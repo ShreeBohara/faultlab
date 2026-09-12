@@ -9,7 +9,7 @@ checks only. Team: Gatekeeper. Product: FaultLab. Architecture remains undecided
 Those folders were left unchanged. There was no parent Git repository; only `faultlab/`
 was initialized, with branch `main`.
 
-The GitHub owner confirmed by the user is `ShreeBohara`. The intended remote is the
+The GitHub owner confirmed by the user is `ShreeBohara`. The created remote is the
 private repository `https://github.com/ShreeBohara/faultlab`. GitHub authentication was
 verified using the existing local login; no global Git configuration was changed.
 
@@ -56,7 +56,7 @@ No system tools were installed or upgraded.
 | Local development binding | Passed | Uvicorn on `127.0.0.1:8000`; Vite on `127.0.0.1:5173`. |
 | Secret exclusions | Passed | `.env`, secret variants, virtualenv, node_modules, build output, and local database paths are ignored; `.env.example` remains trackable. |
 | GitHub authentication | Passed | Existing ShreeBohara login verified; owner confirmed. |
-| GitHub remote | Pending | Create the private repository and verify the reviewed scaffold push. |
+| GitHub remote | Passed | `ShreeBohara/faultlab` created and independently verified private; `main` pushed and GitHub's commit SHA matched the local scaffold commit. |
 | W&B access / models | Not tested | Await key entry in local `.env` and user's confirmation before discovery. |
 | W&B generation / Weave upload | Not tested | Discover models, save one verified ID as `WANDB_MODEL`, then explicitly run one traced request. |
 | TypeSafe | Blocked | Not configured — awaiting sponsor instructions. |
