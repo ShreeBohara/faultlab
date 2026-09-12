@@ -1,0 +1,8 @@
+# Direct dependencies; install requirements.lock for the complete resolved environment.
+fastapi==0.141.1
+uvicorn==0.52.4
+python-dotenv==1.2.3
+openai==3.13.0
+weave==0.53.9
+pytest==9.1.1
+httpx==0.28.1

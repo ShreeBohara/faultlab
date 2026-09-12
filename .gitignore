@@ -1,0 +1,49 @@
+# Secrets; only the blank template is tracked.
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+secrets*.json
+.netrc
+.pypirc
+.npmrc
+
+# Project-local dependencies and generated output.
+.venv/
+venv/
+node_modules/
+.npm-cache/
+dist/
+build/
+*.egg-info/
+*.tsbuildinfo
+
+# Python, test, editor, and OS caches.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.coverage
+htmlcov/
+coverage/
+.DS_Store
+.idea/
+.vscode/
+
+# Local state, traces, databases, and logs.
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.log
+logs/
+wandb/
+.weave/
+.local/
