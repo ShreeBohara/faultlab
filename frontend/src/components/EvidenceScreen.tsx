@@ -14,6 +14,7 @@ import { PortabilityPanel } from './PortabilityPanel'
 import { RegressionControls } from './RegressionControls'
 import { SponsorEvidence } from './SponsorEvidence'
 import { ReplayView } from './ReplayView'
+import { RunSummary } from './RunSummary'
 import { ResourceNote } from './common'
 const storedCampaign = () => { try { return localStorage.getItem('faultlab:campaign') || '' } catch { return '' } }
 export function EvidenceScreen() {
@@ -45,6 +46,7 @@ export function EvidenceScreen() {
     {health.error && <div role="alert" className="error connection-error">{health.error} Start the local backend with <code>./scripts/start-backend.sh</code>, then check again.</div>}<ResourceNote resource={config} />
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
     <ResourceNote resource={campaignResource} />{replay && <ReplayView campaign={campaign} />}
+    <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
     <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>
     <OutcomeMatrix matrix={matrix} selectedEpisode={episodeId} onEpisode={selectEpisode} />
     <ResourceNote resource={experiments} /><div className="section-caption"><span>FROM INCIDENT TO A TESTED REPAIR</span><span>Hypotheses, attempts and failed gates stay visible.</span></div><div className="experiment-grid"><CounterexamplePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><DiagnosticPanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><ChallengePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /></div>
