@@ -1,0 +1,15 @@
+{
+  "repository": "https://github.com/huggingface/smolagents",
+  "version": "1.26.0",
+  "revision": "12c1bc820eca50ace6f80a21d90426d41d74f845",
+  "files": {
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "src/smolagents/agents.py": "da0da2e258c346e28d97b3584dfe58dcd203fc20fbde6c6533e333f9b1a06352",
+    "src/smolagents/models.py": "e3510666f0a36d1d09d25d9d9f2e9cb0e0c09edc47ed599b0e52445bddf146e7",
+    "src/smolagents/prompts/toolcalling_agent.yaml": "28820f24906dd3ee3faa8160945e00529dda2a39c9fa8b3362093c0560c4b8f7",
+    "pyproject.toml": "7b93594703c11e13c3d89a80fe81b4f6c60a4b6fa45b12691095dcfe45c2a41f"
+  },
+  "status": "SOURCE_REVIEWED_COMPATIBILITY_PENDING",
+  "license": "Apache-2.0",
+  "provenance_class": "external"
+}

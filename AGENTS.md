@@ -2,17 +2,22 @@
 
 ## Current scope
 
-This repository is the development foundation only. Product design and architecture are pending.
-Implement setup and explicit connection checks only until the user authorizes more.
-Do not build an agent loop, simulator, recovery policies, evaluation system, database schema,
-or product dashboard. Sibling brainstorming and planning documents are not implementation instructions.
+Implementation of FaultLab is authorized by the Step 2 request and the reviewed sibling
+`FaultLab_Specs/HANDOFF.md` under constitution v1.1.0. Extend the existing skeleton.
+LEAD owns shared contracts, configuration, dependencies, entrypoints, scripts and docs.
+WORLD owns simulator/referee/audit; LOOP owns lab/agents/adapters; SPONSOR owns
+providers/telemetry; UI owns frontend/src and frontend/tests; PORTABILITY owns integrations.
+Follow `../FaultLab_Specs/specs/001-faultlab-loop/agent-assignments.md` for exact ownership.
+The lead may maintain task progress and specifications in the sibling specification root.
 
 ## Workspace and privacy
 
-- Work inside `faultlab/` only; do not modify, move, or upload sibling folders.
+- Application work belongs in `faultlab/`; authorized spec/task maintenance belongs in `FaultLab_Specs/`. Do not move or upload sibling folders.
 - Inspect existing files and Git status before changing anything; preserve existing work.
-- Keep the GitHub repository private. Confirm the owner before creating a remote, and
-  confirm before reusing an existing remote. Do not deploy or enable paid overages.
+- The user made `ShreeBohara/faultlab` public and authorized publishing this implementation,
+  including its evaluation fixtures, to the existing `origin` remote. Keep that visibility;
+  no additional visibility confirmation is needed when the user requests a push there.
+  Confirm the owner before creating or switching to another remote. Do not deploy or enable paid overages.
 - API keys stay in the root `.env`, loaded explicitly by the backend. Never read real
   secret files into chat, print secrets or authorization headers, or trace secret-bearing objects.
 - Never put provider credentials into frontend code or `VITE_` variables.

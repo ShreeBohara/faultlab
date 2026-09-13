@@ -1,7 +1,9 @@
 # Setup record
 
-Checked on 2026-09-12 on macOS. Scope: development foundation and explicit connection
-checks only. Team: Gatekeeper. Product: FaultLab. Architecture remains undecided.
+Checked on 2026-09-12 on macOS. The original foundation record below is retained as
+history; the implementation update at the end and integration-ledger.md describe current
+verification. Team: Gatekeeper. Product: FaultLab. React evidence UI, FastAPI coordinator
+and a separate private-world HTTP simulator run locally.
 
 ## Workspace
 
@@ -102,3 +104,47 @@ settings do not establish its protocol. No fallback provider is used.
 
 Keep this file factual: update the result rows after actual checks, and keep real keys,
 authorization headers, local secret files, and SDK debug dumps out of the repository.
+
+## Implementation baseline (2026-09-12)
+
+The explicit implementation request supersedes setup-only scope. Before adding product code,
+`./scripts/test.sh` passed 20 backend tests and the TypeScript/Vite production build (139 ms
+Vite phase). Existing FastAPI/React/provider checks remain prior scaffold work. No `.env`
+contents were printed or overwritten and no provider calls were made. New schemas use
+Pydantic 2.13.5; runtime integration pins are listed in requirements.txt/requirements.lock.
+
+Frozen profiles: `offline-v1` is labeled offline deterministic smoke; `live-v1` requires
+`FAULTLAB_LIVE_ENABLED=true`, a matching `FAULTLAB_CONFIRMED_ENTITY`, configured W&B
+model/project/credentials and explicit Start. Provider budget maxima are 6000 model calls,
+60M combined tokens and $100 if verified pricing exists. Unknown cost is not zero. The
+1064-call reserve protects audit, external and selector studies. Each episode admits at
+most 18 HTTP attempts, 8 actor calls, 4 waits, 20 ticks, 32 policy steps and 90 seconds.
+Capability scope is orders.upgrade_then_confirm/v1. Registry identities are reviewed locally;
+no API or bundle can install arbitrary code. See integration-ledger.md for evidence gates.
+
+Input admission for the initial gpt-oss model uses locally stored, digest-verified o200k
+BPE ranks through tiktoken 0.14.0, with a framing reserve. Startup and tests never download
+tokenizer assets. Unknown model families retain a conservative byte bound until reviewed.
+The tokenizer metadata/license lives in contracts/tokenizer; actual provider usage remains
+separate from conservative admission/reservation counts. Oversized essential evidence must
+be reported as an input/harness limitation, not an invented agent mistake.
+
+
+## Current implementation commands
+
+Run `./scripts/setup.sh` to install the locked local dependencies. Start the simulator,
+backend and frontend in three terminals with `./scripts/start-simulator.sh`,
+`./scripts/start-backend.sh` and `./scripts/start-frontend.sh`; the UI is
+http://127.0.0.1:5173. `./scripts/test.sh` runs backend tests, UI tests, build and browser
+fixtures without providers. Browser tests use local Google Chrome when available; otherwise
+install the local Playwright Chromium dependency with `cd frontend && npx playwright install chromium`.
+With backend/simulator running, `cd frontend && FAULTLAB_BROWSER_LOCAL=1 npm run test:browser`
+adds the actual local HTTP workflow. See README.md and docs/regression-runner.md for all
+read-only export and explicitly enabled fresh-run commands.
+
+Live campaign admission additionally requires verified nonnegative input/output pricing,
+exact `FAULTLAB_PRICING_MODEL` match and `FAULTLAB_PRICING_VERIFIED=true`. Unknown pricing
+blocks campaign admission; it is never interpreted as zero dollars. The separate one-request
+provider compatibility check remains independently bounded. `openai/gpt-oss-120b` is the
+initial candidate model, subject to account access and pricing verification; it has not been
+called or established as available by this implementation session.

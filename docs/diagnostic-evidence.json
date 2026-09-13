@@ -1,0 +1,38 @@
+{
+  "source_mode": "offline_fixture",
+  "actual_http_probes": 30,
+  "model_calls": 0,
+  "witness": {
+    "schema_version": "faultlab/v1",
+    "diagnostic_id": "diagnostic-d6c844d98b4b4034bcd6c9c26e8fd186",
+    "counterexample_id": null,
+    "diagnostic_profile_id": "evidence_gap_v1",
+    "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "kind": "CONTRACT_EVIDENCE_GAP",
+    "explanation": "Terminal upgrade evidence was unavailable through all declared paths within this diagnostic deadline.",
+    "intervention_ids": [],
+    "reproduction_ids": [],
+    "evidence_ids": [],
+    "authority_paths": [
+      "original_upgrade_write",
+      "identical_upgrade_replay",
+      "upgrade_status",
+      "order_projection",
+      "prior_delivered_receipts"
+    ],
+    "equivalence_refs": [
+      "d302db4092534566594130eb31db540abce90489839b423822ffe99e4b2d2b11",
+      "d302db4092534566594130eb31db540abce90489839b423822ffe99e4b2d2b11"
+    ],
+    "tested_scope": "Fixed evidence_gap_v1 finite probe set: 10 admitted actions through tick 10 in two isolated worlds.",
+    "required_behavior": "Remain unresolved without a matching delivered upgrade receipt; make authoritative terminal evidence available within the task deadline.",
+    "limitations": [
+      "Observed ambiguity is limited to these worlds, probes and deadline; it is not universal impossibility.",
+      "This diagnostic capability fixture is excluded from learned-gain, promotion, audit and selector metrics."
+    ],
+    "checker_hash": "5b83fbc84c20a7bd6db236f370093e5adc09c3c5c35e230fca2c07c8c90d45d9",
+    "protocol_hash": "bfefe69bd6a91e44d24c2ad83d3b42e280df722f1662c84d658826ce38f72287"
+  },
+  "available_status_control": "distinguishing succeeded receipt observed",
+  "learning_or_search_metric": false
+}

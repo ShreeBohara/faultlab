@@ -2,8 +2,4 @@
 set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT/backend"
-"$ROOT/.venv/bin/python" -m pytest
-cd "$ROOT/frontend"
-npm test
-npm run build
-npm run test:browser
+exec "$ROOT/.venv/bin/python" -m app.cli.studies selectors "$@"

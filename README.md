@@ -1,133 +1,77 @@
 # FaultLab — built by Gatekeeper
 
-The development foundation for our hackathon project. Product design and architecture are
-still being brainstormed. This repository currently contains one React page, a FastAPI
-health endpoint, and opt-in provider connection checks.
+FaultLab tests an order-upgrade agent against real local HTTP faults, reproduces and reduces failures, tests diagnoses, and challenges generated recovery policies before fixed checks can promote them. The prototype, Explorer and Mechanic use W&B Inference in explicit live runs. A deterministic reference is available for offline smoke checks.
 
-```text
-frontend/       React + TypeScript + Vite
-backend/        FastAPI, configuration, optional providers, offline tests
-scripts/        Installation, start, test, and connection-check commands
-docs/setup.md   Tested versions, actual check results, and remaining setup
-```
+Implementation, offline evidence, live sponsor evidence and measured improvement have separate status in [the acceptance ledger](docs/integration-ledger.md). An installed loop is not evidence that a learned policy improves outcomes. No live campaign, learned-policy success, external transfer or Aria execution has been claimed from offline tests.
 
-## Install
+Start with the [short usage guide](docs/user-guide.md). The [live validation sequence](docs/live-validation.md) explains the six remaining measured tasks and their commands.
 
-Use Python 3.12 (tested with 3.12.8), Node.js 20.19+ or 22.12+, npm, and Git.
-Vite's current requirements are in its [official guide](https://vite.dev/guide/).
-No system-wide installation or upgrade is performed by this repository.
+## Start locally
+
+Use Python 3.12, Node 20.19+ or 22.12+, and npm. From this existing private repository:
 
 ```sh
-git clone https://github.com/ShreeBohara/faultlab.git
-cd faultlab
 ./scripts/setup.sh
-```
-
-The repository is private; teammates need access granted by its owner before cloning.
-Setup creates a project-local `.venv`, installs pinned Python dependencies and the npm
-lockfile, and copies `.env.example` to `.env` only if `.env` does not exist.
-If needed, select your installed Python explicitly:
-
-```sh
-FAULTLAB_PYTHON=/absolute/path/to/python3.12 ./scripts/setup.sh
-```
-
-## Run locally
-
-In separate terminals, from the repository root:
-
-```sh
-./scripts/start-backend.sh
-```
-
-```sh
-./scripts/start-frontend.sh
-```
-
-Open [FaultLab locally](http://127.0.0.1:5173). The page requests `/api/health`, which
-Vite proxies to [the backend](http://127.0.0.1:8000/api/health).
-Both servers bind to `127.0.0.1`. Startup and health checks do not need credentials
-and never make model calls. Stop each server with Ctrl+C.
-
-The scripts resolve their own repository location, so they also work when called by
-absolute path from another directory. Equivalent direct commands are:
-
-```sh
-# From faultlab/backend:
-../.venv/bin/python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
-
-# From faultlab/frontend:
-npm run dev
-```
-
-## Validate
-
-```sh
 ./scripts/test.sh
 ```
 
-This runs offline backend tests and the frontend TypeScript/production build.
-Python's complete resolved dependencies are in `backend/requirements.lock`; direct
-dependencies are recorded in `backend/requirements.txt`. npm uses `frontend/package-lock.json`.
-
-## Configure W&B locally
-
-Open the root `.env` in your local editor. Do not paste keys into chat, commit them,
-or add provider credentials to frontend code or `VITE_` variables.
-The backend loads this file by an explicit path; environment variables take precedence.
-
-Set:
-
-- `WANDB_API_KEY`: your W&B API key, entered locally.
-- `WANDB_ENTITY`: the exact credited entity. The owner confirmed `shreetbohara-quinstreet`
-  for this setup; access and credit availability still require verification.
-- `WANDB_PROJECT`: `faultlab`.
-- `WANDB_MODEL`: leave empty until model discovery returns a supported ID.
-
-The blank template intentionally does not contain the owner's entity or any secrets.
-W&B Inference uses `https://api.inference.wandb.ai/v1` with the W&B key and explicit
-`entity/project` attribution. Weave uses the same key and project. See
-[W&B's integration guide](https://docs.wandb.ai/weave/guides/integrations/inference).
-
-Run these commands only when you intend to contact W&B and have confirmed the credited
-entity. Model discovery makes no generation request:
+In three terminals:
 
 ```sh
+./scripts/start-simulator.sh
+./scripts/start-backend.sh
+./scripts/start-frontend.sh
+```
+
+Open [FaultLab](http://127.0.0.1:5173). The simulator listens on localhost port 8001, the backend on 8000 and the frontend on 5173. Startup, health, page loads and tests require no credentials and make no paid calls. Use Ctrl+C to stop each server.
+
+Run one explicitly labeled offline reference episode:
+
+```sh
+./scripts/run-demo.sh --mode baseline --wait
+```
+
+Copy its campaign ID to inspect or export persisted evidence:
+
+```sh
+./scripts/export-evidence.sh --campaign CAMPAIGN_ID --output artifacts/evidence.json
+```
+
+Exports and dashboard refreshes read recorded results. They do not replay business effects.
+
+## Live configuration and execution
+
+Keep credentials in the existing root `.env`; setup preserves it. Do not put secrets in frontend variables or commit them. Read [the sponsor setup walkthrough](docs/sponsor-setup.md) before enabling a live profile.
+
+Model discovery and a completed Inference/Weave connection check verified `openai/gpt-oss-120b` in canonical project `shreetbohara-quinstreet/Faultlab`. Use `./scripts/start-live-backend.sh` instead of the ordinary backend launcher for the configured live walkthrough; it preserves `.env` and sets the verified prices and $100 campaign cap. Changing models requires matching verified prices and a new frozen campaign. Actual attempts and limitations are in [sponsor results](docs/sponsor-results.md) and [learning results](docs/learning-results.md).
+
+```sh
+# Offline installed-SDK compatibility only:
+./scripts/check-provider.sh preflight
+
+# Explicit W&B contact:
 ./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet
+
+# One explicit bounded generation and Weave check:
+WANDB_PROJECT=Faultlab WANDB_MODEL='openai/gpt-oss-120b' \
+  ./scripts/smoke-sponsors.sh --confirm-entity shreetbohara-quinstreet \
+  --max-output-tokens 2000
+
+# Explicit fresh live campaign, after local configuration:
+./scripts/run-demo.sh --mode learn --execute-live --wait
 ```
 
-Copy one returned model ID into `WANDB_MODEL` in `.env`. Then explicitly run a single
-short generation check, which verifies that the selected model is still available:
+The learning loop may finish with no change, reject a candidate, or wait for verified Weave evidence. It never substitutes a canned repair or promotes on missing results. Aria setup is deferred for the current walkthrough and does not block Inference/Weave. Its later validation uses a supported W&B UI automation and attributed output capture; see [sponsor setup](docs/sponsor-setup.md).
 
-```sh
-./scripts/check-provider.sh wandb --generate --confirm-entity shreetbohara-quinstreet
-```
+## Components and evidence
 
-The generation check uses a bounded timeout, a small output limit, no automatic
-generation retries, and a real Weave trace. It reports sanitized failures and a trace
-link when verified. This command consumes model usage; it is never called by the page,
-health endpoint, setup script, or test suite. Successful access does not establish the
-amount of promotional credit remaining; confirm that in W&B before further usage.
+- `backend/app/simulator`: four HTTP tools, private SQLite worlds, logical ticks, lost responses, delayed commits/rejections, historical reads and transient errors.
+- `backend/app/referee`: fixed C1–C8, fresh-trial reduction, interventions, finite evidence-gap witnesses and immutable experiment freeze.
+- `backend/app/lab`, `agents`, `adapters`: model roles, policy interpreter, journal, one-active-run controls and repeated evaluation.
+- `backend/app/telemetry`: isolated Weave worker, durable outbox/readback, evaluation/dataset publication and W&B campaign bridge.
+- `backend/app/integrations`: trusted regression runner and reviewed external-agent registration.
+- `frontend`: task controls and persisted evidence drilldowns.
 
-## TypeSafe
+[Diagnostic evidence](docs/diagnostic-results.md) contains an actual finite committed/uncommitted witness and available-status control. It is a separately labeled fixture and excluded from learning gains. [External source review](docs/external-agent-setup.md) records the independently authored agent; successful transfer still requires the frozen external study.
 
-Status: **not configured — awaiting sponsor instructions**.
-
-`TYPESAFE_API_KEY`, `TYPESAFE_BASE_URL`, and `TYPESAFE_MODEL` are reserved placeholders.
-They do not assert an endpoint, authentication scheme, or compatible API protocol.
-The optional module makes no requests until sponsor documentation is supplied and the
-documented protocol is implemented. A status check is available with:
-
-```sh
-./scripts/check-provider.sh typesafe
-```
-
-## Working together
-
-Open only `faultlab/` as the project folder in Codex. Read [AGENTS.md](AGENTS.md) before
-coding. Keep the repository private during setup. Brainstorming and planning remain in
-the untouched sibling folders and are not part of the application repository.
-
-No agent loop, simulator, recovery policy, evaluation system, database, or product
-dashboard has been implemented. Architecture decisions come next, after brainstorming.
-See [the setup record](docs/setup.md) for verified checks and outstanding configuration.
+See [demo instructions](docs/demo.md), [limitations](docs/limitations.md), [regression commands](docs/regression-runner.md) and [submission checklist](docs/submission-checklist.md). The repository stays private. Deployment, publication and submission require a separate owner action.
