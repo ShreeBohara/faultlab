@@ -62,8 +62,10 @@ def list_models(settings: Settings) -> list[str]:
             raise ProviderCheckError("Could not initialize the W&B inference client.") from None
 
 
-def generate_once(settings: Settings) -> GenerationResult:
-    """Verify the configured model, then make at most one short traced generation."""
+def generate_once(settings: Settings, *, max_output_tokens: int = MAX_OUTPUT_TOKENS) -> GenerationResult:
+    """Verify the model, then make one explicitly bounded traced generation."""
+    if type(max_output_tokens) is not int or not 1 <= max_output_tokens <= 2000:
+        raise ProviderCheckError("The output-token limit must be an integer from 1 to 2000.")
     settings.require_wandb(require_model=True)
     with quiet_sdk_output():
         try:
@@ -77,7 +79,7 @@ def generate_once(settings: Settings) -> GenerationResult:
                     completion = client.chat.completions.create(
                         model=settings.wandb_model,
                         messages=[{"role": "user", "content": CHECK_PROMPT}],
-                        max_tokens=MAX_OUTPUT_TOKENS,
+                        max_tokens=max_output_tokens,
                         stream=False,
                     )
                     content = completion.choices[0].message.content

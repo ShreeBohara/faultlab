@@ -1,6 +1,6 @@
 """Explicit server-side configuration; importing this module performs no I/O."""
 
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field, fields, MISSING
 import os
 from pathlib import Path
 
@@ -28,6 +28,21 @@ class Settings:
     typesafe_base_url: str = ""
     typesafe_model: str = ""
 
+    faultlab_artifact_dir: str = 'artifacts'
+    faultlab_simulator_url: str = 'http://127.0.0.1:8001'
+    faultlab_control_token: str = field(default='', repr=False)
+    faultlab_live_enabled: bool = False
+    faultlab_confirmed_entity: str = ''
+    faultlab_model_call_cap: int = 6000
+    faultlab_token_cap: int = 60000000
+    faultlab_dollar_cap: float = 100.0
+    # Negative rates mean unverified. Explicit short provider checks use
+    # require_wandb(); campaign admission additionally requires a priced bound.
+    faultlab_input_dollars_per_million: float = -1.0
+    faultlab_output_dollars_per_million: float = -1.0
+    faultlab_pricing_model: str = ''
+    faultlab_pricing_verified: bool = False
+
     @classmethod
     def from_env(cls, env_path: str | Path | None = None) -> "Settings":
         """Read the explicit root .env, then apply process environment overrides.
@@ -43,7 +58,19 @@ class Settings:
         for setting in fields(cls):
             name = setting.name.upper()
             value = os.environ.get(name, file_values.get(name))
-            values[setting.name] = (value or "").strip()
+            if value is None:
+                values[setting.name] = setting.default if setting.default is not MISSING else ''
+            elif setting.type is bool:
+                if value.strip().lower() not in ('true','false','1','0',''):
+                    raise ConfigurationError((name,))
+                values[setting.name] = value.strip().lower() in ('true','1')
+            elif setting.type in (int, float):
+                try:
+                    values[setting.name] = setting.type(value)
+                except (ValueError, TypeError):
+                    raise ConfigurationError((name,)) from None
+            else:
+                values[setting.name] = (value or '').strip()
         return cls(**values)
 
     def require_wandb(self, require_model: bool = False) -> None:
@@ -58,3 +85,70 @@ class Settings:
     @property
     def project_path(self) -> str:
         return f"{self.wandb_entity}/{self.wandb_project}"
+
+    def require_live(self) -> None:
+        self.require_wandb(require_model=True)
+        missing = []
+        if not self.faultlab_live_enabled:
+            missing.append('FAULTLAB_LIVE_ENABLED')
+        if self.faultlab_confirmed_entity != self.wandb_entity:
+            missing.append('FAULTLAB_CONFIRMED_ENTITY')
+        if not (1 <= self.faultlab_model_call_cap <= 6000):
+            missing.append('FAULTLAB_MODEL_CALL_CAP')
+        if not (1 <= self.faultlab_token_cap <= 60000000):
+            missing.append('FAULTLAB_TOKEN_CAP')
+        if not (0 < self.faultlab_dollar_cap <= 100):
+            missing.append('FAULTLAB_DOLLAR_CAP')
+        import math
+        for name in ('faultlab_input_dollars_per_million','faultlab_output_dollars_per_million'):
+            value=getattr(self,name)
+            if not math.isfinite(value) or value<0: missing.append(name.upper())
+        if self.faultlab_pricing_model!=self.wandb_model:
+            missing.append('FAULTLAB_PRICING_MODEL')
+        if not self.faultlab_pricing_verified:
+            missing.append('FAULTLAB_PRICING_VERIFIED')
+        if missing:
+            raise ConfigurationError(tuple(missing))
+
+    @property
+    def model_call_dollar_bound(self) -> float | None:
+        import math
+        rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
+        if not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model or any(not math.isfinite(v) or v<0 for v in rates):return None
+        return (8000*rates[0]+2000*rates[1])/1000000
+
+    @property
+    def artifact_path(self) -> Path:
+        value = Path(self.faultlab_artifact_dir)
+        return value if value.is_absolute() else ROOT_ENV_PATH.parent / value
+
+    def local_control_token(self) -> str:
+        """Share an opaque localhost-only capability without modifying the real .env.
+
+        Called only by explicitly constructed simulator/coordinator services. File
+        permissions and exclusive creation prevent accidental replacement on restart.
+        """
+        if self.faultlab_control_token:
+            return self.faultlab_control_token
+        import secrets
+        path = self.artifact_path / 'control-capability'
+        path.parent.mkdir(parents=True, exist_ok=True)
+        candidate = path.parent / ('.control-' + secrets.token_hex(12))
+        descriptor = os.open(candidate, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        token = secrets.token_urlsafe(32)
+        try:
+            with os.fdopen(descriptor, 'w') as file:
+                file.write(token)
+                file.flush()
+                os.fsync(file.fileno())
+            try:
+                os.link(candidate, path)
+            except FileExistsError:
+                if path.is_symlink():
+                    raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
+                token = path.read_text().strip()
+                if len(token) < 32:
+                    raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
+            return token
+        finally:
+            candidate.unlink(missing_ok=True)

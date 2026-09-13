@@ -1,6 +1,7 @@
 """Opt-in checks. No provider is contacted by app startup, health, or tests."""
 
 import argparse
+import json
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -11,16 +12,34 @@ from app.providers.typesafe import configuration_status
 from app.providers.wandb_inference import generate_once, list_models
 
 
+def _output_token_limit(value: str) -> int:
+    try:
+        limit = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError("must be an integer from 1 to 2000") from None
+    if not 1 <= limit <= 2000:
+        raise argparse.ArgumentTypeError("must be an integer from 1 to 2000")
+    return limit
+
+
 def main(argv: Sequence[str] | None = None, *, env_path: Path | None = None) -> int:
     parser = argparse.ArgumentParser(description="Explicit FaultLab provider connection checks")
     subparsers = parser.add_subparsers(dest="provider", required=True)
+    subparsers.add_parser("preflight", help="Inspect installed SDK compatibility offline; no configuration or network")
     wandb = subparsers.add_parser("wandb", help="W&B Inference and Weave")
     modes = wandb.add_mutually_exclusive_group(required=True)
     modes.add_argument("--list-models", action="store_true", help="List model IDs; no generation")
     modes.add_argument("--generate", action="store_true", help="Verify WANDB_MODEL and make one short traced request")
     wandb.add_argument("--confirm-entity", help="The credited WANDB_ENTITY confirmed by the user")
+    wandb.add_argument("--max-output-tokens", type=_output_token_limit, default=32, metavar="1..2000",
+                      help="Explicit generation token cap (default: 32); reasoning models may need a larger authorized cap")
     subparsers.add_parser("typesafe", help="Show the sponsor-instructions blocker; no network call")
     args = parser.parse_args(argv)
+    if args.provider == "preflight":
+        from app.providers.preflight import compatibility_report
+        report = compatibility_report()
+        print(json.dumps(report, indent=2, sort_keys=True))
+        return 0 if all(report["compatible"].values()) else 2
     settings = Settings.from_env(env_path=env_path)
     if args.provider == "typesafe":
         print(configuration_status(settings))
@@ -36,7 +55,8 @@ def main(argv: Sequence[str] | None = None, *, env_path: Path | None = None) -> 
             print("\n".join(ids) if ids else "No model IDs were returned.")
             print("Save an exact available ID as WANDB_MODEL in the root .env before --generate.")
         else:
-            result = generate_once(settings)
+            print(f"Generation limit: {args.max_output_tokens} output tokens; 20-second timeout; no generation retries.")
+            result = generate_once(settings, max_output_tokens=args.max_output_tokens)
             print(f"Response: {result.response}")
             print(f"Verified Weave trace: {result.trace_url}")
         return 0

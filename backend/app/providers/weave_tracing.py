@@ -57,7 +57,10 @@ def _weave_environment(settings: Settings) -> Iterator[None]:
     }
     # Environment variables override SDK settings. Pin both for this check so
     # inherited shell settings cannot turn code capture or retries back on.
-    values.update({f"WEAVE_{key.upper()}": str(value).lower() for key, value in WEAVE_SETTINGS.items()})
+    # String settings are case-sensitive (CRITICAL is a logging level, while
+    # logging.critical is a function). Only boolean wire values are lowercase.
+    values.update({f"WEAVE_{key.upper()}": str(value).lower() if isinstance(value, bool) else str(value)
+                   for key, value in WEAVE_SETTINGS.items()})
     original = {key: os.environ.get(key) for key in values}
     try:
         for key, value in values.items():

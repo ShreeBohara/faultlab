@@ -89,3 +89,37 @@ def test_dotenv_values_are_not_interpolated(tmp_path, monkeypatch):
     settings = Settings.from_env(env_path=env_file)
 
     assert settings.wandb_api_key == "literal-${OTHER_VALUE}"
+
+
+def test_local_capability_survives_restart_without_env_edits(tmp_path):
+    settings = Settings(faultlab_artifact_dir=str(tmp_path))
+    token = settings.local_control_token()
+    assert len(token) >= 32
+    assert settings.local_control_token() == token
+    assert (tmp_path / 'control-capability').stat().st_mode & 0o077 == 0
+    assert not (tmp_path / '.env').exists()
+
+
+def test_live_defaults_deny_dispatch():
+    settings = Settings(wandb_api_key='fixture',wandb_entity='team',wandb_project='p',wandb_model='m')
+    with pytest.raises(ConfigurationError):settings.require_live()
+
+
+def test_concurrent_local_capability_creation_is_atomic(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    settings = Settings(faultlab_artifact_dir=str(tmp_path))
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        values = list(pool.map(lambda _: settings.local_control_token(), range(8)))
+    assert len(set(values)) == 1
+
+
+def test_live_campaign_requires_priced_bound_for_exact_model():
+    from dataclasses import replace
+    settings=Settings(wandb_api_key='fixture',wandb_entity='team',wandb_project='p',wandb_model='m',faultlab_live_enabled=True,faultlab_confirmed_entity='team')
+    assert settings.model_call_dollar_bound is None
+    with pytest.raises(ConfigurationError):settings.require_live()
+    priced=replace(settings,faultlab_input_dollars_per_million=1.0,faultlab_output_dollars_per_million=2.0,faultlab_pricing_model='m',faultlab_pricing_verified=True)
+    priced.require_live()
+    assert priced.model_call_dollar_bound==.012
+    assert replace(priced,wandb_model='different').model_call_dollar_bound is None
+    with pytest.raises(ConfigurationError):replace(priced,faultlab_input_dollars_per_million=float('nan')).require_live()

@@ -129,6 +129,21 @@ def test_actual_weave_settings_and_op_signature_are_compatible(monkeypatch):
     assert callable(uncalled.call)
 
 
+def test_actual_weave_logger_accepts_frozen_environment_level(configured):
+    from weave.trace.display.term import logger, update_logger_level
+    previous_level = logger.level
+    previous_environment = os.environ.get("WEAVE_LOG_LEVEL")
+    try:
+        with weave_tracing._weave_environment(configured):
+            assert os.environ["WEAVE_LOG_LEVEL"] == "CRITICAL"
+            assert os.environ["WEAVE_CAPTURE_CODE"] == "false"
+            update_logger_level()  # Real SDK call, no init or network.
+            assert logger.level == logging.CRITICAL
+        assert os.environ.get("WEAVE_LOG_LEVEL") == previous_environment
+    finally:
+        logger.setLevel(previous_level)
+
+
 def test_missing_config_prevents_client_creation(monkeypatch):
     monkeypatch.setattr(wandb_inference, "_client", lambda _: pytest.fail("Created client without config"))
     with pytest.raises(ConfigurationError):
@@ -191,6 +206,41 @@ def test_provider_exception_is_not_logged_traced_or_retried(configured, monkeypa
     assert len(client.generations) == 1
     assert fake.traced_output == {"ok": False, "error": "Inference request failed; no retry was made."}
     assert configured.wandb_api_key not in str(caught.value) + captured.out + captured.err + repr(fake.traced_output)
+
+
+def test_explicit_output_cap_reaches_single_generation(configured, monkeypatch):
+    client = FakeInferenceClient()
+    use_fakes(monkeypatch, client)
+    wandb_inference.generate_once(configured, max_output_tokens=2000)
+    assert len(client.generations) == 1 and client.generations[0]["max_tokens"] == 2000
+
+
+@pytest.mark.parametrize("limit", [0, 2001, -1, True, "2000"])
+def test_invalid_direct_output_cap_precedes_client(configured, monkeypatch, limit):
+    monkeypatch.setattr(wandb_inference, "_client", lambda _: pytest.fail("Client created for invalid token cap"))
+    with pytest.raises(ProviderCheckError, match="1 to 2000"):
+        wandb_inference.generate_once(configured, max_output_tokens=limit)
+
+
+@pytest.mark.parametrize("flag,expected", [([], 32), (["--max-output-tokens", "2000"], 2000)])
+def test_cli_forwards_output_cap_and_discloses_bound(configured, monkeypatch, capsys, flag, expected):
+    calls = []
+    monkeypatch.setattr(Settings, "from_env", lambda **_: configured)
+    def generate(settings, *, max_output_tokens):
+        calls.append((settings, max_output_tokens))
+        return wandb_inference.GenerationResult("fixture response", "https://wandb.ai/fixture/project/call/fixture")
+    monkeypatch.setattr(check_provider, "generate_once", generate)
+    assert check_provider.main(["wandb", "--generate", "--confirm-entity", configured.wandb_entity, *flag]) == 0
+    assert calls == [(configured, expected)]
+    assert f"Generation limit: {expected} output tokens" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("value", ["0", "2001", "-1", "many", "1.5"])
+def test_cli_invalid_output_cap_rejected_before_settings_or_network(monkeypatch, value):
+    monkeypatch.setattr(Settings, "from_env", lambda **_: pytest.fail("Loaded settings for invalid CLI input"))
+    with pytest.raises(SystemExit) as caught:
+        check_provider.main(["wandb", "--generate", "--max-output-tokens", value])
+    assert caught.value.code == 2
 
 
 def test_response_is_redacted_before_tracing(configured, monkeypatch):

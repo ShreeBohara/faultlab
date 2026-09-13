@@ -47,3 +47,9 @@ logs/
 wandb/
 .weave/
 .local/
+
+artifacts/
+*.sqlite-*
+*.tmp
+*.swp
+frontend/tests/.results/
