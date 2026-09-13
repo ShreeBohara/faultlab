@@ -1,0 +1,57 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "check_id": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8"
+      ],
+      "title": "Check Id",
+      "type": "string"
+    },
+    "passed": {
+      "title": "Passed",
+      "type": "boolean"
+    },
+    "category": {
+      "maxLength": 80,
+      "title": "Category",
+      "type": "string"
+    },
+    "evidence_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 36,
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "event_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Event Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "check_id",
+    "passed",
+    "category"
+  ],
+  "title": "CheckResult",
+  "type": "object"
+}

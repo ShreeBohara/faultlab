@@ -1,0 +1,103 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Service",
+      "type": "string"
+    },
+    "intent_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Intent Hash",
+      "type": "string"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "original_request": {
+      "maxLength": 4000,
+      "title": "Original Request",
+      "type": "string"
+    },
+    "attempt_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Attempt Ids",
+      "type": "array"
+    },
+    "latest_status": {
+      "anyOf": [
+        {
+          "enum": [
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Latest Status"
+    },
+    "terminal_receipt_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Terminal Receipt Id"
+    }
+  },
+  "required": [
+    "episode_id",
+    "operation_id",
+    "service",
+    "intent_hash",
+    "payload_hash",
+    "original_request",
+    "attempt_ids",
+    "latest_status",
+    "terminal_receipt_id"
+  ],
+  "title": "OperationJournal",
+  "type": "object"
+}

@@ -1,0 +1,15 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "desired_shipping": {
+      "const": "express",
+      "title": "Desired Shipping",
+      "type": "string"
+    }
+  },
+  "required": [
+    "desired_shipping"
+  ],
+  "title": "UpgradeArguments",
+  "type": "object"
+}

@@ -1,0 +1,1 @@
+"""Scoped mock-business adapters."""

@@ -1,0 +1,321 @@
+{
+  "$defs": {
+    "CampaignBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "model_calls": {
+          "default": 6000,
+          "maximum": 6000,
+          "minimum": 1,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "tokens": {
+          "default": 60000000,
+          "maximum": 60000000,
+          "minimum": 1,
+          "title": "Tokens",
+          "type": "integer"
+        },
+        "dollars": {
+          "default": 100.0,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Dollars",
+          "type": "number"
+        },
+        "discovery_selections": {
+          "default": 8,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Discovery Selections",
+          "type": "integer"
+        },
+        "candidates": {
+          "default": 4,
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Candidates",
+          "type": "integer"
+        },
+        "input_tokens_per_call": {
+          "default": 8000,
+          "maximum": 8000,
+          "minimum": 1,
+          "title": "Input Tokens Per Call",
+          "type": "integer"
+        },
+        "output_tokens_per_call": {
+          "default": 2000,
+          "maximum": 2000,
+          "minimum": 1,
+          "title": "Output Tokens Per Call",
+          "type": "integer"
+        }
+      },
+      "title": "CampaignBudget",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        },
+        "cost_dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Dollars"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "campaign_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "baseline",
+        "learn",
+        "compare"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "state": {
+      "default": "IDLE",
+      "enum": [
+        "IDLE",
+        "SELECTING",
+        "RUNNING",
+        "SCORING",
+        "NO_CHANGE",
+        "DIAGNOSING",
+        "REPRODUCING",
+        "REDUCING",
+        "INTERVENING",
+        "CANDIDATE_VALIDATION",
+        "CHALLENGING",
+        "EVALUATING",
+        "PROMOTED",
+        "REJECTED",
+        "WAITING_EVIDENCE",
+        "STOPPED",
+        "COMPLETED",
+        "ERROR"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "state_seq": {
+      "default": 0,
+      "minimum": 0,
+      "title": "State Seq",
+      "type": "integer"
+    },
+    "execution_epoch": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Execution Epoch",
+      "type": "integer"
+    },
+    "task_text": {
+      "maxLength": 2000,
+      "title": "Task Text",
+      "type": "string"
+    },
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "config_profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Config Profile Id",
+      "type": "string"
+    },
+    "model": {
+      "maxLength": 600,
+      "title": "Model",
+      "type": "string"
+    },
+    "configuration_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Configuration Hash",
+      "type": "string"
+    },
+    "active_policy_version": {
+      "default": "policy-v0",
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Active Policy Version",
+      "type": "string"
+    },
+    "latest_episode_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latest Episode Id"
+    },
+    "stop_requested": {
+      "default": false,
+      "title": "Stop Requested",
+      "type": "boolean"
+    },
+    "caps": {
+      "$ref": "#/$defs/CampaignBudget"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    },
+    "reserved_calls": {
+      "default": 1064,
+      "minimum": 0,
+      "title": "Reserved Calls",
+      "type": "integer"
+    },
+    "telemetry_status": {
+      "default": "local_recorded",
+      "enum": [
+        "local_recorded",
+        "weave_pending",
+        "weave_verified",
+        "weave_error"
+      ],
+      "title": "Telemetry Status",
+      "type": "string"
+    },
+    "aria_status": {
+      "default": "PENDING",
+      "enum": [
+        "PENDING",
+        "UNVERIFIED",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "Aria Status",
+      "type": "string"
+    },
+    "terminal_reason": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Terminal Reason"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "format": "date-time",
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "mode",
+    "task_text",
+    "order_id",
+    "config_profile_id",
+    "model",
+    "configuration_hash"
+  ],
+  "title": "Campaign",
+  "type": "object"
+}

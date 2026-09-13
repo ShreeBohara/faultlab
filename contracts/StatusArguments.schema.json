@@ -1,0 +1,18 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Service",
+      "type": "string"
+    }
+  },
+  "required": [
+    "service"
+  ],
+  "title": "StatusArguments",
+  "type": "object"
+}

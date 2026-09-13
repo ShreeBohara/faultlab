@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "ReductionAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "transform": {
+          "maxLength": 600,
+          "title": "Transform",
+          "type": "string"
+        },
+        "parent_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Parent Hash",
+          "type": "string"
+        },
+        "child_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Child Hash",
+          "type": "string"
+        },
+        "trial_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          "maxItems": 3,
+          "title": "Trial Ids",
+          "type": "array"
+        },
+        "retained": {
+          "title": "Retained",
+          "type": "boolean"
+        },
+        "reason": {
+          "maxLength": 600,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "transform",
+        "parent_hash",
+        "child_hash",
+        "trial_ids",
+        "retained",
+        "reason"
+      ],
+      "title": "ReductionAttempt",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "counterexample_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Counterexample Id",
+      "type": "string"
+    },
+    "reducer_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Reducer Hash",
+      "type": "string"
+    },
+    "reduction_order": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Reduction Order",
+      "type": "array"
+    },
+    "original_recipe_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Original Recipe Hash",
+      "type": "string"
+    },
+    "retained_recipe_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Retained Recipe Hash"
+    },
+    "attempts": {
+      "items": {
+        "$ref": "#/$defs/ReductionAttempt"
+      },
+      "maxItems": 24,
+      "title": "Attempts",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "REDUCED",
+        "LOCALLY_MINIMAL",
+        "FLAKY",
+        "INCOMPLETE",
+        "NO_REDUCTION"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "valid_count": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Valid Count",
+      "type": "integer"
+    },
+    "attempted_count": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Attempted Count",
+      "type": "integer"
+    },
+    "target_violation_count": {
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Target Violation Count",
+      "type": "integer"
+    },
+    "stopping_reason": {
+      "maxLength": 600,
+      "title": "Stopping Reason",
+      "type": "string"
+    },
+    "neighborhood_exhausted": {
+      "title": "Neighborhood Exhausted",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "counterexample_id",
+    "reducer_hash",
+    "reduction_order",
+    "original_recipe_hash",
+    "retained_recipe_hash",
+    "attempts",
+    "status",
+    "valid_count",
+    "attempted_count",
+    "target_violation_count",
+    "stopping_reason",
+    "neighborhood_exhausted"
+  ],
+  "title": "ReductionResult",
+  "type": "object"
+}

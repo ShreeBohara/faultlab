@@ -1,0 +1,9 @@
+{
+  "upgrade_outcome": "UNKNOWN",
+  "notification_outcome": "NOT_STARTED",
+  "overall": "SAFE_UNRESOLVED",
+  "evidence_ids": [],
+  "next_action": {
+    "kind": "ESCALATE"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$defs": {
+    "F3Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "versions_back": {
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Versions Back",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "versions_back"
+      ],
+      "title": "F3Parameters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "target_tool": {
+      "const": "get_order",
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "target_service": {
+      "const": "orders",
+      "title": "Target Service",
+      "type": "string"
+    },
+    "occurrence": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Occurrence",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "F3",
+      "title": "Kind",
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/F3Parameters"
+    }
+  },
+  "required": [
+    "target_tool",
+    "target_service",
+    "occurrence",
+    "kind",
+    "parameters"
+  ],
+  "title": "F3",
+  "type": "object"
+}

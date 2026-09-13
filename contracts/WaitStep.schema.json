@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "op": {
+      "const": "wait_ticks",
+      "title": "Op",
+      "type": "string"
+    },
+    "ticks": {
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Ticks",
+      "type": "integer"
+    },
+    "only_if": {
+      "default": "always",
+      "enum": [
+        "always",
+        "upgrade_receipt_missing",
+        "notification_receipt_missing",
+        "current_operation_pending",
+        "notification_operation_pending",
+        "upgrade_outcome_uncertain",
+        "notification_outcome_uncertain",
+        "upgrade_terminal_failure",
+        "notification_terminal_failure",
+        "upgrade_succeeded",
+        "notification_succeeded",
+        "receipt_missing"
+      ],
+      "title": "Only If",
+      "type": "string"
+    }
+  },
+  "required": [
+    "op",
+    "ticks"
+  ],
+  "title": "WaitStep",
+  "type": "object"
+}

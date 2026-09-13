@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "applied_shipping": {
+      "enum": [
+        "standard",
+        "express"
+      ],
+      "title": "Applied Shipping",
+      "type": "string"
+    },
+    "requested_shipping": {
+      "enum": [
+        "standard",
+        "express"
+      ],
+      "title": "Requested Shipping",
+      "type": "string"
+    },
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "last_upgrade_operation_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Upgrade Operation Id"
+    }
+  },
+  "required": [
+    "order_id",
+    "applied_shipping",
+    "requested_shipping",
+    "version"
+  ],
+  "title": "Order",
+  "type": "object"
+}

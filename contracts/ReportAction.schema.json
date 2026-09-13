@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "CheckNextAction": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "CHECK_EXISTING_UPGRADE",
+            "CHECK_EXISTING_NOTIFICATION"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "operation_id"
+      ],
+      "title": "CheckNextAction",
+      "type": "object"
+    },
+    "NoNextAction": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "NONE",
+            "ESCALATE"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "NoNextAction",
+      "type": "object"
+    },
+    "TaskReport": {
+      "additionalProperties": false,
+      "properties": {
+        "upgrade_outcome": {
+          "enum": [
+            "NOT_STARTED",
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ],
+          "title": "Upgrade Outcome",
+          "type": "string"
+        },
+        "notification_outcome": {
+          "enum": [
+            "NOT_STARTED",
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN",
+            "NOT_REQUIRED"
+          ],
+          "title": "Notification Outcome",
+          "type": "string"
+        },
+        "overall": {
+          "enum": [
+            "COMPLETED",
+            "SAFE_UNRESOLVED",
+            "CORRECTLY_REJECTED"
+          ],
+          "title": "Overall",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          "maxItems": 18,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "next_action": {
+          "discriminator": {
+            "mapping": {
+              "CHECK_EXISTING_NOTIFICATION": "#/$defs/CheckNextAction",
+              "CHECK_EXISTING_UPGRADE": "#/$defs/CheckNextAction",
+              "ESCALATE": "#/$defs/NoNextAction",
+              "NONE": "#/$defs/NoNextAction"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NoNextAction"
+            },
+            {
+              "$ref": "#/$defs/CheckNextAction"
+            }
+          ],
+          "title": "Next Action"
+        }
+      },
+      "required": [
+        "upgrade_outcome",
+        "notification_outcome",
+        "overall",
+        "evidence_ids",
+        "next_action"
+      ],
+      "title": "TaskReport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "report",
+      "title": "Kind",
+      "type": "string"
+    },
+    "report": {
+      "$ref": "#/$defs/TaskReport"
+    }
+  },
+  "required": [
+    "kind",
+    "report"
+  ],
+  "title": "ReportAction",
+  "type": "object"
+}

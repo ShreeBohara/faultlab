@@ -1,0 +1,98 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "ingestion_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Ingestion Id",
+      "type": "string"
+    },
+    "episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "source_project": {
+      "maxLength": 600,
+      "title": "Source Project",
+      "type": "string"
+    },
+    "root_call_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Root Call Id",
+      "type": "string"
+    },
+    "origin": {
+      "enum": [
+        "prototype",
+        "faultlab_evaluation"
+      ],
+      "title": "Origin",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "PENDING",
+        "FETCHING",
+        "INGESTED",
+        "RETRYABLE_ERROR",
+        "REJECTED"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "evidence_digest": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Evidence Digest"
+    },
+    "execution_epoch": {
+      "minimum": 0,
+      "title": "Execution Epoch",
+      "type": "integer"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Reason"
+    }
+  },
+  "required": [
+    "ingestion_id",
+    "episode_id",
+    "source_project",
+    "root_call_id",
+    "origin",
+    "state",
+    "evidence_digest",
+    "execution_epoch",
+    "reason"
+  ],
+  "title": "WeaveIngestion",
+  "type": "object"
+}

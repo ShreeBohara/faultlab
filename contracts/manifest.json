@@ -1,0 +1,313 @@
+{
+  "schema_version": "faultlab/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "schemas": {
+    "EmptyArguments": {
+      "file": "EmptyArguments.schema.json",
+      "sha256": "4757414b28c839a41f2541d9f5854fa0e32f88990afb5194d5ecdaae880a8250"
+    },
+    "UpgradeArguments": {
+      "file": "UpgradeArguments.schema.json",
+      "sha256": "1a5d15646e32945a9376e2ba5900dc41cdea54ddb80dd9aacbfdd3d5532b943d"
+    },
+    "StatusArguments": {
+      "file": "StatusArguments.schema.json",
+      "sha256": "6dee4f4eb291b49cc1b2b1a6a60627e1c7f2bf6b54aab992b9617feb9763892d"
+    },
+    "GetOrderAction": {
+      "file": "GetOrderAction.schema.json",
+      "sha256": "71c8424e7c597004db194314275a5e9876477d4fd29d5db3c173753a67cef47e"
+    },
+    "UpdateOrderAction": {
+      "file": "UpdateOrderAction.schema.json",
+      "sha256": "7c860beb3b9544e92a42e2e3c31ac285b3e74aebb23af746b8d5d01e96986f27"
+    },
+    "GetStatusAction": {
+      "file": "GetStatusAction.schema.json",
+      "sha256": "008a03c7fe2ce71b62d22c5a7a2d992818a5449d459e75b0ee0cdd82806fe7d6"
+    },
+    "SendConfirmationAction": {
+      "file": "SendConfirmationAction.schema.json",
+      "sha256": "296337c9bdc35461771dd5dd95164178cca9d7df890ac74c2497403cde9c16ed"
+    },
+    "NoNextAction": {
+      "file": "NoNextAction.schema.json",
+      "sha256": "ea5750caf60a3bd1802aa8645c9f343ed8afba5c5c126e865b7d3532d81d1f74"
+    },
+    "CheckNextAction": {
+      "file": "CheckNextAction.schema.json",
+      "sha256": "11bbd97d5d61cc85ae0ce6543b78faad2ed53f480dcee648e82e7b5e18ea82c7"
+    },
+    "TaskReport": {
+      "file": "TaskReport.schema.json",
+      "sha256": "72c3b44b462f99642ce9bf5dd6243fee10b345c6b27334e6040bdafe3db837bf"
+    },
+    "ReportAction": {
+      "file": "ReportAction.schema.json",
+      "sha256": "8033400b2631d0ae3bb864453a4f82b9b217aeed29ac245f6212afea2d840c77"
+    },
+    "TaskIntent": {
+      "file": "TaskIntent.schema.json",
+      "sha256": "fbdcd68ee352d44ce35ef1f14158de4ce91048140a82f3b650c3a8c7bddde2b0"
+    },
+    "Receipt": {
+      "file": "Receipt.schema.json",
+      "sha256": "86434f38598ef547ff94daf0c648bd357cefc91880f9f60b1c667c81f6eafa66"
+    },
+    "Order": {
+      "file": "Order.schema.json",
+      "sha256": "6ce0f2bf4eb4b1383243524830f3191fd4584f347fe29a5d3345477abd601ef2"
+    },
+    "OperationData": {
+      "file": "OperationData.schema.json",
+      "sha256": "f7a67ddee8e43089f6464cb887f6b18e35ee8e0fb5a0afd17c312b21fedb8e2c"
+    },
+    "ToolResult": {
+      "file": "ToolResult.schema.json",
+      "sha256": "40b68ae015ce6934ea775be3f8a9d9174906036727f714d75f92c5c16871e64a"
+    },
+    "PublicObservation": {
+      "file": "PublicObservation.schema.json",
+      "sha256": "de318ea388ab96e1cb4265989a598c43ba5ab8bfae1799a1abfdf7a26c1ac6da"
+    },
+    "F1Parameters": {
+      "file": "F1Parameters.schema.json",
+      "sha256": "36bada8ad13b9a776306e3cc31a9ec60901f2e03ab409783f1571312477120f9"
+    },
+    "F2Parameters": {
+      "file": "F2Parameters.schema.json",
+      "sha256": "c17797cc4c9fb3525fc7b079398e397b6d9a8056014e05859a93b283b10c16e6"
+    },
+    "F3Parameters": {
+      "file": "F3Parameters.schema.json",
+      "sha256": "ca06836b479061209de3e374fd227fc927e5fa875fcd1f8e97b977d3de1307eb"
+    },
+    "F4Parameters": {
+      "file": "F4Parameters.schema.json",
+      "sha256": "1d4317ceb92168fb94df88a0631469a165d9a00742606bf68c80435feb11194e"
+    },
+    "PrimitiveBase": {
+      "file": "PrimitiveBase.schema.json",
+      "sha256": "18df1b9a9d2c34e6aa76f360965a8f3bff3d5ab316362ccab3db827873e7d30c"
+    },
+    "F1": {
+      "file": "F1.schema.json",
+      "sha256": "2441d1a834a21fca7d6575bc66e0380819020a0003fb98c305a94f336d3eb53a"
+    },
+    "F2": {
+      "file": "F2.schema.json",
+      "sha256": "221a7362d751d8e828eb933d6037b13687f41524d05b91a4d8b60c67715a4b77"
+    },
+    "F3": {
+      "file": "F3.schema.json",
+      "sha256": "65c5cf49fb874847999121bde5dbc46dbe91d71ad5f5747d9f832152aca9efea"
+    },
+    "F4": {
+      "file": "F4.schema.json",
+      "sha256": "04fcd61827d9bb1143929a698932f393d60b1847a1d9f2997d22aa9ac41dc73b"
+    },
+    "FaultSpec": {
+      "file": "FaultSpec.schema.json",
+      "sha256": "223c0f7b5828134fc3af07c5f91b639fe864ee56243d2b6dbde63b0f37d5efd5"
+    },
+    "ExplorerOutput": {
+      "file": "ExplorerOutput.schema.json",
+      "sha256": "71ec9013f574429c79c6950a7689ebcb048e01d6210f15c4ae3b9a8c312a1b8b"
+    },
+    "NoArgStep": {
+      "file": "NoArgStep.schema.json",
+      "sha256": "49f8d53ca114a940abf3d8f4b06f332b98f27bb1c8d71f3e11d09aeb363a2c28"
+    },
+    "WaitStep": {
+      "file": "WaitStep.schema.json",
+      "sha256": "606626e3e85c3f9721f25aeaeae5c2ae7eb760d0907e8f0f55a37fd035133f67"
+    },
+    "ServiceStep": {
+      "file": "ServiceStep.schema.json",
+      "sha256": "2f4c0f9c2c4168776450e7a02471ca38db9d419a33e589cf8f04af81fcbb2ae4"
+    },
+    "ReceiptStep": {
+      "file": "ReceiptStep.schema.json",
+      "sha256": "ceafb5b2e6388a57a6b9a7cd3cd63f62e475416fc81cf5d595489f0dd86b8574"
+    },
+    "PolicyRule": {
+      "file": "PolicyRule.schema.json",
+      "sha256": "6b1f7b3fb69bf20af6966c7ae1940cb29979cd3a4edad8bbe1817ce5da87102c"
+    },
+    "RecoveryPolicy": {
+      "file": "RecoveryPolicy.schema.json",
+      "sha256": "afe50f48dddfb25080922dfaab6ac1cd57d954bcdea38d03f30c99757b57df0c"
+    },
+    "CandidatePolicy": {
+      "file": "CandidatePolicy.schema.json",
+      "sha256": "4c582c0ee5ff803d140b0b0630ffdb4cd2417ae8c89ec358556a084b1c495d7e"
+    },
+    "MechanicCandidate": {
+      "file": "MechanicCandidate.schema.json",
+      "sha256": "06291657ba7b7112a00f233bcf9d61c09143e5c93ca1d6ce82455358e708ef6a"
+    },
+    "MechanicNoChange": {
+      "file": "MechanicNoChange.schema.json",
+      "sha256": "1d613e74a37dde2ffb554b9313177a6a6108f599d99dbef9184c3c596e3e69c4"
+    },
+    "DiagnosticProposal": {
+      "file": "DiagnosticProposal.schema.json",
+      "sha256": "b9389f08effed4afaf82c0345af2d97c77a1e08e8215ed2974c4b147a14fcd60"
+    },
+    "EpisodeBudget": {
+      "file": "EpisodeBudget.schema.json",
+      "sha256": "37bf68d1698a430e33fafc60d261b491825e7792c502640e8dffac5674ccdf1f"
+    },
+    "CampaignBudget": {
+      "file": "CampaignBudget.schema.json",
+      "sha256": "11813544db5f79843316521d1367cd72f08d04bebf871b6bda455f315a8851a5"
+    },
+    "Usage": {
+      "file": "Usage.schema.json",
+      "sha256": "301eddd72a74a36154e84399ddecb8a64de48b52aba76ff222515bb38478e755"
+    },
+    "Provenance": {
+      "file": "Provenance.schema.json",
+      "sha256": "ee6333e9cadd126479a5908dd6bd37ca96b60b095f1da55d5d450762f55df051"
+    },
+    "CheckResult": {
+      "file": "CheckResult.schema.json",
+      "sha256": "0fc3798da9a770b99f057cb10bb9a6a03cbefe5570f5ba6f5aac49889e008b33"
+    },
+    "FaultExecution": {
+      "file": "FaultExecution.schema.json",
+      "sha256": "47d35ba3fa0e602a754bde3ad7180a2d0f5d42e05723b6f68425567939fbc0d2"
+    },
+    "Verdict": {
+      "file": "Verdict.schema.json",
+      "sha256": "2e7fa0f80b39325b937d21bc5b865532f569861a1e222b623d8c36047619525e"
+    },
+    "Event": {
+      "file": "Event.schema.json",
+      "sha256": "31b0e16ad98b4fc1c43c7787eddd93b52bbe4c08f76d6408fce46aef23841ad3"
+    },
+    "TrialResult": {
+      "file": "TrialResult.schema.json",
+      "sha256": "872928fb38ed32f93ec907befb71e043380ba739cbccb44a4a3e07e836c01d95"
+    },
+    "Counterexample": {
+      "file": "Counterexample.schema.json",
+      "sha256": "52f8041c91755bbe6c9f4a2b1a52d6bc63aaa99426ba438a58b8fabeb60520f2"
+    },
+    "ReductionAttempt": {
+      "file": "ReductionAttempt.schema.json",
+      "sha256": "f30e86cca08087abd0f80d67e84aad91d25d53270c8bba56f96d54d600eb2974"
+    },
+    "ReductionResult": {
+      "file": "ReductionResult.schema.json",
+      "sha256": "2fdf1c2861007b6f3c3797d8a88a0c89d3330d443f8800723f31d0237ebd73f8"
+    },
+    "InterventionExperiment": {
+      "file": "InterventionExperiment.schema.json",
+      "sha256": "41a751c421ad6f50f92e2056423191a55a1cfcfb230f3c48b7e6180287977a39"
+    },
+    "DiagnosticProfile": {
+      "file": "DiagnosticProfile.schema.json",
+      "sha256": "a56c83ccc16d8ebff98b604e398b0509fe0d67e0ddf89db3fa27aac486b1eb4e"
+    },
+    "DiagnosticResult": {
+      "file": "DiagnosticResult.schema.json",
+      "sha256": "04106e266b2527fc81c6625370ac3a0a10c8a8cc3cd32e7d838198206d7b5372"
+    },
+    "ChallengeResult": {
+      "file": "ChallengeResult.schema.json",
+      "sha256": "164ceed7bde20d02ed7b24a16babf3865a4f972de2e83bcc7458ae2603712e05"
+    },
+    "FileEntry": {
+      "file": "FileEntry.schema.json",
+      "sha256": "5e8b8c1fbec22506fb9d9fcf8faafef6bb7411035bcb9a45fd25911d19eda92f"
+    },
+    "RegressionBundle": {
+      "file": "RegressionBundle.schema.json",
+      "sha256": "da105a87358c721bcf112b16ad48994c5656c39bbeecf5babec8405ec62fc7c4"
+    },
+    "RegressionExecution": {
+      "file": "RegressionExecution.schema.json",
+      "sha256": "53ddf12d541bb4dd43c79652641e0e1a9cba4b1762808f9bf7daceabd5e52d0a"
+    },
+    "AgentRegistration": {
+      "file": "AgentRegistration.schema.json",
+      "sha256": "861ce9eaa82d80fec6db85e59b2f530359f5b4e0cb8e69f356d26e74371fa294"
+    },
+    "PortabilityResult": {
+      "file": "PortabilityResult.schema.json",
+      "sha256": "0dad2eb9c711d141bcb421d7758871065a0795cb6067865b05ad749cb18073dc"
+    },
+    "SearchComparison": {
+      "file": "SearchComparison.schema.json",
+      "sha256": "a979a16dc0137b1b00e8ae1ee03990c7bb16ed647c2c3a2ac91f6ae60701c99a"
+    },
+    "CampaignRequest": {
+      "file": "CampaignRequest.schema.json",
+      "sha256": "dae539523306ac3584dfab5e3bac0ab3195971e5e89357ec777629449820b8e8"
+    },
+    "Campaign": {
+      "file": "Campaign.schema.json",
+      "sha256": "8dabe0198d70001feb5ea98a15f3b977c13a26a9997b7fad68d8b337fe7fec58"
+    },
+    "Episode": {
+      "file": "Episode.schema.json",
+      "sha256": "04f44c7769e175c64a6ebb576df2ff0caec7ad068dbe25f928faf93c5e7412c1"
+    },
+    "PolicyVersion": {
+      "file": "PolicyVersion.schema.json",
+      "sha256": "de90defef2b1621f77a565638344fdebadb5e7ea8608e643b9de61608b7feb43"
+    },
+    "EvidenceBundle": {
+      "file": "EvidenceBundle.schema.json",
+      "sha256": "706be2f4d3b5d7a4eea39b8e331f420386d2ce73e6b718815becd01daf4110d5"
+    },
+    "EvaluationBatch": {
+      "file": "EvaluationBatch.schema.json",
+      "sha256": "560ec1e55284d381ef2626c31f60c2b2016005c2a85a32869852b259af9d9518"
+    },
+    "AriaAnalysis": {
+      "file": "AriaAnalysis.schema.json",
+      "sha256": "550fb77dc41cbb8bc3ab69013bbe904960ff3b85eedc616f9ba43ca93a7fad84"
+    },
+    "Operation": {
+      "file": "Operation.schema.json",
+      "sha256": "60c9d2316fce6b06d3f41ee800e37a502b86ef5c5b96224fe6454ddf2e13ba7d"
+    },
+    "NotificationEffect": {
+      "file": "NotificationEffect.schema.json",
+      "sha256": "00d3256230757d9c6c7eb95232688c592238c52ecb233962d055cb9a49ea5705"
+    },
+    "IdempotencyRecord": {
+      "file": "IdempotencyRecord.schema.json",
+      "sha256": "1afe8ef2c5c8532d8308cfccaab8cb3543c87b8a18b4a05c742572e1716b83f9"
+    },
+    "OperationJournal": {
+      "file": "OperationJournal.schema.json",
+      "sha256": "df9e300f0e56c2b1594f21d287fc7480dd0d34115482f514c7ef756bd6472eb3"
+    },
+    "ToolCallRecord": {
+      "file": "ToolCallRecord.schema.json",
+      "sha256": "dbb4d7b1b4ed9a72f4fe969d550d411e98382f9f2c8f70784afa19decdd1d16c"
+    },
+    "WorldSnapshot": {
+      "file": "WorldSnapshot.schema.json",
+      "sha256": "2ed3a11839e02c5addae09cf8528ffb4545310054ea5ecffba024a04f897f193"
+    },
+    "RegressionCase": {
+      "file": "RegressionCase.schema.json",
+      "sha256": "124ad0b8fb426760ace6c0f115dfbe7568b708c1f30a7b90235c785224f1f4d3"
+    },
+    "WeaveIngestion": {
+      "file": "WeaveIngestion.schema.json",
+      "sha256": "eef679bd4708e23dff5b947ad05e7287c89cbf280f098899200de17a2a05042a"
+    },
+    "TelemetryOutbox": {
+      "file": "TelemetryOutbox.schema.json",
+      "sha256": "b37f9a8bceec2806b2ba6ec1b93800d4c6b4884ccf98b765b79691a61aa03ed7"
+    }
+  },
+  "schema_hash": "fdbc73be3f3b37e9ac08a9d138c396a43bef413a29c1a0d9c4670c18d345a04a",
+  "ownership": "../docs/integration-ledger.md",
+  "seams_version": "faultlab-seams/v1"
+}

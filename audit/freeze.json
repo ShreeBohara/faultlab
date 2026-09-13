@@ -1,0 +1,8 @@
+{
+  "schema_version": "faultlab-freeze/v1",
+  "status": "PENDING",
+  "reason": "Implementation identity and final policy must be frozen before any final audit. No accepted learned policy or live experiment is asserted.",
+  "learned_arm": {"status": "UNAVAILABLE", "policy_hash": null},
+  "external": {"status": "PENDING", "adapter_hash": null},
+  "execution_status": "NOT_RUN"
+}

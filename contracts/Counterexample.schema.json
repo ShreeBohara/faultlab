@@ -1,0 +1,139 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "counterexample_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Counterexample Id",
+      "type": "string"
+    },
+    "campaign_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "agent_registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Agent Registration Id",
+      "type": "string"
+    },
+    "source_episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Source Episode Id",
+      "type": "string"
+    },
+    "target_invariant": {
+      "enum": [
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8"
+      ],
+      "title": "Target Invariant",
+      "type": "string"
+    },
+    "scenario_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Scenario Hash",
+      "type": "string"
+    },
+    "configuration_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Configuration Hash",
+      "type": "string"
+    },
+    "report_ref": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Report Ref"
+    },
+    "verdict_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Verdict Ref",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "reproduction_trial_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reproduction Trial Ids",
+      "type": "array"
+    },
+    "target_violation_count": {
+      "default": 0,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Target Violation Count",
+      "type": "integer"
+    },
+    "valid_count": {
+      "default": 0,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Valid Count",
+      "type": "integer"
+    },
+    "attempted_count": {
+      "default": 0,
+      "maximum": 3,
+      "minimum": 0,
+      "title": "Attempted Count",
+      "type": "integer"
+    },
+    "reproduced": {
+      "default": false,
+      "title": "Reproduced",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "counterexample_id",
+    "campaign_id",
+    "agent_registration_id",
+    "source_episode_id",
+    "target_invariant",
+    "scenario_hash",
+    "configuration_hash",
+    "report_ref",
+    "verdict_ref"
+  ],
+  "title": "Counterexample",
+  "type": "object"
+}

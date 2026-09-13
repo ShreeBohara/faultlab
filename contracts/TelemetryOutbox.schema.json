@@ -1,0 +1,91 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "outbox_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Outbox Id",
+      "type": "string"
+    },
+    "payload_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Digest",
+      "type": "string"
+    },
+    "record_kind": {
+      "enum": [
+        "trace",
+        "evaluation",
+        "dataset",
+        "campaign"
+      ],
+      "title": "Record Kind",
+      "type": "string"
+    },
+    "record_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Record Ref",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "PENDING",
+        "UPLOADING",
+        "VERIFIED",
+        "ERROR"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "attempts": {
+      "minimum": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "remote_ref": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Remote Ref"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Error Code"
+    }
+  },
+  "required": [
+    "outbox_id",
+    "payload_digest",
+    "record_kind",
+    "record_ref",
+    "state",
+    "attempts",
+    "remote_ref",
+    "error_code"
+  ],
+  "title": "TelemetryOutbox",
+  "type": "object"
+}

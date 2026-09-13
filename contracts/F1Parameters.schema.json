@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "response_delay_ms": {
+      "maximum": 3000,
+      "minimum": 1500,
+      "title": "Response Delay Ms",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "response_delay_ms"
+  ],
+  "title": "F1Parameters",
+  "type": "object"
+}

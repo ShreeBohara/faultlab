@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "target_tool": {
+      "enum": [
+        "get_order",
+        "update_order",
+        "get_operation_status",
+        "send_confirmation"
+      ],
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "target_service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Target Service",
+      "type": "string"
+    },
+    "occurrence": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Occurrence",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "target_tool",
+    "target_service",
+    "occurrence"
+  ],
+  "title": "PrimitiveBase",
+  "type": "object"
+}

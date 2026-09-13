@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "failure_count": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Failure Count",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "failure_count"
+  ],
+  "title": "F4Parameters",
+  "type": "object"
+}

@@ -1,0 +1,304 @@
+{
+  "$defs": {
+    "CandidatePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "const": "orders.upgrade_then_confirm/v1",
+          "default": "orders.upgrade_then_confirm/v1",
+          "title": "Scope",
+          "type": "string"
+        },
+        "parent_version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Parent Version",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/PolicyRule"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parent_version",
+        "rules"
+      ],
+      "title": "CandidatePolicy",
+      "type": "object"
+    },
+    "NoArgStep": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "enum": [
+            "read_current_operation",
+            "read_notification_operation",
+            "read_order",
+            "defer_unresolved"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "only_if": {
+          "default": "always",
+          "enum": [
+            "always",
+            "upgrade_receipt_missing",
+            "notification_receipt_missing",
+            "current_operation_pending",
+            "notification_operation_pending",
+            "upgrade_outcome_uncertain",
+            "notification_outcome_uncertain",
+            "upgrade_terminal_failure",
+            "notification_terminal_failure",
+            "upgrade_succeeded",
+            "notification_succeeded",
+            "receipt_missing"
+          ],
+          "title": "Only If",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op"
+      ],
+      "title": "NoArgStep",
+      "type": "object"
+    },
+    "PolicyRule": {
+      "additionalProperties": false,
+      "properties": {
+        "hook": {
+          "enum": [
+            "after_upgrade_response",
+            "before_confirmation",
+            "after_notification_response",
+            "before_final_report"
+          ],
+          "title": "Hook",
+          "type": "string"
+        },
+        "when": {
+          "enum": [
+            "always",
+            "upgrade_receipt_missing",
+            "notification_receipt_missing",
+            "current_operation_pending",
+            "notification_operation_pending",
+            "upgrade_outcome_uncertain",
+            "notification_outcome_uncertain",
+            "upgrade_terminal_failure",
+            "notification_terminal_failure",
+            "upgrade_succeeded",
+            "notification_succeeded",
+            "receipt_missing"
+          ],
+          "title": "When",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "defer_unresolved": "#/$defs/NoArgStep",
+                "read_current_operation": "#/$defs/NoArgStep",
+                "read_notification_operation": "#/$defs/NoArgStep",
+                "read_order": "#/$defs/NoArgStep",
+                "report_terminal_failure": "#/$defs/ServiceStep",
+                "require_receipt": "#/$defs/ReceiptStep",
+                "retry_original_request": "#/$defs/ServiceStep",
+                "wait_ticks": "#/$defs/WaitStep"
+              },
+              "propertyName": "op"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/NoArgStep"
+              },
+              {
+                "$ref": "#/$defs/WaitStep"
+              },
+              {
+                "$ref": "#/$defs/ServiceStep"
+              },
+              {
+                "$ref": "#/$defs/ReceiptStep"
+              }
+            ]
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        }
+      },
+      "required": [
+        "hook",
+        "when",
+        "steps"
+      ],
+      "title": "PolicyRule",
+      "type": "object"
+    },
+    "ReceiptStep": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "require_receipt",
+          "title": "Op",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "status": {
+          "const": "SUCCEEDED",
+          "title": "Status",
+          "type": "string"
+        },
+        "only_if": {
+          "default": "always",
+          "enum": [
+            "always",
+            "upgrade_receipt_missing",
+            "notification_receipt_missing",
+            "current_operation_pending",
+            "notification_operation_pending",
+            "upgrade_outcome_uncertain",
+            "notification_outcome_uncertain",
+            "upgrade_terminal_failure",
+            "notification_terminal_failure",
+            "upgrade_succeeded",
+            "notification_succeeded",
+            "receipt_missing"
+          ],
+          "title": "Only If",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "service",
+        "status"
+      ],
+      "title": "ReceiptStep",
+      "type": "object"
+    },
+    "ServiceStep": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "enum": [
+            "retry_original_request",
+            "report_terminal_failure"
+          ],
+          "title": "Op",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "only_if": {
+          "default": "always",
+          "enum": [
+            "always",
+            "upgrade_receipt_missing",
+            "notification_receipt_missing",
+            "current_operation_pending",
+            "notification_operation_pending",
+            "upgrade_outcome_uncertain",
+            "notification_outcome_uncertain",
+            "upgrade_terminal_failure",
+            "notification_terminal_failure",
+            "upgrade_succeeded",
+            "notification_succeeded",
+            "receipt_missing"
+          ],
+          "title": "Only If",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "service"
+      ],
+      "title": "ServiceStep",
+      "type": "object"
+    },
+    "WaitStep": {
+      "additionalProperties": false,
+      "properties": {
+        "op": {
+          "const": "wait_ticks",
+          "title": "Op",
+          "type": "string"
+        },
+        "ticks": {
+          "maximum": 4,
+          "minimum": 1,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "only_if": {
+          "default": "always",
+          "enum": [
+            "always",
+            "upgrade_receipt_missing",
+            "notification_receipt_missing",
+            "current_operation_pending",
+            "notification_operation_pending",
+            "upgrade_outcome_uncertain",
+            "notification_outcome_uncertain",
+            "upgrade_terminal_failure",
+            "notification_terminal_failure",
+            "upgrade_succeeded",
+            "notification_succeeded",
+            "receipt_missing"
+          ],
+          "title": "Only If",
+          "type": "string"
+        }
+      },
+      "required": [
+        "op",
+        "ticks"
+      ],
+      "title": "WaitStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "candidate": {
+      "$ref": "#/$defs/CandidatePolicy"
+    },
+    "explanation": {
+      "maxLength": 600,
+      "title": "Explanation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "candidate",
+    "explanation"
+  ],
+  "title": "MechanicCandidate",
+  "type": "object"
+}

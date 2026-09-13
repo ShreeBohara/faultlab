@@ -1,0 +1,120 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "intervention_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Intervention Id",
+      "type": "string"
+    },
+    "counterexample_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Counterexample Id",
+      "type": "string"
+    },
+    "hypothesis": {
+      "maxLength": 600,
+      "title": "Hypothesis",
+      "type": "string"
+    },
+    "proposal_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Proposal Ref",
+      "type": "string"
+    },
+    "change": {
+      "maxLength": 600,
+      "title": "Change",
+      "type": "string"
+    },
+    "control_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Control Hash",
+      "type": "string"
+    },
+    "treatment_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Treatment Hash",
+      "type": "string"
+    },
+    "trial_pairs": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "maxItems": 3,
+      "title": "Trial Pairs",
+      "type": "array"
+    },
+    "result": {
+      "enum": [
+        "SUPPORTED",
+        "CONTRADICTED",
+        "INCONCLUSIVE"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "evidence_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 108,
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "intervention_id",
+    "counterexample_id",
+    "hypothesis",
+    "proposal_ref",
+    "change",
+    "control_hash",
+    "treatment_hash",
+    "trial_pairs",
+    "result",
+    "evidence_ids",
+    "limitations"
+  ],
+  "title": "InterventionExperiment",
+  "type": "object"
+}

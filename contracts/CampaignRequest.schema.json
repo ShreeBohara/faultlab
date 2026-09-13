@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "task_text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Task Text",
+      "type": "string"
+    },
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "baseline",
+        "learn",
+        "compare"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "config_profile_id": {
+      "default": "offline-v1",
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Config Profile Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_text",
+    "order_id",
+    "mode"
+  ],
+  "title": "CampaignRequest",
+  "type": "object"
+}

@@ -1,0 +1,267 @@
+{
+  "$defs": {
+    "EpisodeBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 18,
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 8,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 4,
+          "maximum": 4,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 20,
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 32,
+          "maximum": 32,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 90,
+          "maximum": 90,
+          "minimum": 1,
+          "title": "Wall Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "EpisodeBudget",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        },
+        "cost_dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Dollars"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "execution_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Execution Id",
+      "type": "string"
+    },
+    "bundle_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Bundle Id",
+      "type": "string"
+    },
+    "manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Hash",
+      "type": "string"
+    },
+    "registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Registration Id",
+      "type": "string"
+    },
+    "profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "VALIDATE_ONLY",
+        "RECORDED_PLAYBACK",
+        "FRESH_SANDBOX"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "explicit_action": {
+      "title": "Explicit Action",
+      "type": "boolean"
+    },
+    "policy_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policy Hash",
+      "type": "string"
+    },
+    "configuration_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Configuration Hash",
+      "type": "string"
+    },
+    "declared_budget": {
+      "$ref": "#/$defs/EpisodeBudget"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    },
+    "episode_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Episode Ids",
+      "type": "array"
+    },
+    "world_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "World Ids",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "INCOMPLETE",
+        "REJECTED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "stop_reason": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Stop Reason"
+    }
+  },
+  "required": [
+    "execution_id",
+    "bundle_id",
+    "manifest_hash",
+    "registration_id",
+    "profile_id",
+    "mode",
+    "explicit_action",
+    "policy_hash",
+    "configuration_hash",
+    "declared_budget",
+    "usage",
+    "episode_ids",
+    "world_ids",
+    "status"
+  ],
+  "title": "RegressionExecution",
+  "type": "object"
+}

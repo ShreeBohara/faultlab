@@ -1,0 +1,84 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "fault_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Fault Id",
+      "type": "string"
+    },
+    "scheduled": {
+      "default": true,
+      "title": "Scheduled",
+      "type": "boolean"
+    },
+    "triggered": {
+      "default": false,
+      "title": "Triggered",
+      "type": "boolean"
+    },
+    "trigger_tick": {
+      "anyOf": [
+        {
+          "maximum": 25,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trigger Tick"
+    },
+    "call_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Call Id"
+    },
+    "attempt_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Attempt Id"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "maxLength": 600,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    }
+  },
+  "required": [
+    "fault_id"
+  ],
+  "title": "FaultExecution",
+  "type": "object"
+}

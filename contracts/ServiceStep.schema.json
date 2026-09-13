@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "op": {
+      "enum": [
+        "retry_original_request",
+        "report_terminal_failure"
+      ],
+      "title": "Op",
+      "type": "string"
+    },
+    "service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Service",
+      "type": "string"
+    },
+    "only_if": {
+      "default": "always",
+      "enum": [
+        "always",
+        "upgrade_receipt_missing",
+        "notification_receipt_missing",
+        "current_operation_pending",
+        "notification_operation_pending",
+        "upgrade_outcome_uncertain",
+        "notification_outcome_uncertain",
+        "upgrade_terminal_failure",
+        "notification_terminal_failure",
+        "upgrade_succeeded",
+        "notification_succeeded",
+        "receipt_missing"
+      ],
+      "title": "Only If",
+      "type": "string"
+    }
+  },
+  "required": [
+    "op",
+    "service"
+  ],
+  "title": "ServiceStep",
+  "type": "object"
+}

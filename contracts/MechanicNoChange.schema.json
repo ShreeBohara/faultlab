@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "no_change_reason": {
+      "maxLength": 600,
+      "minLength": 1,
+      "title": "No Change Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "no_change_reason"
+  ],
+  "title": "MechanicNoChange",
+  "type": "object"
+}

@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "versions_back": {
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Versions Back",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "versions_back"
+  ],
+  "title": "F3Parameters",
+  "type": "object"
+}

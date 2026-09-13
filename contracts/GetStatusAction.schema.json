@@ -1,0 +1,45 @@
+{
+  "$defs": {
+    "StatusArguments": {
+      "additionalProperties": false,
+      "properties": {
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        }
+      },
+      "required": [
+        "service"
+      ],
+      "title": "StatusArguments",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "tool",
+      "default": "tool",
+      "title": "Kind",
+      "type": "string"
+    },
+    "tool": {
+      "const": "get_operation_status",
+      "title": "Tool",
+      "type": "string"
+    },
+    "arguments": {
+      "$ref": "#/$defs/StatusArguments"
+    }
+  },
+  "required": [
+    "tool",
+    "arguments"
+  ],
+  "title": "GetStatusAction",
+  "type": "object"
+}

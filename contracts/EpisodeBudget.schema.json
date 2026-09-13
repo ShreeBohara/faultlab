@@ -1,0 +1,49 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "http_attempts": {
+      "default": 18,
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Http Attempts",
+      "type": "integer"
+    },
+    "actor_calls": {
+      "default": 8,
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Actor Calls",
+      "type": "integer"
+    },
+    "wait_cycles": {
+      "default": 4,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Wait Cycles",
+      "type": "integer"
+    },
+    "ticks": {
+      "default": 20,
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Ticks",
+      "type": "integer"
+    },
+    "policy_steps": {
+      "default": 32,
+      "maximum": 32,
+      "minimum": 0,
+      "title": "Policy Steps",
+      "type": "integer"
+    },
+    "wall_seconds": {
+      "default": 90,
+      "maximum": 90,
+      "minimum": 1,
+      "title": "Wall Seconds",
+      "type": "integer"
+    }
+  },
+  "title": "EpisodeBudget",
+  "type": "object"
+}

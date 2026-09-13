@@ -1,0 +1,159 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "analysis_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Analysis Id",
+      "type": "string"
+    },
+    "campaign_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Run Id",
+      "type": "string"
+    },
+    "automation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Automation Id",
+      "type": "string"
+    },
+    "invocation_mode": {
+      "enum": [
+        "automatic",
+        "manual"
+      ],
+      "title": "Invocation Mode",
+      "type": "string"
+    },
+    "provenance": {
+      "const": "manual_ui_capture",
+      "title": "Provenance",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "UNVERIFIED",
+        "COMPLETED",
+        "FAILED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "execution_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Execution Id"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "thread_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Thread Id"
+    },
+    "history_url": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "History Url"
+    },
+    "output_url": {
+      "anyOf": [
+        {
+          "maxLength": 1000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Output Url"
+    },
+    "summary": {
+      "maxLength": 600,
+      "title": "Summary",
+      "type": "string"
+    },
+    "recorder": {
+      "maxLength": 600,
+      "title": "Recorder",
+      "type": "string"
+    },
+    "verified_source_refs": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Verified Source Refs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "analysis_id",
+    "campaign_id",
+    "run_id",
+    "automation_id",
+    "invocation_mode",
+    "provenance",
+    "status",
+    "execution_id",
+    "observed_at",
+    "thread_id",
+    "history_url",
+    "output_url",
+    "summary",
+    "recorder",
+    "verified_source_refs"
+  ],
+  "title": "AriaAnalysis",
+  "type": "object"
+}

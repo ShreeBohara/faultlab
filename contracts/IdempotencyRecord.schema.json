@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Service",
+      "type": "string"
+    },
+    "key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Key",
+      "type": "string"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Operation Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "service",
+    "key",
+    "payload_hash",
+    "operation_id"
+  ],
+  "title": "IdempotencyRecord",
+  "type": "object"
+}

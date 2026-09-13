@@ -1,0 +1,101 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "desired_shipping": {
+      "const": "express",
+      "default": "express",
+      "title": "Desired Shipping",
+      "type": "string"
+    },
+    "expected_version": {
+      "maximum": 1000000,
+      "minimum": 1,
+      "title": "Expected Version",
+      "type": "integer"
+    },
+    "template_version": {
+      "const": "confirmation/v1",
+      "default": "confirmation/v1",
+      "title": "Template Version",
+      "type": "string"
+    },
+    "upgrade_operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Upgrade Operation Id",
+      "type": "string"
+    },
+    "notification_operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Notification Operation Id",
+      "type": "string"
+    },
+    "upgrade_idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Upgrade Idempotency Key",
+      "type": "string"
+    },
+    "notification_idempotency_key": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Notification Idempotency Key",
+      "type": "string"
+    },
+    "upgrade_intent_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Upgrade Intent Hash",
+      "type": "string"
+    },
+    "notification_intent_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Notification Intent Hash",
+      "type": "string"
+    },
+    "task_text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Task Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "order_id",
+    "expected_version",
+    "upgrade_operation_id",
+    "notification_operation_id",
+    "upgrade_idempotency_key",
+    "notification_idempotency_key",
+    "upgrade_intent_hash",
+    "notification_intent_hash",
+    "task_text"
+  ],
+  "title": "TaskIntent",
+  "type": "object"
+}

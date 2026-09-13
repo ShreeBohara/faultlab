@@ -1,0 +1,150 @@
+{
+  "schema_version": "faultlab-manifest/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "trials_per_case": 3,
+  "access": "PRIVATE_EVALUATOR",
+  "no_tuning_from_results": true,
+  "trial_order": "case_then_trial_alternating_arms",
+  "horizon_ticks": 5,
+  "http_timeout_seconds": 1.0,
+  "partition": "promotion",
+  "arms": [
+    "incumbent",
+    "candidate"
+  ],
+  "cases": [
+    {
+      "case_id": "promotion-1",
+      "name": "healthy",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 201,
+        "primitives": []
+      },
+      "expected_class": "completed"
+    },
+    {
+      "case_id": "promotion-2",
+      "name": "lost_notification_response",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 202,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 2500
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "promotion-3",
+      "name": "later_upgrade",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 203,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 4,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "promotion-4",
+      "name": "terminal_rejection",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 204,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 4,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      },
+      "expected_class": "rejected"
+    },
+    {
+      "case_id": "promotion-5",
+      "name": "older_history",
+      "fixture_id": "history-v1",
+      "expected_version": 4,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 205,
+        "primitives": [
+          {
+            "target_tool": "get_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F3",
+            "parameters": {
+              "versions_back": 2
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "promotion-6",
+      "name": "upgrade_transient",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 206,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 3
+            }
+          }
+        ]
+      },
+      "expected_class": "unresolved_or_completed"
+    }
+  ],
+  "manifest_hash": "3417649ee62d4c24769e05dc6f0a37a356e3ca5358e9147a1b8f5d90d0f1553c"
+}

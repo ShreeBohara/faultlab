@@ -1,0 +1,62 @@
+{
+  "$defs": {
+    "F1Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "response_delay_ms": {
+          "maximum": 3000,
+          "minimum": 1500,
+          "title": "Response Delay Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response_delay_ms"
+      ],
+      "title": "F1Parameters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "target_tool": {
+      "enum": [
+        "update_order",
+        "send_confirmation"
+      ],
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "target_service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Target Service",
+      "type": "string"
+    },
+    "occurrence": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Occurrence",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "F1",
+      "title": "Kind",
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/F1Parameters"
+    }
+  },
+  "required": [
+    "target_tool",
+    "target_service",
+    "occurrence",
+    "kind",
+    "parameters"
+  ],
+  "title": "F1",
+  "type": "object"
+}

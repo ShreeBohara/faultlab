@@ -1,0 +1,42 @@
+{
+  "$defs": {
+    "UpgradeArguments": {
+      "additionalProperties": false,
+      "properties": {
+        "desired_shipping": {
+          "const": "express",
+          "title": "Desired Shipping",
+          "type": "string"
+        }
+      },
+      "required": [
+        "desired_shipping"
+      ],
+      "title": "UpgradeArguments",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "tool",
+      "default": "tool",
+      "title": "Kind",
+      "type": "string"
+    },
+    "tool": {
+      "const": "update_order",
+      "title": "Tool",
+      "type": "string"
+    },
+    "arguments": {
+      "$ref": "#/$defs/UpgradeArguments"
+    }
+  },
+  "required": [
+    "tool",
+    "arguments"
+  ],
+  "title": "UpdateOrderAction",
+  "type": "object"
+}

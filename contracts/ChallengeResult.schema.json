@@ -1,0 +1,136 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "challenge_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Challenge Id",
+      "type": "string"
+    },
+    "candidate_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Candidate Hash",
+      "type": "string"
+    },
+    "incumbent_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Incumbent Hash",
+      "type": "string"
+    },
+    "source_validation_ref": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Source Validation Ref",
+      "type": "string"
+    },
+    "schedule_hashes": {
+      "items": {
+        "pattern": "^[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "title": "Schedule Hashes",
+      "type": "array"
+    },
+    "selection_refs": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Selection Refs",
+      "type": "array"
+    },
+    "novel_schedule_hashes": {
+      "items": {
+        "pattern": "^[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "title": "Novel Schedule Hashes",
+      "type": "array"
+    },
+    "trial_pairs": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "maxItems": 12,
+      "title": "Trial Pairs",
+      "type": "array"
+    },
+    "failed_checks": {
+      "items": {
+        "enum": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8"
+        ],
+        "type": "string"
+      },
+      "maxItems": 8,
+      "title": "Failed Checks",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "PASSED_OBSERVED",
+        "COUNTEREXAMPLE_FOUND",
+        "INCONCLUSIVE",
+        "NOT_RUN"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "stopping_reason": {
+      "maxLength": 600,
+      "title": "Stopping Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "challenge_id",
+    "candidate_hash",
+    "incumbent_hash",
+    "source_validation_ref",
+    "schedule_hashes",
+    "selection_refs",
+    "novel_schedule_hashes",
+    "trial_pairs",
+    "failed_checks",
+    "status",
+    "stopping_reason"
+  ],
+  "title": "ChallengeResult",
+  "type": "object"
+}

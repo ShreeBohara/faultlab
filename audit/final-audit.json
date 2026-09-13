@@ -1,0 +1,218 @@
+{
+  "schema_version": "faultlab-manifest/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "trials_per_case": 3,
+  "access": "PRIVATE_EVALUATOR",
+  "no_tuning_from_results": true,
+  "trial_order": "case_then_trial_alternating_arms",
+  "horizon_ticks": 5,
+  "http_timeout_seconds": 1.0,
+  "partition": "final_audit",
+  "arms": [
+    "B0",
+    "B1",
+    "L"
+  ],
+  "sealed": true,
+  "cases": [
+    {
+      "case_id": "audit-1",
+      "name": "healthy",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 301,
+        "primitives": []
+      },
+      "expected_class": "completed"
+    },
+    {
+      "case_id": "audit-2",
+      "name": "lost_upgrade_response",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 302,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 2000
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "audit-3",
+      "name": "late_upgrade",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 303,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 7,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "audit-4",
+      "name": "late_rejection",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 304,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 5,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      },
+      "expected_class": "rejected"
+    },
+    {
+      "case_id": "audit-5",
+      "name": "oldest_history",
+      "fixture_id": "history-v1",
+      "expected_version": 4,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 305,
+        "primitives": [
+          {
+            "target_tool": "get_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F3",
+            "parameters": {
+              "versions_back": 3
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "audit-6",
+      "name": "notification_long_outage",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 306,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 18
+            }
+          }
+        ]
+      },
+      "expected_class": "unresolved"
+    },
+    {
+      "case_id": "audit-7",
+      "name": "pending_plus_unavailable_status",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 307,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 3,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          },
+          {
+            "target_tool": "get_operation_status",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 2
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "audit-8",
+      "name": "pre_effect_then_lost_notification",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 308,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 1
+            }
+          },
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 3000
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    }
+  ],
+  "manifest_hash": "c2ef43b543045f690df923f0a444b2c453a0aaf7bbddd7647f0b9c9cd2380219"
+}

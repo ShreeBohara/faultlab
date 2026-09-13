@@ -1,0 +1,61 @@
+{
+  "schema_version": "faultlab-study/v1",
+  "purpose": "selection_comparison",
+  "access": "PRIVATE_EVALUATOR",
+  "development_manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+  "selector_order": [
+    "explorer",
+    "systematic"
+  ],
+  "selections_per_arm": 8,
+  "trials_per_selection": 3,
+  "systematic_order": [
+    "dev-1",
+    "dev-2",
+    "dev-3",
+    "dev-4",
+    "dev-5",
+    "dev-6",
+    "dev-2",
+    "dev-3"
+  ],
+  "systematic_variants": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    {
+      "parameter": "response_delay_ms",
+      "value": 2000
+    },
+    {
+      "parameter": "completion_delay_ticks",
+      "value": 4
+    }
+  ],
+  "deduplication": "lowest_failed_invariant+canonical_fault_family",
+  "reproduction_required": "same target invariant 3/3 valid triggered trials",
+  "contexts": "independent selector development contexts; no repair/promotion/audit/portability evidence",
+  "normalize_resources": [
+    "all_model_calls",
+    "input_tokens",
+    "output_tokens",
+    "http_attempts",
+    "wall_seconds",
+    "valid_attempted",
+    "scheduled",
+    "triggered",
+    "untriggered",
+    "incomplete"
+  ],
+  "limits_per_selector": {
+    "selections": 8,
+    "actor_trials": 24,
+    "selection_model_calls": 16,
+    "max_actor_model_calls": 192
+  },
+  "no_tuning_from_results": true,
+  "manifest_hash": "18b27bab67c481b2c127d2f142dc060bfc01e45c0d06678f2cb29a1b9003a969"
+}

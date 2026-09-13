@@ -1,0 +1,181 @@
+{
+  "schema_version": "faultlab-manifest/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "trials_per_case": 3,
+  "access": "DEVELOPMENT_DIAGNOSTIC",
+  "no_tuning_from_results": false,
+  "trial_order": "case_then_trial_alternating_arms",
+  "horizon_ticks": 5,
+  "http_timeout_seconds": 1.0,
+  "partition": "development",
+  "arms": [
+    "B0",
+    "B1",
+    "L"
+  ],
+  "cases": [
+    {
+      "case_id": "dev-1",
+      "name": "healthy",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 101,
+        "primitives": []
+      },
+      "expected_class": "completed"
+    },
+    {
+      "case_id": "dev-2",
+      "name": "lost_upgrade_response",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 102,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 1500
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "dev-3",
+      "name": "delayed_upgrade",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 103,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 3,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "dev-4",
+      "name": "historical_order",
+      "fixture_id": "history-v1",
+      "expected_version": 4,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 104,
+        "primitives": [
+          {
+            "target_tool": "get_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F3",
+            "parameters": {
+              "versions_back": 1
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "dev-5",
+      "name": "terminal_rejection",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 105,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 2,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      },
+      "expected_class": "rejected"
+    },
+    {
+      "case_id": "dev-6",
+      "name": "notification_transient",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 106,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 2
+            }
+          }
+        ]
+      },
+      "expected_class": "unresolved_or_completed"
+    }
+  ],
+  "development_grammar": {
+    "maximum_primitives": 2,
+    "kinds": [
+      "F1",
+      "F2",
+      "F3",
+      "F4"
+    ],
+    "occurrence": [
+      1,
+      18
+    ],
+    "f1_milliseconds": [
+      1500,
+      3000
+    ],
+    "f2_ticks": [
+      1,
+      20
+    ],
+    "f3_versions": [
+      1,
+      3
+    ],
+    "f4_count": [
+      1,
+      18
+    ],
+    "preflight_required": true
+  },
+  "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1"
+}

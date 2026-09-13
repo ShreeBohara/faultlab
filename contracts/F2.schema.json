@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "F2Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "completion_delay_ticks": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Completion Delay Ticks",
+          "type": "integer"
+        },
+        "terminal_status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Terminal Status",
+          "type": "string"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "const": "UPGRADE_REJECTED",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Failure Code"
+        }
+      },
+      "required": [
+        "completion_delay_ticks",
+        "terminal_status",
+        "failure_code"
+      ],
+      "title": "F2Parameters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "target_tool": {
+      "const": "update_order",
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "target_service": {
+      "const": "orders",
+      "title": "Target Service",
+      "type": "string"
+    },
+    "occurrence": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Occurrence",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "F2",
+      "title": "Kind",
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/F2Parameters"
+    }
+  },
+  "required": [
+    "target_tool",
+    "target_service",
+    "occurrence",
+    "kind",
+    "parameters"
+  ],
+  "title": "F2",
+  "type": "object"
+}

@@ -1,0 +1,26 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "enum": [
+        "CHECK_EXISTING_UPGRADE",
+        "CHECK_EXISTING_NOTIFICATION"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Operation Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "operation_id"
+  ],
+  "title": "CheckNextAction",
+  "type": "object"
+}

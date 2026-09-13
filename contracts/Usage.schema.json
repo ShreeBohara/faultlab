@@ -1,0 +1,74 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "http_attempts": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Http Attempts",
+      "type": "integer"
+    },
+    "actor_calls": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Actor Calls",
+      "type": "integer"
+    },
+    "model_calls": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Model Calls",
+      "type": "integer"
+    },
+    "input_tokens": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Input Tokens",
+      "type": "integer"
+    },
+    "output_tokens": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Output Tokens",
+      "type": "integer"
+    },
+    "wait_cycles": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Wait Cycles",
+      "type": "integer"
+    },
+    "ticks": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Ticks",
+      "type": "integer"
+    },
+    "policy_steps": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Policy Steps",
+      "type": "integer"
+    },
+    "wall_seconds": {
+      "default": 0.0,
+      "minimum": 0,
+      "title": "Wall Seconds",
+      "type": "number"
+    },
+    "cost_dollars": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cost Dollars"
+    }
+  },
+  "title": "Usage",
+  "type": "object"
+}

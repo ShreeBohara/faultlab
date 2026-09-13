@@ -1,0 +1,384 @@
+{
+  "$defs": {
+    "OperationData": {
+      "additionalProperties": false,
+      "properties": {
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "intent_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Intent Hash",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Receipt"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "operation_id",
+        "service",
+        "order_id",
+        "intent_hash",
+        "status"
+      ],
+      "title": "OperationData",
+      "type": "object"
+    },
+    "Order": {
+      "additionalProperties": false,
+      "properties": {
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "applied_shipping": {
+          "enum": [
+            "standard",
+            "express"
+          ],
+          "title": "Applied Shipping",
+          "type": "string"
+        },
+        "requested_shipping": {
+          "enum": [
+            "standard",
+            "express"
+          ],
+          "title": "Requested Shipping",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "last_upgrade_operation_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Upgrade Operation Id"
+        }
+      },
+      "required": [
+        "order_id",
+        "applied_shipping",
+        "requested_shipping",
+        "version"
+      ],
+      "title": "Order",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "intent_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Intent Hash",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "terminal_tick": {
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Terminal Tick",
+          "type": "integer"
+        },
+        "committed_version": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Committed Version"
+        },
+        "effect_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect Id"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "enum": [
+                "UPGRADE_REJECTED",
+                "VERSION_CONFLICT"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failure Code"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "operation_id",
+        "service",
+        "order_id",
+        "intent_hash",
+        "status",
+        "terminal_tick"
+      ],
+      "title": "Receipt",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "call_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Call Id",
+      "type": "string"
+    },
+    "tool": {
+      "enum": [
+        "get_order",
+        "update_order",
+        "get_operation_status",
+        "send_confirmation"
+      ],
+      "title": "Tool",
+      "type": "string"
+    },
+    "transport": {
+      "enum": [
+        "ok",
+        "timeout",
+        "error"
+      ],
+      "title": "Transport",
+      "type": "string"
+    },
+    "operation_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Operation Id"
+    },
+    "order_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Order Id"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "enum": [
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED",
+            "UNKNOWN"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Status"
+    },
+    "observed_version": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Version"
+    },
+    "receipt_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Receipt Id"
+    },
+    "retry_after_ticks": {
+      "anyOf": [
+        {
+          "maximum": 20,
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retry After Ticks"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "maxLength": 80,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error Code"
+    },
+    "data": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Order"
+        },
+        {
+          "$ref": "#/$defs/OperationData"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Data"
+    }
+  },
+  "required": [
+    "call_id",
+    "tool",
+    "transport"
+  ],
+  "title": "ToolResult",
+  "type": "object"
+}

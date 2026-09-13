@@ -1,0 +1,157 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "campaign_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "origin": {
+      "enum": [
+        "prototype",
+        "faultlab_evaluation"
+      ],
+      "title": "Origin",
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "development",
+        "promotion",
+        "final_audit"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "arm": {
+      "enum": [
+        "B0",
+        "B1",
+        "L"
+      ],
+      "title": "Arm",
+      "type": "string"
+    },
+    "source_mode": {
+      "enum": [
+        "live",
+        "replay",
+        "offline_fixture"
+      ],
+      "title": "Source Mode",
+      "type": "string"
+    },
+    "experiment_purpose": {
+      "enum": [
+        "discovery",
+        "reproduction",
+        "reduction",
+        "intervention",
+        "source_validation",
+        "challenge",
+        "promotion",
+        "final_audit",
+        "portability",
+        "selection_comparison",
+        "diagnostic_profile"
+      ],
+      "title": "Experiment Purpose",
+      "type": "string"
+    },
+    "trial_index": {
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Trial Index",
+      "type": "integer"
+    },
+    "study_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Study Id",
+      "type": "string"
+    },
+    "evidence_context_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Evidence Context Id",
+      "type": "string"
+    },
+    "selector_id": {
+      "anyOf": [
+        {
+          "enum": [
+            "explorer",
+            "systematic",
+            "random"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Selector Id"
+    },
+    "execution_epoch": {
+      "minimum": 0,
+      "title": "Execution Epoch",
+      "type": "integer"
+    },
+    "agent_registration_id": {
+      "default": "orders-v1",
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Agent Registration Id",
+      "type": "string"
+    },
+    "parent_experiment_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Experiment Id"
+    }
+  },
+  "required": [
+    "campaign_id",
+    "episode_id",
+    "origin",
+    "split",
+    "arm",
+    "source_mode",
+    "experiment_purpose",
+    "trial_index",
+    "study_id",
+    "evidence_context_id",
+    "execution_epoch"
+  ],
+  "title": "Provenance",
+  "type": "object"
+}

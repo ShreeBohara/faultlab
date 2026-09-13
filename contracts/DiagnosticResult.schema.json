@@ -1,0 +1,169 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "diagnostic_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Diagnostic Id",
+      "type": "string"
+    },
+    "counterexample_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Counterexample Id"
+    },
+    "diagnostic_profile_id": {
+      "anyOf": [
+        {
+          "const": "evidence_gap_v1",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Diagnostic Profile Id"
+    },
+    "proposed_kind": {
+      "enum": [
+        "POLICY_GAP",
+        "CONTRACT_EVIDENCE_GAP",
+        "INCONCLUSIVE"
+      ],
+      "title": "Proposed Kind",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "POLICY_GAP",
+        "CONTRACT_EVIDENCE_GAP",
+        "INCONCLUSIVE"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "explanation": {
+      "maxLength": 600,
+      "title": "Explanation",
+      "type": "string"
+    },
+    "intervention_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "title": "Intervention Ids",
+      "type": "array"
+    },
+    "reproduction_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 3,
+      "title": "Reproduction Ids",
+      "type": "array"
+    },
+    "evidence_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 108,
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "authority_paths": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Authority Paths",
+      "type": "array"
+    },
+    "equivalence_refs": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Equivalence Refs",
+      "type": "array"
+    },
+    "tested_scope": {
+      "maxLength": 600,
+      "title": "Tested Scope",
+      "type": "string"
+    },
+    "required_behavior": {
+      "maxLength": 600,
+      "title": "Required Behavior",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "checker_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Checker Hash",
+      "type": "string"
+    },
+    "protocol_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Protocol Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "diagnostic_id",
+    "proposed_kind",
+    "kind",
+    "explanation",
+    "intervention_ids",
+    "reproduction_ids",
+    "evidence_ids",
+    "authority_paths",
+    "equivalence_refs",
+    "tested_scope",
+    "required_behavior",
+    "limitations",
+    "checker_hash",
+    "protocol_hash"
+  ],
+  "title": "DiagnosticResult",
+  "type": "object"
+}

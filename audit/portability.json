@@ -1,0 +1,160 @@
+{
+  "schema_version": "faultlab-manifest/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "trials_per_case": 3,
+  "access": "PRIVATE_EVALUATOR",
+  "no_tuning_from_results": true,
+  "trial_order": "case_then_trial_alternating_arms",
+  "horizon_ticks": 5,
+  "http_timeout_seconds": 1.0,
+  "partition": "final_audit",
+  "purpose": "portability",
+  "arms": [
+    "B0",
+    "L"
+  ],
+  "sealed": true,
+  "external_identity": {
+    "status": "PENDING",
+    "registration_id": null,
+    "source_hash": null,
+    "adapter_hash": null,
+    "configuration_hash": null
+  },
+  "execution_authorized": false,
+  "cases": [
+    {
+      "case_id": "external-1",
+      "name": "healthy",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 401,
+        "primitives": []
+      },
+      "expected_class": "completed"
+    },
+    {
+      "case_id": "external-2",
+      "name": "upgrade_response_lost",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 402,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 2500
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "external-3",
+      "name": "notification_response_lost",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 403,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F1",
+            "parameters": {
+              "response_delay_ms": 2000
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "external-4",
+      "name": "delay",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 404,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 6,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          }
+        ]
+      },
+      "expected_class": "fault"
+    },
+    {
+      "case_id": "external-5",
+      "name": "rejected",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 405,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 3,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      },
+      "expected_class": "rejected"
+    },
+    {
+      "case_id": "external-6",
+      "name": "notification_outage",
+      "fixture_id": "standard-v1",
+      "expected_version": 1,
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 406,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 5
+            }
+          }
+        ]
+      },
+      "expected_class": "unresolved"
+    }
+  ],
+  "manifest_hash": "bae3f339cfebbeed8a0d6d880629fdc21c0d2069da77cf6fdf8325c75587d721"
+}

@@ -1,0 +1,18 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "enum": [
+        "NONE",
+        "ESCALATE"
+      ],
+      "title": "Kind",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind"
+  ],
+  "title": "NoNextAction",
+  "type": "object"
+}

@@ -1,0 +1,206 @@
+{
+  "$defs": {
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "intent_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Intent Hash",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "terminal_tick": {
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Terminal Tick",
+          "type": "integer"
+        },
+        "committed_version": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Committed Version"
+        },
+        "effect_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect Id"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "enum": [
+                "UPGRADE_REJECTED",
+                "VERSION_CONFLICT"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failure Code"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "operation_id",
+        "service",
+        "order_id",
+        "intent_hash",
+        "status",
+        "terminal_tick"
+      ],
+      "title": "Receipt",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Operation Id",
+      "type": "string"
+    },
+    "service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Service",
+      "type": "string"
+    },
+    "task_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "order_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Order Id",
+      "type": "string"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "PENDING",
+        "SUCCEEDED",
+        "FAILED"
+      ],
+      "title": "State",
+      "type": "string"
+    },
+    "accepted_tick": {
+      "maximum": 20,
+      "minimum": 0,
+      "title": "Accepted Tick",
+      "type": "integer"
+    },
+    "terminal_tick": {
+      "anyOf": [
+        {
+          "maximum": 25,
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Terminal Tick"
+    },
+    "receipt": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Receipt"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "operation_id",
+    "service",
+    "task_id",
+    "order_id",
+    "payload_hash",
+    "state",
+    "accepted_tick"
+  ],
+  "title": "Operation",
+  "type": "object"
+}

@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "F4Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "failure_count": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Failure Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "failure_count"
+      ],
+      "title": "F4Parameters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "target_tool": {
+      "enum": [
+        "get_order",
+        "update_order",
+        "get_operation_status",
+        "send_confirmation"
+      ],
+      "title": "Target Tool",
+      "type": "string"
+    },
+    "target_service": {
+      "enum": [
+        "orders",
+        "notifications"
+      ],
+      "title": "Target Service",
+      "type": "string"
+    },
+    "occurrence": {
+      "maximum": 18,
+      "minimum": 1,
+      "title": "Occurrence",
+      "type": "integer"
+    },
+    "kind": {
+      "const": "F4",
+      "title": "Kind",
+      "type": "string"
+    },
+    "parameters": {
+      "$ref": "#/$defs/F4Parameters"
+    }
+  },
+  "required": [
+    "target_tool",
+    "target_service",
+    "occurrence",
+    "kind",
+    "parameters"
+  ],
+  "title": "F4",
+  "type": "object"
+}

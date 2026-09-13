@@ -1,0 +1,33 @@
+{
+  "$defs": {
+    "EmptyArguments": {
+      "additionalProperties": false,
+      "properties": {},
+      "title": "EmptyArguments",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "const": "tool",
+      "default": "tool",
+      "title": "Kind",
+      "type": "string"
+    },
+    "tool": {
+      "const": "get_order",
+      "title": "Tool",
+      "type": "string"
+    },
+    "arguments": {
+      "$ref": "#/$defs/EmptyArguments"
+    }
+  },
+  "required": [
+    "tool",
+    "arguments"
+  ],
+  "title": "GetOrderAction",
+  "type": "object"
+}

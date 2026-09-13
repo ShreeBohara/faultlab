@@ -1,0 +1,173 @@
+{
+  "$defs": {
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        },
+        "cost_dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Dollars"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "call_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Call Id",
+      "type": "string"
+    },
+    "episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "tool": {
+      "enum": [
+        "get_order",
+        "update_order",
+        "get_operation_status",
+        "send_confirmation"
+      ],
+      "title": "Tool",
+      "type": "string"
+    },
+    "caller": {
+      "enum": [
+        "actor",
+        "policy"
+      ],
+      "title": "Caller",
+      "type": "string"
+    },
+    "hook": {
+      "anyOf": [
+        {
+          "enum": [
+            "after_upgrade_response",
+            "before_confirmation",
+            "after_notification_response",
+            "before_final_report"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Hook"
+    },
+    "attempt_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Attempt Ids",
+      "type": "array"
+    },
+    "observation_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Observation Ids",
+      "type": "array"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    }
+  },
+  "required": [
+    "call_id",
+    "episode_id",
+    "tool",
+    "caller",
+    "hook",
+    "attempt_ids",
+    "observation_ids",
+    "usage"
+  ],
+  "title": "ToolCallRecord",
+  "type": "object"
+}

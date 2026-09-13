@@ -1,0 +1,211 @@
+{
+  "$defs": {
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        },
+        "cost_dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Dollars"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "comparison_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Comparison Id",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "INCOMPLETE"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "campaign_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Campaign Id",
+      "type": "string"
+    },
+    "manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Hash",
+      "type": "string"
+    },
+    "registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Registration Id",
+      "type": "string"
+    },
+    "policy_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policy Hash",
+      "type": "string"
+    },
+    "generator_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Generator Hash",
+      "type": "string"
+    },
+    "validator_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Validator Hash",
+      "type": "string"
+    },
+    "deduplication_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Deduplication Hash",
+      "type": "string"
+    },
+    "selector_order": {
+      "items": {
+        "enum": [
+          "explorer",
+          "systematic"
+        ],
+        "type": "string"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Selector Order",
+      "type": "array"
+    },
+    "systematic_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Systematic Digest",
+      "type": "string"
+    },
+    "context_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Context Ids",
+      "type": "array"
+    },
+    "trial_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 48,
+      "title": "Trial Ids",
+      "type": "array"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    },
+    "stopping_reason": {
+      "maxLength": 600,
+      "title": "Stopping Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "comparison_id",
+    "status",
+    "campaign_id",
+    "manifest_hash",
+    "registration_id",
+    "policy_hash",
+    "generator_hash",
+    "validator_hash",
+    "deduplication_hash",
+    "selector_order",
+    "systematic_digest",
+    "context_ids",
+    "trial_ids",
+    "usage",
+    "stopping_reason"
+  ],
+  "title": "SearchComparison",
+  "type": "object"
+}

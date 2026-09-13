@@ -1,0 +1,351 @@
+{
+  "$defs": {
+    "TrialResult": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "faultlab/v1",
+          "default": "faultlab/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "episode_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "world_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "World Id",
+          "type": "string"
+        },
+        "scenario_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Scenario Hash",
+          "type": "string"
+        },
+        "policy_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Policy Hash",
+          "type": "string"
+        },
+        "arm": {
+          "enum": [
+            "B0",
+            "B1",
+            "L"
+          ],
+          "title": "Arm",
+          "type": "string"
+        },
+        "trial_index": {
+          "maximum": 2,
+          "minimum": 0,
+          "title": "Trial Index",
+          "type": "integer"
+        },
+        "lifecycle": {
+          "enum": [
+            "COMPLETED",
+            "INTERRUPTED",
+            "LAB_ERROR"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "COMPLETED",
+                "SAFE_UNRESOLVED",
+                "CORRECTLY_REJECTED",
+                "VIOLATION",
+                "LAB_ERROR"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Outcome"
+        },
+        "failed_checks": {
+          "items": {
+            "enum": [
+              "C1",
+              "C2",
+              "C3",
+              "C4",
+              "C5",
+              "C6",
+              "C7",
+              "C8"
+            ],
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Failed Checks",
+          "type": "array"
+        },
+        "fault_scheduled": {
+          "title": "Fault Scheduled",
+          "type": "boolean"
+        },
+        "fault_triggered": {
+          "title": "Fault Triggered",
+          "type": "boolean"
+        },
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "episode_id",
+        "world_id",
+        "scenario_hash",
+        "policy_hash",
+        "arm",
+        "trial_index",
+        "lifecycle",
+        "outcome",
+        "fault_scheduled",
+        "fault_triggered"
+      ],
+      "title": "TrialResult",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "actor_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Actor Calls",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "wait_cycles": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Wait Cycles",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "policy_steps": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Policy Steps",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        },
+        "cost_dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Dollars"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "batch_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "purpose": {
+      "enum": [
+        "discovery",
+        "reproduction",
+        "reduction",
+        "intervention",
+        "source_validation",
+        "challenge",
+        "promotion",
+        "final_audit",
+        "portability",
+        "selection_comparison",
+        "diagnostic_profile"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    },
+    "split": {
+      "enum": [
+        "development",
+        "promotion",
+        "final_audit"
+      ],
+      "title": "Split",
+      "type": "string"
+    },
+    "candidate_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Candidate Hash",
+      "type": "string"
+    },
+    "incumbent_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Incumbent Hash",
+      "type": "string"
+    },
+    "manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Hash",
+      "type": "string"
+    },
+    "scorer_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Scorer Hash",
+      "type": "string"
+    },
+    "contract_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Contract Hash",
+      "type": "string"
+    },
+    "model_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Model Hash",
+      "type": "string"
+    },
+    "trial_pairs": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "maxItems": 100,
+      "title": "Trial Pairs",
+      "type": "array"
+    },
+    "trials": {
+      "items": {
+        "$ref": "#/$defs/TrialResult"
+      },
+      "maxItems": 200,
+      "title": "Trials",
+      "type": "array"
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    },
+    "decision": {
+      "enum": [
+        "ACCEPTED",
+        "REJECTED",
+        "NO_CHANGE",
+        "INCOMPLETE"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 600,
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "batch_id",
+    "purpose",
+    "split",
+    "candidate_hash",
+    "incumbent_hash",
+    "manifest_hash",
+    "scorer_hash",
+    "contract_hash",
+    "model_hash",
+    "trial_pairs",
+    "trials",
+    "usage",
+    "decision",
+    "reason"
+  ],
+  "title": "EvaluationBatch",
+  "type": "object"
+}

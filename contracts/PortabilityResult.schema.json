@@ -1,0 +1,131 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "portability_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Portability Id",
+      "type": "string"
+    },
+    "source_registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Source Registration Id",
+      "type": "string"
+    },
+    "target_registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Target Registration Id",
+      "type": "string"
+    },
+    "provenance_class": {
+      "enum": [
+        "external",
+        "internal_smoke"
+      ],
+      "title": "Provenance Class",
+      "type": "string"
+    },
+    "policy_source": {
+      "enum": [
+        "transferred_unchanged",
+        "new_target_campaign"
+      ],
+      "title": "Policy Source",
+      "type": "string"
+    },
+    "policy_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Policy Hash",
+      "type": "string"
+    },
+    "manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Manifest Hash",
+      "type": "string"
+    },
+    "target_configuration_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Target Configuration Hash",
+      "type": "string"
+    },
+    "trial_pairs": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "maxItems": 18,
+      "title": "Trial Pairs",
+      "type": "array"
+    },
+    "compatibility_failures": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Compatibility Failures",
+      "type": "array"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "COMPLETED",
+        "INCOMPLETE",
+        "UNSUPPORTED"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "portability_id",
+    "source_registration_id",
+    "target_registration_id",
+    "provenance_class",
+    "policy_source",
+    "policy_hash",
+    "manifest_hash",
+    "target_configuration_hash",
+    "trial_pairs",
+    "compatibility_failures",
+    "status",
+    "limitations"
+  ],
+  "title": "PortabilityResult",
+  "type": "object"
+}

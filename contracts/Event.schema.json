@@ -1,0 +1,107 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "episode_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "seq": {
+      "minimum": 1,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "tick": {
+      "maximum": 25,
+      "minimum": 0,
+      "title": "Tick",
+      "type": "integer"
+    },
+    "at": {
+      "format": "date-time",
+      "title": "At",
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "actor",
+        "policy",
+        "explorer",
+        "mechanic",
+        "referee",
+        "coordinator",
+        "telemetry"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "type": {
+      "maxLength": 80,
+      "pattern": "^[a-z_]+$",
+      "title": "Type",
+      "type": "string"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "title": "Payload",
+      "type": "object"
+    },
+    "call_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Call Id"
+    },
+    "evidence_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Evidence Id"
+    },
+    "visibility": {
+      "enum": [
+        "PUBLIC_OBSERVATION",
+        "DEVELOPMENT_DIAGNOSTIC",
+        "PRIVATE_EVALUATOR"
+      ],
+      "title": "Visibility",
+      "type": "string"
+    }
+  },
+  "required": [
+    "episode_id",
+    "seq",
+    "tick",
+    "role",
+    "type",
+    "visibility"
+  ],
+  "title": "Event",
+  "type": "object"
+}

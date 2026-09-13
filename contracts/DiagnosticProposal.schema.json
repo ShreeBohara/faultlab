@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "proposed_kind": {
+      "enum": [
+        "POLICY_GAP",
+        "CONTRACT_EVIDENCE_GAP",
+        "INCONCLUSIVE"
+      ],
+      "title": "Proposed Kind",
+      "type": "string"
+    },
+    "hypothesis": {
+      "maxLength": 600,
+      "title": "Hypothesis",
+      "type": "string"
+    },
+    "evidence_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "type": "string"
+      },
+      "maxItems": 36,
+      "minItems": 1,
+      "title": "Evidence Ids",
+      "type": "array"
+    },
+    "requested_intervention_id": {
+      "anyOf": [
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Requested Intervention Id"
+    }
+  },
+  "required": [
+    "proposed_kind",
+    "hypothesis",
+    "evidence_ids",
+    "requested_intervention_id"
+  ],
+  "title": "DiagnosticProposal",
+  "type": "object"
+}

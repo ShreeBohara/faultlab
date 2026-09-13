@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "profile_id": {
+      "const": "evidence_gap_v1",
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "contract_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Contract Hash",
+      "type": "string"
+    },
+    "capability_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Capability Hash",
+      "type": "string"
+    },
+    "oracle_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Oracle Hash",
+      "type": "string"
+    },
+    "fixture_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Fixture Hash",
+      "type": "string"
+    },
+    "normalization_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Normalization Hash",
+      "type": "string"
+    },
+    "probe_set": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 18,
+      "minItems": 1,
+      "title": "Probe Set",
+      "type": "array"
+    },
+    "horizon": {
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Horizon",
+      "type": "integer"
+    },
+    "excluded_from_learning": {
+      "const": true,
+      "default": true,
+      "title": "Excluded From Learning",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "profile_id",
+    "contract_hash",
+    "capability_hash",
+    "oracle_hash",
+    "fixture_hash",
+    "normalization_hash",
+    "probe_set",
+    "horizon"
+  ],
+  "title": "DiagnosticProfile",
+  "type": "object"
+}

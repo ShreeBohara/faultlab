@@ -1,0 +1,190 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "registration_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Registration Id",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 600,
+      "title": "Name",
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Version",
+      "type": "string"
+    },
+    "provenance_class": {
+      "enum": [
+        "reference",
+        "internal_smoke",
+        "external"
+      ],
+      "title": "Provenance Class",
+      "type": "string"
+    },
+    "source_origin": {
+      "maxLength": 500,
+      "title": "Source Origin",
+      "type": "string"
+    },
+    "source_owner": {
+      "maxLength": 600,
+      "title": "Source Owner",
+      "type": "string"
+    },
+    "source_revision": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Source Revision",
+      "type": "string"
+    },
+    "source_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Source Hash",
+      "type": "string"
+    },
+    "license": {
+      "maxLength": 600,
+      "title": "License",
+      "type": "string"
+    },
+    "permission_ref": {
+      "maxLength": 600,
+      "title": "Permission Ref",
+      "type": "string"
+    },
+    "adapter_entrypoint_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Adapter Entrypoint Id",
+      "type": "string"
+    },
+    "adapter_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Adapter Hash",
+      "type": "string"
+    },
+    "contract_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Contract Hash",
+      "type": "string"
+    },
+    "capability_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Capability Hash",
+      "type": "string"
+    },
+    "reset_profile_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Reset Profile Id",
+      "type": "string"
+    },
+    "oracle_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Oracle Hash",
+      "type": "string"
+    },
+    "policy_hooks": {
+      "items": {
+        "enum": [
+          "after_upgrade_response",
+          "before_confirmation",
+          "after_notification_response",
+          "before_final_report"
+        ],
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 4,
+      "title": "Policy Hooks",
+      "type": "array"
+    },
+    "model": {
+      "maxLength": 600,
+      "title": "Model",
+      "type": "string"
+    },
+    "prompt_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Prompt Hash",
+      "type": "string"
+    },
+    "configuration_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Configuration Hash",
+      "type": "string"
+    },
+    "dependency_lock_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Dependency Lock Hash",
+      "type": "string"
+    },
+    "budget_compatible": {
+      "title": "Budget Compatible",
+      "type": "boolean"
+    },
+    "dry_run_status": {
+      "enum": [
+        "PENDING",
+        "PASSED",
+        "UNSUPPORTED"
+      ],
+      "title": "Dry Run Status",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 600,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "registration_id",
+    "name",
+    "version",
+    "provenance_class",
+    "source_origin",
+    "source_owner",
+    "source_revision",
+    "source_hash",
+    "license",
+    "permission_ref",
+    "adapter_entrypoint_id",
+    "adapter_hash",
+    "contract_hash",
+    "capability_hash",
+    "reset_profile_id",
+    "oracle_hash",
+    "policy_hooks",
+    "model",
+    "prompt_hash",
+    "configuration_hash",
+    "dependency_lock_hash",
+    "budget_compatible",
+    "dry_run_status",
+    "limitations"
+  ],
+  "title": "AgentRegistration",
+  "type": "object"
+}

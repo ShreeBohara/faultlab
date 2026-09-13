@@ -1,0 +1,313 @@
+{
+  "$defs": {
+    "F1": {
+      "additionalProperties": false,
+      "properties": {
+        "target_tool": {
+          "enum": [
+            "update_order",
+            "send_confirmation"
+          ],
+          "title": "Target Tool",
+          "type": "string"
+        },
+        "target_service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Target Service",
+          "type": "string"
+        },
+        "occurrence": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Occurrence",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "F1",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/F1Parameters"
+        }
+      },
+      "required": [
+        "target_tool",
+        "target_service",
+        "occurrence",
+        "kind",
+        "parameters"
+      ],
+      "title": "F1",
+      "type": "object"
+    },
+    "F1Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "response_delay_ms": {
+          "maximum": 3000,
+          "minimum": 1500,
+          "title": "Response Delay Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "response_delay_ms"
+      ],
+      "title": "F1Parameters",
+      "type": "object"
+    },
+    "F2": {
+      "additionalProperties": false,
+      "properties": {
+        "target_tool": {
+          "const": "update_order",
+          "title": "Target Tool",
+          "type": "string"
+        },
+        "target_service": {
+          "const": "orders",
+          "title": "Target Service",
+          "type": "string"
+        },
+        "occurrence": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Occurrence",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "F2",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/F2Parameters"
+        }
+      },
+      "required": [
+        "target_tool",
+        "target_service",
+        "occurrence",
+        "kind",
+        "parameters"
+      ],
+      "title": "F2",
+      "type": "object"
+    },
+    "F2Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "completion_delay_ticks": {
+          "maximum": 20,
+          "minimum": 1,
+          "title": "Completion Delay Ticks",
+          "type": "integer"
+        },
+        "terminal_status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Terminal Status",
+          "type": "string"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "const": "UPGRADE_REJECTED",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Failure Code"
+        }
+      },
+      "required": [
+        "completion_delay_ticks",
+        "terminal_status",
+        "failure_code"
+      ],
+      "title": "F2Parameters",
+      "type": "object"
+    },
+    "F3": {
+      "additionalProperties": false,
+      "properties": {
+        "target_tool": {
+          "const": "get_order",
+          "title": "Target Tool",
+          "type": "string"
+        },
+        "target_service": {
+          "const": "orders",
+          "title": "Target Service",
+          "type": "string"
+        },
+        "occurrence": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Occurrence",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "F3",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/F3Parameters"
+        }
+      },
+      "required": [
+        "target_tool",
+        "target_service",
+        "occurrence",
+        "kind",
+        "parameters"
+      ],
+      "title": "F3",
+      "type": "object"
+    },
+    "F3Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "versions_back": {
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Versions Back",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "versions_back"
+      ],
+      "title": "F3Parameters",
+      "type": "object"
+    },
+    "F4": {
+      "additionalProperties": false,
+      "properties": {
+        "target_tool": {
+          "enum": [
+            "get_order",
+            "update_order",
+            "get_operation_status",
+            "send_confirmation"
+          ],
+          "title": "Target Tool",
+          "type": "string"
+        },
+        "target_service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Target Service",
+          "type": "string"
+        },
+        "occurrence": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Occurrence",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "F4",
+          "title": "Kind",
+          "type": "string"
+        },
+        "parameters": {
+          "$ref": "#/$defs/F4Parameters"
+        }
+      },
+      "required": [
+        "target_tool",
+        "target_service",
+        "occurrence",
+        "kind",
+        "parameters"
+      ],
+      "title": "F4",
+      "type": "object"
+    },
+    "F4Parameters": {
+      "additionalProperties": false,
+      "properties": {
+        "failure_count": {
+          "maximum": 18,
+          "minimum": 1,
+          "title": "Failure Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "failure_count"
+      ],
+      "title": "F4Parameters",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scope": {
+      "const": "orders.upgrade_then_confirm/v1",
+      "default": "orders.upgrade_then_confirm/v1",
+      "title": "Scope",
+      "type": "string"
+    },
+    "seed": {
+      "maximum": 2147483647,
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "primitives": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "F1": "#/$defs/F1",
+            "F2": "#/$defs/F2",
+            "F3": "#/$defs/F3",
+            "F4": "#/$defs/F4"
+          },
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/F1"
+          },
+          {
+            "$ref": "#/$defs/F2"
+          },
+          {
+            "$ref": "#/$defs/F3"
+          },
+          {
+            "$ref": "#/$defs/F4"
+          }
+        ]
+      },
+      "maxItems": 2,
+      "title": "Primitives",
+      "type": "array"
+    }
+  },
+  "required": [
+    "seed",
+    "primitives"
+  ],
+  "title": "FaultSpec",
+  "type": "object"
+}

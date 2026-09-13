@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "model_calls": {
+      "default": 6000,
+      "maximum": 6000,
+      "minimum": 1,
+      "title": "Model Calls",
+      "type": "integer"
+    },
+    "tokens": {
+      "default": 60000000,
+      "maximum": 60000000,
+      "minimum": 1,
+      "title": "Tokens",
+      "type": "integer"
+    },
+    "dollars": {
+      "default": 100.0,
+      "exclusiveMinimum": 0,
+      "maximum": 100,
+      "title": "Dollars",
+      "type": "number"
+    },
+    "discovery_selections": {
+      "default": 8,
+      "maximum": 8,
+      "minimum": 1,
+      "title": "Discovery Selections",
+      "type": "integer"
+    },
+    "candidates": {
+      "default": 4,
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Candidates",
+      "type": "integer"
+    },
+    "input_tokens_per_call": {
+      "default": 8000,
+      "maximum": 8000,
+      "minimum": 1,
+      "title": "Input Tokens Per Call",
+      "type": "integer"
+    },
+    "output_tokens_per_call": {
+      "default": 2000,
+      "maximum": 2000,
+      "minimum": 1,
+      "title": "Output Tokens Per Call",
+      "type": "integer"
+    }
+  },
+  "title": "CampaignBudget",
+  "type": "object"
+}

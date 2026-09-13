@@ -1,0 +1,509 @@
+{
+  "$defs": {
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "faultlab/v1",
+          "default": "faultlab/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "episode_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "tick": {
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Tick",
+          "type": "integer"
+        },
+        "at": {
+          "format": "date-time",
+          "title": "At",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "actor",
+            "policy",
+            "explorer",
+            "mechanic",
+            "referee",
+            "coordinator",
+            "telemetry"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "type": {
+          "maxLength": 80,
+          "pattern": "^[a-z_]+$",
+          "title": "Type",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "call_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Id"
+        },
+        "evidence_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Evidence Id"
+        },
+        "visibility": {
+          "enum": [
+            "PUBLIC_OBSERVATION",
+            "DEVELOPMENT_DIAGNOSTIC",
+            "PRIVATE_EVALUATOR"
+          ],
+          "title": "Visibility",
+          "type": "string"
+        }
+      },
+      "required": [
+        "episode_id",
+        "seq",
+        "tick",
+        "role",
+        "type",
+        "visibility"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "NotificationEffect": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "faultlab/v1",
+          "default": "faultlab/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "notification_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Notification Id",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "upgrade_operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Upgrade Operation Id",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "idempotency_key": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Idempotency Key",
+          "type": "string"
+        },
+        "payload_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Hash",
+          "type": "string"
+        },
+        "created_tick": {
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Created Tick",
+          "type": "integer"
+        },
+        "template_version": {
+          "const": "confirmation/v1",
+          "default": "confirmation/v1",
+          "title": "Template Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "notification_id",
+        "order_id",
+        "upgrade_operation_id",
+        "operation_id",
+        "idempotency_key",
+        "payload_hash",
+        "created_tick"
+      ],
+      "title": "NotificationEffect",
+      "type": "object"
+    },
+    "Operation": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "faultlab/v1",
+          "default": "faultlab/v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "task_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Task Id",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "payload_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Hash",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "PENDING",
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "accepted_tick": {
+          "maximum": 20,
+          "minimum": 0,
+          "title": "Accepted Tick",
+          "type": "integer"
+        },
+        "terminal_tick": {
+          "anyOf": [
+            {
+              "maximum": 25,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Terminal Tick"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Receipt"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "operation_id",
+        "service",
+        "task_id",
+        "order_id",
+        "payload_hash",
+        "state",
+        "accepted_tick"
+      ],
+      "title": "Operation",
+      "type": "object"
+    },
+    "Order": {
+      "additionalProperties": false,
+      "properties": {
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "applied_shipping": {
+          "enum": [
+            "standard",
+            "express"
+          ],
+          "title": "Applied Shipping",
+          "type": "string"
+        },
+        "requested_shipping": {
+          "enum": [
+            "standard",
+            "express"
+          ],
+          "title": "Requested Shipping",
+          "type": "string"
+        },
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        },
+        "last_upgrade_operation_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Upgrade Operation Id"
+        }
+      },
+      "required": [
+        "order_id",
+        "applied_shipping",
+        "requested_shipping",
+        "version"
+      ],
+      "title": "Order",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "receipt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "service": {
+          "enum": [
+            "orders",
+            "notifications"
+          ],
+          "title": "Service",
+          "type": "string"
+        },
+        "order_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Order Id",
+          "type": "string"
+        },
+        "intent_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Intent Hash",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "terminal_tick": {
+          "maximum": 25,
+          "minimum": 0,
+          "title": "Terminal Tick",
+          "type": "integer"
+        },
+        "committed_version": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Committed Version"
+        },
+        "effect_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect Id"
+        },
+        "failure_code": {
+          "anyOf": [
+            {
+              "enum": [
+                "UPGRADE_REJECTED",
+                "VERSION_CONFLICT"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failure Code"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "operation_id",
+        "service",
+        "order_id",
+        "intent_hash",
+        "status",
+        "terminal_tick"
+      ],
+      "title": "Receipt",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab/v1",
+      "default": "faultlab/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "world_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "World Id",
+      "type": "string"
+    },
+    "tick": {
+      "maximum": 25,
+      "minimum": 0,
+      "title": "Tick",
+      "type": "integer"
+    },
+    "orders": {
+      "items": {
+        "$ref": "#/$defs/Order"
+      },
+      "maxItems": 10,
+      "title": "Orders",
+      "type": "array"
+    },
+    "operations": {
+      "items": {
+        "$ref": "#/$defs/Operation"
+      },
+      "maxItems": 2,
+      "title": "Operations",
+      "type": "array"
+    },
+    "notifications": {
+      "items": {
+        "$ref": "#/$defs/NotificationEffect"
+      },
+      "maxItems": 18,
+      "title": "Notifications",
+      "type": "array"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/Event"
+      },
+      "maxItems": 300,
+      "title": "Events",
+      "type": "array"
+    }
+  },
+  "required": [
+    "world_id",
+    "tick",
+    "orders",
+    "operations",
+    "notifications",
+    "events"
+  ],
+  "title": "WorldSnapshot",
+  "type": "object"
+}

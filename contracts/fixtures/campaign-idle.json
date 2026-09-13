@@ -1,0 +1,43 @@
+{
+  "schema_version": "faultlab/v1",
+  "campaign_id": "campaign-fixture",
+  "mode": "baseline",
+  "state": "IDLE",
+  "state_seq": 0,
+  "execution_epoch": 0,
+  "task_text": "Upgrade the authorized order to express and record one truthful confirmation.",
+  "order_id": "order-fixture",
+  "config_profile_id": "offline-v1",
+  "model": "offline-reference",
+  "configuration_hash": "55185d022200c665bcfe4bb0583e1a4435f23164de7c071a7edbecc4fbd8f578",
+  "active_policy_version": "policy-v0",
+  "latest_episode_id": null,
+  "stop_requested": false,
+  "caps": {
+    "model_calls": 6000,
+    "tokens": 60000000,
+    "dollars": 100.0,
+    "discovery_selections": 8,
+    "candidates": 4,
+    "input_tokens_per_call": 8000,
+    "output_tokens_per_call": 2000
+  },
+  "usage": {
+    "http_attempts": 0,
+    "actor_calls": 0,
+    "model_calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "wait_cycles": 0,
+    "ticks": 0,
+    "policy_steps": 0,
+    "wall_seconds": 0.0,
+    "cost_dollars": null
+  },
+  "reserved_calls": 1064,
+  "telemetry_status": "local_recorded",
+  "aria_status": "PENDING",
+  "terminal_reason": null,
+  "created_at": "2026-09-12T23:12:20.033372Z",
+  "updated_at": "2026-09-12T23:12:20.033521Z"
+}
