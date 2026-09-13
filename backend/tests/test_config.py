@@ -120,6 +120,21 @@ def test_live_campaign_requires_priced_bound_for_exact_model():
     with pytest.raises(ConfigurationError):settings.require_live()
     priced=replace(settings,faultlab_input_dollars_per_million=1.0,faultlab_output_dollars_per_million=2.0,faultlab_pricing_model='m',faultlab_pricing_verified=True)
     priced.require_live()
-    assert priced.model_call_dollar_bound==.012
+    assert priced.model_call_dollar_bound==.036
     assert replace(priced,wandb_model='different').model_call_dollar_bound is None
     with pytest.raises(ConfigurationError):replace(priced,faultlab_input_dollars_per_million=float('nan')).require_live()
+
+
+def test_expanded_token_cap_keeps_call_and_dollar_caps():
+    from dataclasses import replace
+    from app.contracts.models import CampaignBudget
+    from app.providers.runtime import MODEL_REQUEST_SETTINGS
+    settings=Settings(wandb_api_key='fixture',wandb_entity='team',wandb_project='p',wandb_model='deepseek-ai/DeepSeek-V3.1',
+        faultlab_live_enabled=True,faultlab_confirmed_entity='team',faultlab_pricing_model='deepseek-ai/DeepSeek-V3.1',
+        faultlab_input_dollars_per_million=.55,faultlab_output_dollars_per_million=1.65,faultlab_pricing_verified=True)
+    settings.require_live()
+    assert settings.faultlab_token_cap==CampaignBudget().tokens==204000000
+    assert settings.faultlab_model_call_cap==6000 and settings.faultlab_dollar_cap==100
+    assert settings.model_call_dollar_bound==pytest.approx(.0209)
+    assert MODEL_REQUEST_SETTINGS['max_input_tokens']==CampaignBudget().input_tokens_per_call==32000
+    with pytest.raises(ConfigurationError):replace(settings,faultlab_token_cap=204000001).require_live()

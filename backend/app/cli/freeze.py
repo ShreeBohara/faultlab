@@ -37,7 +37,7 @@ def freeze_campaign(store, settings, campaign_id):
         if not target.exists(): shutil.copyfile(AUDIT_DIR/name,target)
         elif target.read_bytes()!=(AUDIT_DIR/name).read_bytes(): raise ValueError('Frozen manifest content changed')
     accepted=policy.decision=='ACCEPTED'
-    result=freeze_core(directory,identity,accepted_policy_hash=policy.policy_hash if accepted else None,accepted_policy_version=policy.version if accepted else None)
+    result=freeze_core(directory,identity,accepted_policy_hash=policy.policy_hash if accepted else None,accepted_policy_version=policy.version if accepted else None,campaign_caps=campaign.caps)
     store.put_record('audit_freezes',campaign_id,{'campaign_id':campaign_id,'policy_hash':policy.policy_hash if accepted else None,
         'configuration_hash':campaign.configuration_hash,'manifest_hash':result['final_manifest_hash'],
         'freeze_hash':result['freeze_hash'],'path':str(directory/'freeze.json'),'learned_arm_available':accepted},immutable=True)

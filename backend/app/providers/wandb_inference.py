@@ -13,6 +13,15 @@ MAX_OUTPUT_TOKENS = 32
 CHECK_PROMPT = "Reply with only: FaultLab connection OK"
 
 
+def model_request_options(model: str) -> dict:
+    """Documented model-specific settings, shared by smoke and campaign calls."""
+    if model == "deepseek-ai/DeepSeek-V4-Pro-0813":
+        # W&B enables thinking by default for this model. FaultLab consumes the
+        # final structured answer, so do not spend its output allowance thinking.
+        return {"extra_body": {"chat_template_kwargs": {"enable_thinking": False}}}
+    return {}
+
+
 @dataclass(frozen=True)
 class GenerationResult:
     response: str
@@ -81,6 +90,7 @@ def generate_once(settings: Settings, *, max_output_tokens: int = MAX_OUTPUT_TOK
                         messages=[{"role": "user", "content": CHECK_PROMPT}],
                         max_tokens=max_output_tokens,
                         stream=False,
+                        **model_request_options(settings.wandb_model),
                     )
                     content = completion.choices[0].message.content
                     if not isinstance(content, str) or not content.strip():

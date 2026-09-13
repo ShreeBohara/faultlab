@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 from dotenv import dotenv_values
+from app.contracts.models import CampaignBudget, CAMPAIGN_TOKEN_LIMIT
 
 
 ROOT_ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
@@ -34,7 +35,7 @@ class Settings:
     faultlab_live_enabled: bool = False
     faultlab_confirmed_entity: str = ''
     faultlab_model_call_cap: int = 6000
-    faultlab_token_cap: int = 60000000
+    faultlab_token_cap: int = CAMPAIGN_TOKEN_LIMIT
     faultlab_dollar_cap: float = 100.0
     # Negative rates mean unverified. Explicit short provider checks use
     # require_wandb(); campaign admission additionally requires a priced bound.
@@ -95,7 +96,7 @@ class Settings:
             missing.append('FAULTLAB_CONFIRMED_ENTITY')
         if not (1 <= self.faultlab_model_call_cap <= 6000):
             missing.append('FAULTLAB_MODEL_CALL_CAP')
-        if not (1 <= self.faultlab_token_cap <= 60000000):
+        if not (1 <= self.faultlab_token_cap <= CAMPAIGN_TOKEN_LIMIT):
             missing.append('FAULTLAB_TOKEN_CAP')
         if not (0 < self.faultlab_dollar_cap <= 100):
             missing.append('FAULTLAB_DOLLAR_CAP')
@@ -115,7 +116,8 @@ class Settings:
         import math
         rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
         if not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model or any(not math.isfinite(v) or v<0 for v in rates):return None
-        return (8000*rates[0]+2000*rates[1])/1000000
+        caps=CampaignBudget()
+        return (caps.input_tokens_per_call*rates[0]+caps.output_tokens_per_call*rates[1])/1000000
 
     @property
     def artifact_path(self) -> Path:

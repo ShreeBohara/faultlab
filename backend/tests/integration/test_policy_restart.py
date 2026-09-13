@@ -170,3 +170,13 @@ def test_fresh_http_world_and_actor_conversation_after_coordinator_restart(tmp_p
         assert provider.calls == 6
 
     asyncio.run(run())
+
+
+def test_role_prompt_changes_are_part_of_frozen_source_identity(tmp_path):
+    from app.lab.configuration import tree_hash
+    (tmp_path/'agent.py').write_text('pass\n')
+    prompt=tmp_path/'prompts'/'explorer.md'
+    prompt.parent.mkdir();prompt.write_text('Initial role contract\n')
+    initial=tree_hash(tmp_path)
+    prompt.write_text('Updated role contract\n')
+    assert tree_hash(tmp_path)!=initial

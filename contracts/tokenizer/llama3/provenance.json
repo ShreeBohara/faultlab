@@ -1,0 +1,22 @@
+{
+  "source": "https://raw.githubusercontent.com/meta-llama/llama-models/5fdf83110cc9daa7435dfba6eb304892cc0041b8/models/llama3/tokenizer.model",
+  "sha256": "82e9d31979e92ab929cd544440f129d9ecd797b69e327f80f17e1c50d5551b55",
+  "bytes": 2183982,
+  "rank_count": 128000,
+  "model": "meta-llama/Llama-3.3-70B-Instruct",
+  "encoding": "Meta Llama 3 tiktoken content tokenizer with conservative message framing reserve",
+  "implementation_source": "https://github.com/meta-llama/llama-models/blob/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3/tokenizer.py",
+  "prompt_format_source": "https://github.com/meta-llama/llama-models/blob/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3_3/prompt_format.md",
+  "license": "Llama 3.3 Community License",
+  "license_files": {
+    "LICENSE": {
+      "source": "https://raw.githubusercontent.com/meta-llama/llama-models/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3_3/LICENSE",
+      "sha256": "fb58d9a630ccc1dc0d08f8c00232de56bc73309020f59c8181d0c12ef28d9f8c"
+    },
+    "USE_POLICY.md": {
+      "source": "https://raw.githubusercontent.com/meta-llama/llama-models/0e0b8c519242d5833d8c11bffc1232b77ad7f301/models/llama3_3/USE_POLICY.md",
+      "sha256": "fac148bfbd9f515b3a7a9885d5d324187cd2ef9e2dcc9cdde49ef248695f3e07"
+    }
+  },
+  "runtime_network": false
+}

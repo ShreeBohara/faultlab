@@ -42,6 +42,8 @@ def test_runtime_explicit_attribution_redaction_and_no_global_mutations():
     result = asyncio.run(run())
     assert options["project"] == "fixture/project" and options["max_retries"] == 0
     assert len(calls) == 1 and calls[0]["max_tokens"] == 2000
+    assert calls[0]["response_format"] == {"type": "json_object"}
+    assert calls[0]["temperature"] == 0
     assert result.model_id == "model" and result.input_tokens == 4 and result.cost_usd is None
     assert "fixture-private-key" not in result.content
     assert dict(os.environ) == env and logging.root.manager.disable == logging_level
@@ -59,13 +61,13 @@ def test_runtime_error_sanitized_without_retry():
     assert "secret" not in str(caught.value) and len(calls) == 1
 
 
-@pytest.mark.parametrize("model,content", [("unregistered-model", "x" * 8001), ("openai/gpt-oss-120b", "word " * 8000)])
+@pytest.mark.parametrize("model,content", [("unregistered-model", "x" * 32001), ("openai/gpt-oss-120b", "word " * 32000)])
 def test_runtime_input_limit_precedes_client(model, content):
     messages = [{"role": "user", "content": content}]
-    assert input_token_bound(messages, model) > 8000
+    assert input_token_bound(messages, model) > 32000
     provider = RuntimeProvider(Settings(wandb_api_key="key", wandb_entity="fixture", wandb_project="project", wandb_model=model),
                                live_authorized=True, client_factory=lambda **_: pytest.fail("Client before input validation"))
-    with pytest.raises(RuntimeProviderError, match="8,000-token"):
+    with pytest.raises(RuntimeProviderError, match="32,000-token"):
         asyncio.run(provider.complete(messages))
 
 
@@ -127,3 +129,30 @@ def test_unrecognized_exception_and_finish_text_never_enter_diagnostics():
     assert error.diagnostics["error_class"] == "ProviderError"
     assert error.diagnostics["http_status"] is None and error.diagnostics["finish_reason"] is None
     assert "secret" not in json.dumps(error.diagnostics)
+
+
+@pytest.mark.parametrize('model,thinking_disabled', [
+    ('deepseek-ai/DeepSeek-V4-Pro-0813', True),
+    ('deepseek-ai/DeepSeek-V3.1', False),
+    ('meta-llama/Llama-3.3-70B-Instruct', False),
+    ('openai/gpt-oss-120b', False),
+])
+def test_documented_thinking_setting_matches_frozen_request(model, thinking_disabled):
+    from app.providers.runtime import model_request_settings
+    from app.lab.configuration import frozen_configuration
+    from app.contracts.models import CampaignBudget
+    calls = []
+    async def create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content='{}'))], usage=None)
+    settings = Settings(wandb_api_key='fixture-key', wandb_entity='fixture', wandb_project='project', wandb_model=model)
+    provider = RuntimeProvider(settings, live_authorized=True,
+        client_factory=lambda **_: SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    asyncio.run(provider.complete([{'role': 'user', 'content': 'Return JSON.'}]))
+    frozen = frozen_configuration(settings, CampaignBudget(), 'live-v1')['model_settings']
+    assert frozen == model_request_settings(model)
+    if thinking_disabled:
+        expected = {'chat_template_kwargs': {'enable_thinking': False}}
+        assert calls[0]['extra_body'] == frozen['extra_body'] == expected
+    else:
+        assert 'extra_body' not in calls[0] and 'extra_body' not in frozen

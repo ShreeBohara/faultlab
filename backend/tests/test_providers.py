@@ -287,3 +287,14 @@ def test_typesafe_never_claims_configured_or_substitutes_wandb(configured, monke
     monkeypatch.setattr(check_provider, "list_models", lambda _: pytest.fail("TypeSafe contacted W&B"))
     assert check_provider.main(["typesafe"]) == 2
     assert typesafe.STATUS in capsys.readouterr().out
+
+
+def test_v4_smoke_disables_default_thinking(configured, monkeypatch):
+    configured = replace(configured, wandb_model='deepseek-ai/DeepSeek-V4-Pro-0813')
+    client = FakeInferenceClient(model_ids=(configured.wandb_model,))
+    use_fakes(monkeypatch, client)
+    result = wandb_inference.generate_once(configured, max_output_tokens=2000)
+    assert result.response == 'FaultLab connection OK'
+    assert len(client.generations) == 1
+    assert client.generations[0]['extra_body'] == {'chat_template_kwargs': {'enable_thinking': False}}
+    assert 'response_format' not in client.generations[0]

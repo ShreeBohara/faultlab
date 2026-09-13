@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 
 from app.contracts.models import AgentRegistration, EpisodeBudget, content_hash, canonical_json
+from app.providers.runtime import model_request_settings
 
 ROOT = Path(__file__).resolve().parents[3]
 REVISION = "12c1bc820eca50ace6f80a21d90426d41d74f845"
@@ -69,7 +70,7 @@ def _configuration(configuration):
             raise ValueError("Invalid frozen configuration digest")
     if configuration["episode_budget"] != EpisodeBudget().model_dump(mode="json"):
         raise ValueError("Target does not support the reviewed episode budget")
-    if configuration["model_settings"] != {"max_output_tokens": 2000, "timeout_seconds": 20, "retries": 0}:
+    if configuration["model_settings"] != model_request_settings(configuration["model"]):
         raise ValueError("Target model settings are unsupported")
     return configuration
 

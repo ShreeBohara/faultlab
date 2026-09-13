@@ -1,0 +1,40 @@
+{
+  "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/resolve/72e1d3230f6c080a530b0a1d46f8eb4602340597/tokenizer.json",
+  "sha256": "8f9f37ca37fdc4f5fd36d5cf4d3b0e8392edb4e894fd10cc0d70b4957c8633cf",
+  "bytes": 6367146,
+  "git_blob": "628e3364caad11bdf9e67cea06eae7878122811d",
+  "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "revision": "72e1d3230f6c080a530b0a1d46f8eb4602340597",
+  "encoding": "Official Hugging Face tokenizers JSON; ordinary-content admission requires disabling added control-token recognition and a separate framing reserve",
+  "license": "MIT",
+  "related_files": {
+    "tokenizer_config.json": {
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/resolve/72e1d3230f6c080a530b0a1d46f8eb4602340597/tokenizer_config.json",
+      "sha256": "6ac8c8dc065ed118161d02dd532749ae3f52c243deac27872134fae2f50d8547",
+      "bytes": 801,
+      "git_blob": "f3dad388a2bbfd6a8605bd02754acd86d9ca5112"
+    },
+    "LICENSE": {
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-0813/resolve/72e1d3230f6c080a530b0a1d46f8eb4602340597/LICENSE",
+      "sha256": "f2c6c602815669d292889e5be8c802f2ed950653b77999b1584e8e6aed25d040",
+      "bytes": 1084,
+      "git_blob": "d62e3bef9f054f21b7fc616365850fbf879a99ff"
+    }
+  },
+  "runtime_network": false,
+  "ordinary_content_equivalence": {
+    "comparison_model": "deepseek-ai/DeepSeek-V3.1",
+    "comparison_source": "https://huggingface.co/deepseek-ai/DeepSeek-V3.1/resolve/c0781d039fb7a1ba2abc4add0bdc293e92d2b8db/tokenizer.json",
+    "comparison_file_sha256": "32b34a41212e92f62e859cbbea121ae705a1fabbf157d9acf22d134ecd8dcf70",
+    "equal_components": [
+      "normalizer",
+      "pre_tokenizer",
+      "post_processor",
+      "decoder",
+      "model"
+    ],
+    "canonical_components_sha256": "4b4511eeef8f6748f4b41608514be9e77c131d214303108d8f03ff8dcb4cc5ff",
+    "added_tokens_removed_for_admission": true,
+    "whole_files_identical": false
+  }
+}

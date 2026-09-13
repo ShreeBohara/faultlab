@@ -11,3 +11,4 @@ wandb==0.30.0
 langchain-core==1.6.3
 smolagents==1.26.0
 tiktoken==0.14.0
+tokenizers==0.23.2

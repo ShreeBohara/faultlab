@@ -9,8 +9,8 @@
       "type": "integer"
     },
     "tokens": {
-      "default": 60000000,
-      "maximum": 60000000,
+      "default": 204000000,
+      "maximum": 204000000,
       "minimum": 1,
       "title": "Tokens",
       "type": "integer"
@@ -37,8 +37,8 @@
       "type": "integer"
     },
     "input_tokens_per_call": {
-      "default": 8000,
-      "maximum": 8000,
+      "default": 32000,
+      "maximum": 32000,
       "minimum": 1,
       "title": "Input Tokens Per Call",
       "type": "integer"

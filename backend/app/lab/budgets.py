@@ -11,8 +11,12 @@ class BudgetExhausted(RuntimeError):
 class StopRequested(RuntimeError):
     pass
 
-PROTECTED = {'final_audit':(384,3840000),'portability':(288,2880000),'selection_comparison':(392,3920000)}
+PROTECTED = {'final_audit':384,'portability':288,'selection_comparison':392}
 CANDIDATE_CALLS = 538  # 528 actor + proposal + eight selections + one format repair
+
+def protected_reservations(caps):
+    tokens_per_call=caps.input_tokens_per_call+caps.output_tokens_per_call
+    return {name:{'calls':calls,'tokens':calls*tokens_per_call} for name,calls in PROTECTED.items()}
 
 @dataclass
 class Reservation:
@@ -29,8 +33,14 @@ def synchronized(method):
 class CampaignLedger:
     def __init__(self, store, campaign_id, caps=None, *, dollar_bound=None):
         self.store,self.campaign_id = store,campaign_id
-        self.caps = caps or CampaignBudget()
         saved = store.get_record('budgets',campaign_id)
+        campaign = store.get_record('campaigns',campaign_id)
+        frozen_caps = saved.get('caps') if saved else None
+        if frozen_caps is None and campaign: frozen_caps=campaign.get('caps')
+        stored_caps=CampaignBudget.model_validate_json(canonical_json(frozen_caps)) if frozen_caps else None
+        if caps is not None and stored_caps is not None and caps!=stored_caps:
+            raise BudgetExhausted('Frozen campaign budget changed')
+        self.caps = caps or stored_caps or CampaignBudget()
         self.dollar_bound=saved.get('dollar_bound') if saved else dollar_bound
         if saved and dollar_bound is not None and self.dollar_bound!=dollar_bound: raise BudgetExhausted('Frozen price bound changed')
         self.used_calls = saved['used_calls'] if saved else 0
@@ -41,25 +51,33 @@ class CampaignLedger:
         self.usage_known=saved.get('usage_metadata_known',True) if saved else True
         self.unknown_cost_calls=saved.get('unknown_cost_calls',0) if saved else 0
         self.unknown_token_calls=saved.get('unknown_token_calls',0) if saved else 0
-        self.reservations = saved['reservations'] if saved else {k:{'calls':v[0],'tokens':v[1]} for k,v in PROTECTED.items()}
+        self.reservations = saved['reservations'] if saved else protected_reservations(self.caps)
         self.stopped = False
         self._save()
 
     def _save(self):
         self.usage_known=self.unknown_token_calls==0
-        self.store.put_record('budgets',self.campaign_id,{'used_calls':self.used_calls,'used_tokens':self.used_tokens,'used_cost':self.used_cost,'reservations':self.reservations,'dollar_bound':self.dollar_bound,'charged_dollar_upper_bound':self.used_calls*self.dollar_bound if self.dollar_bound is not None else None,'charged_token_upper_bound':self.used_tokens,'actual_cost_dollars':self.used_cost if self.unknown_cost_calls==0 else None,'unknown_cost_calls':self.unknown_cost_calls,'unknown_token_calls':self.unknown_token_calls,'usage_metadata_known':self.usage_known,'measured_input_tokens':self.measured_input,'measured_output_tokens':self.measured_output})
+        self.store.put_record('budgets',self.campaign_id,{'caps':self.caps.model_dump(mode='json'),'used_calls':self.used_calls,'used_tokens':self.used_tokens,'used_cost':self.used_cost,'reservations':self.reservations,'dollar_bound':self.dollar_bound,'charged_dollar_upper_bound':self.used_calls*self.dollar_bound if self.dollar_bound is not None else None,'charged_token_upper_bound':self.used_tokens,'actual_cost_dollars':self.used_cost if self.unknown_cost_calls==0 else None,'unknown_cost_calls':self.unknown_cost_calls,'unknown_token_calls':self.unknown_token_calls,'usage_metadata_known':self.usage_known,'measured_input_tokens':self.measured_input,'measured_output_tokens':self.measured_output})
 
     @property
     def reserved_calls(self):
         return sum(r['calls'] for r in self.reservations.values())
 
+    @property
+    def tokens_per_call(self):
+        return self.caps.input_tokens_per_call+self.caps.output_tokens_per_call
+
+    @property
+    def reserved_tokens(self):
+        return sum(r['tokens'] for r in self.reservations.values())
+
     @synchronized
     def reserve(self, name, calls, tokens=None):
         if self.stopped: raise StopRequested()
-        tokens = calls*10000 if tokens is None else tokens
+        tokens = calls*self.tokens_per_call if tokens is None else tokens
         if name in self.reservations: raise BudgetExhausted('Batch already reserved')
         if self.dollar_bound is not None and (self.used_calls+self.reserved_calls+calls)*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Complete batch exceeds frozen dollar reservation')
-        if self.used_calls+self.reserved_calls+calls > self.caps.model_calls or self.used_tokens+sum(r['tokens'] for r in self.reservations.values())+tokens > self.caps.tokens:
+        if self.used_calls+self.reserved_calls+calls > self.caps.model_calls or self.used_tokens+self.reserved_tokens+tokens > self.caps.tokens:
             raise BudgetExhausted('Complete batch cannot fit protected reserves')
         self.reservations[name]={'calls':calls,'tokens':tokens}
         self._save()
@@ -74,19 +92,19 @@ class CampaignLedger:
     def consume_call(self, *, reservation=None):
         if self.stopped: raise StopRequested()
         protected_calls=self.reserved_calls
-        protected_tokens=sum(r['tokens'] for r in self.reservations.values())
+        protected_tokens=self.reserved_tokens
         if reservation:
             r=self.reservations.get(reservation)
-            if not r or r['calls']<1 or r['tokens']<10000: raise BudgetExhausted('Batch reservation exhausted')
-            protected_calls-=1; protected_tokens-=10000
+            if not r or r['calls']<1 or r['tokens']<self.tokens_per_call: raise BudgetExhausted('Batch reservation exhausted')
+            protected_calls-=1; protected_tokens-=self.tokens_per_call
         if self.dollar_bound is not None and (self.used_calls+1+protected_calls)*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Model call exceeds protected dollar cap')
-        if self.used_calls+1+protected_calls>self.caps.model_calls or self.used_tokens+10000+protected_tokens>self.caps.tokens:
+        if self.used_calls+1+protected_calls>self.caps.model_calls or self.used_tokens+self.tokens_per_call+protected_tokens>self.caps.tokens:
             raise BudgetExhausted('Model budget exhausted')
         if self.used_cost is not None and self.used_cost>=self.caps.dollars: raise BudgetExhausted('Dollar cap exhausted')
         if reservation:
             self.reservations[reservation]['calls']-=1
-            self.reservations[reservation]['tokens']-=10000
-        self.used_calls+=1; self.used_tokens+=10000; self.unknown_cost_calls+=1; self.unknown_token_calls+=1
+            self.reservations[reservation]['tokens']-=self.tokens_per_call
+        self.used_calls+=1; self.used_tokens+=self.tokens_per_call; self.unknown_cost_calls+=1; self.unknown_token_calls+=1
         self._save()
 
     @synchronized

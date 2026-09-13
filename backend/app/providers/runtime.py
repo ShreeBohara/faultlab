@@ -10,9 +10,18 @@ import json
 from typing import Any, Callable
 
 from app.config import Settings
+from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT
 from app.contracts.tokens import validate_model_input
 from app.providers import redact_text
-from app.providers.wandb_inference import BASE_URL
+from app.providers.wandb_inference import BASE_URL, model_request_options
+
+MODEL_REQUEST_SETTINGS = {"max_input_tokens": MODEL_INPUT_TOKEN_LIMIT,
+                          "max_output_tokens": MODEL_OUTPUT_TOKEN_LIMIT, "timeout_seconds": 20, "retries": 0,
+                          "response_format": {"type": "json_object"}, "temperature": 0}
+
+
+def model_request_settings(model: str) -> dict:
+    return {**MODEL_REQUEST_SETTINGS, **model_request_options(model)}
 
 
 class RuntimeProviderError(RuntimeError):
@@ -60,13 +69,13 @@ class RuntimeProvider:
         self._client = None
 
     async def complete(self, messages: list[dict[str, str]], *, role: str = "actor",
-                       max_output_tokens: int = 2000, timeout_seconds: float = 20.0) -> RuntimeGeneration:
+                       max_output_tokens: int = MODEL_OUTPUT_TOKEN_LIMIT, timeout_seconds: float = 20.0) -> RuntimeGeneration:
         if not self._authorized:
             raise RuntimeProviderError("An explicit bounded live action is required.", code="LIVE_ACTION_REQUIRED")
         self._settings.require_wandb(require_model=True)
         if role not in {"actor", "explorer", "mechanic"}:
             raise RuntimeProviderError("Unknown runtime role.", code="INVALID_ROLE")
-        if not 1 <= max_output_tokens <= 2000 or not 0 < timeout_seconds <= 20:
+        if not 1 <= max_output_tokens <= MODEL_OUTPUT_TOKEN_LIMIT or not 0 < timeout_seconds <= 20:
             raise RuntimeProviderError("Model request exceeds the frozen per-call limits.", code="REQUEST_LIMIT")
         if not messages or any(set(m) != {"role", "content"} or m["role"] not in {"system", "user", "assistant"}
                                or not isinstance(m["content"], str) for m in messages):
@@ -74,7 +83,7 @@ class RuntimeProvider:
         try:
             validate_model_input(messages, self._settings.wandb_model)
         except ValueError:
-            raise RuntimeProviderError("Model input exceeds or cannot verify the frozen 8,000-token bound.", code="INPUT_LIMIT") from None
+            raise RuntimeProviderError(f"Model input exceeds or cannot verify the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token bound.", code="INPUT_LIMIT") from None
         secrets = (self._settings.wandb_api_key, self._settings.typesafe_api_key)
         if any(secret and secret in json.dumps(messages) for secret in secrets):
             raise RuntimeProviderError("Secret-bearing model input was rejected.", code="SECRET_INPUT")
@@ -92,7 +101,9 @@ class RuntimeProvider:
             async with asyncio.timeout(timeout_seconds):
                 response = await self._client.chat.completions.create(
                     model=self._settings.wandb_model, messages=messages, max_tokens=max_output_tokens,
-                    stream=False, timeout=timeout_seconds)
+                    response_format=MODEL_REQUEST_SETTINGS["response_format"],
+                    temperature=MODEL_REQUEST_SETTINGS["temperature"], stream=False, timeout=timeout_seconds,
+                    **model_request_options(self._settings.wandb_model))
             usage = getattr(response, "usage", None)
             def token_count(name):
                 value = getattr(usage, name, None)

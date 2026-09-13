@@ -73,7 +73,7 @@ async def test_empty_provider_response_retains_usage_and_machine_safe_failure(tm
     trial=await EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),EmptyResponse()).run(campaign,FaultSpec(seed=1,primitives=[]),c.policies.baseline(),source_mode='offline_fixture',ledger=ledger)
     assert trial.lifecycle=='LAB_ERROR' and trial.reason=='EMPTY_FINAL_RESPONSE'
     assert trial.usage.actor_calls==1 and trial.usage.input_tokens==123 and trial.usage.output_tokens==2000 and trial.usage.http_attempts==0
-    assert ledger.used_calls==1 and ledger.measured_input==123 and ledger.measured_output==2000 and ledger.used_tokens==10000
+    assert ledger.used_calls==1 and ledger.measured_input==123 and ledger.measured_output==2000 and ledger.used_tokens==34000
     assert c.store.get_record('episodes',trial.episode_id)['report'] is None
     failures=c.store.list_records('provider_failures')
     assert len(failures)==1 and failures[0]['episode_id']==trial.episode_id and failures[0]['diagnostics']['finish_reason']=='length'

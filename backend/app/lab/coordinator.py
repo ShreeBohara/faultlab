@@ -116,7 +116,7 @@ class LabCoordinator:
             self.validate_core_configuration(campaign)
             if campaign.mode!='baseline' and not live: raise ValueError('Learn and comparison require explicit live profile')
             ledger=CampaignLedger(self.store,id,campaign.caps,dollar_bound=self.settings.model_call_dollar_bound if live else None)
-            if live and (ledger.reserved_calls>campaign.caps.model_calls or 10640000>campaign.caps.tokens or (ledger.dollar_bound is not None and ledger.reserved_calls*ledger.dollar_bound>campaign.caps.dollars)): raise BudgetExhausted('Mandatory protected batches exceed configured campaign cap')
+            if live and (ledger.reserved_calls>campaign.caps.model_calls or ledger.reserved_tokens>campaign.caps.tokens or (ledger.dollar_bound is not None and ledger.reserved_calls*ledger.dollar_bound>campaign.caps.dollars)): raise BudgetExhausted('Mandatory protected batches exceed configured campaign cap')
             self.ledgers[id]=ledger; self.active_id=id
             campaign=self.transition(id,'RUNNING')
             self.tasks[id]=asyncio.create_task(self._execute(id,live),name=f'faultlab-{id}')
