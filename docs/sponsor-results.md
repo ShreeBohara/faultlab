@@ -89,8 +89,17 @@ links rather than the episode set, so it analysed roughly half the campaign. Bot
 with a delivered report whose own `overall` was `SAFE_UNRESOLVED`. Aria's advisory output changed no policy,
 checker rule, budget or promotion decision, as required.
 
-**What is still open for T088.** The attributed Aria capture (`POST /api/campaigns/{id}/aria-evidence`) needs
-the conversation output URL and an operator summary before `status: COMPLETED` is permitted; until then no
-completed automatic analysis is claimed. Publication was operator-initiated (`artifacts/publish_campaign_run.py`)
+**Recorded capture.** The attributed capture was filed as `aria-bfb1956439104da6a4b027e8b7d0f078` at
+2026-09-13T20:03:07Z with `invocation_mode: automatic`, `provenance: manual_ui_capture`, execution
+`TriggerExecution:674022`, thread `01a09c52-640e-7590-b61e-49b2c3a1657a`, history URL
+`https://wandb.ai/shreetbohara-quinstreet/Faultlab/automations`, and 18 verified source references. Its status
+is **UNVERIFIED**, not COMPLETED, and `output_url` is null. W&B provides no addressable URL for an Aria
+conversation: the documented route is the creator's Ask ARIA chat history under *Past conversations*, matched by
+project, date and prompt text. Because no output URL exists, `validate_analysis_capture` derived
+`state: pending_unverified` with `automatic_evidence_complete: false` and `remote_verification: false`, and the
+campaign's `aria_status` is UNVERIFIED.
+
+**What is still open for T088.** Automatic invocation is established; a completed, independently addressable
+automatic analysis is not. No COMPLETED Aria analysis is claimed, and SC-006 stays unmet. Publication was operator-initiated (`artifacts/publish_campaign_run.py`)
 rather than produced by the coordinator's end-of-campaign hook, and `aria_bindings` was written manually to
 mirror the coordinator's own binding step. Both deviations are recorded here rather than implied away.
