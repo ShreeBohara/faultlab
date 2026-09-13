@@ -9,13 +9,14 @@ def schedule_identity(recipe):
 
 class Challenger:
     def __init__(self,store,explorer,evaluator): self.store,self.explorer,self.evaluator=store,explorer,evaluator
-    async def run(self,campaign,incumbent,candidate,source_batch,*,reservation,prior_hashes=(),evidence_summary=None,stop=lambda:False):
+    async def run(self,campaign,incumbent,candidate,source_batch,*,reservation,prior_hashes=(),prior_recipes=(),evidence_summary=None,stop=lambda:False):
         selections=[]; schedules=[]; pairs=[]; failed=set(); novel=[]; reason='Fewer than four feasible schedules'; status='INCONCLUSIVE'
+        tested_recipes=[recipe.model_dump(mode='json') for recipe in prior_recipes]
         frozen=(candidate.policy_hash,incumbent.policy_hash)
         for proposal_index in range(8):
             if stop(): reason='External stop'; break
             try:
-                ref,output=await self.explorer.select({'campaign_id':campaign.campaign_id,'purpose':'challenge','candidate':candidate.content.model_dump(mode='json'),'candidate_hash':candidate.policy_hash,'incumbent_hash':incumbent.policy_hash,'already_tested_schedule_hashes':list(prior_hashes)+schedules,'development_evidence':evidence_summary or [],'proposal_index':proposal_index},reservation=reservation,challenge=True)
+                ref,output=await self.explorer.select({'campaign_id':campaign.campaign_id,'purpose':'challenge','candidate':candidate.content.model_dump(mode='json'),'candidate_hash':candidate.policy_hash,'incumbent_hash':incumbent.policy_hash,'already_tested_schedule_hashes':list(prior_hashes)+schedules,'already_tested_fault_specs':list(tested_recipes),'development_evidence':evidence_summary or [],'proposal_index':proposal_index},reservation=reservation,challenge=True)
             except BudgetExhausted: reason='Challenge selection budget exhausted'; break
             selections.append(ref)
             if output is None: continue
@@ -26,6 +27,7 @@ class Challenger:
             try: validate_schedule(recipe,[{}]*4 if fixture=='history-v1' else [{}])
             except ValueError: continue
             schedules.append(digest)
+            tested_recipes.append(recipe.model_dump(mode='json'))
             if digest not in prior_hashes: novel.append(digest)
             batch=await self.evaluator.run(campaign,[{'fault_spec':recipe.model_dump(mode='json'),'fixture_id':fixture}],incumbent,candidate,purpose='challenge',reservation=reservation,stop=stop)
             pairs.extend(batch.trial_pairs)

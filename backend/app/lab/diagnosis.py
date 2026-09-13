@@ -1,11 +1,35 @@
 """Model hypotheses select reviewed interventions; fixed code assigns verdicts."""
-from app.contracts.models import content_hash,canonical_json,new_id
+from app.contracts.models import content_hash,canonical_json,new_id,EpisodeBudget
+from app.agents.actor import ACTOR_PROMPT
 from app.referee.reducer import neighbors
 from app.referee.diagnostics import InterventionVariant,InterventionRun,run_interventions,classify_policy_gap
 
+def runtime_contract():
+    return {'actor_contract':ACTOR_PROMPT,'episode_limits':EpisodeBudget().model_dump(mode='json'),
+            'hook_execution':'Policy hooks execute their finite steps inside the existing business-call boundaries. Reads and same-identity retries consume HTTP attempts; waits consume ticks and polling cycles; all steps consume the policy-step budget. These hook steps do not consume actor model turns. They deliver observations for the next original actor turn. They cannot rewrite its report or create new authorized operations.'}
+
+def trial_outcomes(trials):
+    # Group only identical public outcomes. Every attempted trial remains named,
+    # including infrastructure errors, untriggered cases and contradictory checks.
+    groups={}
+    for trial in trials:
+        value={'scenario_hash':trial.scenario_hash,'arm':trial.arm,'lifecycle':trial.lifecycle,
+               'outcome':trial.outcome,'failed_checks':trial.failed_checks,'fault_scheduled':trial.fault_scheduled,
+               'fault_triggered':trial.fault_triggered,'actor_calls':trial.usage.actor_calls,'http_attempts':trial.usage.http_attempts}
+        key=canonical_json(value)
+        if key not in groups: groups[key]={**value,'episode_ids':[]}
+        groups[key]['episode_ids'].append(trial.episode_id)
+    return list(groups.values())
+
+def reduction_context(result,trials,evidence):
+    data=result.model_dump(mode='json')
+    return {'status':data['status'],'stopping_reason':data.get('stopping_reason'),
+            'attempts':[{k:a[k] for k in ('transform','retained','reason','trial_ids')} for a in data.get('attempts',[])],
+            'trial_outcomes':trial_outcomes(trials),'verified_episode_ids':[b.episode_id for b in evidence if b.source=='weave_verified']}
+
 class Diagnostician:
     def __init__(self,store,runner,ledger,mechanic): self.store,self.runner,self.ledger,self.mechanic=store,runner,ledger,mechanic
-    async def run(self,campaign,counter,recipe,policy,reproduction_trials,*,evidence,fixture_id='standard-v1',stop=lambda:False):
+    async def run(self,campaign,counter,recipe,policy,reproduction_trials,*,evidence,reduction=None,fixture_id='standard-v1',stop=lambda:False):
         options={}
         # Fixed finite one-variable options are named before model selection.
         for change,treatment in neighbors(recipe):
@@ -13,7 +37,7 @@ class Diagnostician:
             key='intervention-'+content_hash({'control':recipe,'treatment':treatment})[:24]
             options[key]=(change,treatment)
         evidence_ids=[o.evidence_id for bundle in evidence for o in bundle.observations]
-        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'interventions':[{'id':key,'change':value[0],'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations'} for key,value in options.items()],'observations':summarize_evidence(evidence)}
+        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations'} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(),'reduction':reduction}
         proposal_ref,proposal,raws=await self.mechanic.diagnose(context)
         variants=[]
         if proposal and proposal.requested_intervention_id in options:

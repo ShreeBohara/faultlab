@@ -18,7 +18,7 @@ class ActorReportError(ValueError):
 class Actor:
     async def __call__(self,intent,context):
         broker=context.broker; meter=broker.meter; interpreter=context.interpreter
-        messages=[{'role':'system','content':ACTOR_PROMPT},{'role':'user','content':canonical_json({'task':intent.model_dump(mode='json')})}]
+        messages=[{'role':'system','content':ACTOR_PROMPT},{'role':'user','content':canonical_json({'task':intent.model_dump(mode='json'),'output_schema':ACTION_ADAPTER.json_schema()})}]
         cost_known=True; measured_cost=0.0
         def account(generation):
             nonlocal cost_known,measured_cost
@@ -45,8 +45,14 @@ class Actor:
             if generation.model_id!=context.metadata['model_id']:
                 raise RuntimeProviderError('Provider returned a different frozen model')
             try: action=ACTION_ADAPTER.validate_json(generation.content)
-            except (ValidationError,ValueError):
-                messages.append({'role':'user','content':'Invalid action JSON. Return exactly one allowed tool or report action. This correction consumes a turn.'})
+            except (ValidationError,ValueError) as error:
+                errors=([{'location':list(issue['loc']),'type':issue['type']}
+                         for issue in error.errors(include_input=False,include_context=False,include_url=False)]
+                        if isinstance(error,ValidationError) else [{'location':[],'type':'invalid_json'}])
+                # RuntimeProvider has already redacted credentials. Preserve the
+                # actual invalid answer, never substitute a repaired action.
+                messages.extend([{'role':'assistant','content':generation.content},
+                                 {'role':'user','content':canonical_json({'action_errors':errors,'instruction':'Your action failed output_schema. Return exactly one allowed tool or report action with only its declared fields. No business call was executed; this correction consumes a turn.'})}])
                 continue
             proposal_id=new_id('proposal')
             if isinstance(action,ReportAction):
