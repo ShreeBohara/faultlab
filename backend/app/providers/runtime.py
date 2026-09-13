@@ -68,6 +68,10 @@ class RuntimeProvider:
         self._factory = client_factory
         self._client = None
 
+    def role_model(self, role: str) -> str:
+        """Frozen model for a runtime role; Explorer/Mechanic may use the lab model."""
+        return self._settings.model_for(role)
+
     async def complete(self, messages: list[dict[str, str]], *, role: str = "actor",
                        max_output_tokens: int = MODEL_OUTPUT_TOKEN_LIMIT, timeout_seconds: float = 20.0) -> RuntimeGeneration:
         if not self._authorized:
@@ -80,8 +84,9 @@ class RuntimeProvider:
         if not messages or any(set(m) != {"role", "content"} or m["role"] not in {"system", "user", "assistant"}
                                or not isinstance(m["content"], str) for m in messages):
             raise RuntimeProviderError("Invalid model input.", code="INVALID_INPUT")
+        model = self.role_model(role)
         try:
-            validate_model_input(messages, self._settings.wandb_model)
+            validate_model_input(messages, model)
         except ValueError:
             raise RuntimeProviderError(f"Model input exceeds or cannot verify the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token bound.", code="INPUT_LIMIT") from None
         secrets = (self._settings.wandb_api_key, self._settings.typesafe_api_key)
@@ -100,17 +105,17 @@ class RuntimeProvider:
                                        project=self._settings.project_path, timeout=timeout_seconds, max_retries=0)
             async with asyncio.timeout(timeout_seconds):
                 response = await self._client.chat.completions.create(
-                    model=self._settings.wandb_model, messages=messages, max_tokens=max_output_tokens,
+                    model=model, messages=messages, max_tokens=max_output_tokens,
                     response_format=MODEL_REQUEST_SETTINGS["response_format"],
                     temperature=MODEL_REQUEST_SETTINGS["temperature"], stream=False, timeout=timeout_seconds,
-                    **model_request_options(self._settings.wandb_model))
+                    **model_request_options(model))
             usage = getattr(response, "usage", None)
             def token_count(name):
                 value = getattr(usage, name, None)
                 return value if type(value) is int and 0 <= value <= 1_000_000_000 else None
             # This is usage from an actual response, not a fabricated actor answer.
             # Preserve it even if no final content survives the output-token cap.
-            returned_usage = RuntimeGeneration(content="", model_id=self._settings.wandb_model,
+            returned_usage = RuntimeGeneration(content="", model_id=model,
                 input_tokens=token_count("prompt_tokens"), output_tokens=token_count("completion_tokens"))
             choice = response.choices[0]
             finish_reason = getattr(choice, "finish_reason", None)
@@ -119,7 +124,7 @@ class RuntimeProvider:
                 raise RuntimeProviderError("W&B returned no final response; no generation retry was made.",
                     code="EMPTY_FINAL_RESPONSE", error_class="ValueError", finish_reason=finish_reason, generation=returned_usage)
             return RuntimeGeneration(
-                content=redact_text(content, *secrets), model_id=self._settings.wandb_model,
+                content=redact_text(content, *secrets), model_id=model,
                 input_tokens=returned_usage.input_tokens, output_tokens=returned_usage.output_tokens)
         except asyncio.CancelledError:
             raise

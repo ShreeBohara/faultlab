@@ -15,6 +15,11 @@ export FAULTLAB_INPUT_DOLLARS_PER_MILLION="${FAULTLAB_INPUT_DOLLARS_PER_MILLION:
 export FAULTLAB_OUTPUT_DOLLARS_PER_MILLION="${FAULTLAB_OUTPUT_DOLLARS_PER_MILLION:-3.96}"
 export FAULTLAB_PRICING_MODEL="${FAULTLAB_PRICING_MODEL:-deepseek-ai/DeepSeek-V4-Pro-0813}"
 export FAULTLAB_PRICING_VERIFIED=true
+# Optional separate lab model for Explorer/Mechanic; the actor keeps WANDB_MODEL.
+export FAULTLAB_LAB_MODEL="${FAULTLAB_LAB_MODEL:-}"
+export FAULTLAB_LAB_PRICING_MODEL="${FAULTLAB_LAB_PRICING_MODEL:-}"
+export FAULTLAB_LAB_INPUT_DOLLARS_PER_MILLION="${FAULTLAB_LAB_INPUT_DOLLARS_PER_MILLION:--1}"
+export FAULTLAB_LAB_OUTPUT_DOLLARS_PER_MILLION="${FAULTLAB_LAB_OUTPUT_DOLLARS_PER_MILLION:--1}"
 # Live campaigns use frozen code/configuration and must not be interrupted by a
 # development file watcher. Stop and restart deliberately after making changes.
 cd "$ROOT/backend"

@@ -20,7 +20,7 @@
         "dollars": {
           "default": 100.0,
           "exclusiveMinimum": 0,
-          "maximum": 100,
+          "maximum": 500,
           "title": "Dollars",
           "type": "number"
         },

@@ -54,8 +54,8 @@ def _configuration(configuration):
     required = {"model", "actor_prompt_hash", "adapter_hash", "source_hash", "contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash", "episode_budget", "model_settings"}
     if not isinstance(configuration, dict) or not required <= set(configuration):
         raise ValueError("Complete independently frozen target configuration required")
-    allowed = required | {"schema_version", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version"}
-    if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"]:
+    allowed = required | {"schema_version", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing"}
+    if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"] or not isinstance(configuration.get("lab_model", ""), str):
         raise ValueError("Unreviewed target configuration fields or service URL")
     def no_location(value):
         if isinstance(value, dict):

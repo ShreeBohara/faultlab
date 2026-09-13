@@ -43,6 +43,17 @@ class Settings:
     faultlab_output_dollars_per_million: float = -1.0
     faultlab_pricing_model: str = ''
     faultlab_pricing_verified: bool = False
+    # Optional separate lab model for the Explorer and Mechanic roles. The actor
+    # (agent under test) always uses WANDB_MODEL. Empty means the same model.
+    faultlab_lab_model: str = ''
+    faultlab_lab_input_dollars_per_million: float = -1.0
+    faultlab_lab_output_dollars_per_million: float = -1.0
+    faultlab_lab_pricing_model: str = ''
+
+    def model_for(self, role: str) -> str:
+        if role in ('explorer', 'mechanic') and self.faultlab_lab_model.strip():
+            return self.faultlab_lab_model.strip()
+        return self.wandb_model
 
     @classmethod
     def from_env(cls, env_path: str | Path | None = None) -> "Settings":
@@ -98,7 +109,7 @@ class Settings:
             missing.append('FAULTLAB_MODEL_CALL_CAP')
         if not (1 <= self.faultlab_token_cap <= CAMPAIGN_TOKEN_LIMIT):
             missing.append('FAULTLAB_TOKEN_CAP')
-        if not (0 < self.faultlab_dollar_cap <= 100):
+        if not (0 < self.faultlab_dollar_cap <= 500):
             missing.append('FAULTLAB_DOLLAR_CAP')
         import math
         for name in ('faultlab_input_dollars_per_million','faultlab_output_dollars_per_million'):
@@ -108,16 +119,28 @@ class Settings:
             missing.append('FAULTLAB_PRICING_MODEL')
         if not self.faultlab_pricing_verified:
             missing.append('FAULTLAB_PRICING_VERIFIED')
+        if self.faultlab_lab_model.strip():
+            for name in ('faultlab_lab_input_dollars_per_million','faultlab_lab_output_dollars_per_million'):
+                value=getattr(self,name)
+                if not math.isfinite(value) or value<0: missing.append(name.upper())
+            if self.faultlab_lab_pricing_model!=self.faultlab_lab_model.strip():
+                missing.append('FAULTLAB_LAB_PRICING_MODEL')
         if missing:
             raise ConfigurationError(tuple(missing))
 
     @property
     def model_call_dollar_bound(self) -> float | None:
+        """Worst-case dollars per admitted call across every configured role model."""
         import math
         rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
         if not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model or any(not math.isfinite(v) or v<0 for v in rates):return None
         caps=CampaignBudget()
-        return (caps.input_tokens_per_call*rates[0]+caps.output_tokens_per_call*rates[1])/1000000
+        bound=(caps.input_tokens_per_call*rates[0]+caps.output_tokens_per_call*rates[1])/1000000
+        if self.faultlab_lab_model.strip():
+            lab=(self.faultlab_lab_input_dollars_per_million,self.faultlab_lab_output_dollars_per_million)
+            if self.faultlab_lab_pricing_model!=self.faultlab_lab_model.strip() or any(not math.isfinite(v) or v<0 for v in lab):return None
+            bound=max(bound,(caps.input_tokens_per_call*lab[0]+caps.output_tokens_per_call*lab[1])/1000000)
+        return bound
 
     @property
     def artifact_path(self) -> Path:

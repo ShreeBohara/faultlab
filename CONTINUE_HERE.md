@@ -1,5 +1,9 @@
 # Continue FaultLab on another Codex account
 
+> **Latest update (Claude Code session, 2026-09-13 11:50 PDT):** start with
+> [docs/HANDOFF_CLAUDE_2026-09-13.md](docs/HANDOFF_CLAUDE_2026-09-13.md). It supersedes the
+> status below; the rest of this file is the earlier Codex handoff.
+
 Prepared on **2026-09-13** after live validation. Start with this file, then read
 [the detailed agent handoff](docs/AGENT_HANDOFF_2026-09-13.md).
 

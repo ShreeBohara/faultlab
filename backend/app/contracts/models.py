@@ -373,7 +373,7 @@ class EpisodeBudget(StrictModel):
 class CampaignBudget(StrictModel):
     model_calls: int = Field(default=6000, ge=1, le=6000)
     tokens: int = Field(default=CAMPAIGN_TOKEN_LIMIT, ge=1, le=CAMPAIGN_TOKEN_LIMIT)
-    dollars: float = Field(default=100.0, gt=0, le=100)
+    dollars: float = Field(default=100.0, gt=0, le=500)
     discovery_selections: int = Field(default=8, ge=1, le=8)
     candidates: int = Field(default=4, ge=1, le=4)
     input_tokens_per_call: int = Field(default=MODEL_INPUT_TOKEN_LIMIT, ge=1, le=MODEL_INPUT_TOKEN_LIMIT)

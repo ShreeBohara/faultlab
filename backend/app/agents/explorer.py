@@ -32,6 +32,8 @@ def development_coverage(store,campaign_id,trial,recipe):
     return {'episode_id':trial.episode_id,'fault_spec':recipe.model_dump(mode='json'),
             'lifecycle':trial.lifecycle,'outcome':trial.outcome,'failed_checks':trial.failed_checks,
             'triggered':trial.fault_triggered,'primitive_triggered':[f['triggered'] for f in executions],
+            'primitive_prevented_reasons':[f.get('reason') for f in executions],
+            'qualifies_for_repair':bool(trial.lifecycle=='COMPLETED' and trial.outcome=='VIOLATION' and trial.fault_triggered),
             'http_attempts_by_tool':attempts,'actor_calls':trial.usage.actor_calls}
 
 class Explorer:
@@ -44,7 +46,9 @@ class Explorer:
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
                  'episode_limits':EpisodeBudget().model_dump(mode='json'),'public_invariants':PUBLIC_INVARIANTS}
         messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')},{'role':'user','content':canonical_json(context)}]
-        validate_model_input(messages,(self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b')))
+        role_model=getattr(self.provider,'role_model',None)
+        expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
+        validate_model_input(messages,expected)
         self.ledger.consume_call(reservation=reservation)
         from app.lab.tracing import phase_span
         try:
@@ -56,7 +60,7 @@ class Explorer:
             record_provider_failure(self.store,error,role='explorer',metadata=self.metadata or context)
             raise
         self.ledger.reconcile(generation)
-        if self.metadata and generation.model_id!=self.metadata['model_id']:
+        if self.metadata and generation.model_id!=expected:
             raise RuntimeProviderError('Provider returned a different frozen model')
         selection_id=new_id('selection'); parsed=None; error=None
         try: parsed=ExplorerOutput.model_validate_json(generation.content)

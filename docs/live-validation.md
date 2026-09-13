@@ -41,6 +41,8 @@ The dashboard's **Run baseline** button runs one healthy smoke episode; it does 
 
 The preceding V3.1 campaign (`campaign-e6ac7b05ebc049f6804d34dc04d4ef72`) finished `NO_CHANGE` after 119 episodes and 829 model calls, with zero provider errors and all 119 episode traces verified. Reproduction and reduction ran, but no diagnosis qualified for repair. Its conservative admitted inference ceiling was $17.3261; the actual billed total is unknown. The V4 attempt must produce its own evidence.
 
+The 2026-09-13 repair-loop attempt used DeepSeek V3.1 as the agent under test because V4 never violates a fixed check. Start the live backend with the V3.1 model and pricing overrides listed in `docs/model-selection.md`, then run the same learn command. Campaign `campaign-44085f54a24144b78252d8eea211ebb8` reached a supported diagnosis, a generated policy, a passing source validation and a challenge counterexample before ending NO_CHANGE; see `docs/learning-results.md`.
+
 ```sh
 ./scripts/run-demo.sh --mode learn --execute-live --wait
 ```

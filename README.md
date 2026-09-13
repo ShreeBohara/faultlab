@@ -65,6 +65,8 @@ WANDB_PROJECT=Faultlab WANDB_MODEL='deepseek-ai/DeepSeek-V4-Pro-0813' \
 
 The preceding DeepSeek V3.1 campaign finished `NO_CHANGE`: 119 episodes, 829 model calls, zero provider failures and 119 verified episode traces. Its diagnoses remained inconclusive, so no repair qualified. Earlier Llama baseline measurements completed all 36 trials. These are retained results under their own models, not V4 results.
 
+The 2026-09-13 repair-loop campaign `campaign-44085f54a24144b78252d8eea211ebb8` used DeepSeek V3.1 as the agent under test and reached a supported diagnosis, a model-generated recovery policy, a 3/3 source validation pass and an active challenge that found a counterexample, then ended `NO_CHANGE`. No learned policy is accepted; see [learning results](docs/learning-results.md).
+
 The learning loop may finish with no change, reject a candidate, or wait for verified Weave evidence. It never substitutes a canned repair or promotes on missing results. Aria setup is deferred for the current walkthrough and does not block Inference/Weave. Its later validation uses a supported W&B UI automation and attributed output capture; see [sponsor setup](docs/sponsor-setup.md).
 
 ## Components and evidence

@@ -160,7 +160,7 @@
     },
     "CampaignBudget": {
       "file": "CampaignBudget.schema.json",
-      "sha256": "5d9b9d0e6d4dedc9885f3773428794cecda5316fc00e51a43628330ec06582ec"
+      "sha256": "30d9dc22766cb6842a15259fea4ad0c82f03411259e2f21b5450dafab0e36aa5"
     },
     "Usage": {
       "file": "Usage.schema.json",
@@ -248,7 +248,7 @@
     },
     "Campaign": {
       "file": "Campaign.schema.json",
-      "sha256": "0eb8f839a7c316dad3afb7afa065248264e865d1f4b520c33a3fcff88cc167eb"
+      "sha256": "713973932f0c877c85ad9aad35fb9f98ac1142f71bf0a40b33c17855a5521621"
     },
     "Episode": {
       "file": "Episode.schema.json",
@@ -307,7 +307,7 @@
       "sha256": "b37f9a8bceec2806b2ba6ec1b93800d4c6b4884ccf98b765b79691a61aa03ed7"
     }
   },
-  "schema_hash": "1a76a136d0fba90d5b8739f2d8f238bd6af9043857cfd464dd2579d0a9b35eba",
+  "schema_hash": "e1fc8829f11b921d2014049f59f51d4217554394779a8042c420d4fb3569f660",
   "ownership": "../docs/integration-ledger.md",
   "seams_version": "faultlab-seams/v1"
 }

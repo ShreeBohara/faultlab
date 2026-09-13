@@ -15,8 +15,10 @@ class Mechanic:
         context={**context,'output_schema':adapter.json_schema()}
         messages=[{'role':'system','content':(PROMPTS/prompt).read_text()},{'role':'user','content':canonical_json(context)}]
         raws=[]
+        role_model=getattr(self.provider,'role_model',None)
+        expected=(role_model('mechanic') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         for attempt in range(2 if allow_format_repair else 1):
-            validate_model_input(messages,(self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b')))
+            validate_model_input(messages,expected)
             self.ledger.consume_call(reservation=reservation)
             from app.lab.tracing import phase_span
             try:
@@ -28,7 +30,7 @@ class Mechanic:
                 record_provider_failure(self.store,error,role='mechanic',metadata=self.metadata or context)
                 raise
             self.ledger.reconcile(generation)
-            if self.metadata and generation.model_id!=self.metadata['model_id']:
+            if self.metadata and generation.model_id!=expected:
                 raise RuntimeProviderError('Provider returned a different frozen model')
             raws.append(generation.content)
             ref=new_id('mechanic')

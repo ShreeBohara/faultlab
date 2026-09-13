@@ -51,3 +51,7 @@ The [W&B token prices](https://wandb.ai/site/pricing/tokens/), including the [V4
 | Llama 3.3 70B Instruct, earlier 8K-input runs | $0.71 | $0.71 | $0.0071 |
 
 The current V4 ceiling uses 32,000 input and 2,000 output tokens. Its 1,064 protected calls reserve $53.02976, leaving the remaining campaign dollar capacity for development. The Llama row preserves its smaller historical allowance. These are admission ceilings, not actual billed totals. The existing $100 authorization remains. Credentials stay in `.env`, while the live launcher applies non-secret model and pricing overrides. Each model's results retain their separate frozen configuration.
+
+## Agent under test for the repair loop
+
+V4 Pro-0813 produced no fixed-check violation across 24 discovery episodes, so it cannot exercise the repair path; that is a retained robustness result, not a defect of the lab. DeepSeek V3.1 fails C5/C6/C7 deterministically under an F2 upgrade completion delay of five or more ticks and roughly half the time at four ticks, so it ran as the agent under test for the 2026-09-13 repair-loop campaign (`campaign-44085f54a24144b78252d8eea211ebb8`) at its verified rates. Launch it with `WANDB_MODEL='deepseek-ai/DeepSeek-V3.1' FAULTLAB_PRICING_MODEL='deepseek-ai/DeepSeek-V3.1' FAULTLAB_INPUT_DOLLARS_PER_MILLION=0.55 FAULTLAB_OUTPUT_DOLLARS_PER_MILLION=1.65 ./scripts/start-live-backend.sh`. Outcomes are in `docs/learning-results.md`.

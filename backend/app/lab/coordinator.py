@@ -60,7 +60,7 @@ class LabCoordinator:
         return self.save(campaign)
 
     def config_status(self):
-        return {'schema_version':'faultlab/v1','model':self.settings.wandb_model or 'not-configured','model_configured':bool(self.settings.wandb_model and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
+        return {'schema_version':'faultlab/v1','model':self.settings.wandb_model or 'not-configured','lab_model':self.settings.model_for('explorer') or 'not-configured','model_configured':bool(self.settings.wandb_model and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
 
     def create(self,request):
         if request.config_profile_id not in ('offline-v1','live-v1'): raise ValueError('Unknown frozen configuration profile')

@@ -123,13 +123,13 @@ def test_discovery_coverage_preserves_recipe_trigger_order_and_physical_attempts
         {'kind':'F2','target_tool':'update_order','target_service':'orders','occurrence':1,'parameters':{'completion_delay_ticks':10,'terminal_status':'SUCCEEDED','failure_code':None}},
         {'kind':'F4','target_tool':'send_confirmation','target_service':'notifications','occurrence':1,'parameters':{'failure_count':3}}]})
     trial=TrialResult(episode_id='episode-own',world_id='world-own',scenario_hash=content_hash(recipe),policy_hash=content_hash('baseline'),arm='B0',trial_index=0,lifecycle='COMPLETED',outcome='VIOLATION',failed_checks=['C5'],fault_scheduled=True,fault_triggered=False,usage=Usage(actor_calls=8,http_attempts=3))
-    store.put_record('episodes',trial.episode_id,{'campaign_id':'campaign-own','split':'development','experiment_purpose':'discovery','verdict':{'fault_executions':[{'triggered':True,'call_id':'private-call-reference'},{'triggered':False}],'private_truth':'not permitted'},'report':{'private_text':'not permitted'}})
+    store.put_record('episodes',trial.episode_id,{'campaign_id':'campaign-own','split':'development','experiment_purpose':'discovery','verdict':{'fault_executions':[{'triggered':True,'call_id':'private-call-reference','reason':None},{'triggered':False,'reason':'target_not_reached'}],'private_truth':'not permitted'},'report':{'private_text':'not permitted'}})
     store.put_record('private_snapshots',trial.episode_id,{'decision':'private business truth'})
     store.put_record('tool_calls','own-1',{'episode_id':trial.episode_id,'tool':'update_order','attempt_ids':['a','b'],'usage':{'private':'not permitted'}})
     store.put_record('tool_calls','own-2',{'episode_id':trial.episode_id,'tool':'get_operation_status','attempt_ids':['c']})
     store.put_record('tool_calls','other',{'episode_id':'episode-foreign','tool':'send_confirmation','attempt_ids':['d']})
     summary=development_coverage(store,'campaign-own',trial,recipe)
-    assert summary=={'episode_id':'episode-own','fault_spec':recipe.model_dump(mode='json'),'lifecycle':'COMPLETED','outcome':'VIOLATION','failed_checks':['C5'],'triggered':False,'primitive_triggered':[True,False],'http_attempts_by_tool':{'update_order':2,'get_operation_status':1},'actor_calls':8}
+    assert summary=={'episode_id':'episode-own','fault_spec':recipe.model_dump(mode='json'),'lifecycle':'COMPLETED','outcome':'VIOLATION','failed_checks':['C5'],'triggered':False,'primitive_triggered':[True,False],'primitive_prevented_reasons':[None,'target_not_reached'],'qualifies_for_repair':False,'http_attempts_by_tool':{'update_order':2,'get_operation_status':1},'actor_calls':8}
     assert 'private' not in json.dumps(summary)
     store.put_record('episodes',trial.episode_id,{'campaign_id':'campaign-own','split':'final_audit','experiment_purpose':'final_audit'})
     with pytest.raises(ValueError,match='discovery coverage'):

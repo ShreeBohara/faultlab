@@ -27,6 +27,18 @@ def reduction_context(result,trials,evidence):
             'attempts':[{k:a[k] for k in ('transform','retained','reason','trial_ids')} for a in data.get('attempts',[])],
             'trial_outcomes':trial_outcomes(trials),'verified_episode_ids':[b.episode_id for b in evidence if b.source=='weave_verified']}
 
+def observed_outcomes(reduction,scenario_hash,target):
+    """Fresh reduction trials already executed for this exact recipe under the same policy.
+
+    Reads only the retained grouped public outcomes; nothing is rerun and no verdict
+    is assigned here. None means that recipe was not observed during reduction.
+    """
+    groups=[g for g in (reduction or {}).get('trial_outcomes',[]) if g.get('scenario_hash')==scenario_hash]
+    if not groups: return None
+    def valid(g): return g.get('lifecycle')=='COMPLETED' and g.get('outcome') not in (None,'LAB_ERROR') and (not g.get('fault_scheduled') or g.get('fault_triggered'))
+    def count(pred): return sum(len(g.get('episode_ids',[])) for g in groups if pred(g))
+    return {'fresh_trials':count(lambda g:True),'valid_trials':count(valid),'target_violations':count(lambda g: valid(g) and target in (g.get('failed_checks') or [])),'episode_ids':[e for g in groups for e in g.get('episode_ids',[])]}
+
 class Diagnostician:
     def __init__(self,store,runner,ledger,mechanic): self.store,self.runner,self.ledger,self.mechanic=store,runner,ledger,mechanic
     async def run(self,campaign,counter,recipe,policy,reproduction_trials,*,evidence,reduction=None,fixture_id='standard-v1',stop=lambda:False):
@@ -37,7 +49,7 @@ class Diagnostician:
             key='intervention-'+content_hash({'control':recipe,'treatment':treatment})[:24]
             options[key]=(change,treatment)
         evidence_ids=[o.evidence_id for bundle in evidence for o in bundle.observations]
-        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations'} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(),'reduction':reduction}
+        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'observed_control_trials':observed_outcomes(reduction,content_hash(recipe),counter.target_invariant),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations','observed_treatment_trials':observed_outcomes(reduction,content_hash(value[1]),counter.target_invariant)} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(),'reduction':reduction}
         proposal_ref,proposal,raws=await self.mechanic.diagnose(context)
         variants=[]
         if proposal and proposal.requested_intervention_id in options:
