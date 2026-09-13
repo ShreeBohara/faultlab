@@ -97,8 +97,8 @@ Source validation repaired 2/3, 2/3, 2/3 and 1/3 against an incumbent that faile
 campaign-wide budget of four Mechanic proposals ran out. **It never reached the challenge stage.** The saved episodes show
 the policy delivering the SUCCEEDED receipt at tick 7 and the actor's confirmation succeeding at tick 8, after which V3.1
 still burned all eight turns without a valid report. The measured blocker has therefore moved from the diagnosis and the
-challenge to the actor itself: V3.1 fails to report about one episode in three even when handed everything it needs, which
-alone makes a 3/3 batch unlikely. Step 1 in section 8 is still worth doing, but on its own it will not fix this.
+challenge to the actor itself: V3.1 dropped the report in 5 of 12 candidate trials (the incumbent completed 0 of 12), so at
+that 7-of-12 repair rate a 3/3 batch clears only about one time in five. Step 1 in section 8 is still worth doing, but on its own it will not fix this.
 Full write-up in `docs/learning-results.md`.
 
 **Campaign as described at handoff:** `campaign-aa79023053da470984118fdb1e9d8138` (config `cff07c5516dd...`), started 11:46.
