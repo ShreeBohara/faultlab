@@ -138,3 +138,26 @@ def test_expanded_token_cap_keeps_call_and_dollar_caps():
     assert settings.model_call_dollar_bound==pytest.approx(.0209)
     assert MODEL_REQUEST_SETTINGS['max_input_tokens']==CampaignBudget().input_tokens_per_call==32000
     with pytest.raises(ConfigurationError):replace(settings,faultlab_token_cap=204000001).require_live()
+
+
+def test_split_role_models_have_frozen_verified_price_bounds():
+    from app.contracts.models import CampaignBudget
+    from app.lab.configuration import frozen_configuration
+    settings=Settings(
+        wandb_api_key='fixture',wandb_entity='team',wandb_project='p',
+        wandb_model='meta-llama/Llama-3.1-8B-Instruct',
+        wandb_explorer_model='deepseek-ai/DeepSeek-V4-Pro-0813',
+        wandb_mechanic_model='deepseek-ai/DeepSeek-V4-Pro-0813',
+        faultlab_live_enabled=True,faultlab_confirmed_entity='team',
+        faultlab_input_dollars_per_million=.22,faultlab_output_dollars_per_million=.22,
+        faultlab_pricing_model='meta-llama/Llama-3.1-8B-Instruct',faultlab_pricing_verified=True,
+        faultlab_reasoning_input_dollars_per_million=1.31,faultlab_reasoning_output_dollars_per_million=3.96,
+        faultlab_reasoning_pricing_model='deepseek-ai/DeepSeek-V4-Pro-0813',faultlab_reasoning_pricing_verified=True)
+    settings.require_live()
+    assert settings.model_call_dollar_bounds==pytest.approx(
+        {'actor':.00748,'explorer':.04984,'mechanic':.04984})
+    frozen=frozen_configuration(settings,CampaignBudget(),'live-v1')
+    assert frozen['model']==settings.wandb_model
+    assert frozen['models']==settings.role_models
+    assert frozen['pricing']['actor']['model']==settings.wandb_model
+    assert frozen['pricing']['explorer']['per_call_dollar_upper_bound']==pytest.approx(.04984)

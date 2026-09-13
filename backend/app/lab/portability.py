@@ -21,7 +21,7 @@ async def queue_portability(coordinator,campaign_id,request):
     fixed=PortabilityStudy(coordinator.store,registry)
     fixed._freeze(external_freeze,registration,target,coordinator.policies.baseline(),policy)
     if coordinator.store.get_record('portability_freezes',external_freeze['freeze_hash']): raise StoreConflict('Frozen external study already executed')
-    ledger=coordinator.ledgers.setdefault(campaign_id,CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound))
+    ledger=coordinator.ledgers.setdefault(campaign_id,CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     if 'portability' not in ledger.reservations: raise StoreConflict('Protected external study reservation unavailable')
     await coordinator.admit_activity(campaign_id)
     campaign=coordinator.get(campaign_id)

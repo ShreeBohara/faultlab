@@ -33,7 +33,7 @@ class SearchBenchmark:
                     provenance=Provenance(campaign_id=campaign.campaign_id,episode_id=planned_episode,origin='faultlab_evaluation',split='development',arm='B0',source_mode='live',experiment_purpose='selection_comparison',trial_index=0,study_id=comparison_id,evidence_context_id=contexts[arm_index],selector_id=selector,execution_epoch=campaign.execution_epoch)
                     config=self.store.get_record('configurations',campaign.configuration_hash)
                     explorer.trace=getattr(self.runner,'trace',None)
-                    explorer.metadata={**provenance.model_dump(mode='json'),'model_id':campaign.model,'policy_hash':baseline.policy_hash,'contract_hash':config['contract_hash'],'scorer_hash':config['scorer_hash']}
+                    explorer.metadata={**provenance.model_dump(mode='json'),'model_id':(config.get('models') or {}).get('explorer',campaign.model),'policy_hash':baseline.policy_hash,'contract_hash':config['contract_hash'],'scorer_hash':config['scorer_hash']}
                     if stop(): raise InterruptedError()
                     selected=None; selection_ref=None
                     if selector=='explorer':
@@ -96,7 +96,7 @@ async def queue_search(coordinator,campaign_id):
     campaign=coordinator.get(campaign_id); coordinator.settings.require_live()
     coordinator.validate_core_configuration(campaign)
     if any(r['campaign_id']==campaign_id for r in coordinator.store.list_records('search_comparisons')): raise StoreConflict('This frozen selector study already exists')
-    ledger=coordinator.ledgers.setdefault(campaign_id,CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound))
+    ledger=coordinator.ledgers.setdefault(campaign_id,CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     await coordinator.admit_activity(campaign_id)
     campaign=coordinator.get(campaign_id)
     request_id=new_id('search-request')

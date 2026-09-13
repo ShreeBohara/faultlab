@@ -66,7 +66,7 @@ class RuntimeProvider:
         self._settings = settings
         self._authorized = live_authorized
         self._factory = client_factory
-        self._client = None
+        self._clients = {}
 
     def role_model(self, role: str) -> str:
         """Frozen model for a runtime role; Explorer/Mechanic may use the lab model."""
@@ -79,6 +79,7 @@ class RuntimeProvider:
         self._settings.require_wandb(require_model=True)
         if role not in {"actor", "explorer", "mechanic"}:
             raise RuntimeProviderError("Unknown runtime role.", code="INVALID_ROLE")
+        model=self._settings.model_for_role(role)
         if not 1 <= max_output_tokens <= MODEL_OUTPUT_TOKEN_LIMIT or not 0 < timeout_seconds <= 20:
             raise RuntimeProviderError("Model request exceeds the frozen per-call limits.", code="REQUEST_LIMIT")
         if not messages or any(set(m) != {"role", "content"} or m["role"] not in {"system", "user", "assistant"}
@@ -95,16 +96,17 @@ class RuntimeProvider:
         returned_usage = None
         finish_reason = None
         try:
-            if self._client is None:
+            if model not in self._clients:
                 if self._factory is None:
                     from openai import AsyncOpenAI
                     factory = AsyncOpenAI
                 else:
                     factory = self._factory
-                self._client = factory(base_url=BASE_URL, api_key=self._settings.wandb_api_key,
-                                       project=self._settings.project_path, timeout=timeout_seconds, max_retries=0)
+                self._clients[model] = factory(base_url=BASE_URL, api_key=self._settings.wandb_api_key,
+                                               project=self._settings.project_path, timeout=timeout_seconds, max_retries=0)
+            client=self._clients[model]
             async with asyncio.timeout(timeout_seconds):
-                response = await self._client.chat.completions.create(
+                response = await client.chat.completions.create(
                     model=model, messages=messages, max_tokens=max_output_tokens,
                     response_format=MODEL_REQUEST_SETTINGS["response_format"],
                     temperature=MODEL_REQUEST_SETTINGS["temperature"], stream=False, timeout=timeout_seconds,
@@ -141,11 +143,13 @@ class RuntimeProvider:
                 error_class=error_name, http_status=status, finish_reason=finish_reason, generation=returned_usage) from None
 
     async def close(self) -> None:
-        if self._client is not None:
+        clients=list(self._clients.values())
+        self._clients.clear()
+        for client in clients:
             try:
-                await self._client.close()
-            finally:
-                self._client = None
+                await client.close()
+            except Exception:
+                pass
 
     async def __aenter__(self):
         return self

@@ -54,7 +54,7 @@ def _configuration(configuration):
     required = {"model", "actor_prompt_hash", "adapter_hash", "source_hash", "contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash", "episode_budget", "model_settings"}
     if not isinstance(configuration, dict) or not required <= set(configuration):
         raise ValueError("Complete independently frozen target configuration required")
-    allowed = required | {"schema_version", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing"}
+    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing"}
     if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"] or not isinstance(configuration.get("lab_model", ""), str):
         raise ValueError("Unreviewed target configuration fields or service URL")
     def no_location(value):
@@ -72,6 +72,15 @@ def _configuration(configuration):
         raise ValueError("Target does not support the reviewed episode budget")
     if configuration["model_settings"] != model_request_settings(configuration["model"]):
         raise ValueError("Target model settings are unsupported")
+    models=configuration.get("models")
+    settings_by_role=configuration.get("model_settings_by_role")
+    if models is not None:
+        if set(models)!={"actor","explorer","mechanic"} or models["actor"]!=configuration["model"]:
+            raise ValueError("Frozen role models are invalid")
+        if not isinstance(settings_by_role,dict) or set(settings_by_role)!=set(models):
+            raise ValueError("Frozen role model settings are incomplete")
+        if any(settings_by_role[role]!=model_request_settings(model) for role,model in models.items()):
+            raise ValueError("Frozen role model settings are unsupported")
     return configuration
 
 
@@ -96,6 +105,10 @@ def freeze_target_configuration(source_configuration, model_id):
     target = {**source, "model": model_id, "source_hash": verify_native_source(),
         "adapter_hash": adapter_hash(), "actor_prompt_hash": native_prompt_hash(),
         "external_source_revision": REVISION, "external_agent_version": "smolagents/1.26.0"}
+    if "models" in target:
+        target["models"]={**target["models"],"actor":model_id}
+        target["model_settings_by_role"]={**target["model_settings_by_role"],"actor":model_request_settings(model_id)}
+    target["model_settings"]=model_request_settings(model_id)
     return target
 
 

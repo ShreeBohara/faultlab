@@ -60,7 +60,8 @@ class LabCoordinator:
         return self.save(campaign)
 
     def config_status(self):
-        return {'schema_version':'faultlab/v1','model':self.settings.wandb_model or 'not-configured','lab_model':self.settings.model_for('explorer') or 'not-configured','model_configured':bool(self.settings.wandb_model and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
+        models=self.settings.role_models
+        return {'schema_version':'faultlab/v1','model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
 
     def create(self,request):
         if request.config_profile_id not in ('offline-v1','live-v1'): raise ValueError('Unknown frozen configuration profile')
@@ -115,7 +116,7 @@ class LabCoordinator:
             if live: self.settings.require_live()
             self.validate_core_configuration(campaign)
             if campaign.mode!='baseline' and not live: raise ValueError('Learn and comparison require explicit live profile')
-            ledger=CampaignLedger(self.store,id,campaign.caps,dollar_bound=self.settings.model_call_dollar_bound if live else None)
+            ledger=CampaignLedger(self.store,id,campaign.caps,dollar_bounds=self.settings.model_call_dollar_bounds if live else None)
             if live and (ledger.reserved_calls>campaign.caps.model_calls or ledger.reserved_tokens>campaign.caps.tokens or (ledger.dollar_bound is not None and ledger.reserved_calls*ledger.dollar_bound>campaign.caps.dollars)): raise BudgetExhausted('Mandatory protected batches exceed configured campaign cap')
             self.ledgers[id]=ledger; self.active_id=id
             campaign=self.transition(id,'RUNNING')

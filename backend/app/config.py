@@ -25,6 +25,8 @@ class Settings:
     wandb_entity: str = ""
     wandb_project: str = ""
     wandb_model: str = ""
+    wandb_explorer_model: str = ""
+    wandb_mechanic_model: str = ""
     typesafe_api_key: str = field(default="", repr=False)
     typesafe_base_url: str = ""
     typesafe_model: str = ""
@@ -43,16 +45,26 @@ class Settings:
     faultlab_output_dollars_per_million: float = -1.0
     faultlab_pricing_model: str = ''
     faultlab_pricing_verified: bool = False
-    # Optional separate lab model for the Explorer and Mechanic roles. The actor
-    # (agent under test) always uses WANDB_MODEL. Empty means the same model.
     faultlab_lab_model: str = ''
     faultlab_lab_input_dollars_per_million: float = -1.0
     faultlab_lab_output_dollars_per_million: float = -1.0
     faultlab_lab_pricing_model: str = ''
+    faultlab_reasoning_input_dollars_per_million: float = -1.0
+    faultlab_reasoning_output_dollars_per_million: float = -1.0
+    faultlab_reasoning_pricing_model: str = ''
+    faultlab_reasoning_pricing_verified: bool = False
 
     def model_for(self, role: str) -> str:
-        if role in ('explorer', 'mechanic') and self.faultlab_lab_model.strip():
-            return self.faultlab_lab_model.strip()
+        if role == "explorer":
+            if self.wandb_explorer_model.strip():
+                return self.wandb_explorer_model.strip()
+            if self.faultlab_lab_model.strip():
+                return self.faultlab_lab_model.strip()
+        elif role == "mechanic":
+            if self.wandb_mechanic_model.strip():
+                return self.wandb_mechanic_model.strip()
+            if self.faultlab_lab_model.strip():
+                return self.faultlab_lab_model.strip()
         return self.wandb_model
 
     @classmethod
@@ -98,6 +110,15 @@ class Settings:
     def project_path(self) -> str:
         return f"{self.wandb_entity}/{self.wandb_project}"
 
+    def model_for_role(self, role: str) -> str:
+        if role not in ("actor", "explorer", "mechanic"):
+            raise ValueError("Unknown model role")
+        return self.model_for(role)
+
+    @property
+    def role_models(self) -> dict[str, str]:
+        return {role: self.model_for_role(role) for role in ("actor", "explorer", "mechanic")}
+
     def require_live(self) -> None:
         self.require_wandb(require_model=True)
         missing = []
@@ -125,22 +146,49 @@ class Settings:
                 if not math.isfinite(value) or value<0: missing.append(name.upper())
             if self.faultlab_lab_pricing_model!=self.faultlab_lab_model.strip():
                 missing.append('FAULTLAB_LAB_PRICING_MODEL')
+        explicit={self.wandb_explorer_model.strip(), self.wandb_mechanic_model.strip()} - {'', self.wandb_model}
+        if explicit:
+            for name in ('faultlab_reasoning_input_dollars_per_million','faultlab_reasoning_output_dollars_per_million'):
+                value=getattr(self,name)
+                if not math.isfinite(value) or value<0: missing.append(name.upper())
+            if len(explicit)!=1 or self.faultlab_reasoning_pricing_model not in explicit:
+                missing.append('FAULTLAB_REASONING_PRICING_MODEL')
+            if not self.faultlab_reasoning_pricing_verified:
+                missing.append('FAULTLAB_REASONING_PRICING_VERIFIED')
         if missing:
-            raise ConfigurationError(tuple(missing))
+            raise ConfigurationError(tuple(dict.fromkeys(missing)))
+
+    @property
+    def model_call_dollar_bounds(self) -> dict[str, float] | None:
+        import math
+        caps=CampaignBudget()
+        actor_rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
+        if (not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model
+                or any(not math.isfinite(v) or v<0 for v in actor_rates)):
+            return None
+        actor_bound=(caps.input_tokens_per_call*actor_rates[0]+caps.output_tokens_per_call*actor_rates[1])/1000000
+        result={'actor':actor_bound}
+        reasoning_rates=(self.faultlab_reasoning_input_dollars_per_million,self.faultlab_reasoning_output_dollars_per_million)
+        lab_rates=(self.faultlab_lab_input_dollars_per_million,self.faultlab_lab_output_dollars_per_million)
+        for role in ('explorer','mechanic'):
+            model=self.model_for_role(role)
+            if model==self.wandb_model:
+                result[role]=actor_bound
+            elif (self.faultlab_reasoning_pricing_verified and self.faultlab_reasoning_pricing_model==model
+                    and all(math.isfinite(v) and v>=0 for v in reasoning_rates)):
+                result[role]=(caps.input_tokens_per_call*reasoning_rates[0]+caps.output_tokens_per_call*reasoning_rates[1])/1000000
+            elif (self.faultlab_lab_model.strip()==model and self.faultlab_lab_pricing_model==model
+                    and all(math.isfinite(v) and v>=0 for v in lab_rates)):
+                result[role]=(caps.input_tokens_per_call*lab_rates[0]+caps.output_tokens_per_call*lab_rates[1])/1000000
+            else:
+                return None
+        return result
 
     @property
     def model_call_dollar_bound(self) -> float | None:
         """Worst-case dollars per admitted call across every configured role model."""
-        import math
-        rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
-        if not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model or any(not math.isfinite(v) or v<0 for v in rates):return None
-        caps=CampaignBudget()
-        bound=(caps.input_tokens_per_call*rates[0]+caps.output_tokens_per_call*rates[1])/1000000
-        if self.faultlab_lab_model.strip():
-            lab=(self.faultlab_lab_input_dollars_per_million,self.faultlab_lab_output_dollars_per_million)
-            if self.faultlab_lab_pricing_model!=self.faultlab_lab_model.strip() or any(not math.isfinite(v) or v<0 for v in lab):return None
-            bound=max(bound,(caps.input_tokens_per_call*lab[0]+caps.output_tokens_per_call*lab[1])/1000000)
-        return bound
+        bounds=self.model_call_dollar_bounds
+        return max(bounds.values()) if bounds else None
 
     @property
     def artifact_path(self) -> Path:

@@ -52,7 +52,9 @@ async def run_learning_cycle(coordinator,campaign,runner):
             from app.lab.tracing import trace_metadata
             planned_episode_id=new_id('episode')
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
-            explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,store.get_record('configurations',current.configuration_hash))
+            configuration=store.get_record('configurations',current.configuration_hash)
+            explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer')
+            mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic')
             selection_ref,output=await explorer.select({'campaign_id':id,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract()},fallback=fallback)
             recipe=output.fault_spec; fixture='history-v1' if any(p.kind=='F3' for p in recipe.primitives) else 'standard-v1'
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
@@ -65,7 +67,6 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 continue
             source_evidence=await evidence_for([source])
             discovery_evidence.extend(source_evidence)
-            mechanic.metadata=explorer.metadata
             history.append(coverage)
             # A completed untriggered attempt can explain why a proposed recipe
             # was unreachable. It informs discovery but never qualifies a repair.
@@ -81,7 +82,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
             reduction_evidence=await evidence_for(reduced.trials)
             reduction_summary=reduction_context(reduced.result,reduced.trials,reduction_evidence)
             coordinator.transition(id,'DIAGNOSING')
-            diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',explorer.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
+            diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
             intervention_evidence=await evidence_for(interventions.trials)
             if diagnostic.kind!='POLICY_GAP': continue
             feedback=[]; source_feedback=[]; source_feedback_evidence=[]

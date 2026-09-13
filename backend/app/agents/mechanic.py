@@ -19,7 +19,7 @@ class Mechanic:
         expected=(role_model('mechanic') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         for attempt in range(2 if allow_format_repair else 1):
             validate_model_input(messages,expected)
-            self.ledger.consume_call(reservation=reservation)
+            self.ledger.consume_call(reservation=reservation,role='mechanic')
             from app.lab.tracing import phase_span
             try:
                 async with phase_span(self.trace,'diagnose' if prompt=='diagnosis.md' else 'propose_policy',self.metadata,{'format_attempt':attempt,'evidence_ids':context.get('evidence_ids',[]),'parent_version':context.get('parent_version')}) as span:

@@ -156,3 +156,31 @@ def test_documented_thinking_setting_matches_frozen_request(model, thinking_disa
         assert calls[0]['extra_body'] == frozen['extra_body'] == expected
     else:
         assert 'extra_body' not in calls[0] and 'extra_body' not in frozen
+
+
+def test_runtime_dispatches_frozen_model_by_role():
+    calls=[]
+    async def create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content='{}'))],usage=None)
+    settings=Settings(
+        wandb_api_key='fixture-key',wandb_entity='fixture',wandb_project='project',
+        wandb_model='meta-llama/Llama-3.1-8B-Instruct',
+        wandb_explorer_model='deepseek-ai/DeepSeek-V4-Pro-0813',
+        wandb_mechanic_model='deepseek-ai/DeepSeek-V4-Pro-0813')
+    provider=RuntimeProvider(settings,live_authorized=True,
+        client_factory=lambda **_:SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    async def run():
+        return [
+            await provider.complete([{'role':'user','content':'actor'}],role='actor'),
+            await provider.complete([{'role':'user','content':'explorer'}],role='explorer'),
+            await provider.complete([{'role':'user','content':'mechanic'}],role='mechanic'),
+        ]
+    generations=asyncio.run(run())
+    assert [generation.model_id for generation in generations]==[
+        'meta-llama/Llama-3.1-8B-Instruct',
+        'deepseek-ai/DeepSeek-V4-Pro-0813',
+        'deepseek-ai/DeepSeek-V4-Pro-0813']
+    assert [call['model'] for call in calls]==[generation.model_id for generation in generations]
+    assert 'extra_body' not in calls[0]
+    assert all(call['extra_body']=={'chat_template_kwargs':{'enable_thinking':False}} for call in calls[1:])

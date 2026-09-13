@@ -26,7 +26,7 @@ def freeze_campaign(store, settings, campaign_id):
     if policy is None or policy.decision not in ('ACCEPTED','BASELINE'):
         raise ValueError('An immutable baseline or accepted policy is required')
     identity={'baseline_policy_hash':baseline.policy_hash,
-        'model_hash':content_hash({'model':config['model'],'settings':config['model_settings']}),
+        'model_hash':content_hash({'models':config.get('models',{'actor':config['model']}),'settings':config.get('model_settings_by_role',{'actor':config['model_settings']})}),
         'prompt_hash':config['actor_prompt_hash'],'budget_hash':content_hash({'episode':config['episode_budget'],'campaign':config['campaign_budget']}),
         **{key:config[key] for key in ('adapter_hash','interpreter_hash','scorer_hash','contract_hash','capability_hash','dependency_lock_hash')},
         'schema_hash':file_hash(Path(__file__).resolve().parents[3]/'contracts/manifest.json')}

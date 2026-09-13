@@ -114,7 +114,7 @@ async def queue_evaluation(coordinator,request):
     from app.lab.budgets import CampaignLedger
     await coordinator.admit_activity(campaign.campaign_id)
     campaign=coordinator.get(campaign.campaign_id)
-    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound))
+    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     request_id=new_id('evaluation-request')
     async def execute():
         runner=None; owned=False

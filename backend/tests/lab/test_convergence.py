@@ -16,7 +16,7 @@ from app.telemetry.outbox import TelemetryOutbox
 def anyio_backend(): return 'asyncio'
 
 @pytest.mark.anyio
-@pytest.mark.parametrize('change',[{'wandb_model':'different-model'},{'faultlab_model_call_cap':1500},{'faultlab_token_cap':15000000},{'faultlab_dollar_cap':50.0}])
+@pytest.mark.parametrize('change',[{'wandb_model':'different-model'},{'wandb_explorer_model':'different-explorer'},{'faultlab_model_call_cap':1500},{'faultlab_token_cap':15000000},{'faultlab_dollar_cap':50.0}])
 async def test_restart_changed_frozen_admission_rejects_before_any_dispatch(tmp_path,monkeypatch,change):
     original=Settings(faultlab_artifact_dir=str(tmp_path),wandb_model='openai/gpt-oss-120b')
     c=LabCoordinator(original)

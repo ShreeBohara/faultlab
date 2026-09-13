@@ -73,7 +73,7 @@ def deepseek_v4_encoding():
 def input_token_bound(messages,model):
     if model in ('openai/gpt-oss-120b','openai/gpt-oss-20b','gpt-oss-120b','gpt-oss-20b'):
         tokenizer=encoding()
-    elif model=='meta-llama/Llama-3.3-70B-Instruct':
+    elif model in ('meta-llama/Llama-3.1-8B-Instruct','meta-llama/Llama-3.3-70B-Instruct'):
         tokenizer=llama_encoding()
     elif model in ('deepseek-ai/DeepSeek-V3.1','deepseek-ai/DeepSeek-V4-Pro-0813'):
         tokenizer=deepseek_v4_encoding() if model=='deepseek-ai/DeepSeek-V4-Pro-0813' else deepseek_encoding()

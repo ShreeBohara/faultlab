@@ -31,7 +31,7 @@ def synchronized(method):
     return wrapped
 
 class CampaignLedger:
-    def __init__(self, store, campaign_id, caps=None, *, dollar_bound=None):
+    def __init__(self, store, campaign_id, caps=None, *, dollar_bound=None, dollar_bounds=None):
         self.store,self.campaign_id = store,campaign_id
         saved = store.get_record('budgets',campaign_id)
         campaign = store.get_record('campaigns',campaign_id)
@@ -41,8 +41,21 @@ class CampaignLedger:
         if caps is not None and stored_caps is not None and caps!=stored_caps:
             raise BudgetExhausted('Frozen campaign budget changed')
         self.caps = caps or stored_caps or CampaignBudget()
-        self.dollar_bound=saved.get('dollar_bound') if saved else dollar_bound
-        if saved and dollar_bound is not None and self.dollar_bound!=dollar_bound: raise BudgetExhausted('Frozen price bound changed')
+        roles=('actor','explorer','mechanic')
+        supplied_bounds=dollar_bounds or ({role:dollar_bound for role in roles} if dollar_bound is not None else None)
+        if saved:
+            stored_bounds=saved.get('dollar_bounds')
+            if stored_bounds is None:
+                legacy=saved.get('dollar_bound')
+                stored_bounds={role:legacy for role in roles} if legacy is not None else None
+            if saved.get('dollar_bounds') is not None and supplied_bounds is not None and stored_bounds!=supplied_bounds:
+                raise BudgetExhausted('Frozen price bounds changed')
+            self.dollar_bounds=stored_bounds
+        else:
+            self.dollar_bounds=supplied_bounds
+        self.dollar_bound=max(self.dollar_bounds.values()) if self.dollar_bounds else None
+        if saved and saved.get('dollar_bounds') is None and dollar_bound is not None and self.dollar_bound!=dollar_bound:
+            raise BudgetExhausted('Frozen price bound changed')
         self.used_calls = saved['used_calls'] if saved else 0
         self.used_tokens = saved['used_tokens'] if saved else 0
         self.used_cost = saved['used_cost'] if saved else None
@@ -52,12 +65,15 @@ class CampaignLedger:
         self.unknown_cost_calls=saved.get('unknown_cost_calls',0) if saved else 0
         self.unknown_token_calls=saved.get('unknown_token_calls',0) if saved else 0
         self.reservations = saved['reservations'] if saved else protected_reservations(self.caps)
+        prior_upper=saved.get('charged_dollar_upper_bound') if saved else None
+        self.used_dollar_upper_bound=prior_upper if isinstance(prior_upper,(int,float)) else (
+            self.used_calls*self.dollar_bound if self.dollar_bound is not None else None)
         self.stopped = False
         self._save()
 
     def _save(self):
         self.usage_known=self.unknown_token_calls==0
-        self.store.put_record('budgets',self.campaign_id,{'caps':self.caps.model_dump(mode='json'),'used_calls':self.used_calls,'used_tokens':self.used_tokens,'used_cost':self.used_cost,'reservations':self.reservations,'dollar_bound':self.dollar_bound,'charged_dollar_upper_bound':self.used_calls*self.dollar_bound if self.dollar_bound is not None else None,'charged_token_upper_bound':self.used_tokens,'actual_cost_dollars':self.used_cost if self.unknown_cost_calls==0 else None,'unknown_cost_calls':self.unknown_cost_calls,'unknown_token_calls':self.unknown_token_calls,'usage_metadata_known':self.usage_known,'measured_input_tokens':self.measured_input,'measured_output_tokens':self.measured_output})
+        self.store.put_record('budgets',self.campaign_id,{'caps':self.caps.model_dump(mode='json'),'used_calls':self.used_calls,'used_tokens':self.used_tokens,'used_cost':self.used_cost,'reservations':self.reservations,'dollar_bound':self.dollar_bound,'dollar_bounds':self.dollar_bounds,'charged_dollar_upper_bound':self.used_dollar_upper_bound,'charged_token_upper_bound':self.used_tokens,'actual_cost_dollars':self.used_cost if self.unknown_cost_calls==0 else None,'unknown_cost_calls':self.unknown_cost_calls,'unknown_token_calls':self.unknown_token_calls,'usage_metadata_known':self.usage_known,'measured_input_tokens':self.measured_input,'measured_output_tokens':self.measured_output})
 
     @property
     def reserved_calls(self):
@@ -76,7 +92,7 @@ class CampaignLedger:
         if self.stopped: raise StopRequested()
         tokens = calls*self.tokens_per_call if tokens is None else tokens
         if name in self.reservations: raise BudgetExhausted('Batch already reserved')
-        if self.dollar_bound is not None and (self.used_calls+self.reserved_calls+calls)*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Complete batch exceeds frozen dollar reservation')
+        if self.dollar_bound is not None and self.used_dollar_upper_bound+(self.reserved_calls+calls)*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Complete batch exceeds frozen dollar reservation')
         if self.used_calls+self.reserved_calls+calls > self.caps.model_calls or self.used_tokens+self.reserved_tokens+tokens > self.caps.tokens:
             raise BudgetExhausted('Complete batch cannot fit protected reserves')
         self.reservations[name]={'calls':calls,'tokens':tokens}
@@ -89,15 +105,17 @@ class CampaignLedger:
         self._save()
 
     @synchronized
-    def consume_call(self, *, reservation=None):
+    def consume_call(self, *, reservation=None, role='actor'):
         if self.stopped: raise StopRequested()
+        if role not in ('actor','explorer','mechanic'): raise ValueError('Unknown model role')
         protected_calls=self.reserved_calls
         protected_tokens=self.reserved_tokens
         if reservation:
             r=self.reservations.get(reservation)
             if not r or r['calls']<1 or r['tokens']<self.tokens_per_call: raise BudgetExhausted('Batch reservation exhausted')
             protected_calls-=1; protected_tokens-=self.tokens_per_call
-        if self.dollar_bound is not None and (self.used_calls+1+protected_calls)*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Model call exceeds protected dollar cap')
+        role_bound=self.dollar_bounds.get(role) if self.dollar_bounds else None
+        if role_bound is not None and self.used_dollar_upper_bound+role_bound+protected_calls*self.dollar_bound>self.caps.dollars: raise BudgetExhausted('Model call exceeds protected dollar cap')
         if self.used_calls+1+protected_calls>self.caps.model_calls or self.used_tokens+self.tokens_per_call+protected_tokens>self.caps.tokens:
             raise BudgetExhausted('Model budget exhausted')
         if self.used_cost is not None and self.used_cost>=self.caps.dollars: raise BudgetExhausted('Dollar cap exhausted')
@@ -105,6 +123,7 @@ class CampaignLedger:
             self.reservations[reservation]['calls']-=1
             self.reservations[reservation]['tokens']-=self.tokens_per_call
         self.used_calls+=1; self.used_tokens+=self.tokens_per_call; self.unknown_cost_calls+=1; self.unknown_token_calls+=1
+        if role_bound is not None: self.used_dollar_upper_bound+=role_bound
         self._save()
 
     @synchronized
@@ -155,7 +174,7 @@ class EpisodeMeter:
     def model_call(self):
         self.check()
         if self.usage.actor_calls>=self.caps.actor_calls: raise BudgetExhausted('Actor budget exhausted')
-        if self.campaign: self.campaign.consume_call(reservation=self.reservation)
+        if self.campaign: self.campaign.consume_call(reservation=self.reservation,role='actor')
         self.usage.actor_calls+=1; self.usage.model_calls+=1
         # Actual token counts are populated only when returned by the provider.
 

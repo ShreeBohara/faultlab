@@ -14,7 +14,7 @@ async def queue_audit(coordinator,campaign,policy):
     from app.referee.manifests import load_manifest
     manifest=load_manifest('final-audit')
     if frozen.get('manifest_hash')!=manifest['manifest_hash']: raise StoreConflict('Frozen final manifest mismatch')
-    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound))
+    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     if 'final_audit' not in ledger.reservations: raise StoreConflict('Protected final audit capacity already consumed')
     batch_id=new_id('audit'); await coordinator.admit_activity(campaign.campaign_id)
     campaign=coordinator.get(campaign.campaign_id)

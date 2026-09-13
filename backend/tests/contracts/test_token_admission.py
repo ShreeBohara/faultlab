@@ -2,7 +2,7 @@ import pytest
 from app.contracts.tokens import input_token_bound,validate_model_input
 
 
-@pytest.mark.parametrize('model',['openai/gpt-oss-120b','meta-llama/Llama-3.3-70B-Instruct','deepseek-ai/DeepSeek-V3.1','deepseek-ai/DeepSeek-V4-Pro-0813'])
+@pytest.mark.parametrize('model',['openai/gpt-oss-120b','meta-llama/Llama-3.1-8B-Instruct','meta-llama/Llama-3.3-70B-Instruct','deepseek-ai/DeepSeek-V3.1','deepseek-ai/DeepSeek-V4-Pro-0813'])
 def test_reviewed_tokenizer_is_offline_and_does_not_confuse_bytes_with_tokens(model):
     messages=[{'role':'user','content':'The order is pending. '*700}]
     assert len(messages[0]['content'].encode())>8000
@@ -12,13 +12,14 @@ def test_reviewed_tokenizer_is_offline_and_does_not_confuse_bytes_with_tokens(mo
 
 def test_oversized_evidence_rejected_without_truncation():
     with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'order '*40000}],'openai/gpt-oss-120b')
+    with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'order '*40000}],'meta-llama/Llama-3.1-8B-Instruct')
     with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'order '*40000}],'meta-llama/Llama-3.3-70B-Instruct')
     with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'order '*40000}],'deepseek-ai/DeepSeek-V3.1')
     with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'order '*40000}],'deepseek-ai/DeepSeek-V4-Pro-0813')
     with pytest.raises(ValueError):validate_model_input([{'role':'user','content':'x'*32001}],'unregistered-model')
 
 
-@pytest.mark.parametrize('model',['openai/gpt-oss-120b','meta-llama/Llama-3.3-70B-Instruct','deepseek-ai/DeepSeek-V3.1','deepseek-ai/DeepSeek-V4-Pro-0813'])
+@pytest.mark.parametrize('model',['openai/gpt-oss-120b','meta-llama/Llama-3.1-8B-Instruct','meta-llama/Llama-3.3-70B-Instruct','deepseek-ai/DeepSeek-V3.1','deepseek-ai/DeepSeek-V4-Pro-0813'])
 def test_evidence_above_previous_eight_thousand_limit_is_preserved(model):
     content='The order is pending. '*2000
     messages=[{'role':'user','content':content}]

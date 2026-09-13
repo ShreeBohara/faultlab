@@ -23,7 +23,7 @@ async def execute_regression(coordinator,regression_id,request):
     fixed=RegressionRunner(coordinator.store,registry)
     checked=fixed.validate(directory,target,registration.registration_id)
     if checked.bundle.policy_hash!=policy.policy_hash: raise ValueError('Selected policy must equal the transferred immutable artifact')
-    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound))
+    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     execution_id=new_id('execution'); reservation=f'regression:{execution_id}'
     await coordinator.admit_activity(campaign.campaign_id)
     campaign=coordinator.get(campaign.campaign_id)

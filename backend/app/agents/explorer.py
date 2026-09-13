@@ -49,7 +49,7 @@ class Explorer:
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         validate_model_input(messages,expected)
-        self.ledger.consume_call(reservation=reservation)
+        self.ledger.consume_call(reservation=reservation,role='explorer')
         from app.lab.tracing import phase_span
         try:
             async with phase_span(self.trace,'select_experiment',self.metadata,{'challenge':challenge,'selection_index':context.get('selection_index',context.get('proposal_index'))}) as span:

@@ -62,6 +62,18 @@ def test_known_and_unknown_costs_are_separate_from_upper_bound(tmp_path):
     assert data['actual_cost_dollars'] is None and data['charged_dollar_upper_bound']==.02
     assert data['measured_input_tokens']==12 and data['unknown_cost_calls']==1
 
+
+def test_role_specific_bounds_charge_the_model_actually_dispatched(tmp_path):
+    store=LabStore(tmp_path/'lab.db')
+    bounds={'actor':.001,'explorer':.01,'mechanic':.01}
+    ledger=CampaignLedger(store,'c',dollar_bounds=bounds)
+    ledger.consume_call(role='actor')
+    ledger.consume_call(role='explorer')
+    data=store.get_record('budgets','c')
+    assert data['dollar_bounds']==bounds
+    assert data['dollar_bound']==.01
+    assert data['charged_dollar_upper_bound']==pytest.approx(.011)
+
 def test_unreturned_request_usage_is_unknown_immediately(tmp_path):
     store=LabStore(tmp_path/'lab.db'); ledger=CampaignLedger(store,'c')
     ledger.consume_call()

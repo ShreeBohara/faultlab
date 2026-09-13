@@ -1,7 +1,7 @@
 import type { Campaign, CampaignRequest, Episode, Event, PolicyVersion, Counterexample, RegressionCase, AgentRegistration, AriaAnalysis, RegressionBundle, RegressionExecution, DiagnosticResult, ChallengeResult, PortabilityResult, EvaluationBatch } from './generated/contracts'
 import { validateContract, validateList } from './generated/validate'
 
-export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; model_configured: boolean; live_enabled: boolean; profile_ids: string[]; sponsor: { weave: string; aria: string }; active_campaign_id: string | null; execution_profiles?: { profile_id: string; caps: import('./generated/contracts').EpisodeBudget; requires_live: boolean }[] }
+export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; lab_model?: string; models?: { actor: string; explorer: string; mechanic: string }; model_configured: boolean; live_enabled: boolean; profile_ids: string[]; sponsor: { weave: string; aria: string }; active_campaign_id: string | null; execution_profiles?: { profile_id: string; caps: import('./generated/contracts').EpisodeBudget; requires_live: boolean }[] }
 export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
 export type Matrix = { campaign_id: string; cells: MatrixCell[]; counts: Record<string, number> }
 export type EventPage = { events: Event[]; next_after: number; has_more: boolean }
@@ -41,6 +41,7 @@ export async function request<T>(path: string, decode: (value: unknown) => T, bo
 }
 export function validateConfig(v: unknown): ConfigStatus {
   if (!object(v) || v.schema_version !== 'faultlab/v1' || typeof v.model !== 'string' || typeof v.model_configured !== 'boolean' || typeof v.live_enabled !== 'boolean' || !strings(v.profile_ids) || !object(v.sponsor) || typeof v.sponsor.weave !== 'string' || typeof v.sponsor.aria !== 'string' || !(v.active_campaign_id === null || typeof v.active_campaign_id === 'string')) return malformed('configuration')
+  if (v.models !== undefined && (!object(v.models) || typeof v.models.actor !== 'string' || typeof v.models.explorer !== 'string' || typeof v.models.mechanic !== 'string')) return malformed('role models')
   if (v.execution_profiles !== undefined) {
     if (!Array.isArray(v.execution_profiles)) return malformed('execution profiles')
     for (const profile of v.execution_profiles) { if (!object(profile) || typeof profile.profile_id !== 'string' || typeof profile.requires_live !== 'boolean') return malformed('execution profile'); validateContract('EpisodeBudget', profile.caps) }

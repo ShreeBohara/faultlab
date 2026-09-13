@@ -1,86 +1,114 @@
-# FaultLab — built by Gatekeeper
+# FaultLab
 
-FaultLab tests an order-upgrade agent against real local HTTP faults, reproduces and reduces failures, tests diagnoses, and challenges generated recovery policies before fixed checks can promote them. The prototype, Explorer and Mechanic use W&B Inference in explicit live runs. A deterministic reference is available for offline smoke checks.
+**CoreWeave Hacks: Agent Loops · September 12–13, 2026 · San Francisco**
 
-Implementation, offline evidence, live sponsor evidence and measured improvement have separate status in [the acceptance ledger](docs/integration-ledger.md). An installed loop is not evidence that a learned policy improves outcomes. No live campaign, learned-policy success, external transfer or Aria execution has been claimed from offline tests.
+FaultLab is a bounded experiment lab for tool-using agents under injected HTTP faults. A weaker Actor tries a small business task. A stronger Explorer searches for failures. A fixed Referee scores the original report against private simulator truth. A Mechanic may propose a recovery policy. The lab promotes that policy only when repeated fresh trials prove it helps and does not break healthy behavior.
 
-Start with the [short usage guide](docs/user-guide.md). The [live validation sequence](docs/live-validation.md) explains the remaining measured tasks and their commands.
+This is a **self-improving agent loop**, not weight training. The loop learns recovery policies around the model.
 
-To resume on another laptop or Codex account, read [CONTINUE_HERE.md](CONTINUE_HERE.md) and the linked detailed agent handoff before changing code or starting new runs.
+> **Try → Check → Repeat → Explain → Propose → Challenge → Promote**
 
-## Start locally
+## Why it exists
 
-Use Python 3.12, Node 20.19+ or 22.12+, and npm. From this repository:
+Timeouts do not mean failure. An order API can commit while the agent sees a lost response. Guessing creates duplicate effects or false claims. FaultLab studies whether an agent can stay truthful when the public evidence is incomplete.
+
+The task is deliberately narrow: upgrade one mock order to express shipping, create exactly one confirmation, and report honestly. No real orders or email.
+
+## The loop
+
+| Stage | Who | What happens |
+|---|---|---|
+| Discover | Explorer + Actor | Inject a fault. Attempt the task in a fresh world. |
+| Check | Fixed Referee (C1–C8) | Compare the Actor's report with private simulator truth. |
+| Reproduce | Lab | Repeat the same failure in three fresh worlds. |
+| Reduce | Lab | Search for a smaller recipe that still fails. |
+| Diagnose | Mechanic + fixed tests | Policy gap, contract evidence gap, or inconclusive. |
+| Propose | Mechanic | A constrained recovery-policy candidate, or honest no-change. |
+| Challenge | Explorer as adversary | New fault schedules try to break the candidate. |
+| Promote | Fixed comparisons | Accept only measured improvement that preserves healthy behavior. |
+
+`NO_CHANGE` is a valid scientific result. The lab will not promote an unsupported repair.
+
+## Roles and models
+
+Live campaigns split the models on purpose:
+
+- **Actor** (system under test): `meta-llama/Llama-3.1-8B-Instruct`
+- **Explorer / Mechanic** (lab helpers): `deepseek-ai/DeepSeek-V4-Pro-0813`
+- **Referee**: fixed code, never a model
+
+Each campaign freezes this role map and bills each role at its verified price.
+
+## Sponsor tools
+
+| Tool | How FaultLab uses it |
+|---|---|
+| **W&B Inference** | Hosted models for Actor, Explorer, and Mechanic. Bounded calls, no retries, JSON mode. |
+| **Weave** | Eligible live episode traces are saved, read back by exact identity, and matched to local evidence before they can justify later optimization. |
+| **Aria** | After a campaign finishes, FaultLab publishes a W&B run named `faultlab-campaign-<id>`. A Finished-run automation asks Aria for one advisory summary. Aria does not score episodes or promote policies. |
+
+Required for a live run: a W&B API key in the root `.env`. Do not put secrets in frontend code or commit them.
+
+## Quick start (offline, no credentials)
+
+Python 3.12, Node 20.19+ or 22.12+, and npm:
 
 ```sh
 ./scripts/setup.sh
 ./scripts/test.sh
 ```
 
-In three terminals:
+Three terminals:
 
 ```sh
-./scripts/start-simulator.sh
-./scripts/start-backend.sh
-./scripts/start-frontend.sh
+./scripts/start-simulator.sh    # :8001 mock order APIs
+./scripts/start-backend.sh      # :8000 coordinator
+./scripts/start-frontend.sh     # :5173 dashboard
 ```
 
-Open [FaultLab](http://127.0.0.1:5173). The simulator listens on localhost port 8001, the backend on 8000 and the frontend on 5173. Startup, health, page loads and tests require no credentials and make no paid calls. Use Ctrl+C to stop each server.
+Open http://127.0.0.1:5173. Startup and health checks make no paid calls.
 
-Run one explicitly labeled offline reference episode:
+One offline reference episode:
 
 ```sh
 ./scripts/run-demo.sh --mode baseline --wait
 ```
 
-Copy its campaign ID to inspect or export persisted evidence:
+## Live demo (W&B)
+
+1. Copy `.env.example` to `.env` and set `WANDB_API_KEY`, `WANDB_ENTITY`, and `WANDB_PROJECT`.
+2. Create a Finished-run Aria automation on that project (`^faultlab-campaign-.*`, action **Trigger ARIA**, exact prompt from `backend/app/telemetry/aria_bridge.py`).
+3. Follow **[docs/hackathon-demo.md](docs/hackathon-demo.md)** for the one-campaign run.
 
 ```sh
-./scripts/export-evidence.sh --campaign CAMPAIGN_ID --output artifacts/evidence.json
+set -a && source .env && set +a
+./scripts/start-simulator.sh
+./scripts/start-live-backend.sh
+./scripts/start-frontend.sh
 ```
 
-Exports and dashboard refreshes read recorded results. They do not replay business effects.
+Create a **Learn** campaign in the dashboard, then click **Start campaign**. Do not reopen an old campaign after changing `WANDB_PROJECT`. Skip the smoke check if you want Weave to contain only this campaign's traces.
 
-## Live configuration and execution
+## What judges should look at
 
-Keep credentials in the existing root `.env`; setup preserves it. Do not put secrets in frontend variables or commit them. Read [the sponsor setup walkthrough](docs/sponsor-setup.md) before enabling a live profile.
+1. **Run summary** — which stages ran, and which were not reached.
+2. **Evidence timeline** — original Actor report vs Referee verdict.
+3. **Reproduce / Diagnose / Challenge** — only for stages that actually executed.
+4. **Sponsor evidence** — verified Weave traces and captured Aria output.
 
-The current default is `deepseek-ai/DeepSeek-V4-Pro-0813` in canonical project `shreetbohara-quinstreet/Faultlab`. It passed real action, report, Explorer and diagnosis response checks with W&B's documented thinking toggle disabled. Healthy execution and the final 44-call learning attempt completed without provider errors, with all eight traces verified. That attempt finished `NO_CHANGE`; live automatic repair, challenge and promotion remain unverified. Use `./scripts/start-live-backend.sh` instead of the ordinary backend launcher; it preserves `.env` and sets matching prices and the $100 campaign cap. Restart any existing backend to load this configuration. Changing models requires matching verified prices and a new frozen campaign. See [model selection](docs/model-selection.md), [sponsor results](docs/sponsor-results.md) and [learning results](docs/learning-results.md).
+A recorded live split-model campaign finished `NO_CHANGE` after a repeatable C5 truthful-report failure and an inconclusive diagnosis. That is the honest outcome: the loop found a scar, refused to invent a fix, and kept the evidence.
 
-```sh
-# Offline installed-SDK compatibility only:
-./scripts/check-provider.sh preflight
+## Architecture
 
-# Explicit W&B contact:
-./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet
+- `backend/app/simulator` — local HTTP world, four ordinary faults (delay, pending, stale read, transient failure)
+- `backend/app/referee` — fixed C1–C8 checks
+- `backend/app/lab` — campaign state, budgets, learning stages
+- `backend/app/agents` — Actor, Explorer, Mechanic
+- `backend/app/telemetry` — Weave outbox/readback and Aria campaign bridge
+- `frontend` — dashboard over persisted records only
 
-# One explicit bounded generation and Weave check:
-WANDB_PROJECT=Faultlab WANDB_MODEL='deepseek-ai/DeepSeek-V4-Pro-0813' \
-  ./scripts/smoke-sponsors.sh --confirm-entity shreetbohara-quinstreet \
-  --max-output-tokens 2000
+Longer explanation: [docs/demo-guide.md](docs/demo-guide.md). Limitations: [docs/limitations.md](docs/limitations.md).
 
-# Explicit fresh live campaign, after local configuration:
-./scripts/run-demo.sh --mode learn --execute-live --wait
-```
+## License and provenance
 
-The preceding DeepSeek V3.1 campaign finished `NO_CHANGE`: 119 episodes, 829 model calls, zero provider failures and 119 verified episode traces. Its diagnoses remained inconclusive, so no repair qualified. Earlier Llama baseline measurements completed all 36 trials. These are retained results under their own models, not V4 results.
-
-The 2026-09-13 repair-loop campaign `campaign-44085f54a24144b78252d8eea211ebb8` used DeepSeek V3.1 as the agent under test and reached a supported diagnosis, a model-generated recovery policy, a 3/3 source validation pass and an active challenge that found a counterexample, then ended `NO_CHANGE`. No learned policy is accepted; see [learning results](docs/learning-results.md).
-
-The learning loop may finish with no change, reject a candidate, or wait for verified Weave evidence. It never substitutes a canned repair or promotes on missing results. Aria setup is deferred for the current walkthrough and does not block Inference/Weave. Its later validation uses a supported W&B UI automation and attributed output capture; see [sponsor setup](docs/sponsor-setup.md).
-
-## Components and evidence
-
-- `backend/app/simulator`: four HTTP tools, private SQLite worlds, logical ticks, lost responses, delayed commits/rejections, historical reads and transient errors.
-- `backend/app/referee`: fixed C1–C8, fresh-trial reduction, interventions, finite evidence-gap witnesses and immutable experiment freeze.
-- `backend/app/lab`, `agents`, `adapters`: model roles, policy interpreter, journal, one-active-run controls and repeated evaluation.
-- `backend/app/telemetry`: isolated Weave worker, durable outbox/readback, evaluation/dataset publication and W&B campaign bridge.
-- `backend/app/integrations`: trusted regression runner and reviewed external-agent registration.
-- `frontend`: task controls and persisted evidence drilldowns.
-
-[Diagnostic evidence](docs/diagnostic-results.md) contains an actual finite committed/uncommitted witness and available-status control. It is a separately labeled fixture and excluded from learning gains. [External source review](docs/external-agent-setup.md) records the independently authored agent; successful transfer still requires the frozen external study.
-
-See [demo instructions](docs/demo.md), [limitations](docs/limitations.md), [regression commands](docs/regression-runner.md) and [submission checklist](docs/submission-checklist.md). The repository is public by owner choice. Deployment and submission remain separate actions.
-
-Earlier baseline measurements used Meta Llama 3.3 70B Instruct through W&B Inference. Built with Llama.
-Offline tokenizer files and their license are recorded in `contracts/tokenizer/llama3/`.
+Built at CoreWeave Hacks (Agent Loops) with Weights & Biases Inference, Weave, and Aria. Offline Llama tokenizer files and license are in `contracts/tokenizer/llama3/`.

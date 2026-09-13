@@ -32,7 +32,8 @@ class EpisodeRunner:
         broker=BusinessToolBroker(self.world_client,world['world_id'],world['capability'],journal,meter)
         interpreter=PolicyInterpreter(policy.content,broker)
         frozen=self.store.get_record('configurations',campaign.configuration_hash) or {}
-        metadata={**provenance.model_dump(mode='json'),'model_id':campaign.model,'policy_hash':policy.policy_hash,'contract_hash':frozen.get('contract_hash'),'scorer_hash':frozen.get('scorer_hash')}
+        actor_model=(frozen.get('models') or {}).get('actor',campaign.model)
+        metadata={**provenance.model_dump(mode='json'),'model_id':actor_model,'policy_hash':policy.policy_hash,'contract_hash':frozen.get('contract_hash'),'scorer_hash':frozen.get('scorer_hash')}
         broker.trace=self.trace; broker.metadata=metadata
         context=EpisodeContext(provenance,broker,interpreter,self.provider,policy.content,policy.policy_hash,policy.decision,metadata,self.trace)
         report=None; lab_error=False; interrupted=False

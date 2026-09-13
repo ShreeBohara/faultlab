@@ -53,7 +53,7 @@ async def queue_baseline_study(coordinator,campaign_id):
         study_id=new_id('baseline-study'); reservation='baseline:'+study_id
         ledger=coordinator.ledgers.get(campaign_id)
         if ledger is None:
-            ledger=CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bound=coordinator.settings.model_call_dollar_bound)
+            ledger=CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds)
             coordinator.ledgers[campaign_id]=ledger
         ledger.stopped=False
         ledger.reserve(reservation,MODEL_CALL_RESERVATION)
