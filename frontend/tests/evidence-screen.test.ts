@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EvidenceScreen } from '../src/components/EvidenceScreen'
 import { api, request } from '../src/api'
-import { campaign, episode, fixtureResponse } from './fixtures'
+import { campaign, episode, fixtureResponse, verifiedExperiments } from './fixtures'
 let writes: string[]
 beforeEach(() => {
   const storage = () => { const values = new Map<string, string>(); return { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value), clear: () => values.clear(), removeItem: (key: string) => values.delete(key) } }
@@ -56,6 +56,16 @@ describe('evidence screen behavior', () => {
     expect(button.getAttribute('aria-pressed')).toBe('true')
     expect(screen.getByText(episode.world_id)).toBeTruthy()
     expect(writes).toEqual([])
+  })
+  it('loads a saved campaign with actual ingestion progress and displays its verified trace', async () => {
+    localStorage.setItem('faultlab:campaign', campaign.campaign_id)
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, json: async () => String(url).endsWith('/experiments') ? verifiedExperiments : fixtureResponse(String(url)) })))
+    render(h(EvidenceScreen))
+    const trace = await screen.findByRole('link', { name: /Open Weave trace/ })
+    expect(trace.getAttribute('href')).toBe(verifiedExperiments.evidence[0].root_call_url)
+    expect(screen.getByText('Ingestion · INGESTED')).toBeTruthy()
+    expect(screen.queryByText(/Malformed/)).toBeNull()
+    expect(vi.mocked(fetch).mock.calls.every(([, options]) => options?.method === 'GET')).toBe(true)
   })
   it('shows malformed health and does not trigger execution to repair it', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({ wrong: true }) })))

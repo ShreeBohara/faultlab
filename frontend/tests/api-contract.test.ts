@@ -4,7 +4,7 @@ import { validateContract } from '../src/generated/validate'
 import { pollDelay } from '../src/useResource'
 import { cellOutcome } from '../src/components/OutcomeMatrix'
 import { validateExperiments } from '../src/experiments'
-import { baseline, campaign, config, episode, events, experiments, matrix } from './fixtures'
+import { baseline, campaign, config, episode, events, experiments, matrix, verifiedExperiments } from './fixtures'
 
 describe('canonical API contracts', () => {
   it('validates reviewed records and rejects nested corruption, unknown fields and bad timestamps', () => {
@@ -40,6 +40,14 @@ describe('canonical API contracts', () => {
     expect(() => validateExperiments({ ...experiments, counterexamples: [{ counterexample: {} }] })).toThrow('Malformed')
     expect(validateConfig(config)).toEqual(config)
     expect(() => validateConfig({ ...config, live_enabled: 'true' })).toThrow('Malformed')
+  })
+  it('accepts the endpoint ingestion projection and preserves verified evidence references', () => {
+    expect(validateExperiments(verifiedExperiments)).toEqual(verifiedExperiments)
+    const ingestion = verifiedExperiments.ingestions[0]
+    for (const patch of [{ episode_id: '' }, { state: 'PROBABLY_INGESTED' }, { status: 'assumed_verified' }, { execution_epoch: -1 }, { execution_epoch: 0.5 }, { error_code: undefined }, { secret: 'unexpected' }]) {
+      expect(() => validateExperiments({ ...verifiedExperiments, ingestions: [{ ...ingestion, ...patch }] })).toThrow('Malformed ingestion')
+    }
+    expect(validateExperiments({ ...verifiedExperiments, ingestions: [{ ...ingestion, state: 'RETRYABLE_ERROR', status: 'weave_pending', error_code: 'DEADLINE' }] }).ingestions[0].error_code).toBe('DEADLINE')
   })
   it('allows actual HTTPS W&B record links only', () => {
     expect(safeEvidenceUrl('https://wandb.ai/team/project/runs/record')).toBe('https://wandb.ai/team/project/runs/record')

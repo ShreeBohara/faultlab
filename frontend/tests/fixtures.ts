@@ -8,6 +8,12 @@ export const events: Event[] = [ { episode_id: 'episode-fixture', seq: 1, tick: 
 export const baseline: PolicyVersion = { version: 'policy-v0', parent_version: null, content: { parent_version: 'policy-v0', rules: [] }, policy_hash: hash, author: 'baseline', raw_proposal_ref: null, development_episode_ids: [], decision: 'BASELINE', created_at: '2026-09-12T12:00:00Z' }
 export const matrix: Matrix = { campaign_id: campaign.campaign_id, cells: [{ episode_id: episode.episode_id, scenario_alias: hash.slice(0, 10), arm: 'B1', policy_hash: hash, outcome: 'COMPLETED', lifecycle: 'COMPLETED', fault_scheduled: false, fault_triggered: false, source_mode: 'offline_fixture', telemetry_provenance: 'local_only', usage: episode.usage }], counts: { valid_attempted: 1, completed: 1, violations: 0, safe_unresolved: 0, correctly_rejected: 0, lab_errors: 0, interrupted: 0, scheduled: 0, triggered: 0, untriggered: 0 } }
 export const experiments = { counterexamples: [], evidence: [], ingestions: [], portability_ids: [] }
+// Shape returned by GET /campaigns/{id}/experiments after actual remote readback.
+export const verifiedExperiments = {
+  ...experiments,
+  evidence: [{ episode_id: episode.episode_id, source: 'weave_verified', root_call_id: 'root-fixture', child_call_ids: ['child-fixture'], source_project: 'team/project', root_call_url: 'https://wandb.ai/team/project/weave/calls/root-fixture' }],
+  ingestions: [{ episode_id: episode.episode_id, error_code: null, execution_epoch: 0, state: 'INGESTED', status: 'weave_verified' }],
+}
 export function fixtureResponse(url: string, currentCampaign: Campaign = campaign): unknown {
   if (url.endsWith('/health')) return { status: 'ok', service: 'faultlab-backend' }
   if (url.endsWith('/config/status')) return config
