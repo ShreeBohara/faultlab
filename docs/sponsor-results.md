@@ -41,3 +41,56 @@ The exact DeepSeek smoke command in the updated quick start also passed, returni
 The V3.1 learning campaign completed with all 119 episode trace bundles verified and no provider errors. Its four controlled diagnoses were inconclusive; no regression dataset was eligible. V4 Pro’s exact quick-start connection command passed with [verified Weave readback](https://wandb.ai/shreetbohara-quinstreet/Faultlab/r/call/01a09bb0-f093-7152-b0c7-350facb29a2f). Final V4 results are recorded in `docs/learning-results.md`: 44 model calls, no provider errors, eight verified episode traces, and NO_CHANGE with no qualified repair.
 
 The V4 healthy order has a [verified completed root/tool trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/weave/calls/9f61ce4d-410c-4a4e-b4e2-b8e856e398fc). The final V4 campaign preserved all eight verified traces; no generated-policy evaluation/dataset or Aria pass is claimed.
+
+
+## Aria automation: registered, fired automatically, analysis observed (2026-09-13)
+
+The Aria gate moved from "deferred" to an automatic invocation that is verified against W&B's own API. It is
+not yet a complete T088 pass; the remaining gap is stated at the end of this section.
+
+**Observed automation.** `Test-final`, automation id `VHJpZ2dlcjo5MTQ5`, project-scoped to
+`shreetbohara-quinstreet/Faultlab`, enabled, created by Shree Bohara in the W&B UI. Event: run status change
+restricted to `FINISHED`, with the run-name filter `^faultlab-campaign-.*`. Action: `Trigger ARIA`. The stored
+prompt was read back through the W&B GraphQL API and compared byte-for-byte against `ARIA_PROMPT` in
+`backend/app/telemetry/aria_bridge.py`; it matches exactly (1,266 characters). The run-name filter, the
+`FINISHED` state and the enabled flag were verified the same way. Readback: `artifacts/aria-automation-readback.json`.
+
+The W&B SDK (0.30.0) cannot see project-scoped ARIA automations: `Api.automations()` returns zero for every
+call form, and there is no executable GraphQL client on that build. Verification therefore used direct HTTPS
+GraphQL calls. Registration was recorded with `python -m app.cli.sponsors register-automation`, which returned
+`observed_setup_recorded` with `invocation_performed: false` and `remote_verification: false`.
+
+**Published Finished run.** `faultlab-campaign-campaign-63933675566f49a994eb3e5bb6145434`, run id
+`fl825f412b6fa2d6ae35550b786c35e5`, published 2026-09-13T19:50:39.986811Z and confirmed in state `finished`:
+[run](https://wandb.ai/shreetbohara-quinstreet/Faultlab/runs/fl825f412b6fa2d6ae35550b786c35e5). It carries the
+18 verified development Weave links and the evidence table for campaign
+`campaign-63933675566f49a994eb3e5bb6145434`.
+
+**Automatic invocation, verified.** Trigger execution `VHJpZ2dlckV4ZWN1dGlvbjo2NzQwMjI=` (decoded
+`TriggerExecution:674022`), state `FINISHED`, `actionStartedAt` 2026-09-13T19:50:40Z, action duration 485 ms,
+`triggerID` `VHJpZ2dlcjo5MTQ5`. The event payload records `eventType: RUN_STATE`, `entityName:
+shreetbohara-quinstreet`, `projectName: Faultlab`, `runName: fl825f412b6fa2d6ae35550b786c35e5`,
+`newRunState: FINISHED`. The action payload shows the prompt with `${run_name}`, `${entity_name}` and
+`${project_name}` resolved to the real run and project. Aria replied HTTP 202 `Accepted` with
+`thread_id` and `turn_id` `01a09c52-640e-7590-b61e-49b2c3a1657a`. Readback: `artifacts/aria-execution-readback.json`.
+
+The 202 and the 485 ms duration are a dispatch, not an analysis. Automatic invocation is therefore established
+by these records; Aria producing useful output is established separately by operator observation below.
+
+**Observed Aria output, and its measured inaccuracy.** The operator read the resulting Aria conversation in the
+W&B UI. Aria produced a substantive analysis: it reported 13 completed, 3 correctly rejected and 2
+checker-level violations, declined to credit any successful repair because the adversarial challenge batch was
+incomplete, and questioned records carrying `PROTOTYPE_EXCEPTION`.
+
+Checked against saved records, Aria's denominators are wrong for this campaign. The campaign holds **36**
+discovery episodes: 28 COMPLETED, 6 CORRECTLY_REJECTED and 2 VIOLATION, with **zero** LAB_ERROR lifecycles and
+zero `run_episode` traces carrying a LAB_ERROR terminal status. Aria's counts match the 18 published Weave
+links rather than the episode set, so it analysed roughly half the campaign. Both violations are genuine, each
+with a delivered report whose own `overall` was `SAFE_UNRESOLVED`. Aria's advisory output changed no policy,
+checker rule, budget or promotion decision, as required.
+
+**What is still open for T088.** The attributed Aria capture (`POST /api/campaigns/{id}/aria-evidence`) needs
+the conversation output URL and an operator summary before `status: COMPLETED` is permitted; until then no
+completed automatic analysis is claimed. Publication was operator-initiated (`artifacts/publish_campaign_run.py`)
+rather than produced by the coordinator's end-of-campaign hook, and `aria_bindings` was written manually to
+mirror the coordinator's own binding step. Both deviations are recorded here rather than implied away.

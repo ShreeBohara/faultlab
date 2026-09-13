@@ -10,6 +10,26 @@ The 2026-09-13 V3.1 repair-loop campaign (`campaign-44085f54a24144b78252d8eea211
 
 The 2026-09-13 split-role campaign (`campaign-aa79023053da470984118fdb1e9d8138`, DeepSeek V3.1 under test, DeepSeek V4-Pro-0813 as Explorer and Mechanic) reached a supported diagnosis on its first source and produced four model-generated candidate policies, all with identical content. Every candidate repaired the original failure in only two of three pairs, or one of three, so none met the fixed 3/3 source-validation requirement and the campaign ended NO_CHANGE without reaching challenge or promotion. The saved episodes locate the remaining limit in the agent under test, not in the policy: with the receipt already delivered by the policy and the confirmation already sent, V3.1 still failed to emit a valid final report in 5 of 12 candidate trials, against an incumbent that completed 0 of 12; at that observed 7-of-12 repair rate a 3/3 batch clears only about one time in five. A second limit is unchanged across both lab models: V3.1 and V4 both placed the honest `defer_unresolved` step only in `before_final_report`, a hook the interpreter reaches only when a report has already been proposed, so the step cannot rescue an agent that never reports. The per-hook invocation boundaries are not among the facts the Mechanic receives. No learned policy is accepted; see `docs/learning-results.md`.
 
+Aria is no longer deferred, but its gate is only partly met. An observed W&B automation fires `Trigger ARIA`
+automatically when a run named `^faultlab-campaign-.*` reaches FINISHED, and that invocation is verified against
+W&B's GraphQL API, including a byte-exact match between the stored prompt and the reviewed prompt. Aria's reply
+is HTTP 202 with a thread id, which is a dispatch and not evidence of analysis; the analysis itself is read by an
+operator in the UI and remains attributed manual capture, never independent remote verification. The one observed
+Aria analysis reported episode counts that do not match the saved records for that campaign: it described 18
+episodes with 13 completed and 3 correctly rejected, while the campaign holds 36 discovery episodes with 28
+completed, 6 correctly rejected, 2 violations and zero lab errors. Its counts correspond to the 18 published Weave
+links, so it analysed part of the campaign. Advisory Aria output cannot and did not change any policy, checker
+rule, budget or promotion decision.
+
+Two operational deviations are recorded rather than hidden. The Finished run for
+`campaign-63933675566f49a994eb3e5bb6145434` was published by an operator script invoking the same `AriaBridge`
+rather than by the coordinator's end-of-campaign hook, and its `aria_bindings` record was written manually to
+mirror the coordinator's binding step. Separately, campaign `campaign-b80e4ade72ed42ab815f977b62f8a297` can never
+publish: an operator invocation whose telemetry worker failed to start still wrote the immutable
+`aria_publish_intents` record, and `publish_campaign` refuses any campaign with a prior intent. That campaign also
+terminated ERROR for a cause that was not established; registering the Aria setup activated a previously unused
+completion path, and the generic handler discards the traceback.
+
 Three repeated trials and four challenge schedules are finite observations, not statistical certainty or an unbreakable policy. A reduced incident is only locally minimal in the tested finite neighborhood. The evidence-gap diagnostic is limited to its two worlds, ten public probes and declared deadline; it does not prove universal impossibility.
 
 Verified remote readback is mandatory before development evidence enters model optimization. Local storage and pending outbox uploads keep incidents inspectable during outages but do not clear the sponsor gate. Aria output is advisory; manual UI capture is attributed operator evidence, distinct from independently verified remote data. A manually started Aria chat does not satisfy automatic invocation.
