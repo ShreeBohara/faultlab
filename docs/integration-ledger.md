@@ -1,8 +1,9 @@
 # FaultLab acceptance and integration ledger
 
+Current live status (2026-09-13): Llama baseline measurement completed all 36 trials. The subsequent DeepSeek V3.1 learning attempt completed 119 episodes with verified traces and no provider errors, but no qualified repair. The selected model is now DeepSeek V4 Pro 0813 with documented thinking disabled; healthy execution passed, and its final learning campaign completed 44 model calls without provider errors with all eight traces verified. No fixed check failed, so automatic repair/challenge/promotion remain unverified live. The dated entries below preserve earlier implementation and experiment milestones.
+
 Implementation started 2026-09-12 under the explicit Step 2 request. Application checkout
-was clean. Existing skeleton is preserved. No live model or sponsor action is authorized by
-this implementation request. All measurements below distinguish code/tests from experiments.
+was clean. Existing skeleton is preserved. The initial implementation request did not authorize live calls; the user separately authorized the live validation recorded below. All measurements below distinguish code/tests from experiments.
 
 ## Contract freeze: faultlab-seams/v1
 
@@ -48,7 +49,7 @@ calls / 4 waits / 20 ticks / 32 policy steps / 90 seconds; campaign ceilings 600
 Live Start requires configured enablement, confirmed entity and valid caps; configuration
 alone is not a request. Page loads, health, imports, tests, validation and playback stay offline.
 
-## Acceptance ledger
+## Acceptance ledger at the implementation handoff
 
 | Gate | Status | Evidence / remaining input |
 |---|---|---|
@@ -280,3 +281,16 @@ The guide is now `docs/user-guide.md` and the editable `docs/FaultLab_Quick_Star
 Corrected campaign result: eight valid model-selected recipes, eight episodes (one successful order, one C5 violation and six EMPTY_FINAL_RESPONSE infrastructure failures). No fully triggered source qualified for repair. Both completed root/tool inventories were verified and persisted after switching from duplicate-producing bulk results to exact-ID retrieval. 28 model calls and 49,161 returned tokens; admitted inference ceiling $0.01624, actual bill unknown. The full local regression suite passed 307 backend tests, 18 UI tests, production build and three browser fixtures; targeted telemetry checks cover the final retrieval fix. All six original measured gates remain open; Aria is deferred. The four-page guide was rendered and every final page visually inspected.
 
 Final handover verification: evidence retry `evidence-retry-16ab70b2c38b49a0bbc526880b8b2f93` completed with two VERIFIED episodes and six SKIPPED_INELIGIBLE episodes. Matching saved calls were reused; no inference or business rerun occurred. Final evidence export: `artifacts/live-end-to-end-final.json`. The final telemetry suite passed 68 tests; T116 is checked, for 110/116 tasks complete. Aria remains awaiting setup as requested.
+
+## Live flow follow-up on 2026-09-13
+
+The user prioritized a complete working flow and authorized trying available W&B models. Llama 3.3 70B completed the healthy order and the six-case baseline: 36 valid trials, zero infrastructure errors, all 30 scheduled fault recipes triggered and fixed scores verified in Weave. Two incorrect model reports remain measured failures. Its separate 64-call learning attempt ended `NO_CHANGE` without provider failures. See `docs/baseline-results.md`.
+
+DeepSeek V3.1 campaign `campaign-e6ac7b05ebc049f6804d34dc04d4ef72` completed `NO_CHANGE` after 119 episodes and 829 model calls. All 119 episode traces were verified; no provider failures occurred. Reproduction, reduction and diagnostic interventions ran, but all four fixed diagnoses were inconclusive and no repair qualified. The conservative admitted inference ceiling was $17.3261, with actual billing unknown. All attempts remain saved in `artifacts/deepseek-learning-final-20260913.json` and the learning-results report.
+
+The configured model is `deepseek-ai/DeepSeek-V4-Pro-0813`. W&B documents thinking as enabled by default and supports disabling it with `extra_body={"chat_template_kwargs":{"enable_thinking":false}}`. The default-thinking diagnosis probe returned no final answer after 4,000 output tokens (`artifacts/v4-diagnosis-readiness-20260913.json`). With thinking disabled, action, report and Explorer checks were schema-valid (`artifacts/model-readiness-v4-direct-20260913.json`), and diagnosis passed at the actual 2,000-output-token/20-second ceiling (`artifacts/v4-direct-diagnosis-readiness-20260913.json`). Those probes establish request compatibility. Subsequent healthy execution and the final V4 learning attempt completed with no provider errors; the latter ended NO_CHANGE with 44 model calls and eight verified traces. No fixed-check violation qualified for repair, so repair/challenge/promotion remain unverified live.
+
+The runtime keeps JSON mode, temperature 0 and zero automatic retries. Current admission is 32,000 input plus 2,000 output tokens per request, 204 million campaign tokens, 6,000 calls and a $100 campaign cap. At [W&B's V4 prices](https://wandb.ai/site/inference-model/deepseek-v4-pro-0813/) of $1.31/$3.96 per million input/output tokens, each call reserves $0.04984 and the 1,064 protected calls reserve $53.02976. Official tokenizer provenance is stored locally; no runtime tokenizer download or credential change is required. Model-specific [thinking settings](https://docs.wandb.ai/inference/response-settings/reasoning), prompts, source and prices are frozen in each new campaign. Aria remains deferred.
+
+
+Final 2026-09-13 verification: T118/T120/T121 software fixes verified, including complete own-development Explorer evidence and model-specific request options. Full suite: 356 backend tests, 20 frontend tests, build and three browser checks passed; actual live UI verified separately. Checklist: 116/121 checked. Final V4 campaign `campaign-40c46ebee7b247c49d4a0204dead1939` is NO_CHANGE, 44 model calls, eight completed episodes, no provider errors and eight verified traces. Five original measured gates remain open; Aria stays deferred. See `docs/learning-results.md` for outcomes and limits.

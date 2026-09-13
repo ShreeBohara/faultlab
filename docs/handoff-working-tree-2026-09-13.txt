@@ -1,0 +1,140 @@
+FaultLab handoff working-tree inventory — 2026-09-13
+Historical read-only Git snapshot BEFORE the subsequent source-publication commits.
+This inventory does not contain .env contents or diffs of secrets.
+At snapshot time, the latest validation fixes and new handoff documents were uncommitted.
+Those files accompany this source update; run git status for the current state.
+
+$ git rev-parse --show-toplevel
+/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab
+
+$ git branch --show-current
+main
+
+$ git rev-parse HEAD
+d32aa55e8bbb6e0aac6dd42e2bb84e489b7fe497
+
+$ git log -5 --oneline
+d32aa55 Add operator scripts, quick start guide, and live validation results
+a1a239a Build the campaign dashboard and evidence inspection UI
+fa666f6 Integrate live inference, verified Weave evidence, and sponsor workflows
+f78efa7 Implement FaultLab simulator, contracts, and learning engine
+aabbf1d Record verified private GitHub setup
+
+$ git status --short
+ M .env.example
+ M README.md
+ M backend/app/agents/actor.py
+ M backend/app/agents/explorer.py
+ M backend/app/agents/mechanic.py
+ M backend/app/agents/prompts/diagnosis.md
+ M backend/app/agents/prompts/explorer.md
+ M backend/app/cli/freeze.py
+ M backend/app/config.py
+ M backend/app/contracts/models.py
+ M backend/app/contracts/tokens.py
+ M backend/app/integrations/registry.py
+ M backend/app/lab/budgets.py
+ M backend/app/lab/challenge.py
+ M backend/app/lab/configuration.py
+ M backend/app/lab/coordinator.py
+ M backend/app/lab/diagnosis.py
+ M backend/app/lab/learning.py
+ M backend/app/providers/runtime.py
+ M backend/app/providers/wandb_inference.py
+ M backend/app/referee/freeze.py
+ M backend/requirements.lock
+ M backend/requirements.txt
+ M backend/tests/agents/test_roles.py
+ M backend/tests/contracts/test_token_admission.py
+ M backend/tests/integration/test_policy_restart.py
+ M backend/tests/lab/test_budgets.py
+ M backend/tests/lab/test_challenge.py
+ M backend/tests/lab/test_counterexample_loop.py
+ M backend/tests/lab/test_runner.py
+ M backend/tests/providers/test_runtime.py
+ M backend/tests/test_config.py
+ M backend/tests/test_providers.py
+ M backend/tests/world/test_audit_freeze.py
+ M contracts/Campaign.schema.json
+ M contracts/CampaignBudget.schema.json
+ M contracts/manifest.json
+ M docs/FaultLab_Quick_Start_Guide.docx
+ M docs/baseline-results.md
+ M docs/integration-ledger.md
+ M docs/learning-results.md
+ M docs/limitations.md
+ M docs/live-validation.md
+ M docs/setup.md
+ M docs/sponsor-results.md
+ M docs/sponsor-setup.md
+ M docs/user-guide.md
+ M frontend/src/components/SponsorEvidence.tsx
+ M frontend/src/experiments.ts
+ M frontend/tests/api-contract.test.ts
+ M frontend/tests/evidence-screen.test.ts
+ M frontend/tests/fixtures.ts
+ M scripts/start-live-backend.sh
+?? CONTINUE_HERE.md
+?? backend/tests/agents/test_actor_format.py
+?? backend/tests/lab/test_diagnosis_context.py
+?? contracts/tokenizer/deepseek-v3.1/
+?? contracts/tokenizer/deepseek-v4-pro-0813/
+?? contracts/tokenizer/llama3/
+?? docs/AGENT_HANDOFF_2026-09-13.md
+?? docs/model-selection.md
+
+$ git diff --stat
+ .env.example                                     |   2 +-
+ README.md                                        |  15 ++--
+ backend/app/agents/actor.py                      |  12 ++-
+ backend/app/agents/explorer.py                   |  31 +++++++-
+ backend/app/agents/mechanic.py                   |  33 +++++---
+ backend/app/agents/prompts/diagnosis.md          |   2 +
+ backend/app/agents/prompts/explorer.md           |   4 +
+ backend/app/cli/freeze.py                        |   2 +-
+ backend/app/config.py                            |   8 +-
+ backend/app/contracts/models.py                  |   9 ++-
+ backend/app/contracts/tokens.py                  |  68 +++++++++++++---
+ backend/app/integrations/registry.py             |   3 +-
+ backend/app/lab/budgets.py                       |  42 +++++++---
+ backend/app/lab/challenge.py                     |   6 +-
+ backend/app/lab/configuration.py                 |   5 +-
+ backend/app/lab/coordinator.py                   |   2 +-
+ backend/app/lab/diagnosis.py                     |  30 ++++++-
+ backend/app/lab/learning.py                      |  35 +++++----
+ backend/app/providers/runtime.py                 |  21 +++--
+ backend/app/providers/wandb_inference.py         |  10 +++
+ backend/app/referee/freeze.py                    |  13 ++--
+ backend/requirements.lock                        |   1 +
+ backend/requirements.txt                         |   1 +
+ backend/tests/agents/test_roles.py               |  49 +++++++++++-
+ backend/tests/contracts/test_token_admission.py  |  72 ++++++++++++++++-
+ backend/tests/integration/test_policy_restart.py |  10 +++
+ backend/tests/lab/test_budgets.py                |  58 +++++++++++++-
+ backend/tests/lab/test_challenge.py              |  13 +++-
+ backend/tests/lab/test_counterexample_loop.py    |  95 ++++++++++++++++++++++-
+ backend/tests/lab/test_runner.py                 |   2 +-
+ backend/tests/providers/test_runtime.py          |  35 ++++++++-
+ backend/tests/test_config.py                     |  17 +++-
+ backend/tests/test_providers.py                  |  11 +++
+ backend/tests/world/test_audit_freeze.py         |  13 ++++
+ contracts/Campaign.schema.json                   |   8 +-
+ contracts/CampaignBudget.schema.json             |   8 +-
+ contracts/manifest.json                          |   6 +-
+ docs/FaultLab_Quick_Start_Guide.docx             | Bin 43843 -> 44158 bytes
+ docs/baseline-results.md                         |  19 +++++
+ docs/integration-ledger.md                       |  20 ++++-
+ docs/learning-results.md                         |  54 ++++++++++++-
+ docs/limitations.md                              |   8 +-
+ docs/live-validation.md                          |  12 ++-
+ docs/setup.md                                    |   9 ++-
+ docs/sponsor-results.md                          |  17 +++-
+ docs/sponsor-setup.md                            |  24 +++---
+ docs/user-guide.md                               |  26 ++++---
+ frontend/src/components/SponsorEvidence.tsx      |   2 +-
+ frontend/src/experiments.ts                      |  15 +++-
+ frontend/tests/api-contract.test.ts              |  10 ++-
+ frontend/tests/evidence-screen.test.ts           |  12 ++-
+ frontend/tests/fixtures.ts                       |   6 ++
+ scripts/start-live-backend.sh                    |  12 +--
+ 53 files changed, 839 insertions(+), 159 deletions(-)

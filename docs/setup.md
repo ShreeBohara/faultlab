@@ -11,8 +11,8 @@ and a separate private-world HTTP simulator run locally.
 Those folders were left unchanged. There was no parent Git repository; only `faultlab/`
 was initialized, with branch `main`.
 
-The GitHub owner confirmed by the user is `ShreeBohara`. The created remote is the
-private repository `https://github.com/ShreeBohara/faultlab`. GitHub authentication was
+The GitHub owner confirmed by the user is `ShreeBohara`. The remote is now the user-confirmed public
+repository `https://github.com/ShreeBohara/faultlab`. GitHub authentication was
 verified using the existing local login; no global Git configuration was changed.
 
 ## Tested tool and dependency versions
@@ -148,3 +148,8 @@ blocks campaign admission; it is never interpreted as zero dollars. The separate
 provider compatibility check remains independently bounded. `openai/gpt-oss-120b` is the
 initial candidate model, subject to account access and pricing verification; it has not been
 called or established as available by this implementation session.
+
+
+## Current live verification — 2026-09-13
+
+The live launcher selects DeepSeek V4 Pro-0813 with W&B’s documented thinking disabled, JSON mode, temperature zero, 32K input/2K output admission and matching verified prices. The exact quick-start connection check and healthy order passed with verified Weave readback. The full suite passed 356 backend tests, 20 frontend tests, production build and three browser checks; the opt-in offline browser execution was skipped and the actual live V4 dashboard was checked separately. Live learning outcomes, including unreached repair stages, remain explicit in `docs/learning-results.md`.

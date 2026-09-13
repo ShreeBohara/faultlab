@@ -1,6 +1,6 @@
 # Connected sponsor results
 
-Status: Inference, connection trace and both completed campaign root/tool trace readbacks VERIFIED. Live evaluation and regression dataset were not reached because no source qualified for repair. Aria automation and analysis are explicitly deferred by the user. T088 remains open.
+Current status: real Inference, completed campaign root/tool readbacks and a full 36-case baseline Weave evaluation are VERIFIED. DeepSeek V4 Pro-0813 with thinking disabled is the current selected model. Regression dataset and automatic Aria evidence remain pending; Aria is explicitly deferred. Historical checks are preserved below. T088 remains open.
 
 The user authorized model discovery and a bounded smoke check for `shreetbohara-quinstreet/faultlab`, then one full learning cycle up to $100. W&B returns the canonical project as `shreetbohara-quinstreet/Faultlab`; the live launcher supplies that exact case without editing the existing `.env`.
 
@@ -26,3 +26,18 @@ Aria setup, Finished-run publication and automatic analysis remain pending by ex
 The corrected campaign finished NO_CHANGE. Both eligible completed-lifecycle episodes were verified through the actual SDK worker and evidence gateway, including exact project/campaign identities, tool hierarchy and equality with saved observations/reports. Seven calls were retrieved: two roots plus five tool children. The successful order [trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/weave/calls/d49c1470-7ef1-433d-a581-5cd0668a7e3e) and C5 violation [trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/weave/calls/6daec6dd-2846-45f9-8587-f346b24aa8fb) remain distinct. The bulk SDK query returned duplicate rows; reading the bounded exact inventory resolved verification while preserving strict comparison. This does not establish a campaign evaluation, dataset or Aria analysis, so T088 remains open.
 
 Final handover verification: evidence retry `evidence-retry-16ab70b2c38b49a0bbc526880b8b2f93` completed with two VERIFIED episodes and six SKIPPED_INELIGIBLE episodes. Matching saved calls were reused; no inference or business rerun occurred. Final evidence export: `artifacts/live-end-to-end-final.json`. The final telemetry suite passed 68 tests; T116 is checked, for 110/116 tasks complete. Aria remains awaiting setup as requested.
+
+
+## Live validation on 2026-09-13
+
+The Llama baseline study completed all 36 predeclared trials with no infrastructure errors. The actual [Weave evaluation](https://wandb.ai/shreetbohara-quinstreet/Faultlab/r/call/01a09b7b-1890-78da-b9f9-1d7c162daf23) was read back and matched fixed local scores. All 18 real model episode roots were verified. This completes T039; it does not replace the separate generated-policy dataset or Aria requirements.
+
+After comparative request checks, the default switched to `deepseek-ai/DeepSeek-V3.1`. Its healthy campaign passed C1-C8 and its [actual root/tool trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/weave/calls/c34e9ec6-8016-499b-8d8d-9c2bac5184f1) was verified. The current learning result and subsequent sponsor evidence are recorded in `docs/learning-results.md`.
+
+
+The exact DeepSeek smoke command in the updated quick start also passed, returning “FaultLab connection OK” and a [verified completed connection trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/r/call/01a09b93-a428-7fdd-aaf6-a6a3e8aac193). This was a separate explicit connection request, not a learning trial.
+
+
+The V3.1 learning campaign completed with all 119 episode trace bundles verified and no provider errors. Its four controlled diagnoses were inconclusive; no regression dataset was eligible. V4 Pro’s exact quick-start connection command passed with [verified Weave readback](https://wandb.ai/shreetbohara-quinstreet/Faultlab/r/call/01a09bb0-f093-7152-b0c7-350facb29a2f). Final V4 results are recorded in `docs/learning-results.md`: 44 model calls, no provider errors, eight verified episode traces, and NO_CHANGE with no qualified repair.
+
+The V4 healthy order has a [verified completed root/tool trace](https://wandb.ai/shreetbohara-quinstreet/Faultlab/weave/calls/9f61ce4d-410c-4a4e-b4e2-b8e856e398fc). The final V4 campaign preserved all eight verified traces; no generated-policy evaluation/dataset or Aria pass is claimed.

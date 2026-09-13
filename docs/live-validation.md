@@ -2,7 +2,7 @@
 
 Run commands from `/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab` with the simulator and live backend running. The beginner walkthrough is `docs/user-guide.md`. `./scripts/start-live-backend.sh` preserves the existing `.env` and supplies the verified model, canonical project, rates and caps. Live commands below consume credits; read-only status, export and freeze commands do not call models.
 
-The current authorized scope is one full learning cycle with Inference and Weave, up to $100. Model discovery and a completed connection trace succeeded; see `docs/sponsor-results.md`. Aria setup is explicitly deferred and is not needed to start this walkthrough. The sequence below also covers broader acceptance studies, which remain separate from the current single-campaign test.
+The current model is `deepseek-ai/DeepSeek-V4-Pro-0813`, with its documented thinking toggle disabled. Action, report, Explorer and diagnosis format checks passed. The final V4 learning campaign finished NO_CHANGE with 44 real model calls, no provider errors and eight verified traces; automatic repair, challenge and promotion remain unverified live. The current authorized scope is one full learning cycle with Inference and Weave, up to $100. See `docs/model-selection.md` and `docs/sponsor-results.md`. Aria setup is explicitly deferred and is not needed to start this walkthrough. The sequence below also covers broader acceptance studies, which remain separate from the current single-campaign test.
 
 The $100 setting is **per campaign**, not a shared session or account cap. The baseline study, learning and a separately imported regression can create different campaigns. Track total spending across them; do not assume several $100 campaign ceilings add up to a $100 overall ceiling.
 
@@ -12,14 +12,16 @@ The user confirmed the credited project. W&B returns its canonical name as `shre
 
 ```sh
 ./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet
-WANDB_PROJECT=Faultlab WANDB_MODEL='openai/gpt-oss-120b' \
+WANDB_PROJECT=Faultlab WANDB_MODEL='deepseek-ai/DeepSeek-V4-Pro-0813' \
   ./scripts/smoke-sponsors.sh --confirm-entity shreetbohara-quinstreet \
   --max-output-tokens 2000
 ```
 
-The default smoke check caps output at 32 tokens. The explicit 2,000-token override above accommodates GPT-OSS reasoning and matches the existing campaign ceiling. It still makes only one generation with a 20-second timeout and no SDK automatic retry. It also verifies a completed Weave call. This is a connection check, not full T088 campaign acceptance.
+The default smoke check caps output at 32 tokens. The explicit 2,000-token override above matches the configured V4 campaign ceiling. The smoke command and runtime use the documented disabled-thinking setting for this model. The smoke makes only one generation with a 20-second timeout and no SDK automatic retry. It also verifies a completed Weave call. This is a connection check, not full T088 campaign acceptance.
 
 ## 2 Measure the original agent for T039
+
+The Llama baseline already completed all 36 trials with zero infrastructure errors and verified fixed scores in Weave; see `docs/baseline-results.md`. Running this command again uses the currently configured model and creates a new study. Do not relabel the earlier Llama measurements as V4 results.
 
 ```sh
 ./scripts/run-baseline-study.sh --execute-live --wait
@@ -36,6 +38,8 @@ Read status later without execution:
 The dashboard's **Run baseline** button runs one healthy smoke episode; it does not replace this study. Full baseline-study counts appear in the CLI/status JSON, separately from the ordinary campaign matrix. Record results in `docs/baseline-results.md`.
 
 ## 3 Attempt learning for T065
+
+The preceding V3.1 campaign (`campaign-e6ac7b05ebc049f6804d34dc04d4ef72`) finished `NO_CHANGE` after 119 episodes and 829 model calls, with zero provider errors and all 119 episode traces verified. Reproduction and reduction ran, but no diagnosis qualified for repair. Its conservative admitted inference ceiling was $17.3261; the actual billed total is unknown. The V4 attempt must produce its own evidence.
 
 ```sh
 ./scripts/run-demo.sh --mode learn --execute-live --wait
@@ -86,4 +90,4 @@ Fresh regression execution returns an execution ID. External/selector requests r
 
 This queues eight frozen cases with three trials each for B0, B1 and L: 72 episodes. It requires the accepted policy and matching freeze. Save the returned batch ID; read `/api/audit-results/BATCH_ID` for persisted status. Retain all outcomes and report denominators, uncertainty and overhead in `docs/final-results.md`. Do not rerun until results look favorable or use audit feedback to repair this frozen policy.
 
-Finally, export the campaign's saved evidence and update the six task checkboxes only when their actual required evidence is present. An empty dashboard panel or a passing offline test is not a substitute for a completed live experiment.
+Finally, export the campaign's saved evidence and update the remaining task checkboxes only when their actual required evidence is present. An empty dashboard panel or a passing offline test is not a substitute for a completed live experiment.

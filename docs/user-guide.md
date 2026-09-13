@@ -34,36 +34,44 @@ Run one service in each window and leave it running:
 ./scripts/start-frontend.sh
 ```
 
-For a fresh installation, run `./scripts/setup.sh` once first. If an ordinary backend already uses port 8000, stop that backend with Ctrl+C before starting the live backend. Keep an already-running simulator or frontend; do not launch duplicate copies.
+For a fresh installation, run `./scripts/setup.sh` once first. If any backend already uses port 8000, stop it with Ctrl+C and restart with the live launcher so it loads the current code and model. Keep an already-running simulator or frontend; do not launch duplicate copies.
 
 **Why.** The dashboard needs a coordinator and a mock service to perform the experiment.
 
-**Backend.** The live launcher preserves your existing `.env`. It selects `openai/gpt-oss-120b` and W&B's canonical project `shreetbohara-quinstreet/Faultlab`. It sets ceilings of 6,000 calls, 60 million tokens and $100 per campaign, with verified model rates. Starting services makes no model calls. Keep settings and source unchanged during a campaign; the live launcher disables automatic reloads.
+**Backend.** The live launcher preserves your existing `.env`. It selects `deepseek-ai/DeepSeek-V4-Pro-0813` and W&B's canonical project `shreetbohara-quinstreet/Faultlab`. It sets ceilings of 6,000 calls, 204 million tokens and $100 per campaign, with verified model rates. Starting services makes no model calls. Keep settings and source unchanged during a campaign; the live launcher disables automatic reloads.
 
-**Frontend.** Open `http://127.0.0.1:5173` and look for **Backend connected**. The page reads health and configuration; it has not started a run. If disconnected, check the backend terminal and click **Check again**.
+**Frontend.** Open `http://127.0.0.1:5173` and look for **Backend connected** and **deepseek-ai/DeepSeek-V4-Pro-0813** in Run desk. The page reads health and configuration; it has not started a run. If disconnected, check the backend terminal and click **Check again**.
 
 ## 2 Check the model connection
 
 **Do this.** In a fourth terminal in the same application folder, run:
 
 ```sh
-WANDB_PROJECT=Faultlab WANDB_MODEL='openai/gpt-oss-120b' \
+WANDB_PROJECT=Faultlab WANDB_MODEL='deepseek-ai/DeepSeek-V4-Pro-0813' \
   ./scripts/smoke-sponsors.sh \
   --confirm-entity shreetbohara-quinstreet \
   --max-output-tokens 2000
 ```
 
-**Why.** This catches account and trace-connection problems before a longer experiment. GPT-OSS uses reasoning tokens; the default 32-token smoke limit can end before it returns a final answer. This explicit limit matches the campaign's existing per-call ceiling.
+**Why.** This catches account and trace-connection problems before a longer experiment. DeepSeek V4 Pro is selected after real action, report, scenario and diagnosis checks. Thinking is disabled using W&B’s documented setting so the model returns its final answer within the call allowance. This command checks the connection; the runtime also uses JSON mode and exact action schemas. The explicit limit matches the campaign's existing per-call ceiling.
 
 **Backend.** Verifies the model ID, makes one generation with a 20-second timeout and no automatic retry, then reads back its completed Weave trace. Success prints a response and actual trace link. Keys stay server-side.
 
 **Frontend.** The result appears in Terminal. The dashboard does not create or start a campaign from this command.
 
+**Check the ordinary order workflow.** Before fault testing, run:
+
+```sh
+./scripts/run-demo.sh --mode baseline --execute-live --wait
+```
+
+This checks that the whole product can upgrade and confirm an order without injected faults. The backend calls the real model and local mock APIs, checks the final report and verifies its Weave trace. In the frontend, paste the printed campaign ID into **Open saved campaign** and click **Load recording**. Expect `COMPLETED` and eight passing checks. This is one healthy episode; the 36-trial research baseline is separate.
+
 Model discovery is available with `./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet`. To switch models, also update matching verified prices and create a new campaign. The live launcher records its pricing source. Its $100 cap applies to one campaign, not every campaign on the account combined.
 
 ## 3 Create and start one learning run
 
-**Do this in the dashboard.** In **Run desk**, choose **Execution profile → Live · configured model**, then **Campaign mode → Learn**. Keep the supplied task and enter an order label such as `order-live-demo`. Click **Create campaign**. Review the campaign ID, model and budget, then click **Start campaign** once.
+**Do this in the dashboard.** In **Run desk**, choose **Execution profile → Live · configured model**, then **Campaign mode → Learn**. Keep the supplied task and enter an order label such as `order-live-demo`. If playback is active, click **Exit playback**. Click **Create campaign**. Review the campaign ID, model and budget, then click **Start campaign** once.
 
 **Why.** Create fixes what you are testing. Start explicitly begins the paid experiment. The supported task is order upgrade and confirmation; free text does not define arbitrary new tools or workflows.
 
@@ -108,7 +116,7 @@ You do not need to click through these stages. The backend advances automaticall
 
 **Backend.** Keeps every attempt, including rejected candidates and inconclusive results. The active recovery policy changes only after the promotion checks pass.
 
-**Frontend.** In **Recovery policy → Immutable version**, select the relevant version. If a proposal exists, use **Read original model proposal** and **Policy content and complete provenance** to inspect its decision. No proposal was generated in the recorded NO_CHANGE run. Under **Sponsor evidence → Weave**, use **Open Weave trace** for a recorded remote trace. Aria remains pending in this walkthrough.
+**Frontend.** In **Recovery policy → Immutable version**, select the relevant version. If a proposal exists, use **Read original model proposal** and **Policy content and complete provenance** to inspect its decision. Under **Sponsor evidence → Weave**, use **Open Weave trace** for a recorded remote trace. Aria remains pending in this walkthrough.
 
 | Result | Meaning |
 |---|---|
@@ -135,11 +143,11 @@ The walkthrough covers one learning campaign with Inference and Weave. Broader v
 
 | Task | Required evidence |
 |---|---|
-| T039 baseline study | Six development cases with three B0/B1 pairs each. The command is in `docs/live-validation.md`; Run baseline runs only one healthy episode. |
+| T039 baseline study done | All 36 B0/B1 trials completed with Llama; the fixed scores were verified in Weave. DeepSeek is now the selected model. |
 | T065 learning | Repeated failure, tested diagnosis, generated repair, challenge and promotion evidence. Improvement must be measured. |
 | T088 sponsors | Real Inference, Weave evaluation/dataset and automatic Aria analysis. Aria is deferred. |
 | T097 freeze | Save the accepted policy and exact configuration before protected studies. Requires an accepted learned policy. |
 | T100 external studies | Run exported failures on the independent agent; measure transfer and equal-budget fault selection. |
 | T102 final audit | Run the sealed 72-episode comparison and retain all results. Do not tune the policy from audit results. |
 
-**Observed live result.** The tested campaign finished NO_CHANGE: one order completed, one trial violated a check, and six trials received no usable final model answer. Repair stages were not reached. See `docs/learning-results.md` and `docs/sponsor-results.md` for exact evidence. Additional studies have separate campaign budgets. Stop service terminals with Ctrl+C when finished; local history remains saved.
+**Verified here.** V4 Pro completed the healthy order with all eight checks passing. The final learning attempt made 44 model calls without provider errors; all eight traces were verified in Weave. It found no fixed-rule failure, so it finished `NO_CHANGE`. Automatic repair, challenge and promotion remain unverified live. See `docs/learning-results.md` and `docs/sponsor-results.md` for the evidence. Additional studies have separate campaign budgets. Stop service terminals with Ctrl+C when finished; local history remains saved.
