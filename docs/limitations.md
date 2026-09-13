@@ -13,8 +13,11 @@ The 2026-09-13 split-role campaign (`campaign-aa79023053da470984118fdb1e9d8138`,
 Aria is no longer deferred. An observed W&B automation fires `Trigger ARIA` automatically when a run named
 `^faultlab-campaign-.*` reaches FINISHED, verified against W&B's GraphQL API including a byte-exact match
 between the stored prompt and the reviewed prompt. Aria's immediate reply is HTTP 202 with a thread id, which
-is a dispatch and not evidence of analysis; the analysis is read by an operator and recorded as attributed
-manual capture, never independent remote verification. One capture is COMPLETED with an Aria-authored report as
+is a dispatch and not evidence of analysis. Completion was confirmed by reading the conversation back from
+W&B's agent service, which reports the thread as `completed` with 140 messages and 46 tool calls; the
+operator summary was checked against that text. That endpoint is undocumented and is not an allowlisted
+evidence host, so it verifies the summary but does not itself constitute recorded evidence, and the capture
+remains attributed operator observation rather than independent remote verification. One capture is COMPLETED with an Aria-authored report as
 its output URL, and an earlier UNVERIFIED capture is retained rather than removed.
 
 Aria's counts must not be read as audited figures. For the published campaign it described 18 episodes with 13

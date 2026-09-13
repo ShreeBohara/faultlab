@@ -74,8 +74,13 @@ shreetbohara-quinstreet`, `projectName: Faultlab`, `runName: fl825f412b6fa2d6ae3
 `${project_name}` resolved to the real run and project. Aria replied HTTP 202 `Accepted` with
 `thread_id` and `turn_id` `01a09c52-640e-7590-b61e-49b2c3a1657a`. Readback: `artifacts/aria-execution-readback.json`.
 
-The 202 and the 485 ms duration are a dispatch, not an analysis. Automatic invocation is therefore established
-by these records; Aria producing useful output is established separately by operator observation below.
+The 202 and the 485 ms duration are a dispatch, not an analysis. Completion was confirmed separately by
+reading the conversation back from W&B's agent service: thread `01a09c52-640e-7590-b61e-49b2c3a1657a`
+reports `state: completed`, created 19:50:40.398Z and finished 20:03:27.356Z, containing 140 messages with
+39 reasoning steps, 46 tool calls and 7 assistant answers. The operator summary recorded below was checked
+against that source text and matches it. Note that this endpoint (`wb-agent.wandb.ai/api/v1/turns/{id}`) is
+undocumented, is not an allowlisted evidence host, and was used only to verify the observed summary; the
+recorded `output_url` remains the Aria-authored report on `wandb.ai`. Readback: `artifacts/aria-thread-readback.json`.
 
 **Observed Aria output, and its measured inaccuracy.** The operator read the resulting Aria conversation in the
 W&B UI. Aria produced a substantive analysis: it reported 13 completed, 3 correctly rejected and 2
