@@ -10,16 +10,28 @@ The 2026-09-13 V3.1 repair-loop campaign (`campaign-44085f54a24144b78252d8eea211
 
 The 2026-09-13 split-role campaign (`campaign-aa79023053da470984118fdb1e9d8138`, DeepSeek V3.1 under test, DeepSeek V4-Pro-0813 as Explorer and Mechanic) reached a supported diagnosis on its first source and produced four model-generated candidate policies, all with identical content. Every candidate repaired the original failure in only two of three pairs, or one of three, so none met the fixed 3/3 source-validation requirement and the campaign ended NO_CHANGE without reaching challenge or promotion. The saved episodes locate the remaining limit in the agent under test, not in the policy: with the receipt already delivered by the policy and the confirmation already sent, V3.1 still failed to emit a valid final report in 5 of 12 candidate trials, against an incumbent that completed 0 of 12; at that observed 7-of-12 repair rate a 3/3 batch clears only about one time in five. A second limit is unchanged across both lab models: V3.1 and V4 both placed the honest `defer_unresolved` step only in `before_final_report`, a hook the interpreter reaches only when a report has already been proposed, so the step cannot rescue an agent that never reports. The per-hook invocation boundaries are not among the facts the Mechanic receives. No learned policy is accepted; see `docs/learning-results.md`.
 
-Aria is no longer deferred, but its gate is only partly met. An observed W&B automation fires `Trigger ARIA`
-automatically when a run named `^faultlab-campaign-.*` reaches FINISHED, and that invocation is verified against
-W&B's GraphQL API, including a byte-exact match between the stored prompt and the reviewed prompt. Aria's reply
-is HTTP 202 with a thread id, which is a dispatch and not evidence of analysis; the analysis itself is read by an
-operator in the UI and remains attributed manual capture, never independent remote verification. The one observed
-Aria analysis reported episode counts that do not match the saved records for that campaign: it described 18
-episodes with 13 completed and 3 correctly rejected, while the campaign holds 36 discovery episodes with 28
-completed, 6 correctly rejected, 2 violations and zero lab errors. Its counts correspond to the 18 published Weave
-links, so it analysed part of the campaign. Advisory Aria output cannot and did not change any policy, checker
-rule, budget or promotion decision.
+Aria is no longer deferred. An observed W&B automation fires `Trigger ARIA` automatically when a run named
+`^faultlab-campaign-.*` reaches FINISHED, verified against W&B's GraphQL API including a byte-exact match
+between the stored prompt and the reviewed prompt. Aria's immediate reply is HTTP 202 with a thread id, which
+is a dispatch and not evidence of analysis; the analysis is read by an operator and recorded as attributed
+manual capture, never independent remote verification. One capture is COMPLETED with an Aria-authored report as
+its output URL, and an earlier UNVERIFIED capture is retained rather than removed.
+
+Aria's counts must not be read as audited figures. For the published campaign it described 18 episodes with 13
+completed and 3 correctly rejected, while that campaign holds 36 discovery episodes with 28 completed, 6
+correctly rejected, 2 violations and zero lab errors; its denominators correspond to the 18 published Weave
+links. Where it could be checked against saved records it also agreed, reporting 7/12 completed for the
+`campaign-aa790230` candidate, which matches the direct count. Advisory Aria output cannot and did not change
+any policy, checker rule, budget or promotion decision.
+
+Aria did surface a real defect in this project's telemetry. Genuine contract violations are traced as
+infrastructure failures: for `campaign-44085f54a24144b78252d8eea211ebb8` all 143 episodes have referee lifecycle
+COMPLETED with 77 VIOLATION verdicts and zero referee lab errors, yet the `run_episode` traces mark exactly
+those 77 as `terminal_status: LAB_ERROR` with `error_category: PROTOTYPE_EXCEPTION`. The span handler in
+`backend/app/telemetry/tracing.py` labels any escaping exception LAB_ERROR, while `backend/app/lab/runner.py`
+does not treat `ActorReportError` as a lab error. External analysis based on Weave will therefore understate
+genuine reporting failures and overstate infrastructure faults. A fix is tracked separately, and traces already
+written to Weave cannot be relabelled.
 
 Two operational deviations are recorded rather than hidden. The Finished run for
 `campaign-63933675566f49a994eb3e5bb6145434` was published by an operator script invoking the same `AriaBridge`

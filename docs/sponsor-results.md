@@ -89,17 +89,34 @@ links rather than the episode set, so it analysed roughly half the campaign. Bot
 with a delivered report whose own `overall` was `SAFE_UNRESOLVED`. Aria's advisory output changed no policy,
 checker rule, budget or promotion decision, as required.
 
-**Recorded capture.** The attributed capture was filed as `aria-bfb1956439104da6a4b027e8b7d0f078` at
-2026-09-13T20:03:07Z with `invocation_mode: automatic`, `provenance: manual_ui_capture`, execution
-`TriggerExecution:674022`, thread `01a09c52-640e-7590-b61e-49b2c3a1657a`, history URL
-`https://wandb.ai/shreetbohara-quinstreet/Faultlab/automations`, and 18 verified source references. Its status
-is **UNVERIFIED**, not COMPLETED, and `output_url` is null. W&B provides no addressable URL for an Aria
-conversation: the documented route is the creator's Ask ARIA chat history under *Past conversations*, matched by
-project, date and prompt text. Because no output URL exists, `validate_analysis_capture` derived
-`state: pending_unverified` with `automatic_evidence_complete: false` and `remote_verification: false`, and the
-campaign's `aria_status` is UNVERIFIED.
+**Recorded capture.** Two captures are retained. `aria-bfb1956439104da6a4b027e8b7d0f078` (20:03:07Z) was
+filed as UNVERIFIED while no conversation URL was known. `aria-9be89e4644234166bf8af095dbc027d0` (20:06:02Z) is
+**COMPLETED**: `invocation_mode: automatic`, execution `TriggerExecution:674022`, thread
+`01a09c52-640e-7590-b61e-49b2c3a1657a`, history URL
+`https://wandb.ai/shreetbohara-quinstreet/Faultlab/automations`, and output URL the Aria-authored
+[campaign analysis report](https://wandb.ai/shreetbohara-quinstreet/Faultlab/reports/FaultLab-development-campaign-63933675566f49a994eb3e5bb6145434-analysis--VmlldzoxNzkyNTQ3MQ==),
+with 18 verified source references. `validate_analysis_capture` derived `state: automatic_output_observed`
+with `automatic_evidence_complete: true`; `remote_verification` stays false because a pasted pointer is
+attributed operator capture, never independent readback. The campaign's `aria_status` is COMPLETED.
 
-**What is still open for T088.** Automatic invocation is established; a completed, independently addressable
-automatic analysis is not. No COMPLETED Aria analysis is claimed, and SC-006 stays unmet. Publication was operator-initiated (`artifacts/publish_campaign_run.py`)
+**Aria's critique of our telemetry is correct, and it found a real defect.** Aria declined to count
+`PROTOTYPE_EXCEPTION` records as policy violations. For the small published campaign that reading did not
+apply, since it carries zero LAB_ERROR traces. For `campaign-44085f54a24144b78252d8eea211ebb8`, which Aria
+followed through the linked evidence, it does: all 143 episodes have referee lifecycle COMPLETED with 66
+COMPLETED and **77 VIOLATION** verdicts and **zero** referee lab errors, yet the `run_episode` traces label
+exactly those 77 as `terminal_status: LAB_ERROR` with `error_category: PROTOTYPE_EXCEPTION`. The cause is
+`backend/app/telemetry/tracing.py`, whose span handler stamps LAB_ERROR on any escaping exception, while
+`backend/app/lab/runner.py` deliberately does not set `lab_error` for `ActorReportError` because failing to
+report is a genuine contract violation. Any external analyst reading Weave will therefore misclassify these
+runs as infrastructure crashes rather than reporting failures. Aria read our telemetry faithfully; the
+telemetry is wrong. A fix is tracked separately; historical traces already in Weave cannot be relabelled.
+
+Aria also independently corroborated a measured result: it reported the candidate on
+`campaign-aa79023053da470984118fdb1e9d8138` at 7/12 completed, matching the 7 of 12 counted directly from the
+saved records.
+
+**What is still open for T088.** Automatic invocation and an addressable automatic analysis are both now
+established and recorded. Remote verification of the Aria output remains false by design, and the earlier
+deviations stand. Publication was operator-initiated (`artifacts/publish_campaign_run.py`)
 rather than produced by the coordinator's end-of-campaign hook, and `aria_bindings` was written manually to
 mirror the coordinator's own binding step. Both deviations are recorded here rather than implied away.
