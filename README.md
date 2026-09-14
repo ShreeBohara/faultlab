@@ -102,6 +102,10 @@ A recorded live split-model campaign finished `NO_CHANGE` after a repeatable C5 
 
 ## Architecture
 
+![FaultLab whole-system architecture and feedback loop](docs/assets/faultlab-architecture.png)
+
+[Architecture overview and downloadable graphic](docs/architecture.md)
+
 - `backend/app/simulator` — local HTTP world, four ordinary faults (delay, pending, stale read, transient failure)
 - `backend/app/referee` — fixed C1–C8 checks
 - `backend/app/lab` — campaign state, budgets, learning stages
