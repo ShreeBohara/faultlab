@@ -3,6 +3,7 @@ import { createElement as h, StrictMode } from 'react'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EvidenceScreen } from '../src/components/EvidenceScreen'
+import { ThemeToggle } from '../src/components/ThemeToggle'
 import { api, request } from '../src/api'
 import { campaign, episode, fixtureResponse, verifiedExperiments } from './fixtures'
 let writes: string[]
@@ -17,6 +18,19 @@ beforeEach(() => {
 })
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks() })
 describe('evidence screen behavior', () => {
+  it('defaults to dark mode and restores a changed theme after remounting', () => {
+    const first = render(h(ThemeToggle))
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }))
+    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(localStorage.getItem('faultlab:theme')).toBe('light')
+    first.unmount()
+    render(h(ThemeToggle))
+    expect(document.documentElement.dataset.theme).toBe('light')
+    fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(writes).toEqual([])
+  })
   it('starts read-only with honest empty states and unavailable live controls', async () => {
     render(h(EvidenceScreen))
     await screen.findByText('Backend connected')
@@ -179,4 +193,20 @@ it('reports unreached stages as not run rather than leaving them blank', () => {
 it('renders nothing until a campaign is selected', () => {
   const view = render(h(RunSummary, { campaign: undefined, matrix: matrixFixture, experiments: undefined, policies: [] }))
   expect(view.container.textContent).toBe('')
+})
+it('keeps the latest incident reproduction, reduction and diagnosis together', () => {
+  const latest = {
+    ...testedExperiment,
+    counterexample: { ...testedExperiment.counterexample, counterexample_id: 'counter-latest', target_invariant: 'C5', target_violation_count: 2 },
+    reduction: null,
+    diagnostics: [],
+    interventions: [],
+  }
+  const records = validateExperiments({ ...experiments, counterexamples: [testedExperiment, latest] })
+  const view = render(h(RunSummary, { campaign, matrix: matrixFixture, experiments: records, policies: [baseline] }))
+  expect(view.container.textContent).toContain('2 of 3 fresh trials violated C5.')
+  expect(view.container.textContent).toContain('No reduction recorded.')
+  expect(view.container.textContent).toContain('No controlled intervention finished.')
+  expect(view.container.textContent).not.toContain('Reduction budget reached.')
+  expect(screen.getAllByText('Candidate violated C1; saved counterexample returns to development.')).toHaveLength(1)
 })

@@ -100,6 +100,12 @@ Create a **Learn** campaign in the dashboard, then click **Start campaign**. Do 
 
 A recorded live split-model campaign finished `NO_CHANGE` after a repeatable C5 truthful-report failure and an inconclusive diagnosis. That is the honest outcome: the loop found a scar, refused to invent a fix, and kept the evidence.
 
+## Dashboard
+
+![FaultLab dashboard in dark mode. The run summary for the recorded campaign shows 143 trials, 77 violations, 66 completed, 995 model calls and 143 of 143 Weave-verified traces, then six learning stages: the failure repeated 3 of 3 times, the fault was reduced, the diagnosis was supported, three candidate policies were proposed, the challenge found a counterexample and returned to repair, and no promotion batch qualified.](docs/assets/faultlab-dashboard-dark.png)
+
+The dashboard reads only persisted records. This capture shows `campaign-44085f54a24144b78252d8eea211ebb8`: a repeated C5 failure, a supported diagnosis, three model-written candidate policies, and a challenge that found a counterexample, so `policy-v0` stayed active. Dark and light themes switch from the header. Regenerate the image with `node scripts/capture-dashboard.mjs` while the simulator, backend and frontend are running.
+
 ## Architecture
 
 ![FaultLab whole-system architecture and feedback loop](docs/assets/faultlab-architecture.png)

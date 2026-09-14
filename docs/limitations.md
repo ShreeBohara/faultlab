@@ -42,8 +42,13 @@ rather than by the coordinator's end-of-campaign hook, and its `aria_bindings` r
 mirror the coordinator's binding step. Separately, campaign `campaign-b80e4ade72ed42ab815f977b62f8a297` can never
 publish: an operator invocation whose telemetry worker failed to start still wrote the immutable
 `aria_publish_intents` record, and `publish_campaign` refuses any campaign with a prior intent. That campaign also
-terminated ERROR for a cause that was not established; registering the Aria setup activated a previously unused
-completion path, and the generic handler discards the traceback.
+terminated ERROR, and the cause is now established: the local world simulator had stopped. It made 8 Explorer
+selections but ran only 7 episodes, and died 5 seconds after the last one ended, which is the 8th episode
+failing to create a world. A later campaign reproduced the same signature exactly, erroring after a single
+successful Explorer call with zero episodes while nothing was listening on the simulator port. The earlier
+attribution to the Aria completion path was wrong. The generic handler in `_execute` discards the traceback,
+so an infrastructure outage is indistinguishable from a logic fault in the recorded state; that reporting gap
+is a real limitation of this prototype.
 
 Three repeated trials and four challenge schedules are finite observations, not statistical certainty or an unbreakable policy. A reduced incident is only locally minimal in the tested finite neighborhood. The evidence-gap diagnostic is limited to its two worlds, ten public probes and declared deadline; it does not prove universal impossibility.
 
