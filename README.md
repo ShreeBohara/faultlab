@@ -8,6 +8,8 @@ This is a **self-improving agent loop**, not weight training. The loop learns re
 
 > **Try → Check → Repeat → Explain → Propose → Challenge → Promote**
 
+**[Presentation slides (PDF)](docs/presentation.pdf)** — the hackathon architecture and proposed loop. See the [recorded results](docs/learning-results.md) for which stages actually ran; no learned repair has been accepted yet.
+
 ## Why it exists
 
 Timeouts do not mean failure. An order API can commit while the agent sees a lost response. Guessing creates duplicate effects or false claims. FaultLab studies whether an agent can stay truthful when the public evidence is incomplete.
