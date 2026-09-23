@@ -120,7 +120,7 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
   - `algorithm_hash` is `8d92e0c5…` and `runtime_hash` is `485c5e12…`;
   - the expected `configuration_hash` is `c4169ee4…`, cross-checked against Phase 15's
     stored configuration.
-- **Tests:** 594 before; 53 new.
+- **Tests:** 594 before; 53 new; **647 passed after** all Phase 16 changes. The intermittent `[untriggered]` failure is still unexplained.
 - **Phase 17 is declared** (`docs/part2/PHASE17_EXPERIMENT.md`) and **awaits the user's
   approval to spend.**
 

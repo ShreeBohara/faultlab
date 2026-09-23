@@ -153,6 +153,6 @@ person or agent read it; `gate_freeze.py` and the backend hash its bytes.
   - **A hanging test.** While fixing round 2's findings, one new test hung because my fake
     backend never became idle on the adoption path. The fake is fixed, and every runner test
     now caps idle waits at 2 seconds.
-- **Full suite after all round-2 changes:** see the final line of this section.
+- **Full suite after all round-2 changes:** **647 passed** (594 existing + 53 new), 0 failed.
 - **Still unexplained:** the known intermittent `[untriggered]` failure (~1 in 8). It did not
   occur in the runs recorded here, which does not mean it is fixed.
