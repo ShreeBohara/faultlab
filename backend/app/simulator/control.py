@@ -33,6 +33,9 @@ def router(store,control_token):
         except ValueError:local=host=='testclient'
         if not local or not control_token or not x_faultlab_control or not secrets.compare_digest(control_token,x_faultlab_control):raise HTTPException(403,'Control capability required')
     api.dependencies=[Depends(authorize)]
+    @api.get('/ready')
+    def ready():
+        return {'status':'ok','service':'faultlab-simulator','schema_version':'faultlab/v1'}
     @api.post('/worlds',status_code=201)
     def create(body:CreateWorld):return store.create(body.episode_id,body.intent,body.fault_spec,body.fixture_id)
     @api.post('/diagnostics/worlds',status_code=201)

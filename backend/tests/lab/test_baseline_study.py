@@ -2,6 +2,7 @@
 import asyncio,json
 from dataclasses import replace
 import httpx,pytest
+from unittest.mock import AsyncMock
 from app.config import Settings
 from app.contracts.models import CampaignRequest,canonical_json
 from app.adapters.business_tools import WorldClient
@@ -101,6 +102,7 @@ async def test_explicit_gate_stop_and_no_implicit_dispatch(tmp_path):
     calls=[]
     async def forbidden(*args): calls.append('runner'); raise AssertionError('Stopped before dispatch')
     c._get_runner=forbidden
+    c.require_simulator=AsyncMock()  # Local readiness is covered by integration tests.
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=backend_app(coordinator=c)),base_url='http://127.0.0.1:8000')
     path=f'/api/campaigns/{campaign.campaign_id}/baseline-study'
     for body in ({},{'execute_live':False},{'execute_live':True,'unknown':'field'}): assert (await client.post(path,json=body)).status_code==422
@@ -121,6 +123,7 @@ async def test_active_and_budget_admission_reject_before_study(tmp_path):
     with pytest.raises(StoreConflict): await queue_baseline_study(c,campaign.campaign_id)
     assert not c.store.list_records('baseline_studies')
     c.active_id=None
+    c.require_simulator=AsyncMock()
     from app.lab.budgets import CampaignLedger,BudgetExhausted
     ledger=CampaignLedger(c.store,campaign.campaign_id,campaign.caps,dollar_bound=c.settings.model_call_dollar_bound); c.ledgers[campaign.campaign_id]=ledger
     ledger.reserve('other-complete-batch',campaign.caps.model_calls-1064-100)
@@ -133,6 +136,7 @@ async def test_initialization_failure_is_retained_and_releases_active_reservatio
     c=LabCoordinator(settings(tmp_path)); campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
     async def unavailable(live): raise RuntimeError('Local initialization fixture failure')
     c._get_runner=unavailable
+    c.require_simulator=AsyncMock()
     queued=await queue_baseline_study(c,campaign.campaign_id); await c.tasks[queued['study_id']]
     saved=c.store.get_record('baseline_studies',queued['study_id'])
     assert saved['status']=='INCOMPLETE' and not saved['trial_ids']

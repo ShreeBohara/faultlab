@@ -173,6 +173,10 @@ def test_reduced_f3_recipe_retains_original_history_fixture(bundle, store, regis
     (directory / "retained-recipe.json").write_text(canonical_json(retained))
     rewrite_manifest(directory, lambda m: m.update(source_recipe=source.model_dump(mode="json"), retained_recipe=retained.model_dump(mode="json"), fixture_id="history-v1"), "source-recipe.json")
     rewrite_manifest(directory, changed_file="retained-recipe.json")
+    evidence=json.loads((directory/'evidence.json').read_text())
+    evidence['initial_state'].update(fixture_id='history-v1',initial_order_version=4)
+    (directory/'evidence.json').write_text(canonical_json(evidence))
+    rewrite_manifest(directory,changed_file='evidence.json')
     observed_fixtures = []
     async def run_fresh(recipe, registered, policy, index, *, fixture_id):
         assert not recipe.primitives
@@ -193,3 +197,23 @@ def test_changed_reset_fixture_is_incomplete(bundle, store, registry, external):
     result = asyncio.run(RegressionRunner(store, registry).execute(directory, target, registration.registration_id,
         explicit_live=True, profile_id="sandbox-v1", run_fresh=run_fresh))
     assert result.status == "INCOMPLETE" and len(result.episode_ids) == 1
+
+
+def test_rejected_candidate_comparison_can_run_fresh_without_becoming_accepted(bundle,store,registry,external):
+    directory,_=bundle; registration,target=external
+    policy=json.loads((directory/'policy.json').read_text())
+    policy.update(version='rejected-candidate',decision='REJECTED')
+    (directory/'policy.json').write_text(canonical_json(policy))
+    evidence=json.loads((directory/'evidence.json').read_text()); evidence['artifact_kind']='candidate_comparison'
+    (directory/'evidence.json').write_text(canonical_json(evidence))
+    rewrite_manifest(directory,lambda m:m.update(artifact_kind='candidate_comparison'),changed_file='policy.json')
+    rewrite_manifest(directory,changed_file='evidence.json')
+    decisions=[]
+    async def fresh(recipe,registered,selected,index,*,fixture_id):
+        decisions.append(selected.decision)
+        return persist_trial(store,registered,trial(recipe,selected,index),fixture_id=fixture_id)
+    result=asyncio.run(RegressionRunner(store,registry).execute(directory,target,registration.registration_id,
+        explicit_live=True,profile_id='sandbox-v1',run_fresh=fresh))
+    assert result.status=='COMPLETED' and decisions==['REJECTED']*3
+    assert store.get_pointer('active-policy:offline-campaign') is None
+    assert store.get_record('regression_assertions',result.execution_id)['reproduced']

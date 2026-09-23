@@ -11,15 +11,17 @@ import stat
 
 from app.contracts.models import (RegressionBundle, RegressionExecution, PolicyVersion,
     FaultSpec, TrialResult, EpisodeBudget, Usage, Counterexample, DiagnosticResult,
-    ChallengeResult, ReductionResult, canonical_json, content_hash, new_id)
+    ChallengeResult, ReductionResult, Episode, Event, canonical_json, content_hash, new_id)
 from app.integrations.registry import ROOT
+from app.lab.regressions import manifest_payload,artifact_kind,runnable_policy,MAX_BUNDLE_FILE,MAX_BUNDLE_BYTES
 
 INVENTORY = frozenset({"policy.json", "configuration.json", "source-recipe.json", "retained-recipe.json", "trials.json", "lineage.json", "harness/test_regression.py"})
 TRUSTED_TEMPLATE = Path(__file__).with_name("templates") / "test_regression.py"
-HARNESS_VERSION = "faultlab-runner-v1"
+HARNESS_VERSION = "faultlab-runner-v2"
+LEGACY_SCHEMA_HASH = '67bf010177427eee95883743f7330ebb7ec508a14af48fc601d3c4016900f008'
 PROFILE_ID = "sandbox-v1"
-MAX_FILE = 2 * 1024 * 1024
-MAX_BUNDLE = 8 * 1024 * 1024
+MAX_FILE = MAX_BUNDLE_FILE
+MAX_BUNDLE = MAX_BUNDLE_BYTES
 
 
 def _json(content):
@@ -78,18 +80,20 @@ def inspect_bundle(bundle_dir):
             raise ValueError("Unknown bundle directory rejected")
         elif not path.is_dir():
             raise ValueError("Nonregular bundle entry rejected")
-    if actual != INVENTORY | {"manifest.json"}:
-        raise ValueError("Exact reviewed bundle inventory required")
     raw_manifest = _json(_read(directory / "manifest.json"))
     bundle = RegressionBundle.model_validate_json(canonical_json(raw_manifest))
+    inventory=INVENTORY|({'evidence.json'} if bundle.harness_version==HARNESS_VERSION else set())
+    if actual != inventory | {"manifest.json"}:
+        raise ValueError("Exact reviewed bundle inventory required")
     entries = {entry.path: entry for entry in bundle.files}
-    if set(entries) != INVENTORY or len(entries) != len(bundle.files):
+    if set(entries) != inventory or len(entries) != len(bundle.files):
         raise ValueError("Unknown, duplicate or missing inventory entry")
-    if bundle.manifest_hash != content_hash({k: v for k, v in bundle.model_dump(mode="json").items() if k != "manifest_hash"}):
+    if bundle.manifest_hash != content_hash({k: v for k, v in manifest_payload(bundle).items() if k != "manifest_hash"}):
         raise ValueError("Manifest digest mismatch")
     schema_hash = sha256((ROOT / "contracts/RegressionBundle.schema.json").read_bytes()).hexdigest()
     trusted_source = TRUSTED_TEMPLATE.read_bytes()
-    if bundle.schema_hash != schema_hash or bundle.harness_version != HARNESS_VERSION or bundle.harness_hash != sha256(trusted_source).hexdigest():
+    schema_allowed={schema_hash,LEGACY_SCHEMA_HASH} if bundle.harness_version=='faultlab-runner-v1' else {schema_hash}
+    if bundle.schema_hash not in schema_allowed or bundle.harness_version not in (HARNESS_VERSION,'faultlab-runner-v1') or bundle.harness_hash != sha256(trusted_source).hexdigest():
         raise ValueError("Untrusted schema or runner version/digest")
     if bundle.execution_profile_id != PROFILE_ID or bundle.caps != EpisodeBudget():
         raise ValueError("Unsupported execution profile or caps")
@@ -136,6 +140,29 @@ def inspect_bundle(bundle_dir):
     for field, cls in classes.items():
         if lineage[field] is not None:
             cls.model_validate_json(canonical_json(lineage[field]))
+    kind=artifact_kind(bundle,policy)
+    if kind=='accepted_policy_bundle' and policy.decision!='ACCEPTED': raise ValueError('Accepted-policy label contradicts recorded decision')
+    if 'evidence.json' in payloads:
+        from app.telemetry.safety import public_json
+        evidence=public_json(_json(payloads['evidence.json']),max_bytes=MAX_BUNDLE)
+        if evidence.get('recording_version')!='faultlab-development-recording/v1' or evidence.get('artifact_kind')!=kind:
+            raise ValueError('Incident evidence version or kind mismatch')
+        if evidence.get('initial_state',{}).get('fixture_id')!=bundle.fixture_id:
+            raise ValueError('Incident reset fixture mismatch')
+        episode_ids=set()
+        for raw in evidence.get('episodes',[]):
+            episode=Episode.model_validate_json(canonical_json(raw))
+            if episode.split!='development' or episode.campaign_id!=evidence.get('campaign_id') or episode.episode_id in episode_ids:
+                raise ValueError('Protected or mismatched incident episode')
+            episode_ids.add(episode.episode_id)
+        for episode_id,events in evidence.get('events',{}).items():
+            if episode_id not in episode_ids: raise ValueError('Unrelated incident event timeline')
+            previous=0
+            for raw in events:
+                event=Event.model_validate_json(canonical_json(raw))
+                if event.episode_id!=episode_id or event.seq<=previous or event.visibility=='PRIVATE_EVALUATOR':
+                    raise ValueError('Private or unordered incident event')
+                previous=event.seq
     return InspectedBundle(bundle, policy, configuration, trials)
 
 
@@ -186,8 +213,7 @@ class RegressionRunner:
         policy = policy_version or inspected.policy
         if policy.policy_hash != inspected.bundle.policy_hash or content_hash(policy.content) != inspected.bundle.policy_hash:
             raise ValueError("Fresh transfer must use the exact bundled policy")
-        if policy.decision not in ("BASELINE", "ACCEPTED"):
-            raise ValueError("Fresh execution requires an immutable baseline or accepted policy")
+        runnable_policy(inspected.bundle,policy)
         if execution_id is not None:
             previous = self.store.get_record("regression_executions", execution_id)
             if previous is not None and (previous.get("status") != "PENDING" or previous.get("bundle_id") != inspected.bundle.bundle_id or previous.get("registration_id") != registration_id or previous.get("manifest_hash") != inspected.bundle.manifest_hash):

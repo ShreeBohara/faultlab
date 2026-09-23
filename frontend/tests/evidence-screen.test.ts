@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { createElement as h, StrictMode } from 'react'
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EvidenceScreen } from '../src/components/EvidenceScreen'
 import { ThemeToggle } from '../src/components/ThemeToggle'
@@ -18,6 +18,23 @@ beforeEach(() => {
 })
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks() })
 describe('evidence screen behavior', () => {
+  it('keeps exactly one search and completion panel across repeated evidence-screen updates', async () => {
+    localStorage.setItem('faultlab:campaign', campaign.campaign_id)
+    render(h(EvidenceScreen))
+    await screen.findByText('No completion study recorded for this campaign.')
+    vi.useFakeTimers()
+    try {
+      for (let i = 0; i < 4; i++) {
+        fireEvent.click(screen.getByRole('button', { name: 'Switch to light mode' }))
+        fireEvent.click(screen.getByRole('button', { name: 'Switch to dark mode' }))
+        fireEvent.click(screen.getByRole('button', { name: i % 2 ? 'Exit playback' : 'Recorded playback' }))
+        await act(async () => { await vi.advanceTimersByTimeAsync(800) })
+        expect(screen.getAllByRole('heading', { name: 'Fault search · selection attempts' })).toHaveLength(1)
+        expect(screen.getAllByRole('heading', { name: 'Completion study · separate development experiment' })).toHaveLength(1)
+      }
+      expect(writes).toEqual([])
+    } finally { vi.useRealTimers() }
+  })
   it('defaults to dark mode and restores a changed theme after remounting', () => {
     const first = render(h(ThemeToggle))
     expect(document.documentElement.dataset.theme).toBe('dark')
@@ -34,7 +51,7 @@ describe('evidence screen behavior', () => {
   it('starts read-only with honest empty states and unavailable live controls', async () => {
     render(h(EvidenceScreen))
     await screen.findByText('Backend connected')
-    expect(screen.getByText(/No trials yet/)).toBeTruthy()
+    expect(screen.getByText(/No main-loop trials recorded/)).toBeTruthy()
     expect(screen.getByText(/Independent external validation is/)).toBeTruthy()
     expect((screen.getByRole('button', { name: 'Compare' }) as HTMLButtonElement).disabled).toBe(true)
     expect(writes).toEqual([])
@@ -188,6 +205,18 @@ it('reports unreached stages as not run rather than leaving them blank', () => {
   expect(view.container.textContent).toContain('A candidate must repair every source-validation pair first.')
   expect(campaignProposals([baseline], matrixFixture)).toEqual([])
   expect(campaignProposals([candidate], matrixFixture)).toEqual([candidate])
+  expect(writes).toEqual([])
+})
+it.each(['COMPLETED', 'IDLE'] as const)('labels main-loop counts separately from saved study verification in a %s campaign', state => {
+  const records = validateExperiments({ ...experiments, ingestions: ['study-1', 'study-2', 'study-3'].map(episode_id => ({
+    episode_id, error_code: null, execution_epoch: 0, state: 'INGESTED', status: 'weave_verified',
+  })) })
+  render(h(RunSummary, { campaign: { ...campaign, state }, matrix: { ...matrixFixture, cells: [], counts: { valid_attempted: 0, violations: 0, completed: 0 } }, experiments: records, policies: [baseline] }))
+  expect(screen.getByText('Main-loop trials').previousElementSibling?.textContent).toBe('0')
+  expect(screen.getByText('Weave verified · campaign evidence').previousElementSibling?.textContent).toBe('3 / 3')
+  expect(screen.getByText('No learning-loop incident recorded')).toBeTruthy()
+  expect(screen.queryByText('Waiting for incident evidence')).toBeNull()
+  expect(screen.getByText(/Separate studies are excluded from these counts; their saved evidence may still appear below/)).toBeTruthy()
   expect(writes).toEqual([])
 })
 it('renders nothing until a campaign is selected', () => {

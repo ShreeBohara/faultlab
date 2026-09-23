@@ -24,6 +24,20 @@ async def test_mechanic_all_malformed_stays_rejected_no_canned_policy(tmp_path):
     assert 'Correct formatting only' in provider.messages[1][-1]['content']
 
 @pytest.mark.anyio
+async def test_mechanic_retains_campaign_ownership_for_every_raw_format_attempt(tmp_path):
+    store=LabStore(tmp_path/'lab.db'); ledger=CampaignLedger(store,'campaign-owned')
+    provider=Provider(['invalid','{"no_change_reason":"No supported repair"}'])
+    mechanic=Mechanic(provider,store,ledger)
+    mechanic.metadata={'campaign_id':'campaign-owned','episode_id':'source-owned','model_id':'openai/gpt-oss-120b'}
+    await mechanic.propose({'parent_version':'policy-v0'})
+    rows=store.list_records('mechanic_outputs')
+    assert len(rows)==2 and {r['campaign_id'] for r in rows}=={'campaign-owned'}
+    assert {r['episode_id'] for r in rows}=={'source-owned'}
+    assert len({r['request_id'] for r in rows})==1 and [r['attempt'] for r in rows]==[0,1]
+    assert [r['raw'] for r in rows]==['invalid','{"no_change_reason":"No supported repair"}']
+    assert all(r['usage']=={'model_calls':1,'input_tokens':None,'output_tokens':None,'cost_dollars':None} for r in rows)
+
+@pytest.mark.anyio
 async def test_mechanic_no_change_and_foreign_evidence_rejected(tmp_path):
     store=LabStore(tmp_path/'lab.db'); ledger=CampaignLedger(store,'c')
     invalid=json.dumps({'proposed_kind':'POLICY_GAP','hypothesis':'h','evidence_ids':['foreign'],'requested_intervention_id':'known'})

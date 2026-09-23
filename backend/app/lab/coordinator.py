@@ -24,10 +24,25 @@ class LabCoordinator:
             if raw_episode['lifecycle'] in ('CREATED','RUNNING','SCORING'):
                 raw_episode['lifecycle']='INTERRUPTED'; raw_episode['reason']='Process restart interrupted execution'; raw_episode['ended_at']=utc_now().isoformat()
                 self.store.put_record('episodes',raw_episode['episode_id'],raw_episode)
-        for study in self.store.list_records('baseline_studies'):
-            if study['status'] in ('QUEUED','RUNNING'):
-                study['status']='INTERRUPTED'; study['reason']='Process restart interrupted fixed study; attempts cannot be replayed'
-                self.store.put_record('baseline_studies',study['study_id'],study)
+        for kind in ('baseline_studies','completion_studies','context_studies'):
+            for study in self.store.list_records(kind):
+                if study['status'] in ('QUEUED','RUNNING'):
+                    study['status']='INTERRUPTED'; study['reason']='Process restart interrupted fixed study; attempts cannot be replayed'
+                    if kind in ('completion_studies','context_studies'):
+                        study['decision']='INCOMPLETE'
+                        for slot in study['slots']:
+                            if slot['status']=='RUNNING': slot['status']='INTERRUPTED'
+                    self.store.put_record(kind,study['study_id'],study)
+                    # An interrupted study's model-call reservation is never spent;
+                    # leaving it in the ledger permanently understates the campaign's
+                    # remaining cap for every later admission check.
+                    budget=self.store.get_record('budgets',study.get('campaign_id',''))
+                    if budget and isinstance(budget.get('reservations'),dict):
+                        prefix={'completion_studies':'completion:','context_studies':'context:','baseline_studies':'baseline:'}[kind]
+                        released={name:value for name,value in budget['reservations'].items() if name!=prefix+study['study_id']}
+                        if released!=budget['reservations']:
+                            budget['reservations']=released
+                            self.store.put_record('budgets',study['campaign_id'],budget)
         for retry in self.store.list_records('evidence_retries'):
             if retry['status'] in ('QUEUED','RUNNING'):
                 retry['status']='INTERRUPTED'; self.store.put_record('evidence_retries',retry['request_id'],retry)
@@ -63,6 +78,24 @@ class LabCoordinator:
         models=self.settings.role_models
         return {'schema_version':'faultlab/v1','model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
 
+    async def readiness(self):
+        from app.lab.readiness import simulator_readiness
+        simulator = ({'ready':True,'code':'INJECTED_RUNNER','message':'Explicit test runner supplied.'}
+                     if self.runner is not None else await simulator_readiness(self.settings))
+        try:
+            self.settings.require_live()
+            live={'ready':True,'missing_fields':[]}
+        except ConfigurationError as error:
+            live={'ready':False,'missing_fields':list(error.missing_fields)}
+        return {'ready':simulator['ready'],'simulator':simulator,'live_configuration':live,
+                'provider_access':'not_checked','provider_calls':0,'models':self.settings.role_models}
+
+    async def require_simulator(self):
+        from app.lab.readiness import ServiceNotReady
+        readiness=await self.readiness()
+        if not readiness['ready']:
+            raise ServiceNotReady(readiness['simulator']['code']+': '+readiness['simulator']['message'])
+
     def create(self,request):
         if request.config_profile_id not in ('offline-v1','live-v1'): raise ValueError('Unknown frozen configuration profile')
         if request.config_profile_id=='offline-v1' and request.mode!='baseline': raise ValueError('Offline profile supports labeled reference smoke only')
@@ -81,6 +114,9 @@ class LabCoordinator:
                 if version and version.decision=='ACCEPTED': campaign.active_policy_version=accepted
             if request.mode=='compare' and campaign.active_policy_version=='policy-v0': raise StoreConflict('No accepted policy exists for this frozen configuration')
         self.save(campaign)
+        from app.lab.configuration import source_provenance
+        self.store.put_record('campaign_provenance',campaign.campaign_id,
+                              {**source_provenance(),'aria_publication_enabled':self.settings.faultlab_aria_publish_enabled},immutable=True)
         self.store.put_record('campaign_registrations',campaign.campaign_id,{'registration_id':registration.registration_id},immutable=True)
         self.store.compare_and_set_pointer(f'active-policy:{campaign.campaign_id}',None,campaign.active_policy_version)
         return campaign
@@ -103,6 +139,7 @@ class LabCoordinator:
             if self.active_id is not None: raise StoreConflict('Another fresh execution is active')
             campaign=self.get(id)
             self.validate_current_caps(campaign)
+            await self.require_simulator()
             campaign.stop_requested=False; campaign.execution_epoch+=1; self.save(campaign)
             self.active_id=id
 
@@ -116,6 +153,15 @@ class LabCoordinator:
             if live: self.settings.require_live()
             self.validate_core_configuration(campaign)
             if campaign.mode!='baseline' and not live: raise ValueError('Learn and comparison require explicit live profile')
+            from app.lab.budgets import protected_reservations
+            protected=protected_reservations(campaign.caps)
+            protected_calls=sum(r['calls'] for r in protected.values())
+            protected_tokens=sum(r['tokens'] for r in protected.values())
+            dollar_bound=self.settings.model_call_dollar_bound if live else None
+            if live and (protected_calls>campaign.caps.model_calls or protected_tokens>campaign.caps.tokens or
+                         (dollar_bound is not None and protected_calls*dollar_bound>campaign.caps.dollars)):
+                raise BudgetExhausted('Mandatory protected batches exceed configured campaign cap')
+            await self.require_simulator()
             ledger=CampaignLedger(self.store,id,campaign.caps,dollar_bounds=self.settings.model_call_dollar_bounds if live else None)
             if live and (ledger.reserved_calls>campaign.caps.model_calls or ledger.reserved_tokens>campaign.caps.tokens or (ledger.dollar_bound is not None and ledger.reserved_calls*ledger.dollar_bound>campaign.caps.dollars)): raise BudgetExhausted('Mandatory protected batches exceed configured campaign cap')
             self.ledgers[id]=ledger; self.active_id=id
@@ -181,8 +227,11 @@ class LabCoordinator:
                 await self._publish_completion(id)
         except (BudgetExhausted,StopRequested) as error:
             self.transition(id,'NO_CHANGE' if not self.get(id).stop_requested else 'STOPPED',str(error) or 'Budget or stop boundary')
-        except Exception:
-            self.transition(id,'ERROR','Execution failed; inspect persisted local evidence')
+        except Exception as error:
+            from app.lab.readiness import execution_failure
+            failure=execution_failure(error)
+            self.store.put_record('execution_errors',id,{'campaign_id':id,**failure,'recorded_at':utc_now().isoformat()})
+            self.transition(id,'ERROR',failure['code']+': '+failure['message'])
         finally:
             if owned and runner:
                 await runner.world_client.close()
@@ -218,6 +267,12 @@ class LabCoordinator:
 
     async def _publish_completion(self,id,*,bridge=None):
         campaign=self.get(id)
+        if not self.settings.faultlab_aria_publish_enabled:
+            campaign.aria_status='PENDING'; self.save(campaign)
+            result={'campaign_id':id,'state':'publication_disabled',
+                    'reason':'This execution explicitly enables Inference/Weave only; no Finished run was published.'}
+            self.store.put_record('sponsor_publication_deferrals',id,result)
+            return result
         setup=self.store.get_record('aria_setup',self.settings.project_path)
         if setup is None:
             # A Finished run may trigger a real Aria automation. Leave that

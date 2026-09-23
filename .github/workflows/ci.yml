@@ -1,0 +1,42 @@
+name: Offline checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: offline-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      FAULTLAB_LIVE_ENABLED: "false"
+      FAULTLAB_ARIA_PUBLISH_ENABLED: "false"
+      FAULTLAB_BROWSER_LOCAL: "0"
+      WANDB_MODE: disabled
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked local dependencies
+        run: ./scripts/setup.sh
+      - name: Install browser for fixture checks
+        working-directory: frontend
+        run: ./node_modules/.bin/playwright install --with-deps chromium
+      - name: Run offline backend, frontend, build and browser checks
+        run: ./scripts/test.sh

@@ -11,13 +11,44 @@ from app.lab.promotion import promotion_decision,commit_promotion
 from app.lab.budgets import CANDIDATE_CALLS
 from app.lab.tracing import execute_phase,execute_sync_phase
 
+def source_validation_assessment(batch,target_invariant):
+    """Keep failure to reproduce separate from the candidate's observed mistakes."""
+    lookup={t.episode_id:t for t in batch.trials}
+    complete=paired_complete(batch,3)
+    source_failures=sum(target_invariant in lookup[a].failed_checks for a,b in batch.trial_pairs if a in lookup)
+    candidate_violations=[t.episode_id for t in batch.trials if t.policy_hash==batch.candidate_hash and (t.failed_checks or t.outcome=='VIOLATION')]
+    paired_candidate_violations=[b for a,b in batch.trial_pairs if b in lookup and lookup[b].failed_checks]
+    reproduced=complete and source_failures==3
+    classification=('INCOMPLETE_PAIRS' if not complete else 'SOURCE_FLAKY' if not reproduced
+                    else 'CANDIDATE_FAILED' if paired_candidate_violations else 'PASSED')
+    return {'classification':classification,'source_reproduction':'INCOMPLETE' if not complete else 'REPRODUCED' if reproduced else 'FLAKY',
+            'target_invariant':target_invariant,'incumbent_target_failures':source_failures,'required_pairs':3,
+            'valid_complete_pairs':len(batch.trial_pairs) if complete else None,
+            'candidate_violation_episode_ids':candidate_violations,
+            'qualification_candidate_violation_episode_ids':paired_candidate_violations,
+            'decision':'PROPOSED' if classification=='PASSED' else 'REJECTED' if classification=='CANDIDATE_FAILED' else 'INCOMPLETE'}
+
+def repair_context_id(campaign,incumbent,recipe,fixture_id,target_invariant):
+    # A new source episode or bookkeeping seed alone is not a new qualification.
+    return content_hash({'campaign_id':campaign.campaign_id,'configuration_hash':campaign.configuration_hash,
+                         'parent_version':incumbent.version,'parent_hash':incumbent.policy_hash,
+                         'schedule_hash':schedule_identity(recipe),'fixture_id':fixture_id,'target_invariant':target_invariant})
+
+async def export_incident(coordinator,campaign,counter,policy,source_recipe,retained_recipe,trials,**kwargs):
+    from app.lab.regressions import RegressionCompiler
+    settings=getattr(coordinator,'settings',None)
+    secrets=tuple(getattr(settings,name,'') for name in ('wandb_api_key','typesafe_api_key','faultlab_control_token'))
+    bundle=RegressionCompiler(coordinator.store,secrets=secrets).compile(campaign,counter,policy,source_recipe,retained_recipe,trials,**kwargs)
+    if getattr(coordinator,'dataset_publisher',None): await coordinator.publish_regression_dataset(bundle)
+    return bundle
+
 async def run_learning_cycle(coordinator,campaign,runner):
     id=campaign.campaign_id; store=coordinator.store; ledger=coordinator.ledgers[id]
     stop=lambda:coordinator.get(id).stop_requested
     explorer=Explorer(runner.provider,store,ledger); mechanic=Mechanic(runner.provider,store,ledger)
     reproducer=Reproducer(store,runner,ledger); evaluator=PairedEvaluator(store,runner,ledger,publisher=getattr(coordinator,'evaluation_publisher',None))
     context=EvidenceContext(id,id,id)
-    candidate_count=0; history=[]; discovery_evidence=[]
+    candidate_count=0; history=[]; discovery_evidence=[]; repair_histories={}
     explorer.trace=getattr(runner,'trace',None); mechanic.trace=getattr(runner,'trace',None)
     async def evidence_for(trials):
         bundles=[]
@@ -55,7 +86,8 @@ async def run_learning_cycle(coordinator,campaign,runner):
             configuration=store.get_record('configurations',current.configuration_hash)
             explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer')
             mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic')
-            selection_ref,output=await explorer.select({'campaign_id':id,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract()},fallback=fallback)
+            selection_ref,output=await explorer.select({'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract()},fallback=fallback)
+            if output is None: continue  # A rejected proposal consumes its slot, not an Actor episode.
             recipe=output.fault_spec; fixture='history-v1' if any(p.kind=='F3' for p in recipe.primitives) else 'standard-v1'
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
             coordinator.transition(id,'RUNNING')
@@ -77,60 +109,106 @@ async def run_learning_cycle(coordinator,campaign,runner):
             reproduced_evidence=await evidence_for(reproduction_trials)
             coordinator.transition(id,'REDUCING')
             reduced=await execute_phase(getattr(runner,'trace',None),'reduce_counterexample',explorer.metadata,{'source_episode_id':source.episode_id},lambda: reproducer.reduce(current,counter,recipe,incumbent,fixture_id=fixture,stop=stop))
-            if reduced.result.status in ('FLAKY','INCOMPLETE'): continue
             retained=reduced.retained_recipe or recipe
-            reduction_evidence=await evidence_for(reduced.trials)
+            reduction_evidence=await evidence_for([t for t in reduced.trials if t.lifecycle=='COMPLETED'])
             reduction_summary=reduction_context(reduced.result,reduced.trials,reduction_evidence)
+            incident_trials=[source]+reproduction_trials+reduced.trials
+            await export_incident(coordinator,current,counter,incumbent,recipe,retained,incident_trials,reduction=reduced.result,stage='reduced_source',artifact_kind='incident_fixture')
+            if reduced.result.status in ('FLAKY','INCOMPLETE'): continue
             coordinator.transition(id,'DIAGNOSING')
             diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
-            intervention_evidence=await evidence_for(interventions.trials)
+            intervention_evidence=await evidence_for([t for t in interventions.trials if t.lifecycle=='COMPLETED'])
             if diagnostic.kind!='POLICY_GAP': continue
-            feedback=[]; source_feedback=[]; source_feedback_evidence=[]
+            source_context=repair_context_id(current,incumbent,retained,fixture,counter.target_invariant)
+            repair_history=repair_histories.setdefault(source_context,{'candidates':[],'challenge':[],'source':[],'evidence':[]})
+            candidate_history=repair_history['candidates']; feedback=repair_history['challenge']
+            source_feedback=repair_history['source']; source_feedback_evidence=repair_history['evidence']
             while candidate_count<campaign.caps.candidates and not stop():
                 name=f'candidate:{id}:{candidate_count}'; ledger.reserve(name,CANDIDATE_CALLS)
                 candidate_count+=1
                 try:
-                    proposal_context={'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'challenge_counterexamples':feedback,'source_validation_feedback':source_feedback,'runtime_contract':runtime_contract(),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
+                    proposal_context={'campaign_id':id,'source_context_id':source_context,'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'candidate_history':list(candidate_history),'challenge_counterexamples':list(feedback),'source_validation_feedback':list(source_feedback),'runtime_contract':runtime_contract(),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
                     proposal_ref,proposal,raws=await mechanic.propose(proposal_context,reservation=name)
+                    proposal_record={'campaign_id':id,'proposal_ref':proposal_ref,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,'raw_outputs':raws}
+                    def save_proposal(**fields):
+                        store.put_record('campaign_proposals',proposal_ref,{**proposal_record,**fields},immutable=True)
                     if proposal is None:
-                        coordinator.policies.rejected_raw('\n'.join(raws),incumbent.version,'INVALID_MECHANIC_OUTPUT'); continue
-                    if isinstance(proposal,MechanicNoChange): break
+                        invalid=coordinator.policies.rejected_raw('\n'.join(raws),incumbent.version,'INVALID_MECHANIC_OUTPUT')
+                        save_proposal(candidate_version=invalid.version,decision='REJECTED',reason='INVALID_MECHANIC_OUTPUT'); continue
+                    if isinstance(proposal,MechanicNoChange):
+                        save_proposal(decision='NO_CHANGE',reason=proposal.no_change_reason); break
                     try: candidate=coordinator.policies.proposal(proposal.candidate,parent=incumbent.version,raw='\n'.join(raws),episode_ids=[source.episode_id]+counter.reproduction_trial_ids)
                     except ValueError:
-                        coordinator.policies.rejected_raw('\n'.join(raws),incumbent.version,'STALE_OR_INVALID_POLICY'); continue
+                        invalid=coordinator.policies.rejected_raw('\n'.join(raws),incumbent.version,'STALE_OR_INVALID_POLICY')
+                        save_proposal(candidate_version=invalid.version,decision='REJECTED',reason='STALE_OR_INVALID_POLICY'); continue
+                    qualification_id=content_hash({'source_context_id':source_context,'candidate_hash':candidate.policy_hash})
+                    previous=store.get_record('candidate_qualifications',qualification_id)
+                    candidate_record={'candidate_version':candidate.version,'candidate_hash':candidate.policy_hash,'candidate':candidate.content.model_dump(mode='json'),'qualification_ref':qualification_id}
+                    if previous:
+                        candidate.decision='NO_CHANGE'; coordinator.policies.save(candidate)
+                        duplicate={**candidate_record,'decision':'NO_CHANGE','classification':'DUPLICATE_CANDIDATE','duplicate_of':previous['candidate_version'],'prior_decision':previous['decision'],'prior_stage':previous['stage']}
+                        candidate_history.append(duplicate)
+                        save_proposal(**duplicate,reason='Identical candidate already qualified in this source/runtime context; no new trials')
+                        continue
+                    qualification={'campaign_id':id,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,**candidate_record,'stage':'SOURCE_VALIDATION','decision':'PROPOSED'}
+                    def save_qualification(**fields):
+                        qualification.update(fields); store.put_record('candidate_qualifications',qualification_id,qualification)
+                    save_qualification()
+                    save_proposal(**candidate_record,decision='PROPOSED')
                     coordinator.transition(id,'CANDIDATE_VALIDATION')
                     source_batch=await evaluator.run(current,[{'fault_spec':retained.model_dump(mode='json'),'fixture_id':fixture}],incumbent,candidate,purpose='source_validation',reservation=name,stop=stop)
-                    lookup={t.episode_id:t for t in source_batch.trials}
-                    repaired=paired_complete(source_batch,3) and all(counter.target_invariant in lookup[a].failed_checks and not lookup[b].failed_checks for a,b in source_batch.trial_pairs)
-                    if not repaired:
-                        candidate.decision='REJECTED' if paired_complete(source_batch,3) else 'INCOMPLETE'; coordinator.policies.save(candidate)
-                        failed_evidence=await evidence_for([t for t in source_batch.trials if t.lifecycle=='COMPLETED'])
-                        source_feedback.append({'batch_id':source_batch.batch_id,'candidate':candidate.content.model_dump(mode='json'),'decision':candidate.decision,'reason':'Candidate must remove the target check failure in all three valid pairs with no other candidate check failures; incumbent must still fail the target check.','trial_outcomes':trial_outcomes(source_batch.trials),'verified_episode_ids':[b.episode_id for b in failed_evidence]})
-                        source_feedback_evidence.extend(failed_evidence)
+                    assessment=source_validation_assessment(source_batch,counter.target_invariant)
+                    source_result={'campaign_id':id,'batch_id':source_batch.batch_id,'source_context_id':source_context,**candidate_record,**assessment,'trial_outcomes':trial_outcomes(source_batch.trials)}
+                    store.put_record('source_validation_results',source_batch.batch_id,source_result,immutable=True)
+                    source_retest_evidence=await evidence_for([t for t in source_batch.trials if t.lifecycle=='COMPLETED'])
+                    source_feedback.append({**source_result,'reason':'Qualification requires three valid pairs: the incumbent still fails the target in all three, and every candidate has no check failure. Source flakiness and candidate violations are recorded separately.','verified_episode_ids':[b.episode_id for b in source_retest_evidence]})
+                    source_feedback_evidence.extend(source_retest_evidence)
+                    save_qualification(source_validation_ref=source_batch.batch_id,source_classification=assessment['classification'])
+                    if assessment['classification']!='PASSED':
+                        candidate.decision=assessment['decision']; coordinator.policies.save(candidate)
+                        save_qualification(decision=candidate.decision)
+                        candidate_history.append({**candidate_record,**assessment,'source_validation_ref':source_batch.batch_id})
                         continue
-                    source_retest_evidence=await evidence_for(source_batch.trials)
                     coordinator.transition(id,'CHALLENGING')
+                    prior_evaluation_ids={b['batch_id'] for b in store.list_records('evaluations')}
                     challenge=await execute_phase(getattr(runner,'trace',None),'challenge_policy',explorer.metadata,{'source_episode_id':source.episode_id},lambda: Challenger(store,explorer,evaluator).run(current,incumbent,candidate,source_batch,reservation=name,prior_hashes=[schedule_identity(retained)],prior_recipes=[retained],evidence_summary=summarize_evidence(source_retest_evidence),stop=stop))
-                    challenge_trials=[]
                     from app.contracts.models import TrialResult
+                    # Keep failed infrastructure attempts too, not only pairs that
+                    # qualified after the evaluator's allowed infrastructure retry.
+                    challenge_trials_by_id={}
+                    for batch in store.list_records('evaluations'):
+                        if batch['batch_id'] in prior_evaluation_ids or batch['purpose']!='challenge' or (batch['candidate_hash'],batch['incumbent_hash'])!=(candidate.policy_hash,incumbent.policy_hash): continue
+                        for raw in batch['trials']:
+                            trial=TrialResult.model_validate_json(canonical_json(raw)); challenge_trials_by_id[trial.episode_id]=trial
                     for a,b in challenge.trial_pairs:
-                        challenge_trials.extend([store.get_model('trials',a,TrialResult),store.get_model('trials',b,TrialResult)])
-                    challenge_evidence=await evidence_for(challenge_trials)
+                        for episode_id in (a,b):
+                            if episode_id not in challenge_trials_by_id: challenge_trials_by_id[episode_id]=store.get_model('trials',episode_id,TrialResult)
+                    challenge_trials=list(challenge_trials_by_id.values())
+                    challenge_evidence=await evidence_for([t for t in challenge_trials if t.lifecycle=='COMPLETED'])
+                    save_qualification(stage='CHALLENGE',challenge_ref=challenge.challenge_id,challenge_status=challenge.status)
                     if challenge.status!='PASSED_OBSERVED':
                         candidate.decision='REJECTED' if challenge.status=='COUNTEREXAMPLE_FOUND' else 'INCOMPLETE'; coordinator.policies.save(candidate)
+                        save_qualification(decision=candidate.decision)
+                        counterexample_record=store.get_record('challenge_counterexamples',candidate.version) or {}
+                        schedules=[]
+                        for selection_ref in challenge.selection_refs:
+                            selection=store.get_record('selections',selection_ref) or {}
+                            fault=(selection.get('output') or {}).get('fault_spec')
+                            if fault is not None and schedule_identity(FaultSpec.model_validate_json(canonical_json(fault))) in challenge.schedule_hashes: schedules.append(fault)
+                        feedback.append({'challenge_id':challenge.challenge_id,**candidate_record,'decision':candidate.decision,'status':challenge.status,'reason':challenge.stopping_reason,'failed_checks':challenge.failed_checks,'fault_spec':counterexample_record.get('recipe'),'fixture_id':counterexample_record.get('fixture_id'),'tested_fault_specs':schedules,'trial_outcomes':trial_outcomes(challenge_trials),'evidence':summarize_evidence(challenge_evidence)})
+                        candidate_history.append({**candidate_record,'decision':candidate.decision,'source_validation_ref':source_batch.batch_id,'challenge_ref':challenge.challenge_id,'classification':challenge.status})
                         if challenge.status=='COUNTEREXAMPLE_FOUND':
-                            feedback=[{'challenge_id':challenge.challenge_id,'failed_checks':challenge.failed_checks,'evidence':summarize_evidence(challenge_evidence)}]
+                            await export_incident(coordinator,current,counter,candidate,recipe,retained,incident_trials+interventions.trials+source_batch.trials+challenge_trials,diagnostic=diagnostic,challenge=challenge,reduction=reduced.result,stage='failed_challenge',artifact_kind='candidate_comparison')
                             coordinator.transition(id,'REJECTED','Challenge counterexample returned to Mechanic')
                         continue
                     coordinator.transition(id,'EVALUATING')
                     cases=load_cases('promotion')
                     promotion=await evaluator.run(current,cases,incumbent,candidate,purpose='promotion',reservation=name,stop=stop)
                     decision,reason=promotion_decision(source_batch,challenge,promotion,target_invariant=counter.target_invariant,healthy_hashes=[content_hash(c['fault_spec']) for c in cases if not c['fault_spec']['primitives']])
+                    save_qualification(stage='PROMOTION',decision=decision,promotion_ref=promotion.batch_id)
+                    candidate_history.append({**candidate_record,'decision':decision,'classification':'PROMOTION_DECISION','promotion_ref':promotion.batch_id})
                     await execute_sync_phase(getattr(runner,'trace',None),'promotion_decision',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: commit_promotion(store,coordinator.policies,coordinator.get(id),candidate,decision,reason,evaluation_ref=promotion.batch_id))
-                    from app.lab.regressions import RegressionCompiler
-                    bundle=await execute_sync_phase(getattr(runner,'trace',None),'export_regression',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: RegressionCompiler(store).compile(coordinator.get(id),counter,candidate,recipe,retained,source_batch.trials+challenge_trials+promotion.trials,diagnostic=diagnostic,challenge=challenge,reduction=reduced.result))
-                    if getattr(coordinator,'dataset_publisher',None):
-                        await coordinator.publish_regression_dataset(bundle)
+                    await execute_phase(getattr(runner,'trace',None),'export_regression',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: export_incident(coordinator,coordinator.get(id),counter,candidate,recipe,retained,incident_trials+interventions.trials+source_batch.trials+challenge_trials+promotion.trials,diagnostic=diagnostic,challenge=challenge,reduction=reduced.result,stage='promotion_decision'))
                     coordinator.transition(id,'PROMOTED' if decision=='ACCEPTED' else 'REJECTED',reason)
                     if decision=='ACCEPTED':
                         coordinator.transition(id,'COMPLETED','Generated policy accepted after repeated source, active challenge and independent promotion')

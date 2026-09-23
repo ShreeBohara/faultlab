@@ -48,3 +48,32 @@ def test_meaningful_hex_error_strings_are_not_normalized_to_identity():
     compact=summarize_evidence([bundle(1,'a'*32),bundle(2,'b'*32)])
     errors={r['error_code'] for r in compact['results'] if 'error_code' in r}
     assert errors=={'a'*32,'b'*32}
+
+def test_default_summary_is_unchanged_so_other_callers_are_untouched():
+    bundles=[bundle(1),bundle(2)]
+    compact=summarize_evidence(bundles)
+    assert compact['format']=='faultlab-compact-evidence/v1'
+    assert all('task_outcome' not in e for e in compact['episodes'])
+    assert 'task_outcome' not in compact['interpretation']
+    # Passing an empty map is still the changed format, not the default one.
+    assert summarize_evidence(bundles,outcomes={})['format']=='faultlab-compact-evidence/v2-task-outcome'
+
+def test_supplied_outcomes_bind_the_verdict_to_each_episode_row():
+    bundles=[bundle(1),bundle(2)]
+    outcomes={bundles[0].episode_id:'SAFE_UNRESOLVED',bundles[1].episode_id:'COMPLETED'}
+    compact=summarize_evidence(bundles,outcomes=outcomes)
+    assert compact['format']=='faultlab-compact-evidence/v2-task-outcome'
+    assert [e['task_outcome'] for e in compact['episodes']]==['SAFE_UNRESOLVED','COMPLETED']
+    assert compact['interpretation'].endswith(
+        ' task_outcome is the adjudicated public outcome of that episode, the same value grouped in observed_outcomes.')
+    # The added field is the only difference; every other structure is identical.
+    plain=summarize_evidence(bundles)
+    assert {k:v for k,v in compact.items() if k not in ('format','interpretation','episodes')}== \
+           {k:v for k,v in plain.items() if k not in ('format','interpretation','episodes')}
+    assert [{k:v for k,v in e.items() if k!='task_outcome'} for e in compact['episodes']]==plain['episodes']
+    assert compact['interpretation'].startswith(plain['interpretation'])
+
+def test_missing_outcome_is_explicit_rather_than_absent():
+    bundles=[bundle(1),bundle(2)]
+    compact=summarize_evidence(bundles,outcomes={bundles[0].episode_id:'COMPLETED'})
+    assert [e['task_outcome'] for e in compact['episodes']]==['COMPLETED',None]

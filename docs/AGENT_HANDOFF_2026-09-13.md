@@ -1,3 +1,5 @@
+> Historical handoff. For the September 20 continuation, start with `CLAUDE.md` and `memory/README.md` at the repository root. The original text below is preserved.
+
 # FaultLab: detailed continuation handoff
 
 Snapshot date: **2026-09-13**. This document describes the completed validation

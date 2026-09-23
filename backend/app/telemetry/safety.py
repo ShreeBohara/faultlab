@@ -64,7 +64,7 @@ def capture_allowed(metadata: dict, *, frozen: bool = False) -> bool:
     if purpose == "discovery":
         return origin == "prototype"
     return origin == "faultlab_evaluation" and purpose in {
-        "reproduction", "reduction", "intervention", "source_validation", "challenge", "diagnostic_profile", "selection_comparison"}
+        "reproduction", "reduction", "intervention", "source_validation", "challenge", "diagnostic_profile", "selection_comparison", "completion_study", "context_study"}
 
 
 def wandb_url(value: str) -> str:

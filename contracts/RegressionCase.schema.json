@@ -7,6 +7,16 @@
       "title": "Schema Version",
       "type": "string"
     },
+    "artifact_kind": {
+      "default": "incident_fixture",
+      "enum": [
+        "incident_fixture",
+        "candidate_comparison",
+        "accepted_policy_bundle"
+      ],
+      "title": "Artifact Kind",
+      "type": "string"
+    },
     "regression_id": {
       "maxLength": 128,
       "minLength": 1,

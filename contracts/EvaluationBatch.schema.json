@@ -37,7 +37,8 @@
           "enum": [
             "B0",
             "B1",
-            "L"
+            "L",
+            "P1"
           ],
           "title": "Arm",
           "type": "string"
@@ -235,7 +236,9 @@
         "final_audit",
         "portability",
         "selection_comparison",
-        "diagnostic_profile"
+        "diagnostic_profile",
+        "completion_study",
+        "context_study"
       ],
       "title": "Purpose",
       "type": "string"

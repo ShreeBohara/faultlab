@@ -14,7 +14,7 @@ class Mechanic:
     async def _generate(self,prompt,context,adapter,*,reservation=None,allow_format_repair=True,validate_result=None):
         context={**context,'output_schema':adapter.json_schema()}
         messages=[{'role':'system','content':(PROMPTS/prompt).read_text()},{'role':'user','content':canonical_json(context)}]
-        raws=[]
+        raws=[]; request_id=new_id('mechanic-request')
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('mechanic') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         for attempt in range(2 if allow_format_repair else 1):
@@ -34,7 +34,8 @@ class Mechanic:
                 raise RuntimeProviderError('Provider returned a different frozen model')
             raws.append(generation.content)
             ref=new_id('mechanic')
-            self.store.put_record('mechanic_outputs',ref,{'raw':generation.content,'role':'mechanic','prompt':prompt,'attempt':attempt,'model_id':generation.model_id},immutable=True)
+            metadata=self.metadata or {}
+            self.store.put_record('mechanic_outputs',ref,{'raw':generation.content,'role':'mechanic','prompt':prompt,'attempt':attempt,'model_id':generation.model_id,'request_id':request_id,'campaign_id':metadata.get('campaign_id') or context.get('campaign_id'),'episode_id':metadata.get('episode_id'),'usage':{'model_calls':1,'input_tokens':generation.input_tokens,'output_tokens':generation.output_tokens,'cost_dollars':generation.cost_usd}},immutable=True)
             try:
                 result=adapter.validate_json(generation.content)
                 errors=validate_result(result) if validate_result else []
@@ -59,3 +60,6 @@ class Mechanic:
     async def propose(self,context,*,reservation=None):
         # Schema is complete but contains no solved benchmark examples.
         return await self._generate('mechanic.md',context,TypeAdapter(MechanicOutput),reservation=reservation)
+    async def propose_completion(self,context,*,reservation=None):
+        # This separate development objective cannot invoke invariant promotion.
+        return await self._generate('completion.md',context,TypeAdapter(MechanicOutput),reservation=reservation)

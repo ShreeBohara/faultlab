@@ -426,7 +426,8 @@
           "enum": [
             "B0",
             "B1",
-            "L"
+            "L",
+            "P1"
           ],
           "title": "Arm",
           "type": "string"
@@ -603,6 +604,16 @@
       "const": "faultlab-regression/v1",
       "default": "faultlab-regression/v1",
       "title": "Export Version",
+      "type": "string"
+    },
+    "artifact_kind": {
+      "default": "incident_fixture",
+      "enum": [
+        "incident_fixture",
+        "candidate_comparison",
+        "accepted_policy_bundle"
+      ],
+      "title": "Artifact Kind",
       "type": "string"
     },
     "bundle_id": {

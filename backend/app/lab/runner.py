@@ -6,16 +6,18 @@ from app.adapters.business_tools import BusinessToolBroker
 from app.adapters.prototype import EpisodeContext,run_prototype
 from app.agents.reference import ReferenceActor
 from app.agents.actor import ActorReportError
+from app.agents.progress import ACTOR_CONTEXT_PROTOCOL_V1,ACTOR_CONTEXT_PROTOCOLS
 from app.providers.runtime import RuntimeProviderError
 from app.lab.budgets import EpisodeMeter,StopRequested,BudgetExhausted
 from app.lab.policy_interpreter import PolicyInterpreter
+from app.telemetry.tracing import episode_deadline
 
 class EpisodeRunner:
     def __init__(self,store,world_client,provider=None,*,trace=None,scorer=None,actor=None):
         self.store,self.world_client,self.provider=store,world_client,provider
         self.trace,self.scorer,self.actor=trace,scorer,actor
 
-    async def run(self,campaign,recipe,policy,*,purpose='discovery',arm='B0',trial_index=0,study_id=None,evidence_context_id=None,selector_id=None,fixture_id='standard-v1',ledger=None,reservation=None,stop=None,source_mode='live',agent_registration_id='orders-v1',actor=None,episode_id=None):
+    async def run(self,campaign,recipe,policy,*,purpose='discovery',arm='B0',trial_index=0,study_id=None,evidence_context_id=None,selector_id=None,fixture_id='standard-v1',ledger=None,reservation=None,stop=None,source_mode='live',agent_registration_id='orders-v1',actor=None,episode_id=None,actor_context_protocol=None):
         episode_id=episode_id or new_id('episode')
         if agent_registration_id=='orders-v1':
             registered=self.store.get_record('campaign_registrations',campaign.campaign_id)
@@ -26,7 +28,13 @@ class EpisodeRunner:
         episode=Episode(**provenance.model_dump(),world_id=world['world_id'],task_id=intent.task_id,scenario_hash=content_hash(recipe),policy_hash=policy.policy_hash,policy_version=policy.version,model=campaign.model,configuration_hash=campaign.configuration_hash,lifecycle='RUNNING',started_at=utc_now())
         self.store.put_record('episodes',episode_id,episode)
         self.store.put_record('private_episode_inputs',episode_id,{'intent':intent.model_dump(mode='json'),'recipe':recipe.model_dump(mode='json'),'fixture_id':fixture_id},immutable=True)
-        self.store.append_event(episode_id,type='episode_started',payload={'arm':arm,'source_mode':source_mode})
+        # A retried world creation is recorded on the episode rather than on Episode or
+        # TrialResult: those are StrictModel (extra='forbid'), so a new field would move
+        # contract_hash. If an earlier attempt did reach the handler, a world exists that
+        # this lab never learned the id of and never references.
+        started={'arm':arm,'source_mode':source_mode}
+        if world.get('create_failures'): started['create_failures']=world['create_failures']
+        self.store.append_event(episode_id,type='episode_started',payload=started)
         meter=EpisodeMeter(campaign=ledger,reservation=reservation,stop=stop)
         journal=Journal(self.store,episode_id,intent)
         broker=BusinessToolBroker(self.world_client,world['world_id'],world['capability'],journal,meter)
@@ -35,28 +43,41 @@ class EpisodeRunner:
         actor_model=(frozen.get('models') or {}).get('actor',campaign.model)
         metadata={**provenance.model_dump(mode='json'),'model_id':actor_model,'policy_hash':policy.policy_hash,'contract_hash':frozen.get('contract_hash'),'scorer_hash':frozen.get('scorer_hash')}
         broker.trace=self.trace; broker.metadata=metadata
-        context=EpisodeContext(provenance,broker,interpreter,self.provider,policy.content,policy.policy_hash,policy.decision,metadata,self.trace)
+        if actor_context_protocol is not None and actor_context_protocol not in ACTOR_CONTEXT_PROTOCOLS: raise ValueError('Unknown actor context protocol')
+        context=EpisodeContext(provenance,broker,interpreter,self.provider,policy.content,policy.policy_hash,policy.decision,metadata,self.trace,
+                               actor_context_protocol=actor_context_protocol or ACTOR_CONTEXT_PROTOCOL_V1)
         report=None; lab_error=False; interrupted=False
         try:
             chosen=actor or self.actor or (ReferenceActor() if arm=='B1' else run_prototype)
-            report=await asyncio.wait_for(chosen(intent,context),timeout=meter.caps.wall_seconds)
-            meter.check()
+            # Trace finalization sees the same explicit deadline disposition as
+            # the runner. External cancellation remains an interrupted trial.
+            async with asyncio.timeout(meter.caps.wall_seconds) as deadline:
+                with episode_deadline(deadline):
+                    returned=await chosen(intent,context)
+                    if context.returned_report is None: context.complete_report(returned)
+                    report=returned
+            if meter.stop(): raise StopRequested('External stop requested')
         except asyncio.CancelledError:
+            report=context.returned_report
             interrupted=True; episode.reason='TASK_CANCELLED'
         except TimeoutError:
             episode.reason='Episode deadline exhausted; no additional model call'
         except StopRequested:
+            report=context.returned_report
             interrupted=True; episode.reason='STOP_REQUESTED'
         except ActorReportError as error:
             episode.reason=str(error)
         except BudgetExhausted:
-            episode.reason='No final actor report before the frozen episode limit'
+            episode.reason=('Episode deadline exhausted; no timely final actor report'
+                            if meter.clock()-meter.started>=meter.caps.wall_seconds
+                            else 'No final actor report before the frozen episode limit')
         except RuntimeProviderError as error:
             lab_error=True; episode.reason=error.code
         except Exception:
             lab_error=True; episode.reason='PROVIDER_OR_INFRASTRUCTURE_ERROR'
         try:
-            meter.usage.wall_seconds=meter.clock()-meter.started
+            meter.usage.wall_seconds=(context.report_completed_wall_seconds
+                if context.report_completed_wall_seconds is not None else meter.clock()-meter.started)
             decision=await self.world_client.snapshot(world['world_id'])
             await self.world_client.stop(world['world_id'])
             await self.world_client.advance(world['world_id'],5,observer=True)
@@ -72,7 +93,8 @@ class EpisodeRunner:
             self.store.put_record('private_snapshots',episode_id,{'decision':decision.model_dump(mode='json'),'horizon':horizon.model_dump(mode='json')},immutable=True)
         except Exception:
             lab_error=True; episode.reason='SIMULATOR_OR_SCORER_ERROR'
-        meter.usage.wall_seconds=meter.clock()-meter.started
+        meter.usage.wall_seconds=(context.report_completed_wall_seconds
+            if context.report_completed_wall_seconds is not None else meter.clock()-meter.started)
         episode.report=report; episode.usage=meter.usage; episode.ended_at=utc_now()
         episode.lifecycle='INTERRUPTED' if interrupted else 'LAB_ERROR' if lab_error else 'COMPLETED'
         self.store.put_record('episodes',episode_id,episode)

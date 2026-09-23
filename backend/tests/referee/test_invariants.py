@@ -82,3 +82,40 @@ def test_duplicate_upgrade_commit_cannot_pass(fixture):
 def test_fabricated_version_change_cannot_pass(fixture):
     fixture[3].orders[0].version=8
     assert not run(fixture).checks[0].passed
+
+
+def test_indexed_citations_decode_to_the_same_verdict_and_stay_exactly_as_strict(fixture):
+    """The Phase 11 citation protocol must not change any verdict, in either direction.
+
+    C6 is not touched. What changes is only the alphabet the Actor writes in, so decoding a
+    label must land on the identical verdict, and every fabrication must still fail.
+    """
+    from app.agents.progress import decode_citations
+    intent, report, observations, world = fixture
+    rows = [o.model_dump(mode='json') for o in observations]
+
+    # 1. The honest case: labels decode to the real ids and the verdict is identical.
+    baseline = run(fixture)
+    report.evidence_ids = decode_citations(['obs-1', 'obs-2'], rows)
+    assert report.evidence_ids == ['e0', 'e1']
+    decoded = run(fixture)
+    assert decoded.outcome == baseline.outcome == 'COMPLETED'
+    assert [c.passed for c in decoded.checks] == [c.passed for c in baseline.checks]
+
+    # 2. A label that was never delivered passes through verbatim and STILL fails C6.
+    report.evidence_ids = decode_citations(['obs-1', 'obs-99'], rows)
+    assert 'obs-99' in report.evidence_ids
+    assert run(fixture).outcome == 'VIOLATION'
+
+    # 3. A fabricated hex identifier fails exactly as it does today.
+    report.evidence_ids = decode_citations(['evidence-' + 'f' * 32], rows)
+    assert run(fixture).outcome == 'VIOLATION'
+
+    # 4. Citing nothing still fails the support clauses - the decode cannot rescue it.
+    report.evidence_ids = decode_citations([], rows)
+    assert run(fixture).outcome == 'VIOLATION'
+
+    # 5. A near-miss label is NOT repaired to the nearest real one.
+    report.evidence_ids = decode_citations(['obs-1extremely'], rows)
+    assert report.evidence_ids == ['obs-1extremely']
+    assert run(fixture).outcome == 'VIOLATION'

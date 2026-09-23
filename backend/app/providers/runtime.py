@@ -7,10 +7,10 @@ logging, stdout, or SDK instrumentation. Clients are private and lazily created.
 import asyncio
 from dataclasses import dataclass
 import json
-from typing import Any, Callable
+from typing import Any, Callable, Literal
 
 from app.config import Settings
-from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT
+from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT, ReportAction, canonical_json, content_hash
 from app.contracts.tokens import validate_model_input
 from app.providers import redact_text
 from app.providers.wandb_inference import BASE_URL, model_request_options
@@ -18,6 +18,46 @@ from app.providers.wandb_inference import BASE_URL, model_request_options
 MODEL_REQUEST_SETTINGS = {"max_input_tokens": MODEL_INPUT_TOKEN_LIMIT,
                           "max_output_tokens": MODEL_OUTPUT_TOKEN_LIMIT, "timeout_seconds": 20, "retries": 0,
                           "response_format": {"type": "json_object"}, "temperature": 0}
+ACTOR_RESPONSE_PROTOCOL_VERSION = "faultlab-reference-final-report/v1"
+ACTOR_FINAL_REPORT_SCHEMA_JSON = canonical_json(ReportAction.model_json_schema())
+ResponseContract = Literal["actor_final_report"]
+
+
+def response_format_for(*, role: str = "actor", response_contract: ResponseContract | None = None) -> dict:
+    """Only reviewed code may select the fixed final-report contract."""
+    if response_contract is None:
+        return {"type": "json_object"}
+    if role != "actor" or response_contract != "actor_final_report":
+        raise RuntimeProviderError("Unknown or role-incompatible response contract.", code="INVALID_INPUT")
+    return {"type": "json_schema", "json_schema": {
+        "name": "FaultLabActorFinalReport", "strict": True,
+        "schema": json.loads(ACTOR_FINAL_REPORT_SCHEMA_JSON)}}
+
+
+def actor_response_protocol() -> dict:
+    final_format = response_format_for(response_contract="actor_final_report")
+    return {"version": ACTOR_RESPONSE_PROTOCOL_VERSION, "scope": "faultlab_reference_actor",
+            "trigger": "EpisodeMeter.final_turn: reserved last turn or business_closed",
+            "response_contract": "actor_final_report", "response_format": final_format,
+            "schema_hash": content_hash(final_format["json_schema"]["schema"]),
+            "response_format_hash": content_hash(final_format),
+            "input_admission": "messages_plus_final_report_response_format/v1"}
+
+
+def validate_request_input(messages, model: str, *, role: str = "actor",
+                           response_contract: ResponseContract | None = None) -> int:
+    """Admit the final-report schema without changing the sent messages.
+
+    An admission-only message counts serialized schema tokens and conservatively
+    reserves message framing. It is never sent to the model or added to history.
+    Default JSON mode keeps the existing admission and its framing reserve, so
+    other callers' pre-debit admission remains identical to provider admission.
+    """
+    if response_contract is None:
+        return validate_model_input(messages, model)
+    response_format = response_format_for(role=role, response_contract=response_contract)
+    return validate_model_input([*messages, {"role": "system", "content": canonical_json({
+        "response_format": response_format})}], model)
 
 
 def model_request_settings(model: str) -> dict:
@@ -73,7 +113,8 @@ class RuntimeProvider:
         return self._settings.model_for(role)
 
     async def complete(self, messages: list[dict[str, str]], *, role: str = "actor",
-                       max_output_tokens: int = MODEL_OUTPUT_TOKEN_LIMIT, timeout_seconds: float = 20.0) -> RuntimeGeneration:
+                       max_output_tokens: int = MODEL_OUTPUT_TOKEN_LIMIT, timeout_seconds: float = 20.0,
+                       response_contract: ResponseContract | None = None) -> RuntimeGeneration:
         if not self._authorized:
             raise RuntimeProviderError("An explicit bounded live action is required.", code="LIVE_ACTION_REQUIRED")
         self._settings.require_wandb(require_model=True)
@@ -86,8 +127,9 @@ class RuntimeProvider:
                                or not isinstance(m["content"], str) for m in messages):
             raise RuntimeProviderError("Invalid model input.", code="INVALID_INPUT")
         model = self.role_model(role)
+        response_format = response_format_for(role=role, response_contract=response_contract)
         try:
-            validate_model_input(messages, model)
+            validate_request_input(messages, model, role=role, response_contract=response_contract)
         except ValueError:
             raise RuntimeProviderError(f"Model input exceeds or cannot verify the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token bound.", code="INPUT_LIMIT") from None
         secrets = (self._settings.wandb_api_key, self._settings.typesafe_api_key)
@@ -108,7 +150,7 @@ class RuntimeProvider:
             async with asyncio.timeout(timeout_seconds):
                 response = await client.chat.completions.create(
                     model=model, messages=messages, max_tokens=max_output_tokens,
-                    response_format=MODEL_REQUEST_SETTINGS["response_format"],
+                    response_format=response_format,
                     temperature=MODEL_REQUEST_SETTINGS["temperature"], stream=False, timeout=timeout_seconds,
                     **model_request_options(model))
             usage = getattr(response, "usage", None)

@@ -1,3 +1,5 @@
+> Historical handoff. For the September 20 continuation, start with `CLAUDE.md` and `memory/README.md` at the repository root. The original text below is preserved.
+
 # FaultLab handoff: Claude Code session, 2026-09-13 (written 11:50 PDT)
 
 This file supersedes the status in `CONTINUE_HERE.md` and `docs/AGENT_HANDOFF_2026-09-13.md`

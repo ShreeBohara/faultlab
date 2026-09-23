@@ -4,9 +4,53 @@ from app.agents.actor import ACTOR_PROMPT
 from app.referee.reducer import neighbors
 from app.referee.diagnostics import InterventionVariant,InterventionRun,run_interventions,classify_policy_gap
 
+# Declared evidence-presentation protocols for the compact Mechanic/Explorer summary.
+# V1 is the preserved default every caller receives unless it asks otherwise. V2 binds the
+# adjudicated per-episode outcome the caller already supplies in grouped form; it discloses
+# nothing new. The allowlist lives here, with the protocols themselves.
+COMPACT_EVIDENCE_V1 = 'faultlab-compact-evidence/v1'
+COMPACT_EVIDENCE_V2 = 'faultlab-compact-evidence/v2-task-outcome'
+EVIDENCE_PROTOCOLS = (COMPACT_EVIDENCE_V1, COMPACT_EVIDENCE_V2)
+TASK_OUTCOME_CLAUSE = (' task_outcome is the adjudicated public outcome of that episode, '
+                       'the same value grouped in observed_outcomes.')
+
 def runtime_contract():
     return {'actor_contract':ACTOR_PROMPT,'episode_limits':EpisodeBudget().model_dump(mode='json'),
-            'hook_execution':'Policy hooks execute their finite steps inside the existing business-call boundaries. Reads and same-identity retries consume HTTP attempts; waits consume ticks and polling cycles; all steps consume the policy-step budget. These hook steps do not consume actor model turns. They deliver observations for the next original actor turn. They cannot rewrite its report or create new authorized operations.'}
+            'hook_execution':'Rules run in array order. Each rule tests when once on entry; each visited step retests only_if and consumes a policy step, including skipped steps. Policy reads and same-identity retries consume HTTP attempts and ticks; waits consume ticks and polling cycles. Hook steps do not consume actor model turns and do not recursively invoke hooks. Newly delivered observations appear on the next original actor turn. No hook can rewrite a report or create a new authorized operation.',
+            'hook_boundaries':{
+                'after_upgrade_response':'Once after an executed actor update_order has delivered its result or exhausted adapter retries. Policy retries and status reads do not invoke this hook again.',
+                'before_confirmation':'Before each schema-valid actor send_confirmation proposal, before HTTP dispatch. A blocked or final-requested proposal consumes its actor turn but dispatches nothing.',
+                'after_notification_response':'Once after an executed actor send_confirmation has delivered its result or exhausted adapter retries. It does not run when before_confirmation blocked dispatch.',
+                'before_final_report':'Only after a schema-valid actor report proposal, before finalization/scoring. It never runs when the actor proposes a tool, returns invalid output, or fails to propose a report. An unblocked original report finalizes unchanged; a blocked report needs a new actor proposal within remaining turns.'},
+            'primitive_semantics':{
+                'read_current_operation':'Read public status of the original orders operation, regardless of the most recently called tool. Does not submit an upgrade.',
+                'read_notification_operation':'Read public status of the original notifications operation. Does not submit a confirmation.',
+                'read_order':'Read the order projection, which may be stale and is not a terminal operation receipt.',
+                'wait_ticks':'Advance logical time by the supplied 1..4 ticks and consume one wait cycle. Does not read status or deliver a receipt by itself.',
+                'retry_original_request':'Replay an already attempted write for the supplied service using its persisted original bytes and identity. No first write and no retry after a matching FAILED receipt. Notification retries are permitted only at after_notification_response.',
+                'require_receipt':'Check for a delivered matching SUCCEEDED receipt and create the scoped requirement described in report_control. Does not poll, wait, dispatch a write or request a report.',
+                'defer_unresolved':'Close business calls and request an original actor report as described in report_control. Does not choose report fields.',
+                'report_terminal_failure':'Request an original actor report only with a delivered matching FAILED receipt for the supplied service; see report_control.'},
+            'condition_evidence':'Use delivered observations and the original write-attempt journal only. A matching terminal receipt remains authoritative after later UNKNOWN or stale observations. Without a receipt, status is the latest observation of the original service operation; missing status is UNKNOWN, and no such observation means no status. No condition reads private simulator state.',
+            'condition_semantics':{
+                'always':'True.',
+                'upgrade_receipt_missing':'No matching SUCCEEDED orders receipt; also true when a matching FAILED receipt exists.',
+                'notification_receipt_missing':'No matching SUCCEEDED notifications receipt; also true when a matching FAILED receipt exists.',
+                'current_operation_pending':'No matching orders terminal receipt and latest orders operation status is PENDING. Does not require a receipt.',
+                'notification_operation_pending':'No matching notifications terminal receipt and latest notifications operation status is PENDING. Does not require a receipt.',
+                'upgrade_outcome_uncertain':'An orders write was attempted, no matching terminal receipt exists, and its status is PENDING, UNKNOWN or absent.',
+                'notification_outcome_uncertain':'A notifications write was attempted, no matching terminal receipt exists, and its status is PENDING, UNKNOWN or absent.',
+                'upgrade_terminal_failure':'A matching FAILED orders receipt was delivered.',
+                'notification_terminal_failure':'A matching FAILED notifications receipt was delivered.',
+                'upgrade_succeeded':'A matching SUCCEEDED orders receipt was delivered.',
+                'notification_succeeded':'A matching SUCCEEDED notifications receipt was delivered.',
+                'receipt_missing':'Hook-local flag, initially false at each hook entry. The most recent require_receipt step sets it from that step\'s service receipt check. Later reads do not refresh this flag; service-specific conditions inspect current observations.'},
+            'report_control':{
+                'reserved_final_turn':'Without business closure, only the last of the eight physical actor calls is reserved for a report. A tool proposed then is not dispatched; if no valid report is submitted, the episode violates the report contract. There is no extra repair turn.',
+                'defer_unresolved':'Sets business_closed immediately, stops remaining steps/rules in this hook, and makes every remaining actor turn report-required. It does not generate a report or force an unresolved claim; the original actor must report truthfully from its observations.',
+                'report_terminal_failure':'Requires a delivered matching FAILED receipt; otherwise returns POLICY_PRECONDITION_UNMET. With that receipt it has the same business-closure control effect as defer_unresolved. It does not generate a report.',
+                'require_receipt':'Tests for a matching SUCCEEDED receipt without calling a tool. Requirements are rechecked after the hook. An unmet requirement blocks before_confirmation; at before_final_report it blocks only a report claiming that service SUCCEEDED. At response hooks it does not block future actions or close business calls.',
+                'limits':'Business closure does not add model turns or extend the deadline. All original episode caps and report checks still apply.'}}
 
 def trial_outcomes(trials):
     # Group only identical public outcomes. Every attempted trial remains named,
@@ -46,7 +90,7 @@ class Diagnostician:
         # Fixed finite one-variable options are named before model selection.
         for change,treatment in neighbors(recipe):
             if len(options)>=4: break
-            key='intervention-'+content_hash({'control':recipe,'treatment':treatment})[:24]
+            key='intervention-'+content_hash({'counterexample_id':counter.counterexample_id,'control':recipe,'treatment':treatment})[:24]
             options[key]=(change,treatment)
         evidence_ids=[o.evidence_id for bundle in evidence for o in bundle.observations]
         context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'observed_control_trials':observed_outcomes(reduction,content_hash(recipe),counter.target_invariant),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations','observed_treatment_trials':observed_outcomes(reduction,content_hash(value[1]),counter.target_invariant)} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(),'reduction':reduction}
@@ -72,12 +116,16 @@ class Diagnostician:
         return diagnostic,run
 
 
-def summarize_evidence(bundles):
+def summarize_evidence(bundles,outcomes=None):
     """Table compression preserves every observed semantic value and contradiction.
 
     Opaque identity values are consistently aliased within each episode. Original
     IDs/records remain persisted and episode/evidence IDs remain exact citations.
     Shared rows are interned only after complete typed-value equality.
+
+    outcomes optionally maps episode_id to the adjudicated public outcome the caller
+    already supplies in grouped form. It adds one field per episode and discloses
+    nothing new. Callers that omit it receive byte-identical v1 output.
     """
     import re
     opaque=re.compile(r'^(?:[A-Za-z][A-Za-z0-9_-]*[-:])?[a-f0-9]{24,64}$')
@@ -104,5 +152,9 @@ def summarize_evidence(bundles):
             observations.append([observation.evidence_id,observation.delivered_tick,intern('results',compact(observation.result.model_dump(mode='json')))])
         report=compact(bundle.report.model_dump(mode='json')) if bundle.report else None
         findings=compact([finding.model_dump(mode='json') for finding in bundle.findings])
-        episodes.append({'episode_id':bundle.episode_id,'source':bundle.source,'observations':observations,'report_row':intern('reports',report),'check_row':intern('checks',findings)})
-    return {'format':'faultlab-compact-evidence/v1','interpretation':'Each observation row is [exact evidence_id, delivered_tick, results table index]. Reports/checks use their table indexes. oN cites the Nth observation of that episode. @iN consistently aliases an opaque operation/order/intent/receipt/call/event identity within that episode; different aliases remain different identities. Omitted nullable fields are null. All trials and all delivered results, including contradictions, are retained. Original complete records are referenced by exact episode/evidence IDs.','episodes':episodes,**tables}
+        row={'episode_id':bundle.episode_id,'source':bundle.source,'observations':observations,'original_report_present':bundle.report is not None,'report_row':intern('reports',report),'check_row':intern('checks',findings)}
+        if outcomes is not None: row['task_outcome']=outcomes.get(bundle.episode_id)
+        episodes.append(row)
+    legend='Each observation row is [exact evidence_id, delivered_tick, results table index]. Reports/checks use their table indexes. original_report_present=false means no final original report was recorded; it does not establish what the actor may have proposed. A present report is not necessarily correct. oN cites the Nth observation of that episode. @iN consistently aliases an opaque operation/order/intent/receipt/call/event identity within that episode; different aliases remain different identities. Omitted nullable fields are null. All trials and all delivered results, including contradictions, are retained. Original complete records are referenced by exact episode/evidence IDs.'
+    if outcomes is not None: legend+=TASK_OUTCOME_CLAUSE
+    return {'format':COMPACT_EVIDENCE_V1 if outcomes is None else COMPACT_EVIDENCE_V2,'interpretation':legend,'episodes':episodes,**tables}

@@ -6,7 +6,9 @@ FaultLab is a small lab that breaks the tools an AI assistant depends on, on pur
 
 Built in one weekend at CoreWeave Hacks: Agent Loops (San Francisco, September 12 to 13, 2026) by Team Gatekeeper: Shree Bohara and Aryan Bhusari.
 
-[Slides (PDF)](docs/presentation.pdf) · [Recorded results](docs/learning-results.md) · [Architecture](docs/architecture.md) · [Plain-language guide](docs/demo-guide.md) · [Limitations](docs/limitations.md)
+[Latest results: Phase 15](docs/part2/PHASE15_RESULTS.md) · [Phase 14 results](docs/part2/PHASE14_RESULTS.md) · [Phase 13 results](docs/part2/PHASE13_RESULTS.md) · [Phase 12 results](docs/part2/PHASE12_RESULTS.md) · [Phase 11 results](docs/part2/PHASE11_RESULTS.md) · [Current checklist](docs/part2/PHASE13_TASKS.md) · [Phase 10 results](docs/part2/PHASE10_RESULTS.md) · [Phase 9 results](docs/part2/PHASE9_RESULTS.md) · [Phase 2 results](docs/part2/PHASE2_RESULTS.md) · [Slides (PDF)](docs/presentation.pdf) · [Recorded results](docs/learning-results.md) · [Architecture](docs/architecture.md) · [Plain-language guide](docs/demo-guide.md) · [Limitations](docs/limitations.md)
+
+**Latest:** search now avoids repeated fault schedules, and a separate study measures whether generated rules finish safely unfinished tasks. The latest round retained 34 live episodes and verified every trace. Two generated rules failed to improve completion; a follow-up stopped when its planned fault was never reached. No learned policy has been accepted. The dashboard shows these results separately, with original proposals and reports. See [the results](docs/part2/PHASE3_RESULTS.md) and [quick start](docs/user-guide.md).
 
 ![The FaultLab dashboard in dark mode. The run summary shows 143 trials, 77 violations, 66 completed, 995 model calls and 143 of 143 Weave-verified traces, then six stages: the failure repeated 3 of 3 times, the fault was simplified, the diagnosis was supported, three candidate rules were proposed, the challenge found a counterexample and sent it back to repair, and no promotion qualified.](docs/assets/faultlab-dashboard-dark.png)
 
@@ -46,9 +48,9 @@ The Referee cannot be persuaded and the Mechanic cannot mark its own work. That 
 
 The run shown on this page used DeepSeek V3.1 in every model role. Later runs split the roles: a weaker Actor under test (Llama 3.3 70B, Gemma 4 31B or DeepSeek V3.1) with DeepSeek V4 Pro as Explorer and Mechanic. Models are set in `.env`.
 
-## What happened when we ran it
+## Recorded hackathon run
 
-Our best recorded run is `campaign-44085f54a24144b78252d8eea211ebb8`. Every number below comes from its saved records, and all 143 of its traces were read back from Weave and matched against the local evidence.
+The hackathon run shown above is `campaign-44085f54a24144b78252d8eea211ebb8`. Every number below comes from its saved records, and all 143 of its traces were read back from Weave and matched against the local evidence.
 
 - The Explorer found a real failure. With a delayed upgrade response, the assistant kept polling for status and never filed its final report. Three of the eight checks failed.
 - The failure repeated 3 out of 3 times in fresh shops, and the lab reduced it to the smallest delay that still broke the assistant.
@@ -64,6 +66,14 @@ Our best recorded run is `campaign-44085f54a24144b78252d8eea211ebb8`. Every numb
 </p>
 
 Two limits showed up that we have not solved. The assistant sometimes drops its final report even after the rule has delivered every receipt it needs. And the Mechanic did not learn from the counterexample; it re-sent the same rule. Both are written up in the [results](docs/learning-results.md) and [limitations](docs/limitations.md).
+
+## Phase 1 update — September 20
+
+The repair loop now supplies exact hook rules and cumulative feedback, avoids qualifying the same failed policy repeatedly, and separates a flaky source from a failed repair. New experiments record runtime identity and consistent trace outcomes. The lab checks local service readiness before paid work and records safe error causes.
+
+Reproduced failures can now be exported as complete incident bundles before any policy is accepted. The trusted runner validates them and creates fresh test worlds. The dashboard labels an incident, candidate comparison and accepted-policy bundle separately.
+
+A new 36-trial baseline and an independent 18-trial native smolagents baseline have completed with verified model traces. The updated checks include 422 backend tests, 34 frontend tests and offline CI configuration. Read [the Phase 1 report](docs/part2/PHASE1_RESULTS.md) for full outcomes and [the checklist](docs/part2/PHASE1_TASKS.md) for current completion. These changes do not establish an accepted learned repair.
 
 ## The dashboard
 
@@ -105,7 +115,7 @@ Open http://127.0.0.1:5173 and run one offline reference attempt:
 ./scripts/run-demo.sh --mode baseline --wait
 ```
 
-A live run uses real models through W&B. Copy `.env.example` to `.env`, add your W&B key, project and model names, and follow [docs/hackathon-demo.md](docs/hackathon-demo.md). Never commit `.env`.
+A live run uses real models through W&B. If `.env` does not exist, copy `.env.example` to `.env`; add your W&B key, project and model names, and follow [the current step-by-step guide](docs/user-guide.md). Keep an existing `.env` and never commit it.
 
 ## Read more
 

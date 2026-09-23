@@ -3,7 +3,7 @@ import asyncio
 from app.contracts.models import RegressionExecution,RegressionBundle,Usage,EpisodeBudget,content_hash,new_id
 from app.lab.budgets import CampaignLedger
 from app.lab.storage import StoreConflict
-from app.lab.regressions import RegressionCompiler
+from app.lab.regressions import RegressionCompiler,runnable_policy
 
 async def execute_regression(coordinator,regression_id,request):
     from app.integrations.registry import AgentRegistry
@@ -11,7 +11,7 @@ async def execute_regression(coordinator,regression_id,request):
     regression=coordinator.store.get_record('regressions',regression_id)
     if not regression: raise KeyError(regression_id)
     policy=coordinator.policies.get(request.policy_version)
-    if policy is None or policy.decision not in ('BASELINE','ACCEPTED'): raise ValueError('Immutable accepted policy required')
+    if policy is None: raise ValueError('Immutable bundled policy required')
     if request.execute_live is not True or request.execution_profile_id!='sandbox-v1': raise ValueError('Explicit reviewed execution profile required')
     coordinator.settings.require_live()
     campaign=coordinator.get(regression['campaign_id'])
@@ -22,6 +22,7 @@ async def execute_regression(coordinator,regression_id,request):
     RegressionCompiler(coordinator.store).export(regression['bundle_id'],directory)
     fixed=RegressionRunner(coordinator.store,registry)
     checked=fixed.validate(directory,target,registration.registration_id)
+    runnable_policy(checked.bundle,policy)
     if checked.bundle.policy_hash!=policy.policy_hash: raise ValueError('Selected policy must equal the transferred immutable artifact')
     ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
     execution_id=new_id('execution'); reservation=f'regression:{execution_id}'

@@ -48,6 +48,7 @@ class EvidenceGateway:
 
     async def get(self,episode_id,context,*,require_remote=True,stopped=lambda:False):
         e=self.authorize(episode_id,context)
+        config=self.store.get_record('configurations',e.configuration_hash)
         existing=self.store.get_record('evidence',episode_id)
         if existing and (not require_remote or existing['source']=='weave_verified'):
             return EvidenceBundle.model_validate_json(canonical_json(existing))
@@ -63,9 +64,13 @@ class EvidenceGateway:
             snapshot=result.snapshot
             remote_obs=[call['output']['observation'] for call in snapshot['calls'][1:]]
             if [o.model_dump(mode='json') for o in observations]!=remote_obs or snapshot['calls'][0]['output']['report']!=(e.report.model_dump(mode='json') if e.report else None): raise EvidenceDenied('Remote delivered evidence differs from local authority')
+            if config.get('trace_contract_version', 1) >= 2 and snapshot['calls'][0]['output'].get('terminal_status') != e.lifecycle:
+                # Legacy immutable traces may carry the former exception label.
+                # New campaigns must agree with the locally adjudicated lifecycle.
+                self.store.put_record('ingestions',episode_id,{'episode_id':episode_id,'state':'REJECTED','status':'weave_error','execution_epoch':e.execution_epoch,'error_code':'TERMINAL_CLASSIFICATION_MISMATCH'})
+                raise EvidenceDenied('Remote terminal classification differs from local authority')
             self.authorize(episode_id,context)
             source='weave_verified'; root=registration.root_call_id; children=list(registration.child_call_ids); retrieved=utc_now()
-        config=self.store.get_record('configurations',e.configuration_hash)
         fields={'episode_id':episode_id,'policy_hash':e.policy_hash,'contract_hash':config['contract_hash'],'scorer_hash':config['scorer_hash'],'source':source,'root_call_id':root,'child_call_ids':children,'observations':observations,'report':e.report,'findings':e.verdict.checks if e.verdict else [],'retrieved_at':retrieved,'source_project':self.project if source=='weave_verified' else None}
         bundle=EvidenceBundle(**fields,digest='0'*64)
         bundle.digest=content_hash({k:v for k,v in bundle.model_dump(mode='json').items() if k!='digest'})

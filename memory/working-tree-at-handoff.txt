@@ -1,0 +1,106 @@
+ M .env.example
+ M AGENTS.md
+ M CONTINUE_HERE.md
+ M README.md
+ M backend/app/adapters/business_tools.py
+ M backend/app/adapters/decorator.py
+ M backend/app/adapters/prototype.py
+ M backend/app/agents/actor.py
+ M backend/app/agents/explorer.py
+ M backend/app/agents/mechanic.py
+ M backend/app/agents/prompts/explorer.md
+ M backend/app/agents/prompts/mechanic.md
+ M backend/app/cli/client.py
+ M backend/app/cli/regressions.py
+ M backend/app/config.py
+ M backend/app/contracts/models.py
+ M backend/app/integrations/registry.py
+ M backend/app/integrations/regression_runner.py
+ M backend/app/lab/api.py
+ M backend/app/lab/baseline_study.py
+ M backend/app/lab/configuration.py
+ M backend/app/lab/coordinator.py
+ M backend/app/lab/diagnosis.py
+ M backend/app/lab/evidence.py
+ M backend/app/lab/learning.py
+ M backend/app/lab/regression_executions.py
+ M backend/app/lab/regressions.py
+ M backend/app/lab/runner.py
+ M backend/app/providers/runtime.py
+ M backend/app/simulator/control.py
+ M backend/app/telemetry/safety.py
+ M backend/app/telemetry/tracing.py
+ M backend/tests/agents/test_prompt_evidence.py
+ M backend/tests/agents/test_roles.py
+ M backend/tests/integrations/test_regression_runner.py
+ M backend/tests/lab/test_baseline_study.py
+ M backend/tests/lab/test_counterexample_loop.py
+ M backend/tests/lab/test_diagnosis_context.py
+ M backend/tests/lab/test_evidence.py
+ M backend/tests/providers/test_runtime.py
+ M backend/tests/referee/test_invariants.py
+ M backend/tests/telemetry/test_lifecycle.py
+ M contracts/Episode.schema.json
+ M contracts/EvaluationBatch.schema.json
+ M contracts/Provenance.schema.json
+ M contracts/RegressionBundle.schema.json
+ M contracts/RegressionCase.schema.json
+ M contracts/TrialResult.schema.json
+ M contracts/manifest.json
+ M contracts/wire-types.ts
+ M docs/AGENT_HANDOFF_2026-09-13.md
+ M docs/HANDOFF_CLAUDE_2026-09-13.md
+ M docs/limitations.md
+ M docs/regression-runner.md
+ M docs/setup.md
+ M docs/user-guide.md
+ M frontend/src/api.ts
+ M frontend/src/components/EvidenceScreen.tsx
+ M frontend/src/components/OutcomeMatrix.tsx
+ M frontend/src/components/RegressionControls.tsx
+ M frontend/src/components/RunSummary.tsx
+ M frontend/tests/evidence-screen.test.ts
+ M frontend/tests/fixtures.ts
+?? .github/
+?? CLAUDE.md
+?? backend/app/agents/progress.py
+?? backend/app/agents/prompts/completion.md
+?? backend/app/lab/completion_study.py
+?? backend/app/lab/context_study.py
+?? backend/app/lab/exports.py
+?? backend/app/lab/readiness.py
+?? backend/tests/agents/test_actor_final_report.py
+?? backend/tests/agents/test_actor_outputs.py
+?? backend/tests/agents/test_actor_progress.py
+?? backend/tests/agents/test_explorer_search.py
+?? backend/tests/integration/test_readiness.py
+?? backend/tests/integration/test_repeatability_plan.py
+?? backend/tests/lab/test_completion_study.py
+?? backend/tests/lab/test_configuration.py
+?? backend/tests/lab/test_context_study.py
+?? backend/tests/lab/test_discovery_search_flow.py
+?? backend/tests/lab/test_incident_exports.py
+?? backend/tests/lab/test_learning_qualification.py
+?? backend/tests/telemetry/test_report_deadline.py
+?? docs/offline-ci.md
+?? docs/part2/
+?? frontend/src/completion.ts
+?? frontend/src/components/CompletionStudyPanel.tsx
+?? frontend/src/components/ContextStudyPanel.tsx
+?? frontend/src/components/PromotionComparison.tsx
+?? frontend/src/components/SearchAttemptsPanel.tsx
+?? frontend/src/contextStudy.ts
+?? frontend/src/searchAttempts.ts
+?? frontend/tests/completion-study.test.tsx
+?? frontend/tests/context-study.test.tsx
+?? frontend/tests/promotion-comparison.test.tsx
+?? frontend/tests/regression-controls.test.ts
+?? frontend/tests/search-attempts.test.tsx
+?? memory/
+?? scripts/experiments/
+?? scripts/run-completion-study.sh
+?? scripts/run-context-study.sh
+?? docs/part2/PHASE13_EXPERIMENT.md
+?? docs/part2/PHASE13_RESULTS.md
+?? docs/part2/PHASE13_TASKS.md
+?? docs/part2/PHASE14_RESULTS.md

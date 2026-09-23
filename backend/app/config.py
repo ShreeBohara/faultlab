@@ -35,6 +35,9 @@ class Settings:
     faultlab_simulator_url: str = 'http://127.0.0.1:8001'
     faultlab_control_token: str = field(default='', repr=False)
     faultlab_live_enabled: bool = False
+    # Allows an explicitly bounded Inference/Weave-only experiment without
+    # publishing a Finished W&B run that would trigger additional Aria spending.
+    faultlab_aria_publish_enabled: bool = True
     faultlab_confirmed_entity: str = ''
     faultlab_model_call_cap: int = 6000
     faultlab_token_cap: int = CAMPAIGN_TOKEN_LIMIT
@@ -158,31 +161,32 @@ class Settings:
         if missing:
             raise ConfigurationError(tuple(dict.fromkeys(missing)))
 
-    @property
-    def model_call_dollar_bounds(self) -> dict[str, float] | None:
+    def model_rates_for_role(self, role: str) -> tuple[float, float] | None:
+        """Use one verified model/rate selection for admission and frozen records."""
         import math
-        caps=CampaignBudget()
+        model=self.model_for_role(role)
         actor_rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
-        if (not self.faultlab_pricing_verified or self.faultlab_pricing_model!=self.wandb_model
-                or any(not math.isfinite(v) or v<0 for v in actor_rates)):
-            return None
-        actor_bound=(caps.input_tokens_per_call*actor_rates[0]+caps.output_tokens_per_call*actor_rates[1])/1000000
-        result={'actor':actor_bound}
+        if model==self.wandb_model:
+            return actor_rates if (self.faultlab_pricing_verified and self.faultlab_pricing_model==model
+                and all(math.isfinite(v) and v>=0 for v in actor_rates)) else None
         reasoning_rates=(self.faultlab_reasoning_input_dollars_per_million,self.faultlab_reasoning_output_dollars_per_million)
         lab_rates=(self.faultlab_lab_input_dollars_per_million,self.faultlab_lab_output_dollars_per_million)
-        for role in ('explorer','mechanic'):
-            model=self.model_for_role(role)
-            if model==self.wandb_model:
-                result[role]=actor_bound
-            elif (self.faultlab_reasoning_pricing_verified and self.faultlab_reasoning_pricing_model==model
-                    and all(math.isfinite(v) and v>=0 for v in reasoning_rates)):
-                result[role]=(caps.input_tokens_per_call*reasoning_rates[0]+caps.output_tokens_per_call*reasoning_rates[1])/1000000
-            elif (self.faultlab_lab_model.strip()==model and self.faultlab_lab_pricing_model==model
-                    and all(math.isfinite(v) and v>=0 for v in lab_rates)):
-                result[role]=(caps.input_tokens_per_call*lab_rates[0]+caps.output_tokens_per_call*lab_rates[1])/1000000
-            else:
-                return None
-        return result
+        if (self.faultlab_reasoning_pricing_verified and self.faultlab_reasoning_pricing_model==model
+                and all(math.isfinite(v) and v>=0 for v in reasoning_rates)):
+            return reasoning_rates
+        if (self.faultlab_lab_model.strip()==model and self.faultlab_lab_pricing_model==model
+                and all(math.isfinite(v) and v>=0 for v in lab_rates)):
+            return lab_rates
+        return None
+
+    @property
+    def model_call_dollar_bounds(self) -> dict[str, float] | None:
+        caps=CampaignBudget()
+        rates={role:self.model_rates_for_role(role) for role in ('actor','explorer','mechanic')}
+        if any(value is None for value in rates.values()):
+            return None
+        return {role:(caps.input_tokens_per_call*value[0]+caps.output_tokens_per_call*value[1])/1000000
+                for role,value in rates.items()}
 
     @property
     def model_call_dollar_bound(self) -> float | None:

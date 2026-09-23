@@ -75,6 +75,44 @@ def test_provider_failure_trace_records_only_structured_diagnostics(worker, stor
     assert output["report"] is None and output["terminal_status"] == "LAB_ERROR"
 
 
+@pytest.mark.parametrize('kind,status,category', [
+    ('report', 'COMPLETED', 'ACTOR_REPORT_MISSING'),
+    ('budget', 'COMPLETED', 'EPISODE_BUDGET_EXHAUSTED'),
+    ('stop', 'INTERRUPTED', 'STOP_REQUESTED'),
+])
+def test_actor_terminal_condition_preserves_original_error(worker, store, metadata, kind, status, category):
+    from app.agents.actor import ActorReportError
+    from app.lab.budgets import BudgetExhausted, StopRequested
+    error = {'report': ActorReportError, 'budget': BudgetExhausted, 'stop': StopRequested}[kind]('PRIVATE_TEST_SENTINEL')
+    async def run():
+        async with TraceRecorder(worker, TelemetryOutbox(store)).span('run_episode', metadata, {}):
+            raise error
+    with pytest.raises(type(error)) as caught:
+        asyncio.run(run())
+    assert caught.value is error
+    output = store.list_records('trace_calls')[0]['output']
+    assert output == {'terminal_status': status, 'report': None, 'error_category': category}
+    assert 'PRIVATE_TEST_SENTINEL' not in json.dumps(store.list_records('trace_calls'))
+
+
+def test_external_cancel_at_deadline_remains_interrupted(worker, store, metadata):
+    from app.telemetry.tracing import episode_deadline
+    async def run():
+        async with asyncio.timeout(.001) as deadline:
+            with episode_deadline(deadline):
+                async with TraceRecorder(worker, TelemetryOutbox(store)).span('run_episode', metadata, {}):
+                    try:
+                        await asyncio.Event().wait()
+                    except asyncio.CancelledError:
+                        # A concurrent operator cancel must not be swallowed by
+                        # timeout conversion or described as a completed trial.
+                        asyncio.current_task().cancel()
+                        raise
+    with pytest.raises(asyncio.CancelledError):
+        asyncio.run(run())
+    assert store.list_records('trace_calls')[0]['output']['terminal_status'] == 'INTERRUPTED'
+
+
 def test_outbox_duplicate_delivery_and_persisted_retry(store):
     outbox = TelemetryOutbox(store)
     job = outbox.enqueue("dataset", "fixture", {"rows": []})

@@ -1,6 +1,6 @@
 """Sanitized async spans that preserve original return and exception behavior."""
 
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 import asyncio
@@ -14,6 +14,44 @@ OPERATIONS = {"run_episode", "get_order", "update_order", "get_operation_status"
               "select_experiment", "reproduce_counterexample", "reduce_counterexample", "run_intervention",
               "diagnose", "propose_policy", "challenge_policy", "export_regression", "promotion_decision"}
 _parent_call = ContextVar("faultlab_trace_parent", default=None)
+_episode_deadline = ContextVar("faultlab_episode_deadline", default=None)
+TRACE_FINISH_TIMEOUT_SECONDS = 2.0
+
+
+@contextmanager
+def episode_deadline(deadline):
+    """Expose the runner's timeout disposition without mistaking a user cancel for it."""
+    task = asyncio.current_task()
+    token = _episode_deadline.set((deadline, task, task.cancelling()))
+    try:
+        yield
+    finally:
+        _episode_deadline.reset(token)
+
+
+def _deadline_cancelled(error):
+    context = _episode_deadline.get()
+    if not isinstance(error, asyncio.CancelledError) or context is None:
+        return False
+    deadline, task, cancelling = context
+    # asyncio.timeout converts only its own cancellation to TimeoutError. An
+    # additional external cancellation must remain an interruption in both logs.
+    return deadline.expired() and task.cancelling() == cancelling + 1
+
+
+def complete_episode_work():
+    """Close a timely returned report's work deadline, never pending cancellation."""
+    context = _episode_deadline.get()
+    if context is None:
+        return True
+    deadline, task, cancelling = context
+    if task.cancelling() != cancelling:
+        raise asyncio.CancelledError()
+    when = deadline.when()
+    if deadline.expired() or (when is not None and asyncio.get_running_loop().time() >= when):
+        return False
+    deadline.reschedule(None)
+    return True
 
 
 @dataclass
@@ -66,6 +104,17 @@ class TraceRecorder:
         except BaseException as error:
             span.output = {"terminal_status": "INTERRUPTED" if type(error).__name__ == "CancelledError" else "LAB_ERROR",
                            "report": None, "error_category": "PROTOTYPE_EXCEPTION"}
+            from app.agents.actor import ActorReportError
+            from app.lab.budgets import BudgetExhausted, StopRequested
+            # These are valid terminal actor attempts, not infrastructure errors.
+            # The Referee still decides which correctness checks failed.
+            if name == "run_episode" and isinstance(error, (ActorReportError, BudgetExhausted)):
+                span.output.update(terminal_status="COMPLETED", error_category=(
+                    "ACTOR_REPORT_MISSING" if isinstance(error, ActorReportError) else "EPISODE_BUDGET_EXHAUSTED"))
+            elif name == "run_episode" and (isinstance(error, TimeoutError) or _deadline_cancelled(error)):
+                span.output.update(terminal_status="COMPLETED", error_category="EPISODE_DEADLINE_EXHAUSTED")
+            elif isinstance(error, StopRequested):
+                span.output.update(terminal_status="INTERRUPTED", error_category="STOP_REQUESTED")
             from app.providers.runtime import RuntimeProviderError
             if isinstance(error, RuntimeProviderError):
                 span.output["provider_diagnostics"] = error.diagnostics
@@ -78,12 +127,23 @@ class TraceRecorder:
                 payload["output"] = {"terminal_status": "TELEMETRY_REJECTED", "report": None, "error_category": "UNSAFE_TRACE_OUTPUT"}
             payload["ended_at"] = utc_now()
             self.outbox.store.put_record("trace_calls", call_id, payload)
-            self.outbox.enqueue("trace", call_id, payload)
-            if span.captured:
-                try:
-                    await self.worker.request("finish_call", {"call_id": call_id, "output": payload["output"], "ended_at": payload["ended_at"]}, timeout_seconds=2)
-                except Exception:
-                    pass
+            try:
+                if span.captured:
+                    try:
+                        async with asyncio.timeout(TRACE_FINISH_TIMEOUT_SECONDS):
+                            await self.worker.request("finish_call", {"call_id": call_id, "output": payload["output"], "ended_at": payload["ended_at"]}, timeout_seconds=TRACE_FINISH_TIMEOUT_SECONDS)
+                    except asyncio.CancelledError as error:
+                        if name == 'run_episode' and not _deadline_cancelled(error):
+                            payload['output'] = {**payload['output'], 'terminal_status': 'INTERRUPTED',
+                                                 'error_category': 'EXTERNAL_CANCELLATION'}
+                            self.outbox.store.put_record('trace_calls', call_id, payload)
+                        raise
+                    except Exception:
+                        pass
+            finally:
+                # The durable local call exists before delivery. Queue its final
+                # disposition even when an operator cancels an in-flight upload.
+                self.outbox.enqueue("trace", call_id, payload)
 
     async def retry_episode_upload(self, episode_id: str, *, deadline_seconds: float = 60, stopped=lambda: False):
         """Synchronize only saved trace records, parent before children; never execute code."""

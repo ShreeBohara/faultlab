@@ -168,7 +168,7 @@
     },
     "Provenance": {
       "file": "Provenance.schema.json",
-      "sha256": "ee6333e9cadd126479a5908dd6bd37ca96b60b095f1da55d5d450762f55df051"
+      "sha256": "6ff8b80d318122ed199181325d0959a0c36022fd7bd72551ba73fc660d4af250"
     },
     "CheckResult": {
       "file": "CheckResult.schema.json",
@@ -188,7 +188,7 @@
     },
     "TrialResult": {
       "file": "TrialResult.schema.json",
-      "sha256": "872928fb38ed32f93ec907befb71e043380ba739cbccb44a4a3e07e836c01d95"
+      "sha256": "47c52c172b97b38eae7daa4963b8864ed226e21920f5570b747b0bf92ab672d4"
     },
     "Counterexample": {
       "file": "Counterexample.schema.json",
@@ -224,7 +224,7 @@
     },
     "RegressionBundle": {
       "file": "RegressionBundle.schema.json",
-      "sha256": "da105a87358c721bcf112b16ad48994c5656c39bbeecf5babec8405ec62fc7c4"
+      "sha256": "dcc6b1159f01a494374251a1eae8ab69c374fe55d09d867bf3b8bc1017cc9a9f"
     },
     "RegressionExecution": {
       "file": "RegressionExecution.schema.json",
@@ -252,7 +252,7 @@
     },
     "Episode": {
       "file": "Episode.schema.json",
-      "sha256": "04f44c7769e175c64a6ebb576df2ff0caec7ad068dbe25f928faf93c5e7412c1"
+      "sha256": "2cc45fbbc041dca86587c58ba01d2663bd8125de5bda0c292732700d144ced85"
     },
     "PolicyVersion": {
       "file": "PolicyVersion.schema.json",
@@ -264,7 +264,7 @@
     },
     "EvaluationBatch": {
       "file": "EvaluationBatch.schema.json",
-      "sha256": "560ec1e55284d381ef2626c31f60c2b2016005c2a85a32869852b259af9d9518"
+      "sha256": "ff6914f9dcf36ef4744d1a7b4dc1fea0a319e2b584d497205710c4b37560e817"
     },
     "AriaAnalysis": {
       "file": "AriaAnalysis.schema.json",
@@ -296,7 +296,7 @@
     },
     "RegressionCase": {
       "file": "RegressionCase.schema.json",
-      "sha256": "124ad0b8fb426760ace6c0f115dfbe7568b708c1f30a7b90235c785224f1f4d3"
+      "sha256": "29c8dfd1a60163d1a1ad96696654fd2940d0fe2c023539ad31a7661cc1645fc0"
     },
     "WeaveIngestion": {
       "file": "WeaveIngestion.schema.json",
@@ -307,7 +307,7 @@
       "sha256": "b37f9a8bceec2806b2ba6ec1b93800d4c6b4884ccf98b765b79691a61aa03ed7"
     }
   },
-  "schema_hash": "e1fc8829f11b921d2014049f59f51d4217554394779a8042c420d4fb3569f660",
+  "schema_hash": "b0260cf91957c490d4e7a9995229d03e8aac8cbd58c348453c66d2096ab1262c",
   "ownership": "../docs/integration-ledger.md",
   "seams_version": "faultlab-seams/v1"
 }

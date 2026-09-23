@@ -25,18 +25,20 @@ export function RunSummary({ campaign, matrix, experiments, policies }: { campai
   const challenge = challenges.at(-1)
   const proposals = campaignProposals(policies, matrix)
   const accepted = proposals.find(p => p.decision === 'ACCEPTED')
+  const promotion = proposals.filter(p => !!p.decision_ref).at(-1)
   const verified = (experiments?.ingestions ?? []).filter(i => i.status === 'weave_verified').length
-  const finished = ['NO_CHANGE', 'STOPPED', 'COMPLETED'].includes(campaign.state ?? '')
+  const finished = ['NO_CHANGE', 'STOPPED', 'COMPLETED', 'ERROR'].includes(campaign.state ?? '')
   const retainedLabel = campaign.active_policy_version === 'policy-v0' ? 'Baseline retained' : 'Current policy retained'
   return <Panel title="Run summary" className="summary-panel" aside={<div className="summary-heading-meta"><span className="small-label">Read from persisted records</span><Badge value={campaign.state ?? 'UNVERIFIED'} /></div>}>
-    <div className="summary-context"><span>Actor <strong>{campaign.model}</strong></span><span>{records.length ? `Latest incident shown · ${records.length} recorded` : 'Waiting for incident evidence'}</span></div>
+    <div className="summary-context"><span>Actor <strong>{campaign.model}</strong></span><span>{records.length ? `Latest incident shown · ${records.length} recorded` : !experiments ? 'Incident evidence not loaded' : finished || campaign.state === 'IDLE' ? 'No learning-loop incident recorded' : 'Waiting for incident evidence'}</span></div>
     <div className="stat-strip">
-      <div><strong>{counts?.valid_attempted ?? '—'}</strong><span>Trials recorded</span></div>
-      <div className="stat-alert"><strong>{counts?.violations ?? '—'}</strong><span>Violations</span></div>
-      <div className="stat-good"><strong>{counts?.completed ?? '—'}</strong><span>Completed</span></div>
-      <div><strong>{campaign.usage?.model_calls ?? '—'}</strong><span>Model calls</span></div>
-      <div className="stat-good"><strong>{experiments ? verified : '—'}{experiments && <span> / {experiments.ingestions.length}</span>}</strong><span>Weave verified</span></div>
+      <div><strong>{counts?.valid_attempted ?? '—'}</strong><span>Main-loop trials</span></div>
+      <div className="stat-alert"><strong>{counts?.violations ?? '—'}</strong><span>Main-loop violations</span></div>
+      <div className="stat-good"><strong>{counts?.completed ?? '—'}</strong><span>Main-loop completed</span></div>
+      <div><strong>{campaign.usage?.model_calls ?? '—'}</strong><span>Campaign model calls</span></div>
+      <div className="stat-good"><strong>{experiments ? verified : '—'}{experiments && <span> / {experiments.ingestions.length}</span>}</strong><span>Weave verified · campaign evidence</span></div>
     </div>
+    <p className="muted">Main-loop counts mix discovery, diagnosis and repair tests. Separate studies are excluded from these counts; their saved evidence may still appear below. These totals are not a before-and-after comparison.</p>
     <ol className="summary-stages" aria-label="Learning cycle evidence">
       <li className={`summary-stage ${counterexample?.reproduced ? 'stage-supported' : 'stage-pending'}`}><span className="stage-index">01</span><div className="stage-content"><h3 className="stage-label">Repeat the failure</h3><div className="stage-detail">{counterexample
         ? <><Badge value={counterexample.reproduced ? 'SUPPORTED' : 'INCONCLUSIVE'} /><p>{counterexample.target_violation_count ?? 'not recorded'} of {counterexample.valid_count ?? 'not recorded'} fresh trials violated {counterexample.target_invariant}.</p></>
@@ -53,8 +55,9 @@ export function RunSummary({ campaign, matrix, experiments, policies }: { campai
       <li className={`summary-stage ${challenge?.status === 'COUNTEREXAMPLE_FOUND' ? 'stage-rejected' : challenge ? 'stage-observed' : 'stage-pending'}`}><span className="stage-index">05</span><div className="stage-content"><h3 className="stage-label">Challenge the repair</h3><div className="stage-detail">{challenge
         ? <><Badge value={challenge.status} /><p>{challenge.stopping_reason}</p>{challenge.status === 'COUNTEREXAMPLE_FOUND' && <span className="stage-loop"><span aria-hidden="true">↩</span> Back to 04 · Repair</span>}</>
         : <><Badge value="NOT_RUN" /> Not reached. A candidate must repair every source-validation pair first.</>}</div></div></li>
-      <li className={`summary-stage ${accepted ? 'stage-supported' : 'stage-pending'}`}><span className="stage-index">06</span><div className="stage-content"><h3 className="stage-label">Promote if qualified</h3><div className="stage-detail">{accepted
+      <li className={`summary-stage ${accepted ? 'stage-supported' : promotion ? 'stage-observed' : 'stage-pending'}`}><span className="stage-index">06</span><div className="stage-content"><h3 className="stage-label">Promote if qualified</h3><div className="stage-detail">{accepted
         ? <><Badge value="ACCEPTED" /><p>{accepted.version} was accepted in this campaign.</p></>
+        : promotion ? <><Badge value={promotion.decision} /><p>{promotion.version} reached promotion. Its recorded decision was {promotion.decision.toLowerCase().replaceAll('_', ' ')}.</p></>
         : <><Badge value="NOT_RUN" /><p>No promotion batch qualified.</p></>}</div></div></li>
     </ol>
     <div className="summary-outcome"><span className="outcome-marker" aria-hidden="true">↺</span><div className="outcome-copy"><strong>{accepted ? 'Recovery policy accepted' : finished ? retainedLabel : 'No policy accepted yet'}</strong><p>{accepted

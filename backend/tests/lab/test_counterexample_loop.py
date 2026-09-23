@@ -31,6 +31,8 @@ async def test_rejected_candidate_returns_actual_feedback_without_human_edit(tmp
     campaign.caps.discovery_selections=1; c.save(campaign)
     c.ledgers[campaign.campaign_id]=CampaignLedger(c.store,campaign.campaign_id,campaign.caps)
     c.evidence_gateway=EvidenceDouble(); runner=FakeRunner(); runner.provider=object()
+    async def export_double(*args,**kwargs): pass
+    monkeypatch.setattr(learning,'export_incident',export_double)
     original=runner.run
     async def persisted(*args,**kwargs):
         trial=await original(*args,**kwargs)

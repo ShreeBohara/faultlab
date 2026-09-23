@@ -15,6 +15,10 @@ import { RegressionControls } from './RegressionControls'
 import { SponsorEvidence } from './SponsorEvidence'
 import { ReplayView } from './ReplayView'
 import { RunSummary } from './RunSummary'
+import { PromotionComparison } from './PromotionComparison'
+import { CompletionStudyPanel } from './CompletionStudyPanel'
+import { ContextStudyPanel } from './ContextStudyPanel'
+import { SearchAttemptsPanel } from './SearchAttemptsPanel'
 import { ResourceNote } from './common'
 import { ThemeToggle } from './ThemeToggle'
 const storedCampaign = () => { try { return localStorage.getItem('faultlab:campaign') || '' } catch { return '' } }
@@ -48,8 +52,12 @@ export function EvidenceScreen() {
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
     <ResourceNote resource={campaignResource} />{replay && <ReplayView campaign={campaign} />}
     <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
+    <PromotionComparison campaignId={campaignId} matrix={matrix.data} policies={policies.data} />
     <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>
     <OutcomeMatrix matrix={matrix} selectedEpisode={episodeId} onEpisode={selectEpisode} />
+    <SearchAttemptsPanel key={`search:${campaignId}`} campaignId={campaignId} onEpisode={selectEpisode} />
+    <CompletionStudyPanel key={`completion:${campaignId}`} campaignId={campaignId} activePolicy={campaign?.active_policy_version} onEpisode={selectEpisode} />
+    <ContextStudyPanel key={`context:${campaignId}`} campaignId={campaignId} onEpisode={selectEpisode} />
     <ResourceNote resource={experiments} /><div className="section-caption"><span>FROM INCIDENT TO A TESTED REPAIR</span><span>Hypotheses, attempts and failed gates stay visible.</span></div><div className="experiment-grid"><CounterexamplePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><DiagnosticPanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><ChallengePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /></div>
     <ResourceNote resource={regressions} /><div className="support-grid"><RegressionControls key={campaignId} cases={regressions.data} registrations={registrations.data} policies={policies.data} config={config.data} replay={replay} onEpisode={selectEpisode} /><PortabilityPanel registrations={registrations} portabilityIds={experiments.data?.portability_ids} onEpisode={selectEpisode} /><SponsorEvidence config={config.data} campaign={campaign} experiments={experiments.data} aria={aria} replay={replay} /></div>
     <footer><span>FaultLab / Gatekeeper</span><span>Read-only startup · fixed Referee · durable local evidence</span><code>GET /api/health → {health.data?.service ?? 'pending'}</code></footer>

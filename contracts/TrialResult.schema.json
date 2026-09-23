@@ -111,7 +111,8 @@
       "enum": [
         "B0",
         "B1",
-        "L"
+        "L",
+        "P1"
       ],
       "title": "Arm",
       "type": "string"

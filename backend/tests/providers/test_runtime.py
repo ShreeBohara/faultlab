@@ -184,3 +184,64 @@ def test_runtime_dispatches_frozen_model_by_role():
     assert [call['model'] for call in calls]==[generation.model_id for generation in generations]
     assert 'extra_body' not in calls[0]
     assert all(call['extra_body']=={'chat_template_kwargs':{'enable_thinking':False}} for call in calls[1:])
+
+
+def test_final_report_contract_uses_exact_schema_without_changing_request_or_answer():
+    from app.contracts.models import ReportAction
+    from app.providers.runtime import response_format_for
+    calls=[]
+    original='{"kind":"tool","tool":"get_order","arguments":{}}'
+    async def create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=original))],usage=None)
+    settings=Settings(wandb_api_key='fixture-key',wandb_entity='fixture',wandb_project='project',wandb_model='deepseek-ai/DeepSeek-V3.1')
+    provider=RuntimeProvider(settings,live_authorized=True,
+        client_factory=lambda **_:SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    messages=[{'role':'user','content':'Report now.'}]
+    returned=asyncio.run(provider.complete(messages,response_contract='actor_final_report'))
+    assert len(calls)==1 and calls[0]['messages']==messages
+    assert calls[0]['response_format']==response_format_for(response_contract='actor_final_report')
+    assert calls[0]['response_format']['json_schema']['schema']==ReportAction.model_json_schema()
+    assert calls[0]['response_format']['json_schema']['strict'] is True
+    assert calls[0]['temperature']==0 and calls[0]['max_tokens']==2000
+    # Even a provider which ignores its schema cannot trigger repair or fallback.
+    assert returned.content==original
+
+
+@pytest.mark.parametrize('role,contract',[
+    ('explorer','actor_final_report'),('mechanic','actor_final_report'),
+    ('actor','arbitrary_schema'),('actor',{'type':'json_schema'}),
+])
+def test_unreviewed_response_contract_rejected_before_client(role,contract):
+    provider=RuntimeProvider(Settings(wandb_api_key='fixture-key',wandb_entity='fixture',wandb_project='project',wandb_model='model'),
+        live_authorized=True,client_factory=lambda **_:pytest.fail('Client created for an unreviewed contract'))
+    with pytest.raises(RuntimeProviderError) as error:
+        asyncio.run(provider.complete([{'role':'user','content':'hello'}],role=role,response_contract=contract))
+    assert error.value.code=='INVALID_INPUT'
+
+
+def test_schema_tokens_rejected_before_client_when_messages_alone_fit():
+    from app.providers.runtime import validate_request_input
+    model='unregistered-byte-bound-model'
+    messages=[{'role':'user','content':'x'*31700}]
+    assert input_token_bound(messages,model)<32000
+    assert validate_request_input(messages,model)==input_token_bound(messages,model)
+    with pytest.raises(ValueError,match='32,000-token'):
+        validate_request_input(messages,model,response_contract='actor_final_report')
+    provider=RuntimeProvider(Settings(wandb_api_key='fixture-key',wandb_entity='fixture',wandb_project='project',wandb_model=model),
+        live_authorized=True,client_factory=lambda **_:pytest.fail('Client created before complete input admission'))
+    with pytest.raises(RuntimeProviderError) as error:
+        asyncio.run(provider.complete(messages,response_contract='actor_final_report'))
+    assert error.value.code=='INPUT_LIMIT'
+
+
+def test_schema_rejection_never_retries_with_json_mode():
+    calls=[]
+    async def create(**kwargs):
+        calls.append(kwargs)
+        raise ValueError('Provider rejected the requested schema')
+    provider=RuntimeProvider(Settings(wandb_api_key='fixture-key',wandb_entity='fixture',wandb_project='project',wandb_model='model'),
+        live_authorized=True,client_factory=lambda **_:SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    with pytest.raises(RuntimeProviderError):
+        asyncio.run(provider.complete([{'role':'user','content':'Report now.'}],response_contract='actor_final_report'))
+    assert len(calls)==1 and calls[0]['response_format']['type']=='json_schema'

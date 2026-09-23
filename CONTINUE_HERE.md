@@ -1,3 +1,5 @@
+> Historical handoff. For the September 20 continuation, start with `CLAUDE.md` and `memory/README.md` at the repository root. The original text below is preserved.
+
 # Continue FaultLab on another Codex account
 
 > **Latest update (Claude Code session, 2026-09-13 11:50 PDT):** start with

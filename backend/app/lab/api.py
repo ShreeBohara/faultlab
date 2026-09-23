@@ -23,6 +23,22 @@ class PortabilityRequest(StrictModel):
 class StudyRequest(StrictModel):
     execute_live:Literal[True]
 
+class CompletionStudyRequest(StrictModel):
+    execute_live:Literal[True]
+    # Which declared presentation of the reviewed evidence the Mechanic reads.
+    # The allowlist lives with the protocols themselves, not in this module.
+    evidence_protocol:str|None=Field(default=None,max_length=120)
+    # Replays one saved policy's validation batch to measure the gate's false-rejection
+    # rate. Makes no Mechanic call and can never accept or activate a policy.
+    replay_policy_version:str|None=Field(default=None,max_length=120)
+    actor_context_protocol:str|None=Field(default=None,max_length=120)
+
+class ContextStudyRequest(StrictModel):
+    execute_live:Literal[True]
+    # Which declared changed protocol the P1 arm runs. B0 always preserves v1.
+    # The allowlist lives with the protocols themselves, not in this module.
+    changed_context_protocol:str|None=Field(default=None,max_length=120)
+
 class ExecutionRequest(StrictModel):
     agent_registration_id:Id
     execution_profile_id:Id
@@ -30,9 +46,11 @@ class ExecutionRequest(StrictModel):
     execute_live:Literal[True]
 
 def error_response(error):
+    from app.lab.readiness import ServiceNotReady
     if isinstance(error,KeyError): status,code,message=404,'NOT_FOUND','Unknown record'
     elif isinstance(error,(StoreConflict,BudgetExhausted)): status,code,message=409,'CONFLICT',str(error)
     elif isinstance(error,ConfigurationError): status,code,message=503,'SERVICE_UNAVAILABLE','Live configuration is not ready: '+', '.join(error.missing_fields)
+    elif isinstance(error,ServiceNotReady): status,code,message=503,'SERVICE_NOT_READY',str(error)
     elif isinstance(error,ValidationError): status,code,message=422,'INVALID_REQUEST','Record failed the frozen schema'
     elif isinstance(error,ValueError): status,code,message=422,'INVALID_REQUEST',str(error)[:200]
     else: status,code,message=503,'SERVICE_UNAVAILABLE','Required local service unavailable'
@@ -65,6 +83,9 @@ def create_router(get_coordinator):
     @router.get('/config/status')
     @guarded
     async def config_status(): return c().config_status()
+    @router.get('/readiness')
+    @guarded
+    async def readiness(): return await c().readiness()
     @router.post('/campaigns',status_code=201)
     @guarded
     async def create(request:CampaignRequest): return c().create(request)
@@ -104,6 +125,13 @@ def create_router(get_coordinator):
     async def configuration(id:str):
         campaign=c().get(id)
         return record('configurations',campaign.configuration_hash)
+    @router.get('/campaigns/{id}/recording')
+    @guarded
+    async def recording(id:str):
+        from app.lab.exports import development_recording
+        c().get(id)
+        settings=c().settings
+        return development_recording(c().store,id,secrets=(settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token))
     @router.get('/campaigns/{id}/matrix')
     @guarded
     async def matrix(id:str):
@@ -148,6 +176,25 @@ def create_router(get_coordinator):
         episodes={e['episode_id'] for e in records('episodes',id) if e['split']=='development' and e['experiment_purpose'] not in ('selection_comparison','diagnostic_profile')}
         evidence=[{**{k:d[k] for k in ('episode_id','source','root_call_id','child_call_ids','source_project')},'root_call_url':'https://wandb.ai/'+d['source_project']+'/weave/calls/'+d['root_call_id'] if d['source']=='weave_verified' and d['root_call_id'] and d['source_project'] else None} for d in records('evidence') if d['episode_id'] in episodes]
         return {'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in records('ingestions') if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
+    @router.get('/campaigns/{id}/search-attempts')
+    @guarded
+    async def search_attempts(id:str):
+        campaign=c().get(id)
+        selected=[]
+        policy_hashes={p.policy_hash for p in c().policies.list() if p.policy_hash}
+        for row in records('selections'):
+            context=row.get('context',{})
+            if (context.get('campaign_id')!=id or context.get('configuration_hash')!=campaign.configuration_hash
+                or row.get('challenge') or context.get('study_id') or context.get('selector_id')
+                or 'development_history' not in context or not row.get('search_decision')
+                or context.get('policy_hash') not in policy_hashes): continue
+            selected.append({'selection_ref':row['selection_id'],'campaign_id':id,
+                'selection_index':context['selection_index'],'configuration_hash':context['configuration_hash'],
+                'policy_hash':context['policy_hash'],'search_decision':row['search_decision'],
+                'selected_output':row.get('selected_output'),'output':row.get('output'),
+                'raw_response':row['raw'],'usage':row['usage'],'provenance':row['provenance'],
+                'error':row.get('error')})
+        return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded
     async def regressions(id:str): c().get(id); return records('regressions',id)
@@ -184,14 +231,14 @@ def create_router(get_coordinator):
     async def download(id:str):
         import io,zipfile
         from app.contracts.models import RegressionBundle
-        from app.lab.regressions import validate_bundle
+        from app.lab.regressions import validate_bundle,manifest_payload
         regression=record('regressions',id)
         bundle=c().store.get_model('bundles',regression['bundle_id'],RegressionBundle)
         payloads=c().store.get_record('bundle_files',bundle.bundle_id)
         validate_bundle(bundle,payloads)
         target=io.BytesIO()
         with zipfile.ZipFile(target,'w',compression=zipfile.ZIP_DEFLATED) as archive:
-            archive.writestr('manifest.json',bundle.model_dump_json(indent=2))
+            archive.writestr('manifest.json',canonical_json(manifest_payload(bundle)))
             for entry in bundle.files: archive.writestr(entry.path,payloads[entry.path])
         return Response(target.getvalue(),media_type='application/zip',headers={'Content-Disposition':f'attachment; filename="{bundle.bundle_id}.zip"'})
     @router.post('/reset-demo',status_code=201)
@@ -209,6 +256,34 @@ def create_router(get_coordinator):
     @router.get('/baseline-studies/{id}')
     @guarded
     async def baseline_study_status(id:str): return record('baseline_studies',id)
+
+    @router.post('/campaigns/{id}/completion-study',status_code=202)
+    @guarded
+    async def completion_study_start(id:str,request:CompletionStudyRequest):
+        from app.lab.completion_study import queue_completion_study
+        return await queue_completion_study(c(),id,evidence_protocol=request.evidence_protocol,
+                                            replay_policy_version=request.replay_policy_version,
+                                            actor_context_protocol=request.actor_context_protocol)
+    @router.get('/campaigns/{id}/completion-studies')
+    @guarded
+    async def completion_studies(id:str): c().get(id); return records('completion_studies',id)
+    @router.get('/completion-studies/{id}')
+    @guarded
+    async def completion_study_status(id:str): return record('completion_studies',id)
+
+    @router.post('/campaigns/{id}/context-study',status_code=202)
+    @guarded
+    async def context_study_start(id:str,request:ContextStudyRequest):
+        from app.lab.context_study import CHANGED_PROTOCOLS,DEFAULT_CHANGED_PROTOCOL,queue_context_study
+        protocol=request.changed_context_protocol or DEFAULT_CHANGED_PROTOCOL
+        if protocol not in CHANGED_PROTOCOLS: raise ValueError('Unknown changed actor context protocol')
+        return await queue_context_study(c(),id,protocol)
+    @router.get('/campaigns/{id}/context-studies')
+    @guarded
+    async def context_studies(id:str): c().get(id); return records('context_studies',id)
+    @router.get('/context-studies/{id}')
+    @guarded
+    async def context_study_status(id:str): return record('context_studies',id)
 
     @router.post('/campaigns/{id}/search-comparison',status_code=202)
     @guarded

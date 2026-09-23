@@ -54,7 +54,7 @@ def _configuration(configuration):
     required = {"model", "actor_prompt_hash", "adapter_hash", "source_hash", "contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash", "episode_budget", "model_settings"}
     if not isinstance(configuration, dict) or not required <= set(configuration):
         raise ValueError("Complete independently frozen target configuration required")
-    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing"}
+    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing", "algorithm_hash", "runtime_hash", "trace_contract_version", "actor_response_protocol", "actor_context_protocols"}
     if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"] or not isinstance(configuration.get("lab_model", ""), str):
         raise ValueError("Unreviewed target configuration fields or service URL")
     def no_location(value):
@@ -68,10 +68,25 @@ def _configuration(configuration):
     for key in required - {"model", "episode_budget", "model_settings"}:
         if not isinstance(configuration[key], str) or not re.fullmatch("[a-f0-9]{64}", configuration[key]):
             raise ValueError("Invalid frozen configuration digest")
+    # Historical configurations remain readable; new identities must be complete.
+    provenance_fields = {"algorithm_hash", "runtime_hash", "trace_contract_version"}
+    if provenance_fields & configuration.keys():
+        if not provenance_fields <= configuration.keys() or configuration["trace_contract_version"] != 2:
+            raise ValueError("Incomplete or unsupported runtime identity")
+        if any(not isinstance(configuration[key], str) or not re.fullmatch("[a-f0-9]{64}", configuration[key]) for key in ("algorithm_hash", "runtime_hash")):
+            raise ValueError("Invalid frozen runtime digest")
     if configuration["episode_budget"] != EpisodeBudget().model_dump(mode="json"):
         raise ValueError("Target does not support the reviewed episode budget")
     if configuration["model_settings"] != model_request_settings(configuration["model"]):
         raise ValueError("Target model settings are unsupported")
+    if "actor_response_protocol" in configuration:
+        from app.providers.runtime import actor_response_protocol
+        if configuration["actor_response_protocol"] != actor_response_protocol():
+            raise ValueError("Target actor response protocol is unsupported")
+    if "actor_context_protocols" in configuration:
+        from app.agents.progress import actor_context_protocols
+        if configuration["actor_context_protocols"] != actor_context_protocols():
+            raise ValueError("Target actor context protocols are unsupported")
     models=configuration.get("models")
     settings_by_role=configuration.get("model_settings_by_role")
     if models is not None:
@@ -91,7 +106,13 @@ def _installed_semantics(configuration):
     from app.contracts.models import CampaignBudget
     from app.lab.configuration import frozen_configuration
     actual = frozen_configuration(Settings(), CampaignBudget(), "offline-v1")
-    for field in ("contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash"):
+    fields = ("contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash")
+    fields += tuple(field for field in ("algorithm_hash", "runtime_hash", "trace_contract_version") if field in configuration)
+    if "actor_response_protocol" in configuration:
+        fields += ("actor_response_protocol",)
+    if "actor_context_protocols" in configuration:
+        fields += ("actor_context_protocols",)
+    for field in fields:
         if configuration.get(field) != actual[field]:
             raise ValueError("Target shared semantics or dependency lock differ from the installed reviewed runtime")
 
@@ -147,6 +168,12 @@ class AgentRegistry:
     def register_reference(self, configuration, *, internal_smoke=False):
         target = _configuration(configuration)
         _installed_semantics(target)
+        from app.providers.runtime import actor_response_protocol
+        if target.get("actor_response_protocol") != actor_response_protocol():
+            raise ValueError("Reference actor response protocol must be explicitly frozen")
+        from app.agents.progress import actor_context_protocols
+        if target.get("actor_context_protocols") != actor_context_protocols():
+            raise ValueError("Reference actor context protocols must be explicitly frozen")
         from app.lab.configuration import tree_hash
         from app.agents.actor import ACTOR_PROMPT_HASH
         if target["source_hash"] != tree_hash(ROOT / "backend/app/agents") or target["adapter_hash"] != tree_hash(ROOT / "backend/app/adapters") or target["actor_prompt_hash"] != ACTOR_PROMPT_HASH:
@@ -199,5 +226,7 @@ class AgentRegistry:
         if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
             from app.integrations.external_agent import SmolagentsActor
             return SmolagentsActor(model_id=registration.model)
-        from app.agents.actor import Actor
-        return Actor()
+        # The registered reference executes the same tracked entrypoint as the
+        # ordinary runner. Raw Actor bypasses the episode root/report trace.
+        from app.adapters.prototype import run_prototype
+        return run_prototype

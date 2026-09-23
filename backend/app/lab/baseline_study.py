@@ -50,6 +50,7 @@ async def queue_baseline_study(coordinator,campaign_id):
         baseline=coordinator.policies.baseline()
         if baseline.version!='policy-v0' or baseline.content.rules or campaign.active_policy_version!='policy-v0':
             raise StoreConflict('Baseline comparison requires the unchanged empty baseline policy')
+        await coordinator.require_simulator()
         study_id=new_id('baseline-study'); reservation='baseline:'+study_id
         ledger=coordinator.ledgers.get(campaign_id)
         if ledger is None:

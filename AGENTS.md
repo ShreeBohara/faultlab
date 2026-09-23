@@ -1,5 +1,11 @@
 # FaultLab — Gatekeeper
 
+## Continuation context
+
+For the September 20 Part 2 implementation state, read `CLAUDE.md` and
+`memory/README.md`, then `docs/part2/PHASE3_RESULTS.md`. Earlier handoffs remain
+historical evidence; their budgets, counts and working-tree descriptions are not current.
+
 ## Current scope
 
 Implementation of FaultLab is authorized by the Step 2 request and the reviewed sibling

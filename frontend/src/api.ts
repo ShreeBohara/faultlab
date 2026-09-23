@@ -2,7 +2,7 @@ import type { Campaign, CampaignRequest, Episode, Event, PolicyVersion, Countere
 import { validateContract, validateList } from './generated/validate'
 
 export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; lab_model?: string; models?: { actor: string; explorer: string; mechanic: string }; model_configured: boolean; live_enabled: boolean; profile_ids: string[]; sponsor: { weave: string; aria: string }; active_campaign_id: string | null; execution_profiles?: { profile_id: string; caps: import('./generated/contracts').EpisodeBudget; requires_live: boolean }[] }
-export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
+export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L' | 'P1'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
 export type Matrix = { campaign_id: string; cells: MatrixCell[]; counts: Record<string, number> }
 export type EventPage = { events: Event[]; next_after: number; has_more: boolean }
 export type AriaInput = Omit<AriaAnalysis, 'schema_version' | 'analysis_id' | 'campaign_id' | 'verified_source_refs'>
@@ -52,7 +52,7 @@ export function validateMatrix(v: unknown): Matrix {
   const outcomes = ['COMPLETED', 'VIOLATION', 'SAFE_UNRESOLVED', 'CORRECTLY_REJECTED', 'LAB_ERROR']
   if (!object(v) || typeof v.campaign_id !== 'string' || !Array.isArray(v.cells) || !object(v.counts) || !Object.values(v.counts).every(n => Number.isInteger(n) && (n as number) >= 0)) return malformed('matrix')
   for (const c of v.cells) {
-    if (!object(c) || !(c.episode_id === null || typeof c.episode_id === 'string') || typeof c.scenario_alias !== 'string' || typeof c.policy_hash !== 'string' || !['B0', 'B1', 'L'].includes(String(c.arm)) || !(c.outcome === null || outcomes.includes(String(c.outcome))) || !['CREATED', 'RUNNING', 'SCORING', 'COMPLETED', 'INTERRUPTED', 'LAB_ERROR', 'NOT_RUN'].includes(String(c.lifecycle)) || typeof c.fault_scheduled !== 'boolean' || typeof c.fault_triggered !== 'boolean' || !['live', 'replay', 'offline_fixture'].includes(String(c.source_mode)) || typeof c.telemetry_provenance !== 'string') return malformed('matrix cell')
+    if (!object(c) || !(c.episode_id === null || typeof c.episode_id === 'string') || typeof c.scenario_alias !== 'string' || typeof c.policy_hash !== 'string' || !['B0', 'B1', 'L', 'P1'].includes(String(c.arm)) || !(c.outcome === null || outcomes.includes(String(c.outcome))) || !['CREATED', 'RUNNING', 'SCORING', 'COMPLETED', 'INTERRUPTED', 'LAB_ERROR', 'NOT_RUN'].includes(String(c.lifecycle)) || typeof c.fault_scheduled !== 'boolean' || typeof c.fault_triggered !== 'boolean' || !['live', 'replay', 'offline_fixture'].includes(String(c.source_mode)) || typeof c.telemetry_provenance !== 'string') return malformed('matrix cell')
     if (c.usage) validateContract('Usage', c.usage)
   }
   return v as Matrix
@@ -99,7 +99,7 @@ export const api = {
     } finally { window.clearTimeout(timeout) }
   },
   execute: (regressionId: string, agentId: string, profileId: string, policy: string) => request(`/regressions/${id(regressionId)}/execute`, contract<RegressionExecution>('RegressionExecution'), { agent_registration_id: agentId, execution_profile_id: profileId, policy_version: policy, execute_live: true }),
-  execution: (executionId: string) => request(`/regression-executions/${id(executionId)}`, contract<RegressionExecution>('RegressionExecution')),
+  execution: (executionId: string) => request(`/regression-executions/${id(executionId)}`, identified<RegressionExecution>('RegressionExecution', 'execution_id', executionId)),
   diagnostic: (diagnosticId: string) => request(`/diagnostics/${id(diagnosticId)}`, contract<DiagnosticResult>('DiagnosticResult')),
   challenge: (challengeId: string) => request(`/challenges/${id(challengeId)}`, contract<ChallengeResult>('ChallengeResult')),
   portability: (portabilityId: string) => request(`/portability/${id(portabilityId)}`, contract<PortabilityResult>('PortabilityResult')),

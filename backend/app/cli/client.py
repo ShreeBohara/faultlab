@@ -41,6 +41,21 @@ def main():
     baseline_target.add_argument('--status',metavar='STUDY_ID',help='Read saved study status without execution')
     baseline.add_argument('--execute-live',action='store_true')
     baseline.add_argument('--wait',action='store_true')
+    completion=commands.add_parser('completion-study',help='Separate generated completion-recovery experiment; never activates a policy')
+    completion_target=completion.add_mutually_exclusive_group()
+    completion_target.add_argument('--campaign',help='Fresh idle live baseline campaign; otherwise create one')
+    completion_target.add_argument('--status',metavar='STUDY_ID',help='Read saved study status without execution')
+    completion.add_argument('--execute-live',action='store_true')
+    completion.add_argument('--wait',action='store_true')
+    completion.add_argument('--evidence-protocol',help='Declared presentation of the reviewed Mechanic evidence; omit for the default')
+    completion.add_argument('--replay-policy-version',help='Replay only the validation batch for a saved policy; makes no Mechanic call and never accepts')
+    context=commands.add_parser('context-study',help='Fixed Actor-context protocol comparison; changes model input only, never a policy')
+    context_target=context.add_mutually_exclusive_group()
+    context_target.add_argument('--campaign',help='Fresh idle live baseline campaign; otherwise create one')
+    context_target.add_argument('--status',metavar='STUDY_ID',help='Read saved study status without execution')
+    context.add_argument('--changed-protocol',help='Declared changed context protocol for the P1 arm')
+    context.add_argument('--execute-live',action='store_true')
+    context.add_argument('--wait',action='store_true')
     audit=commands.add_parser('audit');audit.add_argument('--campaign',required=True);audit.add_argument('--execute-live',action='store_true');audit.add_argument('--policy',action='append',default=[])
     export=commands.add_parser('export');export.add_argument('--campaign',required=True);export.add_argument('--output',type=Path,required=True)
     status=commands.add_parser('status');status.add_argument('--campaign',required=True)
@@ -64,21 +79,29 @@ def main():
                     if result['state']=='WAITING_EVIDENCE' or (terminal and request('GET','/api/config/status')['active_campaign_id']!=ident):
                         print_json(result);break
                     time.sleep(.75)
-        elif args.command=='baseline-study':
+        elif args.command in ('baseline-study','completion-study','context-study'):
+            route={'baseline-study':'baseline-studies','completion-study':'completion-studies','context-study':'context-studies'}[args.command]
             if args.status:
-                print_json(request('GET',f'/api/baseline-studies/{args.status}'))
+                print_json(request('GET',f'/api/{route}/{args.status}'))
             else:
-                if not args.execute_live:parser.error('A fresh baseline study requires --execute-live and verified live settings')
+                if not args.execute_live:parser.error('A fresh study requires --execute-live and verified live settings')
                 ident=args.campaign
                 if not ident:
-                    campaign=request('POST','/api/campaigns',{'task_text':'Upgrade the authorized order to express shipping, then record one truthful confirmation.','order_id':'order-baseline-study','mode':'baseline','config_profile_id':'live-v1'})
+                    campaign=request('POST','/api/campaigns',{'task_text':'Upgrade the authorized order to express shipping, then record one truthful confirmation.','order_id':{'baseline-study':'order-baseline-study','completion-study':'order-1','context-study':'order-context-study'}[args.command],'mode':'baseline','config_profile_id':'live-v1'})
                     ident=campaign['campaign_id']
-                result=request('POST',f'/api/campaigns/{ident}/baseline-study',{'execute_live':True})
+                body={'execute_live':True}
+                if args.command=='context-study' and getattr(args,'changed_protocol',None):
+                    body['changed_context_protocol']=args.changed_protocol
+                if args.command=='completion-study' and getattr(args,'evidence_protocol',None):
+                    body['evidence_protocol']=args.evidence_protocol
+                if args.command=='completion-study' and getattr(args,'replay_policy_version',None):
+                    body['replay_policy_version']=args.replay_policy_version
+                result=request('POST',f'/api/campaigns/{ident}/{args.command}',body)
                 print_json(result)
                 if args.wait:
                     while result['status'] in ('QUEUED','RUNNING'):
                         time.sleep(.75)
-                        result=request('GET',f'/api/baseline-studies/{result["study_id"]}')
+                        result=request('GET',f'/api/{route}/{result["study_id"]}')
                     print_json(result)
         elif args.command=='audit':
             if not args.execute_live: parser.error('A fresh audit requires --execute-live, frozen campaign and protected budget')
@@ -89,12 +112,10 @@ def main():
         elif args.command=='export':
             campaign=request('GET',f'/api/campaigns/{args.campaign}')
             result={'export_version':'faultlab-evidence/v1','campaign':campaign,'matrix':request('GET',f'/api/campaigns/{args.campaign}/matrix'),'counterexamples':request('GET',f'/api/campaigns/{args.campaign}/counterexamples'),'regressions':request('GET',f'/api/campaigns/{args.campaign}/regressions'),'experiments':request('GET',f'/api/campaigns/{args.campaign}/experiments'),'aria':request('GET',f'/api/campaigns/{args.campaign}/aria-evidence')}
-            versions={campaign['active_policy_version'],'policy-v0'}
-            versions.update(p for regression in result['regressions'] for p in (regression['first_failing_policy'],regression['accepted_policy']) if p)
-            result['policies']=[request('GET',f'/api/policies/{version}') for version in sorted(versions)]
-            result['proposals']=[request('GET',f'/api/policies/{policy["version"]}/proposal') for policy in result['policies'] if policy['raw_proposal_ref']]
+            # One bounded public-development projection includes every event
+            # page and campaign-owned rejected/invalid/no-change proposal.
+            result.update(request('GET',f'/api/campaigns/{args.campaign}/recording'))
             result['configuration']=request('GET',f'/api/campaigns/{args.campaign}/configuration')
-            result['episodes']=[request('GET',f'/api/episodes/{cell["episode_id"]}') for cell in result['matrix']['cells']]
             args.output.parent.mkdir(parents=True,exist_ok=True)
             with args.output.open('x',encoding='utf-8') as file:json.dump(result,file,indent=2,allow_nan=False)
             print_json({'saved':str(args.output.resolve()),'mode':'read_only_export'})

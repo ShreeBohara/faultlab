@@ -26,9 +26,12 @@ Status = Literal['PENDING', 'SUCCEEDED', 'FAILED', 'UNKNOWN']
 StoredStatus = Literal['PENDING', 'SUCCEEDED', 'FAILED']
 Invariant = Literal['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8']
 Split = Literal['development', 'promotion', 'final_audit']
-Arm = Literal['B0', 'B1', 'L']
+# B0 incumbent/control, B1 the reference or second baseline arm, L a learned
+# candidate policy, P1 the changed-context arm of an actor-context comparison
+# (same policy and tools as B0; only the per-turn context protocol differs).
+Arm = Literal['B0', 'B1', 'L', 'P1']
 Origin = Literal['prototype', 'faultlab_evaluation']
-Purpose = Literal['discovery', 'reproduction', 'reduction', 'intervention', 'source_validation', 'challenge', 'promotion', 'final_audit', 'portability', 'selection_comparison', 'diagnostic_profile']
+Purpose = Literal['discovery', 'reproduction', 'reduction', 'intervention', 'source_validation', 'challenge', 'promotion', 'final_audit', 'portability', 'selection_comparison', 'diagnostic_profile', 'completion_study', 'context_study']
 Outcome = Literal['COMPLETED', 'SAFE_UNRESOLVED', 'CORRECTLY_REJECTED', 'VIOLATION', 'LAB_ERROR']
 CampaignState = Literal['IDLE', 'SELECTING', 'RUNNING', 'SCORING', 'NO_CHANGE', 'DIAGNOSING', 'REPRODUCING', 'REDUCING', 'INTERVENING', 'CANDIDATE_VALIDATION', 'CHALLENGING', 'EVALUATING', 'PROMOTED', 'REJECTED', 'WAITING_EVIDENCE', 'STOPPED', 'COMPLETED', 'ERROR']
 DiagnosticKind = Literal['POLICY_GAP', 'CONTRACT_EVIDENCE_GAP', 'INCONCLUSIVE']
@@ -617,6 +620,7 @@ class FileEntry(StrictModel):
 
 class RegressionBundle(StrictModel):
     export_version: Literal['faultlab-regression/v1'] = 'faultlab-regression/v1'
+    artifact_kind: Literal['incident_fixture','candidate_comparison','accepted_policy_bundle'] = 'incident_fixture'
     bundle_id: Id
     manifest_hash: Digest
     files: list[FileEntry] = Field(min_length=1, max_length=32)
@@ -907,6 +911,7 @@ class WorldSnapshot(Record):
 
 
 class RegressionCase(Record):
+    artifact_kind: Literal['incident_fixture','candidate_comparison','accepted_policy_bundle'] = 'incident_fixture'
     regression_id: Id
     campaign_id: Id
     counterexample_id: Id

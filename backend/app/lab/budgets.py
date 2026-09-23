@@ -178,6 +178,24 @@ class EpisodeMeter:
         self.usage.actor_calls+=1; self.usage.model_calls+=1
         # Actual token counts are populated only when returned by the provider.
 
+    def transport_retry(self):
+        """Admit one blind retry of a call whose transport failed before any generation
+        arrived. Such a call delivered nothing for the actor to read, so it consumed no
+        actor turn: ``actor_calls`` still bounds generations at ``caps.actor_calls``,
+        which is why the retry can fire on the final allowed turn. Dollars and
+        ``model_calls`` are charged, because the request was really sent.
+
+        Returns False instead of raising when it cannot be admitted, so that a retry can
+        never replace the transport failure that caused it with a different error.
+        """
+        try:
+            self.check()
+            if self.campaign: self.campaign.consume_call(reservation=self.reservation,role='actor')
+        except (BudgetExhausted,StopRequested):
+            return False
+        self.usage.model_calls+=1
+        return True
+
     @property
     def final_turn(self):
         return self.usage.actor_calls>=self.caps.actor_calls-1 or self.business_closed

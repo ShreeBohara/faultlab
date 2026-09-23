@@ -191,9 +191,9 @@ export type Episode = {
   "episode_id": string;
   "origin": "prototype" | "faultlab_evaluation";
   "split": "development" | "promotion" | "final_audit";
-  "arm": "B0" | "B1" | "L";
+  "arm": "B0" | "B1" | "L" | "P1";
   "source_mode": "live" | "replay" | "offline_fixture";
-  "experiment_purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile";
+  "experiment_purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile" | "completion_study" | "context_study";
   "trial_index": number;
   "study_id": string;
   "evidence_context_id": string;
@@ -229,7 +229,7 @@ export type EpisodeBudget = {
 export type EvaluationBatch = {
   "schema_version"?: "faultlab/v1";
   "batch_id": string;
-  "purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile";
+  "purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile" | "completion_study" | "context_study";
   "split": "development" | "promotion" | "final_audit";
   "candidate_hash": string;
   "incumbent_hash": string;
@@ -510,9 +510,9 @@ export type Provenance = {
   "episode_id": string;
   "origin": "prototype" | "faultlab_evaluation";
   "split": "development" | "promotion" | "final_audit";
-  "arm": "B0" | "B1" | "L";
+  "arm": "B0" | "B1" | "L" | "P1";
   "source_mode": "live" | "replay" | "offline_fixture";
-  "experiment_purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile";
+  "experiment_purpose": "discovery" | "reproduction" | "reduction" | "intervention" | "source_validation" | "challenge" | "promotion" | "final_audit" | "portability" | "selection_comparison" | "diagnostic_profile" | "completion_study" | "context_study";
   "trial_index": number;
   "study_id": string;
   "evidence_context_id": string;
@@ -588,6 +588,7 @@ export type ReductionResult = {
 
 export type RegressionBundle = {
   "export_version"?: "faultlab-regression/v1";
+  "artifact_kind"?: "incident_fixture" | "candidate_comparison" | "accepted_policy_bundle";
   "bundle_id": string;
   "manifest_hash": string;
   "files": Array<FileEntry>;
@@ -617,6 +618,7 @@ export type RegressionBundle = {
 
 export type RegressionCase = {
   "schema_version"?: "faultlab/v1";
+  "artifact_kind"?: "incident_fixture" | "candidate_comparison" | "accepted_policy_bundle";
   "regression_id": string;
   "campaign_id": string;
   "counterexample_id": string;
@@ -758,7 +760,7 @@ export type TrialResult = {
   "world_id": string;
   "scenario_hash": string;
   "policy_hash": string;
-  "arm": "B0" | "B1" | "L";
+  "arm": "B0" | "B1" | "L" | "P1";
   "trial_index": number;
   "lifecycle": "COMPLETED" | "INTERRUPTED" | "LAB_ERROR";
   "outcome": ("COMPLETED" | "SAFE_UNRESOLVED" | "CORRECTLY_REJECTED" | "VIOLATION" | "LAB_ERROR" | null);
