@@ -21,7 +21,7 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 
 ## The honest bottom line — corrected by Phase 16 (2026-09-22)
 
-**Read `docs/part2/PHASE16_RESULTS.md` and `docs/part2/PHASE17_EXPERIMENT.md` first.**
+**Read `docs/part2/PHASE17_RESULTS.md`, `PHASE17_EXPERIMENT.md` and `PHASE16_RESULTS.md` first.**
 
 - **No generated policy has ever been ACCEPTED, and a completion study cannot produce one.**
   - `completion_study.py` never calls `commit_promotion`.
@@ -48,7 +48,13 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
   - a code freeze and pins;
   - a backup of everything (branch `backup/part2-2026-09-22`, plus
     `~/FaultLab_Backups/2026-09-22-pre-phase16/`).
-- **Phase 17 is declared and awaiting the user's approval to spend.**
+- **Phase 17 (2026-09-23, $24.29) produced the first certified completion repair**:
+  - it came on attempt 9 of a fresh full-loop run;
+  - the policy is new (`dd62c857…`), and it repaired `notification-2` and `notification-3`
+    on a batch with no violation and no untriggered fault;
+  - a different generated repair was correctly rejected for breaking refusal handling;
+  - it is **not** ACCEPTED, and Phase 17 is closed;
+  - see `docs/part2/PHASE17_RESULTS.md`.
 
 ## Hard rules — these are not negotiable
 
@@ -101,7 +107,7 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 ## Budget
 
 **$436.73 conservatively charged, $563.27 remaining** of a shared $1,000 ceiling that began
-at Phase 2 and does not reset. Phase 16 cost $0. The ledger rows actually sum to $436.45 (the
+at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 cost $24.29 (now $461.02 charged, $538.98 remaining). The ledger rows actually sum to $436.45 (the
 Phase 6 probe was counted twice); the higher figure is carried. Actual billed dollars are unavailable, not zero. A 30-attempt
 replay run costs ~$97. Phase 14 cost $0 and produced more than most paid phases.
 
@@ -117,7 +123,7 @@ not discovered. `checks.py` has never been opened.
 1. This file.
 2. `CLAUDE.md` — current truth, one bullet per finding.
 3. `memory/context/next-phase.md` — the recommended next work.
-4. `memory/context/pitfalls-and-decisions.md` — 76 numbered items; every one is a mistake
+4. `memory/context/pitfalls-and-decisions.md` — 78 numbered items; every one is a mistake
    already made and investigated. Read before proposing anything.
 5. `memory/context/runtime-and-evidence.md` — services, per-phase evidence, cost ledger.
 6. `docs/part2/PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,

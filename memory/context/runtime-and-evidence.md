@@ -69,9 +69,10 @@ The shared $1,000 authorization began with Phase 2 and continues through Phase 3
 | Phase 14 (two free rounds: diagnosis, mechanism, fix) | 0 | $0.00000 | — |
 | Phase 15 gate replays (28 attempts, 914 episodes) | see manifest | $97.33130 | not separately reconciled |
 | Phase 16 (read-only audit, build, two reviews; no provider or W&B call) | 0 | $0.00000 | — |
-| Shared total | 2,232 + Phases 9-15 | **$436.73** | **$4.60950+** |
+| Phase 17 full loop (9 attempts, stopped CERTIFIED at attempt 9) | see manifest | $24.29386 | ≈$2.28 token-priced (unverified) |
+| Shared total | 2,232 + Phases 9-17 | **$461.02** | **$4.60950+** |
 
-**Remaining conservative allowance: $563.27.** (Phase 16's audit found the ledger rows actually sum to $436.45; the $0.28 is the Phase 6 probe counted twice. The higher figure is carried.) The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
+**Remaining conservative allowance: $538.98** (after Phase 17's $24.29). (Phase 16's audit found the ledger rows actually sum to $436.45; the $0.28 is the Phase 6 probe counted twice. The higher figure is carried.) The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
 
 ## Phase 3 evidence inventory
 
@@ -368,3 +369,14 @@ Aria publication is disabled. Generic sponsor status may show PENDING even when 
     store copied via the SQLite backup API, the specs, and a README with restore steps;
   - both are on the same disk as the originals. Copy them to external storage for real
     protection.
+
+
+## Phase 17 evidence inventory (2026-09-23, $24.29 bound)
+
+- `artifacts/phase17-2026-09-23/full-loop-manifest.json`: every attempt and all spend.
+  Reconciled against the store: 0 discrepancies, 0 untracked.
+- `runner.log`, `backend.log`, `simulator.log`, and `launch_backend.py` (the exact backend
+  launch recipe: the frozen settings, non-empty values, no reload).
+- **Certified study:** `completion-study-2c2a11971fce4884a382c875bebb87f1`.
+- **Certified policy:** hash `dd62c85780f8226a6c199d28c346ea579a3c2ad02a1db7c905cf3c3c2b45d521`,
+  saved as `PROPOSED`.

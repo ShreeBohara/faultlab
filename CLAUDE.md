@@ -1,6 +1,6 @@
 # FaultLab — continuation memory
 
-Updated September 22, 2026 after Phase 16 (free). Read `AGENTS.md` first.
+Updated September 23, 2026 after Phase 17 (first certified completion repair). Read `AGENTS.md` first.
 
 ## Start here
 
@@ -121,14 +121,22 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
   - the expected `configuration_hash` is `c4169ee4…`, cross-checked against Phase 15's
     stored configuration.
 - **Tests:** 594 before; 53 new; **647 passed after** all Phase 16 changes. The intermittent `[untriggered]` failure is still unexplained.
-- **Phase 17 is declared** (`docs/part2/PHASE17_EXPERIMENT.md`) and **awaits the user's
-  approval to spend.**
+- **Phase 17 ran on 2026-09-23 and CERTIFIED a repair on attempt 9 of 9 ($24.29 bound).**
+  - The certified policy is new (`dd62c857…`, not T15's). It repaired the source case and
+    `notification-3` (0 → 3 each), with zero candidate violations, zero untriggered faults
+    and no regression.
+  - Attempt 4's repair was rejected for turning `CORRECTLY_REJECTED` into `SAFE_UNRESOLVED`:
+    it deferred without waiting and re-reading.
+  - S1: 3 of 7 first proposals contained the step. S2: 2 of 4 step candidates qualified; the
+    other 2 gated the retry on PENDING and could never fire.
+  - The evidence re-read was never needed (0 of 192 reads failed).
+  - It is **not ACCEPTED**, and Phase 17 is closed. See `docs/part2/PHASE17_RESULTS.md`.
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 16: **$436.73 conservatively charged; $563.27 remaining** (Phase 16 cost $0). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 17: **$461.02 conservatively charged; $538.98 remaining** (Phase 16 cost $0; Phase 17 $24.29). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 
