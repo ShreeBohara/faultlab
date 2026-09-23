@@ -1,6 +1,6 @@
 # FaultLab — continuation memory
 
-Updated September 23, 2026 after Phase 17 (first certified completion repair). Read `AGENTS.md` first.
+Updated September 23, 2026 after Phase 18 (held-out check: HARM, traced post hoc to a lab clock drift). Read `AGENTS.md` first.
 
 ## Start here
 
@@ -131,12 +131,32 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
     other 2 gated the retry on PENDING and could never fire.
   - The evidence re-read was never needed (0 of 192 reads failed).
   - It is **not ACCEPTED**, and Phase 17 is closed. See `docs/part2/PHASE17_RESULTS.md`.
+- **Phase 18 ran on 2026-09-23: a held-out check of `dd62c857…`. Verdict HARM, final ($4.22 bound).**
+  - The run was one attempt on the private promotion partition: 6 unseen cases, 18 pairs,
+    all valid, with 0 untriggered faults.
+  - **1 candidate episode failed C5, C6 and C8** (delayed-confirmation case). The baseline
+    had 0 failures.
+  - The policy acted in 10 of 18 candidate trials; the failure was its only
+    notification-side action.
+  - The refusal case held (3 of 3 correctly rejected). On transient upgrade failures the
+    candidate completed 0 of 3 against 1 of 3 for the baseline (descriptive only).
+  - **The post-verdict investigation** ($0, read-only, not declared in advance):
+    - the failing report was **true about the world**;
+    - the lab's tick ran one ahead of the simulator's, because an automatic same-`call_id`
+      re-send after a timeout was never recorded by the world;
+    - the cited evidence therefore landed "after" the world's decision tick, and C6 failed.
+  - **The same drift:** 4 of 4,791 stored episodes, all C6 violations, **2 of them
+    baseline**. It first appeared on September 22 (0 drifts in 1,655 earlier episodes with a
+    re-send), and Phase 17 contains none.
+  - The verdict stays HARM. Held-out safety for this policy is **unshown**, and the
+    partition is spent for it. Next: **Phase 19**, diagnose and fix the drift ($0). See
+    `docs/part2/PHASE18_RESULTS.md`.
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 17: **$461.02 conservatively charged; $538.98 remaining** (Phase 16 cost $0; Phase 17 $24.29). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 18: **$465.24 conservatively charged; $534.76 remaining** (Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

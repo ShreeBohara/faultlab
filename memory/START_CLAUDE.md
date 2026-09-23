@@ -1,6 +1,6 @@
 # START HERE — FaultLab continuation handoff
 
-Written 2026-09-22, after Phase 15. This file is the entry point. Read it fully before
+Written 2026-09-22 after Phase 15; updated 2026-09-23 after Phase 18. This file is the entry point. Read it fully before
 touching anything.
 
 ## Where things are
@@ -18,6 +18,23 @@ send exactly one truthful confirmation. Faults are injected (lost response after
 delayed terminal op, stale read, transient failure). Roles: **Actor** performs the task,
 **Explorer** picks faults, **Mechanic** proposes a bounded recovery policy, a **fixed
 Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance gate.
+
+## Latest: Phase 18 (2026-09-23), the held-out check. Verdict HARM, final
+
+- Phase 17's certified policy (`dd62c857…`) ran once on the private promotion partition.
+  **Verdict HARM** (rule `check_failure`), final: 1 candidate episode of 18 failed C5, C6
+  and C8. The baseline had 0 failures, and the batch was clean.
+- **The post-verdict investigation** ($0, not declared in advance) traced that failure to a
+  **lab clock drift**:
+  - an automatic same-`call_id` re-send never reached the simulator, but the lab advanced
+    its tick anyway;
+  - so a truthful report's citation landed one tick "after the decision".
+  - The same drift appears in 4 of 4,791 stored episodes, all C6 violations, **2 of them
+    baseline**. The verdict still stands.
+- **Next: Phase 19**, diagnose and fix the drift at $0 (see `memory/context/next-phase.md`).
+  Read `docs/part2/PHASE18_RESULTS.md`.
+- The promotion partition is **spent** for anything Phase 18 could inform. Never re-run it
+  for this policy.
 
 ## The honest bottom line — corrected by Phase 16 (2026-09-22)
 
@@ -106,8 +123,8 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 
 ## Budget
 
-**$436.73 conservatively charged, $563.27 remaining** of a shared $1,000 ceiling that began
-at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 cost $24.29 (now $461.02 charged, $538.98 remaining). The ledger rows actually sum to $436.45 (the
+**$465.24 conservatively charged, $534.76 remaining** of a shared $1,000 ceiling that began
+at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22. The ledger rows actually sum to $436.45 (the
 Phase 6 probe was counted twice); the higher figure is carried. Actual billed dollars are unavailable, not zero. A 30-attempt
 replay run costs ~$97. Phase 14 cost $0 and produced more than most paid phases.
 
@@ -123,8 +140,8 @@ not discovered. `checks.py` has never been opened.
 1. This file.
 2. `CLAUDE.md` — current truth, one bullet per finding.
 3. `memory/context/next-phase.md` — the recommended next work.
-4. `memory/context/pitfalls-and-decisions.md` — 78 numbered items; every one is a mistake
+4. `memory/context/pitfalls-and-decisions.md` — 81 numbered items; every one is a mistake
    already made and investigated. Read before proposing anything.
 5. `memory/context/runtime-and-evidence.md` — services, per-phase evidence, cost ledger.
-6. `docs/part2/PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
+6. `docs/part2/PHASE18_RESULTS.md`, `PHASE17_RESULTS.md`, `PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
    `PHASE9`, `PHASE7`, `PHASE6`, `PHASE5` results.
