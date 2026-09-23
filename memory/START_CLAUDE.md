@@ -19,22 +19,26 @@ delayed terminal op, stale read, transient failure). Roles: **Actor** performs t
 **Explorer** picks faults, **Mechanic** proposes a bounded recovery policy, a **fixed
 Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance gate.
 
-## Latest: Phase 18 (2026-09-23), the held-out check. Verdict HARM, final
+## Latest: Phases 18 and 19 (2026-09-23)
 
-- Phase 17's certified policy (`dd62c857…`) ran once on the private promotion partition.
-  **Verdict HARM** (rule `check_failure`), final: 1 candidate episode of 18 failed C5, C6
-  and C8. The baseline had 0 failures, and the batch was clean.
-- **The post-verdict investigation** ($0, not declared in advance) traced that failure to a
-  **lab clock drift**:
-  - an automatic same-`call_id` re-send never reached the simulator, but the lab advanced
-    its tick anyway;
-  - so a truthful report's citation landed one tick "after the decision".
-  - The same drift appears in 4 of 4,791 stored episodes, all C6 violations, **2 of them
-    baseline**. The verdict still stands.
-- **Next: Phase 19**, diagnose and fix the drift at $0 (see `memory/context/next-phase.md`).
-  Read `docs/part2/PHASE18_RESULTS.md`.
-- The promotion partition is **spent** for anything Phase 18 could inform. Never re-run it
-  for this policy.
+- **Phase 18:** Phase 17's certified policy (`dd62c857…`) ran once on the private promotion
+  partition. **Verdict HARM**, final: 1 candidate episode of 18 failed C5, C6 and C8. The
+  baseline had 0 failures.
+- **Phase 19 ($0)** traced that failure to a **lab defect**, reproduced and fixed:
+  - a request that had to open a new connection during a >1 s lab event-loop freeze was
+    never sent, but its tick was counted;
+  - the lab's clock ran one tick ahead of the world's, so a truthful citation failed C6;
+  - the same drift hit 2 baseline episodes;
+  - the freezes came, by strong inference, from an open **dashboard tab** polling two
+    endpoints that parsed the whole store once a second (fixed).
+- **The verdict still stands,** and held-out safety for `dd62c857…` is **unshown**. The
+  promotion partition is spent for it.
+- **Before any paid run:**
+  - close the dashboard or check the loop
+    (`artifacts/phase19-2026-09-23/diagnosis/loop_latency.py`);
+  - start the simulator only via `scripts/start-simulator.sh`;
+  - afterwards, run `scripts/experiments/check_clock_drift.py --worlds --since <date>`.
+- **Next: Phase 20**, the event write-up and demo (see `memory/context/next-phase.md`).
 
 ## The honest bottom line — corrected by Phase 16 (2026-09-22)
 
@@ -124,13 +128,13 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 ## Budget
 
 **$465.24 conservatively charged, $534.76 remaining** of a shared $1,000 ceiling that began
-at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22. The ledger rows actually sum to $436.45 (the
+at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0. The ledger rows actually sum to $436.45 (the
 Phase 6 probe was counted twice); the higher figure is carried. Actual billed dollars are unavailable, not zero. A 30-attempt
 replay run costs ~$97. Phase 14 cost $0 and produced more than most paid phases.
 
 ## Verification state
 
-592 backend tests, 124 frontend tests, production build, three browser fixtures.
+692 backend tests after Phase 19 (2026-09-23); 124 frontend tests, production build and three browser fixtures as last recorded (not re-run since; the frontend is unchanged).
 `scorer_hash` and `actor_prompt_hash` verified identical to all 36 stored configurations.
 `algorithm_hash`/`runtime_hash`/`configuration_hash` have moved since Phase 13 — declared,
 not discovered. `checks.py` has never been opened.
@@ -140,8 +144,8 @@ not discovered. `checks.py` has never been opened.
 1. This file.
 2. `CLAUDE.md` — current truth, one bullet per finding.
 3. `memory/context/next-phase.md` — the recommended next work.
-4. `memory/context/pitfalls-and-decisions.md` — 81 numbered items; every one is a mistake
+4. `memory/context/pitfalls-and-decisions.md` — 85 numbered items; every one is a mistake
    already made and investigated. Read before proposing anything.
 5. `memory/context/runtime-and-evidence.md` — services, per-phase evidence, cost ledger.
-6. `docs/part2/PHASE18_RESULTS.md`, `PHASE17_RESULTS.md`, `PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
+6. `docs/part2/PHASE19_RESULTS.md`, `PHASE18_RESULTS.md`, `PHASE17_RESULTS.md`, `PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
    `PHASE9`, `PHASE7`, `PHASE6`, `PHASE5` results.

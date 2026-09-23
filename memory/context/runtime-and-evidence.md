@@ -71,9 +71,10 @@ The shared $1,000 authorization began with Phase 2 and continues through Phase 3
 | Phase 16 (read-only audit, build, two reviews; no provider or W&B call) | 0 | $0.00000 | — |
 | Phase 17 full loop (9 attempts, stopped CERTIFIED at attempt 9) | see manifest | $24.29386 | ≈$2.28 token-priced (unverified) |
 | Phase 18 held-out check (1 attempt, 36 episodes, verdict HARM) | 202 (Actor) | $4.22180 | ≈$0.36 token-priced (unverified) |
-| Shared total | 2,232 + Phases 9-18 | **$465.24** | **$4.60950+** |
+| Phase 19 (clock-drift diagnosis and fix; local probes only, no provider or W&B call) | 0 | $0.00000 | — |
+| Shared total | 2,232 + Phases 9-19 | **$465.24** | **$4.60950+** |
 
-**Remaining conservative allowance: $534.76** (after Phase 18's $4.22; Phase 17 was $24.29). (Phase 16's audit found the ledger rows actually sum to $436.45; the $0.28 is the Phase 6 probe counted twice. The higher figure is carried.) The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
+**Remaining conservative allowance: $534.76** (after Phase 18's $4.22 and Phase 19's $0; Phase 17 was $24.29). (Phase 16's audit found the ledger rows actually sum to $436.45; the $0.28 is the Phase 6 probe counted twice. The higher figure is carried.) The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
 
 ## Phase 3 evidence inventory
 
@@ -381,3 +382,26 @@ Aria publication is disabled. Generic sponsor status may show PENDING even when 
 - **Certified study:** `completion-study-2c2a11971fce4884a382c875bebb87f1`.
 - **Certified policy:** hash `dd62c85780f8226a6c199d28c346ea579a3c2ad02a1db7c905cf3c3c2b45d521`,
   saved as `PROPOSED`.
+
+## Phase 18-19 evidence and live state (2026-09-23)
+
+- **Phase 18 held-out check:** `artifacts/phase18-2026-09-23/`
+  - check `heldout-check-9c5389c06d4b498aadb330643972c9ae`;
+  - campaign `campaign-86d7c4325a4b474cbba797002ff84300`;
+  - configuration `1b6e5ed0…`;
+  - verdict HARM.
+- **Phase 19:** `artifacts/phase19-2026-09-23/`
+  - freezes: before `3619a4aa…`, after `3636ca21…`;
+  - `source-before/`;
+  - `diagnosis/` (probe scripts and saved outputs);
+  - `clock-drift-*.txt`, `loop-latency-*.txt`, `expected-configuration.txt`.
+- **Backend:** restarted on the Phase 19 code at 10:33:42 local on 2026-09-23 (pid 58539),
+  via `artifacts/phase17-2026-09-23/launch_backend.py`. It logs to
+  `artifacts/phase19-2026-09-23/backend.log`.
+- **Simulator:** pid 33848, started by `scripts/start-simulator.sh` with
+  `--timeout-keep-alive 75`. It logs to `artifacts/phase17-2026-09-23/simulator.log`.
+- **Dashboard:** a Vite dev server (pid 6469, since 2026-09-13) serves the dashboard at
+  `localhost:5173`. An open tab polls the backend once a second.
+- **Expected `configuration_hash`** for the Phase 17 settings on the Phase 19 code:
+  `0a33aa51cf125cadcfc1dfeaf640950f9e18e0dd89576ec24202a414893aee98`.
+

@@ -103,30 +103,50 @@ the policy.
 | of those, ending `VIOLATION` with C6 failed | **4 of 4** |
 | of those, **baseline** arm (no policy present) | **2** |
 | of those, candidate arm | 2 (one development, this one) |
+| lab dispatches in the whole store never recorded by the world | **4 of 27,938**, one in each of the 4 |
+| episodes failing C8 anywhere in the store | exactly these 4 |
 
-- **Every one of the 4 has the identical sequence:** `send_confirmation` times out → the lab
-  re-sends the same `call_id` → the world has no record of the re-send → a one-tick drift →
-  the report cites a post-drift observation → C6 fails.
+- **The shared sequence:** in each of the 4, exactly one request the lab dispatched never
+  reached the simulator. The lab still advanced its clock, so every later observation is
+  stamped one tick late and the report's citation fails C6.
+  - **Three of the four:** the lost request is the automatic same-`call_id` re-send after a
+    read timeout.
+  - **The fourth (baseline, `cad4a9f4…`):** it is the Actor's first send. The re-send that
+    followed was recorded and rejected with a 503 by an F4 fault.
+  - An earlier draft of this section said all four lost the re-send. That was wrong.
 - **The two baseline cases** had the Actor's *own* status read as the late citation. No
   policy was involved.
-- **How rare it is:** same-request re-sends are common. **1,655** scored episodes before
-  September 22 contained one, and none drifted. The 4 drifts are among **1,002** such
-  episodes on September 22–23.
-- **What is still unknown:** why the simulator misses some re-sends. One plausible cause is
-  the delay faults (1.5–2.5 s) holding the request while the client times out. This is
-  **not established**.
-- **Phase 17 is untouched:** none of the 4 episodes belongs to Phase 17's nine attempts.
+- **Every lost request had to open a new connection.** Across the store:
+  - 0 of ~27,500 requests on an already-open connection were lost;
+  - 4 of 363 new-connection requests on September 22–23 were lost, against 0 of 372
+    before (p ≈ 0.06);
+  - for timeout re-sends alone: 0 of 243 before and 3 of 166 after (p ≈ 0.07).
 
-**What this means:**
-- The one held-out failure has the mechanical signature of a **lab clock-accounting defect
-  that also hits the baseline**, not of the policy misbehaving.
-- The policy's only role was to make the status read that the Actor then cited. That is the
-  read any correct recovery has to make.
-- **The verdict remains HARM.** It was declared final, and a post-hoc explanation does not
-  earn a re-run on this partition.
-- The defect is a real flaw in the measurement itself: in rare cases it can turn a truthful
-  report into a violation in either arm. It should be fixed and verified on **development**
-  cases, never on this partition.
+  An earlier draft compared against "1,655 re-send episodes before September 22". That was
+  the wrong base: most of those re-sends followed a 503 on a connection that stayed open,
+  where this cannot happen.
+- **Why:** diagnosed and fixed in Phase 19 (`PHASE19_RESULTS.md`). The draft's guess here,
+  that the delay faults held the request, is refuted by the fourth episode, where no delay
+  fault touched the lost request.
+- **Phase 17 is untouched:** none of the 4 episodes belongs to Phase 17's nine attempts.
+  The other three are Phase 15 replays (1, 24, 28), and none of them changed a Phase 15
+  decision (see `PHASE19_RESULTS.md`).
+
+**What this means** (wording checked by an independent audit):
+- **We attribute the failure to the defect, not to the policy.** The failure matches a lab
+  measurement defect:
+  - the lost request came before any policy action (09.103 s against the first policy step
+    at 10.294 s);
+  - it is the broker's automatic retry, which is the same in both arms;
+  - the same signature failed two baseline episodes.
+- **Two things this does not show:**
+  - that this episode would have passed without the drift;
+  - that policy requests add no exposure. The policy's own status read also had to open a
+    new connection, and it took 822 ms to reach the simulator.
+- **The verdict remains HARM, and held-out safety is still unshown.** HARM was declared
+  final, and a post-hoc explanation does not earn a re-run on this partition.
+- **Elsewhere:** the certified policy acted after a notification response in 12 other stored
+  episodes; none drifted and none failed a check (9 completed, 3 safely unresolved).
 
 ## What this establishes, and what it does not
 

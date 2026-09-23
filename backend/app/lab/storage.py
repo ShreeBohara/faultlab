@@ -65,6 +65,31 @@ class LabStore:
             rows = self.db.execute('SELECT payload FROM records WHERE kind=? ORDER BY rowid',(kind,)).fetchall()
         return [json.loads(row['payload']) for row in rows]
 
+    # The two readers below exist for request handlers that run on the event loop.
+    # Parsing every episode (or every evidence bundle) there froze the loop for most
+    # of each second while the dashboard polled; a lab request whose 1s connect window
+    # fell inside a freeze was never sent, while the lab still counted its tick
+    # (Phase 18/19). They return the same rows in the same order as filtering
+    # list_records in Python, PROVIDED the registry row was written with the episode
+    # and its campaign never changes (put_record keeps the first campaign_id), and
+    # evidence/ingestion ids equal their episode_id (evidence.py). Both hold for every
+    # writer and for all 214 campaigns in the store as of Phase 19.
+
+    def list_campaign_episodes(self, campaign_id):
+        with self.lock:
+            rows = self.db.execute("SELECT r.payload FROM records r JOIN episode_registry e ON e.id=r.id WHERE r.kind='episodes' AND e.campaign_id=? ORDER BY r.rowid",(campaign_id,)).fetchall()
+        values = [json.loads(row['payload']) for row in rows]
+        return [v for v in values if v.get('campaign_id') == campaign_id]
+
+    def get_records(self, kind, ids):
+        ids = list(dict.fromkeys(ids)); found = []
+        with self.lock:
+            for start in range(0, len(ids), 500):
+                chunk = ids[start:start+500]
+                marks = ','.join('?' * len(chunk))
+                found += self.db.execute(f'SELECT rowid,payload FROM records WHERE kind=? AND id IN ({marks})',(kind,*chunk)).fetchall()
+        return [json.loads(row['payload']) for row in sorted(found, key=lambda row: row['rowid'])]
+
     def get_model(self, kind, id, cls):
         record = self.get_record(kind,id)
         return cls.model_validate_json(canonical_json(record)) if record is not None else None

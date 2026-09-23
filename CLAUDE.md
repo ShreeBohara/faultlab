@@ -1,6 +1,6 @@
 # FaultLab — continuation memory
 
-Updated September 23, 2026 after Phase 18 (held-out check: HARM, traced post hoc to a lab clock drift). Read `AGENTS.md` first.
+Updated September 23, 2026 after Phase 19 (the Phase 18 clock drift diagnosed and fixed, $0). Read `AGENTS.md` first.
 
 ## Start here
 
@@ -84,7 +84,7 @@ Updated September 23, 2026 after Phase 18 (held-out check: HARM, traced post hoc
 - Phase 6 also measured the source gap honestly for the first time: the baseline completes it **2 of 45** valid triggered episodes (4.4%), so any three-trial gate fails ~13% of the time by chance. Study 6B stopped exactly that way. **Correction made in Phase 8:** adding trials does not help, because against an absolute zero-completion gate more trials can only make a stop more likely. The only honest prospective mitigation is more independent study runs, capped and declared in advance and only after a stop that produced no proposal. Never loosen a threshold.
 - **Known, unresolved:** an intermittent full-suite test failure (~1 in 8 runs, in the untriggered-control path, pre-existing) was investigated in Phase 10 and not explained. Do not report the suite as unconditionally green.
 - Phase 4's work was adversarially reviewed after the fact and three real code defects plus four wrong numbers were found and fixed. No Phase 4 conclusion changed; the corrections are listed in `PHASE4_RESULTS.md`.
-- Latest verification: **592 backend tests, 124 frontend tests, production build** and three browser fixtures; actual dashboard, per-turn request reconstruction, original reports, simulator effects, Weave and restart checked manually.
+- Latest verification: **692 backend tests** (Phase 19, 2026-09-23); 124 frontend tests, production build and three browser fixtures as last recorded (not re-run since; the frontend is unchanged); actual dashboard, per-turn request reconstruction, original reports, simulator effects, Weave and restart checked manually.
 - Main checklist: sibling `../FaultLab_Specs/specs/001-faultlab-loop/tasks.md`. T065/T088/T097/T100/T102 remain open; Phases 4 through 15 closed none of them. Checked investigation tasks do not mean the learned-repair goal passed.
 
 ## READ THIS FIRST — Phase 16 (2026-09-22) corrected the handoff that preceded it
@@ -149,14 +149,47 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
     baseline**. It first appeared on September 22 (0 drifts in 1,655 earlier episodes with a
     re-send), and Phase 17 contains none.
   - The verdict stays HARM. Held-out safety for this policy is **unshown**, and the
-    partition is spent for it. Next: **Phase 19**, diagnose and fix the drift ($0). See
-    `docs/part2/PHASE18_RESULTS.md`.
+    partition is spent for it. See `docs/part2/PHASE18_RESULTS.md`.
+- **Phase 19 (2026-09-23, $0) diagnosed and fixed the drift.** See `docs/part2/PHASE19_RESULTS.md`.
+  - **Mechanism (reproduced):** a lab request that must open a **new connection** is lost
+    unsent if the lab's event loop freezes for over 1 s while it connects. httpx raises
+    `ConnectTimeout` before writing, but the broker has already counted the tick.
+    - Fresh connection: 12 of 12 lost. Otherwise: 0 of 24.
+    - Real broker: old code 6 of 6 drift; new code 0 of 6.
+  - **Freeze source** (supported, not proven for the four historical cases; the logs lack
+    timestamps):
+    - an open **dashboard tab** polled `/matrix` and `/experiments` once a second;
+    - both parsed every episode and evidence record on the event loop;
+    - the idle backend stalled ~0.8 s of every second, at 60% CPU.
+  - **Fix:**
+    - those endpoints read only their own campaign (0 output differences on all 214
+      campaigns);
+    - lab requests get `connect=10 s`, with read, write and pool unchanged at 1 s (control:
+      3 s);
+    - a new read-only `scripts/experiments/check_clock_drift.py` (use `--worlds --since`
+      around paid runs).
+  - **Measured:** dashboard-on loop latency p50 611 ms → 2.4 ms, p99 1,180 ms → 68 ms.
+    Tests: 692 passed.
+  - **Unchanged:** `assess_pairs` (`783e8e58…`) and `scorer_hash` (`19de811c…`). Four
+    fingerprints moved, all declared. The next expected `configuration_hash` is `0a33aa51…`.
+  - **Store-wide:** 4 drifts and 6 **masked** F1 faults. In the masked cases a lab freeze let
+    a delayed response be read as success, so the Actor never saw the fault. Among them:
+    - Phase 15 replays 1, 5, 12, 21, 24 and 28, and one Phase 13 replay;
+    - **no declared read-out of Phases 13, 15 or 17 changed** (replay 5: L completed that
+      case 55 of 55 with the fault visible);
+    - Phase 18's HARM is the one verdict the defect decided.
+  - **Remaining paths**, rare and documented:
+    - a freeze longer than 10 s;
+    - a simulator started without `--timeout-keep-alive 75`, so always use
+      `scripts/start-simulator.sh`;
+    - a refused connection;
+    - the broker still counting an attempt before it is sent.
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 18: **$465.24 conservatively charged; $534.76 remaining** (Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 19: **$465.24 conservatively charged; $534.76 remaining** (Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

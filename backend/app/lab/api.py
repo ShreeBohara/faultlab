@@ -71,6 +71,7 @@ def create_router(get_coordinator):
         if found is None: raise KeyError(id)
         return found
     def records(kind,campaign_id=None):
+        if kind=='episodes' and campaign_id is not None: return c().store.list_campaign_episodes(campaign_id)
         data=c().store.list_records(kind)
         return [v for v in data if campaign_id is None or v.get('campaign_id')==campaign_id]
     def safe_episode(id):
@@ -180,8 +181,10 @@ def create_router(get_coordinator):
             challenges=[d for d in records('challenges') if d['challenge_id'] in campaign_challenges]
             joined.append({'counterexample':counter,'source_recipe':recipe.get('source_recipe'),'retained_recipe':retained.get('retained_recipe'),'reduction':c().store.get_record('reductions',key),'diagnostics':diagnostics,'interventions':interventions,'challenges':challenges})
         episodes={e['episode_id'] for e in records('episodes',id) if e['split']=='development' and e['experiment_purpose'] not in ('selection_comparison','diagnostic_profile')}
-        evidence=[{**{k:d[k] for k in ('episode_id','source','root_call_id','child_call_ids','source_project')},'root_call_url':'https://wandb.ai/'+d['source_project']+'/weave/calls/'+d['root_call_id'] if d['source']=='weave_verified' and d['root_call_id'] and d['source_project'] else None} for d in records('evidence') if d['episode_id'] in episodes]
-        return {'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in records('ingestions') if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
+        # Evidence and ingestion records are keyed by episode_id (evidence.py), so
+        # fetch this campaign's rows by key instead of parsing every campaign's.
+        evidence=[{**{k:d[k] for k in ('episode_id','source','root_call_id','child_call_ids','source_project')},'root_call_url':'https://wandb.ai/'+d['source_project']+'/weave/calls/'+d['root_call_id'] if d['source']=='weave_verified' and d['root_call_id'] and d['source_project'] else None} for d in c().store.get_records('evidence',episodes) if d['episode_id'] in episodes]
+        return {'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in c().store.get_records('ingestions',episodes) if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
     @router.get('/campaigns/{id}/search-attempts')
     @guarded
     async def search_attempts(id:str):

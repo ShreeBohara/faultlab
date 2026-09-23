@@ -46,6 +46,21 @@ class WorldControlError(httpx.TransportError):
 SIMULATOR_KEEPALIVE_SECONDS=5.0
 KEEPALIVE_EXPIRY=2.0
 
+# Only the connect phase gets a long budget. A localhost connect completes in the
+# kernel even while the simulator is busy, so the only way it outlasts 1s is the LAB's
+# own event loop being frozen. httpx then raises ConnectTimeout and the request is never
+# written, yet the broker has already counted its tick: the lab's clock runs one ahead
+# of the world's and every later citation fails C6 (Phase 18's only failure; 4 of 4,791
+# stored episodes, 2 of them baseline). Measured: a 1.2s freeze during connect lost 12
+# of 12 requests on a fresh connection; with the request already written, 0 of 18.
+# Read, write and pool stay at 1.0s, so response-delay faults behave exactly as before.
+# (Before and after alike, a lab freeze spanning the read deadline can let a delayed
+# response arrive first and be read as success: 6 of 384 stored F1 triggers. Removing
+# the dashboard's loop-blocking reads is what makes that rare; check_clock_drift.py
+# --worlds reports it.)
+BUSINESS_TIMEOUT=1.0
+CONNECT_TIMEOUT=10.0
+
 CREATE_ATTEMPTS=3
 CREATE_BACKOFF=(0.25,0.5)
 CREATE_JITTER=(0.5,1.5)
@@ -74,13 +89,13 @@ class WorldClient:
         parsed=urlsplit(base_url)
         if parsed.scheme!='http' or parsed.hostname not in ('127.0.0.1','localhost','::1') or parsed.username or parsed.password or parsed.query:
             raise ValueError('Explicit localhost mock service required')
-        self.client=client or httpx.AsyncClient(base_url=base_url,timeout=1.0,
+        self.client=client or httpx.AsyncClient(base_url=base_url,timeout=httpx.Timeout(BUSINESS_TIMEOUT,connect=CONNECT_TIMEOUT),
                                                  limits=httpx.Limits(keepalive_expiry=KEEPALIVE_EXPIRY))
         self.control_token=control_token
 
     async def control(self,method,path,payload=None,*,operation=None):
         try:
-            response=await self.client.request(method,path,json=payload,headers={'X-FaultLab-Control':self.control_token},timeout=3)
+            response=await self.client.request(method,path,json=payload,headers={'X-FaultLab-Control':self.control_token},timeout=httpx.Timeout(3,connect=CONNECT_TIMEOUT))
         except httpx.TransportError as error:
             # Named so an aborted study can say which control call failed. A rejected
             # request (HTTPStatusError) is not transport and is left untouched.
@@ -183,7 +198,7 @@ class BusinessToolBroker:
                 if encoded: headers['Content-Type']='application/json'
                 retryable=False
                 try:
-                    response=await self.world_client.client.request(method,path,content=encoded,headers=headers,timeout=1.0)
+                    response=await self.world_client.client.request(method,path,content=encoded,headers=headers,timeout=httpx.Timeout(BUSINESS_TIMEOUT,connect=CONNECT_TIMEOUT))
                     try:
                         result=ToolResult.model_validate_json(response.content)
                         if result.call_id!=call_id or result.tool!=tool: raise ValueError('Tool result correlation mismatch')
