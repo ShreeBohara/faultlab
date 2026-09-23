@@ -33,6 +33,12 @@ class CompletionStudyRequest(StrictModel):
     replay_policy_version:str|None=Field(default=None,max_length=120)
     actor_context_protocol:str|None=Field(default=None,max_length=120)
 
+class HeldoutCheckRequest(StrictModel):
+    execute_live:Literal[True]
+    # The full, non-replay completion study whose selected candidate is checked once on
+    # the private promotion partition. Never accepts or activates a policy.
+    certified_study_id:str=Field(max_length=120)
+
 class ContextStudyRequest(StrictModel):
     execute_live:Literal[True]
     # Which declared changed protocol the P1 arm runs. B0 always preserves v1.
@@ -270,6 +276,18 @@ def create_router(get_coordinator):
     @router.get('/completion-studies/{id}')
     @guarded
     async def completion_study_status(id:str): return record('completion_studies',id)
+
+    @router.post('/campaigns/{id}/heldout-check',status_code=202)
+    @guarded
+    async def heldout_check_start(id:str,request:HeldoutCheckRequest):
+        from app.lab.heldout_check import queue_heldout_check
+        return await queue_heldout_check(c(),id,request.certified_study_id)
+    @router.get('/campaigns/{id}/heldout-checks')
+    @guarded
+    async def heldout_checks(id:str): c().get(id); return records('heldout_checks',id)
+    @router.get('/heldout-checks/{id}')
+    @guarded
+    async def heldout_check_status(id:str): return record('heldout_checks',id)
 
     @router.post('/campaigns/{id}/context-study',status_code=202)
     @guarded

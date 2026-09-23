@@ -34,7 +34,7 @@ def paired_complete(batch,expected_pairs):
 
 class PairedEvaluator:
     def __init__(self,store,runner,ledger,*,publisher=None): self.store,self.runner,self.ledger,self.publisher=store,runner,ledger,publisher
-    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True):
+    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True,actor_context_protocol=None):
         batch_id=new_id('batch'); own=reservation is None
         if own:
             reservation=f'{purpose}:{batch_id}'
@@ -67,7 +67,7 @@ class PairedEvaluator:
                         try:
                             for arm_name in order:
                                 chosen=incumbent if arm_name=='incumbent' else candidate
-                                trial=await self.runner.run(campaign,recipe,chosen,purpose=purpose,arm='B0' if arm_name=='incumbent' else 'L',trial_index=index,fixture_id=case.get('fixture_id','standard-v1'),ledger=self.ledger,reservation=retry_reservation,stop=stop,episode_id=planned[(case_index,index,arm_name)] if retry==0 else None)
+                                trial=await self.runner.run(campaign,recipe,chosen,purpose=purpose,arm='B0' if arm_name=='incumbent' else 'L',trial_index=index,fixture_id=case.get('fixture_id','standard-v1'),ledger=self.ledger,reservation=retry_reservation,stop=stop,episode_id=planned[(case_index,index,arm_name)] if retry==0 else None,actor_context_protocol=actor_context_protocol)
                                 trials.append(trial); outcomes[arm_name]=trial
                                 if session and retry==0 and trial.lifecycle=='COMPLETED':
                                     e=self.store.get_record('episodes',trial.episode_id)

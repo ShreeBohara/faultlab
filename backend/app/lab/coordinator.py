@@ -43,6 +43,29 @@ class LabCoordinator:
                         if released!=budget['reservations']:
                             budget['reservations']=released
                             self.store.put_record('budgets',study['campaign_id'],budget)
+        # A held-out check runs on a dedicated campaign; its evaluator reservation is
+        # named 'promotion:<batch>' and is never spent after a restart.
+        for check in self.store.list_records('heldout_checks'):
+            if check['status'] in ('QUEUED','RUNNING'):
+                check['status']='INTERRUPTED'; check['decision']='INCOMPLETE'
+                check['reason']='Process restart interrupted the held-out check; attempts cannot be replayed'
+                try:
+                    from app.lab.heldout_check import stored_candidate_failures
+                    stored=stored_candidate_failures(self.store,check.get('campaign_id'),check.get('policy_hash'))
+                except Exception as scan_error:
+                    stored=[]; check['recovery_error']=type(scan_error).__name__
+                if stored:
+                    reason='A candidate trial failed a C1-C8 check (recovered from stored trials after a restart)'
+                    check.update(status='COMPLETED',decision='HARM',candidate_failures=stored,reason=reason,
+                                 ended_at=utc_now().isoformat(),
+                                 assessment={'decision':'HARM','rule':'check_failure','reason':reason,'candidate_failures':stored})
+                self.store.put_record('heldout_checks',check['check_id'],check)
+                budget=self.store.get_record('budgets',check.get('campaign_id',''))
+                if budget and isinstance(budget.get('reservations'),dict):
+                    released={name:value for name,value in budget['reservations'].items() if not name.startswith('promotion:')}
+                    if released!=budget['reservations']:
+                        budget['reservations']=released
+                        self.store.put_record('budgets',check['campaign_id'],budget)
         for retry in self.store.list_records('evidence_retries'):
             if retry['status'] in ('QUEUED','RUNNING'):
                 retry['status']='INTERRUPTED'; self.store.put_record('evidence_retries',retry['request_id'],retry)
