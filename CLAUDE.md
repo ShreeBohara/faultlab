@@ -177,7 +177,11 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
     - Phase 15 replays 1, 5, 12, 21, 24 and 28, and one Phase 13 replay;
     - **no declared read-out of Phases 13, 15 or 17 changed** (replay 5: L completed that
       case 55 of 55 with the fault visible);
-    - Phase 18's HARM is the one verdict the defect decided.
+    - **Correction:** Phase 18's HARM does NOT hinge on the defect. Rule 3 (`lost_outcome`)
+      still fires on stale history (L 2 vs B0 3, where the policy never acted) and on
+      transient upgrade failures (L 0 vs B0 1). The defect decided only which rule fired
+      first. Rule-3 HARM at n=3 is weak evidence (per-case false alarm ~33% at a 1-in-3
+      baseline rate).
   - **Remaining paths**, rare and documented:
     - a freeze longer than 10 s;
     - a simulator started without `--timeout-keep-alive 75`, so always use
@@ -185,11 +189,23 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
     - a refused connection;
     - the broker still counting an attempt before it is sent.
 
+- **Phase 20 (2026-09-23, $18.77): development probe of `dd62c857…`, 138 episodes.** See `docs/part2/PHASE20_RESULTS.md`.
+  - **Safety:** 0 C1–C8 failures in either arm (0 of 69 each).
+  - **Completions kept:** L kept all 33 of 33 that B0 had on short delays, lost upgrade response, stale history and healthy.
+  - **Source check `none_found`:** no baseline fails any check 3 of 3, so **the ACCEPTED path has no known source** in the trusted configuration. T065, T097 and T102 are blocked by that absence. This is bounded evidence.
+  - **Transient upgrade failures:** P-1 is **floor-limited** (B0 2 of 27, L 0 of 27). A cost cannot be ruled out; it is descriptive only.
+  - **Descriptive:** L completed the F2 d5 boundary delay 3 of 3 where B0 completed 0 of 3.
+- **Phase 21 (2026-09-23, $22.22): Actor replay probe of the lapse. V5_NOT_ADOPTED.** See `docs/part2/PHASE21_RESULTS.md`.
+  - **At the point of lapse (turn 4):** stating "no confirmation requested yet" made the Actor send 3 of 65 times, against 0 of 65 for both C and the placebo. It FAILED.
+  - **The lapse is a chance draw on turn 3:** the same prompts now send 83%. It is absorbing once the Actor has polled and read UNKNOWN.
+  - **Temperature 0 is not deterministic:** only 36% of repeat pairs are byte-identical.
+  - The untriggered channel stays fatal. Phase 25 falls back to 12 v4 replays.
+
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 19: **$465.24 conservatively charged; $534.76 remaining** (Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 21: **$506.23 conservatively charged; $493.77 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

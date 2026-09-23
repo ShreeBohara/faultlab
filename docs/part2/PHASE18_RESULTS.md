@@ -133,7 +133,16 @@ the policy.
   decision (see `PHASE19_RESULTS.md`).
 
 **What this means** (wording checked by an independent audit):
-- **We attribute the failure to the defect, not to the policy.** The failure matches a lab
+- **Without the defect, the verdict would still be HARM** (a correction added after the
+  Phase 20 planning review). Rule 3 (`lost_outcome`) also fires:
+  - on stale history (L 2 vs B0 3, where the policy never acted);
+  - on transient upgrade failures (L 0 vs B0 1).
+
+  As this protocol declared, rule-3 HARM from one 3-trial batch is weak evidence. The
+  per-case false alarm is ~33% when the baseline completes about 1 in 3, so the declared
+  25–38% overall false-HARM rate was probably too low. The paragraph below is about the one
+  **check failure** only.
+- **We attribute the check failure to the defect, not to the policy.** The failure matches a lab
   measurement defect:
   - the lost request came before any policy action (09.103 s against the first policy step
     at 10.294 s);

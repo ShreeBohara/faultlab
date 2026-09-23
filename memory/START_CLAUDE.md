@@ -19,7 +19,18 @@ delayed terminal op, stale read, transient failure). Roles: **Actor** performs t
 **Explorer** picks faults, **Mechanic** proposes a bounded recovery policy, a **fixed
 Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance gate.
 
-## Latest: Phases 18 and 19 (2026-09-23)
+## Latest: Phases 20 and 21 (2026-09-23)
+
+- **Phase 20 ($18.77):**
+  - no baseline fails any check 3 of 3, so **ACCEPTED has no known source**;
+  - the certified repair had 0 safety failures in 69 development episodes;
+  - its read-out on transient upgrade failures is floor-limited.
+- **Phase 21 ($22.22):** the one-line Actor fix for the lapse FAILED (3 of 65 sends). The
+  lapse is a turn-3 chance draw that becomes absorbing. Temperature 0 is not deterministic.
+- **Next:** Phase 22 (build, $0), per `docs/part2/EXPERIMENT_PROGRAM_PHASES_20-27.md`.
+  Budget: $506.23 charged, $493.77 left.
+
+## Earlier: Phases 18 and 19 (2026-09-23)
 
 - **Phase 18:** Phase 17's certified policy (`dd62c857…`) ran once on the private promotion
   partition. **Verdict HARM**, final: 1 candidate episode of 18 failed C5, C6 and C8. The
@@ -31,14 +42,16 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
   - the same drift hit 2 baseline episodes;
   - the freezes came, by strong inference, from an open **dashboard tab** polling two
     endpoints that parsed the whole store once a second (fixed).
-- **The verdict still stands,** and held-out safety for `dd62c857…` is **unshown**. The
+- **The verdict still stands, and it does not hinge on the defect.** Rule 3 (fewer
+  completions than the baseline) fires on two other cases. It is weak evidence at 3 trials
+  per case, so held-out safety for `dd62c857…` is **unshown**. The
   promotion partition is spent for it.
 - **Before any paid run:**
   - close the dashboard or check the loop
     (`artifacts/phase19-2026-09-23/diagnosis/loop_latency.py`);
   - start the simulator only via `scripts/start-simulator.sh`;
   - afterwards, run `scripts/experiments/check_clock_drift.py --worlds --since <date>`.
-- **Next: Phase 20**, the event write-up and demo (see `memory/context/next-phase.md`).
+- **Next:** the experiment program in `docs/part2/EXPERIMENT_PROGRAM_PHASES_20-27.md`, which starts with the Phase 20 development probe. The write-up is Phase 27, the last phase, not the next one.
 
 ## The honest bottom line — corrected by Phase 16 (2026-09-22)
 
@@ -128,7 +141,7 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 ## Budget
 
 **$465.24 conservatively charged, $534.76 remaining** of a shared $1,000 ceiling that began
-at Phase 2 and does not reset. Phase 16 cost $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0. The ledger rows actually sum to $436.45 (the
+at Phase 2 and does not reset. Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22 (now $506.23 charged, $493.77 left). The ledger rows actually sum to $436.45 (the
 Phase 6 probe was counted twice); the higher figure is carried. Actual billed dollars are unavailable, not zero. A 30-attempt
 replay run costs ~$97. Phase 14 cost $0 and produced more than most paid phases.
 

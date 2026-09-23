@@ -129,8 +129,12 @@ CPU):
 - **The Phase 18 verdict stays HARM.** It was declared final. This phase explains the
   failure; it does not earn a re-run on that partition, and held-out safety is still
   unshown.
-- **Earlier results** (the only affected episodes in the store's history, mapped to their
-  studies; decisions checked against the stored assessments):
+- **Earlier results:** see the next section.
+
+### Earlier results
+
+The only affected episodes in the store's history, mapped to their studies. Each decision
+was checked against the stored assessment.
 
 | defect | where | arm | decision | did it change the decision? |
 |---|---|---|---|---|
@@ -142,31 +146,42 @@ CPU):
 | masked F1 | Phase 15 replays 12, 21 | L; B0 ×2 | INCOMPLETE | no |
 | masked F1 | Phase 15 replay 5 | L | OBSERVED_IMPROVEMENT | almost certainly not: on that case, with the fault visible, L completed **55 of 55** and B0 **57 of 57** Phase 15 episodes |
 
-  - **Declared read-outs:** no declared read-out of Phases 13, 15 or 17 changes. Phase 18's
-    HARM is the one verdict the defect decided.
-  - **The "clean" Phase 15 record was not quite clean.** The two drifted
-    `lost-notification-response` episodes are the **only** non-completions on that case in
-    all of Phase 15. The drift turned two would-be completions into violations.
-  - **A correction:** an earlier draft of this document said the September 22 drift
-    episodes were "outside the declared phases". They are Phase 15 replays.
-- **Not fixed here:**
-  - **One-off scans:** the lab's own studies still call `list_records('episodes')` on some
-    paths during runs. They run inline in the study task, so the audit found they cannot
-    freeze the loop while that task awaits its own request. The connect budget also now
-    absorbs any freeze under 10 s. Recorded, not changed.
-  - **Unexplained stalls:** the three remaining ~0.13 s stalls, one every ~7 s.
-  - **Other paths to a lost attempt:** see the timeout review under Integrity.
+- **Declared read-outs:** no declared read-out of Phases 13, 15 or 17 changes.
+- **Correction (from the Phase 20 planning review):** an earlier version said Phase 18's
+  HARM was "the one verdict the defect decided". **That is false.** With the drifted
+  episode set to a clean completion, rule 3 (`lost_outcome`) still fires on two cases:
+  - stale history: L 2 vs B0 3, where the policy never acted;
+  - transient upgrade failures: L 0 vs B0 1.
+
+  The defect decided only which rule fired first (`check_failure`), not the verdict. The
+  Phase 18 protocol itself declared rule-3 HARM at 3 trials per case weak evidence. The
+  per-case false alarm is ~33% when the baseline completes about 1 in 3, which is the
+  transient-upgrade case.
+- **The "clean" Phase 15 record was not quite clean.** The two drifted
+  `lost-notification-response` episodes are the **only** non-completions on that case in
+  all of Phase 15, so the drift very likely turned two completions into violations.
+- **A correction:** an earlier draft of this document said the September 22 drift episodes
+  were "outside the declared phases". They are Phase 15 replays.
+
+### Not fixed here
+
+- **One-off scans:** the lab's own studies still call `list_records('episodes')` on some
+  paths during runs. They run inline in the study task, so the audit found they cannot
+  freeze the loop while that task awaits its own request. The connect budget also now
+  absorbs any freeze under 10 s. Recorded, not changed.
+- **Unexplained stalls:** the three remaining ~0.13 s stalls, one every ~7 s.
+- **Other paths to a lost attempt:** see the timeout review under Integrity.
 
 ## Integrity
 
 - **Freeze diff** (`gate-freeze-before.json` `3619a4aa…` → `gate-freeze-after.json`
   `3636ca21…`): exactly four fingerprints moved, all declared:
-  - `adapter_hash` and `runtime_hash`, from `business_tools.py`;
-  - `algorithm_hash` and `tree_lab`, from `api.py` and `storage.py`.
+- `adapter_hash` and `runtime_hash`, from `business_tools.py`;
+- `algorithm_hash` and `tree_lab`, from `api.py` and `storage.py`.
 - **Unchanged:**
-  - `assess_pairs` is text-identical (`783e8e58…`);
-  - `scorer_hash` is `19de811c…`, the value in the Phase 18 verdict;
-  - no gate function or referee file changed, and `checks.py` was not opened.
+- `assess_pairs` is text-identical (`783e8e58…`);
+- `scorer_hash` is `19de811c…`, the value in the Phase 18 verdict;
+- no gate function or referee file changed, and `checks.py` was not opened.
 - **The before-freeze equals Phase 18's after-freeze,** so nothing changed between the
   Phase 18 run and this phase.
 - **Expected `configuration_hash` for the next run:** `0a33aa51…` (Phase 17 settings,
@@ -174,25 +189,25 @@ CPU):
 - **Backend:** restarted on the new code at 10:33:42 local (pid 58539) after confirming
   nothing was queued or running. The dashboard tab kept polling it.
 - **The timeout review** (it could not break the fix):
-  - **Sweeps:** old code drifted 5 of 12, new code 0 of 12, then 0 of 31 in a denser sweep
+- **Sweeps:** old code drifted 5 of 12, new code 0 of 12, then 0 of 31 in a denser sweep
     over connect, write and read.
-  - **Remaining paths to a counted-but-unsent attempt:**
+- **Remaining paths to a counted-but-unsent attempt:**
     - a freeze longer than 10 s (the longest send→record gap in 27,956 stored requests is
       1.51 s);
     - a simulator started **without** `--timeout-keep-alive 75`, which leaves a 3 s margin
       for the keep-alive race. Start it only with `scripts/start-simulator.sh`;
     - a refused connection;
     - a future `max_connections` limit.
-  - **The design is unchanged:** the broker still counts an attempt before it knows the
+- **The design is unchanged:** the broker still counts an attempt before it knows the
     request was sent. `check_clock_drift.py` catches it after the fact.
-  - **Worst case for `create()`:** a genuinely hanging connect now waits up to ~31 s, where
+- **Worst case for `create()`:** a genuinely hanging connect now waits up to ~31 s, where
     it used to take ~10 s.
 - **The masked-fault finding** (new, pre-existing, not a drift):
-  - **What happens:** a lab freeze spanning the read deadline lets an F1-delayed response
+- **What happens:** a lab freeze spanning the read deadline lets an F1-delayed response
     arrive first, and it is read as success.
-  - **How often:** 6 of 384 stored F1 triggers, all September 22.
-  - **What it does:** the Actor never sees the fault, but the trial counts it as triggered.
-  - **Status:** the dashboard fix removes the freezes that caused it, and
+- **How often:** 6 of 384 stored F1 triggers, all September 22.
+- **What it does:** the Actor never sees the fault, but the trial counts it as triggered.
+- **Status:** the dashboard fix removes the freezes that caused it, and
     `check_clock_drift.py --worlds` now reports it.
 
 ## Budget

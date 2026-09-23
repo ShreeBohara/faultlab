@@ -33,43 +33,45 @@ Read `docs/part2/PHASE19_RESULTS.md` first, then `PHASE18_RESULTS.md` and
    date>` must exit 0. Treat any drift or masked fault as a lab defect and report it.
 5. **Also keep** the ingestion health check (`check_ingestion_health.py`), as before.
 
-## Recommended Phase 20: the event write-up and demo (free)
+## The program: Phases 20–27 (adopted 2026-09-23)
 
-The event is roughly 20 days from 2026-09-22. The honest story, in order:
+The user wants to keep experimenting while time (~19 days) and budget remain. The
+write-up is **Phase 27, the last phase, not the next**. The full program, its reviews and
+its numbers are in `docs/part2/EXPERIMENT_PROGRAM_PHASES_20-27.md` (evidence in
+`artifacts/program-2026-09-23/`).
 
-1. **The lab** injects faults into a tool-using agent's task. A fixed referee scores eight
-   checks.
-2. **The loop** generated a repair, and the unchanged gate certified it on development
-   cases (Phase 17).
-3. **In the same run,** the gate rejected a harmful repair (attempt 4 broke refusal
-   handling).
-4. **A held-out check** on unseen cases flagged one failure (Phase 18, HARM).
-5. **The investigation** traced that failure to the lab's own measurement:
-   - a request lost unsent during a loop freeze caused by the dashboard;
-   - the same defect had failed baseline runs too.
+| phase | what | cap |
+|---|---|---|
+| 20 | Development probe of `dd62c857…` on upgrade-side faults, plus a source-existence check (is ACCEPTED reachable at all?) | $28 |
+| 21 | Actor replay probe: does telling the Actor "no confirmation requested yet" fix the lapse behind every untriggered fault? Also temperature-0 determinism | $25 |
+| 22 | Build, two review rounds, one freeze: heldout-2 partition (declared generator and seed), predicate v2 (15 trials per case with Fisher), fixed-N loop runner. $0 validity soak | $0 |
+| 23 | Fixed-N full loop: 30 attempts, no stop at success, so the certification rate gets an interval | $150 |
+| 24 | One held-out check of the first new certified repair on heldout-2 | $87 |
+| 25 | `dd62c857…` replays on the fixed lab, with a v4-vs-v5 lapse A/B if Phase 21 passed | $110 |
+| 26 | Small probes: Explorer challenge, a second completion gap, Mechanic slot 2 | $23 |
+| 27 | Event write-up and demo | $0 |
 
-   It was reproduced, fixed, and swept across 4,791 stored episodes (Phase 19).
-6. **What is still not shown:** that the repair is safe on unseen cases. A new held-out
-   check needs a new partition or a declared re-use rule.
+Caps total $423, leaving a reserve of $111.76. Every phase is declared, reviewed and
+reported on its own.
 
-Deliverables to decide in Phase 20: a short write-up page, a 3-minute demo script, and
-dashboard screenshots with the fixed backend. **Never claim held-out safety.**
+**Done so far:**
+- **Phase 20 ($18.77):** no source for ACCEPTED (`none_found`); 0 safety failures; P-1
+  floor-limited.
+- **Phase 21 ($22.22):** V5_NOT_ADOPTED. The lapse is a turn-3 chance draw that is absorbing
+  at turn 4.
+- **Consequences:**
+  - Phase 22 proceeds **without** v5.
+  - Phase 25 falls back to 12 v4 replays ($60), only after Phase 24.
+  - Heldout-2's transient-upgrade case is low-rate: B0 completed 2 of 27 in Phase 20, and
+    its verdict must say so.
+- **Budget:** $506.23 charged, $493.77 remaining.
 
-## Later candidates
-
-- **A fresh held-out check** on a **new** partition, with a declared construction rule.
-  Paid, small.
-- **Structural hardening:** stop counting an attempt the lab knows was never sent
-  (`ConnectError` / `ConnectTimeout`), or cross-check the lab's and the world's ticks at
-  the end of every episode.
-- **The remaining ~0.13 s stalls** every ~7 s on the fixed backend. They are harmless at
-  today's budgets, but unexplained.
-- **The Actor lapse,** the cause of every untriggered fault.
-- **Mechanic brief quality:** retries gated on PENDING, and duplicate slot-2 proposals.
-
-**Pooling rule:** any further certified-repair run quotes its attempts pooled with Phase
-17's 9.
+**Key facts the program established ($0):**
+- Runtime 2's strict report schema removed the only failure a baseline ever repeated 3 of
+  3, so ACCEPTED is very likely unreachable in the trusted configuration. Phase 20's
+  source check tests that directly.
+- Phase 18's HARM does not hinge on the defect (see the corrections).
 
 ## Budget
 
-**$465.24 conservatively charged, $534.76 remaining** of the shared $1,000.
+**$506.23 conservatively charged, $493.77 remaining** of the shared $1,000.
