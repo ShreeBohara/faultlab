@@ -210,6 +210,7 @@ class WeaveWorker:
     def __init__(self, settings: Settings, *, live_authorized: bool = False):
         self._settings, self._authorized = settings, live_authorized
         self._process = self._pipe = None
+        self._initialized = False
         self._lock = asyncio.Lock()
 
     async def start(self, *, timeout_seconds: float = 20):
@@ -224,6 +225,18 @@ class WeaveWorker:
         self._process.start()
         child.close()
         await self.request("initialize", {}, timeout_seconds=timeout_seconds)
+        self._initialized = True
+
+    async def ensure_running(self, *, timeout_seconds: float = 20):
+        """Start a fresh worker if the last one exited or was aborted; a live one is untouched.
+
+        A timed-out request aborts the shared worker, and start() alone keeps a
+        child that died on its own or never initialized (the coordinator swallows a
+        failed first start); in every such case each later request would fail.
+        """
+        if self._process is not None and (not self._process.is_alive() or not self._initialized):
+            self.abort()
+        await self.start(timeout_seconds=timeout_seconds)
 
     async def request(self, command: str, payload: dict, *, timeout_seconds: float = 20) -> Any:
         if not 0 < timeout_seconds <= 60:
@@ -257,6 +270,7 @@ class WeaveWorker:
             if self._process.is_alive():
                 self._process.kill()
             self._process = None
+        self._initialized = False
         if self._pipe is not None:
             self._pipe.close()
             self._pipe = None

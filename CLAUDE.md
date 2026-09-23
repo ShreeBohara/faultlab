@@ -1,6 +1,6 @@
 # FaultLab — continuation memory
 
-Updated September 22, 2026 after the Phase 15 round. Read `AGENTS.md` first.
+Updated September 22, 2026 after Phase 16 (free). Read `AGENTS.md` first.
 
 ## Start here
 
@@ -87,45 +87,48 @@ Updated September 22, 2026 after the Phase 15 round. Read `AGENTS.md` first.
 - Latest verification: **592 backend tests, 124 frontend tests, production build** and three browser fixtures; actual dashboard, per-turn request reconstruction, original reports, simulator effects, Weave and restart checked manually.
 - Main checklist: sibling `../FaultLab_Specs/specs/001-faultlab-loop/tasks.md`. T065/T088/T097/T100/T102 remain open; Phases 4 through 15 closed none of them. Checked investigation tasks do not mean the learned-repair goal passed.
 
-## READ THIS FIRST — a finding from 2026-09-22 that reframes the project
+## READ THIS FIRST — Phase 16 (2026-09-22) corrected the handoff that preceded it
 
-**Measured directly from the store, and it contradicts the narrative the project has been
-carrying since Phase 6.**
+An earlier section here recommended "run full completion studies until a policy is ACCEPTED,
+$15–50". **A read-only audit, and two adversarial review rounds, showed that plan could not
+work.** See `docs/part2/PHASE16_RESULTS.md`.
 
-`records` kind `mechanic_outputs`, n=100: **16 contain `retry_original_request` — 16.0%.**
-All 15 such proposals place it at `after_notification_response`, the correct hook. Phase 9
-alone: 6 of 44 = 13.6%.
-
-**The Mechanic emits the working repair roughly one time in six.** It is not true that it
-"never" does. The carried claim — *0 of 6 proposals contained the step* — was a real
-observation of a **six-proposal sample**, and at a 16% base rate seeing zero in six has
-probability **0.35**. It is an ordinary outcome. **It never required an explanation, and
-Phases 6, 7 and 8 were spent constructing one.**
-
-What this means, given everything else that is now established:
-
-- Mechanic emits the step: **~16%** per proposal, two proposal slots per study.
-- Gate certifies a clean batch: **9 of 10** (Phase 15).
-- Control path, Actor transport, citation corruption: **all fixed** (Phases 11, 13, 14).
-- **Nobody has run the full loop — Mechanic → source gate → validation — since Phase 9.**
-  Phases 10 through 15 replayed one already-known policy, 126 replay studies to 40 full-loop
-  studies ever.
-
-Rough arithmetic, **to be verified before spending**: one accepted policy should need on the
-order of 4–14 full completion studies, call it **$15–50**. That is the cheapest untried path
-to the project's actual goal, and it has been sitting behind an unexamined premise.
-
-**Caveats, stated honestly.** The 16% is over all mechanic outputs in the store, including
-pre-Phase-9 campaigns that ran under different briefs and models. I did not re-derive the
-Phases 5–6 study-level figure, and the two are fully compatible. Containing the step is
-necessary, not sufficient — the policy must also survive the source gate and validation.
-**Verify the rate per current brief and model before committing budget.**
+- **Completion studies cannot write ACCEPTED** (by design and by spec). The target is now a
+  separately labelled **certified completion repair**:
+  - `OBSERVED_IMPROVEMENT` under the unchanged `assess_pairs`, **plus**
+  - `L − B0 ≥ 2` completions on a validation case other than `notification-2` and `healthy`.
+- **All 40 full studies ran on the v1 Actor context.** The default is still v1, so pass v4
+  explicitly.
+- **The step rate:**
+  - 5 of 31 first proposals contained the step;
+  - the second slot is a duplicate 20 of 25 times (temperature 0);
+  - 15 of the "16 of 100" were valid; the 16th has a corrupted key.
+- **The source gate:** 1 of 5 step candidates qualified. **3 of the 4 failures were C6
+  citation errors, and the 4th was an untriggered trial.** Unmeasured under v4.
+- **Untriggered faults:** all 73 are the same Actor lapse (it polls a confirmation it never
+  sent, then gives up). The documented 2.02% should be 2.64% per fault-bearing episode.
+- **`EvidenceDenied`** is always a lab-error episode (21 of 21).
+- **Phase 16 changed only:**
+  - an in-study evidence re-read (`completion_study.verified_evidence`, `EvidenceGateway.retry`,
+    `WeaveWorker.ensure_running`);
+  - the health check;
+  - new scripts: `gate_freeze.py`, `expected_configuration.py`, `run_full_loop.py`,
+    `phase17_readouts.py`.
+- **Phase 16 verified:**
+  - `assess_pairs` is text- and AST-identical (`783e8e58…`);
+  - `scorer_hash`, `contract_hash`, `source_hash` and `actor_prompt_hash` are unchanged;
+  - `algorithm_hash` is `8d92e0c5…` and `runtime_hash` is `485c5e12…`;
+  - the expected `configuration_hash` is `c4169ee4…`, cross-checked against Phase 15's
+    stored configuration.
+- **Tests:** 594 before; 53 new.
+- **Phase 17 is declared** (`docs/part2/PHASE17_EXPERIMENT.md`) and **awaits the user's
+  approval to spend.**
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 15: **$436.73 conservatively charged; $563.27 remaining**. (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 16: **$436.73 conservatively charged; $563.27 remaining** (Phase 16 cost $0). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

@@ -19,41 +19,36 @@ delayed terminal op, stale read, transient failure). Roles: **Actor** performs t
 **Explorer** picks faults, **Mechanic** proposes a bounded recovery policy, a **fixed
 Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance gate.
 
-## The honest bottom line, and it matters more than any individual phase result
+## The honest bottom line — corrected by Phase 16 (2026-09-22)
 
-**Read this before deciding what to work on.**
+**Read `docs/part2/PHASE16_RESULTS.md` and `docs/part2/PHASE17_EXPERIMENT.md` first.**
 
-- **No generated policy has ever been ACCEPTED or promoted.** Not once, in 15 phases. Verify
-  it yourself: 0 policy records with `decision == 'ACCEPTED'`.
-- **The Mechanic DOES emit the one step that fixes the task, about one proposal in six.**
-  This corrects the project's own long-standing claim. Measured 2026-09-22 over
-  `mechanic_outputs` (n=100): **16 contain `retry_original_request`, 16.0%**, all at the
-  correct hook `after_notification_response`; Phase 9 alone 6 of 44 = 13.6%. The carried
-  belief that it "never" does came from a **six-proposal sample**, and at a 16% rate
-  zero-in-six has probability **0.35** — an ordinary outcome. **Phases 6, 7 and 8 were spent
-  explaining a non-event.** Re-derive the rate under the current brief and model before
-  relying on it: the 16% pools older campaigns.
-- **Phases 9–15 did not work on that.** They fixed measurement and infrastructure. That work
-  is real and is finished, but it is not the goal.
-
-**What Phases 9–15 did establish**, so it is not re-litigated:
-
-| | result |
-|---|---|
-| Actor citation corruption (Phase 11) | fixed — fabricated IDs 3.43% → 0 in 370 episodes |
-| Actor transport failures (Phase 13) | retried; survives on the final turn |
-| Lab control path (Phase 14) | cause found in uvicorn's keep-alive close; fixed |
-| Declared read-out (Phase 15) | reached at last: **9 of 20 accepted, p = 0.005** vs Phase 10's 0 of 13 |
-| **What the gate actually does** | **on a clean batch it certifies the working repair 9 times in 10; with one untriggered fault, never** |
-
-So: **the gate works, the harness works, and the Mechanic produces the repair about one
-proposal in six — yet no policy has ever been accepted, because the full loop has not been
-run since Phase 9.** The store holds 126 replay studies against 40 full-loop ones; every
-phase from 10 to 15 replayed one already-known policy.
-
-**That is the open problem, and it looks cheap.** Rough arithmetic, to be verified before
-spending: 4–14 full completion studies, **$15–50**, against $563.27 remaining. See
-`memory/context/next-phase.md`.
+- **No generated policy has ever been ACCEPTED, and a completion study cannot produce one.**
+  - `completion_study.py` never calls `commit_promotion`.
+  - The only promotion path (`promotion.py`) needs the incumbent to *fail* a C1–C8 check,
+    and a completion gap fails none.
+  - The spec excludes completion-only sources from promotion.
+  - The project's target is therefore a separately labelled **certified completion repair**
+    (defined in the Phase 17 protocol). It is never called ACCEPTED.
+- **The full loop has never produced a win:** 0 of 40 full studies reached
+  `OBSERVED_IMPROVEMENT`. **All 40 ran on the old v1 Actor context**, before the citation fix.
+  The default launcher still runs v1; Phase 17's runner passes v4 explicitly.
+- **The Mechanic writes the fix in ~16% of studies** (5 of 31 first proposals; 4 of 15 on the
+  closest setup). It runs at temperature 0, so the second slot repeated the first in 20 of 25
+  studies: **one real draw per study, not two**. The pooled "16 of 100" was a text count
+  mixing prompts; 15 were valid.
+- **Validation is single-shot** and passes a working policy ~1 attempt in 3 (9 of 28).
+  - "9 of 10 on clean batches" is the true gate figure.
+  - "0 of 10 with an untriggered fault" is true by construction, not a finding.
+- **The handoff's "$15–50, 4–14 studies" was 3–6× too optimistic.** Realistic: ~4% per study,
+  ~25 studies, ~$55 at the conservative bound.
+- **Phase 16 ($0)** built:
+  - an in-study evidence re-read;
+  - the Phase 17 runner, hardened by two adversarial review rounds;
+  - a code freeze and pins;
+  - a backup of everything (branch `backup/part2-2026-09-22`, plus
+    `~/FaultLab_Backups/2026-09-22-pre-phase16/`).
+- **Phase 17 is declared and awaiting the user's approval to spend.**
 
 ## Hard rules — these are not negotiable
 
@@ -106,7 +101,8 @@ spending: 4–14 full completion studies, **$15–50**, against $563.27 remainin
 ## Budget
 
 **$436.73 conservatively charged, $563.27 remaining** of a shared $1,000 ceiling that began
-at Phase 2 and does not reset. Actual billed dollars are unavailable, not zero. A 30-attempt
+at Phase 2 and does not reset. Phase 16 cost $0. The ledger rows actually sum to $436.45 (the
+Phase 6 probe was counted twice); the higher figure is carried. Actual billed dollars are unavailable, not zero. A 30-attempt
 replay run costs ~$97. Phase 14 cost $0 and produced more than most paid phases.
 
 ## Verification state
@@ -121,8 +117,8 @@ not discovered. `checks.py` has never been opened.
 1. This file.
 2. `CLAUDE.md` — current truth, one bullet per finding.
 3. `memory/context/next-phase.md` — the recommended next work.
-4. `memory/context/pitfalls-and-decisions.md` — 67 numbered items; every one is a mistake
+4. `memory/context/pitfalls-and-decisions.md` — 76 numbered items; every one is a mistake
    already made and investigated. Read before proposing anything.
 5. `memory/context/runtime-and-evidence.md` — services, per-phase evidence, cost ledger.
-6. `docs/part2/PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
+6. `docs/part2/PHASE16_RESULTS.md` and `PHASE17_EXPERIMENT.md`, then `PHASE15_RESULTS.md`, then `PHASE14`, `PHASE13`, `PHASE11`, `PHASE10`,
    `PHASE9`, `PHASE7`, `PHASE6`, `PHASE5` results.

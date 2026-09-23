@@ -20,10 +20,11 @@ from app.lab.diagnosis import (
     COMPACT_EVIDENCE_V1, COMPACT_EVIDENCE_V2, EVIDENCE_PROTOCOLS,
     runtime_contract, summarize_evidence, trial_outcomes,
 )
-from app.lab.evidence import EvidenceContext, WaitingEvidence
+from app.lab.evidence import EvidenceContext, EvidenceDenied, WaitingEvidence
 from app.lab.reproduction import valid_trial
 from app.lab.storage import StoreConflict
 from app.lab.tracing import trace_metadata
+from app.telemetry.safety import TelemetryError
 
 SCHEMA = 'faultlab-completion-study/v1'
 PROPOSAL_SLOTS = 2
@@ -34,6 +35,9 @@ DEFAULT_EVIDENCE_PROTOCOL = COMPACT_EVIDENCE_V2
 # 6 controls + 2 * 6 source-pair trials + 7 * 6 validation trials, plus
 # two Mechanic requests per proposal (one optional format correction).
 MODEL_CALL_RESERVATION = 60 * 8 + PROPOSAL_SLOTS * 2
+# Phase 16: a read that timed out or lost its transport gets one re-upload of the
+# saved local trace and one more read. Integrity failures are never retried.
+EVIDENCE_REREAD_CODES = ('DEADLINE', 'TRANSPORT')
 
 
 def case_manifest():
@@ -233,6 +237,40 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
         coordinator.validate_core_configuration(campaign)
         if content_hash(case_manifest()) != record['manifest_hash']:
             raise StoreConflict('Completion case manifest changed during execution')
+    async def verified_evidence(episode_id):
+        # Blind by construction: keyed only on the ingestion record's transport-level
+        # code, never on the trial's arm, outcome or stage. It re-sends only the saved
+        # local trace; the verdict and trial row are already saved and nothing is
+        # generated again (pitfall 49). The first failure is kept in the record, since
+        # a successful re-read overwrites the ingestion row (pitfall 48).
+        gateway = coordinator.evidence_gateway
+        try:
+            return await gateway.get(episode_id, context, stopped=stop)
+        except WaitingEvidence as pending:
+            first = store.get_record('ingestions', episode_id) or {}
+            if (stop() or first.get('state') != 'RETRYABLE_ERROR'
+                    or first.get('error_code') not in EVIDENCE_REREAD_CODES):
+                raise
+            entry = {'episode_id': episode_id, 'stage': record['stage'],
+                     'first_error_code': first['error_code'], 'result': 'ATTEMPTED'}
+            record.setdefault('evidence_rereads', []).append(entry); save()
+            try:
+                worker = getattr(getattr(gateway, 'trace', None), 'worker', None)
+                if hasattr(worker, 'ensure_running'):
+                    await worker.ensure_running()
+                bundle = await gateway.retry(episode_id, context, stopped=stop)
+            except EvidenceDenied:
+                entry['result'] = 'DENIED'; save(); raise
+            except (WaitingEvidence, TelemetryError, TimeoutError, OSError):
+                entry['result'] = 'FAILED'; save()
+                if stop(): raise StopRequested() from None
+                raise pending from None
+            except Exception:
+                # Unexpected (e.g. a settings error while restarting the worker): the
+                # study still ends, and the attempt is not left looking unresolved.
+                entry['result'] = 'ERROR'; save(); raise
+            entry['result'] = 'VERIFIED'; save()
+            return bundle
     async def execute_slots(stage, candidate=None):
         check(); record['stage'] = stage; save()
         selected = [slot for slot in record['slots'] if slot['stage'] == stage]
@@ -289,7 +327,7 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
                 raise StoreConflict('World identity reused across study trials')
             if coordinator.evidence_gateway is None:
                 raise WaitingEvidence('Verified development evidence is required')
-            bundles[trial.episode_id] = await coordinator.evidence_gateway.get(trial.episode_id, context, stopped=stop)
+            bundles[trial.episode_id] = await verified_evidence(trial.episode_id)
             if bundles[trial.episode_id].source != 'weave_verified':
                 raise WaitingEvidence('Study requires actual verified Weave evidence')
             record['evidence'][trial.episode_id] = bundles[trial.episode_id].source

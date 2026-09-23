@@ -77,13 +77,13 @@ class EvidenceGateway:
         self.store.put_record('evidence',episode_id,bundle)
         return bundle
 
-    async def retry(self,episode_id):
+    async def retry(self,episode_id,context=None,*,stopped=lambda:False):
         e=self.store.get_model('episodes',episode_id,Episode)
         if e is None: raise EvidenceDenied('Unknown episode')
-        context=EvidenceContext(e.campaign_id,e.study_id,e.evidence_context_id,e.selector_id,e.experiment_purpose=='diagnostic_profile')
+        context=context or EvidenceContext(e.campaign_id,e.study_id,e.evidence_context_id,e.selector_id,e.experiment_purpose=='diagnostic_profile')
         self.authorize(episode_id,context)
-        if self.trace: await self.trace.retry_episode_upload(episode_id)
-        return await self.get(episode_id,context)
+        if self.trace: await self.trace.retry_episode_upload(episode_id,stopped=stopped)
+        return await self.get(episode_id,context,stopped=stopped)
 
     @staticmethod
     def format(bundles):

@@ -68,9 +68,10 @@ The shared $1,000 authorization began with Phase 2 and continues through Phase 3
 | Phase 13 gate replays (30 attempts, 849 episodes) | see manifest | $91.41660 | not separately reconciled |
 | Phase 14 (two free rounds: diagnosis, mechanism, fix) | 0 | $0.00000 | — |
 | Phase 15 gate replays (28 attempts, 914 episodes) | see manifest | $97.33130 | not separately reconciled |
+| Phase 16 (read-only audit, build, two reviews; no provider or W&B call) | 0 | $0.00000 | — |
 | Shared total | 2,232 + Phases 9-15 | **$436.73** | **$4.60950+** |
 
-**Remaining conservative allowance: $563.27.** The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
+**Remaining conservative allowance: $563.27.** (Phase 16's audit found the ledger rows actually sum to $436.45; the $0.28 is the Phase 6 probe counted twice. The higher figure is carried.) The rows above sum to $339.40; the headline through Phase 12 read $243.00 while its rows summed to $243.28, a pre-existing $0.28 discrepancy the size of one probe. The higher, more conservative figure is carried forward. Actual billed dollars are unavailable, not zero. Phases 3 and 4 have no unknown token usage, but billed cost is unknown for all of those requests. Phase 1's campaigns on the same day (`ccb81465`, `0ff8bbf4`, `2fdef056`, `9e7f10cd`; 1,294 calls, $27.59 conservative in `artifacts/lab.sqlite3`) belong to Phase 1's older separate allowance and are not part of this ceiling; Phase 2 additionally ran two campaigns in their own stores under `artifacts/phase2-2026-09-20/`. Allocations are not amounts actually spent. Phase 1's older separate allowance is documented in its own report.
 
 ## Phase 3 evidence inventory
 
@@ -350,3 +351,20 @@ Read-only: `GET /api/config/status`, `/api/readiness`, `/api/campaigns/ID`, `/ap
 `./scripts/run-completion-study.sh --status STUDY_ID` only reads. `--execute-live --wait` creates fresh paid work and must not be used merely to inspect status. POST `/api/campaigns/ID/retry-evidence` with explicit episode IDs synchronizes existing evidence only; it does not rerun models or make a failed study successful. Check its returned `/api/evidence-retries/REQUEST_ID` until terminal before claiming verification.
 
 Aria publication is disabled. Generic sponsor status may show PENDING even when specific episode evidence is verified; inspect the actual evidence records. Historical runtime 2 registrations can fail compatibility against current source; do not weaken validation to reuse one. Read the current regression guide before fresh replay.
+
+
+## Phase 16 evidence inventory (2026-09-22, $0)
+
+- `artifacts/phase16-2026-09-22/gate-freeze-before.json` and `gate-freeze-after.json`
+  (sha256 `96dc32a0…`): gate fingerprints before and after.
+- `artifacts/phase16-2026-09-22/source-before/`: verbatim pre-edit copies, with `SHA256SUMS`.
+- `artifacts/phase16-2026-09-22/settings-phase17.json`: a byte copy of the Phase 9 settings,
+  sha256 `1e2002d3…`.
+- Expected `configuration_hash` `c4169ee4…`, from `scripts/experiments/expected_configuration.py`.
+- Backups:
+  - git branch `backup/part2-2026-09-22`, a snapshot of all Part 2 work taken without
+    touching `main` or the working tree;
+  - `~/FaultLab_Backups/2026-09-22-pre-phase16/`: git bundle, full `artifacts/` copy, the
+    store copied via the SQLite backup API, the specs, and a README with restore steps;
+  - both are on the same disk as the originals. Copy them to external storage for real
+    protection.

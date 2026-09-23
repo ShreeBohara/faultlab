@@ -32,19 +32,36 @@ def main() -> int:
         recent = [json.loads(p) for _, p in connection.execute(
             "select id,payload from records where kind='ingestions' order by rowid desc limit ?",
             (args.recent,))]
+        # Since Phase 16 a completion study re-reads a lost trace once, and a successful
+        # re-read overwrites the ingestion row with INGESTED in place (same rowid). The
+        # first failure survives only in the study's evidence_rereads list; count it,
+        # or this guard would report a healthy channel that is actually failing.
+        rereads = {}
+        for (payload,) in connection.execute(
+                "select payload from records where kind='completion_studies'"):
+            for entry in json.loads(payload).get('evidence_rereads') or []:
+                rereads[entry['episode_id']] = entry
     finally:
         connection.close()
     if not recent:
         print('no ingestion records'); return 1
     states = Counter(r.get('state') for r in recent)
     codes = Counter(r.get('error_code') for r in recent if r.get('error_code'))
-    failed = sum(1 for r in recent if r.get('state') != 'INGESTED')
-    rate = failed / len(recent)
+    # Every episode whose FIRST read failed counts once, whatever the re-read did: a
+    # VERIFIED re-read and a DENIED one (the mismatch is found after the row is already
+    # overwritten with INGESTED) both leave an INGESTED row behind.
+    state = {r.get('episode_id'): r.get('state') for r in recent}
+    reread_here = {eid: e for eid, e in rereads.items() if eid in state}
+    recovered = [e for e in reread_here.values() if e.get('result') == 'VERIFIED']
+    failed = sum(1 for eid, s in state.items() if s != 'INGESTED' or eid in reread_here)
+    rate = failed / len(state)
 
     print(f'last {len(recent)} ingestion records')
     print(f'  states      : {dict(states)}')
     print(f'  error codes : {dict(codes) or "none"}')
-    print(f'  failure rate: {100 * rate:.1f}%   (Phase 11 healthy baseline 0.9%)')
+    print(f'  in-study re-reads in this window: {len(reread_here)} ({len(recovered)} recovered); '
+          f'all counted as first-read failures below')
+    print(f'  first-read failure rate: {100 * rate:.1f}%   (Phase 11 healthy baseline 0.9%)')
     survive = (1 - rate) ** args.batch_size
     print(f'  => P(a {args.batch_size}-episode batch fully verifies) = {100 * survive:.1f}%')
     if 100 * rate > args.max_failure_pct:
