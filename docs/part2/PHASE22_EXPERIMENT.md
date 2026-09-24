@@ -894,10 +894,10 @@ finding. Suggested lenses (the reviewer may change them):
 | `backend/app/lab/api.py` | `9c3ac4534a1f40da9c2c07e22e7a0026d0b57ca1a4f4667baf5dadc2240a2a63` |
 | `scripts/experiments/make_heldout_partition.py` | `e9783440be7f73e66df0399e5a9c6c601872ad75301833cf4e69af9f1c8b08da` (before the seed exists; also the fenced block's `generator-sha256:` line, committed on the backup branch at F6) |
 | `scripts/experiments/phase22_predicate_calibration.py` (the calibration that was run) | round 1: `143a44b5dcab07d25f6db327168993750aee116b6d5c172c8b64389465a4d562`, recorded in its own output's `provenance` (round 0 ran `7e483d9f…`). F4 re-runs it; a later edit means a new calibration and a new sha here |
-| `docs/part2/PHASE23_EXPERIMENT.md`, pins filled | `FILL-AT-FREEZE` |
-| `scripts/experiments/run_full_loop_fixed_n.py`, pins filled | `FILL-AT-FREEZE` |
-| `docs/part2/PHASE24_EXPERIMENT.md`, pins filled | `FILL-AT-SEAL` |
-| `scripts/experiments/run_heldout2_check.py`, pins filled | `FILL-AT-SEAL` |
+| `docs/part2/PHASE23_EXPERIMENT.md`, pins filled | `b5bd37267f132ad70fd7e9a7ee51630743d4d3f0ea3201b6b18f37d6a33614a5` |
+| `scripts/experiments/run_full_loop_fixed_n.py`, pins filled | `95ef698d155986c209e1138d169b1bbb342656dd13152db457ff2185a5ff09d1` |
+| `docs/part2/PHASE24_EXPERIMENT.md`, pins filled | `733d572df1aa73f7452b7d8d00dd6008649a7279a2bcf1121a19c71ac32df7e2` |
+| `scripts/experiments/run_heldout2_check.py`, pins filled | `e59105601bc47b3a90780808f8c01e19275b93296014ddebe3fb2997a5f32377` |
 | heldout-2 partition directory | `artifacts/heldout2/partition` |
 | heldout-2 `manifest_hash` / `heldout-2.json` sha256 (sealed at S3–S5) | `c902f1c982e99c57ae65a8c73ed331838a6f4ce4336a325058b918cd901846cf` / `4f2aa9fc7136b2e247af47f261501936847ce840b6c4fc2646902ee7388322aa` |
 | heldout-2 seed sha256 (committed at S2, before any draw; also sent to the project owner in the chat) | `470aaac01052c177b8c2c8fa8f50f5129181ac786b9c265086d48ca195dadcff` |
@@ -913,8 +913,8 @@ generator-sha256: e9783440be7f73e66df0399e5a9c6c601872ad75301833cf4e69af9f1c8b08
 heldout2-seed-sha256: 470aaac01052c177b8c2c8fa8f50f5129181ac786b9c265086d48ca195dadcff
 heldout2-manifest-hash: c902f1c982e99c57ae65a8c73ed331838a6f4ce4336a325058b918cd901846cf
 heldout2-file-sha256: 4f2aa9fc7136b2e247af47f261501936847ce840b6c4fc2646902ee7388322aa
-phase23-runner-sha256: FILL-AT-FREEZE
-phase24-runner-sha256: FILL-AT-SEAL
+phase23-runner-sha256: 95ef698d155986c209e1138d169b1bbb342656dd13152db457ff2185a5ff09d1
+phase24-runner-sha256: e59105601bc47b3a90780808f8c01e19275b93296014ddebe3fb2997a5f32377
 ```
 
 ## Review log
