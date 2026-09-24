@@ -27,8 +27,16 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
   - its read-out on transient upgrade failures is floor-limited.
 - **Phase 21 ($22.22):** the one-line Actor fix for the lapse FAILED (3 of 65 sends). The
   lapse is a turn-3 chance draw that becomes absorbing. Temperature 0 is not deterministic.
-- **Next:** Phase 22 (build, $0), per `docs/part2/EXPERIMENT_PROGRAM_PHASES_20-27.md`.
-  Budget: $506.23 charged, $493.77 left.
+- **Phase 22 ($0):** v2 held-out predicate adopted, heldout-2 sealed (seed sha `470aaac0…`,
+  manifest `c902f1c9…`), code frozen (`8994e962…`, configuration `2cf63e93…`).
+- **Phase 23 ($77.30):** **3 of 30 attempts certified** [3.5%, 25.6%], three distinct policies.
+  The Mechanic writing the step (7 of 26) and slot-2 duplicates (16 studies) are the binding
+  constraints.
+- **Phase 24 ($17.12):** the routed policy `711bddb6…` was HARM on heldout-2. One Actor report
+  said PENDING where the evidence said UNKNOWN (C5/C6); the policy acted correctly. Held-out
+  safety is unshown again, and heldout-2 is spent.
+- **Budget:** $600.65 charged, $399.35 left. Next: Phases 25–26 (adjust them to these findings),
+  then 27 (the write-up).
 
 ## Earlier: Phases 18 and 19 (2026-09-23)
 

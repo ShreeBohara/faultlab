@@ -38,6 +38,11 @@ class HeldoutCheckRequest(StrictModel):
     # The full, non-replay completion study whose selected candidate is checked once on
     # the private promotion partition. Never accepts or activates a policy.
     certified_study_id:str=Field(max_length=120)
+    # Phase 22: a sealed partition directory plus its pinned manifest hash (content hash of
+    # the case list) selects predicate v2. Leaving both out is exactly the Phase 18 check.
+    partition_dir:str|None=Field(default=None,max_length=500)
+    manifest_hash:str|None=Field(default=None,pattern='^[0-9a-f]{64}$')
+    predicate:str|None=Field(default=None,max_length=120)
 
 class ContextStudyRequest(StrictModel):
     execute_live:Literal[True]
@@ -284,7 +289,8 @@ def create_router(get_coordinator):
     @guarded
     async def heldout_check_start(id:str,request:HeldoutCheckRequest):
         from app.lab.heldout_check import queue_heldout_check
-        return await queue_heldout_check(c(),id,request.certified_study_id)
+        return await queue_heldout_check(c(),id,request.certified_study_id,partition_dir=request.partition_dir,
+                                         manifest_hash=request.manifest_hash,predicate=request.predicate)
     @router.get('/campaigns/{id}/heldout-checks')
     @guarded
     async def heldout_checks(id:str): c().get(id); return records('heldout_checks',id)

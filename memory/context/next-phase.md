@@ -66,6 +66,25 @@ reported on its own.
     its verdict must say so.
 - **Budget:** $506.23 charged, $493.77 remaining.
 
+**Phase 22 done ($0):** v2 adopted; heldout-2 sealed; freeze `8994e962…`, configuration
+`2cf63e93…`. **Phase 23 running** since 2026-09-24 04:03 UTC. Next: Phase 24 if Phase 23
+routes a new certified policy (`run_heldout2_check.py`, the runbook in `PHASE24_EXPERIMENT.md`
+§9).
+
+**Phase 23 done ($77.30):** 3 of 30 certified; three distinct policies. **Phase 24 done
+($17.12):** HARM on heldout-2 from one Actor PENDING/UNKNOWN report slip (C5/C6). heldout-2 is
+spent.
+
+**Suggested next** (re-plan before spending):
+- **Mechanic slot-2 duplicates:** 16 of 30 studies were wasted. This is the biggest yield
+  lever.
+- **Development-only probe of the transient-upgrade pattern:** repairs 0 of 45 against
+  baseline 5 of 45 across three data sets. Never use heldout-2 for it.
+- **The Actor's report-word slips** (PENDING for UNKNOWN; Phase 21 measured about 7%). This is
+  what now blocks held-out certification.
+- **A third held-out partition,** only with a declared construction rule, and only for a
+  policy from a new run.
+
 **Key facts the program established ($0):**
 - Runtime 2's strict report schema removed the only failure a baseline ever repeated 3 of
   3, so ACCEPTED is very likely unreachable in the trusted configuration. Phase 20's
@@ -74,4 +93,4 @@ reported on its own.
 
 ## Budget
 
-**$506.23 conservatively charged, $493.77 remaining** of the shared $1,000.
+**$600.65 conservatively charged, $399.35 remaining** of the shared $1,000.

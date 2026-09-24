@@ -201,11 +201,42 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
   - **Temperature 0 is not deterministic:** only 36% of repeat pairs are byte-identical.
   - The untriggered channel stays fatal. Phase 25 falls back to 12 v4 replays.
 
+- **Phase 22 (2026-09-23/24, $0): build, two review rounds, freeze, seal.** See `docs/part2/PHASE22_RESULTS.md`.
+  - **Held-out check v2** (15 trials per case, Fisher) was built beside the unchanged v1.
+  - **v2 was ADOPTED** although its declared criterion is not met literally; the reasons and
+    the non-compliance are recorded in the Review log.
+  - **heldout-2 was sealed:**
+    - the seed sha `470aaac0…` was committed before any draw;
+    - manifest `c902f1c9…`, 6 cases;
+    - nobody opens the seed or the partition.
+  - **Freeze:** `8994e962…`; configuration `2cf63e93…`. `assess_pairs` and `scorer_hash` are
+    unchanged.
+  - **Tests:** 1,165 passed, 0 failed.
+- **Phase 23 (2026-09-24, $77.30): 3 of 30 attempts certified a completion repair (Wilson 95% [0.035, 0.256]).** See `docs/part2/PHASE23_RESULTS.md`.
+  - **Three distinct policies:** `711bddb6…` (attempt 2, routed), `5735a918…` and `d4bc993e…`.
+  - **Funnel:** the step was in 7 of 26 first proposals and fired 8 of 8. The source gate
+    passed 6 of 6. 3 of 4 clean batches were accepted.
+  - **Duplicates:** slot 2 repeated slot 1 in 16 studies.
+  - **Lab integrity:** 0 drift and 0 masked faults in 613 episodes. The evidence re-read was
+    used once, and verified.
+  - **Pooled with Phase 17:** 4 of 39.
+- **Phase 24 (2026-09-24, $17.12): heldout-2 v2 check of `711bddb6…`. Verdict HARM (`check_failure`), final.** See `docs/part2/PHASE24_RESULTS.md`.
+  - **The failure:** 1 of 78 candidate episodes failed C5/C6 on transient upgrade failures.
+    The policy acted correctly (read, wait, read, require a receipt), but the Actor reported
+    `upgrade_outcome: PENDING` where every observation said `UNKNOWN`.
+  - **The baseline had 0 failures,** and the lab was clean (0 drift).
+  - **Without rule 1** the attempt would have been INCOMPLETE, and rule 3 fired nowhere.
+  - **Otherwise the repair matched or beat B0 on every case.**
+  - **Held-out safety is unshown again.** heldout-2 is now spent.
+  - **Recurring descriptive pattern:** the repairs never complete transient upgrade failures,
+    while B0 sometimes does by re-sending: 0 of 45 against 5 of 45 over Phases 18, 20 and 24.
+    Two different policies. It is a development hypothesis, never a held-out finding.
+
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 21: **$506.23 conservatively charged; $493.77 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 24: **$600.65 conservatively charged; $399.35 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 
