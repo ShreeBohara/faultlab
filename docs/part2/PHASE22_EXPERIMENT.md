@@ -899,6 +899,7 @@ finding. Suggested lenses (the reviewer may change them):
 | `docs/part2/PHASE24_EXPERIMENT.md`, pins filled | `FILL-AT-SEAL` |
 | `scripts/experiments/run_heldout2_check.py`, pins filled | `FILL-AT-SEAL` |
 | heldout-2 partition directory | `artifacts/heldout2/partition` |
+| heldout-2 seed sha256 (committed at S2, before any draw; also sent to the project owner in the chat) | `470aaac01052c177b8c2c8fa8f50f5129181ac786b9c265086d48ca195dadcff` |
 | v2 decision | **adopted** (approver, 2026-09-24; see "Approver decisions" in the Review log) |
 
 The fenced block is what the generator and `prep/seal_summary_checks.py` read from the backup
@@ -908,7 +909,7 @@ branch: every value is filled as bare 64 lowercase hex, nothing else on its line
 gate-freeze-sha256: 8994e96273be43a8abc0f10fd41a131d9c0700b9a9916b70ddbef2afd74a3bf1
 configuration-hash: 2cf63e93480e71afe5de9f459ac21aaebb418f242cfdb1ff18e803f11ce9a5ba
 generator-sha256: e9783440be7f73e66df0399e5a9c6c601872ad75301833cf4e69af9f1c8b08da
-heldout2-seed-sha256: FILL-BEFORE-GENERATOR
+heldout2-seed-sha256: 470aaac01052c177b8c2c8fa8f50f5129181ac786b9c265086d48ca195dadcff
 heldout2-manifest-hash: FILL-AT-SEAL
 heldout2-file-sha256: FILL-AT-SEAL
 phase23-runner-sha256: FILL-AT-FREEZE
