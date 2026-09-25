@@ -1,16 +1,13 @@
 # Phase 30 protocol — narrow report-status field replay probe (non-scoring)
 
-**Status: declared before any paid call; NOT yet reviewed.** No paid, model or W&B call has been made for this
-phase, and nothing under `backend/app` was edited. Every number below comes from a $0 dry run or a saved $0
-computation. The harness sends nothing until the review is closed as §12 step 2 describes; §10 lists everything
-its live gate checks. Review rounds 1, 2 and 3 ran on 2026-09-25; every finding is applied (Review log). Round 1's
-fixes changed the harness, and round 2 checked them (pitfall 74). Round 2's three findings and round 3's four (the
-fidelity lens named in §12 step 1) changed only this file, so no pin moved. All three lenses have reported. The
-review is not closed; §12 step 2 says how it closes.
+**Status: declared before any paid call; reviewed in rounds 1, 2 and 3; closed 2026-09-25; approved by Claude (Opus 5.5) as PM, delegated by the project owner.**
+No paid, model or W&B call had been made for this phase when the review closed, and nothing under
+`backend/app` was edited. Every number below comes from a $0 dry run or a saved $0 computation. Review rounds
+1 (statistics; build and live safety), 2 (the check of round 1's fixes) and 3 (fidelity to the program, Phase
+27 and the runtime) ran on 2026-09-25, and every finding is applied (Review log). The review closed on
+2026-09-25 (Review log, Closure). §10 lists everything the live gate checks.
 
-Pins of this draft, after round 3 (round 1's, unchanged; the live gate requires both strings in this file): harness
-ca3b8b9d0df0960b4fff4f6ae8369f5cc6677815e9ee94b73f9c40e106681317 plan
-05f266082d4bd7fe3ea5e62b859eb061df15a07a377282de2375d06b3979fd34
+Pins at closure (the live gate requires both strings in this file): harness ca3b8b9d0df0960b4fff4f6ae8369f5cc6677815e9ee94b73f9c40e106681317 plan 05f266082d4bd7fe3ea5e62b859eb061df15a07a377282de2375d06b3979fd34
 
 - **Program:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_28-31.md`, Phase 30 (cap about $20).
 - **Harness:** `scripts/experiments/report_narrow_probe.py`. **Tests:**
@@ -1327,3 +1324,62 @@ of 206 (`review-r3/tests-r3.txt`); the dry run reproduced plan `05f26608…` wit
 (`review-r3/dry-rerun-r3.out.txt`); every pin in §3 equals its file (`review-r3/pins-r3.out.json`); the closure
 rehearsal and the Phase 28a check passed as described under F4 and F1; and every re-derived figure is in
 `review-r3/fidelity_fix_checks_r3.out.json` and `phase21_rate_numbers_r3.out.json`.
+
+### Closure (2026-09-25)
+
+**Approver:** Claude (Opus 5.5) as PM, delegated by the project owner. The owner's words, which delegate every decision in this program: "go ahead with whatever
+u recommend" (Shree Bohara, project owner, 2026-09-25), given for the Phase 28–31 batch; restated the same evening as
+"ok go ahead.. i am homw now.. pluggedn in alls et....".
+
+**Rounds and verdicts:**
+
+| round | lens | verdict | disposition |
+|---|---|---|---|
+| 1 | statistics | RUN_WITH_CHANGES | every finding applied; the harness changed (round 1 pins) |
+| 1 | build and live safety | RUN_WITH_CHANGES | every finding applied |
+| 2 | the check of round 1's fixes (pitfall 74) | RUN_WITH_CHANGES | three findings, this file only |
+| 3 | fidelity to the program, Phase 27 and the runtime | RUN_WITH_CHANGES | four minor findings (F1–F4), this file only |
+| focused check of round 3 | an independent $0 verification after round 3's last edit | no new finding needing a fix; launch-ready apart from closure | below |
+
+**Pitfall 74 decision (the closer's, as round 3 asked).** Round 3 changed no code but changed two procedures: the
+closure edit (§12 step 2) and the manual Phase 28a check (§12 step 3). The $0 verification that ran after round 3's
+last edit (evidence copied unchanged into `artifacts/phase30-2026-09-25/review-verify/`) **is accepted as the focused
+check of both**, because it exercised each procedure rather than reading it:
+- **the Phase 28a check**, exactly as printed, on the repository (pass line) and on 10 temporary trees built with
+  the 28a draft's real file formats: it named the open record in all 5 open cases and passed the 5 closed or
+  unrelated ones (`p28a_check_trees.out.json`);
+- **the closure edit**, taken from §12 step 2's own text on a scratch copy: exactly lines 3–13 replaced, both shell
+  checks and `check_review` pass, and the three refusals hold (`closure_rehearsal_verify.out.json`);
+- it also re-ran the §12 step 3 tests (206 passed), the dry run (plan `05f26608…`, `"passed": true`, byte-equal to
+  round 3's output apart from a trailing exit line), every §3 pin (`pins_verify.out.json`), round 3's F2 figures by
+  separate code, and the paid-run guard against a real `nohup caffeinate -is` launch (its own helper is never
+  counted; a sibling launch is refused).
+The protocol's sha256 before this closure was `8273c0bb…`, the file that verification read. No further round is run.
+
+**Final answers to §16:**
+
+| # | question | answer |
+|---|---|---|
+| 1 | $0 structural byte-identity check on all 2,070 Phase 27 guard prompts, instead of re-sending Phase 27's 95 | **Accepted.** Re-sending can only measure noise where T2's request is byte-identical to the control |
+| 2 | margin and α | **Keep 1.5 points at one-sided α 0.024** (round 1, S2; round 2 re-derived every figure). Returning to 2 points would be a harness change |
+| 3 | fresh U2 prompts | **Kept.** The 20 prompts that Phase 21 re-sent under a plain control (never with the field) are disclosed (§2 row 7, §6) |
+| 4 | U1 re-sent, with the U3-alone test | **Accepted**, with the union rule's cost (a harmless field blocked about 0.1% of the time at the measured rates, at most 3.3%) |
+| 5 | the window's report-required rule | **Accepted.** Voluntary `UNKNOWN` reports (U4) stay untouched |
+| 6 | "at or near 0" | **Non-inferiority decides;** "at or near 0" is answered descriptively (T2's count and Wilson interval, with an exact Clopper–Pearson bound allowed in the results, labelled descriptive) |
+
+**Disclosures carried to the results** (from the focused check; none changes a figure, a pin or a decision):
+- **U2's selection history.** Phase 21 chose its U2 contexts as every historical-`PENDING` context plus one matched
+  `UNKNOWN` context, so 18 of its 36 were chosen for a past slip. Phase 27 disclosed this and showed it made no
+  difference (3 of 90 selected against 4 of 90 not; reproduced). Of the 20 overlap prompts here, 11 are
+  historical-slip contexts. `PHASE30_RESULTS.md` must say so beside the U2 figures.
+- **The read-out note's "cannot reliably".** The harness's note says a reduction cannot reliably be shown. That
+  holds at a 1.6–1.8% control rate; at Phase 21's 3.9% the reduction's power for a perfect field is 0.99 (§8.3).
+  The results must quote both.
+- **The Phase 28a check can flag a non-run JSON** under `artifacts/phase28a-*` whose name contains `manifest`.
+  If it names one on launch day, write down why before going on (§12 step 3).
+
+**Reviewers:** round 1: statistics lens; build and live safety lens. Round 2: combined check of round 1's fixes.
+Round 3: fidelity lens. Focused check: independent $0 verification of round 3's fixes. All were Claude subagents in
+the Phase 30/28a/28 build workflow, none of which made a paid, model or W&B call.
+
+Reviewed for launch: harness ca3b8b9d0df0960b4fff4f6ae8369f5cc6677815e9ee94b73f9c40e106681317 plan 05f266082d4bd7fe3ea5e62b859eb061df15a07a377282de2375d06b3979fd34
