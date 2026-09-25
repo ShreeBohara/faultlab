@@ -75,6 +75,11 @@ routes a new certified policy (`run_heldout2_check.py`, the runbook in `PHASE24_
 ($17.12):** HARM on heldout-2 from one Actor PENDING/UNKNOWN report slip (C5/C6). heldout-2 is
 spent.
 
+**Phases 25–27 done** (see their RESULTS files). **Candidates next:**
+- a loop run whose SOURCE case is an upgrade-side gap (F4 on `update_order`, or a long F2
+  delay), to see whether the Mechanic learns the upgrade retry (Phase 26);
+- a declared slot-2 arm that hides the prior candidate entirely (Phase 25's lead).
+
 **Suggested next** (re-plan before spending):
 - **Mechanic slot-2 duplicates:** 16 of 30 studies were wasted. This is the biggest yield
   lever.
@@ -93,4 +98,4 @@ spent.
 
 ## Budget
 
-**$600.65 conservatively charged, $399.35 remaining** of the shared $1,000.
+**$652.90 conservatively charged, $347.10 remaining** of the shared $1,000.

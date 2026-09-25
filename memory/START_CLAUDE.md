@@ -35,8 +35,16 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 - **Phase 24 ($17.12):** the routed policy `711bddb6…` was HARM on heldout-2. One Actor report
   said PENDING where the evidence said UNKNOWN (C5/C6); the policy acted correctly. Held-out
   safety is unshown again, and heldout-2 is spent.
-- **Budget:** $600.65 charged, $399.35 left. Next: Phases 25–26 (adjust them to these findings),
-  then 27 (the write-up).
+- **Phase 25 ($12.96):** no slot-2 change was recommended. With no prior candidate in view,
+  the Mechanic never copied slot 1 (0 of 26, a descriptive lead).
+- **Phase 26 ($17.05):** a manual-reference policy that re-sends the upgrade completes 36 of 36
+  upgrade-side gap cases, against the baseline's 1 of 36. The certified repairs never do.
+  This is a second, learnable gap.
+- **Phase 27 ($22.24):** NOT_RECOMMENDED. The PENDING slip is about 2% (4 of 225). A status
+  field removed it (0 of 225), but it broke correct rejection reports (23 of 45 turned into
+  extra polls).
+- **Plan:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_25-28.md`.
+- **Budget:** $652.90 charged, $347.10 left.
 
 ## Earlier: Phases 18 and 19 (2026-09-23)
 

@@ -232,11 +232,33 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
     while B0 sometimes does by re-sending: 0 of 45 against 5 of 45 over Phases 18, 20 and 24.
     Two different policies. It is a development hypothesis, never a held-out finding.
 
+- **Phase 25 (2026-09-25, $12.96): Mechanic slot-2 replay probe. No arm recommended; mechanism NOT_SHOWN.** See `docs/part2/PHASE25_RESULTS.md`.
+  - **Temperature arm:** distinct 63% against 26% and working 6 against 0, but invalid 11.5%.
+    It missed three bars.
+  - **Re-presenting the prior candidate:** no effect.
+  - **Descriptive lead:** with no prior candidate in view, the Mechanic never rewrote slot 1's
+    policy (0 of 26).
+- **Phase 26 (2026-09-25, $17.05): second completion gap probe. Both families `mr_completes_more`.** See `docs/part2/PHASE26_RESULTS.md`.
+  - **The result:** a manual-reference policy (wait, then `retry_original_request` on the
+    upgrade) completed **36 of 36** transient-failure and long-delay upgrade cases, against
+    the baseline's 1 of 36 (p ≈ 1e-9 each). 0 safety failures in any arm.
+  - **The certified repair `711bddb6…`** completed 0 of 18 F4, against 4 of 18 for the
+    baseline.
+  - **The pattern across four data sets:** 0 of 63 against 9 of 63 (post hoc). The repairs
+    never re-send the upgrade.
+  - **So a second, learnable gap exists.**
+- **Phase 27 (2026-09-25, $22.24): Actor report-word replay probe. NOT_RECOMMENDED.** See `docs/part2/PHASE27_RESULTS.md`.
+  - **Primary: FLOOR_LIMITED.** The slip rate is 4 of 225 (1.8%) under C, against 0 of 225
+    with the status field. Too few events to test.
+  - **Guard FAIL:** on terminal-rejection turns the field made the Actor stop filing its
+    correct `FAILED/NOT_REQUIRED` report in 23 of 45 prompts. It was the Phase 4 kind of
+    regression, and the guard caught it.
+
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 24: **$600.65 conservatively charged; $399.35 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 27: **$652.90 conservatively charged; $347.10 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12; Phase 25 $12.96; Phase 26 $17.05; Phase 27 $22.24). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 
