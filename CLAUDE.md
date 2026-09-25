@@ -253,12 +253,23 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
   - **Guard FAIL:** on terminal-rejection turns the field made the Actor stop filing its
     correct `FAILED/NOT_REQUIRED` report in 23 of 45 prompts. It was the Phase 4 kind of
     regression, and the guard caught it.
+- **Phase 29 was cancelled ($0)** before any paid call (`PHASE29_EXPERIMENT.md`, Cancellation).
+- **Phase 30 (2026-09-25, $17.97): narrow report-status field replay probe. RECOMMENDED_FOR_A_LATER_LOOP.** See `docs/part2/PHASE30_RESULTS.md`.
+  - **The field is now shown only on report-required turns with an `UNKNOWN` status**, never on a
+    terminal rejection. Outside that window the request is byte-identical, so Phase 27's harm cannot occur.
+  - **Non-inferiority PASS:** slips T2 0 of 316 against C 6 of 316 (Tango p = 0.00048, 1.5-point margin).
+    **In-window guard PASS:** 0 against 0 of 114.
+  - **Not a shown benefit:** the reduction (McNemar p = 0.016; pooled with Phase 27, 10 against 0) was
+    declared descriptive. A field that does nothing is recommended 15-27% of the time.
+  - **Undeclared side effects, checked at $0 and found harmless to the scorer:** `next_action` moves toward
+    `NONE` (away from the spec's `CHECK_EXISTING_UPGRADE` and the fixture's `ESCALATE` in U1), and the
+    number of cited labels halves. A later loop must report both, with C6 and C7.
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 27: **$652.90 conservatively charged; $347.10 remaining** (Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12; Phase 25 $12.96; Phase 26 $17.05; Phase 27 $22.24). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 30: **$670.88 conservatively charged; $329.12 remaining** (Phase 30 $17.98, rounded up from $17.974; Phase 29 cancelled, $0; Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12; Phase 25 $12.96; Phase 26 $17.05; Phase 27 $22.24). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

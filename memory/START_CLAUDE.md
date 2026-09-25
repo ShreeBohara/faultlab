@@ -43,8 +43,16 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
 - **Phase 27 ($22.24):** NOT_RECOMMENDED. The PENDING slip is about 2% (4 of 225). A status
   field removed it (0 of 225), but it broke correct rejection reports (23 of 45 turned into
   extra polls).
-- **Plan:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_25-28.md`.
-- **Budget:** $652.90 charged, $347.10 left.
+- **Phase 29:** cancelled at $0.
+- **Phase 30 ($17.97):** RECOMMENDED_FOR_A_LATER_LOOP. The same field, shown only on report turns with
+  an `UNKNOWN` status: slips 0 of 316 against 6 of 316, guard 0 against 0 of 114. Not a shown benefit.
+  Side effects to track in any loop that uses it: `next_action` shifts toward `NONE`, and fewer labels
+  are cited.
+- **In progress:** Phase 28a ($5, does the Mechanic write the upgrade re-send?) is in review round 3.
+  Phase 28 (the main upgrade-side loop, $150) is being built in a detached worktree. Phase 31 is the
+  write-up, last.
+- **Plan:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_28-31.md` and `PHASE28_DESIGN.md`.
+- **Budget:** $670.88 charged, $329.12 left.
 
 ## Earlier: Phases 18 and 19 (2026-09-23)
 
