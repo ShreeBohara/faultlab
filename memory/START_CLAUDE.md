@@ -48,11 +48,12 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
   an `UNKNOWN` status: slips 0 of 316 against 6 of 316, guard 0 against 0 of 114. Not a shown benefit.
   Side effects to track in any loop that uses it: `next_action` shifts toward `NONE`, and fewer labels
   are cited.
-- **In progress:** Phase 28a ($5, does the Mechanic write the upgrade re-send?) is in review round 3.
-  Phase 28 (the main upgrade-side loop, $150) is being built in a detached worktree. Phase 31 is the
-  write-up, last.
+- **Phase 28a ($1.60): GO.** Pointed at upgrade-side evidence, the Mechanic wrote the upgrade re-send in
+  13 of 30 first proposals, all placed where they can fire.
+- **In progress:** Phase 28 (the main upgrade-side loop, N=50, $150). It was built and reviewed in a
+  detached worktree and must be integrated, frozen, reviewed and launched. Phase 31 is the write-up, last.
 - **Plan:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_28-31.md` and `PHASE28_DESIGN.md`.
-- **Budget:** $670.88 charged, $329.12 left.
+- **Budget:** $672.48 charged, $327.52 left.
 
 ## Earlier: Phases 18 and 19 (2026-09-23)
 
