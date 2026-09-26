@@ -528,6 +528,37 @@ def test_go_no_go_and_incomplete():
     assert probe.compute_readouts(r, prompts, missing + [_line(r[-1], 'first', status='error')])['decision'] == 'INCOMPLETE'
     incomplete = probe.compute_readouts(r, prompts, missing)
     assert incomplete['statement'].startswith('INCOMPLETE: 29 of 30 draws delivered (0 of them empty or unreadable')
+    assert ("completing the missing draws needs the owner's approval and a separately reviewed harness change (this "
+            'harness has no completion mode).') in incomplete['statement']
+    assert incomplete['any_generation_arrived'] is True
+    # Review round 2, finding 2: when no generation arrived, the statement says a relaunch needs the owner's approval.
+    errored = [_line(x, 'first', status='error', attempts=[{'attempt': 1, 'code': 'HTTP_ERROR', 'served': None}] * 2)
+               for x in r[:5]]
+    for lines in ([], errored):
+        nothing = probe.compute_readouts(r, prompts, lines)
+        assert nothing['decision'] == 'INCOMPLETE' and nothing['any_generation_arrived'] is False
+        assert nothing['statement'].startswith(
+            'INCOMPLETE: 0 of 30 draws delivered and no generation arrived, so nothing was observed. Another launch '
+            "within the $5 phase cap sends all 30 draws and needs the owner's relaunch approval (design §6.0; "
+            'protocol §11). ')
+        assert nothing['statement'].endswith(probe.SCOPE_SENTENCE)
+    # A generation that arrived without making a draw delivered (an invalid first output whose repair never went), an
+    # empty reply, or a line cut off by a hard kill: never the relaunch wording, because the one-run rule refuses a
+    # relaunch. For a cut-off line that holds since review round 3, finding 1: --finalize-abandoned counts it as
+    # delivered (test_a_line_cut_off_by_a_hard_stop_counts_as_delivered_and_no_relaunch_is_offered).
+    arrived = [[_line(r[0], 'first', raw='not json')], [_line(r[0], 'first', status='empty_response')],
+               [_line(r[0], 'first', status='error', attempts=[{'attempt': 1, 'code': 'INVALID_RESPONSE_SHAPE',
+                                                                'served': {'model': 'm'}}])]]
+    for lines in arrived:
+        readouts = probe.compute_readouts(r, prompts, lines)
+        assert readouts['decision'] == 'INCOMPLETE' and readouts['any_generation_arrived'] is True
+        assert 'relaunch approval' not in readouts['statement'] and 'no completion mode' in readouts['statement']
+    cut = probe.compute_readouts(r, prompts, [], partial_lines_skipped=1)
+    assert cut['any_generation_arrived'] is True and 'no completion mode' in cut['statement']
+    # The manifest's own count (the one-run rule's test) also rules the relaunch wording out: counted, or unreadable.
+    for counted in (1, None):
+        by_manifest = probe.compute_readouts(r, prompts, errored, manifest_delivered=counted)
+        assert by_manifest['any_generation_arrived'] is True and 'no completion mode' in by_manifest['statement']
     firing = missing[:-1] + [_line(r[-2], 'first', raw=FIRING)]
     readouts = probe.compute_readouts(r, prompts, firing)
     assert readouts['decision'] == 'GO' and readouts['statement'].startswith('GO: 1 of 30 first proposals')
@@ -666,7 +697,9 @@ def test_five_errored_draws_in_a_row_stop_the_run_after_the_declared_waits(tmp_p
     assert reason == 'consecutive_errors' and len(provider.calls) == 10 and len(results) == 5
     assert [w['seconds'] for w in manifest['backoff_waits']] == [30, 120, 300, 300]
     assert manifest['generations_delivered'] == 0
-    assert probe.compute_readouts(plan['requests'], prompts, results)['decision'] == 'INCOMPLETE'
+    readouts = probe.compute_readouts(plan['requests'], prompts, results)
+    assert readouts['decision'] == 'INCOMPLETE' and readouts['any_generation_arrived'] is False
+    assert "needs the owner's relaunch approval" in readouts['statement']
 
 
 def test_the_spend_guard_stops_before_an_unaffordable_request(tmp_path):
@@ -728,16 +761,22 @@ def test_spend_guard_and_budget():
 
 
 class FakeOpenAI:
-    """Modelled on the openai client the real RuntimeProvider builds."""
+    """Modelled on the openai client the real RuntimeProvider builds. `cancel_on` = n raises asyncio.CancelledError
+    inside the n-th call, while that request is in flight (RuntimeProvider re-raises it from inside the call); a
+    scripted exception is raised as the client would raise it (RuntimeProvider maps it to a RuntimeProviderError)."""
 
-    script, calls = [], []
+    script, calls, cancel_on = [], [], None
 
     def __init__(self, **kwargs):
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=self.create))
 
     async def create(self, **kwargs):
         FakeOpenAI.calls.append(kwargs)
+        if FakeOpenAI.cancel_on == len(FakeOpenAI.calls):
+            raise asyncio.CancelledError()
         outcome = FakeOpenAI.script.pop(0) if FakeOpenAI.script else NO_CHANGE
+        if isinstance(outcome, Exception):
+            raise outcome
         return SimpleNamespace(model='served-by/test', system_fingerprint='fp_test',
                                usage=SimpleNamespace(prompt_tokens=11, completion_tokens=7),
                                choices=[SimpleNamespace(finish_reason='stop', message=SimpleNamespace(content=outcome))])
@@ -850,6 +889,62 @@ def test_a_claim_is_atomic_and_finalize_abandoned_charges_what_was_recorded(tmp_
     assert probe.check_output('artifacts/phase28a-test/live-2')
 
 
+@pytest.mark.parametrize('last_line,cut', [('firing', True), ('errored', True), ('errored', False)])
+def test_a_line_cut_off_by_a_hard_stop_counts_as_delivered_and_no_relaunch_is_offered(tmp_path, monkeypatch, last_line,
+                                                                                      cut):
+    """Review round 3, finding 1 (the fix-check reviewer's E1, its assertion inverted). A hard stop (kill -9, power
+    loss) while the recorder writes r0001's first line leaves the RUNNING manifest saved before that send (0
+    delivered) and a responses.jsonl ending in a cut-off line, part of which can be read. Round 2's
+    --finalize-abandoned counted complete lines only, so the run became "final, 0 delivered" and the one-run rule
+    (which reads only the manifest's count) offered a relaunch after part of a draw may have been seen. Now a cut-off
+    line counts as delivered, whatever its readable part says (an errored line too: the conservative side), and a
+    second run is refused as repeat-until-lucky. The contrast: the same run with a complete errored line and no cut
+    still delivered nothing, and another launch needs the owner's relaunch approval."""
+    artifacts = _artifacts(tmp_path, monkeypatch)
+    plan, prompts = _small_plan(3)
+    harness = probe.sha256_file(probe.__file__)
+    out = 'artifacts/phase28a-test/live'
+    _claim(artifacts, 1, out)
+    run = tmp_path / out
+    run.mkdir(parents=True)
+    (run / probe.MANIFEST_NAME).write_text(json.dumps({
+        'schema_version': probe.SCHEMA, 'mode': 'live', 'status': 'RUNNING', 'pid': 999999,
+        'plan_hash': probe.plan_hash(plan), 'harness_sha256': harness, 'started_at': 'x', 'ended_at': None,
+        'requests_done': 0, 'repairs_sent': 0, 'attempts': 0, 'charged_upper_bound': 0.0, 'statuses': {},
+        'generations_delivered': 0, 'in_flight_request': {'request_id': 'r0001', 'kind': 'first'}}))
+    probe.write_json(run / 'plan.json', plan)
+    (run / 'prompts.jsonl').write_text(''.join(json.dumps(p, sort_keys=True) + '\n' for p in prompts.values()))
+    request = plan['requests'][0]
+    line = (_line(request, 'first', raw=FIRING, attempts=[{'attempt': 1, 'error': None, 'served': {'model': 'm'}}])
+            if last_line == 'firing' else
+            _line(request, 'first', status='error', attempts=[{'attempt': 1, 'code': 'CONNECTION_ERROR', 'served': None}] * 2))
+    text = json.dumps(line, sort_keys=True)
+    (run / 'responses.jsonl').write_text(text[: len(text) // 2] if cut else text + '\n')
+    _, final = probe.finalize_abandoned(str(artifacts / probe.CLAIM_DIR / 'claim-01.json'), alive=lambda pid: False)
+    readouts = probe.recompute_readouts(run)
+    assert final['finalized_abandoned']['partial_lines_skipped'] == int(cut) == readouts['partial_lines_skipped']
+    recorded = 0 if cut else 2
+    assert final['attempts'] == recorded + probe.ABANDONED_IN_FLIGHT_ATTEMPTS
+    assert final['charged_upper_bound'] == pytest.approx((recorded + 2) * probe.PER_REQUEST_DOLLAR_BOUND)
+    if cut:
+        assert final['generations_delivered'] == 1
+        with pytest.raises(probe.PlanningError, match='repeat-until-lucky'):
+            probe.earlier_live_runs(artifacts)
+        with pytest.raises(probe.PlanningError, match='repeat-until-lucky'):
+            probe.check_output('artifacts/phase28a-test/live-2')
+        assert readouts['any_generation_arrived'] is True
+        assert 'no completion mode' in readouts['statement'] and 'relaunch approval' not in readouts['statement']
+    else:
+        assert final['generations_delivered'] == 0
+        earlier = probe.earlier_live_runs(artifacts)
+        assert earlier == [{'manifest': f'{out}/{probe.MANIFEST_NAME}', 'charged_upper_bound': pytest.approx(
+            4 * probe.PER_REQUEST_DOLLAR_BOUND)}]
+        with pytest.raises(probe.PlanningError, match='ended having delivered nothing'):
+            probe.check_relaunch_approval(None, earlier, probe.check_output('artifacts/phase28a-test/live-2', live=False),
+                                          probe.plan_hash(plan), harness)
+        assert readouts['any_generation_arrived'] is False and 'relaunch approval' in readouts['statement']
+
+
 def test_other_paid_runs_are_seen_and_this_phase_and_the_seals_are_not(tmp_path, monkeypatch):
     artifacts = _artifacts(tmp_path, monkeypatch)
     assert probe.other_paid_runs(status=IDLE) == ([], 'down')
@@ -872,7 +967,10 @@ def test_other_paid_runs_are_seen_and_this_phase_and_the_seals_are_not(tmp_path,
     assert probe.other_paid_runs(status=lambda: ('idle', None))[0] == []
 
 
-def test_the_process_guard_ignores_this_runs_caffeinate_child_and_sees_a_foreign_run(monkeypatch):
+def test_the_process_guard_ignores_this_runs_caffeinate_child_and_sees_a_foreign_run(tmp_path, monkeypatch):
+    # An empty test tree, so the run-record half of the guard never reads the real repository's artifacts (applying
+    # round 2, this test failed while a real Phase 30 run was live: it saw that run's open manifest and claim).
+    _artifacts(tmp_path, monkeypatch)
     me, parent = os.getpid(), os.getppid()
     own = f'python scripts/experiments/upgrade_mechanic_probe.py --execute-live --out artifacts/phase28a-x/live'
     rows = [(parent, 1, '-zsh'), (me, parent, own), (me + 100000, me, f'caffeinate -is {own}'), FOREIGN_RUN,
@@ -907,7 +1005,7 @@ def _gate(tmp_path, monkeypatch, plan, *, review=True, reviewed_line='{}', marke
         path.write_text(json.dumps({k: v for k, v in body.items() if v is not ...}))
     return SimpleNamespace(out='artifacts/phase28a-test/live', expect_harness_sha256=harness,
                            expect_protocol_sha256=protocol_sha, expect_plan_hash=plan_hash, spend_cap=5.0,
-                           confirm_entity=confirm_entity, ignore_manifest=[])
+                           confirm_entity=confirm_entity, ignore_manifest=[], relaunch_approval=None)
 
 
 class CredentialRead(Exception):
@@ -1108,10 +1206,79 @@ def test_a_base_exception_escaping_the_run_is_recorded_aborted_and_final(tmp_pat
     manifest = json.loads((tmp_path / args.out / probe.MANIFEST_NAME).read_text())
     assert manifest['status'] == 'ABORTED' and manifest['stop_reason'] == 'CancelledError' and probe._final(manifest)
     assert manifest['traceback'] and manifest['generations_delivered'] == 1 and manifest['attempts'] == 1
+    assert manifest['unrecorded_attempts_charged'] == 0   # the send had finished; round 2's in-flight case is below
     with pytest.raises(probe.PlanningError, match='repeat-until-lucky'):
         probe.check_output('artifacts/phase28a-test/live-2')
     with pytest.raises(probe.PlanningError, match='already final'):
         probe.finalize_abandoned(str(tmp_path / 'artifacts' / probe.CLAIM_DIR / 'claim-01.json'), alive=lambda pid: False)
+
+
+class APIConnectionError(Exception):
+    """Named as the openai client's connection error, which RuntimeProvider maps to CONNECTION_ERROR."""
+
+
+def _relaunch_record(tmp_path, plan, earlier, launch_out, name='relaunch-approval-01.json',
+                     directory='phase28a-earlier', **fields):
+    """The owner's relaunch approval (RELAUNCH_RULE), written only in a test tree."""
+    path = tmp_path / 'artifacts' / directory / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    body = {'status': 'approved', 'approved_by': 'the owner (test)', 'approved_at': '2026-09-25T23:00:00Z',
+            'earlier_undelivered_runs': earlier, 'out': launch_out, 'plan_hash': probe.plan_hash(plan),
+            'harness_sha256': probe.sha256_file(probe.__file__), **fields}
+    path.write_text(json.dumps({k: v for k, v in body.items() if v is not ...}))
+    return str(path.relative_to(tmp_path))
+
+
+@needs_store
+@pytest.mark.parametrize('cancel_on,attempts,delivered,unrecorded', [(1, 1, 0, 1), (3, 3, 1, 2)])
+def test_a_cancellation_while_a_request_is_in_flight_charges_every_admitted_attempt(
+        tmp_path, monkeypatch, dry_settings, cancel_on, attempts, delivered, unrecorded):
+    """Review round 2, finding 1: RuntimeProvider re-raises asyncio.CancelledError from inside the provider call.
+    Round 1's handler made that manifest final with the counts of the last finished send, so the attempt in flight
+    (and, during a blind re-send, the errored first attempt) was never charged, and --finalize-abandoned then refused
+    ('already final'). Case 1: cancelled in r0001's first call. Case 2: r0001 answers, r0002's first attempt fails at
+    transport and its blind re-send is cancelled in flight. Every attempt the guard admitted is now charged."""
+    plan, prompts, args = _live(tmp_path, monkeypatch, dry_settings)
+    FakeOpenAI.script, FakeOpenAI.calls = [NO_CHANGE, APIConnectionError('down')], []
+    monkeypatch.setattr(FakeOpenAI, 'cancel_on', cancel_on)
+    with pytest.raises(asyncio.CancelledError):
+        probe.run_live(args, plan, prompts, sleep=FakeSleep(), status=IDLE)
+    assert len(FakeOpenAI.calls) == cancel_on
+    manifest = json.loads((tmp_path / args.out / probe.MANIFEST_NAME).read_text())
+    assert manifest['status'] == 'ABORTED' and manifest['stop_reason'] == 'CancelledError' and probe._final(manifest)
+    assert manifest['attempts'] == attempts and manifest['charged_upper_bound'] == pytest.approx(attempts * 0.04984)
+    assert manifest['unrecorded_attempts_charged'] == unrecorded and manifest['generations_delivered'] == delivered
+    assert manifest['in_flight_request'] == {'request_id': f'r{1 + (cancel_on > 1):04d}', 'kind': 'first'}
+    with pytest.raises(probe.PlanningError, match='already final'):
+        probe.finalize_abandoned(str(tmp_path / 'artifacts' / probe.CLAIM_DIR / 'claim-01.json'), alive=lambda pid: False)
+    if delivered:
+        with pytest.raises(probe.PlanningError, match='repeat-until-lucky'):
+            probe.check_output('artifacts/phase28a-test/live-2')
+        return
+    # Nothing arrived: the read-out says so, and the next launch has the rest of the cap and needs the owner's approval.
+    readouts = probe.recompute_readouts(tmp_path / args.out)
+    assert readouts['decision'] == 'INCOMPLETE' and readouts['any_generation_arrived'] is False
+    assert readouts['statement'].startswith('INCOMPLETE: 0 of 3 draws delivered and no generation arrived')
+    earlier = probe.earlier_live_runs(tmp_path / 'artifacts')
+    assert earlier == [{'manifest': f'{args.out}/{probe.MANIFEST_NAME}', 'charged_upper_bound': 0.04984}]
+    assert probe.phase_spend_remaining(earlier) == pytest.approx(5.0 - 0.04984)
+    again = SimpleNamespace(**{**vars(args), 'out': 'artifacts/phase28a-test/live-2'})
+    with pytest.raises(probe.PlanningError, match="needs the owner's approval"):
+        probe.run_live(again, plan, prompts, sleep=FakeSleep(), status=IDLE)
+    assert not (tmp_path / again.out).exists() and not (tmp_path / 'artifacts' / probe.CLAIM_DIR / 'claim-02.json').exists()
+    record = _relaunch_record(tmp_path, plan, earlier, again.out)
+    monkeypatch.setattr(FakeOpenAI, 'cancel_on', None)
+    FakeOpenAI.script, FakeOpenAI.calls = [], []
+    assert probe.run_live(SimpleNamespace(**{**vars(again), 'relaunch_approval': record}), plan, prompts,
+                          sleep=FakeSleep(), status=IDLE) == 0
+    second = json.loads((tmp_path / again.out / probe.MANIFEST_NAME).read_text())
+    assert second['status'] == 'COMPLETED' and second['spend_cap'] == pytest.approx(5.0 - 0.04984)
+    assert second['relaunch_approval']['path'] == record and second['earlier_undelivered_runs'] == earlier
+    assert second['relaunch_approval']['sha256'] == probe.sha256_file(tmp_path / record)
+    claim = json.loads((tmp_path / 'artifacts' / probe.CLAIM_DIR / 'claim-02.json').read_text())
+    assert claim['relaunch_approval'] == second['relaunch_approval']
+    with pytest.raises(probe.PlanningError, match='repeat-until-lucky'):
+        probe.check_output('artifacts/phase28a-test/live-3')
 
 
 def test_an_existing_output_is_never_resumed_and_a_racing_claim_is_refused(tmp_path, monkeypatch):
@@ -1161,23 +1328,86 @@ def test_the_gates_after_the_credential_read_refuse_without_claiming(tmp_path, m
     assert FakeOpenAI.calls == []
 
 
-def test_runs_that_delivered_nothing_may_follow_within_the_phase_cap_until_it_cannot_cover_the_plan(tmp_path, monkeypatch):
-    """Review round 1 (E5), pinning what §11 now declares: each further zero-delivery run is blind and needs no
-    approval, within the remaining $5 phase cap. At the worst zero-delivery charge (five errored draws with a blind
-    re-send each, $0.4984) five such runs fit; the sixth is refused because $2.51 cannot cover the 60 planned calls."""
+@pytest.mark.parametrize('attempts_per_run,launches', [(12, 4), (10, 5), (2, 21), (1, 41)])
+def test_the_phase_cap_admits_between_4_and_41_launches_after_runs_that_delivered_nothing(
+        tmp_path, monkeypatch, attempts_per_run, launches):
+    """Review round 2, finding 2 (the reviewer's arithmetic): a launch is admitted only while the rest of the $5 phase
+    cap covers the 60 planned calls ($2.99), so earlier zero-delivery runs may have been charged at most 40 attempts
+    in total. A finished zero-delivery run is charged at most 10 (five errored draws, each with a blind re-send): 5
+    launches in all. One closed by --finalize-abandoned may carry 2 in-flight attempts more (12): 4. At 2 attempts per
+    run 21 fit, at 1 attempt 41. Each launch after the first also needs the owner's relaunch approval (RELAUNCH_RULE;
+    test_a_launch_after_runs_that_delivered_nothing_needs_the_owners_relaunch_approval)."""
     artifacts = _artifacts(tmp_path, monkeypatch)
     allowed = 0
-    for index in range(1, 10):
+    for index in range(1, 100):
         earlier = probe.earlier_live_runs(artifacts)
         try:
             probe.check_budget(probe.PLANNED_CALLS, probe.effective_spend_cap(5.0, earlier))
         except probe.PlanningError as error:
-            assert 'exceed the $2.51 cap' in str(error)
-            assert probe.phase_spend_remaining(earlier) == pytest.approx(5.0 - 5 * 0.4984)
+            assert 'exceed' in str(error)
+            assert probe.phase_spend_remaining(earlier) < probe.PLANNED_CALLS * probe.PER_REQUEST_DOLLAR_BOUND
             break
         allowed += 1
-        _manifest(artifacts, f'phase28a-test/run-{index}', charged_upper_bound=10 * 0.04984, statuses={'error': 5})
-    assert allowed == 5
+        _manifest(artifacts, f'phase28a-test/run-{index:03d}', charged_upper_bound=attempts_per_run * 49_840 / 1_000_000,
+                  statuses={'error': attempts_per_run})
+    assert allowed == launches
+    assert sum(run['charged_upper_bound'] for run in probe.earlier_live_runs(artifacts)) == pytest.approx(
+        launches * attempts_per_run * 0.04984)
+
+
+def test_runs_that_sent_nothing_are_charged_nothing_and_never_use_up_the_cap(tmp_path, monkeypatch):
+    """A run that ended before sending anything (a stop before the first request, another paid run seen after the
+    claim) is charged $0, so the cap never refuses the next launch; the owner's relaunch approval still does."""
+    artifacts = _artifacts(tmp_path, monkeypatch)
+    for index in range(1, 51):
+        _manifest(artifacts, f'phase28a-test/run-{index:03d}', charged_upper_bound=0.0, statuses={})
+    assert probe.effective_spend_cap(5.0, probe.earlier_live_runs(artifacts)) == 5.0
+
+
+def test_a_launch_after_runs_that_delivered_nothing_needs_the_owners_relaunch_approval(tmp_path, monkeypatch):
+    """Review round 2, finding 2, option (b): design §6.0 makes completing an INCOMPLETE run the owner's decision.
+    Round 1 let a run that delivered nothing be followed by launches with no approval. Now: with no earlier run the
+    argument must be absent; after runs that delivered nothing, a launch needs the owner's record naming exactly it
+    (earlier runs, out, plan, harness), refused before any credential read or claim otherwise; one record admits one
+    launch, because the next launch sees one more earlier run."""
+    plan, prompts = _small_plan()
+    args = _gate(tmp_path, monkeypatch, plan)
+    artifacts = tmp_path / 'artifacts'
+    with_record = lambda record: SimpleNamespace(**{**vars(args), 'relaunch_approval': record})  # noqa: E731
+    stray = _relaunch_record(tmp_path, plan, [], args.out)
+    assert 'there is none' in _refused_before_credentials(tmp_path, monkeypatch, with_record(stray), plan, prompts)
+    _manifest(artifacts, 'phase28a-earlier/run-1')
+    earlier = probe.earlier_live_runs(artifacts)
+    assert earlier == [{'manifest': f'artifacts/phase28a-earlier/run-1/{probe.MANIFEST_NAME}', 'charged_upper_bound': 0.4984}]
+    message = _refused_before_credentials(tmp_path, monkeypatch, args, plan, prompts)
+    assert "needs the owner's approval" in message and json.dumps(earlier) in message and args.out in message
+    for fields, expected in (({'status': 'pending'}, 'approved'), ({'status': ...}, 'approved'),
+                             ({'approved_by': ' '}, 'approved_by'), ({'approved_at': ...}, 'approved_at'),
+                             ({'earlier_undelivered_runs': []}, 'exactly this launch'),
+                             ({'earlier_undelivered_runs': [{**earlier[0], 'charged_upper_bound': 0.0}]}, 'exactly this launch'),
+                             ({'out': 'artifacts/phase28a-test/other'}, 'exactly this launch'),
+                             ({'plan_hash': '0' * 64}, 'exactly this launch'),
+                             ({'harness_sha256': '0' * 64}, 'exactly this launch')):
+        record = _relaunch_record(tmp_path, plan, earlier, args.out, **fields)
+        assert expected in _refused_before_credentials(tmp_path, monkeypatch, with_record(record), plan, prompts)
+    # The record's place is checked before it is read: artifacts/phase28a-<date>/relaunch-approval-NN.json only.
+    out = probe.check_output(args.out, live=False)
+    for where in ('artifacts/phase28a-earlier/run-1/relaunch-approval-01.json', 'artifacts/elsewhere/relaunch-approval-01.json',
+                  'artifacts/phase28a-earlier/approval.json', f'artifacts/{probe.CLAIM_DIR}/relaunch-approval-01.json',
+                  str(tmp_path.parent / 'relaunch-approval-01.json')):
+        with pytest.raises(probe.PlanningError, match='must name artifacts/'):
+            probe.check_relaunch_approval(where, earlier, out, probe.plan_hash(plan), probe.sha256_file(probe.__file__))
+    (artifacts / 'phase28a-earlier/relaunch-approval-02.json').write_text('not json')
+    assert 'No readable relaunch approval' in _refused_before_credentials(
+        tmp_path, monkeypatch, with_record('artifacts/phase28a-earlier/relaunch-approval-02.json'), plan, prompts)
+    # The owner's record for exactly this launch passes every offline check; the next step is the credential read.
+    record = _relaunch_record(tmp_path, plan, earlier, args.out)
+    with pytest.raises(CredentialRead):
+        probe.run_live(with_record(record), plan, prompts, sleep=FakeSleep(), status=IDLE)
+    assert not (tmp_path / args.out).exists() and not (artifacts / probe.CLAIM_DIR).exists()
+    # Once another run has ended with nothing delivered, the same record no longer names the launch.
+    _manifest(artifacts, 'phase28a-earlier/run-2')
+    assert 'exactly this launch' in _refused_before_credentials(tmp_path, monkeypatch, with_record(record), plan, prompts)
 
 
 def test_readouts_refuse_until_the_run_has_ended(tmp_path):

@@ -39,7 +39,9 @@ The decision (PHASE28_DESIGN.md §6.0, approved in §19 decision 4; restored in 
               service orders, at any hook and under any when/only_if (the design's "present" predicate, the same one
               as Phase 28's futility look)
   NO_GO       all 30 draws were delivered and none is (0 of 30: Wilson 95% upper bound 11.4%)
-  INCOMPLETE  fewer than 30 delivered and none so far is; completing it needs the owner's approval
+  INCOMPLETE  fewer than 30 delivered and none so far is; completing it needs the owner's approval: after runs that
+              delivered nothing, a relaunch record (RELAUNCH_RULE); after a run that delivered anything, also a
+              separately reviewed harness change (there is no completion mode)
 Everything else is descriptive and never decides: the static check's label (CAN_FIRE, CANNOT_FIRE, UNCLEAR), where a
 re-send fires and why one does not, the firing rates R_fire_draw and R_fire_valid, how each re-send is written,
 NO_CHANGE and invalid shares, the draws the loop would have recorded as an infrastructure death (an empty or
@@ -67,7 +69,10 @@ approver, the configuration pin and this harness's $5 phase cap. The configurati
 the code on disk, so the harness refuses once any Phase 28 backend change lands. A live run refuses beside any other
 paid run (other phases' open run manifests and claims, the lab backend's active campaign, and any other
 `--execute-live` experiment process by Phase 25's token rule, which excludes this process, its ancestors and its
-descendants such as its own caffeinate helper), takes an atomic claim, and runs once.
+descendants such as its own caffeinate helper), takes an atomic claim, and runs once. A run that delivered anything
+is never repeated; after runs that delivered nothing, another launch needs `--relaunch-approval` with the owner's
+record naming exactly that launch (RELAUNCH_RULE). Every attempt the spend guard admitted is charged in the final
+manifest, including one in flight when an exception escaped the run.
 
 Usage (from the repository root):
   python scripts/experiments/upgrade_mechanic_probe.py
@@ -76,7 +81,8 @@ Usage (from the repository root):
   python scripts/experiments/upgrade_mechanic_probe.py --finalize-abandoned artifacts/phase28a-live-claims/claim-NN.json
   python scripts/experiments/upgrade_mechanic_probe.py --execute-live --confirm-entity ENTITY \\
       --out artifacts/phase28a-<date>/live --expect-plan-hash H \\
-      --expect-harness-sha256 S --expect-protocol-sha256 P
+      --expect-harness-sha256 S --expect-protocol-sha256 P \\
+      [--relaunch-approval artifacts/phase28a-<date>/relaunch-approval-NN.json]
 """
 from __future__ import annotations
 
@@ -228,6 +234,17 @@ REVIEW_RECORD = 'artifacts/phase28a-2026-09-25/review.json'
 REVIEW_PENDING_MARKER = 'NOT yet reviewed'
 REVIEWED_LINE = 'Reviewed for launch: harness {harness} plan {plan}'
 REVIEW_APPROVED_STATUS = 'approved'
+# PHASE28_DESIGN.md §6.0: completing an INCOMPLETE run needs the owner's approval. After runs that delivered nothing,
+# another launch (it sends all 30 missing draws) needs the owner's record, artifacts/phase28a-<date>/relaunch-approval-
+# NN.json, bound to the exact earlier runs and to this launch's --out, so one record admits one launch (round 2).
+RELAUNCH_APPROVAL_NAME = re.compile(r'relaunch-approval-(\d+)\.json')
+RELAUNCH_RULE = ('a run that delivered anything is never repeated or resumed (no completion mode). After earlier runs '
+                 'that all delivered nothing, another launch sends all 30 draws (the missing ones) and is admitted only '
+                 'with --relaunch-approval naming the owner\'s record artifacts/phase28a-<date>/relaunch-approval-NN.json '
+                 '(status approved, approved_by, approved_at, and exactly this launch: earlier_undelivered_runs as the '
+                 'harness lists them, out, plan_hash, harness_sha256), so one record admits one launch; with no earlier '
+                 'run the argument must be absent. The phase cap still applies: a launch needs the rest of the $5 to '
+                 'cover the 60 planned calls ($2.99)')
 
 B0_POLICY_HASH = 'bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb'
 BASELINE_VERSION = 'policy-v0'
@@ -813,7 +830,8 @@ def orders_retry_steps(rules):
 
 
 def upgrade_audit(content):
-    """Static read of one candidate policy's orders re-sends on the declared source path.
+    """Static read of one candidate policy's orders re-sends on the declared source path (descriptive: the decision
+    counts present re-sends, and this label never decides).
 
     after_upgrade_response runs first (upgrade attempted, no receipt, UNKNOWN; reads deliver UNKNOWN); unless a step
     there closed business or exhausted a bound, before_final_report runs next on the same state and the same policy
@@ -1158,6 +1176,7 @@ def assemble_plan(inputs, *, spend_cap=HARD_SPEND_CAP, root=None):
                           'request_digest': 'content_hash of the create() keywords, checked before every send'},
         'readout_rules': readout_rules(),
         'decision_rule': DECISION_RULE,
+        'relaunch_rule': RELAUNCH_RULE,
         'operating_characteristics': operating_characteristics(),
         'counts': {'contexts': len(requests), 'first_requests': len(requests), 'planned_calls': PLANNED_CALLS,
                    'largest_input_token_bound': largest, 'input_token_limit': MODEL_INPUT_TOKEN_LIMIT,
@@ -1298,8 +1317,10 @@ def check_output(out, *, root=None, live=True):
     return out
 
 
-def take_claim(out, plan_hash_value, harness, *, root=None, spend_cap=None, expected_earlier=None):
-    """Atomically claim the next live run (private file, then hard link; fails if the name exists). Never deleted."""
+def take_claim(out, plan_hash_value, harness, *, root=None, spend_cap=None, expected_earlier=None,
+               relaunch_approval=None):
+    """Atomically claim the next live run (private file, then hard link; fails if the name exists). Never deleted.
+    `expected_earlier` must still equal the earlier runs, which also binds a relaunch approval to this one claim."""
     artifacts = (_root(root) / 'artifacts').resolve()
     records = live_run_records(artifacts)
     earlier = records['undelivered']
@@ -1313,7 +1334,8 @@ def take_claim(out, plan_hash_value, harness, *, root=None, spend_cap=None, expe
         with temporary.open('w', encoding='utf-8') as handle:
             json.dump({'claim': path.name, 'pid': os.getpid(), 'out': str(out.relative_to(artifacts.parent)),
                        'plan_hash': plan_hash_value, 'harness_sha256': harness, 'spend_cap': spend_cap,
-                       'claimed_at': datetime.now(timezone.utc).isoformat(), 'earlier_undelivered_runs': earlier},
+                       'claimed_at': datetime.now(timezone.utc).isoformat(), 'earlier_undelivered_runs': earlier,
+                       'relaunch_approval': relaunch_approval},
                       handle, indent=2)
             handle.write('\n')
             handle.flush()
@@ -1347,7 +1369,8 @@ def claim_process_alive(pid):
 
 def finalize_abandoned(claim, *, root=None, alive=None):
     """Close, at $0, a claimed run whose process died before its manifest became final. Charges every recorded
-    attempt, plus ABANDONED_IN_FLIGHT_ATTEMPTS when the run died while RUNNING."""
+    attempt, plus ABANDONED_IN_FLIGHT_ATTEMPTS when the run died while RUNNING. A trailing response line cut off by the
+    hard stop counts as a delivered generation (review round 3, finding 1)."""
     alive = claim_process_alive if alive is None else alive
     root = _root(root)
     artifacts = (root / 'artifacts').resolve()
@@ -1384,7 +1407,10 @@ def finalize_abandoned(claim, *, root=None, alive=None):
     prior_attempts = existing.get('attempts') if existing else 0
     attempts = max(prior_attempts if type(prior_attempts) is int else 0, recorded) + in_flight
     prior = delivered_generations(existing) if existing else 0
-    delivered = sum(entry_delivered(r) for r in results)
+    # Review round 3, finding 1: a line cut off by the hard stop may hold part of the Mechanic's output, so it counts
+    # as delivered. The one-run rule reads only this count, so it then refuses a second draw, as the read-outs'
+    # any_generation_arrived already says (a skipped partial line counts there too).
+    delivered = sum(entry_delivered(r) for r in results) + partial
     now = datetime.now(timezone.utc).isoformat()
     manifest = dict(existing) if existing else {
         'schema_version': SCHEMA, 'mode': 'live', 'plan_hash': record.get('plan_hash'),
@@ -1522,6 +1548,53 @@ def check_review(protocol_text, protocol_sha256, harness, plan_hash_value, *, ro
         raise PlanningError(f"The review record does not name this harness's phase cap ({HARD_SPEND_CAP:.2f}) as "
                             'phase_cap; live execution refuses')
     return record
+
+
+def check_relaunch_approval(path, earlier, out, plan_hash_value, harness, *, root=None):
+    """RELAUNCH_RULE (review round 2, finding 2, option b): design §6.0 makes completing an INCOMPLETE run the owner's
+    decision. `earlier` is earlier_live_runs(): runs that are final and delivered nothing. With none, no approval may
+    be passed. With some, the owner's record must name exactly this launch; returns its path and sha256."""
+    root = _root(root)
+    artifacts = (root / 'artifacts').resolve()
+    if not earlier:
+        if path:
+            raise PlanningError('--relaunch-approval is only for a launch after earlier Phase 28a runs that delivered '
+                                'nothing, and there is none; launch without it')
+        return None
+    listed = json.dumps(earlier)
+    out_relative = str(pathlib.Path(out).relative_to(artifacts.parent))
+    if not path:
+        raise PlanningError('Earlier Phase 28a runs ended having delivered nothing, so the phase is INCOMPLETE. Another '
+                            'launch sends the 30 missing draws, which needs the owner\'s approval (design §6.0): pass '
+                            f'--relaunch-approval artifacts/{PHASE_PREFIX}<date>/relaunch-approval-NN.json, a record with '
+                            f'status "approved", approved_by, approved_at, earlier_undelivered_runs {listed}, out '
+                            f'"{out_relative}", plan_hash and harness_sha256')
+    resolved = pathlib.Path(path)
+    resolved = (resolved if resolved.is_absolute() else root / resolved).resolve()
+    try:
+        relative = resolved.relative_to(artifacts)
+    except ValueError:
+        relative = None
+    if (relative is None or len(relative.parts) != 2 or not relative.parts[0].startswith(PHASE_PREFIX)
+            or relative.parts[0] == CLAIM_DIR or not RELAUNCH_APPROVAL_NAME.fullmatch(relative.parts[1])):
+        raise PlanningError(f'--relaunch-approval must name artifacts/{PHASE_PREFIX}<date>/relaunch-approval-NN.json')
+    try:
+        record = json.loads(resolved.read_text())
+    except (OSError, ValueError):
+        raise PlanningError(f'No readable relaunch approval at {relative}; live execution refuses') from None
+    expected = {'earlier_undelivered_runs': earlier, 'out': out_relative, 'plan_hash': plan_hash_value,
+                'harness_sha256': harness}
+    if not isinstance(record, dict) or any(record.get(key) != value for key, value in expected.items()):
+        raise PlanningError('The relaunch approval does not name exactly this launch: earlier_undelivered_runs '
+                            f'{listed}, out "{out_relative}", this plan hash and this harness sha256. One record admits '
+                            'one launch')
+    if record.get('status') != REVIEW_APPROVED_STATUS:
+        raise PlanningError('The relaunch approval does not say status "approved"; live execution refuses')
+    for key in ('approved_by', 'approved_at'):
+        if not (isinstance(record.get(key), str) and record[key].strip()):
+            raise PlanningError(f'The relaunch approval names no {key}; live execution refuses')
+    return {'path': str(resolved.relative_to(artifacts.parent)), 'sha256': sha256_file(resolved),
+            'approved_by': record['approved_by'], 'approved_at': record['approved_at']}
 
 
 # ---------------------------------------------------------------- the draw's requests (pure)
@@ -1705,6 +1778,7 @@ def run_live(args, plan, prompts, *, sleep=asyncio.sleep, status=None, processes
             raise PlanningError(f'{request["request_id"]} has no verified prompt matching the plan; nothing may be sent')
     artifacts = (_root() / 'artifacts').resolve()
     earlier = earlier_live_runs(artifacts)
+    relaunch = check_relaunch_approval(getattr(args, 'relaunch_approval', None), earlier, out, plan_hash(plan), harness)
     spend_cap = effective_spend_cap(args.spend_cap, earlier)
     check_budget(PLANNED_CALLS, spend_cap)
     guard = SpendGuard(spend_cap)
@@ -1750,7 +1824,8 @@ def run_live(args, plan, prompts, *, sleep=asyncio.sleep, status=None, processes
             raise PlanningError('An operator stop arrived before the claim; nothing was claimed or sent')
         if out.exists():
             raise PlanningError(f'{out} appeared during the launch checks; nothing was claimed or sent')
-        claim, earlier = take_claim(out, plan_hash(plan), harness, spend_cap=spend_cap, expected_earlier=earlier)
+        claim, earlier = take_claim(out, plan_hash(plan), harness, spend_cap=spend_cap, expected_earlier=earlier,
+                                    relaunch_approval=relaunch)
         out.mkdir(parents=True, exist_ok=False)
         manifest = {'schema_version': SCHEMA, 'mode': 'live', 'status': 'STARTING', 'pid': os.getpid(),
                     'plan_hash': plan_hash(plan), 'harness_sha256': harness, 'protocol_sha256': protocol_sha256,
@@ -1761,7 +1836,7 @@ def run_live(args, plan, prompts, *, sleep=asyncio.sleep, status=None, processes
                     'imported': {'slot2_probe.py': PHASE25_HARNESS_SHA256, 'run_full_loop.py': PHASE17_RUNNER_SHA256},
                     'review': {key: review.get(key) for key in ('status', 'approved_by', 'approved_at')},
                     'claim': str(claim.relative_to(artifacts.parent)), 'earlier_undelivered_runs': earlier,
-                    'backend_state_at_launch': backend_state,
+                    'relaunch_approval': relaunch, 'backend_state_at_launch': backend_state,
                     'ignored_manifests': list(getattr(args, 'ignore_manifest', None) or ()),
                     'requests_planned': len(plan['requests']), 'requests_done': 0, 'repairs_sent': 0, 'attempts': 0,
                     'charged_upper_bound': 0.0, 'statuses': {}, 'generations_delivered': 0,
@@ -1791,11 +1866,19 @@ def run_live(args, plan, prompts, *, sleep=asyncio.sleep, status=None, processes
                             traceback=recorder.scrub(traceback.format_exc()[-8000:]))
         except BaseException as error:
             # A cancellation or an exit that escapes the run (review round 1): the manifest is made final (ABORTED,
-            # with the traceback) so an ended run is never left RUNNING, then the exception goes on.
+            # with the traceback) so an ended run is never left RUNNING, then the exception goes on. The finally block
+            # charges every attempt the guard admitted, including one in flight (round 2, finding 1).
             manifest.update(status='ABORTED', stop_reason=type(error).__name__,
                             traceback=recorder.scrub(traceback.format_exc()[-8000:]))
             raise
         finally:
+            # Charge every attempt the guard admitted (review round 2, finding 1). send() copies the guard's count
+            # only after provider.complete returns, so an exception that escapes while a request is in flight (the
+            # cancellation RuntimeProvider re-raises from inside the call) would otherwise leave that sent attempt,
+            # and a blind re-send's errored first attempt, uncharged in a manifest that is already final.
+            manifest['unrecorded_attempts_charged'] = max(0, guard.attempts - (manifest.get('attempts') or 0))
+            manifest['attempts'] = max(manifest.get('attempts') or 0, guard.attempts)
+            manifest['charged_upper_bound'] = guard.charged
             manifest['stop_signal'] = signal_state['first']
             manifest['stop_signals_received'] = signal_state['count']
             manifest['ended_at'] = datetime.now(timezone.utc).isoformat()
@@ -1814,7 +1897,8 @@ def run_live(args, plan, prompts, *, sleep=asyncio.sleep, status=None, processes
         return 1
     try:
         results, partial = load_results(out / 'responses.jsonl') if (out / 'responses.jsonl').exists() else ([], 0)
-        readouts = compute_readouts(plan['requests'], prompts, results, partial_lines_skipped=partial)
+        readouts = compute_readouts(plan['requests'], prompts, results, partial_lines_skipped=partial,
+                                    manifest_delivered=delivered_generations(manifest))
     except Exception as error:  # noqa: BLE001 - the run is already final; --readouts can recompute at $0
         summary['readouts_error'] = type(error).__name__
         print(json.dumps(summary, indent=2))
@@ -1923,7 +2007,14 @@ SCOPE_SENTENCE = ('Development evidence only, rebuilt locally (every evidence ro
                   'intervals understate the uncertainty.')
 
 
-def compute_readouts(requests, prompts, results, *, partial_lines_skipped=0):
+def compute_readouts(requests, prompts, results, *, partial_lines_skipped=0, manifest_delivered=0):
+    """`manifest_delivered` is delivered_generations(the run's manifest): None when it cannot say. The relaunch wording
+    is used only when neither the manifest nor any line (a cut-off line included) shows that a generation may have
+    arrived. The one-run rule (live_run_records) reads the manifest's count alone; run_live counts every line that
+    shows a generation, and --finalize-abandoned also counts a cut-off line (review round 3), so on every manifest the
+    harness writes the two tests agree, and where they could differ this one is the stricter. The wording does not
+    check the rest of the $5 phase cap: after the last launch the cap admits it still appears, and the harness then
+    refuses any further launch on the cap alone (protocol §9, §11)."""
     lines = _lines_by_request(results)
     draws = [classify_draw(r, (prompts or {}).get(r['messages_hash']), lines[r['request_id']]) for r in requests]
     n = len(requests)
@@ -1938,6 +2029,11 @@ def compute_readouts(requests, prompts, results, *, partial_lines_skipped=0):
     not_loop = Counter(d['not_a_loop_proposal'] for d in draws if d['not_a_loop_proposal'])
     empty = sum(not_loop.values())
     delivered = n - classes.get('UNDELIVERED', 0)
+    # Whether any generation may have arrived: the one-run rule's own test on the manifest, and line by line (a skipped
+    # partial line counts), so the statement never offers a relaunch after a run the one-run rule refuses to follow.
+    # It does not check the phase cap (review round 3, finding 2); check_budget refuses a launch the cap cannot cover.
+    nothing_arrived = (manifest_delivered == 0 and not partial_lines_skipped
+                       and not any(entry_delivered(line) for line in results))
     decision = decide(draws, n)
     hashes = lambda rows: sorted({d['policy_hash'] for d in rows})  # noqa: E731
     not_loop_text = (f'{empty} of the {n} draws were empty or unreadable outputs, which the loop would have recorded '
@@ -1960,10 +2056,17 @@ def compute_readouts(requests, prompts, results, *, partial_lines_skipped=0):
                      f'upper bound {upper:.3f}). {not_loop_text}; over the other {n - empty} the upper bound is '
                      f'{"undefined" if rest is None else format(rest, ".3f")}. Phase 28 closes; the backend change is '
                      'not built.')
+    elif nothing_arrived:
+        # Review round 2, finding 2: after a run that delivered nothing, another launch (it sends all the draws) is
+        # admitted only with the owner's relaunch approval (RELAUNCH_RULE); a run that delivered anything never is.
+        statement = (f'INCOMPLETE: 0 of {n} draws delivered and no generation arrived, so nothing was observed. Another '
+                     f'launch within the $5 phase cap sends all {n} draws and needs the owner\'s relaunch approval '
+                     '(design §6.0; protocol §11).')
     else:
         statement = (f'INCOMPLETE: {delivered} of {n} draws delivered ({empty} of them empty or unreadable, which the '
                      'loop would have recorded as an infrastructure death), none so far with an orders re-send; '
-                     'completing the missing draws needs the owner\'s approval.')
+                     'completing the missing draws needs the owner\'s approval and a separately reviewed harness '
+                     'change (this harness has no completion mode).')
     statement += ' ' + SCOPE_SENTENCE
     exposure = defaultdict(lambda: [0, 0, 0])
     for draw, request in zip(draws, requests):
@@ -1974,7 +2077,8 @@ def compute_readouts(requests, prompts, results, *, partial_lines_skipped=0):
     return {
         'schema_version': READOUT_SCHEMA, 'requests_planned': n, 'partial_lines_skipped': partial_lines_skipped,
         'decision': decision, 'decision_rule': DECISION_RULE, 'statement': statement,
-        'delivered': delivered, 'classes': dict(sorted(classes.items())), 'invalid_subclasses': dict(sorted(subclasses.items())),
+        'delivered': delivered, 'any_generation_arrived': not nothing_arrived,
+        'classes': dict(sorted(classes.items())), 'invalid_subclasses': dict(sorted(subclasses.items())),
         'not_a_loop_proposal': {'count': empty, 'by_cause': dict(sorted(not_loop.items())),
                                 'loop_visible_draws': n - empty,
                                 'wilson95_upper_over_loop_visible_if_none_present': wilson(0, n - empty)[1]},
@@ -2053,7 +2157,8 @@ def recompute_readouts(directory, *, allow_other_harness=False):
         raise PlanningError(f'The run in {directory} has not ended (manifest status {manifest.get("status")}); '
                             '--readouts refuses until its manifest is final')
     plan, prompts, results, partial = load_run(directory)
-    readouts = compute_readouts(plan['requests'], prompts, results, partial_lines_skipped=partial)
+    readouts = compute_readouts(plan['requests'], prompts, results, partial_lines_skipped=partial,
+                                manifest_delivered=delivered_generations(manifest))
     harness_matches = sha256_file(__file__) == manifest.get('harness_sha256')
     plan_matches = plan_hash(plan) == manifest.get('plan_hash')
     if harness_matches and plan_matches:
@@ -2084,6 +2189,9 @@ def arguments(argv=None):
     parser.add_argument('--expect-protocol-sha256')
     parser.add_argument('--execute-live', action='store_true')
     parser.add_argument('--confirm-entity')
+    parser.add_argument('--relaunch-approval', metavar='RECORD',
+                        help=('with --execute-live, only after earlier runs that delivered nothing: the owner\'s record '
+                              f'artifacts/{PHASE_PREFIX}<date>/relaunch-approval-NN.json naming exactly this launch'))
     parser.add_argument('--ignore-manifest', action='append', default=[],
                         help="another phase's crashed run manifest or claim (exact path) known not to be running")
     return parser.parse_args(argv)
@@ -2097,7 +2205,9 @@ def main(argv=None) -> int:
             print(json.dumps({'status': 'FINALIZED', 'manifest': str(path),
                               'generations_delivered': manifest['generations_delivered'],
                               'charged_upper_bound': manifest['charged_upper_bound'],
-                              'note': 'add charged_upper_bound to the ledger; a new run needs a new --out'}, indent=2))
+                              'note': ('add charged_upper_bound to the ledger. A run that delivered anything is never '
+                                       'repeated; after one that delivered nothing, another launch needs a new --out '
+                                       'and the owner\'s --relaunch-approval')}, indent=2))
             return 0
         if args.readouts:
             print(json.dumps(recompute_readouts(args.readouts, allow_other_harness=args.not_the_runs_harness), indent=2))
