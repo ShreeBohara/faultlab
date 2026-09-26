@@ -1,0 +1,14 @@
+{
+ "method_reproduces_7ab9368e": true,
+ "upgrade_v1_mirror_hash": "cafe5757b9dccf8f5f0f5ed0f34a6df657a3fb61198972cff23417ea3dac63d3",
+ "equals_design_value": true,
+ "cases": [
+  "healthy",
+  "upgrade-3",
+  "upgrade-2",
+  "delayed-upgrade",
+  "upgrade-18",
+  "lost-upgrade-response",
+  "terminal-upgrade-rejection"
+ ]
+}

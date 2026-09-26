@@ -1,0 +1,31 @@
+diff --git a/artifacts/builds/phase28-2026-09-25-r3/build/docs/part2/PHASE28_EXPERIMENT.md b/docs/part2/PHASE28_EXPERIMENT.md
+index 8b06f28..9735817 100644
+--- a/artifacts/builds/phase28-2026-09-25-r3/build/docs/part2/PHASE28_EXPERIMENT.md
++++ b/docs/part2/PHASE28_EXPERIMENT.md
+@@ -849,16 +849,16 @@ claims that prove wrong are recorded too.
+ 
+ | pin | value |
+ |---|---|
+-| reviewed code freeze | `artifacts/phase28-<date>/gate-freeze-after.json`, sha256 `FILL-AT-FREEZE`. The code on disk must equal it |
+-| expected `configuration_hash` (Phase 17 settings on the Phase 28 code) | `FILL-AT-FREEZE`. The first campaign must equal it, at $0 |
+-| `upgrade-v1` manifest hash | `FILL-AT-FREEZE` (must equal the stdlib mirror) |
+-| `upgrade_case_manifest` text / AST (Python 3.12.8) | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `CASE_MANIFESTS` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `DEFAULT_CASE_MANIFEST` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `build_case_manifest` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `SOURCE_CLAUSE_OUTCOMES` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `SOURCE_CLAUSE_REOPENS` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
+-| `source_clause` text / AST | `FILL-AT-FREEZE` / `FILL-AT-FREEZE` |
++| reviewed code freeze | `artifacts/phase28-2026-09-26/gate-freeze-after.json`, sha256 `bb0b19a9e7988884efaecec5ada22405bb520d58c16b3bdfae8c66206f6e0e8e`. The code on disk must equal it |
++| expected `configuration_hash` (Phase 17 settings on the Phase 28 code) | `96a30c69b4108ff840a826141a6bce487cdeb0153a20880b7c2ffaf05659299e`. The first campaign must equal it, at $0 |
++| `upgrade-v1` manifest hash | `cafe5757b9dccf8f5f0f5ed0f34a6df657a3fb61198972cff23417ea3dac63d3` (must equal the stdlib mirror) |
++| `upgrade_case_manifest` text / AST (Python 3.12.8) | `db52a8054061e30946756b2ce1681b6849438f605cb91b1821be29c4129e4592` / `fd77006c3c04d773481bf67a5f9f0fc2ee45813a9ccc3764aa0dd86b9056ae04` |
++| `CASE_MANIFESTS` text / AST | `196327a2b9c83951d893c65025d0c2bf0fc8dccac18a5d81954eac8ae9d26467` / `c1a3248afecf9b08059e49f0db483fe9a383887475f49260ebee655656ff27c3` |
++| `DEFAULT_CASE_MANIFEST` text / AST | `5adef5e2bd7a4f930af30a27b0ee81856ef882f9f33dd39b825626201dd2d265` / `a064c48ec6683fc153116089dc3e0a535e15fdff14ca9f5d78c4917b7c0ff7fa` |
++| `build_case_manifest` text / AST | `3220e7e912dc0e9991cdc5e281d85ca460b59be72203b204e3e9ccc17fce08a5` / `c5df4b7969ac77cca5f065a199e75d6c575f3bd1d23e01c599cdc26971a15ac3` |
++| `SOURCE_CLAUSE_OUTCOMES` text / AST | `fb2a8d3622a4da6062b6a95fc42eaebf874804c60cb2a3d349149efde17a3332` / `2755d2b9998c03adc7ad6cec5a643f998d41771646fe3fceae3af546eb8b25be` |
++| `SOURCE_CLAUSE_REOPENS` text / AST | `555796149da78128f156077dd0238f6db4e29c4a4e1c96672bf345013ccf4a7e` / `74874e9a5723a81f6873f2404e08a738fba1aa2f0f7e2c2307b082d00536165c` |
++| `source_clause` text / AST | `4f3468cd4a904aa567e74201f68a9579c09f9f28e1557e32b0fb8db6ec78f4b9` / `51d5b4c394a788127968e5d8e6d9ce3a488775bcf1ff0852542cbf4d1402c42e` |
+ | settings file | `artifacts/phase16-2026-09-22/settings-phase17.json`, `1e2002d383cbccb3c0479f411f9d9ab7fd13af97f3d923a27281a454060c941d` |
+ | Mechanic brief `completion.md` | `e3b9362f281e1616fea7013fb3d9b7cf85432884f726a95cde39e4a9dadd1673` |
+ | base runner `run_full_loop.py` | `07dcaa93fd2e2d62ea22209bc78981fd011d025f839d0143dca157f6208f2342` |

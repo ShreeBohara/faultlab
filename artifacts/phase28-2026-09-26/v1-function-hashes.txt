@@ -1,0 +1,7 @@
+harmful: text 1b181c1cfce695a8e7ac9861887cf562653556d453d9bd0f4225fc82e5118620 | declared True | text equals f4014f0 True | AST equals f4014f0 True -> OK
+stored_candidate_failures: text ad56068809ccdc6f31228c15568be008df90befccf4e19126c7e18ac4c2e01fd | declared True | text equals f4014f0 True | AST equals f4014f0 True -> OK
+assess_heldout: text 193b63ab812f09587da8a2069fecda128049d13a2090019a42c3fb7ffa190a39 | declared True | text equals f4014f0 True | AST equals f4014f0 True -> OK
+certified_source: text b56b6b8740bb8b42c0069f2ff38807213ca40b49712afb840a7861e2e85ee114 | declared True | text equals f4014f0 True | AST equals f4014f0 True -> OK
+constants SCHEMA, PREDICATE, MAX_ATTEMPTS_PER_POLICY, NO_REPORT_SIGNATURE, CERTIFIED_EVIDENCE_PROTOCOL, CERTIFIED_ACTOR_CONTEXT: equal to f4014f0 True
+RESULT all v1 functions and constants unchanged
+exit 0

@@ -1,0 +1,14 @@
+{
+ "moved": [
+  "files:backend/app/lab/completion_study.py",
+  "fingerprints:algorithm_hash",
+  "fingerprints:runtime_hash",
+  "fingerprints:tree_lab",
+  "functions:backend/app/lab/completion_study.py::_execute",
+  "functions:backend/app/lab/completion_study.py::queue_completion_study"
+ ],
+ "problems": [],
+ "script_sha256": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+ "reviewed": "after review round 2 (the backend values are unchanged since review round 1)",
+ "accepted": true
+}

@@ -1,0 +1,6 @@
+Phase 18 held-out checks of dd62c857 on the promotion partition: 1
+stored: HARM / check_failure (predicate faultlab-heldout-no-harm/v1)
+current v1 re-assessment: HARM / check_failure
+whole assessment equals the stored one: True
+RESULT unchanged: HARM / check_failure
+exit 0

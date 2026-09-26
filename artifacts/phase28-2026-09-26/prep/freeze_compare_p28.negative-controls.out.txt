@@ -1,0 +1,76 @@
+## negative controls (round 2 script; each must exit 1)
+### 1. the unchanged Phase 22 freeze
+{
+ "moved": [],
+ "problems": [
+  "declared entries did not move: [('files', 'backend/app/lab/completion_study.py'), ('fingerprints', 'algorithm_hash'), ('fingerprints', 'runtime_hash'), ('fingerprints', 'tree_lab'), ('functions', 'backend/app/lab/completion_study.py::_execute'), ('functions', 'backend/app/lab/completion_study.py::queue_completion_study')]",
+  "files:backend/app/lab/completion_study.py is not the reviewed value",
+  "fingerprints:algorithm_hash is not the reviewed value",
+  "fingerprints:runtime_hash is not the reviewed value",
+  "fingerprints:tree_lab is not the reviewed value",
+  "functions:backend/app/lab/completion_study.py::_execute is not the reviewed value",
+  "functions:backend/app/lab/completion_study.py::queue_completion_study is not the reviewed value"
+ ],
+ "script_sha256": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+ "reviewed": "after review round 2 (the backend values are unchanged since review round 1)",
+ "accepted": false
+}
+exit 1
+### 2. an edited _execute entry
+{
+ "moved": [
+  "files:backend/app/lab/completion_study.py",
+  "fingerprints:algorithm_hash",
+  "fingerprints:runtime_hash",
+  "fingerprints:tree_lab",
+  "functions:backend/app/lab/completion_study.py::_execute",
+  "functions:backend/app/lab/completion_study.py::queue_completion_study"
+ ],
+ "problems": [
+  "functions:backend/app/lab/completion_study.py::_execute is not the reviewed value"
+ ],
+ "script_sha256": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+ "reviewed": "after review round 2 (the backend values are unchanged since review round 1)",
+ "accepted": false
+}
+exit 1
+### 3. another tree_lab
+{
+ "moved": [
+  "files:backend/app/lab/completion_study.py",
+  "fingerprints:algorithm_hash",
+  "fingerprints:runtime_hash",
+  "fingerprints:tree_lab",
+  "functions:backend/app/lab/completion_study.py::_execute",
+  "functions:backend/app/lab/completion_study.py::queue_completion_study"
+ ],
+ "problems": [
+  "fingerprints:tree_lab is not the reviewed value"
+ ],
+ "script_sha256": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+ "reviewed": "after review round 2 (the backend values are unchanged since review round 1)",
+ "accepted": false
+}
+exit 1
+### 4. a definition-hash record taken under Python 3.9.6
+{
+ "moved": [
+  "files:backend/app/lab/completion_study.py",
+  "fingerprints:algorithm_hash",
+  "fingerprints:runtime_hash",
+  "fingerprints:tree_lab",
+  "functions:backend/app/lab/completion_study.py::_execute",
+  "functions:backend/app/lab/completion_study.py::queue_completion_study"
+ ],
+ "problems": [
+  "new_function_hashes.py did not report ok",
+  "new_function_hashes.py ran under Python '3.9.6'; the reviewed AST hashes were taken with 3.12.8 (./.venv/bin/python)",
+  "backend/app/lab/completion_study.py::upgrade_case_manifest is not the reviewed definition (text/AST)",
+  "backend/app/lab/completion_study.py::build_case_manifest is not the reviewed definition (text/AST)",
+  "backend/app/lab/completion_study.py::source_clause is not the reviewed definition (text/AST)"
+ ],
+ "script_sha256": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+ "reviewed": "after review round 2 (the backend values are unchanged since review round 1)",
+ "accepted": false
+}
+exit 1

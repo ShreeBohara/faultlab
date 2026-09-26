@@ -2092,3 +2092,20 @@ def test_r3_the_paid_run_rule_is_widened_as_the_phase25_rule_was():
     found = gap.live_experiment_processes(lambda: rows)
     assert found == [f'pid {900000 + i}: {script} --execute-live' for i, script in enumerate(R3_PAID_RUNS.values())]
     assert not any('s3cr3t' in entry or 'phase26-x' in entry for entry in found)
+
+
+# Phase 28 (docs/part2/PHASE28_EXPERIMENT.md section 3.3, build item B4): Phase 26 ran on the Phase 22 tree
+# (configuration 2cf63e93...). The Phase 28 backend change (completion_study.py, api.py) moves that
+# configuration hash by design, so the test named below, which recomputes it from the code on disk, can only
+# pass on the tree Phase 26 ran on. Elsewhere it is skipped with this reason rather than failing. The skip
+# keys on the whole Phase 22 freeze, never on the asserted hash itself, so on the Phase 22 tree the test still
+# runs and still checks the hash. Same pattern as test_lapse_probe.py's NEEDS_PHASE21_TREE (Phase 22, N3).
+# The harness (run_gap_probe.py) is not edited.
+NEEDS_PHASE22_TREE = frozenset({
+    'test_the_phase17_settings_reproduce_the_phase22_configuration_hash_without_env',
+})
+for _name in NEEDS_PHASE22_TREE:
+    globals()[_name] = pytest.mark.skipif(
+        'not tree_is_phase22_frozen()',
+        reason='needs the tree Phase 26 ran on (Phase 22 freeze, configuration 2cf63e93...); backend/app '
+               'changed after it (Phase 28)')(globals()[_name])

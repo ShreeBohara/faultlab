@@ -1,0 +1,60 @@
+........................................................................ [ 11%]
+........................................................................ [ 23%]
+........................................................................ [ 35%]
+........................................................................ [ 47%]
+.....................................................................s.. [ 58%]
+......ss................sssssssssssssssssssssssssssssssssssssss......... [ 70%]
+.......s......ssssssssssssssssss..........................s........sssss [ 82%]
+sss.ssss..........sssssss............................................... [ 94%]
+.............s......................                                     [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:357: needs the tree Phase 26 ran on (Phase 22 freeze, configuration 2cf63e93...); backend/app changed after it (Phase 28)
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:586: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:615: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1290: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [7] tests/experiments/test_run_gap_probe.py:1325: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1355: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1385: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [3] tests/experiments/test_run_gap_probe.py:1397: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1425: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1439: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1458: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1477: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [8] tests/experiments/test_run_gap_probe.py:1507: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [2] tests/experiments/test_run_gap_probe.py:1555: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1584: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1598: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [6] tests/experiments/test_run_gap_probe.py:1610: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1660: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1681: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1696: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1738: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:2008: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:177: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:193: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:227: needs the local lab stores
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:259: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [9] tests/experiments/test_upgrade_mechanic_probe.py:281: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:300: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:332: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:346: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:362: needs the local lab stores
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:378: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:792: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1088: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1111: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1129: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1145: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1173: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1191: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [2] tests/experiments/test_upgrade_mechanic_probe.py:1232: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [4] tests/experiments/test_upgrade_mechanic_probe.py:1300: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:123: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:146: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:170: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:200: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:212: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:232: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:252: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:1134: not the Phase 22 configuration or stores absent
+530 passed, 82 skipped in 166.66s (0:02:46)

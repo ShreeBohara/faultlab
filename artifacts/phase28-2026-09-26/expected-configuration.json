@@ -1,0 +1,25 @@
+{
+ "configuration_hash": "96a30c69b4108ff840a826141a6bce487cdeb0153a20880b7c2ffaf05659299e",
+ "models": {
+  "actor": "deepseek-ai/DeepSeek-V3.1",
+  "explorer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "mechanic": "deepseek-ai/DeepSeek-V4-Pro-0813"
+ },
+ "per_call_dollar_upper_bound": {
+  "actor": 0.0209,
+  "explorer": 0.04984,
+  "mechanic": 0.04984
+ },
+ "campaign_budget": {
+  "model_calls": 6000,
+  "tokens": 204000000,
+  "dollars": 400.0,
+  "discovery_selections": 8,
+  "candidates": 4,
+  "input_tokens_per_call": 32000,
+  "output_tokens_per_call": 2000
+ },
+ "mechanic_temperature": 0,
+ "algorithm_hash": "88eb5b77b51ce53b22e5b50b6f0e355c883a25f3c741a9ef51797766d9c6ec1d",
+ "runtime_hash": "18332ec3b3b32f4cb6aa97ea320c67ab9afb079e75c9f52af923b8981705ef51"
+}

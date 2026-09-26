@@ -1,0 +1,217 @@
+........................................................................ [  3%]
+.................................................................sssssss [  7%]
+.....................................................sssssss.sss.....ss. [ 10%]
+s..............................................................sssssss.. [ 14%]
+..........................................................s............. [ 18%]
+..........ssssssss...................................................... [ 21%]
+......................s....ss.......s....s..s...........F.s..........s.s [ 25%]
+..............................sssssssssssssssssssssssssss............... [ 28%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+......s........ss................sssssssssssssssssssssssssssssssssssssss [ 39%]
+................s....................................................... [ 43%]
+........................................................................ [ 47%]
+........................................................................ [ 50%]
+........................................................................ [ 54%]
+..........sssss...s..................................................... [ 57%]
+......................................................F...ssssssssss...s [ 61%]
+sssssss.s.......................................................s....... [ 65%]
+....s....sssssss......ssssssssssssssssss..........................s..... [ 68%]
+...ssssssss.ssss........................................................ [ 72%]
+........................................................................ [ 76%]
+........................................................................ [ 79%]
+........................................................................ [ 83%]
+........................................................................ [ 86%]
+........................................................................ [ 90%]
+........................................................................ [ 94%]
+........................................................................ [ 97%]
+...........................................                              [100%]
+=================================== FAILURES ===================================
+______________ test_the_real_store_holds_both_policies_unchanged _______________
+
+    @pytest.mark.skipif(not probe.DEFAULT_SOURCE_STORE.is_file(), reason='needs the local lab store')
+    def test_the_real_store_holds_both_policies_unchanged():
+>       found = probe.load_policies(probe.DEFAULT_SOURCE_STORE)   # opened read-only
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/experiments/test_run_dev_probe.py:214: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+source_store = PosixPath('/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/lab.sqlite3')
+
+    def load_policies(source_store):
+        """Both policies by hash from the lab store, opened read-only; their content hashes verified."""
+        path = pathlib.Path(source_store)
+        if not path.is_file():
+            raise PlanningError('Source lab store not found')
+        connection = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
+        found = {}
+        try:
+            for arm, pin in (('B0', BASELINE_POLICY_HASH), ('L', CANDIDATE_POLICY_HASH)):
+                rows = connection.execute("SELECT id, payload FROM records WHERE kind='policies' AND instr(payload, ?) > 0",
+                                          (pin,)).fetchall()
+                matches = [(rid, json.loads(raw)) for rid, raw in rows if json.loads(raw).get('policy_hash') == pin]
+                if len(matches) != 1:
+>                   raise PlanningError(f'Expected exactly one stored policy with the declared {arm} hash, found {len(matches)}')
+E                   run_dev_probe.PlanningError: Expected exactly one stored policy with the declared L hash, found 2
+
+../scripts/experiments/run_dev_probe.py:742: PlanningError
+____________ test_the_owners_answer_gate_on_the_real_protocol_text _____________
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-2024/test_the_owners_answer_gate_on0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cc70a40>
+
+    def test_the_owners_answer_gate_on_the_real_protocol_text(tmp_path, monkeypatch):
+        """Review round 2 (the round-2 reviewer's $0 launch rehearsal, as a test): on the REAL protocol text, whose
+        status block quotes the program-level approval, round 1's substring test passed a record that reused that phrase,
+        or the one-letter answer "N", with no closing entry at all. Closed as the runbook says (review-pending phrase
+        gone, bare Reviewed line), only the owner's own answer on the closing line passes."""
+        real = REAL_PROTOCOL.read_text()
+        head, _, body = real.partition('\n## ')
+        h2 = [line for line in ('## ' + body).splitlines() if line.startswith('## ')]
+>       assert h2[-1] == probe.REVIEW_LOG_HEADING, 'the Review log is the protocol\'s last section'
+E       AssertionError: the Review log is the protocol's last section
+E       assert '## Cancellat...roject owner)' == '## Review log'
+E         
+E         - ## Review log
+E         + ## Cancellation (2026-09-25; Claude as PM, delegated by the project owner)
+
+tests/experiments/test_slot2_hidden_probe.py:1453: AssertionError
+=============================== warnings summary ===============================
+../.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/experiments/test_run_dev_probe.py::test_the_real_store_holds_both_policies_unchanged
+FAILED tests/experiments/test_slot2_hidden_probe.py::test_the_owners_answer_gate_on_the_real_protocol_text
+SKIPPED [1] tests/experiments/test_lapse_probe.py:208: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:262: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:270: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:283: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:309: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:323: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:341: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [4] tests/experiments/test_lapse_probe.py:1370: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1408: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1419: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1437: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1487: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1507: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1530: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1663: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1696: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_lapse_probe.py:1716: needs the tree Phase 21 ran on (configuration 0a33aa51...); backend/app changed after it
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:123: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:146: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:170: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:200: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:212: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:232: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:252: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_narrow_probe.py:1134: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:81: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:98: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:134: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:156: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:180: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:199: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:213: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:240: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1277: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1408: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1427: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1521: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1639: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_report_word_probe.py:1716: not the Phase 22 configuration or stores absent
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:233: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:470: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:511: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1448: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [4] tests/experiments/test_run_dev_probe.py:1507: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [2] tests/experiments/test_run_dev_probe.py:1533: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1555: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1569: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1585: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1598: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1613: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [11] tests/experiments/test_run_dev_probe.py:1630: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1664: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1682: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1703: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_dev_probe.py:1729: needs the Phase 19 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:357: needs the tree Phase 26 ran on (Phase 22 freeze, configuration 2cf63e93...); backend/app changed after it (Phase 28)
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:586: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:615: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1290: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [7] tests/experiments/test_run_gap_probe.py:1325: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1355: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1385: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [3] tests/experiments/test_run_gap_probe.py:1397: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1425: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1439: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1458: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1477: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [8] tests/experiments/test_run_gap_probe.py:1507: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [2] tests/experiments/test_run_gap_probe.py:1555: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1584: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1598: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [6] tests/experiments/test_run_gap_probe.py:1610: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1660: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1681: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1696: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:1738: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_run_gap_probe.py:2008: needs the Phase 22 frozen tree and the Phase 17 settings file
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:193: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:231: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:256: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:286: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:301: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:343: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1537: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [3] tests/experiments/test_slot2_hidden_probe.py:1552: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1583: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1607: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1627: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1641: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1662: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_hidden_probe.py:1678: needs the local lab store and the tree Phase 29 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:94: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:110: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:190: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:238: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:267: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:285: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:309: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:326: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:356: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1219: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1540: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1599: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1626: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1640: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1659: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1683: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1703: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_slot2_probe.py:1716: needs the local lab store and the tree Phase 25 is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:177: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:193: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:227: needs the local lab stores
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:259: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [9] tests/experiments/test_upgrade_mechanic_probe.py:281: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:300: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:332: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:346: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:362: needs the local lab stores
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:378: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:792: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1088: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1111: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1129: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1145: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1173: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [1] tests/experiments/test_upgrade_mechanic_probe.py:1191: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [2] tests/experiments/test_upgrade_mechanic_probe.py:1232: needs the local lab stores and the tree Phase 28a is pinned to
+SKIPPED [4] tests/experiments/test_upgrade_mechanic_probe.py:1300: needs the local lab stores and the tree Phase 28a is pinned to
+2 failed, 1805 passed, 180 skipped, 1 warning in 671.30s (0:11:11)

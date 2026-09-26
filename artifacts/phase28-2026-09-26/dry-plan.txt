@@ -1,0 +1,40 @@
+design     fixed N = 50 attempts on case manifest 'upgrade-v1' (source upgrade-3); a CERTIFIED study never stops the run
+look       once, at the first D >= 16 distinct valid policies: stop if none re-sends the upgrade and none is certified (futility look, then fixed_n, then spend_guard)
+stops      futility, N, the $150 spend guard ("truncated at n=j"), 5 consecutive infrastructure failures, Ctrl-C/SIGTERM/SIGHUP
+success    Phase 17 certification transposed: OBSERVED_IMPROVEMENT (assess_pairs + source_clause), upgrade-3 3 of 3, L-B0 >= 2 on a case other than upgrade-3 and healthy
+models     actor deepseek-ai/DeepSeek-V3.1; mechanic deepseek-ai/DeepSeek-V4-Pro-0813; brief backend/app/agents/prompts/completion.md
+protocols  actor faultlab-actor-context/v4-indexed-evidence (explicit); evidence faultlab-compact-evidence/v2-task-outcome
+routing    none: no held-out check follows this phase
+spend      guard $150.00 (conservative bound), headroom $11.00 per study
+runbook    before: check_ingestion_health (run by this runner), start-simulator.sh, dashboard closed (loop_latency p99 < 100 ms); after: check_clock_drift --worlds --since <run start> (run by this runner)
+never      replay, re-validate, resume a study, route anything, or write ACCEPTED
+pin        DECLARED_MANIFEST_HASH                     MATCH     declared cafe5757b9dccf8f  on disk cafe5757b9dccf8f
+pin        DECLARED_FREEZE_SHA256                     MATCH     declared bb0b19a9e7988884  on disk bb0b19a9e7988884
+pin        DECLARED_CONFIGURATION_HASH                pinned (checked against the backend at the first campaign) declared 96a30c69b4108ff8
+pin        DECLARED_SETTINGS_SHA256                   MATCH     declared 1e2002d383cbccb3  on disk 1e2002d383cbccb3
+pin        DECLARED_MECHANIC_BRIEF_SHA256             MATCH     declared e3b9362f281e1616  on disk e3b9362f281e1616
+pin        DECLARED_BASE_RUNNER_SHA256                MATCH     declared 07dcaa93fd2e2d62  on disk 07dcaa93fd2e2d62
+pin        DECLARED_FIXED_RUNNER_SHA256               MATCH     declared 95ef698d155986c2  on disk 95ef698d155986c2
+pin        DECLARED_SLOT2_PROBE_SHA256                MATCH     declared 28b998ac9d66fc03  on disk 28b998ac9d66fc03
+pin        DECLARED_GATE_FREEZE_SCRIPT_SHA256         MATCH     declared 5e21c0ecb64ee12c  on disk 5e21c0ecb64ee12c
+pin        DECLARED_DRIFT_CHECKER_SHA256              MATCH     declared fa25ab9d38ed1287  on disk fa25ab9d38ed1287
+pin        DECLARED_INGESTION_CHECK_SHA256            MATCH     declared edde0190836898e2  on disk edde0190836898e2
+pin        DECLARED_LAUNCHER_SHA256                   MATCH     declared 78911a293492b803  on disk 78911a293492b803
+pin        CASE_MANIFESTS.text_sha256                 MATCH     declared 196327a2b9c83951  on disk 196327a2b9c83951
+pin        CASE_MANIFESTS.ast_sha256                  MATCH     declared c1a3248afecf9b08  on disk c1a3248afecf9b08
+pin        DEFAULT_CASE_MANIFEST.text_sha256          MATCH     declared 5adef5e2bd7a4f93  on disk 5adef5e2bd7a4f93
+pin        DEFAULT_CASE_MANIFEST.ast_sha256           MATCH     declared a064c48ec6683fc1  on disk a064c48ec6683fc1
+pin        SOURCE_CLAUSE_OUTCOMES.text_sha256         MATCH     declared fb2a8d3622a4da60  on disk fb2a8d3622a4da60
+pin        SOURCE_CLAUSE_OUTCOMES.ast_sha256          MATCH     declared 2755d2b9998c03ad  on disk 2755d2b9998c03ad
+pin        SOURCE_CLAUSE_REOPENS.text_sha256          MATCH     declared 555796149da78128  on disk 555796149da78128
+pin        SOURCE_CLAUSE_REOPENS.ast_sha256           MATCH     declared 74874e9a5723a81f  on disk 74874e9a5723a81f
+pin        build_case_manifest.text_sha256            MATCH     declared 3220e7e912dc0e99  on disk 3220e7e912dc0e99
+pin        build_case_manifest.ast_sha256             MATCH     declared c5df4b7969ac77cc  on disk c5df4b7969ac77cc
+pin        source_clause.text_sha256                  MATCH     declared 4f3468cd4a904aa5  on disk 4f3468cd4a904aa5
+pin        source_clause.ast_sha256                   MATCH     declared 51d5b4c394a78812  on disk 51d5b4c394a78812
+pin        upgrade_case_manifest.text_sha256          MATCH     declared db52a8054061e309  on disk db52a8054061e309
+pin        upgrade_case_manifest.ast_sha256           MATCH     declared fd77006c3c04d773  on disk fd77006c3c04d773
+python     3.12.8 (/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.venv/bin/python); the definition pins are AST hashes, taken with the venv interpreter
+harness    sha256 d8689fcfae7a79d028a9021d8863172daf5788572d1dca82cb0e0ca9d2d2d146
+plan       hash 0779572d3c609078efb8009d41519e6abd45025cd4768b07859a7048caca1c07
+Dry plan only. A live run needs --execute-live with the launch gates of the protocol (refused while any pin is UNFILLED).

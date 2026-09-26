@@ -1,0 +1,65 @@
+{
+ "checks": {
+  "main_after": {
+   "backend/app/lab/api.py": "32a1b0873dd83baf7c57ec4f610d400b87179fe6adb1a88d4d901145da813283",
+   "backend/app/lab/completion_study.py": "03e3d8bed4cbcc117ffdbb9f552f254cd33234d177e6b58254aba3f398a1b9c4",
+   "backend/tests/experiments/test_run_gap_probe.py": "03dd92e21c3e0908a068971eaf101a442cf5daf5dbf27bef674161e806b6f2a0",
+   "backend/tests/experiments/test_run_upgrade_loop.py": "1de4f5214e6048758920e2ecc2773235b9a17afb2c5c055705f92d32d4c0a73b",
+   "backend/tests/lab/test_completion_manifests.py": "fb352a62314bc520d2dafe92533a0674be1aca62a591432243fea82ec9e8f359",
+   "docs/part2/PHASE28_EXPERIMENT.md": "1620d02ee7dd1a9f3ac40605c5650325e01999b26f24e080fa5e6df4071210a5",
+   "scripts/experiments/run_upgrade_loop.py": "9432419e2b7585d447924be5a603851290aecbb6adfac5385419385176da63a7"
+  },
+  "main_protocol_body": "672195d6155b6ab0ba0f2beb4d9e3a2b324950de7b01e7ee2bbac74ef0ee84ea",
+  "phase28a": {
+   "readouts_path": "artifacts/phase28a-2026-09-25/live/readouts.json",
+   "readouts_sha256": "1c72dc35c0a6b0654714b369bb6099cff7be29270ebc0cf967c6e46e131c8a8c",
+   "run_dir": "artifacts/phase28a-2026-09-25/live"
+  },
+  "phase28a_format": {
+   "harness": {
+    "PHASE28A_CLAIM_DIR": "phase28a-live-claims",
+    "PHASE28A_FINAL_STATUSES": [
+     "COMPLETED",
+     "STOPPED",
+     "ABORTED"
+    ],
+    "PHASE28A_MANIFEST": "upgrade-mechanic-probe-manifest.json",
+    "PHASE28A_PREFIX": "phase28a-",
+    "PHASE28A_READOUT_SCHEMA": "faultlab-upgrade-mechanic-probe-readouts/v1"
+   },
+   "runner": {
+    "PHASE28A_CLAIM_DIR": "phase28a-live-claims",
+    "PHASE28A_FINAL_STATUSES": [
+     "COMPLETED",
+     "STOPPED",
+     "ABORTED"
+    ],
+    "PHASE28A_MANIFEST": "upgrade-mechanic-probe-manifest.json",
+    "PHASE28A_MISMATCH_KEY": "label",
+    "PHASE28A_PREFIX": "phase28a-",
+    "PHASE28A_READOUTS": "readouts.json",
+    "PHASE28A_READOUT_SCHEMA": "faultlab-upgrade-mechanic-probe-readouts/v1",
+    "PHASE28A_RECHECK": "readouts-recheck.json"
+   }
+  },
+  "pre_change_copies": {
+   "backend/app/lab/api.py": "9c3ac4534a1f40da9c2c07e22e7a0026d0b57ca1a4f4667baf5dadc2240a2a63",
+   "backend/app/lab/completion_study.py": "c3fc22345359157612631c2b88c1ab8d641b274ad5aaf1527ae77dbe7107988a",
+   "backend/tests/experiments/test_run_gap_probe.py": "336b485f8cebf24c2afba44ee9979f9cc5513e78441ced76d73477a9e8afd564"
+  },
+  "prep": {
+   "design_numbers_r1.py": "7a1c413e4e03afeb914e0da36b8370328d398d9c734b0dc66964faa0a9b88f6c",
+   "draft_manifest_r1.py": "a49506ea9d5f5c67076539bbbb3053aece80d3c3669492ea27d7366264187604",
+   "freeze_compare_p28.py": "1e53a42d7abce4145e8379e47279a48b92b570836a81b310589fa6f23bc5cd05",
+   "manifest_hash.py": "5b3199e56884643ff6c31385891cb3eed3d50fb673c3242b35f793961c1ba3b1",
+   "new_function_hashes.py": "9dc8d889cfa908bb19d90ef81c993a2f18ffb855057a2bd18f9d638100e2ff5f"
+  },
+  "script_sha256": "07fc36ee7521d7b7dbc34731ae6afaeb5648d6d39f1411ee0b3742dde327854e"
+ },
+ "from": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/builds/phase28-2026-09-25-r3/build",
+ "main": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab",
+ "mode": "after",
+ "ok": true,
+ "problems": [],
+ "reviewed": "after review round 3"
+}

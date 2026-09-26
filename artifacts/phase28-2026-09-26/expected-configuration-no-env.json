@@ -1,0 +1,11 @@
+{
+ "path": "Settings.from_env(env_path=os.devnull): the root .env is not read",
+ "configuration_hash": "96a30c69b4108ff840a826141a6bce487cdeb0153a20880b7c2ffaf05659299e",
+ "models": {
+  "actor": "deepseek-ai/DeepSeek-V3.1",
+  "explorer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "mechanic": "deepseek-ai/DeepSeek-V4-Pro-0813"
+ },
+ "algorithm_hash": "88eb5b77b51ce53b22e5b50b6f0e355c883a25f3c741a9ef51797766d9c6ec1d",
+ "runtime_hash": "18332ec3b3b32f4cb6aa97ea320c67ab9afb079e75c9f52af923b8981705ef51"
+}

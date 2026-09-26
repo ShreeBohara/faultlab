@@ -1,0 +1,41 @@
+diff --git a/artifacts/builds/phase28-2026-09-25-r3/build/scripts/experiments/run_upgrade_loop.py b/scripts/experiments/run_upgrade_loop.py
+index 2628f5d..c81f9bc 100644
+--- a/artifacts/builds/phase28-2026-09-25-r3/build/scripts/experiments/run_upgrade_loop.py
++++ b/scripts/experiments/run_upgrade_loop.py
+@@ -191,9 +191,9 @@ FIRING_GATES = frozenset({None, 'always', 'upgrade_receipt_missing', 'upgrade_ou
+ # code edit and the review rounds. A live run refuses while any holds the placeholder. They are never
+ # regenerated to get past a mismatch: a mismatch means the reviewed state changed.
+ PLACEHOLDER = 'FILL-AT-FREEZE'
+-DECLARED_MANIFEST_HASH = PLACEHOLDER              # content_hash(build_case_manifest('upgrade-v1')), F6
+-DECLARED_FREEZE_SHA256 = PLACEHOLDER              # artifacts/phase28-<date>/gate-freeze-after.json, F4
+-DECLARED_CONFIGURATION_HASH = PLACEHOLDER         # expected_configuration.py on the frozen code, F5
++DECLARED_MANIFEST_HASH = 'cafe5757b9dccf8f5f0f5ed0f34a6df657a3fb61198972cff23417ea3dac63d3'              # content_hash(build_case_manifest('upgrade-v1')), F6
++DECLARED_FREEZE_SHA256 = 'bb0b19a9e7988884efaecec5ada22405bb520d58c16b3bdfae8c66206f6e0e8e'              # artifacts/phase28-<date>/gate-freeze-after.json, F4
++DECLARED_CONFIGURATION_HASH = '96a30c69b4108ff840a826141a6bce487cdeb0153a20880b7c2ffaf05659299e'         # expected_configuration.py on the frozen code, F5
+ # Supplementary text/AST hashes of the Phase 28 definitions, which gate_freeze.py (pinned) cannot list (F4): the four
+ # the design names, and the three module constants they read (review round 1): DEFAULT_CASE_MANIFEST picks the default
+ # path, and SOURCE_CLAUSE_OUTCOMES and SOURCE_CLAUSE_REOPENS decide whether and how source_clause acts. An AST sha
+@@ -201,8 +201,21 @@ DECLARED_CONFIGURATION_HASH = PLACEHOLDER         # expected_configuration.py on
+ NEW_DEFINITIONS = ('upgrade_case_manifest', 'CASE_MANIFESTS', 'DEFAULT_CASE_MANIFEST', 'build_case_manifest',
+                    'SOURCE_CLAUSE_OUTCOMES', 'SOURCE_CLAUSE_REOPENS', 'source_clause')
+ DECLARED_FUNCTION_HASHES = {
+-    f'{COMPLETION_STUDY}::{name}': {'text_sha256': PLACEHOLDER, 'ast_sha256': PLACEHOLDER}
+-    for name in NEW_DEFINITIONS}
++    f'{COMPLETION_STUDY}::upgrade_case_manifest': {'text_sha256': 'db52a8054061e30946756b2ce1681b6849438f605cb91b1821be29c4129e4592',
++        'ast_sha256': 'fd77006c3c04d773481bf67a5f9f0fc2ee45813a9ccc3764aa0dd86b9056ae04'},
++    f'{COMPLETION_STUDY}::CASE_MANIFESTS': {'text_sha256': '196327a2b9c83951d893c65025d0c2bf0fc8dccac18a5d81954eac8ae9d26467',
++        'ast_sha256': 'c1a3248afecf9b08059e49f0db483fe9a383887475f49260ebee655656ff27c3'},
++    f'{COMPLETION_STUDY}::DEFAULT_CASE_MANIFEST': {'text_sha256': '5adef5e2bd7a4f930af30a27b0ee81856ef882f9f33dd39b825626201dd2d265',
++        'ast_sha256': 'a064c48ec6683fc153116089dc3e0a535e15fdff14ca9f5d78c4917b7c0ff7fa'},
++    f'{COMPLETION_STUDY}::build_case_manifest': {'text_sha256': '3220e7e912dc0e9991cdc5e281d85ca460b59be72203b204e3e9ccc17fce08a5',
++        'ast_sha256': 'c5df4b7969ac77cca5f065a199e75d6c575f3bd1d23e01c599cdc26971a15ac3'},
++    f'{COMPLETION_STUDY}::SOURCE_CLAUSE_OUTCOMES': {'text_sha256': 'fb2a8d3622a4da6062b6a95fc42eaebf874804c60cb2a3d349149efde17a3332',
++        'ast_sha256': '2755d2b9998c03adc7ad6cec5a643f998d41771646fe3fceae3af546eb8b25be'},
++    f'{COMPLETION_STUDY}::SOURCE_CLAUSE_REOPENS': {'text_sha256': '555796149da78128f156077dd0238f6db4e29c4a4e1c96672bf345013ccf4a7e',
++        'ast_sha256': '74874e9a5723a81f6873f2404e08a738fba1aa2f0f7e2c2307b082d00536165c'},
++    f'{COMPLETION_STUDY}::source_clause': {'text_sha256': '4f3468cd4a904aa567e74201f68a9579c09f9f28e1557e32b0fb8db6ec78f4b9',
++        'ast_sha256': '51d5b4c394a788127968e5d8e6d9ce3a488775bcf1ff0852542cbf4d1402c42e'},
++}
+ # Known now and declared UNCHANGED, so they are pinned now: an edit to any of these files then fails the
+ # run instead of being re-pinned at the freeze.
+ DECLARED_SETTINGS_SHA256 = '1e2002d383cbccb3c0479f411f9d9ab7fd13af97f3d923a27281a454060c941d'  # settings-phase17.json

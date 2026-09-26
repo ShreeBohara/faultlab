@@ -148,13 +148,17 @@ def assess_pairs(rows, cases, incumbent_hash, candidate_hash, *, validation=Fals
 
 
 async def queue_completion_study(coordinator, campaign_id, evidence_protocol=None,
-                                 replay_policy_version=None, actor_context_protocol=None):
+                                 replay_policy_version=None, actor_context_protocol=None,
+                                 case_manifest_id=None):
     """Run the declared completion experiment, or replay one saved policy's validation.
 
     replay_policy_version measures the GATE, not the policy: it runs only the frozen
     validation batch for an already-decided policy, through the unchanged execute_slots
     and assess_pairs, makes no Mechanic call, and can never accept or activate anything.
     The replayed policy's own saved decision is never rewritten.
+
+    case_manifest_id names one declared case manifest (CASE_MANIFESTS). Leaving it out is
+    exactly today's study: the default manifest, and a record without the key.
     """
     coordinator.settings.require_live()
     evidence_protocol = evidence_protocol or DEFAULT_EVIDENCE_PROTOCOL
@@ -167,7 +171,11 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
             raise StoreConflict('Replay requires a saved non-empty policy')
     if actor_context_protocol is not None and actor_context_protocol not in ACTOR_CONTEXT_PROTOCOLS:
         raise StoreConflict('Unknown actor context protocol')
-    manifest = case_manifest()
+    manifest_id = DEFAULT_CASE_MANIFEST if case_manifest_id is None else case_manifest_id
+    # Before the lock: an unknown id is refused before any state is taken.
+    manifest = build_case_manifest(manifest_id)
+    if replay is not None and manifest_id != DEFAULT_CASE_MANIFEST:
+        raise StoreConflict('Replay runs only the default manifest')
     async with coordinator.lock:
         campaign = coordinator.get(campaign_id)
         if campaign.mode != 'baseline' or campaign.config_profile_id != 'live-v1' or campaign.state != 'IDLE':
@@ -204,6 +212,9 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
                   'trial_rows': [], 'candidates': [], 'evidence': {}, 'telemetry': {},
                   'validation_assessment': None, 'charged_model_calls': 0,
                   'usage': summarize([])['usage'], 'created_at': utc_now().isoformat()}
+        if case_manifest_id is not None:
+            # Only when a request names a manifest, so a default request writes today's record.
+            record['case_manifest_id'] = case_manifest_id
         coordinator.store.put_record('completion_plans', study_id, deepcopy(record), immutable=True)
         coordinator.store.put_record('completion_studies', study_id, record)
         coordinator.tasks[study_id] = asyncio.create_task(
@@ -235,7 +246,7 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
     def check():
         if stop(): raise StopRequested()
         coordinator.validate_core_configuration(campaign)
-        if content_hash(case_manifest()) != record['manifest_hash']:
+        if content_hash(build_case_manifest(record.get('case_manifest_id', DEFAULT_CASE_MANIFEST))) != record['manifest_hash']:
             raise StoreConflict('Completion case manifest changed during execution')
     async def verified_evidence(episode_id):
         # Blind by construction: keyed only on the ingestion record's transport-level
@@ -354,14 +365,14 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
             # No Mechanic call, no controls gate, no candidate stage, no acceptance:
             # the replayed policy's saved decision is left exactly as it was.
             validation = await execute_slots('validation', replay)
-            result = assess_pairs(validation, record['manifest']['cases'], baseline.policy_hash,
-                                  replay.policy_hash, validation=True)
+            result = source_clause(assess_pairs(validation, record['manifest']['cases'], baseline.policy_hash,
+                                                replay.policy_hash, validation=True), record['manifest'])
             record.update(status='COMPLETED' if result['decision'] != 'INCOMPLETE' else 'INCOMPLETE',
                           decision=result['decision'], reason=result['reason'],
                           validation_assessment=result)
             return
         controls = await execute_slots('controls')
-        source = cases['notification-2']; healthy = cases['healthy']
+        source = cases[record['manifest']['source_case_id']]; healthy = cases[record['manifest']['control_case_id']]
         source_trials = [r['trial'] for r in controls if r['case_id'] == source['case_id']]
         healthy_trials = [r['trial'] for r in controls if r['case_id'] == healthy['case_id']]
         # Eligibility to spend on a proposal, not an acceptance gate. Uninformative
@@ -434,8 +445,8 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
             record['selected_candidate_version'] = candidate.version
             record['selected_candidate_hash'] = candidate.policy_hash; save()
             validation = await execute_slots('validation', candidate)
-            result = assess_pairs(validation, record['manifest']['cases'], baseline.policy_hash,
-                                  candidate.policy_hash, validation=True)
+            result = source_clause(assess_pairs(validation, record['manifest']['cases'], baseline.policy_hash,
+                                                candidate.policy_hash, validation=True), record['manifest'])
             record.update(status='COMPLETED' if result['decision'] != 'INCOMPLETE' else 'INCOMPLETE',
                           decision=result['decision'], reason=result['reason'], validation_assessment=result)
             attempt['decision'] = result['decision']
@@ -472,3 +483,108 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
         finally:
             async with coordinator.lock:
                 if coordinator.active_id == campaign_id: coordinator.active_id = None
+
+
+# Phase 28 (docs/part2/PHASE28_DESIGN.md section 8.1): a second, upgrade-side case manifest, a
+# closed registry that selects a manifest by name, and the transposed source clause. Appended
+# after _execute on purpose, so case_manifest, planned_slots and assess_pairs keep their text
+# and their line ranges.
+
+def upgrade_case_manifest():
+    """The 'upgrade-v1' manifest: the source is an upgrade-side transient failure (F4 on
+    update_order, 3 failures). Only the public development manifest is read. healthy and
+    terminal-upgrade-rejection are copied from case_manifest(), so they are byte-identical to
+    the reviewed ones; dev-2 and dev-3 are refused if their reviewed fault specs changed."""
+    from app.referee.manifests import load_manifest
+    reviewed = case_manifest()
+    original = load_manifest('development')
+    if original['manifest_hash'] != reviewed['source_manifest_hash']:
+        raise StoreConflict('Reviewed public upgrade cases changed')
+    kept = {case['case_id']: case for case in reviewed['cases']}
+    by_id = {case['case_id']: case for case in original['cases']}
+    healthy = deepcopy(kept['healthy'])
+    rejection = deepcopy(kept['terminal-upgrade-rejection'])
+    lost = deepcopy(by_id['dev-2'])
+    delayed = deepcopy(by_id['dev-3'])
+    template = deepcopy(by_id['dev-6'])
+    expected_lost = FaultSpec.model_validate({'seed': 102, 'primitives': [{
+        'kind': 'F1', 'target_tool': 'update_order', 'target_service': 'orders', 'occurrence': 1,
+        'parameters': {'response_delay_ms': 1500},
+    }]}).model_dump(mode='json')
+    expected_delayed = FaultSpec.model_validate({'seed': 103, 'primitives': [{
+        'kind': 'F2', 'target_tool': 'update_order', 'target_service': 'orders', 'occurrence': 1,
+        'parameters': {'completion_delay_ticks': 3, 'terminal_status': 'SUCCEEDED', 'failure_code': None},
+    }]}).model_dump(mode='json')
+    if lost['fault_spec'] != expected_lost or delayed['fault_spec'] != expected_delayed:
+        raise StoreConflict('Reviewed public upgrade cases changed')
+
+    def transient(count, expected_outcome):
+        case = deepcopy(template)
+        case.update(case_id=f'upgrade-{count}', name=f'upgrade_transient_{count}',
+                    expected_outcome=expected_outcome)
+        case['fault_spec'] = FaultSpec.model_validate({'seed': 700 + count, 'primitives': [{
+            'kind': 'F4', 'target_tool': 'update_order', 'target_service': 'orders', 'occurrence': 1,
+            'parameters': {'failure_count': count},
+        }]}).model_dump(mode='json')
+        return case
+    delayed.update(case_id='delayed-upgrade', expected_outcome='COMPLETED')
+    lost.update(case_id='lost-upgrade-response', expected_outcome='COMPLETED')
+    source = transient(3, 'COMPLETED')
+    cases = [healthy, source, transient(2, 'COMPLETED'), delayed, transient(18, 'SAFE_UNRESOLVED'),
+             lost, rejection]
+    for case in cases:
+        FaultSpec.model_validate(case['fault_spec'])
+    return {'schema_version': SCHEMA, 'source_manifest_hash': original['manifest_hash'],
+            'cases': cases, 'source_case_id': source['case_id'],
+            'control_case_id': healthy['case_id'], 'repeats': 3,
+            'validation_feedback_forbidden': True, 'ordinary_policy_accepted': False}
+
+
+CASE_MANIFESTS = {'notification-v1': case_manifest, 'upgrade-v1': upgrade_case_manifest}
+DEFAULT_CASE_MANIFEST = 'notification-v1'
+
+
+def build_case_manifest(manifest_id):
+    if manifest_id not in CASE_MANIFESTS:
+        raise StoreConflict('Unknown completion case manifest')
+    manifest = CASE_MANIFESTS[manifest_id]()
+    if manifest['control_case_id'] != 'healthy':
+        # assess_pairs names the healthy control literally; never let that clause go inert.
+        raise StoreConflict('A completion manifest must use the literal healthy control')
+    return manifest
+
+
+SOURCE_CLAUSE_OUTCOMES = {'COMPLETED': 'completed', 'CORRECTLY_REJECTED': 'correctly_rejected',
+                          'SAFE_UNRESOLVED': 'safe_unresolved'}
+# The two assess_pairs reasons that come from its per-case loop or after it. Every other
+# decision (INCOMPLETE, a candidate check failure, the healthy clause) is returned before
+# the clause below could have been reached, so it is left exactly as it is.
+SOURCE_CLAUSE_REOPENS = ('Expected outcome regressed within a validation case',
+                         'No strict completion gain in the fixed validation batch',
+                         'Strict completion gain on fresh development cases; no policy activated')
+
+
+def source_clause(result, manifest):
+    """assess_pairs (validation) demands 3 of 3 completions on the literal ids 'healthy' and
+    'notification-2'. For a manifest whose source is another case, the source half of that
+    clause never applies; this restores it. The decision and reason equal what assess_pairs
+    would return with the literal 'notification-2' replaced by manifest['source_case_id']:
+    the per-case loop is replayed from by_case in manifest order, so a regression on an
+    earlier case still wins and the source clause wins over a later case, exactly as the
+    replaced literal would. One key, source_clause_case, is added only when the clause
+    decides. For the default manifest, and for any decision the loop never reached, the
+    result is returned unchanged."""
+    source = manifest['source_case_id']
+    if source == 'notification-2' or result.get('reason') not in SOURCE_CLAUSE_REOPENS:
+        return result
+    for case in manifest['cases']:
+        counts = result['by_case'][case['case_id']]; key = SOURCE_CLAUSE_OUTCOMES[case['expected_outcome']]
+        if counts['L'][key] < counts['B0'][key]:
+            return result
+        if case['case_id'] in ('healthy', 'notification-2') and counts['L']['completed'] != 3:
+            return result
+        if case['case_id'] == source and counts['L']['completed'] != 3:
+            return {**result, 'decision': 'NO_CHANGE',
+                    'reason': 'Healthy or source completion was not preserved in all trials',
+                    'source_clause_case': source}
+    return result

@@ -1,0 +1,31 @@
+{
+ "cases": [
+  "healthy",
+  "upgrade-3",
+  "upgrade-2",
+  "delayed-upgrade",
+  "upgrade-18",
+  "lost-upgrade-response",
+  "terminal-upgrade-rejection"
+ ],
+ "control_case_id": "healthy",
+ "default_manifest_hash": "7ab9368e7e86ec7f32fe6c57e99b8530853326f18d10f3687581be024aa38483",
+ "source_case_id": "upgrade-3",
+ "upgrade_3_fault_spec": {
+  "primitives": [
+   {
+    "kind": "F4",
+    "occurrence": 1,
+    "parameters": {
+     "failure_count": 3
+    },
+    "target_service": "orders",
+    "target_tool": "update_order"
+   }
+  ],
+  "schema_version": "faultlab/v1",
+  "scope": "orders.upgrade_then_confirm/v1",
+  "seed": 703
+ },
+ "upgrade_v1_manifest_hash": "cafe5757b9dccf8f5f0f5ed0f34a6df657a3fb61198972cff23417ea3dac63d3"
+}

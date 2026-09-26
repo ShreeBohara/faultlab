@@ -1,0 +1,24 @@
+diff --git a/backend/app/lab/api.py b/artifacts/builds/phase28-2026-09-25-r3/build/backend/app/lab/api.py
+index bfdfbcf..8cd607c 100644
+--- a/backend/app/lab/api.py
++++ b/artifacts/builds/phase28-2026-09-25-r3/build/backend/app/lab/api.py
+@@ -32,6 +32,9 @@ class CompletionStudyRequest(StrictModel):
+     # rate. Makes no Mechanic call and can never accept or activate a policy.
+     replay_policy_version:str|None=Field(default=None,max_length=120)
+     actor_context_protocol:str|None=Field(default=None,max_length=120)
++    # Phase 28: names one declared completion case manifest (completion_study.CASE_MANIFESTS).
++    # Leaving it out is exactly today's study; an unknown name is refused before any work.
++    case_manifest_id:str|None=Field(default=None,max_length=40)
+ 
+ class HeldoutCheckRequest(StrictModel):
+     execute_live:Literal[True]
+@@ -277,7 +280,8 @@ def create_router(get_coordinator):
+         from app.lab.completion_study import queue_completion_study
+         return await queue_completion_study(c(),id,evidence_protocol=request.evidence_protocol,
+                                             replay_policy_version=request.replay_policy_version,
+-                                            actor_context_protocol=request.actor_context_protocol)
++                                            actor_context_protocol=request.actor_context_protocol,
++                                            case_manifest_id=request.case_manifest_id)
+     @router.get('/campaigns/{id}/completion-studies')
+     @guarded
+     async def completion_studies(id:str): c().get(id); return records('completion_studies',id)

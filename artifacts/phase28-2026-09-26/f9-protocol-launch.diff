@@ -1,0 +1,29 @@
+diff --git a/artifacts/phase28-2026-09-26/protocol-after-f7.md b/docs/part2/PHASE28_EXPERIMENT.md
+index 9735817..a44831e 100644
+--- a/artifacts/phase28-2026-09-26/protocol-after-f7.md
++++ b/docs/part2/PHASE28_EXPERIMENT.md
+@@ -1,13 +1,16 @@
+ # Phase 28 protocol — the full loop on the upgrade-side source: 50 attempts, one futility look
+ 
+-**Status: declared before any paid call; NOT yet reviewed.** No paid, model, provider or W&B call has been made
+-for this phase. The code was built on 2026-09-25 in a detached worktree of `backup/part2-2026-09-22` (`3cda105`),
+-never in the main checkout, and nothing is committed. Every number below is a $0 measurement on that build or is
+-carried from `PHASE28_DESIGN.md`, and its source is named. Review rounds 1 (three lenses, 17 findings), 2 (two
+-reviewers, 12 findings) and 3 (two reviewers, 7 findings) all returned RUN_WITH_CHANGES, and every finding is
+-applied to the build. Round 3 changed code, so a further round follows (§15, pitfall 74). The state of every round
+-is in the Review log, and only the log grows when a round closes (§9, "the one rule"). Nothing may be spent until
+-the review rounds are closed, step P0 and §9's steps F0–F11 are done, and the approval record exists.
++**Status: declared before any paid call; reviewed in rounds 1–3 plus a focused check of round 3's fixes; landed and
++frozen on 2026-09-26; approved by Claude (Opus 5.5) as PM, delegated by the project owner.** No paid, model,
++provider or W&B call had been made for this phase at approval. The code was built on 2026-09-25 in a detached
++worktree of `backup/part2-2026-09-22` (`3cda105`) and landed in the main checkout at §9 F0 on 2026-09-26. Every
++number below is a $0 measurement on that build or is carried from `PHASE28_DESIGN.md`, and its source is named.
++Review rounds 1 (three lenses, 17 findings), 2 (two reviewers, 12 findings) and 3 (two reviewers, 7 findings) all
++returned RUN_WITH_CHANGES, and every finding is applied; round 3's code fixes were reviewed by an independent focused
++check that found no new defect (Review log, "Closure of round 3"). P0 preserved the last closed round, and §9's F0–F9
++are done; the approval record is `artifacts/phase28-2026-09-26/review.json` (F10).
++
++Reviewed for launch: harness d8689fcfae7a79d028a9021d8863172daf5788572d1dca82cb0e0ca9d2d2d146 plan 0779572d3c609078efb8009d41519e6abd45025cd4768b07859a7048caca1c07
+ 
+ - **Program:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_28-31.md`, Phase 28 (cap about $100–150).
+ - **Design (read first):** `docs/part2/PHASE28_DESIGN.md`, revised after design review round 1; the approver took

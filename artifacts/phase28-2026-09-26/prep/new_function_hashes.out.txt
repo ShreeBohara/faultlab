@@ -1,0 +1,78 @@
+{
+ "file_sha256": "03e3d8bed4cbcc117ffdbb9f552f254cd33234d177e6b58254aba3f398a1b9c4",
+ "new": {
+  "backend/app/lab/completion_study.py::CASE_MANIFESTS": {
+   "ast_sha256": "c1a3248afecf9b08059e49f0db483fe9a383887475f49260ebee655656ff27c3",
+   "lines": "543-543",
+   "text_sha256": "196327a2b9c83951d893c65025d0c2bf0fc8dccac18a5d81954eac8ae9d26467"
+  },
+  "backend/app/lab/completion_study.py::DEFAULT_CASE_MANIFEST": {
+   "ast_sha256": "a064c48ec6683fc153116089dc3e0a535e15fdff14ca9f5d78c4917b7c0ff7fa",
+   "lines": "544-544",
+   "text_sha256": "5adef5e2bd7a4f930af30a27b0ee81856ef882f9f33dd39b825626201dd2d265"
+  },
+  "backend/app/lab/completion_study.py::SOURCE_CLAUSE_OUTCOMES": {
+   "ast_sha256": "2755d2b9998c03adc7ad6cec5a643f998d41771646fe3fceae3af546eb8b25be",
+   "lines": "557-558",
+   "text_sha256": "fb2a8d3622a4da6062b6a95fc42eaebf874804c60cb2a3d349149efde17a3332"
+  },
+  "backend/app/lab/completion_study.py::SOURCE_CLAUSE_REOPENS": {
+   "ast_sha256": "74874e9a5723a81f6873f2404e08a738fba1aa2f0f7e2c2307b082d00536165c",
+   "lines": "562-564",
+   "text_sha256": "555796149da78128f156077dd0238f6db4e29c4a4e1c96672bf345013ccf4a7e"
+  },
+  "backend/app/lab/completion_study.py::build_case_manifest": {
+   "ast_sha256": "c5df4b7969ac77cca5f065a199e75d6c575f3bd1d23e01c599cdc26971a15ac3",
+   "lines": "547-554",
+   "text_sha256": "3220e7e912dc0e9991cdc5e281d85ca460b59be72203b204e3e9ccc17fce08a5"
+  },
+  "backend/app/lab/completion_study.py::source_clause": {
+   "ast_sha256": "51d5b4c394a788127968e5d8e6d9ce3a488775bcf1ff0852542cbf4d1402c42e",
+   "lines": "567-590",
+   "text_sha256": "4f3468cd4a904aa567e74201f68a9579c09f9f28e1557e32b0fb8db6ec78f4b9"
+  },
+  "backend/app/lab/completion_study.py::upgrade_case_manifest": {
+   "ast_sha256": "fd77006c3c04d773481bf67a5f9f0fc2ee45813a9ccc3764aa0dd86b9056ae04",
+   "lines": "493-540",
+   "text_sha256": "db52a8054061e30946756b2ce1681b6849438f605cb91b1821be29c4129e4592"
+  }
+ },
+ "ok": true,
+ "python_build": "3.12.8 (main, Mar 16 2025, 12:04:58) [Clang 16.0.0 (clang-1600.0.26.6)]",
+ "python_required": "3.12.8",
+ "python_version": "3.12.8",
+ "script_sha256": "9dc8d889cfa908bb19d90ef81c993a2f18ffb855057a2bd18f9d638100e2ff5f",
+ "unchanged": {
+  "assess_pairs": {
+   "expected": [
+    "783e8e58f91992f36066a2c6a152c4fbd242bd7e3966320b18ce45d525074aa2",
+    "106-147"
+   ],
+   "found": [
+    "783e8e58f91992f36066a2c6a152c4fbd242bd7e3966320b18ce45d525074aa2",
+    "106-147"
+   ]
+  },
+  "case_manifest": {
+   "expected": [
+    "0a5346c86561a032f26b837e5d63a2aefadfa7a43be00ad2f9539b0b2ea3e8e1",
+    "43-83"
+   ],
+   "found": [
+    "0a5346c86561a032f26b837e5d63a2aefadfa7a43be00ad2f9539b0b2ea3e8e1",
+    "43-83"
+   ]
+  },
+  "planned_slots": {
+   "expected": [
+    "495f60fc5110326c13fcded6431d47f19c1d4117ecb4b6e3cc14f76a20dae64d",
+    "86-103"
+   ],
+   "found": [
+    "495f60fc5110326c13fcded6431d47f19c1d4117ecb4b6e3cc14f76a20dae64d",
+    "86-103"
+   ]
+  }
+ }
+}
+exit 0

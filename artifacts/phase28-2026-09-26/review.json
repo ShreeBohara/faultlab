@@ -1,0 +1,36 @@
+{
+  "phase": 28,
+  "status": "approved",
+  "approved_by": "Claude as PM, delegated by the project owner",
+  "approved_at": "2026-09-26T03:35:28+00:00",
+  "protocol_sha256": "fe39f18e7f9f29e236c798f7232b71a73f359e1f0ec5d46f3b3761c1c0d1a48b",
+  "harness_sha256": "d8689fcfae7a79d028a9021d8863172daf5788572d1dca82cb0e0ca9d2d2d146",
+  "plan_hash": "0779572d3c609078efb8009d41519e6abd45025cd4768b07859a7048caca1c07",
+  "gate_freeze_file_sha256": "bb0b19a9e7988884efaecec5ada22405bb520d58c16b3bdfae8c66206f6e0e8e",
+  "configuration_hash": "96a30c69b4108ff840a826141a6bce487cdeb0153a20880b7c2ffaf05659299e",
+  "manifest_hash": "cafe5757b9dccf8f5f0f5ed0f34a6df657a3fb61198972cff23417ea3dac63d3",
+  "phase_cap": 150,
+  "remaining_budget_at_approval": "327.52",
+  "decisions": "PHASE28_DESIGN.md section 19, decisions 1-7, every recommendation taken (decision 4: Phase 28a first, as a declared go/no-go; decision 7: no held-out partition for this phase)",
+  "phase28a": {
+    "run_dir": "artifacts/phase28a-2026-09-25/live",
+    "decision": "GO",
+    "readouts_sha256": "1c72dc35c0a6b0654714b369bb6099cff7be29270ebc0cf967c6e46e131c8a8c"
+  },
+  "reviewed_build": {
+    "round": "3",
+    "record_sha256": "bc09849450859b7ec0ae340580057b41e5966e62184ebe3ce6d91c300ee67f7f",
+    "preserved_at": "artifacts/builds/phase28-2026-09-25-r3"
+  },
+  "owner_told_no_heldout_at": "2026-09-26T03:23Z (about; the verbatim F10 sentence in chat, sent while F2's full suite ran; decision 7 was also told on 2026-09-25 per PHASE28_DESIGN.md section 19). The owner asked questions afterwards and raised no objection.",
+  "review_rounds": [
+    "docs/part2/PHASE28_EXPERIMENT.md#review-log"
+  ],
+  "approval_basis": {
+    "program_direction": "go ahead with whatever u recommend",
+    "by": "Shree Bohara",
+    "date": "2026-09-25",
+    "relayed_by": "workflow harness",
+    "scope": "the direction of Phases 28-31; each phase is still approved on its own"
+  }
+}
