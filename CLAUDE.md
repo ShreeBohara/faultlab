@@ -270,12 +270,27 @@ work.** See `docs/part2/PHASE16_RESULTS.md`.
   - The loop's earlier repairs never re-sent the upgrade because the loop was only ever pointed at
     notification-side gaps. This is descriptive, not a controlled comparison.
   - Decides only that Phase 28 (the $150 upgrade-side loop) may be integrated, frozen, reviewed and run.
+- **Phase 28 (2026-09-26, $139.22): the full loop on the upgrade-side source. 9 of 49 attempts CERTIFIED an
+  upgrade-side repair** (Wilson [10%, 31%]; truncated at n=49 by the $150 guard). See `docs/part2/PHASE28_RESULTS.md`.
+  - **What was built:** the backend change (the `upgrade-v1` manifest and `source_clause`) was built in a worktree
+    and reviewed in 3 rounds plus a focused check. It was landed and frozen on 2026-09-26: freeze `bb0b19a9…`,
+    configuration `96a30c69…`. **The main checkout now runs this code.** Harnesses pinned to `2cf63e93…`
+    (Phases 25, 27, 28a, 30) refuse by design.
+  - **What was certified:** 8 distinct policies, with 4 re-send forms. All re-send the upgrade at
+    `after_upgrade_response`. The fresh gain always came from `upgrade-2`, the source case's sibling.
+  - **Safety:** 0 check failures in 216 certified-L episodes; 0 drift, 0 untriggered faults. Four agents verified it
+    independently.
+  - **Limits:**
+    - the delayed-upgrade re-sends were safe only because the simulator de-duplicates;
+    - on terminal rejection the safety comes from the interpreter's FAILED-receipt guard;
+    - the notification-side rules never ran;
+    - no held-out check; against Phase 23 (3 of 30) p = 0.52.
 
 ## Authorization and budget carried forward
 
 The user authorized autonomous implementation, manual verification, repeated/broader experiments and subagents. They explicitly authorized W&B Inference/Weave provider calls and the entity `shreetbohara-quinstreet`, with a **shared $1,000 ceiling for Phases 2 onward**. Do not ask them to repeat those approvals for unchanged scope. Routine judgment is expected; communicate simply and keep progress checklists current.
 
-After Phase 28a: **$672.48 conservatively charged; $327.52 remaining** (Phase 28a $1.60, rounded up from $1.59488; Phase 30 $17.98, rounded up from $17.974; Phase 29 cancelled, $0; Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12; Phase 25 $12.96; Phase 26 $17.05; Phase 27 $22.24). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
+After Phase 28: **$811.70 conservatively charged; $188.30 remaining** (Phase 28 $139.22, rounded up from $139.21018; Phase 28a $1.60, rounded up from $1.59488; Phase 30 $17.98, rounded up from $17.974; Phase 29 cancelled, $0; Phase 16 $0; Phase 17 $24.29; Phase 18 $4.22; Phase 19 $0; Phase 20 $18.77; Phase 21 $22.22; Phase 22 $0; Phase 23 $77.30; Phase 24 $17.12; Phase 25 $12.96; Phase 26 $17.05; Phase 27 $22.24). (Phase 14 cost $0; Phase 15 cost $97.33.) (The cost table's rows sum to $243.28 through Phase 12 while its headline said $243.00 — a pre-existing $0.28 discrepancy, the size of one probe; the higher figure is carried.) This is not a new allowance. Actual billed dollars are unavailable. Per-campaign $400 is an allocation inside the shared ceiling, not extra money. Reconcile any later use before new dispatch. No deployment, paid overages or new public push is part of this handoff. Aria remains off.
 
 ## Preserve work
 

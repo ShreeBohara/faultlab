@@ -1,0 +1,114 @@
+design     fixed N = 50 attempts on case manifest 'upgrade-v1' (source upgrade-3); a CERTIFIED study never stops the run
+look       once, at the first D >= 16 distinct valid policies: stop if none re-sends the upgrade and none is certified (futility look, then fixed_n, then spend_guard)
+stops      futility, N, the $150 spend guard ("truncated at n=j"), 5 consecutive infrastructure failures, Ctrl-C/SIGTERM/SIGHUP
+success    Phase 17 certification transposed: OBSERVED_IMPROVEMENT (assess_pairs + source_clause), upgrade-3 3 of 3, L-B0 >= 2 on a case other than upgrade-3 and healthy
+models     actor deepseek-ai/DeepSeek-V3.1; mechanic deepseek-ai/DeepSeek-V4-Pro-0813; brief backend/app/agents/prompts/completion.md
+protocols  actor faultlab-actor-context/v4-indexed-evidence (explicit); evidence faultlab-compact-evidence/v2-task-outcome
+routing    none: no held-out check follows this phase
+spend      guard $150.00 (conservative bound), headroom $11.00 per study
+runbook    before: check_ingestion_health (run by this runner), start-simulator.sh, dashboard closed (loop_latency p99 < 100 ms); after: check_clock_drift --worlds --since <run start> (run by this runner)
+never      replay, re-validate, resume a study, route anything, or write ACCEPTED
+[attempt 1/50] spent $0.00000
+[attempt 1/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 2/50] spent $0.68970
+[attempt 2/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: NO_CHANGE+resend, OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=False
+[attempt 3/50] spent $7.39378
+[attempt 3/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 4/50] spent $10.21046
+[attempt 4/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 5/50] spent $11.04646
+[attempt 5/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 6/50] spent $17.51260
+[attempt 6/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 7/50] spent $20.32928
+[attempt 7/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 8/50] spent $23.18776
+[attempt 8/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 9/50] spent $24.72954
+[attempt 9/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 10/50] spent $26.54302
+[attempt 10/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 11/50] spent $29.42240
+[attempt 11/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 12/50] spent $35.76314
+[attempt 12/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 13/50] spent $37.55572
+[attempt 13/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 14/50] spent $38.26632
+[attempt 14/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 15/50] spent $38.93512
+[attempt 15/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[look at n=15] D=16 R=4 k=2: passed
+[attempt 16/50] spent $40.47690
+[attempt 16/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 17/50] spent $42.01868
+[attempt 17/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 18/50] spent $42.72928
+[attempt 18/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 19/50] spent $44.22926
+[attempt 19/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 20/50] spent $44.91896
+[attempt 20/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 21/50] spent $45.62956
+[attempt 21/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 22/50] spent $48.17454
+[attempt 22/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 23/50] spent $50.38512
+[attempt 23/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 24/50] spent $56.47506
+[attempt 24/50] COMPLETED/NO_CHANGE at validation | candidates: NO_CHANGE+resend | validation=NO_CHANGE | certified=False
+[attempt 25/50] spent $62.94924
+[attempt 25/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: REJECTED, REJECTED | validation=None | certified=False
+[attempt 26/50] spent $63.92190
+[attempt 26/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 27/50] spent $64.75790
+[attempt 27/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: NO_CHANGE+resend, OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 28/50] spent $71.90088
+[attempt 28/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 29/50] spent $72.59058
+[attempt 29/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 30/50] spent $75.42816
+[attempt 30/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 31/50] spent $76.11786
+[attempt 31/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 32/50] spent $77.68054
+[attempt 32/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 33/50] spent $80.53902
+[attempt 33/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 34/50] spent $81.99720
+[attempt 34/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 35/50] spent $82.83320
+[attempt 35/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 36/50] spent $89.13214
+[attempt 36/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 37/50] spent $90.98742
+[attempt 37/50] COMPLETED/NO_CHANGE at validation | candidates: NO_CHANGE+resend | validation=NO_CHANGE | certified=False
+[attempt 38/50] spent $97.39086
+[attempt 38/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 39/50] spent $100.24934
+[attempt 39/50] COMPLETED/NO_CHANGE at controls | candidates: none | validation=None | certified=False
+[attempt 40/50] spent $100.98084
+[attempt 40/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE+resend, DUPLICATE+resend | validation=None | certified=False
+[attempt 41/50] spent $102.54352
+[attempt 41/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 42/50] spent $108.88426
+[attempt 42/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 43/50] spent $111.09484
+[attempt 43/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 44/50] spent $117.20568
+[attempt 44/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 45/50] spent $119.39536
+[attempt 45/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 46/50] spent $125.81970
+[attempt 46/50] COMPLETED/OBSERVED_IMPROVEMENT at validation | candidates: OBSERVED_IMPROVEMENT+resend | validation=OBSERVED_IMPROVEMENT | certified=True
+[attempt 47/50] spent $132.28584
+[attempt 47/50] COMPLETED/NO_CHANGE at proposal-2 | candidates: NO_CHANGE, DUPLICATE | validation=None | certified=False
+[attempt 48/50] spent $134.16202
+[attempt 48/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+[attempt 49/50] spent $136.97870
+[attempt 49/50] COMPLETED/NO_CHANGE at candidate-2 | candidates: NO_CHANGE, NO_CHANGE | validation=None | certified=False
+
+spend_guard | Truncated at n=49 by the $150 spend guard: 9 of 49 attempts produced a certified upgrade-side completion repair (Wilson 95% [0.100, 0.314]). Development cases only; no held-out check can follow. The validation set has no notification-fault case, so a certified policy's notification-side rules were never exercised; lost-upgrade-response cannot exercise a gated rule.
+funnel: upgrade re-send in 13 of 37 first proposals | D=46 R=14 | fired at source 15 of 15 | validation assessed 12 (clean 12) | source-clause rejections 0
+clock drift: 0 | charged $139.21018
+manifest /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/phase28-2026-09-26/upgrade-loop-manifest.json

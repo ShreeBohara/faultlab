@@ -50,10 +50,12 @@ Referee** scores C1–C8 against private truth. `assess_pairs` is the acceptance
   are cited.
 - **Phase 28a ($1.60): GO.** Pointed at upgrade-side evidence, the Mechanic wrote the upgrade re-send in
   13 of 30 first proposals, all placed where they can fire.
-- **In progress:** Phase 28 (the main upgrade-side loop, N=50, $150). It was built and reviewed in a
-  detached worktree and must be integrated, frozen, reviewed and launched. Phase 31 is the write-up, last.
+- **Phase 28 ($139.22): 9 of 49 attempts certified an upgrade-side repair** (8 distinct policies, all
+  re-sending the upgrade; Wilson [10%, 31%]). Development cases only. Its backend change is now landed
+  and frozen on main (configuration `96a30c69…`).
+- **Next:** Phase 31, the write-up (last).
 - **Plan:** `docs/part2/EXPERIMENT_PROGRAM_PHASES_28-31.md` and `PHASE28_DESIGN.md`.
-- **Budget:** $672.48 charged, $327.52 left.
+- **Budget:** $811.70 charged, $188.30 left.
 
 ## Earlier: Phases 18 and 19 (2026-09-23)
 

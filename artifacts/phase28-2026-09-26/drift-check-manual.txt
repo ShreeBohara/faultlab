@@ -1,0 +1,5 @@
+scored episodes checked: 1104 since 2026-09-26T03:38:38.540200+00:00
+world files missing: 0
+drifted: 0
+masked response-delay faults: 0
+exit 0
