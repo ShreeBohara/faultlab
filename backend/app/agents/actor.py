@@ -1,5 +1,6 @@
 """Competent typed prototype. Every answer remains authored by this model."""
 from pathlib import Path
+import asyncio
 import json
 from pydantic import TypeAdapter,ValidationError
 from app.contracts.models import ActorAction, ReportAction, canonical_json, new_id, content_hash
@@ -11,8 +12,8 @@ from app.agents.progress import (ACTOR_CONTEXT_PROTOCOL_V1, ACTOR_CONTEXT_PROTOC
                                  decode_citations, evidence_labels, turn_message)
 from app.lab.provider_failures import record_provider_failure
 
-# Codes that mean no generation was received. Retrying these is blind: nothing was
-# observed, so nothing can be selected on. Deliberately excludes EMPTY_FINAL_RESPONSE.
+# Retry admission also requires generation=None. Empty or malformed returned
+# generations are never retried. HTTP 503 is the only retryable HTTP status.
 RETRYABLE_TRANSPORT_CODES=('CONNECTION_ERROR','REQUEST_TIMEOUT')
 
 ACTOR_PROMPT=Path(__file__).with_name('prompts').joinpath('actor.md').read_text()
@@ -63,19 +64,26 @@ class Actor:
                 except RuntimeProviderError as error:
                     if error.generation is not None: account(error.generation)
                     record_provider_failure(broker.journal.store,error,role='actor',metadata=context.metadata)
-                    # A transport failure delivered no generation, so there is nothing to
-                    # look at and nothing to select on: the retry is blind. That is why it
-                    # is restricted to codes meaning "no response arrived", and why an
-                    # EMPTY_FINAL_RESPONSE - a response that did arrive - is not retried.
+                    # A transport failure or HTTP 503 with no generation can receive one
+                    # blind retry. A returned answer, including an empty or malformed one,
+                    # is never re-rolled. The SDK itself performs no retries.
                     # The retry is charged in dollars and model calls but not in actor
                     # turns, so it still fires on the final allowed turn - the turn that
                     # carries the report, and the one Phase 13 measured losing an episode.
                     # meter.transport_retry() returns False rather than raising, so a
                     # retry never substitutes a budget error for the transport failure.
-                    if (transport_attempt==0 and error.code in RETRYABLE_TRANSPORT_CODES
-                            and meter.transport_retry()):
-                        broker.journal.store.append_event(broker.journal.episode_id,tick=meter.usage.ticks,role='actor',type='actor_transport_retry',payload={'code':error.code,'attempt':transport_attempt+1})
-                        continue
+                    unavailable=error.code=='HTTP_ERROR' and error.http_status==503
+                    retryable=error.generation is None and (error.code in RETRYABLE_TRANSPORT_CODES or unavailable)
+                    if transport_attempt==0 and retryable:
+                        if unavailable:
+                            # The following admission refreshes elapsed time and checks
+                            # stop/campaign limits after this cancellable short delay.
+                            await asyncio.sleep(1)
+                        if meter.transport_retry():
+                            payload={'code':error.code,'attempt':transport_attempt+1}
+                            if unavailable: payload.update(http_status=503,retry_delay_seconds=1)
+                            broker.journal.store.append_event(broker.journal.episode_id,tick=meter.usage.ticks,role='actor',type='actor_transport_retry',payload=payload)
+                            continue
                     raise
             account(generation)
             if generation.model_id!=context.metadata['model_id']:

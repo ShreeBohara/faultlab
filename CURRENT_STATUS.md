@@ -26,10 +26,19 @@ GitHub publication remains pending explicit approval.
   **1,891 passed, 180 skipped, zero failures** in 712.56 seconds.
 - [x] Verify exact model availability and published prices; prepare non-secret process settings.
 - [x] Close the dashboard and stop its server and the idle backend before paid execution.
-- [ ] Freeze, review and execute one separate **public current-runtime compatibility measurement**:
-  [declared protocol](docs/part2/CURRENT_RUNTIME_REPLICATION_2026-09-27.md).
-- [ ] Independently verify its actual reports, shop effects, trace readbacks and clock/attempt identities;
-  publish the result, update the ledger and save the final local checkpoint.
+- [x] Freeze and execute the first separate public compatibility check. It stopped on HTTP 503
+  after 16 attempted episodes: 15 completed with verified traces, 26 never attempted. Its status
+  remains **INCOMPLETE**; original protocol, sealed plan, results and costs remain preserved.
+- [x] Independently reconstruct those 16 worlds, actual effects, original answers, request identities
+  and the 15 saved Weave readbacks; no mismatches found. The baseline remains active.
+- [x] Add one bounded, charged retry for HTTP 503 with no returned generation; 66 focused checks
+  passed and independent code review cleared the change. Returned answers are never re-rolled.
+- [ ] Complete the full backend suite again on this new runtime, then seal and execute the
+  [separately declared service-reliability check](docs/part2/SERVICE_RELIABILITY_CHECK_2026-09-27.md).
+  It compares the same fixed policy against the empty baseline on the same seven public cases,
+  in 42 fresh worlds and a separate store. No pooling, whole-episode retry or policy activation.
+- [ ] Independently verify the new run's reports, shop effects, trace readbacks and clock/attempt
+  identities; publish both results separately, update the ledger and save the final local checkpoint.
 
 **Decision:** do not perform the suggested immediate “Phase 28 unseen-case check.” The frozen Phase 28
 protocol explicitly disallows that routing. The old unseen-case generator also excludes notification
@@ -54,7 +63,7 @@ challenge and promotion. A separate completion study uses a chosen failure case 
 |---|---|---|
 | Phase 17 | 1 development-certified repair attempt out of 9 | Separate completion experiment, not original promotion |
 | Phase 23 | 3 out of 30, three notification-side policies | One routed policy subsequently failed its unseen-case check |
-| Phase 28, latest live experiment | **9 out of 49; eight distinct upgrade-side policies** | Development cases only; no unseen-case evaluation of these policies |
+| Phase 28, latest repair-generation experiment | **9 out of 49; eight distinct upgrade-side policies** | Development cases only; no unseen-case evaluation of these policies |
 | Original policy acceptance | **Zero generated ACCEPTED policies** | All recorded active pointers remain `policy-v0` |
 | Native smolagents | Live independent-agent baseline already completed in Phase 1 | Same shop; accepted-repair transfer remains unproven |
 
@@ -82,7 +91,7 @@ validation and a shared hosted product are not established.
 
 ## Evidence and reading order
 
-1. [Latest live result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
+1. [Latest repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
    [declared protocol](docs/part2/PHASE28_EXPERIMENT.md).
 2. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
 3. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
@@ -128,12 +137,14 @@ new runtime; historical campaigns are read-only. Recheck processes before starti
 
 ## Budget
 
-The carried shared allowance is **$811.70 conservatively charged / $188.30 remaining of $1,000**.
+The carried shared allowance is **$813.40 conservatively charged / $186.60 remaining of $1,000**.
 It begins with Phase 2; changing accounts, agents or machines does not reset it. Actual provider-billed
 dollars are unavailable. The detailed non-overlapping ledger sums to $811.39726; the carried figure
 is conservatively higher due to a historical probe double-count and rounding. Do not silently reclaim it.
 See the [preserved ledger](memory/history/2026-09-27-before-consolidation/memory/context/runtime-and-evidence.md).
-This consolidation makes no paid calls and adds no experiment charge.
+The original consolidation made no paid calls. The first separate compatibility check charged
+81 model requests, conservatively $1.6929, carried upward as $1.70. The new reliability check is
+not yet executed. Provider-billed cost remains unavailable.
 The owner subsequently reported adding more than $1,000 to the account and authorized further work;
 this is not a verified provider balance and does not erase prior charges. The next compatibility
 measurement fits within the existing remaining allowance, so it needs no budget reset or increase.
@@ -145,8 +156,8 @@ Local `backup/part2-2026-09-22` was at `7c36110` (September 26), 22 commits ahea
 files in that backup matched the working folder before Claude's later wording correction and this
 implementation. Current edits are therefore additional local work; do not reset the working tree.
 Recheck Git state before publishing. This work does not push or merge branches.
-The September 27 consolidation is now saved on that local backup branch at `52ee801`. Later follow-up
-artifacts are recorded in their own checkpoint. `main` and GitHub were not moved.
+The September 27 consolidation is saved on that local backup branch at `52ee801`; the reviewed
+replication runner and declaration are saved at `deff0b1`. `main` and GitHub were not moved.
 
 Ignored `artifacts/` contains roughly 4.5 GB of databases, worlds and evidence. A source clone does
 not carry it. `/Users/shree/FaultLab_Backups/2026-09-26/lab-after-phase28.sqlite3` matches the
@@ -173,7 +184,8 @@ replay, Phase 28 qualification, Phase 24 HARM, retained baseline policy, and dis
 Read the [new verification note](docs/part2/STATUS_NOTES_2026-09-27.md).
 Local proof: [dashboard screenshot](artifacts/verification-2026-09-27/unseen-result-and-active-policy.png) and
 [verification summary](artifacts/verification-2026-09-27/verification-summary.json). These ignored local artifacts
-are not included in a source clone. No new live experiment was performed for this runtime.
+are not included in a source clone. Those original implementation checks used saved data only;
+the separately declared live compatibility follow-up is tracked above.
 
 - **Fixed:** successful replays validate against their saved replay-policy hash. Ordinary generated-candidate
   validation remains strict. A real 42-trial successful replay now opens in the dashboard.

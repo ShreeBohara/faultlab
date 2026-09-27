@@ -10,9 +10,14 @@ from types import SimpleNamespace
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-spec = importlib.util.spec_from_file_location('runtime_replication', ROOT / 'scripts/experiments/run_runtime_replication.py')
-runner = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(runner)
+# Both frozen entry points must pass the same admission and evidence checks.
+@pytest.fixture(autouse=True, params=['run_runtime_replication.py', 'run_service_reliability.py'])
+def selected_runner(request):
+    global runner
+    spec = importlib.util.spec_from_file_location('replication_under_test', ROOT / 'scripts/experiments' / request.param)
+    runner = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(runner)
+
 
 
 def priced():
