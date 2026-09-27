@@ -2,8 +2,10 @@
 
 Continue FaultLab in `/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab`.
 
-Read `AGENTS.md` and `CURRENT_STATUS.md` first. Use the checklist and linked evidence there to determine what is finished and what remains. Inspect the working tree before editing; preserve the existing source, ignored evidence and local backup branch. Do not rebuild the project or resume a closed experiment.
+Read `AGENTS.md`, `CURRENT_STATUS.md` and `memory/context/product-continuation-2026-09-27.md` first. They contain the saved context, evidence, code map and remaining work.
 
-Keep historical result files unchanged. Record corrections as new notes. Separate development qualification, unseen-case evaluation and active-policy status. Current runtime fixes do not change historical verdicts or make their old source fingerprints current.
+My goal is a complete, dependable product. The demo/write-up is already saved; it is not the finish line. Take ownership of architecture, implementation and verification. Use the previous plan as a starting point, not a script: verify the code and evidence, challenge assumptions and change direction when justified.
 
-Follow my current request. Do not infer a paid run, public push or deployment from this handoff prompt. Offline tests and saved-evidence checks require no provider calls. Explain progress in simple English and keep `CURRENT_STATUS.md` current.
+Start by tracing the full core workflow, explain the most important gaps in simple English, then implement the highest-value improvements. Verify manually as well as with tests. Keep failures of FaultLab, mistakes by the tested agent and repair effectiveness separate.
+
+Time and budget are generous. Use resources thoughtfully and preserve spending records. Preserve existing work, historical results and secrets; do not push to GitHub without my OK. Keep progress updates short and update the status and memory as you work.

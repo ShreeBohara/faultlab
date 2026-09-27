@@ -190,3 +190,16 @@ Phase 1 used V3.1 as Actor, V4 Pro 0813 as Explorer, and separately tested V4 Pr
 The corrected learning and independent baselines produced 226 recorded episodes across their stores (19 offline/reference), 1,400 model calls and 203 verified model traces. A provider connection failure, a request timeout, and three earlier rootless regression traces are preserved and explained. The $100 total ceiling was respected: $29.80986 conservative dispatched bound, $2.780649 estimated from known usage, actual billed dollars unavailable. No learned repair was accepted; Aria publication, protected audit and accepted-policy transfer remain unclaimed.
 
 See [Phase 1 results](part2/PHASE1_RESULTS.md), [checklist](part2/PHASE1_TASKS.md) and [quick start](user-guide.md). The new GitHub Actions workflow runs the existing offline checks without credentials; remote CI execution is still pending a future push. Local services were idle at that checkpoint with results saved. No push or deployment was performed for Phase 1.
+
+
+## Product continuation handoff — 2026-09-27
+
+Documentation-only update: saved the owner's clarified product goal and continuation context in
+[CURRENT_STATUS.md](../CURRENT_STATUS.md), [memory](../memory/context/product-continuation-2026-09-27.md)
+and [the new-chat prompt](../NEW_CHAT_PROMPT.md). No application code, historical results,
+credentials or experiments changed. No paid calls or GitHub push. The previous completed runtime
+verification remains 1,952 backend passes / 180 existing skips, 166 frontend passes and a passing
+production build; those suites were not rerun for this handoff. Checked local links, saved-source
+contents, historical file preservation and HEAD/index preservation. Handoff verification and the
+exact local checkpoint are recorded under `artifacts/product-continuation-2026-09-27/` and backed
+up outside Desktop in `/Users/shree/FaultLab_Backups/2026-09-27/product-continuation/`.

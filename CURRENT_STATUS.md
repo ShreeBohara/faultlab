@@ -6,9 +6,18 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 
 ## Current work
 
-The implementation and saved-evidence verification below are complete. On September 27 the owner
-then authorized the lead to independently review the follow-ups and perform justified bounded work.
-GitHub publication remains pending explicit approval.
+**Current priority: complete and improve a dependable product.** The owner clarified that they meant
+“enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
+project. Finishing Claude's experiment program did not establish full product acceptance.
+
+The next lead should inspect the real core workflow, identify its most important gaps and implement
+justified improvements. Use the proposed milestones below as hypotheses, not a fixed script. Exercise
+independent architectural judgment, verify manually as well as with tests, and explain changes in plain
+English. Time and budget are generous; the old allowance is historical accounting, not a renewed limit.
+
+**This session ends with a handoff only.** No new implementation phase or paid experiment was started.
+Read the [detailed continuation notes](memory/context/product-continuation-2026-09-27.md) after this page
+and `AGENTS.md`. GitHub publication remains pending explicit approval.
 
 ### Phase 31 and report-finalization follow-up
 
@@ -151,18 +160,21 @@ storage work. A second task environment, general agent onboarding, successful re
 
 ## Evidence and reading order
 
-1. [Phase 31 write-up](docs/part2/PHASE31_WRITEUP.md), [demo guide](docs/part2/PHASE31_DEMO_GUIDE.md),
-   and [offline report-finalization correction](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
-2. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
-3. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
-4. [Historical repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
+1. [Product continuation notes](memory/context/product-continuation-2026-09-27.md): the owner's clarified
+   goal, code map, verified stopping point, recovery paths and a proposed starting approach.
+2. [Offline report-finalization correction](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
+3. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
+4. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
+5. [Historical repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
    [declared protocol](docs/part2/PHASE28_EXPERIMENT.md).
-5. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
-6. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
+6. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
+7. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
    not adopted and not an end-to-end result.
-7. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
-8. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
-9. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
+8. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
+9. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
+10. [Phase 31 write-up](docs/part2/PHASE31_WRITEUP.md) and [demo guide](docs/part2/PHASE31_DEMO_GUIDE.md):
+    completed communication assets, not a declaration that the product is finished.
+11. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
 
 The original [specification checklist](../FaultLab_Specs/specs/001-faultlab-loop/tasks.md)
 ends at Phase 15: 234/239 checked. This is not a product completion percentage. T065, T088,
@@ -201,9 +213,15 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-The carried shared allowance is **$855.91 conservatively charged / $144.09 remaining of $1,000**.
-It begins with Phase 2; changing accounts, agents or machines does not reset it. Actual provider-billed
-cost is unavailable. Before this follow-up, the non-overlapping historical ledger summed to $811.39726
+The carried historical accounting is **$855.91 conservatively charged**. Under the previously recorded
+$1,000 allowance, that leaves **$144.09** mathematically. The owner has since reported adding more
+than $1,000 and repeatedly authorized further work with generous resources: **$144.09 is not a newly
+imposed limit for the remaining project**. The actual provider balance and billed cost are unavailable;
+do not invent either, reset prior charges or interpret generous resources as permission for unbounded
+unattended spending. Declare and monitor the next experiment's allocation and verify its exact prices.
+
+The ledger begins with Phase 2; changing accounts, agents or machines does not reset it.
+Before this follow-up, the non-overlapping historical ledger summed to $811.39726
 and its carried figure was $811.70, conservatively higher due to an old probe double-count and rounding.
 That difference was not reclaimed. See the
 [preserved ledger](memory/history/2026-09-27-before-consolidation/memory/context/runtime-and-evidence.md).
@@ -321,15 +339,36 @@ thresholds or gates, substitute a corrected model answer, or present a replay as
 
 ## Next recommended work
 
-Claude's original program ends at **Phase 31: the write-up and event demo**, not at complete product
-acceptance. Those documents and the saved-evidence rehearsal are complete, as is the separate offline
-report-hook correction. No further paid run is active.
+Claude's original program ends at **Phase 31: the write-up and event demo**. That research-program
+milestone is complete; the broader product goal is not. No paid run is active.
 
-The next product question is whether a small, explicit record of attempted writes can prevent repeated
-polling of a never-started notification without causing report errors. The
-[notification review](docs/part2/NOTIFICATION_PROGRESS_REVIEW_2026-09-27.md) explains why the old v2/v3
-progress summaries should not simply be reintroduced. First design a narrow v4 comparison with reporting
-guard cases and an all-attempt denominator; only then consider a new paid experiment. Declare how
-agent-caused untriggered faults count, freeze the new runtime, and reserve fresh cases before execution.
-Keep the current evaluation INCOMPLETE; never replace its missing exposure or reuse it as unseen.
-Original promotion/transfer acceptance, broader environments and onboarding remain separate work.
+The owner accepted the following direction, while explicitly asking the next lead to question and
+improve it based on actual evidence:
+
+1. **Complete the core workflow.** Trace connecting an agent/task, fault discovery, reproduction,
+   diagnosis, repair, challenge, acceptance/rejection and saved regression as one usable flow.
+   Locate missing links and distinguish working modules from verified end-to-end behavior.
+2. **Improve repair quality.** Investigate what information and actions the Mechanic needs, then
+   compare repairs on fresh cases with honest completion, violation and fault-exposure accounting.
+3. **Make it usable by another developer.** Improve agent setup, campaign history/progress,
+   before/after evidence, export and rerun. Verify whether routine use still requires research scripts
+   or manually pasted identifiers before deciding what to build.
+4. **Prove reuse beyond the shop.** Complete independent-agent integration and choose a second
+   meaningful workflow with its own environment and rules, reusing the same testing engine.
+5. **Make operation dependable.** Verify persistence, restart, cancellation, isolation/concurrency,
+   clean setup on another machine and security appropriate to the intended deployment.
+
+Start by auditing and completing the core workflow, not by automatically starting another narrow
+notification experiment. A write-attempt record remains one possible intervention; the
+[notification review](docs/part2/NOTIFICATION_PROGRESS_REVIEW_2026-09-27.md) explains why simply
+reintroducing the old v2/v3 summaries is not justified. Change the sequence when a concrete dependency
+or new evidence warrants it, and explain why.
+
+FaultLab can work correctly while rejecting an ineffective repair. Product reliability, the tested
+agent's mistakes and learned-repair effectiveness are separate outcomes. Do not force the agent to
+call a tool just to expose a scheduled fault, weaken the referee to create acceptance, or count an
+untriggered fault as a passing fault test. Handwritten reference policies can check plumbing when
+clearly labeled; they are not learned-repair evidence. Keep closed evaluations and their verdicts intact.
+
+The next chat should take ownership of implementation and verification after a concise evidence-based
+plan. Keep this page current; use the [saved starting prompt](NEW_CHAT_PROMPT.md) to continue.

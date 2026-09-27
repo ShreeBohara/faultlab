@@ -8,6 +8,12 @@ all refer there. Historical result files must remain unchanged; add corrections 
 Earlier handoffs are archived under `memory/history/2026-09-27-before-consolidation/`.
 Do not use their old budgets, runtime pins or next-step instructions as current state.
 
+The owner's latest priority is completing and improving the product, not ending at the Phase 31
+write-up/demo. Read `memory/context/product-continuation-2026-09-27.md` for the handoff context.
+Use plans as proposals and verify their assumptions; exercise independent judgment and include
+manual evidence checks alongside tests. The latest publication instruction is **no GitHub push
+without the owner's OK**; earlier general publishing authorization does not override that instruction.
+
 ## Current scope
 
 Implementation of FaultLab is authorized by the Step 2 request and the reviewed sibling

@@ -1,7 +1,13 @@
 # FaultLab memory index
 
-Read [CURRENT_STATUS.md](../CURRENT_STATUS.md) first. It is the single current status, budget, reading order and implementation checklist. Then read the repository `AGENTS.md` for operating rules.
+1. [CURRENT_STATUS.md](../CURRENT_STATUS.md) — single current status, priorities, evidence and budget.
+2. [AGENTS.md](../AGENTS.md) — repository operating rules.
+3. [Product continuation, September 27](context/product-continuation-2026-09-27.md) — owner's clarified
+   goal, latest implementation, live-result limits, code map, next-work reasoning and recovery paths.
+4. [Starting prompt](../NEW_CHAT_PROMPT.md) — short text to paste into the next chat.
+5. [Findings and mistakes](context/pitfalls-and-decisions.md) — historical lessons; read in context.
+6. [Archived handoffs](history/2026-09-27-before-consolidation/README.md) — preserved older notes.
 
-The previous contents are preserved in the [dated handoff archive](history/2026-09-27-before-consolidation/memory/README.md). Their historical “current” and “next” instructions do not supersede the current status page or the owner’s latest request.
-
-Preserve existing work, original model reports and historical results. Keep credentials in the existing `.env`; never print or commit them. Startup, saved-evidence inspection and offline checks must not make provider calls. Existing completion qualifications do not imply unseen-case success or policy activation.
+The goal is a dependable product, not finishing phase numbers or polishing the saved demo.
+Use judgment and verify assumptions. Update CURRENT_STATUS.md as work proceeds; keep dated reports
+and historical verdicts intact. Do not maintain competing current-status pages in this folder.

@@ -3,5 +3,9 @@
   "updated_at": "2026-09-27",
   "current_status": "../CURRENT_STATUS.md",
   "historical_snapshot": "history/2026-09-27-before-consolidation/memory/latest-session.json",
-  "note": "Current facts and authorized work live only in CURRENT_STATUS.md; historical snapshots are not execution instructions."
+  "note": "CURRENT_STATUS.md is canonical. Dated handoff notes preserve context, not a fixed execution plan. Use current user intent, independent judgment and verified evidence.",
+  "handoff": "context/product-continuation-2026-09-27.md",
+  "starting_prompt": "../NEW_CHAT_PROMPT.md",
+  "current_focus": "Complete and enhance the product; independently audit the core workflow before selecting implementation work.",
+  "session_action": "Documentation-only continuation handoff; no new implementation phase or paid experiment started."
 }

@@ -1,7 +1,21 @@
 # FaultLab — agent entry point
 
-Read [CURRENT_STATUS.md](CURRENT_STATUS.md) first. It is the single current status, budget, reading order and implementation checklist. Then read the repository `AGENTS.md` for operating rules.
+Read [CURRENT_STATUS.md](CURRENT_STATUS.md) and [AGENTS.md](AGENTS.md), then the
+[September 27 product handoff](memory/context/product-continuation-2026-09-27.md).
+CURRENT_STATUS.md is the single current status; the handoff is a dated context and evidence map.
 
-The previous contents are preserved in the [dated handoff archive](memory/history/2026-09-27-before-consolidation/CLAUDE.md). Their historical “current” and “next” instructions do not supersede the current status page or the owner’s latest request.
+The owner wants to **complete and enhance the product**. Phase 31's write-up/demo is a saved
+asset, not project completion. Take responsibility for architecture, implementation and verification.
+Use independent judgment: question old plans, inspect the actual code/evidence, and change direction
+when justified. Verify manually as well as with tests. Explain progress in simple English.
 
-Preserve existing work, original model reports and historical results. Keep credentials in the existing `.env`; never print or commit them. Startup, saved-evidence inspection and offline checks must not make provider calls. Existing completion qualifications do not imply unseen-case success or policy activation.
+Resources are generous; retain honest spending records rather than treating an old remaining
+allowance as a new project limit. Preserve existing local work, original reports and historical
+results. Keep credentials in `.env`; never print, overwrite or commit them. No GitHub push without
+the owner's OK. Startup, saved-evidence browsing and offline checks must not call providers.
+
+Development qualification, unseen-case results and active policy are different claims. A correct
+rejection can be a successful lab workflow; it is not a successful learned repair.
+
+[Copyable new-chat prompt](NEW_CHAT_PROMPT.md) · [Memory index](memory/README.md).
+Earlier entry-point contents are retained in [the historical archive](memory/history/2026-09-27-before-consolidation/CLAUDE.md).
