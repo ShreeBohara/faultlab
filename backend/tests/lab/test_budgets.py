@@ -135,3 +135,81 @@ def test_coordinator_rejects_incomplete_protected_reserve_before_execution(tmp_p
     assert coordinator.active_id is None and not coordinator.tasks and not coordinator.store.list_records('episodes')
     assert coordinator.store.get_record('configurations',campaign.configuration_hash)['model_settings']['max_input_tokens']==32000
     asyncio.run(coordinator.close())
+
+
+def test_optional_retries_preserve_two_complete_reserved_episodes_and_protected_work(tmp_path):
+    store=LabStore(tmp_path/'lab.db')
+    # Sixteen required turns plus sixteen optional retries, with every protected
+    # batch still reserved. All caps are exactly sufficient for this schedule.
+    total=1064+32
+    ledger=CampaignLedger(store,'c',CampaignBudget(model_calls=total,tokens=total*34000,dollars=total*.125),dollar_bound=.125)
+    protected=store.get_record('budgets','c')['reservations']
+    ledger.reserve('two_episodes',16)
+    for episode in range(2):
+        meter=EpisodeMeter(campaign=ledger,reservation='two_episodes')
+        for turn in range(8):
+            meter.model_call()
+            remaining=16-(episode*8+turn+1)
+            assert ledger.reservations['two_episodes']['calls']==remaining
+            assert meter.transport_retry()
+            assert ledger.reservations['two_episodes']=={'calls':remaining,'tokens':remaining*34000}
+        assert meter.usage.actor_calls==8 and meter.usage.model_calls==16
+    assert ledger.used_calls==32 and ledger.used_tokens==32*34000
+    assert ledger.used_dollar_upper_bound==4
+    assert all(ledger.reservations[name]==value for name,value in protected.items())
+    saved=store.get_record('budgets','c')
+    restored=CampaignLedger(store,'c')
+    assert store.get_record('budgets','c')==saved
+    assert restored.reservations==ledger.reservations
+    assert not EpisodeMeter(campaign=restored).transport_retry()
+    assert store.get_record('budgets','c')==saved
+    store.close()
+
+
+@pytest.mark.parametrize('limiting_cap',['calls','tokens','dollars'])
+def test_retry_cannot_spend_reserved_turns_when_one_campaign_cap_has_no_spare(tmp_path,limiting_cap):
+    total=1064+16
+    caps=CampaignBudget(model_calls=total if limiting_cap=='calls' else 6000,
+        tokens=total*34000 if limiting_cap=='tokens' else 204000000,
+        dollars=total*.125 if limiting_cap=='dollars' else 500)
+    store=LabStore(tmp_path/'lab.db'); ledger=CampaignLedger(store,'c',caps,dollar_bound=.125)
+    ledger.reserve('two_episodes',16)
+    first=EpisodeMeter(campaign=ledger,reservation='two_episodes')
+    first.model_call()
+    saved=store.get_record('budgets','c')
+    assert not first.transport_retry()
+    assert store.get_record('budgets','c')==saved
+    assert first.usage.actor_calls==first.usage.model_calls==1
+    for _ in range(7): first.model_call()
+    second=EpisodeMeter(campaign=ledger,reservation='two_episodes')
+    for _ in range(8): second.model_call()
+    assert ledger.used_calls==16 and ledger.reserved_calls==1064
+    assert first.usage.actor_calls==second.usage.actor_calls==8
+    store.close()
+
+
+def test_retry_after_reload_preserves_historical_charges_caps_and_depleted_reservation(tmp_path):
+    store=LabStore(tmp_path/'lab.db')
+    old_caps=CampaignBudget(tokens=60000000,input_tokens_per_call=8000,output_tokens_per_call=2000)
+    ledger=CampaignLedger(store,'old',old_caps,dollar_bound=.0077)
+    ledger.reserve('batch',16)
+    # Older runtime charged both initial turns and retries to this reservation.
+    # Reload must not reconstruct, refund or top up those four saved requests.
+    for _ in range(4): ledger.consume_call(reservation='batch')
+    saved=store.get_record('budgets','old')
+    restored=CampaignLedger(store,'old')
+    assert store.get_record('budgets','old')==saved
+    meter=EpisodeMeter(campaign=restored,reservation='batch')
+    meter.model_call()
+    before_retry=store.get_record('budgets','old')
+    assert meter.transport_retry()
+    current=store.get_record('budgets','old')
+    assert current['reservations']==before_retry['reservations']
+    assert current['caps']==saved['caps'] and current['dollar_bounds']==saved['dollar_bounds']
+    assert current['used_calls']==6 and current['used_tokens']==60000
+    assert current['charged_dollar_upper_bound']==pytest.approx(6*.0077)
+    assert current['unknown_cost_calls']==current['unknown_token_calls']==6
+    assert current['reservations']['batch']=={'calls':11,'tokens':110000}
+    CampaignLedger(store,'old')
+    assert store.get_record('budgets','old')==current
+    store.close()

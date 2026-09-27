@@ -185,12 +185,16 @@ class EpisodeMeter:
         which is why the retry can fire on the final allowed turn. Dollars and
         ``model_calls`` are charged, because the request was really sent.
 
+        Batch reservations cover initial actor turns. Optional retries use only
+        unreserved campaign capacity, preserving every later turn in the batch and
+        all other protected work. A retry is never promised by a batch reservation.
+
         Returns False instead of raising when it cannot be admitted, so that a retry can
         never replace the transport failure that caused it with a different error.
         """
         try:
             self.check()
-            if self.campaign: self.campaign.consume_call(reservation=self.reservation,role='actor')
+            if self.campaign: self.campaign.consume_call(role='actor')
         except (BudgetExhausted,StopRequested):
             return False
         self.usage.model_calls+=1

@@ -10,6 +10,14 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
+**Active next increment: original learning workflow, then durability.** The owner authorized the
+recommended offline end-to-end exercise and a bounded live original campaign. Preparation is in
+progress: real-world accepted/rejected/interrupted reference fixtures, historical rejection audit,
+and a fix that keeps optional transport retries from consuming later required comparison calls.
+The two configured models are available. No new generation call has been made yet; new spending
+remains $0. Source, caps and stop rules will be frozen before the live run. Follow
+[original-workflow memory](memory/context/product-loop-2026-09-27.md) for this active increment.
+
 Continue to use the milestones below as hypotheses, not a fixed script. Exercise independent
 architectural judgment and verify manually as well as with tests. Time and budget are generous;
 the old allowance is historical accounting, not a renewed limit.
