@@ -43,19 +43,28 @@ GitHub publication remains pending explicit approval.
   [Full current review and results](docs/part2/CURRENT_REVIEW_2026-09-27.md) records both executions
   separately, manual findings, pricing, current spending and the recommended next experiment.
 
-### Authorized next experiment — preparation in progress
+### Fresh repair experiment — execution and verification finished
 
 The owner authorized a fresh repair-generation experiment followed by one reserved-case
 evaluation on September 27. [Prospective declaration](docs/part2/PROSPECTIVE_REPAIR_2026-09-27.md).
 This extends the evidence beyond Claude's original Phase 31 write-up/demo; it does not
-reopen Phase 28 or activate a policy.
+reopen Phase 28 or activate a policy. The sealed run finished and must not be resumed or
+rerun. [Full result and manual findings](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
 
 - [x] Declare up to ten development attempts; select the first strongly qualified new saved-policy hash.
 - [x] Separate $100 generation and $60 evaluation pools, within the remaining $181.77.
 - [x] Finish independent review and 102 offline checks; reserve three unexposed combinations and seal
   all inputs before generation. Frozen configuration `88e97d68…`; same tested application runtime.
-- [ ] Execute the bounded program once; preserve unsuccessful or incomplete results.
-- [ ] Independently reconstruct the actual effects, outputs, traces and cost; save a local backup.
+- [x] Execute ten development studies / 162 episodes; the tenth produced the first new strongly
+  qualified policy. Its development validation completed **15/21 versus 9/21**, with zero violations.
+- [x] Execute all **156 reserved evaluation episodes** once. Formal result **INCOMPLETE**: one baseline
+  episode never attempted its notification, so one scheduled fault could not fire. Candidate had
+  **zero violations**, baseline one C5 report-label violation. No policy was activated.
+- [x] Independently reconstruct all **318 worlds**, 2,544 checks, 1,996 HTTP attempts, 452 journals,
+  315 filed reports and 318 saved readbacks; verify three episodes again directly in Weave.
+- [x] Reconcile **1,783 requests / $37.68 carried cost**; preserve source, historical results,
+  active baseline pointers and the main evidence store. Stop the simulator and other local servers.
+- [x] Save all 318 worlds, all 11 stores, preparation/audit evidence and source locally; verify the backup manifest.
 
 **Decision:** do not perform the suggested immediate “Phase 28 unseen-case check.” The frozen Phase 28
 protocol explicitly disallows that routing. The old unseen-case generator also excludes notification
@@ -63,8 +72,9 @@ development cases but not `upgrade-v1`, so a different seed could repeat known u
 the completed measurement compared the first strongly qualified Phase 28 policy and the empty baseline on
 the seven already-public upgrade cases: 21 pairs / 42 episodes, under the corrected runtime, with a
 $20 cap. It cannot establish new learning, unseen generalization, certification or policy acceptance.
-A later learned-repair/unseen-case claim requires a separate prospective design: seal a genuinely new
-partition before generating new candidates, then qualify and route under one frozen runtime.
+The subsequent prospective experiment reserved new combinations before generating candidates,
+then qualified and evaluated under one frozen runtime. Its coverage gate returned INCOMPLETE;
+it does not establish an unseen-case pass. That partition is now spent.
 
 Changes to runtime code produce a **new runtime identity**. They do not rewrite, resume or repin
 closed Phase 17–30 experiments. The Phase 30 report-status hint remains experimental and is not adopted.
@@ -80,8 +90,10 @@ challenge and promotion. A separate completion study uses a chosen failure case 
 |---|---|---|
 | Phase 17 | 1 development-certified repair attempt out of 9 | Separate completion experiment, not original promotion |
 | Phase 23 | 3 out of 30, three notification-side policies | One routed policy subsequently failed its unseen-case check |
-| Phase 28, latest repair-generation experiment | **9 out of 49; eight distinct upgrade-side policies** | Development cases only; no unseen-case evaluation of these policies |
+| Phase 28 | **9 out of 49; eight distinct upgrade-side policies** | Development cases only; no unseen-case evaluation of these policies |
 | September 27 compatibility check | Saved repair **15/21 completed**, baseline **9/21**, zero violations across 42 episodes | One existing policy on known public cases; no new qualification or acceptance |
+| September 27 fresh repair experiment | **1 of 10 studies qualified**; 15/21 versus 9/21 on development validation | Bounded first-success search; not an unbiased repair-rate estimate |
+| September 27 reserved evaluation | All **156 episodes** ran; candidate zero violations, baseline one | **INCOMPLETE** because one baseline fault did not trigger; no NO_HARM claim |
 | Original policy acceptance | **Zero generated ACCEPTED policies** | All recorded active pointers remain `policy-v0` |
 | Native smolagents | Live independent-agent baseline already completed in Phase 1 | Same shop; accepted-repair transfer remains unproven |
 
@@ -108,15 +120,16 @@ storage work. A second task environment, general agent onboarding, successful re
 
 ## Evidence and reading order
 
-1. [September 27 current review and live results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
-2. [Latest repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
+1. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
+2. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
+3. [Historical repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
    [declared protocol](docs/part2/PHASE28_EXPERIMENT.md).
-3. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
-4. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
+4. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
+5. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
    not adopted and not an end-to-end result.
-5. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
-6. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
-7. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
+6. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
+7. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
+8. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
 
 The original [specification checklist](../FaultLab_Specs/specs/001-faultlab-loop/tasks.md)
 ends at Phase 15: 234/239 checked. This is not a product completion percentage. T065, T088,
@@ -155,7 +168,7 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-The carried shared allowance is **$818.23 conservatively charged / $181.77 remaining of $1,000**.
+The carried shared allowance is **$855.91 conservatively charged / $144.09 remaining of $1,000**.
 It begins with Phase 2; changing accounts, agents or machines does not reset it. Actual provider-billed
 cost is unavailable. Before this follow-up, the non-overlapping historical ledger summed to $811.39726
 and its carried figure was $811.70, conservatively higher due to an old probe double-count and rounding.
@@ -166,10 +179,16 @@ The original consolidation made no paid calls. The first separate compatibility 
 81 model requests / $1.6929 upper bound, carried as $1.70. The complete follow-up charged
 231 requests / $4.8279 upper bound, carried as $4.83. Together: **312 requests / $6.5208**, carried as
 **$6.53**. Both costs remain recorded separately; incomplete runs are not erased or refunded in this ledger.
-The current machine-readable accounting is `artifacts/verification-2026-09-27/followup-budget-ledger.json`.
+That earlier machine-readable accounting remains at
+`artifacts/verification-2026-09-27/followup-budget-ledger.json`.
+
+The fresh repair experiment added **978 development requests / $20.84536** and **805 evaluation
+requests / $16.82450**, conservatively carried as $20.85 + $16.83 = **$37.68**. Total new requests:
+1,783. The current ledger is `artifacts/prospective-repair-prep-2026-09-27/final-budget-ledger.json`;
+the independent accounting audit records all 11 stores. The INCOMPLETE evaluation is fully charged.
 
 The owner reported adding more than $1,000 and authorized further work. This is not a verified provider
-balance and does not erase prior charges. Both bounded runs fit the existing allowance. Exact model
+balance and does not erase prior charges. All three bounded experiments fit the existing allowance. Exact model
 prices and the required non-secret process settings are documented in the
 [current review](docs/part2/CURRENT_REVIEW_2026-09-27.md#exact-model-pricing-and-admission).
 
@@ -184,6 +203,8 @@ The September 27 consolidation is saved on that local backup branch at `52ee801`
 replication runner and declaration are saved at `deff0b1`; the bounded 503 fix and follow-up declaration
 are saved at `e38f7db`. The final results are saved on the same local backup branch. `main` and GitHub
 were not moved.
+The fresh experiment's sealed source and offline tests are saved at `7000ced`; its results and current
+status are saved in the subsequent local checkpoint. No GitHub push was made.
 
 Ignored `artifacts/` contains roughly 4.5 GB of databases, worlds and evidence. A source clone does
 not carry it. `/Users/shree/FaultLab_Backups/2026-09-26/lab-after-phase28.sqlite3` matches the
@@ -193,6 +214,10 @@ is an older preparation copy; do not use it as the latest implementation.
 Both September 27 experiment stores, all 58 new world databases and their verification files have
 byte-verified copies at `/Users/shree/FaultLab_Backups/2026-09-27/followup-verification/`.
 Its `MANIFEST.json` records every copied file hash; it contains no credentials.
+The fresh repair experiment has a separate verified backup at
+`/Users/shree/FaultLab_Backups/2026-09-27/prospective-repair/`, including all 318 worlds, 11 stores,
+commitments, independent audits, current reports and a self-contained source bundle.
+Its manifests record copied file hashes; credentials and SQLite transient sidecars are excluded.
 
 ## Verification and known issues
 
@@ -233,16 +258,25 @@ the separately declared live compatibility follow-up is tracked above.
   **9/49**, with zero mismatches across 88 attempts. It never promotes or activates a policy.
 - All **37 historical result files** match the pre-change hashes, including Claude's already-corrected
   Phase 28 report. The scorer, interpreter and Actor system prompt remain unchanged by this work.
+- The prospective runner/partition passed **102 offline checks**. All 98 application files match
+  the pre-run source checkpoint; the experiment did not change the runtime. All 318 new worlds and
+  saved readbacks were reconstructed; fresh exact-ID Weave reads verified three selected episodes.
+- **Newly diagnosed limitation:** a rejected generated policy used `defer_unresolved` then tried a
+  business read in its report hook. This prevented submission of a real model report; the generic
+  “no final report” reason was misleading. Preserve the three failures; fix diagnostics/handling
+  separately under a new runtime. The selected repair does not use this sequence.
 
 Preserve original reports, failed trials and evaluation partitions. Do not weaken C1–C8, qualifying
 thresholds or gates, substitute a corrected model answer, or present a replay as fresh execution.
 
 ## Next recommended work
 
-One prospective **generate → qualify → reserved evaluation** study on one frozen runtime. Reserve
-previously unexposed fault combinations before any new Mechanic call; compare against the full used-case
-inventory. New seeds or counts alone are not new fault mechanisms. Generate a bounded number of fresh
-attempts, route the first new exact policy hash meeting strong qualification, evaluate that one policy
-once, and keep baseline active. The current review describes a finite draft design; it is not yet sealed
-or launched. Fix experiment admission around these commitments before spending. Another environment
-or broader UI scope would not answer this missing evidence question.
+Claude's original program ends at **Phase 31: the write-up and event demo**, not at complete product
+acceptance. The additional prospective study is now finished. Prepare that write-up with the real
+development improvement and the honest INCOMPLETE reserved result; no further paid run is active.
+
+For the next product change, first reproduce the report-hook failure offline and improve its handling
+and diagnostics. Then investigate why an agent polls an operation it has never attempted. Any later
+experiment must declare how agent-caused untriggered faults count before running, freeze the new runtime
+if code changes, and reserve fresh cases. Do not retroactively change this gate or replace its missing
+exposure. Broader environments and onboarding remain separate product work.
