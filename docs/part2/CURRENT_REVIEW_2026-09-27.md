@@ -82,7 +82,79 @@ the error path rather than relying on test assertions alone.
 A [separate declaration](SERVICE_RELIABILITY_CHECK_2026-09-27.md) fixes the same policy and 42 public
 slots on the new runtime in a new store. The first runner is preserved byte-for-byte; a new entry point
 differs only in its fixed output directory. Shared admission/integrity checks exercise both entry points.
-This follow-up is not yet executed. Its result and verification will be added here after execution.
+The follow-up completed once, in 296.99 seconds, with **42/42 episodes**, **21 complete pairs**,
+**36/36 scheduled faults triggered**, **42 verified Weave readbacks**, and no detected clock drift,
+missing worlds or failed C1–C8 checks.
+
+| Public case (three repetitions per arm) | Empty baseline | Saved repair |
+|---|---|---|
+| Healthy service | 3 completed | 3 completed |
+| Three temporary upgrade failures | 3 safely unresolved | 3 completed |
+| Two temporary upgrade failures | 3 safely unresolved | 3 completed |
+| Delayed upgrade completion | 3 completed | 3 completed |
+| Repeated outage beyond the episode limit | 3 safely unresolved | 3 safely unresolved |
+| Lost upgrade response | 3 completed | 3 completed |
+| Explicit upgrade rejection | 3 correctly rejected | 3 correctly rejected |
+
+The saved repair completed **15/21 tasks**, compared with **9/21** for the baseline: six extra
+completions, all on the two transient-failure cases. Both arms handled the intentionally unfinished
+or rejected tasks truthfully. These are descriptive results from three paired repetitions per case,
+not a general accuracy estimate, a new repair-generation result or evidence about unseen scenarios.
+
+The evaluator's raw decision is `NO_CHANGE`, with reason “Complete repeated evidence; fixed
+promotion predicate still required.” The experiment itself is `COMPLETED`. Those statements are
+consistent: this comparison finished, but it did not run the original promotion workflow or activate
+a policy. The candidate remains `PROPOSED`; the active policy is `policy-v0`.
+
+Manual inspection distinguishes the causes of recovery:
+
+- Temporary failures: the learned rule resubmitted the original upgrade request with the same
+  operation and idempotency identity; the shop applied one upgrade and sent one confirmation.
+- Lost response: both arms recovered through the adapter's existing same-request transport retry.
+  The learned policy did not execute steps in these six episodes. This is not new learned recovery.
+- Delayed success: the learned rule retried accepted work while the last delivered status was still
+  PENDING. The operation completed as that request arrived; service de-duplication returned the
+  existing receipt. This redundant resubmission is safe in this shop, not evidence that arbitrary
+  external services tolerate it.
+- Explicit rejection: rule conditions enabled retry steps, but the interpreter's FAILED-receipt
+  precondition prevented any retry HTTP request. A `policy_step.executed` event means its condition
+  passed, not necessarily that a business request was sent. Actual dispatches and receipts matter.
+- Repeated outage: three policy episodes invoked final-report hooks and appended an observation
+  after the final Actor answer. Original citations were decoded against the earlier request evidence,
+  as intended; newly added evidence was not used to validate those original labels.
+
+No real model HTTP 503 occurred in this second run. The new retry branch was verified with controlled
+SDK failures and independent code inspection; this live run verifies integration of the new runtime,
+not a live recovery from another provider 503. The malicious future-label citation case is likewise
+a controlled regression check; the live run covers genuine hook execution and valid original labels.
+
+The independent audit reconstructed all **42 worlds, 42 original reports, 42 saved remote readbacks,
+262 business HTTP attempt identities, 66 operation journals and 336 fixed rule checks**, with no
+unresolved mismatches. The initial audit mistakenly equated condition-true retry steps with actual
+HTTP dispatches and flagged three rejection episodes. Manual review of the interpreter, FAILED
+receipts and tool journals resolved those false flags. The original audit output is preserved as
+`service-reliability-independent-audit-first-pass.json`; only the independent checker was corrected,
+not the application, score or saved results.
+
+The run charged **231 model requests, $4.8279 conservative upper bound**, carried as **$4.83**.
+Both follow-ups together used **312 requests / $6.5208**, carried as **$6.53**. Shared carried spending
+is now **$818.23 / $1,000**, leaving **$181.77**. Added funds were not needed; actual provider billing
+remains unknown. No historical charge was reset or reclaimed.
+
+Identities and local evidence:
+
+- Runtime: `3da193e30a71ea4aebc8309580548c09ece3fb31d4ccd8a8529112b8f8b9a9d8`.
+- Configuration: `1fbaa792db504d5b0c142ea60af759ab2b417a1e83983f4d34959fa967048921`.
+- Campaign: `campaign-4bd4ae80445044689cd087aaad14cfa9`.
+- `artifacts/service-reliability-2026-09-27/{result.json,plan.json,lab.sqlite3}`.
+- `artifacts/verification-2026-09-27/service-reliability-freeze.json` and
+  `service-reliability-independent-audit.json`.
+- `artifacts/verification-2026-09-27/followup-budget-ledger.json` and
+  `followup-preservation-final.json`.
+
+The live store is deliberately separate from the main dashboard's historical store. It is not silently
+merged into historical studies. All 37 historical reports and the main store's campaign, episode,
+policy, completion-study, unseen-check, evidence and ingestion payloads remain unchanged.
 
 ## Exact-model pricing and admission
 
@@ -106,6 +178,21 @@ Each pricing group needs its exact model ID, input and output rates and a true v
 The live launcher's refusal without those settings is intentional. Never copy historical prices
 as verified without checking the current provider information. Secrets stay in the existing `.env`.
 
+## Verification results
+
+- Full backend suite before the service change: **1,891 passed, 180 skipped, zero failures**,
+  712.56 seconds. This provided the requested clean number after the original two test corrections.
+- Full backend suite after the service change: **1,920 passed, 180 skipped, zero failures**,
+  702.49 seconds, one existing dependency deprecation warning. The new result supersedes the earlier
+  one for the current runtime; it is a single complete invocation, not combined partial counts.
+- Focused Actor/provider checks: **66 passed**. Separate runner checks covering both fixed entry
+  points: **74 passed**. Their initial single-runner 37-test result is retained as historical evidence.
+- Frontend from the consolidation: **166 tests**, production build and three browser fixture checks
+  passed. Manual real-server verification opened an actual saved 42-trial replay and checked the
+  separate development, unseen and active-policy display. No frontend code changed in this follow-up.
+- Current live evidence and manual post-run reconstruction are described above. Neither passing
+  software tests nor an all-green dashboard substitutes for those original reports and world effects.
+
 ## Verification discipline and remaining work
 
 Closing the dashboard and idle backend removes avoidable polling load during live experiments.
@@ -123,3 +210,37 @@ generation, exclusion of previously used scenarios and materially equivalent var
 public qualification and unseen evaluation. Generate fresh repairs under that same runtime, route
 by predeclared criteria, and preserve negative results. That is separate from activating a policy.
 Do not add another environment or a larger feature surface before resolving this evidence gap.
+
+A focused next-study design, not a sealed execution protocol:
+
+1. Freeze the corrected runtime, full pre-existing policy-hash inventory and verified prices.
+2. Reserve one healthy guard, two known-family guards and three previously unexposed combinations
+   of two existing faults before any Mechanic call. Check against all previously exposed scenarios;
+   stop if the construction cannot produce valid reserved combinations. New counts or seeds alone
+   are not new mechanisms. Do not expose evaluation traces to candidate generation.
+3. Run at most ten fresh generation attempts on the existing development manifest, with a spending
+   stop declared in advance. Route the first previously unseen exact policy hash meeting the full
+   strong qualification rule. Record rediscoveries and failures. If none qualifies, stop honestly.
+4. Evaluate that one policy against the baseline: three paired healthy repetitions and fifteen pairs
+   for each of the other five cases, 156 episodes total. No whole-pair retries or second candidate.
+   Actor-only worst-case cost at the verified rate is $52.1664; generation cost requires a separate
+   full-path bound including proposal/correction calls and transport retries before admission.
+5. Report completion, violations and fault triggering by case, separately for familiar guards and
+   reserved combinations. A no-harm decision is a sample result, not proof of safety or equivalence.
+   Keep baseline active; original promotion is a different workflow.
+
+This is a bounded search followed by evaluation, not a fixed-sample estimate of repair yield. A
+new experiment wrapper must enforce strong qualification, source/current runtime equality, exact
+policy identity and the partition commitment made before generation. This design is not part of
+either compatibility-run declaration and has not been launched.
+
+## Local preservation
+
+All source and current documentation are saved on the local `backup/part2-2026-09-22` branch.
+The checked-out main branch and real index were preserved, and no GitHub push was made. `.env`
+remains untracked and unchanged. Dashboard, backend and owned simulator are stopped after verification.
+
+Both isolated experiment stores, all 58 new world databases and their verification files were copied
+to `/Users/shree/FaultLab_Backups/2026-09-27/followup-verification/` and checked byte for byte.
+`MANIFEST.json` there contains hashes and sizes. Credentials were not copied. The historical main-store
+backup remains separate; this small follow-up backup does not pretend to contain the whole project.
