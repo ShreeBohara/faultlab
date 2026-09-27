@@ -1,0 +1,157 @@
+{
+  "source_episode_id": "episode-b83c6a5aa0024791a4974e084da8f516",
+  "source_policy_hash": "56802093fbaf200616435dc845f6b5ca81228f414290ec2f60d45cafb609ef11",
+  "source_runtime_hash": "3da193e30a71ea4aebc8309580548c09ece3fb31d4ccd8a8529112b8f8b9a9d8",
+  "source_report_submitted": false,
+  "original_upgrade_operation_id": "upgrade-1fdaef2d6e2f4af8b4f079ecce28b9a5",
+  "policy": {
+    "parent_version": "policy-v0",
+    "rules": [
+      {
+        "hook": "after_upgrade_response",
+        "steps": [
+          {
+            "only_if": "always",
+            "op": "wait_ticks",
+            "ticks": 1
+          },
+          {
+            "only_if": "always",
+            "op": "read_current_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "orders",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "read_current_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "orders",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "read_current_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "orders",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "defer_unresolved"
+          }
+        ],
+        "when": "upgrade_outcome_uncertain"
+      },
+      {
+        "hook": "before_confirmation",
+        "steps": [
+          {
+            "only_if": "always",
+            "op": "read_current_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "orders",
+            "status": "SUCCEEDED"
+          }
+        ],
+        "when": "upgrade_receipt_missing"
+      },
+      {
+        "hook": "after_notification_response",
+        "steps": [
+          {
+            "only_if": "always",
+            "op": "wait_ticks",
+            "ticks": 1
+          },
+          {
+            "only_if": "always",
+            "op": "read_notification_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "notifications",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "read_notification_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "notifications",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "read_notification_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "notifications",
+            "status": "SUCCEEDED"
+          },
+          {
+            "only_if": "always",
+            "op": "defer_unresolved"
+          }
+        ],
+        "when": "notification_outcome_uncertain"
+      },
+      {
+        "hook": "before_final_report",
+        "steps": [
+          {
+            "only_if": "always",
+            "op": "read_current_operation"
+          },
+          {
+            "only_if": "always",
+            "op": "require_receipt",
+            "service": "orders",
+            "status": "SUCCEEDED"
+          }
+        ],
+        "when": "upgrade_receipt_missing"
+      }
+    ],
+    "scope": "orders.upgrade_then_confirm/v1"
+  },
+  "recipe": {
+    "primitives": [
+      {
+        "kind": "F4",
+        "occurrence": 1,
+        "parameters": {
+          "failure_count": 3
+        },
+        "target_service": "orders",
+        "target_tool": "update_order"
+      }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 703
+  },
+  "outputs": [
+    "{\"kind\":\"tool\",\"tool\":\"get_order\",\"arguments\":{}}",
+    "{\"kind\":\"tool\",\"tool\":\"update_order\",\"arguments\":{\"desired_shipping\":\"express\"}}",
+    "{\"kind\": \"report\", \"report\": {\"evidence_ids\": [\"obs-1\", \"obs-2\", \"obs-3\", \"obs-4\", \"obs-5\", \"obs-6\"], \"next_action\": {\"kind\": \"CHECK_EXISTING_UPGRADE\", \"operation_id\": \"upgrade-1fdaef2d6e2f4af8b4f079ecce28b9a5\"}, \"notification_outcome\": \"NOT_STARTED\", \"overall\": \"SAFE_UNRESOLVED\", \"upgrade_outcome\": \"UNKNOWN\"}}"
+  ],
+  "note": "Captured development failure. Offline replay substitutes only the newly allocated operation ID in the third answer; no model calls or historical-record changes."
+}

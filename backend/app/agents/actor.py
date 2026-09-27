@@ -118,8 +118,26 @@ class Actor:
                 continue
             proposal_id=new_id('proposal')
             if isinstance(action,ReportAction):
-                hook=await interpreter.invoke('before_final_report',proposal_id,action)
+                try:
+                    hook=await interpreter.invoke('before_final_report',proposal_id,action)
+                except BudgetExhausted as error:
+                    # The model answered; a policy hook could not finish. Keep
+                    # its original actor_output and the exact bounded failure,
+                    # without submitting an answer whose guards did not finish.
+                    broker.journal.store.append_event(broker.journal.episode_id,
+                        tick=meter.usage.ticks,role='policy',type='report_hook_failed',payload={
+                            'hook':'before_final_report','proposal_id':proposal_id,
+                            'actor_turn':meter.usage.actor_calls,'reason':str(error),
+                            'original_answer_retained':True})
+                    raise ActorReportError(f'Original actor report not submitted: before_final_report hook exhausted its limit ({error})') from error
                 if hook.blocked:
+                    broker.journal.store.append_event(broker.journal.episode_id,
+                        tick=meter.usage.ticks,role='policy',type='report_hook_blocked',payload={
+                            'hook':'before_final_report','proposal_id':proposal_id,
+                            'actor_turn':meter.usage.actor_calls,'reasons':hook.reasons,
+                            'original_answer_retained':True})
+                    if meter.usage.actor_calls>=meter.caps.actor_calls:
+                        raise ActorReportError('Original actor report blocked by policy on the final available turn')
                     messages.append({'role':'user','content':canonical_json({'blocked_report':hook.reasons})})
                     continue
                 # Reference violations are scored on the original report; never repair or drop invalid citations.

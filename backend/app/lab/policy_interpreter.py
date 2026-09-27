@@ -3,6 +3,9 @@ from dataclasses import dataclass,field
 from app.lab.policy_state import PolicyState
 from app.lab.budgets import BudgetExhausted, StopRequested
 
+BUSINESS_STEPS = frozenset({'read_current_operation', 'read_notification_operation',
+                            'read_order', 'wait_ticks', 'retry_original_request'})
+
 @dataclass
 class HookResult:
     blocked: bool=False
@@ -27,7 +30,17 @@ class PolicyInterpreter:
             for step in rule.steps:
                 self.broker.meter.take('policy_steps')
                 execute=self.state.condition(step.only_if)
-                self.broker.journal.store.append_event(self.broker.journal.episode_id,tick=self.broker.meter.usage.ticks,role='policy',type='policy_step',payload={'hook':hook,'op':step.op,'executed':execute})
+                # A policy may request an unresolved final report after closing
+                # business work. Finalization still checks explicit receipt guards,
+                # but cannot restart I/O merely to process that original answer.
+                closed_io=(execute and hook=='before_final_report'
+                           and self.broker.meter.business_closed and step.op in BUSINESS_STEPS)
+                payload={'hook':hook,'op':step.op,'executed':execute and not closed_io}
+                if closed_io:
+                    payload['skip_reason']='BUSINESS_CALLS_CLOSED'
+                    result.reasons.append(f'BUSINESS_CALLS_CLOSED:{step.op}')
+                self.broker.journal.store.append_event(self.broker.journal.episode_id,tick=self.broker.meter.usage.ticks,role='policy',type='policy_step',payload=payload)
+                if closed_io: continue
                 if not execute: continue
                 op=step.op
                 if op in ('read_current_operation','read_notification_operation'):

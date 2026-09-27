@@ -216,7 +216,7 @@ it('summarises only stages that actually ran and never claims an unaccepted poli
 it('reports unreached stages as not run rather than leaving them blank', () => {
   const view = render(h(RunSummary, { campaign, matrix: matrixFixture, experiments: validateExperiments(experiments), policies: [baseline] }))
   expect(view.container.textContent).toContain('No qualifying repeated violation was recorded.')
-  expect(view.container.textContent).toContain('No candidate policy was generated in this campaign.')
+  expect(view.container.textContent).toContain('No main-loop candidate is recorded. Completion-study candidates appear in their separate panel.')
   expect(view.container.textContent).toContain('A candidate must repair every source-validation pair first.')
   expect(campaignProposals([baseline], matrixFixture)).toEqual([])
   expect(campaignProposals([candidate], matrixFixture)).toEqual([candidate])
