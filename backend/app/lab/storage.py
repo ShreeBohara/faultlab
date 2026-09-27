@@ -65,6 +65,45 @@ class LabStore:
             rows = self.db.execute('SELECT payload FROM records WHERE kind=? ORDER BY rowid',(kind,)).fetchall()
         return [json.loads(row['payload']) for row in rows]
 
+    def campaign_page(self, *, before=None, limit=20):
+        """Bounded, stable creation-order history, without parsing other records.
+
+        Updating a campaign preserves its rowid. A new campaign between page
+        requests therefore cannot move older results across the cursor.
+        """
+        if not 1 <= limit <= 100 or (before is not None and before < 1):
+            raise ValueError('Invalid campaign history cursor or limit')
+        clause = '' if before is None else ' AND rowid < ?'
+        parameters = (limit + 1,) if before is None else (before, limit + 1)
+        with self.lock:
+            rows = self.db.execute(
+                "SELECT rowid,id FROM records WHERE kind='campaigns'" + clause
+                + ' ORDER BY rowid DESC LIMIT ?', parameters,
+            ).fetchall()
+        selected = rows[:limit]
+        more = len(rows) > limit
+        return {'campaign_ids': [row['id'] for row in selected],
+                'next_before': selected[-1]['rowid'] if more else None,
+                'has_more': more}
+
+    def regression_execution_page(self, bundle_id, *, before=None, limit=20):
+        """Return only executions of the selected immutable bundle."""
+        if not 1 <= limit <= 100 or (before is not None and before < 1):
+            raise ValueError('Invalid execution history cursor or limit')
+        clause = '' if before is None else ' AND rowid < ?'
+        parameters = (bundle_id, limit + 1) if before is None else (bundle_id, before, limit + 1)
+        with self.lock:
+            rows = self.db.execute(
+                "SELECT rowid,payload FROM records WHERE kind='regression_executions'"
+                " AND json_extract(payload,'$.bundle_id')=?" + clause
+                + ' ORDER BY rowid DESC LIMIT ?', parameters,
+            ).fetchall()
+        selected = rows[:limit]
+        more = len(rows) > limit
+        return {'executions': [json.loads(row['payload']) for row in selected],
+                'next_before': selected[-1]['rowid'] if more else None,
+                'has_more': more}
+
     # The two readers below exist for request handlers that run on the event loop.
     # Parsing every episode (or every evidence bundle) there froze the loop for most
     # of each second while the dashboard polled; a lab request whose 1s connect window

@@ -3,7 +3,7 @@ import type { Event } from './generated/contracts'
 import { api, validateEvents } from './api'
 export type Resource<T> = { data?: T; error: string | null; loading: boolean; updatedAt?: number }
 export const pollDelay = (failures: number) => failures ? Math.min(6000, 750 * 2 ** failures) : 750
-export function useResource<T>(key: string | null, fetcher: () => Promise<T>, interval = 750): Resource<T> {
+export function useResource<T>(key: string | null, fetcher: () => Promise<T>, interval: number | null = 750): Resource<T> {
   const latest = useRef(fetcher); latest.current = fetcher
   const [state, setState] = useState<Resource<T> & { key: string | null }>({ key, error: null, loading: !!key })
   useEffect(() => {
@@ -19,7 +19,7 @@ export function useResource<T>(key: string | null, fetcher: () => Promise<T>, in
         if (cancelled) return
         failures++; setState(old => ({ ...old, error: error instanceof Error ? error.message : 'Local backend unavailable.', loading: false }))
       }
-      if (!cancelled) timer = window.setTimeout(poll, failures ? pollDelay(failures) : interval)
+      if (!cancelled && interval !== null) timer = window.setTimeout(poll, failures ? pollDelay(failures) : interval)
     }
     void poll()
     return () => { cancelled = true; window.clearTimeout(timer) }

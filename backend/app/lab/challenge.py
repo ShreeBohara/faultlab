@@ -1,6 +1,6 @@
 """Explorer actively proposes four feasible schedules, three fresh pairs each."""
 from app.contracts.models import ChallengeResult,content_hash,new_id,canonical_json
-from app.lab.evaluation import PairedEvaluator,paired_complete
+from app.lab.evaluation import PairedEvaluator,paired_complete,observed_candidate_violations
 from app.lab.budgets import BudgetExhausted
 
 def schedule_identity(recipe):
@@ -31,10 +31,10 @@ class Challenger:
             if digest not in prior_hashes: novel.append(digest)
             batch=await self.evaluator.run(campaign,[{'fault_spec':recipe.model_dump(mode='json'),'fixture_id':fixture}],incumbent,candidate,purpose='challenge',reservation=reservation,stop=stop)
             pairs.extend(batch.trial_pairs)
-            lookup={t.episode_id:t for t in batch.trials}
-            candidate_trials=[lookup[b] for a,b in batch.trial_pairs]
-            failed.update(c for t in candidate_trials for c in t.failed_checks)
-            if failed:
+            candidate_trials=[t for t in batch.trials if t.policy_hash==candidate.policy_hash and t.arm=='L']
+            violations=observed_candidate_violations(batch)
+            failed.update(c for t in violations for c in t.failed_checks)
+            if violations:
                 status='COUNTEREXAMPLE_FOUND'; reason='Candidate violation returned as development feedback'
                 self.store.put_record('challenge_counterexamples',candidate.version,{'campaign_id':campaign.campaign_id,'candidate_hash':candidate.policy_hash,'recipe':recipe.model_dump(mode='json'),'fixture_id':fixture,'trial_ids':[t.episode_id for t in candidate_trials],'failed_checks':sorted(failed)},immutable=True)
                 break

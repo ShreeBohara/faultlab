@@ -1,12 +1,14 @@
 """Independent fixed empirical promotion predicate and atomic expected-parent update."""
 from app.contracts.models import canonical_json,new_id
-from app.lab.evaluation import paired_complete
+from app.lab.evaluation import paired_complete,observed_candidate_violations
 from app.lab.storage import StoreConflict
 
 
 def promotion_decision(source,challenge,promotion,*,target_invariant,healthy_hashes=()):
     if (source.candidate_hash,source.incumbent_hash)!=(promotion.candidate_hash,promotion.incumbent_hash): return 'INCOMPLETE','Source/promotion identity mismatch'
     if (challenge.candidate_hash,challenge.incumbent_hash)!=(promotion.candidate_hash,promotion.incumbent_hash): return 'INCOMPLETE','Challenge identity mismatch'
+    if observed_candidate_violations(source) or observed_candidate_violations(promotion): return 'REJECTED','Candidate invariant violation in a retained scored attempt'
+    if challenge.failed_checks: return 'REJECTED','Candidate invariant violation in required challenge'
     if not paired_complete(source,3) or not paired_complete(promotion,18): return 'INCOMPLETE','Incomplete valid triggered repeated evidence'
     if challenge.status!='PASSED_OBSERVED' or challenge.source_validation_ref!=source.batch_id: return ('REJECTED' if challenge.status=='COUNTEREXAMPLE_FOUND' else 'INCOMPLETE'),'Required matching challenge did not pass'
     def arms(batch):

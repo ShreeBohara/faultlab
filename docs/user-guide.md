@@ -1,5 +1,25 @@
 # FaultLab quick start guide
 
+Current product navigation: use **Campaign history → Saved campaigns → Open selected campaign**
+to browse saved runs. **Load older campaigns** reads the next page; **Refresh history** returns to
+newest-created runs. The pasted-ID field remains available. Opening history never starts or resumes
+execution. A saved campaign's Stop button is enabled only when that exact campaign owns active work;
+use **Open active campaign** to switch to the running one.
+
+In **Portable regression**, inspect the saved bundle, then use its **Saved executions** selector to
+open a previous run. The list is restricted to that exact bundle and manifest. An interrupted run
+keeps its recorded INCOMPLETE status and stop reason. **Run fresh regression** remains a separate
+explicit action that creates new worlds and may spend provider credits.
+
+The Run desk's **Run readiness** check separates backend connectivity, simulator readiness and
+live configuration. It makes no model calls and does not verify provider account access. Offline
+reference runs need the simulator but no provider credentials. Live configuration errors name the
+missing settings; never paste secrets into the dashboard.
+
+The [September 27 product review](PRODUCT_CORE_REVIEW_2026-09-27.md) records current reliability
+changes and verification. Earlier examples below retain their historical settings and results.
+
+
 FaultLab tests an AI agent that upgrades a mock order to express shipping and sends a truthful confirmation. It deliberately makes the mock APIs fail, repeats failures, and asks a model to propose recovery rules. It keeps a rule only when repeated checks show improvement without breaking healthy behavior. Orders and notifications are synthetic; live model requests use your W&B credits.
 
 Start with [current status](../CURRENT_STATUS.md) for the latest results and remaining budget. This guide explains how to inspect saved evidence and start a new campaign. Learning changes a small recovery policy around the agent; it does not train model weights. No generated policy has been accepted through the original promotion gates. Aria remains deferred.

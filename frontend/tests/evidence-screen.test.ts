@@ -199,6 +199,28 @@ it('acknowledges Stop only after the next persisted state is received', async ()
   expect(screen.getByText('Stop acknowledged by the next successful poll.')).toBeTruthy()
   expect((screen.getByRole('button', { name: 'Stop', exact: true }) as HTMLButtonElement).disabled).toBe(true)
 })
+it('cannot stop a saved campaign when another campaign is active and can open the active campaign', () => {
+  const stop = vi.spyOn(api, 'stop')
+  const open = vi.fn()
+  render(h(RunControls, { config: { ...config, active_campaign_id: 'campaign-running' }, campaign, replay: false, onCampaign: vi.fn(), onReplay: vi.fn(), onOpenCampaign: open }))
+  const button = screen.getByRole('button', { name: 'Stop', exact: true }) as HTMLButtonElement
+  expect(button.disabled).toBe(true)
+  fireEvent.click(button)
+  expect(stop).not.toHaveBeenCalled()
+  fireEvent.click(screen.getByRole('button', { name: 'Open active campaign' }))
+  expect(open).toHaveBeenCalledExactlyOnceWith('campaign-running')
+  expect(writes).toEqual([])
+})
+it('never acknowledges a Stop request using a different saved campaign state', async () => {
+  const running = { ...campaign, state: 'RUNNING' as const, state_seq: 5 }
+  vi.spyOn(api, 'stop').mockResolvedValue({ ...running, state: 'STOPPED', stop_requested: true, state_seq: 6 })
+  const props = { config: { ...config, active_campaign_id: campaign.campaign_id }, campaign: running, replay: false, onCampaign: vi.fn(), onReplay: vi.fn() }
+  const view = render(h(RunControls, props))
+  fireEvent.click(screen.getByRole('button', { name: 'Stop', exact: true }))
+  await screen.findByText('Stop requested; waiting for the next successful state poll.')
+  view.rerender(h(RunControls, { ...props, campaign: { ...campaign, campaign_id: 'campaign-old', stop_requested: true, state: 'STOPPED', state_seq: 99 } }))
+  expect(screen.queryByText('Stop acknowledged by the next successful poll.')).toBeNull()
+})
 
 import { RunSummary, campaignProposals } from '../src/components/RunSummary'
 import { matrix as matrixFixture } from './fixtures'

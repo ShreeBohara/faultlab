@@ -802,7 +802,8 @@ async def test_the_default_request_is_still_the_phase18_check_with_its_exact_rec
                 raise RuntimeError('stop before any call')
         monkeypatch.setattr(module, 'PairedEvaluator', Refusing)
         queued = await queue_heldout_check(c, fresh_campaign(c).campaign_id, study['study_id'])
-        assert set(queued) == PHASE18_RECORD_KEYS and queued['schema_version'] == 'faultlab-heldout-check/v1'
+        assert set(queued) == PHASE18_RECORD_KEYS | {'world_integrity_protocol'} and queued['schema_version'] == 'faultlab-heldout-check/v1'
+        assert queued['world_integrity_protocol'] == module.WORLD_INTEGRITY_PROTOCOL
         assert (queued['predicate'], queued['partition'], queued['manifest_hash']) == (
             PREDICATE, 'promotion', content_hash(synthetic_promotion))
         await c.tasks[queued['check_id']]
@@ -964,7 +965,8 @@ async def test_the_one_policy_rule_never_touches_the_v1_request(tmp_path, monkey
             async def run(self, *a, **k): raise RuntimeError('stop before any call')
         monkeypatch.setattr(module, 'PairedEvaluator', Refusing)
         queued = await queue_heldout_check(c, fresh_campaign(c).campaign_id, study['study_id'])
-        assert set(queued) == PHASE18_RECORD_KEYS and queued['predicate'] == PREDICATE
+        assert set(queued) == PHASE18_RECORD_KEYS | {'world_integrity_protocol'} and queued['predicate'] == PREDICATE
+        assert queued['world_integrity_protocol'] == module.WORLD_INTEGRITY_PROTOCOL
         await c.tasks[queued['check_id']]
     finally:
         await client.aclose()

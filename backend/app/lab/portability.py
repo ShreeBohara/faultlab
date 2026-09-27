@@ -40,13 +40,15 @@ async def queue_portability(coordinator,campaign_id,request):
             result=await fixed.run(external_freeze=external_freeze,source_registration_id=source['registration_id'],target_registration_id=registration.registration_id,target_configuration=target,baseline_policy=coordinator.policies.baseline(),accepted_policy=policy,run_fresh=fresh,explicit_live=True,stop=lambda:coordinator.get(campaign_id).stop_requested)
             record.update(status=result.status,portability_id=result.portability_id)
             coordinator.store.put_record('portability_campaigns',result.portability_id,{'campaign_id':campaign_id,'portability_id':result.portability_id},immutable=True)
+        except asyncio.CancelledError:
+            record['status']='INCOMPLETE'
+            raise
         except Exception: record['status']='INCOMPLETE'
         finally:
-            coordinator.store.put_record('portability_requests',request_id,record)
-            ledger.release('portability')
-            if owned and runner:
-                await runner.world_client.close(); await runner.provider.close()
-                if getattr(runner,'telemetry_worker',None): await runner.telemetry_worker.close()
-            coordinator.active_id=None
+            try:
+                coordinator.store.put_record('portability_requests',request_id,record)
+            finally:
+                try: ledger.release('portability')
+                finally: await coordinator.finish_activity(campaign_id,runner,owned=owned,activity_id=request_id)
     coordinator.tasks[request_id]=asyncio.create_task(execute())
     return record

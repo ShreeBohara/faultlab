@@ -50,13 +50,15 @@ async def queue_audit(coordinator,campaign,policy):
             if session and record['status']=='COMPLETED':
                 try: await session.finish({'status':record['status'],'attempted_episodes':len(trials),'policy_hash':policy.policy_hash,'manifest_hash':manifest['manifest_hash']})
                 except Exception: record['telemetry_status']='weave_pending'
+        except asyncio.CancelledError:
+            record['status']='INCOMPLETE'
+            raise
         except Exception: record['status']='INCOMPLETE'
         finally:
-            record['usage']=aggregate_usage(trials).model_dump(mode='json'); coordinator.store.put_record('audit_results',batch_id,record)
-            ledger.release('final_audit')
-            if owned and runner:
-                await runner.world_client.close(); await runner.provider.close()
-                if getattr(runner,'telemetry_worker',None): await runner.telemetry_worker.close()
-            coordinator.active_id=None
+            try:
+                record['usage']=aggregate_usage(trials).model_dump(mode='json'); coordinator.store.put_record('audit_results',batch_id,record)
+            finally:
+                try: ledger.release('final_audit')
+                finally: await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=batch_id)
     coordinator.tasks[batch_id]=asyncio.create_task(execute())
     return record

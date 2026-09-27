@@ -5,7 +5,7 @@ from app.agents.mechanic import Mechanic
 from app.lab.reproduction import Reproducer,valid_trial
 from app.lab.diagnosis import Diagnostician,summarize_evidence,runtime_contract,reduction_context,trial_outcomes
 from app.lab.evidence import EvidenceContext,WaitingEvidence
-from app.lab.evaluation import PairedEvaluator,load_cases,paired_complete
+from app.lab.evaluation import PairedEvaluator,load_cases,paired_complete,observed_candidate_violations
 from app.lab.challenge import Challenger,schedule_identity
 from app.lab.promotion import promotion_decision,commit_promotion
 from app.lab.budgets import CANDIDATE_CALLS
@@ -16,11 +16,11 @@ def source_validation_assessment(batch,target_invariant):
     lookup={t.episode_id:t for t in batch.trials}
     complete=paired_complete(batch,3)
     source_failures=sum(target_invariant in lookup[a].failed_checks for a,b in batch.trial_pairs if a in lookup)
-    candidate_violations=[t.episode_id for t in batch.trials if t.policy_hash==batch.candidate_hash and (t.failed_checks or t.outcome=='VIOLATION')]
+    candidate_violations=[t.episode_id for t in observed_candidate_violations(batch)]
     paired_candidate_violations=[b for a,b in batch.trial_pairs if b in lookup and lookup[b].failed_checks]
     reproduced=complete and source_failures==3
     classification=('INCOMPLETE_PAIRS' if not complete else 'SOURCE_FLAKY' if not reproduced
-                    else 'CANDIDATE_FAILED' if paired_candidate_violations else 'PASSED')
+                    else 'CANDIDATE_FAILED' if candidate_violations else 'PASSED')
     return {'classification':classification,'source_reproduction':'INCOMPLETE' if not complete else 'REPRODUCED' if reproduced else 'FLAKY',
             'target_invariant':target_invariant,'incumbent_target_failures':source_failures,'required_pairs':3,
             'valid_complete_pairs':len(batch.trial_pairs) if complete else None,

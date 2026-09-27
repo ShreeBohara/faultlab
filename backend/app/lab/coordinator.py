@@ -49,12 +49,25 @@ class LabCoordinator:
             if check['status'] in ('QUEUED','RUNNING'):
                 check['status']='INTERRUPTED'; check['decision']='INCOMPLETE'
                 check['reason']='Process restart interrupted the held-out check; attempts cannot be replayed'
+                integrity_findings=[]
                 try:
-                    from app.lab.heldout_check import stored_candidate_failures
-                    stored=stored_candidate_failures(self.store,check.get('campaign_id'),check.get('policy_hash'))
+                    from app.lab.heldout_check import stored_candidate_failures,heldout_integrity_findings,world_integrity_assessment,WORLD_INTEGRITY_PROTOCOL
+                    integrity_findings=heldout_integrity_findings(self.store,check)
+                    stored=stored_candidate_failures(self.store,check.get('campaign_id'),check.get('policy_hash'),excluded_episode_ids={row['episode_id'] for row in integrity_findings})
                 except Exception as scan_error:
                     stored=[]; check['recovery_error']=type(scan_error).__name__
-                if stored:
+                    if check.get('world_integrity_protocol')==WORLD_INTEGRITY_PROTOCOL:
+                        if check.get('assessment') is not None: check['diagnostic_legacy_assessment']=check['assessment']
+                        check['reason']='World execution integrity could not be verified after restart'
+                        check['assessment']={'decision':'INCOMPLETE','rule':'world_integrity_unavailable','reason':check['reason']}
+                if integrity_findings and 'recovery_error' not in check:
+                    prior=check.get('assessment')
+                    assessment=world_integrity_assessment(prior,integrity_findings,stored)
+                    if prior is not None: check['diagnostic_legacy_assessment']=prior
+                    check.update(world_integrity_findings=integrity_findings,candidate_failures=stored,
+                                 decision=assessment['decision'],reason=assessment['reason'],assessment=assessment,
+                                 status='COMPLETED' if assessment['decision']=='HARM' else 'INTERRUPTED',ended_at=utc_now().isoformat())
+                elif stored:
                     reason='A candidate trial failed a C1-C8 check (recovered from stored trials after a restart)'
                     check.update(status='COMPLETED',decision='HARM',candidate_failures=stored,reason=reason,
                                  ended_at=utc_now().isoformat(),
@@ -69,9 +82,47 @@ class LabCoordinator:
         for retry in self.store.list_records('evidence_retries'):
             if retry['status'] in ('QUEUED','RUNNING'):
                 retry['status']='INTERRUPTED'; self.store.put_record('evidence_retries',retry['request_id'],retry)
+        for request in self.store.list_records('evaluation_requests'):
+            if request['status'] in ('QUEUED','RUNNING'):
+                request.update(status='INTERRUPTED',reason='Process restart interrupted evaluation; saved attempts are not replayed',ended_at=utc_now().isoformat())
+                self.store.put_record('evaluation_requests',request['request_id'],request)
+                budget=self.store.get_record('budgets',request.get('campaign_id',''))
+                reservation='promotion:'+request.get('batch_id','')
+                if budget and reservation in budget.get('reservations',{}):
+                    budget['reservations'].pop(reservation)
+                    self.store.put_record('budgets',request['campaign_id'],budget)
+        interrupted_regressions=[]
+        for execution in self.store.list_records('regression_executions'):
+            if execution['mode']=='FRESH_SANDBOX' and execution['status'] in ('PENDING','RUNNING'):
+                from app.lab.regression_executions import interrupt_regression
+                interrupt_regression(self.store,execution['execution_id'],'Process restart interrupted execution; saved effects are not replayed')
+                interrupted_regressions.append('regression:'+execution['execution_id'])
+        if interrupted_regressions:
+            # Budgets are keyed by campaign, not by a field in their payload.
+            for campaign in self.store.list_records('campaigns'):
+                budget=self.store.get_record('budgets',campaign['campaign_id'])
+                if budget and any(name in budget.get('reservations',{}) for name in interrupted_regressions):
+                    for name in interrupted_regressions: budget['reservations'].pop(name,None)
+                    self.store.put_record('budgets',campaign['campaign_id'],budget)
         for raw in self.store.list_records('campaigns'):
             c=Campaign.model_validate_json(__import__('json').dumps(raw))
             if c.state not in TERMINAL and c.state!='IDLE':
+                budget=self.store.get_record('budgets',c.campaign_id)
+                if budget and isinstance(budget.get('reservations'),dict):
+                    # Only unfinished job reservations are abandoned. Protected
+                    # future work, unknown names and already charged usage survive.
+                    prefixes=('candidate:','reproduce:','reduce:','intervention:','pair-retry:','promotion:')
+                    released={name:value for name,value in budget['reservations'].items() if not name.startswith(prefixes)}
+                    if released!=budget['reservations']:
+                        budget['reservations']=released
+                        self.store.put_record('budgets',c.campaign_id,budget)
+                for qualification in self.store.list_records('candidate_qualifications'):
+                    if qualification.get('campaign_id')!=c.campaign_id or qualification.get('decision')!='PROPOSED': continue
+                    qualification.update(decision='INCOMPLETE',interruption_reason='Process restart interrupted qualification; saved attempts are not replayed')
+                    self.store.put_record('candidate_qualifications',qualification['qualification_ref'],qualification)
+                    candidate=self.policies.get(qualification['candidate_version'])
+                    if candidate is not None and candidate.decision=='PROPOSED':
+                        candidate.decision='INCOMPLETE'; self.policies.save(candidate)
                 c.execution_epoch+=1; c.stop_requested=True; c.state='STOPPED'; c.state_seq+=1
                 c.terminal_reason='Interrupted by process restart; create a fresh explicit run'
                 self.save(c)
@@ -92,7 +143,7 @@ class LabCoordinator:
         return campaign
     def transition(self,id,state,reason=None):
         campaign=self.get(id)
-        if campaign.stop_requested and state not in ('STOPPED','ERROR'): return campaign
+        if campaign.stop_requested and state!='STOPPED': return campaign
         campaign.state=state; campaign.state_seq+=1
         if reason: campaign.terminal_reason=reason
         return self.save(campaign)
@@ -164,6 +215,7 @@ class LabCoordinator:
             self.validate_current_caps(campaign)
             await self.require_simulator()
             campaign.stop_requested=False; campaign.execution_epoch+=1; self.save(campaign)
+            if id in self.ledgers: self.ledgers[id].stopped=False
             self.active_id=id
 
     async def start(self,id):
@@ -194,7 +246,11 @@ class LabCoordinator:
 
     async def stop(self,id):
         campaign=self.get(id)
-        if campaign.state=='STOPPED': return campaign
+        # A stop applies only to work this scheduler currently owns. Historical
+        # campaign state is not a job handle: auxiliary studies can run on an
+        # IDLE/terminal campaign, and inactive saved campaigns must stay unchanged.
+        if self.active_id!=id: return campaign
+        if campaign.state=='STOPPED' and campaign.stop_requested: return campaign
         campaign.stop_requested=True; campaign.execution_epoch+=1; campaign.state='STOPPED'; campaign.state_seq+=1
         campaign.terminal_reason='External stop requested; remote effects are retained'
         self.save(campaign)
@@ -250,18 +306,45 @@ class LabCoordinator:
                 await self._publish_completion(id)
         except (BudgetExhausted,StopRequested) as error:
             self.transition(id,'NO_CHANGE' if not self.get(id).stop_requested else 'STOPPED',str(error) or 'Budget or stop boundary')
+        except asyncio.CancelledError:
+            if not self.get(id).stop_requested:
+                await self.stop(id)
+                current=self.get(id); current.terminal_reason='Execution interrupted; saved effects are not replayed'; self.save(current)
+            raise
         except Exception as error:
             from app.lab.readiness import execution_failure
             failure=execution_failure(error)
             self.store.put_record('execution_errors',id,{'campaign_id':id,**failure,'recorded_at':utc_now().isoformat()})
             self.transition(id,'ERROR',failure['code']+': '+failure['message'])
         finally:
+            await self.finish_activity(id,runner,owned=owned,activity_id=id)
+
+    async def finish_activity(self,campaign_id,runner=None,*,owned=False,activity_id=None):
+        """Close each owned resource and always release scheduler admission.
+
+        Cleanup failures have their own safe diagnostics; they do not turn an
+        already stopped or completed execution into a different result.
+        """
+        errors=[]; cancelled=False
+        try:
             if owned and runner:
-                await runner.world_client.close()
-                if runner.provider: await runner.provider.close()
-                if getattr(runner,'telemetry_worker',None): await runner.telemetry_worker.close()
-            async with self.lock:
-                if self.active_id==id: self.active_id=None
+                from app.lab.readiness import execution_failure
+                for name in ('world_client','provider','telemetry_worker'):
+                    resource=getattr(runner,name,None)
+                    if resource is None: continue
+                    try:
+                        await asyncio.wait_for(resource.close(),timeout=2)
+                    except asyncio.CancelledError:
+                        cancelled=True
+                        errors.append({'resource':name,'code':'CLEANUP_INTERRUPTED','message':'Resource cleanup interrupted'})
+                    except Exception as error:
+                        errors.append({'resource':name,**execution_failure(error)})
+                if errors:
+                    key=activity_id or campaign_id
+                    self.store.put_record('resource_cleanup_errors',key,{'activity_id':key,'campaign_id':campaign_id,'errors':errors,'recorded_at':utc_now().isoformat()})
+        finally:
+            if self.active_id==campaign_id: self.active_id=None
+        if cancelled: raise asyncio.CancelledError()
 
     async def _learning_cycle(self,campaign,runner):
         from app.lab.learning import run_learning_cycle

@@ -6,6 +6,11 @@
   "note": "CURRENT_STATUS.md is canonical. Dated handoff notes preserve context, not a fixed execution plan. Use current user intent, independent judgment and verified evidence.",
   "handoff": "context/product-continuation-2026-09-27.md",
   "starting_prompt": "../NEW_CHAT_PROMPT.md",
-  "current_focus": "Complete and enhance the product; independently audit the core workflow before selecting implementation work.",
-  "session_action": "Documentation-only continuation handoff; no new implementation phase or paid experiment started."
+  "current_focus": "Product reliability: full core trace, evidence integrity, passive navigation, interruption and restart recovery.",
+  "session_action": "Core reliability implementation verified: 2010 backend tests, 192 frontend tests, build, six browser checks and separate real-dashboard/world inspection. Local backup only; no push or paid calls.",
+  "latest_implementation": "context/product-core-2026-09-27.md",
+  "current_runtime": "58cd13b6f966d5b1c789fde7de9ca4bbdf744b2335bca25d9f3930e57e14f357",
+  "evidence": "../artifacts/product-core-2026-09-27",
+  "new_spending_dollars": 0,
+  "carried_historical_spending_dollars": 855.91
 }

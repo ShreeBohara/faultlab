@@ -12,6 +12,28 @@ from app.lab.configuration import resolve_actor_context_protocol
 from app.lab.policy_interpreter import PolicyInterpreter
 from app.telemetry.tracing import episode_deadline
 
+
+def world_integrity(decision,horizon,usage,logical_calls):
+    """Validate the lab's predicted clock against the frozen actual execution.
+
+    A transport attempt can fail before the simulator admits it. Its resource
+    charge and delivered observation must remain intact, but their predicted
+    timestamps cannot establish an agent violation when the world disagrees.
+    This check is infrastructure validation; C1-C8 remain unchanged.
+    """
+    dispatched=[attempt for call in logical_calls for attempt in call['attempt_ids']]
+    admitted=[event.payload.get('attempt_id') for event in decision.events if event.type=='http_attempt']
+    issues=[]
+    if decision.tick!=usage.ticks: issues.append('DECISION_TICK_MISMATCH')
+    if len(admitted)!=usage.http_attempts: issues.append('HTTP_ADMISSION_COUNT_MISMATCH')
+    if admitted!=dispatched: issues.append('HTTP_ADMISSION_IDENTITY_MISMATCH')
+    if horizon.tick!=decision.tick+5: issues.append('OBSERVER_HORIZON_MISMATCH')
+    return {'schema_version':'faultlab-world-integrity/v1','status':'INVALID' if issues else 'VALID',
+            'issues':issues,'lab_ticks':usage.ticks,'decision_tick':decision.tick,'horizon_tick':horizon.tick,
+            'charged_http_attempts':usage.http_attempts,'admitted_http_attempts':len(admitted),
+            'dispatched_attempt_ids':dispatched,'admitted_attempt_ids':admitted}
+
+
 class EpisodeRunner:
     def __init__(self,store,world_client,provider=None,*,trace=None,scorer=None,actor=None):
         self.store,self.world_client,self.provider=store,world_client,provider
@@ -78,11 +100,24 @@ class EpisodeRunner:
         try:
             meter.usage.wall_seconds=(context.report_completed_wall_seconds
                 if context.report_completed_wall_seconds is not None else meter.clock()-meter.started)
-            decision=await self.world_client.snapshot(world['world_id'])
+            # Freeze admission before taking the decision snapshot. A read before
+            # stop can miss a request admitted between these two control calls.
             await self.world_client.stop(world['world_id'])
+            decision=await self.world_client.snapshot(world['world_id'])
             await self.world_client.advance(world['world_id'],5,observer=True)
             horizon=await self.world_client.snapshot(world['world_id'])
             faults=await self.world_client.faults(world['world_id'])
+            self.store.put_record('private_snapshots',episode_id,{'decision':decision.model_dump(mode='json'),'horizon':horizon.model_dump(mode='json')},immutable=True)
+            integrity=world_integrity(decision,horizon,meter.usage,broker.logical_calls)
+            self.store.put_record('private_world_integrity',episode_id,integrity,immutable=True)
+            if integrity['status']=='INVALID':
+                if not lab_error and not interrupted: episode.reason='WORLD_EXECUTION_MISMATCH'
+                lab_error=True
+                self.store.append_event(episode_id,tick=decision.tick,role='referee',type='world_execution_mismatch',
+                                        payload={'issues':integrity['issues'],'lab_ticks':meter.usage.ticks,
+                                                 'decision_tick':decision.tick,'charged_http_attempts':meter.usage.http_attempts,
+                                                 'admitted_http_attempts':integrity['admitted_http_attempts']},
+                                        visibility='PRIVATE_EVALUATOR')
             scorer=self.scorer
             if scorer is None:
                 from app.referee.checks import score
@@ -90,7 +125,6 @@ class EpisodeRunner:
             verdict=scorer(intent,report,journal.observations,decision,horizon,episode_id=episode_id,usage=meter.usage,fault_executions=faults,lab_error=lab_error,stopped=interrupted)
             episode.verdict=verdict
             self.store.put_record('verdicts',verdict.verdict_id,verdict,immutable=True)
-            self.store.put_record('private_snapshots',episode_id,{'decision':decision.model_dump(mode='json'),'horizon':horizon.model_dump(mode='json')},immutable=True)
         except Exception:
             lab_error=True; episode.reason='SIMULATOR_OR_SCORER_ERROR'
         meter.usage.wall_seconds=(context.report_completed_wall_seconds

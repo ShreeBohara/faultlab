@@ -22,6 +22,7 @@ import { SearchAttemptsPanel } from './SearchAttemptsPanel'
 import { ResourceNote } from './common'
 import { ThemeToggle } from './ThemeToggle'
 import { PolicyStatusPanel } from './PolicyStatusPanel'
+import { CampaignHistory } from './CampaignHistory'
 const storedCampaign = () => { try { return localStorage.getItem('faultlab:campaign') || '' } catch { return '' } }
 export function EvidenceScreen() {
   const [campaignId, setCampaignId] = useState(storedCampaign)
@@ -30,8 +31,11 @@ export function EvidenceScreen() {
   const [replay, setReplay] = useState(false)
   const [optimistic, setOptimistic] = useState<Campaign>()
   const [healthAttempt, setHealthAttempt] = useState(0)
+  const [historyRevision, setHistoryRevision] = useState(0)
+  const [readinessAttempt, setReadinessAttempt] = useState(0)
   const health = useResource(`health:${healthAttempt}`, api.health, 6000)
   const config = useResource('config', api.config)
+  const readiness = useResource(`readiness:${readinessAttempt}`, api.readiness, null)
   const campaignResource = useResource(campaignId ? `campaign:${campaignId}` : null, () => api.campaign(campaignId))
   const campaign = campaignResource.data?.campaign_id === campaignId && (!optimistic || (campaignResource.data.state_seq ?? 0) >= (optimistic.state_seq ?? 0)) ? campaignResource.data : optimistic?.campaign_id === campaignId ? optimistic : undefined
   const matrix = useResource(campaignId ? `matrix:${campaignId}` : null, () => api.matrix(campaignId))
@@ -44,18 +48,19 @@ export function EvidenceScreen() {
   const episode = useResource(episodeId ? `episode:${episodeId}` : null, () => api.episode(episodeId!))
   const events = useEvents(episodeId)
   function selectCampaign(id: string) { setCampaignId(id); setCampaignInput(id); setSelectedEpisode(null); setOptimistic(undefined); try { localStorage.setItem('faultlab:campaign', id) } catch { /* Persistence unavailable. */ } }
-  function receiveCampaign(value: Campaign) { selectCampaign(value.campaign_id); setOptimistic(value); setReplay(false) }
+  function receiveCampaign(value: Campaign) { selectCampaign(value.campaign_id); setOptimistic(value); setReplay(false); setHistoryRevision(revision => revision + 1) }
   useEffect(() => { if (!campaignId && config.data?.active_campaign_id) selectCampaign(config.data.active_campaign_id) }, [campaignId, config.data?.active_campaign_id])
   function selectEpisode(id: string) { setSelectedEpisode(id); document.getElementById('evidence-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
   return <main className="workspace"><a className="skip-link" href="#evidence-workspace">Skip to evidence</a><header className="masthead"><a className="brand" href="#"><span className="monogram" aria-hidden="true">F<span>∕</span>L</span><span>FaultLab<small>BY GATEKEEPER</small></span></a><div className="header-right"><span className="environment">LOCAL EXPERIMENT LAB</span><span className={`connection-state ${health.error ? 'disconnected' : health.data ? 'connected' : ''}`} role="status"><span aria-hidden="true" />{health.error ? 'Backend unavailable' : health.data ? 'Backend connected' : 'Checking connection…'}</span><div className="header-actions"><button className="text-button" onClick={() => setHealthAttempt(v => v + 1)} disabled={health.loading}>Check again</button><ThemeToggle /></div></div></header>
     <section className="intro"><div><p className="eyebrow">Controlled experiments for AI agents</p><h1>Find the fault.<br /><em>Test the repair.</em></h1><p className="description">Test an agent against service failures. Inspect every attempt and recovery rule.</p></div><div className="lab-index"><span className="index-label">THE LEARNING LOOP</span><ol><li>Discover <span>→</span> Reproduce</li><li>Diagnose <span>→</span> Repair</li><li>Challenge <span>→</span> Evaluate</li></ol><p>Failed challenges return to repair.</p></div></section>
     {health.error && <div role="alert" className="error connection-error">{health.error} Start the local backend with <code>./scripts/start-backend.sh</code>, then check again.</div>}<ResourceNote resource={config} />
+    <CampaignHistory selectedId={campaignId} refreshKey={historyRevision} onOpen={selectCampaign} />
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
     <ResourceNote resource={campaignResource} />{replay && <ReplayView campaign={campaign} />}
     <PolicyStatusPanel key={`policy-status:${campaignId}`} campaignId={campaignId} />
     <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
     <PromotionComparison campaignId={campaignId} matrix={matrix.data} policies={policies.data} />
-    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>
+    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} onOpenCampaign={id => { selectCampaign(id); setReplay(false) }} readiness={readiness} onCheckReadiness={() => setReadinessAttempt(attempt => attempt + 1)} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>
     <OutcomeMatrix matrix={matrix} selectedEpisode={episodeId} onEpisode={selectEpisode} />
     <SearchAttemptsPanel key={`search:${campaignId}`} campaignId={campaignId} onEpisode={selectEpisode} />
     <CompletionStudyPanel key={`completion:${campaignId}`} campaignId={campaignId} activePolicy={campaign?.active_policy_version} onEpisode={selectEpisode} />

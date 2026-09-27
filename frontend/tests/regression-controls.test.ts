@@ -2,7 +2,7 @@
 import { createElement as h } from 'react'
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import { api } from '../src/api'
+import { api, type RegressionExecutionPage, validateExecutionPage } from '../src/api'
 import { RegressionControls } from '../src/components/RegressionControls'
 import type { AgentRegistration, PolicyVersion, RegressionBundle, RegressionExecution } from '../src/generated/contracts'
 import { validateContract } from '../src/generated/validate'
@@ -11,11 +11,12 @@ import { baseline, bundle, config, registration, regressionCase } from './fixtur
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers() })
 
 const candidate = (decision: PolicyVersion['decision'], version = 'candidate'): PolicyVersion => ({ ...baseline, version, decision, author: 'mechanic' })
-async function inspect(kind: RegressionBundle['artifact_kind'], policies: PolicyVersion[], replay = false) {
+async function inspect(kind: RegressionBundle['artifact_kind'], policies: PolicyVersion[], replay = false, historyPage: RegressionExecutionPage = { executions: [], next_before: null, has_more: false }) {
   const saved = validateContract<RegressionBundle>('RegressionBundle', { ...bundle, ...(kind ? { artifact_kind: kind } : {}) })
   const registered = validateContract<AgentRegistration>('AgentRegistration', registration)
   const execution: RegressionExecution = { execution_id: 'fresh-execution', bundle_id: saved.bundle_id, manifest_hash: saved.manifest_hash, registration_id: registered.registration_id, profile_id: saved.execution_profile_id, mode: 'FRESH_SANDBOX', explicit_action: true, policy_hash: saved.policy_hash, configuration_hash: saved.configuration_hash, declared_budget: saved.caps, usage: {}, episode_ids: [], world_ids: [], status: 'COMPLETED' }
   vi.spyOn(api, 'bundle').mockResolvedValue(saved)
+  const history = vi.spyOn(api, 'executions').mockResolvedValue(historyPage)
   const execute = vi.spyOn(api, 'execute').mockResolvedValue(execution)
   vi.spyOn(api, 'execution').mockResolvedValue(execution)
   const props = { cases: [{ ...regressionCase, ...(kind ? { artifact_kind: kind } : {}) }], registrations: [registered], policies, config: { ...config, live_enabled: true, model_configured: true, execution_profiles: [{ profile_id: 'sandbox-v1', caps: saved.caps, requires_live: true }] }, replay, onEpisode: vi.fn() }
@@ -25,7 +26,7 @@ async function inspect(kind: RegressionBundle['artifact_kind'], policies: Policy
   await screen.findByText('sandbox-v1')
   expect(execute).not.toHaveBeenCalled()
   fireEvent.change(screen.getByLabelText('Reviewed agent'), { target: { value: registered.registration_id } })
-  return { execute, props, view }
+  return { execute, history, props, view }
 }
 
 it.each(['REJECTED', 'INCOMPLETE', 'NO_CHANGE'] as const)('explicitly reruns the exact bundled %s candidate without promoting it', async decision => {
@@ -156,4 +157,92 @@ it('clears saved execution state when the campaign key changes', async () => {
   expect(screen.queryByLabelText('Saved execution ID')).toBeNull()
   expect(fetch).toHaveBeenCalledTimes(1)
   expect(execute).not.toHaveBeenCalled()
+})
+
+it('does not list saved executions before the bundle is explicitly inspected', async () => {
+  const history = vi.spyOn(api, 'executions').mockResolvedValue({ executions: [], next_before: null, has_more: false })
+  vi.spyOn(api, 'bundle').mockResolvedValue(validateContract<RegressionBundle>('RegressionBundle', bundle))
+  const execute = vi.spyOn(api, 'execute')
+  render(h(RegressionControls, { cases: [regressionCase], registrations: [], policies: [baseline], config, replay: true, onEpisode: vi.fn() }))
+  expect(history).not.toHaveBeenCalled()
+  fireEvent.change(screen.getByLabelText('Saved regression'), { target: { value: regressionCase.regression_id } })
+  expect(history).not.toHaveBeenCalled()
+  fireEvent.click(screen.getByRole('button', { name: 'Inspect saved bundle' }))
+  await screen.findByText('No saved executions for this bundle.')
+  expect(history).toHaveBeenCalledExactlyOnceWith(regressionCase.regression_id)
+  expect(execute).not.toHaveBeenCalled()
+})
+
+it('opens an interrupted saved execution from history in playback without fresh dispatch or polling', async () => {
+  const interrupted = { ...savedExecution, status: 'INCOMPLETE' as const, stop_reason: 'Interrupted by process restart; saved effects were retained.' }
+  const { execute, history, props } = await inspect('incident_fixture', [baseline], true, { executions: [interrupted], next_before: null, has_more: false })
+  const read = vi.mocked(api.execution).mockResolvedValue(interrupted)
+  await screen.findByText(/1 saved executions loaded/)
+  fireEvent.change(screen.getByLabelText('Saved executions', { exact: true }), { target: { value: interrupted.execution_id } })
+  await screen.findByRole('heading', { name: 'Saved execution · execution-saved' })
+  expect(screen.getByText(interrupted.stop_reason)).toBeTruthy()
+  expect(screen.getByText('Incomplete', { selector: '.badge' })).toBeTruthy()
+  expect(read).toHaveBeenCalledExactlyOnceWith(interrupted.execution_id)
+  fireEvent.click(screen.getByRole('button', { name: 'episode-saved-2', exact: true }))
+  expect(props.onEpisode).toHaveBeenCalledExactlyOnceWith('episode-saved-2')
+  vi.useFakeTimers()
+  await act(() => vi.advanceTimersByTimeAsync(10000))
+  expect(history).toHaveBeenCalledOnce()
+  expect(read).toHaveBeenCalledOnce()
+  expect(execute).not.toHaveBeenCalled()
+})
+
+it('paginates saved executions only on request and refreshes to the newest page', async () => {
+  const firstPage = { executions: [savedExecution], next_before: 42, has_more: true }
+  const { history, execute } = await inspect('incident_fixture', [baseline], false, firstPage)
+  await screen.findByText(/1 saved executions loaded/)
+  history.mockResolvedValueOnce({ executions: [{ ...savedExecution, execution_id: 'execution-older' }], next_before: null, has_more: false })
+  fireEvent.click(screen.getByRole('button', { name: 'Load older executions' }))
+  await screen.findByText(/2 saved executions loaded/)
+  expect(history).toHaveBeenNthCalledWith(2, regressionCase.regression_id, 42)
+  expect(within(screen.getByLabelText('Saved executions', { exact: true })).getAllByRole('option').map(option => (option as HTMLOptionElement).value)).toEqual(['', savedExecution.execution_id, 'execution-older'])
+  expect(screen.queryByRole('button', { name: 'Load older executions' })).toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: 'Refresh saved executions' }))
+  await screen.findByText(/1 saved executions loaded/)
+  expect(history).toHaveBeenNthCalledWith(3, regressionCase.regression_id)
+  expect(execute).not.toHaveBeenCalled()
+})
+
+it.each([{ bundle_id: 'bundle-foreign' }, { manifest_hash: 'b'.repeat(64) }])('refuses a history page containing a foreign bundle identity: %j', async changes => {
+  const { execute } = await inspect('incident_fixture', [baseline], false, { executions: [{ ...savedExecution, ...changes }], next_before: null, has_more: false })
+  expect((await screen.findByRole('alert')).textContent).toContain('does not match the selected bundle and manifest')
+  expect(within(screen.getByLabelText('Saved executions', { exact: true })).getAllByRole('option')).toHaveLength(1)
+  expect(screen.queryByRole('button', { name: 'episode-saved-1' })).toBeNull()
+  expect(api.execution).not.toHaveBeenCalled()
+  expect(execute).not.toHaveBeenCalled()
+})
+
+it('revalidates a selected execution after listing and rejects mismatched detail', async () => {
+  const { execute } = await inspect('incident_fixture', [baseline], false, { executions: [savedExecution], next_before: null, has_more: false })
+  vi.mocked(api.execution).mockResolvedValue({ ...savedExecution, bundle_id: 'bundle-foreign' })
+  await screen.findByText(/1 saved executions loaded/)
+  fireEvent.change(screen.getByLabelText('Saved executions', { exact: true }), { target: { value: savedExecution.execution_id } })
+  expect((await screen.findByRole('alert')).textContent).toContain('does not match the selected bundle and manifest')
+  expect(screen.queryByRole('heading', { name: /Saved execution ·/ })).toBeNull()
+  expect(execute).not.toHaveBeenCalled()
+})
+
+it('retains verified history when a later page belongs to a different bundle', async () => {
+  const { history } = await inspect('incident_fixture', [baseline], false, { executions: [savedExecution], next_before: 42, has_more: true })
+  await screen.findByText(/1 saved executions loaded/)
+  history.mockResolvedValueOnce({ executions: [{ ...savedExecution, execution_id: 'execution-foreign', bundle_id: 'bundle-other' }], next_before: null, has_more: false })
+  fireEvent.click(screen.getByRole('button', { name: 'Load older executions' }))
+  expect((await screen.findByRole('alert')).textContent).toContain('Previously verified execution history remains available.')
+  expect(within(screen.getByLabelText('Saved executions', { exact: true })).getAllByRole('option').map(option => (option as HTMLOptionElement).value)).toEqual(['', savedExecution.execution_id])
+})
+
+it('validates saved execution page contracts, duplicate identities and advancing cursors', () => {
+  const page = { executions: [savedExecution], next_before: 42, has_more: true }
+  expect(validateExecutionPage(page, 100)).toEqual(page)
+  for (const value of [
+    { ...page, next_before: null }, { ...page, next_before: 0 }, { ...page, next_before: 1.5 },
+    { ...page, next_before: 100 }, { ...page, has_more: false }, { ...page, executions: [] },
+    { ...page, executions: [savedExecution, savedExecution] },
+    { ...page, executions: [{ ...savedExecution, status: 'ASSUMED_COMPLETE' }] },
+  ]) expect(() => validateExecutionPage(value, 100)).toThrow(/Malformed/)
 })

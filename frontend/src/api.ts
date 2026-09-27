@@ -5,6 +5,9 @@ export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; lab_m
 export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L' | 'P1'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
 export type Matrix = { campaign_id: string; cells: MatrixCell[]; counts: Record<string, number> }
 export type EventPage = { events: Event[]; next_after: number; has_more: boolean }
+export type CampaignPage = { campaigns: Campaign[]; next_before: number | null; has_more: boolean }
+export type RegressionExecutionPage = { executions: RegressionExecution[]; next_before: number | null; has_more: boolean }
+export type ReadinessStatus = { ready: boolean; simulator: { ready: boolean; code: string; message: string }; live_configuration: { ready: boolean; missing_fields: string[] }; provider_access: 'not_checked'; provider_calls: 0; models: { actor: string; explorer: string; mechanic: string } }
 export type AriaInput = Omit<AriaAnalysis, 'schema_version' | 'analysis_id' | 'campaign_id' | 'verified_source_refs'>
 const pending = new Map<string, Promise<unknown>>()
 const id = encodeURIComponent
@@ -49,6 +52,15 @@ export function validateConfig(v: unknown): ConfigStatus {
   }
   return v as ConfigStatus
 }
+export function validateReadiness(value: unknown): ReadinessStatus {
+  if (!object(value) || typeof value.ready !== 'boolean' || !object(value.simulator)
+    || typeof value.simulator.ready !== 'boolean' || value.ready !== value.simulator.ready
+    || typeof value.simulator.code !== 'string' || typeof value.simulator.message !== 'string'
+    || !object(value.live_configuration) || typeof value.live_configuration.ready !== 'boolean'
+    || !strings(value.live_configuration.missing_fields) || value.provider_access !== 'not_checked' || value.provider_calls !== 0
+    || !object(value.models) || typeof value.models.actor !== 'string' || typeof value.models.explorer !== 'string' || typeof value.models.mechanic !== 'string') return malformed('run readiness')
+  return value as ReadinessStatus
+}
 export function validateMatrix(v: unknown): Matrix {
   const outcomes = ['COMPLETED', 'VIOLATION', 'SAFE_UNRESOLVED', 'CORRECTLY_REJECTED', 'LAB_ERROR']
   if (!object(v) || typeof v.campaign_id !== 'string' || !Array.isArray(v.cells) || !object(v.counts) || !Object.values(v.counts).every(n => Number.isInteger(n) && (n as number) >= 0)) return malformed('matrix')
@@ -69,12 +81,32 @@ export function validateEvents(value: unknown, episodeId: string, after: number)
   if (value.has_more && value.next_after === after) return malformed('event cursor')
   return { events, next_after: value.next_after as number, has_more: value.has_more }
 }
+export function validateCampaignPage(value: unknown, before?: number): CampaignPage {
+  if (!object(value) || typeof value.has_more !== 'boolean'
+    || !(value.next_before === null || (Number.isSafeInteger(value.next_before) && (value.next_before as number) > 0))) return malformed('campaign history')
+  const campaigns = validateList<Campaign>('Campaign', value.campaigns)
+  if (new Set(campaigns.map(campaign => campaign.campaign_id)).size !== campaigns.length
+    || value.has_more !== (value.next_before !== null)
+    || (value.has_more && (!campaigns.length || (before !== undefined && (value.next_before as number) >= before)))) return malformed('campaign history cursor or identity')
+  return { campaigns, next_before: value.next_before as number | null, has_more: value.has_more }
+}
+export function validateExecutionPage(value: unknown, before?: number): RegressionExecutionPage {
+  if (!object(value) || typeof value.has_more !== 'boolean'
+    || !(value.next_before === null || (Number.isSafeInteger(value.next_before) && (value.next_before as number) > 0))) return malformed('regression execution history')
+  const executions = validateList<RegressionExecution>('RegressionExecution', value.executions)
+  if (new Set(executions.map(execution => execution.execution_id)).size !== executions.length
+    || value.has_more !== (value.next_before !== null)
+    || (value.has_more && (!executions.length || (before !== undefined && (value.next_before as number) >= before)))) return malformed('regression execution history cursor or identity')
+  return { executions, next_before: value.next_before as number | null, has_more: value.has_more }
+}
 const contract = <T,>(name: string) => (v: unknown) => validateContract<T>(name, v)
 const identified = <T,>(name: string, key: string, expected: string) => (value: unknown) => { const record = validateContract<T>(name, value); if (!object(value) || value[key] !== expected) return malformed(`${name} identity`); return record }
 const list = <T,>(name: string) => (v: unknown) => validateList<T>(name, v)
 export const api = {
   health: () => request('/health', v => { if (!object(v) || v.status !== 'ok' || v.service !== 'faultlab-backend') return malformed('health'); return { status: 'ok', service: 'faultlab-backend' } }),
   config: () => request('/config/status', validateConfig),
+  readiness: () => request('/readiness', validateReadiness),
+  campaigns: (before?: number) => request(`/campaigns?limit=20${before === undefined ? '' : `&before=${before}`}`, value => validateCampaignPage(value, before)),
   campaign: (campaignId: string) => request(`/campaigns/${id(campaignId)}`, identified<Campaign>('Campaign', 'campaign_id', campaignId)),
   create: (input: CampaignRequest) => request('/campaigns', contract<Campaign>('Campaign'), input),
   start: (campaignId: string) => request(`/campaigns/${id(campaignId)}/start`, contract<Campaign>('Campaign'), {}),
@@ -101,6 +133,7 @@ export const api = {
   },
   execute: (regressionId: string, agentId: string, profileId: string, policy: string) => request(`/regressions/${id(regressionId)}/execute`, contract<RegressionExecution>('RegressionExecution'), { agent_registration_id: agentId, execution_profile_id: profileId, policy_version: policy, execute_live: true }),
   execution: (executionId: string) => request(`/regression-executions/${id(executionId)}`, identified<RegressionExecution>('RegressionExecution', 'execution_id', executionId)),
+  executions: (regressionId: string, before?: number) => request(`/regressions/${id(regressionId)}/executions?limit=20${before === undefined ? '' : `&before=${before}`}`, value => validateExecutionPage(value, before)),
   diagnostic: (diagnosticId: string) => request(`/diagnostics/${id(diagnosticId)}`, contract<DiagnosticResult>('DiagnosticResult')),
   challenge: (challengeId: string) => request(`/challenges/${id(challengeId)}`, contract<ChallengeResult>('ChallengeResult')),
   portability: (portabilityId: string) => request(`/portability/${id(portabilityId)}`, contract<PortabilityResult>('PortabilityResult')),

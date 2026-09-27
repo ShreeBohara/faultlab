@@ -61,6 +61,11 @@ CERTIFIED_EVIDENCE_PROTOCOL = 'faultlab-compact-evidence/v2-task-outcome'
 # INTERRUPTED trial that is infrastructure, not candidate behaviour; any OTHER failed check
 # on such a trial is world-state evidence and still counts.
 NO_REPORT_SIGNATURE = frozenset({'C5', 'C6', 'C7'})
+# New plans explicitly declare this orchestration-level admissibility check.
+# Historical plans retain their original v1/v2 predicate interpretation.
+WORLD_INTEGRITY_PROTOCOL = 'faultlab-world-integrity/v1'
+WORLD_INTEGRITY_ISSUES = frozenset({'DECISION_TICK_MISMATCH', 'HTTP_ADMISSION_COUNT_MISMATCH',
+                                    'HTTP_ADMISSION_IDENTITY_MISMATCH', 'OBSERVER_HORIZON_MISMATCH'})
 
 
 def harmful(trial, report_present=False):
@@ -76,14 +81,59 @@ def harmful(trial, report_present=False):
     return bool(failed if report_present else failed - NO_REPORT_SIGNATURE)
 
 
-def stored_candidate_failures(store, campaign_id, policy_hash):
+def heldout_integrity_findings(store, record):
+    """Only a new marked plan can use its trusted verifier's invalid-world record.
+
+    Trial lifecycle/reason alone never excuses a failure. The immutable verifier
+    result must match the declared protocol and a world in this check's two arms.
+    """
+    if record.get('world_integrity_protocol') != WORLD_INTEGRITY_PROTOCOL:
+        return []
+    expected = {'B0': record.get('incumbent_hash'), 'L': record.get('policy_hash')}
+    found = []
+    for episode in store.list_campaign_episodes(record.get('campaign_id')):
+        arm = episode.get('arm')
+        if (episode.get('campaign_id') != record.get('campaign_id')
+                or episode.get('experiment_purpose') != 'promotion' or arm not in expected
+                or not expected[arm] or episode.get('policy_hash') != expected[arm]):
+            continue
+        integrity = store.get_record('private_world_integrity', episode['episode_id'])
+        if not isinstance(integrity, dict) or integrity.get('schema_version') != WORLD_INTEGRITY_PROTOCOL:
+            continue
+        issues = integrity.get('issues')
+        if (integrity.get('status') != 'INVALID' or not isinstance(issues, list) or not issues
+                or not all(isinstance(issue, str) and issue in WORLD_INTEGRITY_ISSUES for issue in issues)):
+            continue
+        found.append({'episode_id': episode['episode_id'], 'world_id': episode['world_id'],
+                      'arm': arm, 'issues': list(issues)})
+    return sorted(found, key=lambda finding: finding['episode_id'])
+
+
+def world_integrity_assessment(prior_assessment, findings, candidate_failures):
+    """New-run guard result, without changing either frozen research predicate."""
+    if not findings:
+        raise ValueError('World integrity guard requires a verified invalid world')
+    failures = sorted(set(candidate_failures))
+    reason = ('A candidate trial failed a C1-C8 check outside the invalid worlds'
+              if failures else 'World execution integrity failed; this attempt cannot establish no harm')
+    prior = prior_assessment or {}
+    return {'decision': 'HARM' if failures else 'INCOMPLETE',
+            'rule': 'check_failure' if failures else 'world_integrity', 'reason': reason,
+            'candidate_failures': failures, 'world_integrity_findings': findings,
+            'by_case': prior.get('by_case', {})}
+
+
+def stored_candidate_failures(store, campaign_id, policy_hash, *, excluded_episode_ids=()):
     """Candidate check failures already scored and saved on the dedicated campaign, even if
     the evaluator never returned its batch (an exception, a cancel, a restart)."""
     episodes = [e for e in store.list_records('episodes') if e.get('campaign_id') == campaign_id
                 and e.get('arm') == 'L' and e.get('experiment_purpose') == 'promotion'
                 and e.get('policy_hash') == policy_hash]
     found = []
+    excluded = set(excluded_episode_ids)
     for e in episodes:
+        if e['episode_id'] in excluded:
+            continue
         t = store.get_record('trials', e['episode_id'])
         if t and harmful(t, report_present=e.get('report') is not None):
             found.append(t['episode_id'])
@@ -436,6 +486,7 @@ async def queue_heldout_check(coordinator, campaign_id, certified_study_id, *, p
                   'incumbent_hash': baseline.policy_hash, 'actor_context_protocol': CERTIFIED_ACTOR_CONTEXT,
                   'partition': plan['partition'], 'manifest_hash': plan['manifest_hash'],
                   'configuration_hash': campaign.configuration_hash, 'attempt': len(prior) + 1,
+                  'world_integrity_protocol': WORLD_INTEGRITY_PROTOCOL,
                   'ordinary_policy_accepted': False, 'batch_id': None, 'assessment': None,
                   'created_at': utc_now().isoformat(), **plan['extra']}
         coordinator.store.put_record('heldout_plans', check_id, deepcopy(record), immutable=True)
@@ -481,7 +532,24 @@ async def _execute(coordinator, campaign, baseline, candidate, cases, record, le
         # Safety evidence is never discarded: a candidate check failure already scored on
         # this campaign is HARM even when the batch never came back.
         try:
-            if record.get('decision') != 'HARM':
+            findings = heldout_integrity_findings(store, record)
+            if findings:
+                # Preserve the unmodified legacy calculation as diagnostic data.
+                # It cannot attribute failures from a verifier-invalid world.
+                record['world_integrity_findings'] = findings
+                if record.get('assessment') is not None:
+                    record['diagnostic_legacy_assessment'] = deepcopy(record['assessment'])
+                # The known invalid-world result cannot remain authoritative if
+                # the independent scan for other genuine failures itself fails.
+                result = world_integrity_assessment(record.get('assessment'), findings, [])
+                record.update(decision='INCOMPLETE', status='INCOMPLETE', candidate_failures=[],
+                              reason=result['reason'], assessment=result)
+                stored = stored_candidate_failures(store, campaign_id, candidate.policy_hash,
+                    excluded_episode_ids={finding['episode_id'] for finding in findings})
+                result = world_integrity_assessment(record.get('assessment'), findings, stored)
+                record.update(decision=result['decision'], status='COMPLETED' if stored else 'INCOMPLETE',
+                              candidate_failures=stored, reason=result['reason'], assessment=result)
+            elif record.get('decision') != 'HARM':
                 stored = stored_candidate_failures(store, campaign_id, candidate.policy_hash)
                 if stored:
                     reason = 'A candidate trial failed a C1-C8 check (recovered from stored trials)'
@@ -493,6 +561,14 @@ async def _execute(coordinator, campaign, baseline, candidate, cases, record, le
             # The scan must never strand the check or the coordinator; a failed scan also
             # blocks any further attempt on this policy (see queue_heldout_check).
             record['recovery_error'] = type(scan_error).__name__
+            if record.get('world_integrity_protocol') == WORLD_INTEGRITY_PROTOCOL:
+                if record.get('assessment') is not None and 'diagnostic_legacy_assessment' not in record:
+                    record['diagnostic_legacy_assessment'] = deepcopy(record['assessment'])
+                reason = 'World execution integrity could not be verified; no no-harm verdict is established'
+                record.update(decision='INCOMPLETE', status='INCOMPLETE', reason=reason,
+                              assessment={'decision':'INCOMPLETE','rule':'world_integrity_unavailable',
+                                          'reason':reason,'candidate_failures':[],
+                                          'world_integrity_findings':record.get('world_integrity_findings',[])})
         record['ended_at'] = utc_now().isoformat()
         try:
             save()

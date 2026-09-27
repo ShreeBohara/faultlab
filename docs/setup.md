@@ -2,6 +2,13 @@
 
 For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
 
+September 27 product reliability work: [core workflow audit and verification](PRODUCT_CORE_REVIEW_2026-09-27.md).
+Campaign history, saved regression execution history and readiness are now in the dashboard. Saved-record reads run outside
+the scheduler event loop. Retained candidate violations, lab/world clock disagreement, interrupted
+batches and cleanup failures have explicit handling. Final verification: **2,010 backend tests passed,
+180 existing skips; 192 frontend tests, build and six browser checks passed**. A separate real-dashboard
+reference run and direct world reconstruction passed. New provider cost $0. No new live result is claimed.
+
 September 27 Phase 31 follow-up: [report-finalization fix, offline reconstruction and saved-dashboard
 rehearsal](part2/REPORT_FINALIZATION_FIX_2026-09-27.md). This is a new runtime, with no paid calls;
 the historical reserved evaluation remains INCOMPLETE. Use the current status page for final check

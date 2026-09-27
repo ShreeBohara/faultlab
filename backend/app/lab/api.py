@@ -89,18 +89,38 @@ def create_router(get_coordinator):
         return value
     def guarded(fn):
         from functools import wraps
-        @wraps(fn)
-        async def wrapped(*args,**kwargs):
-            try: return await fn(*args,**kwargs)
-            except Exception as error: return error_response(error)
+        from inspect import iscoroutinefunction
+        from fastapi.encoders import jsonable_encoder
+        if iscoroutinefunction(fn):
+            @wraps(fn)
+            async def wrapped(*args,**kwargs):
+                try: return await fn(*args,**kwargs)
+                except Exception as error: return error_response(error)
+        else:
+            # FastAPI runs synchronous readers in its worker pool. Include JSON
+            # conversion there: saved evidence scans/encoding must not stall the
+            # scheduler's HTTP dispatch, deadlines or Stop acknowledgment.
+            @wraps(fn)
+            def wrapped(*args,**kwargs):
+                try:
+                    result=fn(*args,**kwargs)
+                    return result if isinstance(result,Response) else JSONResponse(content=jsonable_encoder(result))
+                except Exception as error: return error_response(error)
         return wrapped
 
     @router.get('/config/status')
     @guarded
-    async def config_status(): return c().config_status()
+    def config_status(): return c().config_status()
     @router.get('/readiness')
     @guarded
     async def readiness(): return await c().readiness()
+    @router.get('/campaigns')
+    @guarded
+    def history(before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
+        coordinator=c()
+        page=coordinator.store.campaign_page(before=before,limit=limit)
+        return {'campaigns':[coordinator.get(id) for id in page['campaign_ids']],
+                'next_before':page['next_before'],'has_more':page['has_more']}
     @router.post('/campaigns',status_code=201)
     @guarded
     async def create(request:CampaignRequest): return c().create(request)
@@ -112,50 +132,50 @@ def create_router(get_coordinator):
     async def stop(id:str,request:EmptyRequest): return await c().stop(id)
     @router.get('/campaigns/{id}')
     @guarded
-    async def detail(id:str): return c().get(id)
+    def detail(id:str): return c().get(id)
     @router.get('/campaigns/{id}/policy-status')
     @guarded
-    async def policy_status(id:str):
+    def policy_status(id:str):
         from app.lab.policy_status import policy_status as summarize_policy_status
         c().get(id)
         return summarize_policy_status(c().store, id)
     @router.get('/episodes/{id}')
     @guarded
-    async def episode(id:str): return safe_episode(id)
+    def episode(id:str): return safe_episode(id)
     @router.get('/episodes/{id}/events')
     @guarded
-    async def events(id:str,after:int=Query(0,ge=0),limit:int=Query(200,ge=1,le=200)):
+    def events(id:str,after:int=Query(0,ge=0),limit:int=Query(200,ge=1,le=200)):
         episode=record('episodes',id)
         page=c().store.events(id,after=after,limit=limit)
         if episode['split']!='development': page['events']=[]
         return page
     @router.get('/policies')
     @guarded
-    async def policies(): return c().policies.list()
+    def policies(): return c().policies.list()
     @router.get('/policies/{version}')
     @guarded
-    async def policy(version:str): return record('policies',version)
+    def policy(version:str): return record('policies',version)
     @router.get('/policies/{version}/proposal')
     @guarded
-    async def policy_proposal(version:str):
+    def policy_proposal(version:str):
         policy=record('policies',version)
         proposal=c().store.get_record('proposals',policy['raw_proposal_ref']) if policy['raw_proposal_ref'] else None
         return {'policy_version':version,'proposal_ref':policy['raw_proposal_ref'],'raw':proposal.get('raw') if proposal else None,'author':policy['author'],'parent_version':policy['parent_version']}
     @router.get('/campaigns/{id}/configuration')
     @guarded
-    async def configuration(id:str):
+    def configuration(id:str):
         campaign=c().get(id)
         return record('configurations',campaign.configuration_hash)
     @router.get('/campaigns/{id}/recording')
     @guarded
-    async def recording(id:str):
+    def recording(id:str):
         from app.lab.exports import development_recording
         c().get(id)
         settings=c().settings
         return development_recording(c().store,id,secrets=(settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token))
     @router.get('/campaigns/{id}/matrix')
     @guarded
-    async def matrix(id:str):
+    def matrix(id:str):
         c().get(id); episodes=records('episodes',id)
         cells=[]; counts={'valid_attempted':0,'completed':0,'violations':0,'safe_unresolved':0,'correctly_rejected':0,'lab_errors':0,'interrupted':0,'scheduled':0,'triggered':0,'untriggered':0}
         for episode in episodes:
@@ -173,7 +193,7 @@ def create_router(get_coordinator):
         return {'campaign_id':id,'cells':cells,'counts':counts}
     @router.get('/evidence-retries/{id}')
     @guarded
-    async def evidence_retry_status(id:str):
+    def evidence_retry_status(id:str):
         result=c().store.get_record('evidence_retries',id)
         if result is None: raise KeyError(id)
         return result
@@ -183,7 +203,7 @@ def create_router(get_coordinator):
     async def retry(id:str,request:RetryRequest): return await c().retry_evidence(id,request.episode_ids)
     @router.get('/campaigns/{id}/experiments')
     @guarded
-    async def experiments(id:str):
+    def experiments(id:str):
         c().get(id)
         counters=records('counterexamples',id); joined=[]
         for counter in counters:
@@ -201,7 +221,7 @@ def create_router(get_coordinator):
         return {'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in c().store.get_records('ingestions',episodes) if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
     @router.get('/campaigns/{id}/search-attempts')
     @guarded
-    async def search_attempts(id:str):
+    def search_attempts(id:str):
         campaign=c().get(id)
         selected=[]
         policy_hashes={p.policy_hash for p in c().policies.list() if p.policy_hash}
@@ -220,22 +240,22 @@ def create_router(get_coordinator):
         return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded
-    async def regressions(id:str): c().get(id); return records('regressions',id)
+    def regressions(id:str): c().get(id); return records('regressions',id)
     @router.get('/campaigns/{id}/counterexamples')
     @guarded
-    async def counterexamples(id:str): c().get(id); return records('counterexamples',id)
+    def counterexamples(id:str): c().get(id); return records('counterexamples',id)
     @router.get('/counterexamples/{id}')
     @guarded
-    async def counterexample(id:str): return record('counterexamples',id)
+    def counterexample(id:str): return record('counterexamples',id)
     @router.get('/diagnostics/{id}')
     @guarded
-    async def diagnostic(id:str): return record('diagnostics',id)
+    def diagnostic(id:str): return record('diagnostics',id)
     @router.get('/challenges/{id}')
     @guarded
-    async def challenge(id:str): return record('challenges',id)
+    def challenge(id:str): return record('challenges',id)
     @router.get('/evaluations/{id}')
     @guarded
-    async def evaluation(id:str):
+    def evaluation(id:str):
         raw=record('evaluations',id)
         if raw['split']!='development': raw={**raw,'trials':[]}
         return raw
@@ -246,12 +266,12 @@ def create_router(get_coordinator):
         return await queue_evaluation(c(),request)
     @router.get('/regressions/{id}/bundle')
     @guarded
-    async def bundle(id:str):
+    def bundle(id:str):
         regression=record('regressions',id)
         return record('bundles',regression['bundle_id'])
     @router.get('/regressions/{id}/download')
     @guarded
-    async def download(id:str):
+    def download(id:str):
         import io,zipfile
         from app.contracts.models import RegressionBundle
         from app.lab.regressions import validate_bundle,manifest_payload
@@ -278,7 +298,7 @@ def create_router(get_coordinator):
         return await queue_baseline_study(c(),id)
     @router.get('/baseline-studies/{id}')
     @guarded
-    async def baseline_study_status(id:str): return record('baseline_studies',id)
+    def baseline_study_status(id:str): return record('baseline_studies',id)
 
     @router.post('/campaigns/{id}/completion-study',status_code=202)
     @guarded
@@ -290,10 +310,10 @@ def create_router(get_coordinator):
                                             case_manifest_id=request.case_manifest_id)
     @router.get('/campaigns/{id}/completion-studies')
     @guarded
-    async def completion_studies(id:str): c().get(id); return records('completion_studies',id)
+    def completion_studies(id:str): c().get(id); return records('completion_studies',id)
     @router.get('/completion-studies/{id}')
     @guarded
-    async def completion_study_status(id:str): return record('completion_studies',id)
+    def completion_study_status(id:str): return record('completion_studies',id)
 
     @router.post('/campaigns/{id}/heldout-check',status_code=202)
     @guarded
@@ -303,10 +323,10 @@ def create_router(get_coordinator):
                                          manifest_hash=request.manifest_hash,predicate=request.predicate)
     @router.get('/campaigns/{id}/heldout-checks')
     @guarded
-    async def heldout_checks(id:str): c().get(id); return records('heldout_checks',id)
+    def heldout_checks(id:str): c().get(id); return records('heldout_checks',id)
     @router.get('/heldout-checks/{id}')
     @guarded
-    async def heldout_check_status(id:str): return record('heldout_checks',id)
+    def heldout_check_status(id:str): return record('heldout_checks',id)
 
     @router.post('/campaigns/{id}/context-study',status_code=202)
     @guarded
@@ -317,10 +337,10 @@ def create_router(get_coordinator):
         return await queue_context_study(c(),id,protocol)
     @router.get('/campaigns/{id}/context-studies')
     @guarded
-    async def context_studies(id:str): c().get(id); return records('context_studies',id)
+    def context_studies(id:str): c().get(id); return records('context_studies',id)
     @router.get('/context-studies/{id}')
     @guarded
-    async def context_study_status(id:str): return record('context_studies',id)
+    def context_study_status(id:str): return record('context_studies',id)
 
     @router.post('/campaigns/{id}/search-comparison',status_code=202)
     @guarded
@@ -329,25 +349,25 @@ def create_router(get_coordinator):
         return await queue_search(c(),id)
     @router.get('/search-requests/{id}')
     @guarded
-    async def search_request(id:str): return record('search_requests',id)
+    def search_request(id:str): return record('search_requests',id)
     @router.get('/search-comparisons/{id}/results')
     @guarded
-    async def search_results(id:str): return record('search_results',id)
+    def search_results(id:str): return record('search_results',id)
     @router.get('/evaluation-requests/{id}')
     @guarded
-    async def evaluation_request(id:str): return record('evaluation_requests',id)
+    def evaluation_request(id:str): return record('evaluation_requests',id)
     @router.get('/audit-results/{id}')
     @guarded
-    async def audit_result(id:str): return record('audit_results',id)
+    def audit_result(id:str): return record('audit_results',id)
     @router.get('/search-comparisons/{id}')
     @guarded
-    async def search_detail(id:str): return record('search_comparisons',id)
+    def search_detail(id:str): return record('search_comparisons',id)
     @router.get('/campaigns/{id}/budget')
     @guarded
-    async def budget(id:str): c().get(id); return c().store.get_record('budgets',id) or {'usage_metadata_known':True,'measured_input_tokens':0,'measured_output_tokens':0,'reservations':{}}
+    def budget(id:str): c().get(id); return c().store.get_record('budgets',id) or {'usage_metadata_known':True,'measured_input_tokens':0,'measured_output_tokens':0,'reservations':{}}
     @router.get('/agent-registrations')
     @guarded
-    async def registrations(): return records('agent_registrations')
+    def registrations(): return records('agent_registrations')
     @router.post('/campaigns/{id}/portability',status_code=202)
     @guarded
     async def portability_start(id:str,request:PortabilityRequest):
@@ -355,16 +375,21 @@ def create_router(get_coordinator):
         return await queue_portability(c(),id,request)
     @router.get('/portability-requests/{id}')
     @guarded
-    async def portability_request(id:str): return record('portability_requests',id)
+    def portability_request(id:str): return record('portability_requests',id)
     @router.get('/portability/{id}/metrics')
     @guarded
-    async def portability_metrics(id:str): return record('portability_metrics',id)
+    def portability_metrics(id:str): return record('portability_metrics',id)
     @router.get('/portability/{id}')
     @guarded
-    async def portability(id:str): return record('portability',id)
+    def portability(id:str): return record('portability',id)
     @router.get('/regression-executions/{id}')
     @guarded
-    async def execution(id:str): return record('regression_executions',id)
+    def execution(id:str): return record('regression_executions',id)
+    @router.get('/regressions/{id}/executions')
+    @guarded
+    def execution_history(id:str,before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
+        regression=record('regressions',id)
+        return c().store.regression_execution_page(regression['bundle_id'],before=before,limit=limit)
     @router.post('/regressions/{id}/execute',status_code=202)
     @guarded
     async def execute(id:str,request:ExecutionRequest):
@@ -372,7 +397,7 @@ def create_router(get_coordinator):
         return await execute_regression(c(),id,request)
     @router.get('/campaigns/{id}/aria-evidence')
     @guarded
-    async def aria_get(id:str): c().get(id); return records('aria',id)
+    def aria_get(id:str): c().get(id); return records('aria',id)
     from app.lab.aria_evidence import AriaEvidenceRequest,save_aria_evidence
     @router.post('/campaigns/{id}/aria-evidence',status_code=201)
     @guarded

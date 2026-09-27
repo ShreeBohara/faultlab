@@ -20,3 +20,12 @@ it('allows one outstanding call and retains verified data during 1.5/3/6-second 
   await act(async () => { await vi.advanceTimersByTimeAsync(6000) }); expect(fetcher).toHaveBeenCalledTimes(5)
   expect(result.current.data).toBe('reconnected'); expect(result.current.error).toBeNull()
 })
+it.each([true, false])('does not poll or retry an on-demand resource after success=%s', async succeeds => {
+  vi.useFakeTimers()
+  const fetcher = succeeds ? vi.fn().mockResolvedValue('checked') : vi.fn().mockRejectedValue(new Error('unavailable'))
+  const { result } = renderHook(() => useResource('manual', fetcher, null))
+  await act(() => vi.advanceTimersByTimeAsync(30000))
+  expect(fetcher).toHaveBeenCalledOnce()
+  expect(result.current.loading).toBe(false)
+  expect(succeeds ? result.current.data : result.current.error).toBe(succeeds ? 'checked' : 'unavailable')
+})

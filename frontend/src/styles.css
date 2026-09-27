@@ -207,6 +207,14 @@ h1 em { font-style: normal; color: var(--accent); }
 .campaign-bar input { max-width: 355px; width: 300px; margin: 0; padding: 7px 10px; font-family: var(--mono); font-size: 10px; }
 .campaign-bar button { padding: 7px 12px; font-size: 11px; }
 .campaign-bar > span { font: 9px var(--mono); color: var(--subtle); text-align: right; overflow-wrap: anywhere; }
+.history-panel { margin-bottom: 20px; }
+.history-controls { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.history-picker { flex: 1 1 320px; min-width: 0; }
+.history-picker label { margin-bottom: 6px; }
+.history-controls select { width: 100%; }
+.history-controls button { margin-bottom: 0; }
+.history-selection { margin-top: 12px; }
+.history-selection .facts { margin-top: 8px; }
 
 /* Shared evidence surfaces. */
 .evidence-grid { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(360px, 1.45fr) minmax(275px, 1fr); gap: 18px; align-items: start; scroll-margin-top: 20px; }
@@ -216,6 +224,9 @@ h1 em { font-style: normal; color: var(--accent); }
 .section-number { color: var(--accent); font-size: 9px; background: var(--accent-surface); padding: 4px 5px; border-radius: 3px; letter-spacing: 0; }
 .small-label { color: var(--subtle); font-size: 8px; letter-spacing: .7px; }
 .run-panel { border-top: 2px solid var(--strong-line); }
+.run-readiness { border-bottom: 1px solid var(--line); margin-bottom: 16px; padding-bottom: 12px; font-size: 11px; }
+.run-readiness h3 { margin: 0; }
+.run-readiness .text-button { font-size: 10px; }
 .timeline-panel { border-top: 2px solid var(--accent); min-height: 540px; }
 .policy-panel { border-top: 2px solid var(--amber); }
 label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 12px; }

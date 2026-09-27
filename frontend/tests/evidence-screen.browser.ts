@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { campaign, config, episode, fixtureResponse } from './fixtures'
+import { bundle, campaign, config, episode, fixtureResponse, matrix, readiness, regressionCase } from './fixtures'
 
 test('saved evidence reload, exact trial drilldown and playback produce only reads', async ({ page }) => {
   const writes: string[] = []; const errors: string[] = []
@@ -48,6 +48,86 @@ test('malformed response stays visible and keyboard access works at narrow width
   await expect(page.getByText(/Malformed health response/)).toBeVisible()
   await page.keyboard.press('Tab'); await expect(page.getByRole('link', { name: 'Skip to evidence' })).toBeFocused()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+test('history is read-only and Stop follows only the selected active campaign', async ({ page }) => {
+  const writes: string[] = []; let stopped = false
+  const activeId = 'campaign-running'
+  const running = { ...campaign, campaign_id: activeId, state: 'RUNNING' as const, latest_episode_id: null }
+  await page.addInitScript(id => localStorage.setItem('faultlab:campaign', id), campaign.campaign_id)
+  await page.route('**/api/**', async route => {
+    const request = route.request(); const path = new URL(request.url()).pathname
+    const selected = path.includes(activeId) ? { ...running, ...(stopped ? { state: 'STOPPED' as const, state_seq: 4, stop_requested: true } : {}) } : campaign
+    if (request.method() === 'POST') { writes.push(path); stopped = true; await route.fulfill({ json: { ...running, state: 'STOPPED', state_seq: 4, stop_requested: true } }); return }
+    const response = path === '/api/campaigns' ? { campaigns: [running, campaign], next_before: null, has_more: false }
+      : path.endsWith('/config/status') ? { ...config, active_campaign_id: activeId }
+      : path.endsWith('/matrix') ? { ...matrix, campaign_id: selected.campaign_id, cells: selected.campaign_id === activeId ? [] : matrix.cells }
+      : fixtureResponse(request.url(), selected)
+    await route.fulfill({ json: response })
+  })
+  await page.goto('/')
+  await expect(page.getByText(/2 saved campaigns loaded/)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Stop', exact: true })).toBeDisabled()
+  await page.getByLabel('Saved campaigns', { exact: true }).selectOption(campaign.campaign_id)
+  await page.getByRole('button', { name: 'Open selected campaign' }).click()
+  expect(writes).toEqual([])
+  await page.getByRole('button', { name: 'Open active campaign' }).click()
+  await expect(page.getByLabel('Open saved campaign', { exact: true })).toHaveValue(activeId)
+  await expect(page.getByRole('button', { name: 'Stop', exact: true })).toBeEnabled()
+  await page.getByRole('button', { name: 'Stop', exact: true }).click()
+  await expect(page.getByText('Stop acknowledged by the next successful poll.')).toBeVisible()
+  expect(writes).toEqual([`/api/campaigns/${activeId}/stop`])
+  await page.screenshot({ path: test.info().outputPath('history-and-scoped-stop.png'), fullPage: true })
+})
+
+test('readiness distinguishes backend health from simulator access and rechecks without writes', async ({ page }) => {
+  const writes: string[] = []; let checks = 0
+  await page.route('**/api/**', async route => {
+    if (route.request().method() !== 'GET') writes.push(route.request().url())
+    if (route.request().url().endsWith('/readiness')) {
+      checks++
+      await route.fulfill({ json: checks === 1 ? { ...readiness, ready: false, simulator: { ready: false, code: 'SIMULATOR_UNAVAILABLE', message: 'Start the local simulator before executing a campaign.' } } : readiness }); return
+    }
+    await route.fulfill({ json: fixtureResponse(route.request().url()) })
+  })
+  await page.goto('/')
+  await expect(page.getByText('Backend connected')).toBeVisible()
+  await expect(page.getByText('Simulator unavailable', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Run baseline', exact: true })).toBeDisabled()
+  await page.getByRole('button', { name: 'Check run readiness' }).click()
+  await expect(page.getByText('Simulator ready', { exact: true })).toBeVisible()
+  await expect(page.getByText('Live configuration incomplete')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Run baseline', exact: true })).toBeEnabled()
+  expect(checks).toBe(2); expect(writes).toEqual([])
+  await page.screenshot({ path: test.info().outputPath('offline-readiness.png'), fullPage: true })
+})
+
+test('saved regression execution history opens interrupted evidence without typing IDs or dispatching work', async ({ page }) => {
+  const writes: string[] = []; const historyReads: string[] = []
+  const saved = { execution_id: 'execution-browser-saved', bundle_id: bundle.bundle_id, manifest_hash: bundle.manifest_hash, registration_id: 'agent-fixture', profile_id: bundle.execution_profile_id, mode: 'FRESH_SANDBOX', explicit_action: true, policy_hash: bundle.policy_hash, configuration_hash: bundle.configuration_hash, declared_budget: bundle.caps, usage: { model_calls: 0, http_attempts: 4 }, status: 'INCOMPLETE', episode_ids: [episode.episode_id], world_ids: [episode.world_id], stop_reason: 'Interrupted by process restart; saved effects were retained.' }
+  await page.addInitScript(id => localStorage.setItem('faultlab:campaign', id), campaign.campaign_id)
+  await page.route('**/api/**', async route => {
+    const request = route.request(); const path = new URL(request.url()).pathname
+    if (request.method() !== 'GET') writes.push(path)
+    if (path.endsWith('/executions')) { historyReads.push(request.url()); await route.fulfill({ json: { executions: [saved], next_before: null, has_more: false } }); return }
+    const response = path.endsWith('/regressions') ? [regressionCase]
+      : path.endsWith('/bundle') ? bundle
+      : path === `/api/regression-executions/${saved.execution_id}` ? saved
+      : fixtureResponse(request.url())
+    await route.fulfill({ json: response })
+  })
+  await page.goto('/')
+  await expect(page.getByText('Backend connected')).toBeVisible()
+  expect(historyReads).toEqual([])
+  await page.getByLabel('Saved regression').selectOption(regressionCase.regression_id)
+  await page.getByRole('button', { name: 'Inspect saved bundle' }).click()
+  await expect(page.getByText(/1 saved executions loaded/)).toBeVisible()
+  await page.getByLabel('Saved executions', { exact: true }).selectOption(saved.execution_id)
+  await expect(page.getByRole('heading', { name: `Saved execution · ${saved.execution_id}` })).toBeVisible()
+  await expect(page.getByText(saved.stop_reason, { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Run fresh regression/ })).toBeDisabled()
+  expect(historyReads).toHaveLength(1); expect(writes).toEqual([])
+  await page.screenshot({ path: test.info().outputPath('saved-regression-history.png'), fullPage: true })
 })
 
 test('actual local offline smoke creates fresh world and survives reload', async ({ page }) => {

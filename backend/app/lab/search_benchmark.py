@@ -109,10 +109,7 @@ async def queue_search(coordinator,campaign_id):
         except Exception:
             coordinator.store.put_record('search_requests',request_id,{'request_id':request_id,'status':'INCOMPLETE'})
         finally:
-            if owned and runner:
-                await runner.world_client.close(); await runner.provider.close()
-                if getattr(runner,'telemetry_worker',None): await runner.telemetry_worker.close()
-            coordinator.active_id=None
+            await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=request_id)
     coordinator.tasks[request_id]=asyncio.create_task(execute())
     return {'request_id':request_id,'status':'QUEUED'}
 

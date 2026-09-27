@@ -1,8 +1,9 @@
 """Complete repeated pairs, all attempts retained, only lab-error pairs retried."""
+import asyncio
 from dataclasses import dataclass
-from app.contracts.models import EvaluationBatch,FaultSpec,Usage,canonical_json,content_hash,new_id
+from app.contracts.models import EvaluationBatch,FaultSpec,Usage,canonical_json,content_hash,new_id,utc_now
 from app.lab.reproduction import valid_trial
-from app.lab.budgets import BudgetExhausted
+from app.lab.budgets import BudgetExhausted,StopRequested
 from app.lab.storage import StoreConflict
 
 
@@ -32,10 +33,23 @@ def paired_complete(batch,expected_pairs):
     return True
 
 
+def observed_candidate_violations(batch):
+    """A clean retry cannot erase a scored violation from an earlier attempt.
+
+    Pair membership and triggered coverage determine comparison completeness, not
+    whether an observed agent mistake happened. Infrastructure errors and interrupted
+    episodes remain diagnostic evidence rather than scored candidate failures.
+    """
+    return [trial for trial in batch.trials
+            if trial.policy_hash == batch.candidate_hash and trial.arm == 'L'
+            and trial.lifecycle == 'COMPLETED' and trial.outcome not in (None, 'LAB_ERROR')
+            and (trial.failed_checks or trial.outcome == 'VIOLATION')]
+
+
 class PairedEvaluator:
     def __init__(self,store,runner,ledger,*,publisher=None): self.store,self.runner,self.ledger,self.publisher=store,runner,ledger,publisher
-    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True,actor_context_protocol=None):
-        batch_id=new_id('batch'); own=reservation is None
+    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True,actor_context_protocol=None,batch_id=None):
+        batch_id=batch_id or new_id('batch'); own=reservation is None
         if own:
             reservation=f'{purpose}:{batch_id}'
             self.ledger.reserve(reservation,len(cases)*3*16)
@@ -43,13 +57,17 @@ class PairedEvaluator:
         pairs=[]; trials=[]; reason='Complete repeated batch'; interrupted=False
         batch=EvaluationBatch(batch_id=batch_id,purpose=purpose,split='promotion' if purpose=='promotion' else 'final_audit' if purpose in ('final_audit','portability') else 'development',candidate_hash=candidate.policy_hash,incumbent_hash=incumbent.policy_hash,manifest_hash=content_hash(cases),scorer_hash=frozen['scorer_hash'],contract_hash=frozen['contract_hash'],model_hash=content_hash({'model':campaign.model,'configuration_hash':campaign.configuration_hash}),trial_pairs=[],trials=[],usage=Usage(),decision='INCOMPLETE',reason='Admitted; execution pending')
         self.store.put_record('evaluations',batch_id,batch)
+        def save_progress(message):
+            batch.trial_pairs=list(pairs); batch.trials=list(trials); batch.usage=aggregate_usage(trials)
+            batch.reason=message
+            self.store.put_record('evaluations',batch_id,batch)
         # Reserve concrete IDs before initializing telemetry and before any actor call.
         planned={(case_index,index,arm):new_id('episode') for case_index in range(len(cases)) for index in range(3) for arm in ('incumbent','candidate')}
         session=None
-        if self.publisher:
-            metadata={'campaign_id':campaign.campaign_id,'episode_id':batch_id,'origin':'faultlab_evaluation','split':batch.split,'source_mode':'live','experiment_purpose':purpose,'arm':'L','execution_epoch':campaign.execution_epoch,'trial_index':0,'study_id':campaign.campaign_id,'evidence_context_id':campaign.campaign_id,'agent_registration_id':'orders-v1','model_id':campaign.model,'policy_hash':candidate.policy_hash,'contract_hash':frozen['contract_hash'],'scorer_hash':frozen['scorer_hash']}
-            session=await self.publisher.begin(batch_id,metadata,expected_episode_ids=list(planned.values()),frozen=False)
         try:
+            if self.publisher:
+                metadata={'campaign_id':campaign.campaign_id,'episode_id':batch_id,'origin':'faultlab_evaluation','split':batch.split,'source_mode':'live','experiment_purpose':purpose,'arm':'L','execution_epoch':campaign.execution_epoch,'trial_index':0,'study_id':campaign.campaign_id,'evidence_context_id':campaign.campaign_id,'agent_registration_id':'orders-v1','model_id':campaign.model,'policy_hash':candidate.policy_hash,'contract_hash':frozen['contract_hash'],'scorer_hash':frozen['scorer_hash']}
+                session=await self.publisher.begin(batch_id,metadata,expected_episode_ids=list(planned.values()),frozen=False)
             for case_index,case in enumerate(cases):
                 recipe=FaultSpec.model_validate_json(canonical_json(case['fault_spec']))
                 for index in range(3):
@@ -69,6 +87,7 @@ class PairedEvaluator:
                                 chosen=incumbent if arm_name=='incumbent' else candidate
                                 trial=await self.runner.run(campaign,recipe,chosen,purpose=purpose,arm='B0' if arm_name=='incumbent' else 'L',trial_index=index,fixture_id=case.get('fixture_id','standard-v1'),ledger=self.ledger,reservation=retry_reservation,stop=stop,episode_id=planned[(case_index,index,arm_name)] if retry==0 else None,actor_context_protocol=actor_context_protocol)
                                 trials.append(trial); outcomes[arm_name]=trial
+                                save_progress('Execution in progress; all returned attempts retained')
                                 if session and retry==0 and trial.lifecycle=='COMPLETED':
                                     e=self.store.get_record('episodes',trial.episode_id)
                                     if e.get('verdict'): await session.record_prediction(trial.episode_id,inputs={'scenario_hash':trial.scenario_hash},original_report=e['report'],persisted_scores={c['check_id']:c['passed'] for c in e['verdict']['checks']})
@@ -81,18 +100,31 @@ class PairedEvaluator:
                             continue
                         clean=(outcomes['incumbent'].episode_id,outcomes['candidate'].episode_id)
                         break
-                    if clean: pairs.append(clean)
+                    if clean:
+                        pairs.append(clean)
+                        save_progress('Execution in progress; completed pair retained')
                     else: interrupted=True; break
                 if interrupted: break
         except BudgetExhausted:
             reason='Complete required batch or clean retry could not fit'; interrupted=True
+        except StopRequested:
+            reason='External stop; incomplete batch'; interrupted=True
+        except asyncio.CancelledError:
+            reason='Execution interrupted; saved attempts are not replayed'; interrupted=True
+            raise
+        except Exception as error:
+            from app.lab.readiness import execution_failure
+            reason='Execution failed; saved attempts are not replayed'; interrupted=True
+            self.store.put_record('evaluation_errors',batch_id,{'batch_id':batch_id,'campaign_id':campaign.campaign_id,**execution_failure(error),'recorded_at':utc_now().isoformat()})
+            raise
         finally:
-            if own: self.ledger.release(reservation)
-        batch.trial_pairs=pairs; batch.trials=trials; batch.usage=aggregate_usage(trials)
-        complete=paired_complete(batch,len(cases)*3)
-        batch.decision='NO_CHANGE' if complete else 'INCOMPLETE'
-        batch.reason='Complete repeated evidence; fixed promotion predicate still required' if complete else reason
-        self.store.put_record('evaluations',batch_id,batch)
+            try:
+                batch.trial_pairs=list(pairs); batch.trials=list(trials)
+                complete=not interrupted and paired_complete(batch,len(cases)*3)
+                batch.decision='NO_CHANGE' if complete else 'INCOMPLETE'
+                save_progress('Complete repeated evidence; fixed promotion predicate still required' if complete else reason)
+            finally:
+                if own: self.ledger.release(reservation)
         if session and complete:
             try: await session.finish({'decision':batch.decision,'valid_pairs':len(pairs),'attempted_episodes':len(trials),'reason':batch.reason})
             except Exception: pass
@@ -110,22 +142,35 @@ async def queue_evaluation(coordinator,request):
     if request.purpose=='final_audit':
         from app.lab.audit import queue_audit
         return await queue_audit(coordinator,campaign,policies[-1])
-    import asyncio
     from app.lab.budgets import CampaignLedger
     await coordinator.admit_activity(campaign.campaign_id)
     campaign=coordinator.get(campaign.campaign_id)
-    ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
-    request_id=new_id('evaluation-request')
+    request_id=new_id('evaluation-request'); batch_id=new_id('batch')
+    record={'request_id':request_id,'campaign_id':campaign.campaign_id,'batch_id':batch_id,'status':'QUEUED'}
+    try:
+        ledger=coordinator.ledgers.setdefault(campaign.campaign_id,CampaignLedger(coordinator.store,campaign.campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
+        coordinator.store.put_record('evaluation_requests',request_id,record)
+    except BaseException:
+        await coordinator.finish_activity(campaign.campaign_id,activity_id=request_id)
+        raise
     async def execute():
         runner=None; owned=False
         try:
+            record['status']='RUNNING'; coordinator.store.put_record('evaluation_requests',request_id,record)
             runner,owned=await coordinator._get_runner(True)
-            batch=await PairedEvaluator(coordinator.store,runner,ledger,publisher=getattr(coordinator,'evaluation_publisher',None)).run(campaign,load_cases('promotion'),policies[0],policies[-1],stop=lambda:coordinator.get(campaign.campaign_id).stop_requested)
-            coordinator.store.put_record('evaluation_requests',request_id,{'request_id':request_id,'batch_id':batch.batch_id,'status':'COMPLETED'})
+            batch=await PairedEvaluator(coordinator.store,runner,ledger,publisher=getattr(coordinator,'evaluation_publisher',None)).run(campaign,load_cases('promotion'),policies[0],policies[-1],batch_id=batch_id,stop=lambda:coordinator.get(campaign.campaign_id).stop_requested)
+            record.update(status='INTERRUPTED' if coordinator.get(campaign.campaign_id).stop_requested else 'INCOMPLETE' if batch.decision=='INCOMPLETE' else 'COMPLETED',reason=batch.reason)
+        except (asyncio.CancelledError,StopRequested):
+            record.update(status='INTERRUPTED',reason='Execution interrupted; saved attempts are not replayed')
+            raise
+        except Exception as error:
+            from app.lab.readiness import execution_failure
+            record.update(status='INTERRUPTED' if coordinator.get(campaign.campaign_id).stop_requested else 'INCOMPLETE',reason='Execution failed; saved attempts are not replayed',error=execution_failure(error))
         finally:
-            if owned and runner:
-                await runner.world_client.close(); await runner.provider.close()
-                if getattr(runner,'telemetry_worker',None): await runner.telemetry_worker.close()
-            coordinator.active_id=None
+            try:
+                record['ended_at']=utc_now().isoformat()
+                coordinator.store.put_record('evaluation_requests',request_id,record)
+            finally:
+                await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=request_id)
     coordinator.tasks[request_id]=asyncio.create_task(execute())
     return {'request_id':request_id,'status':'QUEUED'}

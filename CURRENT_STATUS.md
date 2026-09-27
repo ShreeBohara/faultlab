@@ -10,14 +10,37 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-The next lead should inspect the real core workflow, identify its most important gaps and implement
-justified improvements. Use the proposed milestones below as hypotheses, not a fixed script. Exercise
-independent architectural judgment, verify manually as well as with tests, and explain changes in plain
-English. Time and budget are generous; the old allowance is historical accounting, not a renewed limit.
+Continue to use the milestones below as hypotheses, not a fixed script. Exercise independent
+architectural judgment and verify manually as well as with tests. Time and budget are generous;
+the old allowance is historical accounting, not a renewed limit.
 
-**This session ends with a handoff only.** No new implementation phase or paid experiment was started.
-Read the [detailed continuation notes](memory/context/product-continuation-2026-09-27.md) after this page
-and `AGENTS.md`. GitHub publication remains pending explicit approval.
+**Core reliability fixes are implemented.** The complete original workflow was traced in source.
+Candidate violations now survive opposite-arm infrastructure retries; invalid simulator clocks are
+classified as lab errors; new heldout plans apply the same boundary without rewriting old protocols.
+Stop affects only owned active work, partial evaluations survive interruption, restart preserves
+charges and releases abandoned reservations, and cleanup cannot strand the scheduler. Saved reads
+run outside its event loop. Campaign and saved regression execution history now have bounded selectors;
+provider-free readiness explains which local settings/services are missing.
+
+Final verification passed against runtime
+`58cd13b6f966d5b1c789fde7de9ca4bbdf744b2335bca25d9f3930e57e14f357`.
+Frontend: **192 tests, production build and six browser checks passed** (one opt-in server test skipped).
+Heldout/world integration: **104 passed**. A fresh dashboard reference run completed with one actual
+upgrade, one confirmation, all eight checks and zero model calls; direct world reconstruction agrees.
+The dashboard reopened five saved executions and an original trial from a read-only historical copy,
+without executing anything. Full backend: **2,010 passed, 180 existing skips, zero failures**, one
+dependency warning, in 714.97 seconds. The verified local source/evidence checkpoint is recorded in
+`artifacts/product-core-2026-09-27/final-checkpoint.json`; its external recovery copy is
+`/Users/shree/FaultLab_Backups/2026-09-27/product-core/`.
+
+**New spending: $0; carried historical accounting: $855.91.** No GitHub push. No historical verdict,
+active pointer or result report was changed. This work establishes specific product correctness and
+usability improvements, not a generated accepted policy, successful unseen validation, repaired-policy
+transfer or a second task. Those product milestones remain open.
+
+The [product workflow audit](docs/PRODUCT_CORE_REVIEW_2026-09-27.md) records the trace, decisions and
+verification. [Current implementation memory](memory/context/product-core-2026-09-27.md) supersedes
+the earlier [continuation notes](memory/context/product-continuation-2026-09-27.md) for this work.
 
 ### Phase 31 and report-finalization follow-up
 
@@ -42,7 +65,7 @@ experiment is planned in this round; the latest reserved result remains INCOMPLE
   failures separately. Save code, documents and diagnostic evidence on the local backup branch and
   in `/Users/shree/FaultLab_Backups/2026-09-27/phase31-followup/`; no push.
 
-Current runtime: `b9410f5e77f2b98e6a621ee5adabc20c7ac65ea042f8a9d7049dedadaec7d719`.
+Runtime of that completed follow-up: `b9410f5e77f2b98e6a621ee5adabc20c7ac65ea042f8a9d7049dedadaec7d719`.
 The quoted live results still use `3da193e3…`; this offline correction is not a new live result.
 Some Desktop source/dependency files became iCloud placeholders. The runtime and main database
 are now readable; all 241,000 main-store records and 142,417 events match the preserved backup.
@@ -160,8 +183,9 @@ storage work. A second task environment, general agent onboarding, successful re
 
 ## Evidence and reading order
 
-1. [Product continuation notes](memory/context/product-continuation-2026-09-27.md): the owner's clarified
-   goal, code map, verified stopping point, recovery paths and a proposed starting approach.
+1. [Product workflow review](docs/PRODUCT_CORE_REVIEW_2026-09-27.md) and
+   [current implementation memory](memory/context/product-core-2026-09-27.md): implemented core fixes,
+   final verification and open product milestones. The original continuation notes remain historical context.
 2. [Offline report-finalization correction](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
 3. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
 4. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
@@ -245,6 +269,13 @@ prices and the required non-secret process settings are documented in the
 
 ## Source and backups
 
+Latest product reliability work is saved on local `backup/part2-2026-09-22`; exact commit, unchanged
+main/index, and complete saved-tree verification are in
+`artifacts/product-core-2026-09-27/final-checkpoint.json`. The external `product-core/` recovery copy
+contains a self-contained source bundle, new diagnostic stores/worlds, manual screenshots, full check
+logs, current notes and a verified hash manifest. Historical evidence backups below remain intact.
+No GitHub push was made. Do not reset or stage everything relative to the intentionally old main.
+
 At the September 27 audit, local `main` and GitHub `main` were at `cbbf957` (September 14).
 Local `backup/part2-2026-09-22` was at `7c36110` (September 26), 22 commits ahead. All 585
 files in that backup matched the working folder before Claude's later wording correction and this
@@ -278,7 +309,18 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Current runtime `b9410f5e…`:** one complete backend run passed **1,952 tests**, with **180 existing
+**Current runtime `58cd13b6…`:** one complete backend invocation passed **2,010 tests**, with
+**180 existing skips**, zero failures and one dependency deprecation warning, in 714.97 seconds.
+[Full log](artifacts/product-core-2026-09-27/full-backend.log) and
+[result](artifacts/product-core-2026-09-27/full-backend-result.json). Frontend **192 tests and build
+passed**; **six browser checks passed**, one opt-in server check skipped. Manual real-server work ran
+separately: fresh reference smoke, direct world reconstruction, bounded campaign navigation, readiness
+and saved regression/trial reopening. All used isolated stores and zero provider calls.
+[Product review](docs/PRODUCT_CORE_REVIEW_2026-09-27.md) distinguishes fixture gates, actual local worlds,
+copied historical evidence and unproven live repair claims. All 31 historical result documents and
+the main database's complete hash are unchanged. Temporary services are stopped.
+
+**Previous offline runtime `b9410f5e…`:** one complete backend run passed **1,952 tests**, with **180 existing
 skips**, zero failures and one dependency deprecation warning, in 697.17 seconds.
 [Full log](artifacts/phase31-followup-2026-09-27/full-backend-hydrated.log).
 Frontend **166 tests and production build passed** after the main-loop wording change. Manual
@@ -299,7 +341,7 @@ The earlier clean 1,891-pass run and combined-run record remain preserved; the l
 supersedes them for runtime `3da193e3…`. Separate focused Actor/provider checks: 66 passed;
 shared checks of both experiment entry points: 74 passed. Offline checks made no provider calls.
 
-**Frontend:** 166 tests, production build and three browser fixture checks passed. The optional automated
+**Previous frontend verification:** 166 tests, production build and three browser fixture checks passed. The optional automated
 actual-server mutation test remains skipped; manual real-server checks covered the successful saved
 replay, Phase 28 qualification, Phase 24 HARM, retained baseline policy, and displayed model/context defaults.
 Read the [new verification note](docs/part2/STATUS_NOTES_2026-09-27.md).
