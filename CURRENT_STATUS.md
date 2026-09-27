@@ -6,8 +6,9 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 
 ## Current work
 
-The owner requested these steps in order. This is implementation and saved-evidence verification;
-no new paid experiment, publication or deployment is part of this change.
+The implementation and saved-evidence verification below are complete. On September 27 the owner
+then authorized the lead to independently review the follow-ups and perform justified bounded work.
+GitHub publication remains pending explicit approval.
 
 - [x] Establish this status page and replace conflicting continuation pointers; preserve old notes.
 - [x] Fix successful replay parsing and verify a real saved replay in the dashboard.
@@ -16,6 +17,28 @@ no new paid experiment, publication or deployment is part of this change.
 - [x] Make normal app defaults use the tested model/context settings, preserving explicit historical versions.
 - [x] Show development qualification, unseen-case results and the active policy separately.
 - [x] Complete offline checks, manual saved-evidence verification and documentation of the new runtime.
+
+### September 27 follow-up
+
+- [x] Save the consolidation and Claude's existing report correction on the local backup branch
+  (`52ee801`); preserve `main`, the real index, historical evidence and `.env`.
+- [x] Obtain one clean, complete backend-suite result after the test corrections:
+  **1,891 passed, 180 skipped, zero failures** in 712.56 seconds.
+- [x] Verify exact model availability and published prices; prepare non-secret process settings.
+- [x] Close the dashboard and stop its server and the idle backend before paid execution.
+- [ ] Freeze, review and execute one separate **public current-runtime compatibility measurement**:
+  [declared protocol](docs/part2/CURRENT_RUNTIME_REPLICATION_2026-09-27.md).
+- [ ] Independently verify its actual reports, shop effects, trace readbacks and clock/attempt identities;
+  publish the result, update the ledger and save the final local checkpoint.
+
+**Decision:** do not perform the suggested immediate “Phase 28 unseen-case check.” The frozen Phase 28
+protocol explicitly disallows that routing. The old unseen-case generator also excludes notification
+development cases but not `upgrade-v1`, so a different seed could repeat known upgrade faults. Instead,
+the new measurement compares the first strongly qualified Phase 28 policy and the empty baseline on
+the seven already-public upgrade cases: 21 pairs / 42 episodes, under the corrected runtime, with a
+$20 cap. It cannot establish new learning, unseen generalization, certification or policy acceptance.
+A later learned-repair/unseen-case claim requires a separate prospective design: seal a genuinely new
+partition before generating new candidates, then qualify and route under one frozen runtime.
 
 Changes to runtime code produce a **new runtime identity**. They do not rewrite, resume or repin
 closed Phase 17–30 experiments. The Phase 30 report-status hint remains experimental and is not adopted.
@@ -98,9 +121,10 @@ Do not check those off because completion studies or software tests pass.
   `http://127.0.0.1:5173`. Open the dashboard URL, not `frontend/index.html` as a file.
 - Start commands and offline verification: [setup](docs/setup.md) and [user guide](docs/user-guide.md).
 
-The idle backend was restarted to load these changes, and the dashboard was started for verification.
-No fresh campaign or model call was made. Recheck running processes before changing them; saved prompts
-do not authorize another paid run.
+The idle backend and dashboard were used for the saved-evidence verification, then stopped during
+this follow-up. The simulator remains available. A live model-catalog check verified both selected IDs
+without generation. The prospective compatibility run uses its own store and explicitly declares its
+new runtime; historical campaigns are read-only. Recheck processes before starting or stopping services.
 
 ## Budget
 
@@ -110,6 +134,9 @@ dollars are unavailable. The detailed non-overlapping ledger sums to $811.39726;
 is conservatively higher due to a historical probe double-count and rounding. Do not silently reclaim it.
 See the [preserved ledger](memory/history/2026-09-27-before-consolidation/memory/context/runtime-and-evidence.md).
 This consolidation makes no paid calls and adds no experiment charge.
+The owner subsequently reported adding more than $1,000 to the account and authorized further work;
+this is not a verified provider balance and does not erase prior charges. The next compatibility
+measurement fits within the existing remaining allowance, so it needs no budget reset or increase.
 
 ## Source and backups
 
@@ -118,6 +145,8 @@ Local `backup/part2-2026-09-22` was at `7c36110` (September 26), 22 commits ahea
 files in that backup matched the working folder before Claude's later wording correction and this
 implementation. Current edits are therefore additional local work; do not reset the working tree.
 Recheck Git state before publishing. This work does not push or merge branches.
+The September 27 consolidation is now saved on that local backup branch at `52ee801`. Later follow-up
+artifacts are recorded in their own checkpoint. `main` and GitHub were not moved.
 
 Ignored `artifacts/` contains roughly 4.5 GB of databases, worlds and evidence. A source clone does
 not carry it. `/Users/shree/FaultLab_Backups/2026-09-26/lab-after-phase28.sqlite3` matches the
@@ -131,12 +160,12 @@ Audit baseline on September 27: **1,805 backend tests passed, 180 skipped, two f
 **124 frontend tests**, production build and **three browser fixture checks passed**.
 The optional actual-server smoke was skipped.
 
-**Final implementation verification:** all **2,071 currently collected backend cases** are accounted for
-across the broad sweep and focused reruns: **1,891 passed, 180 existing skips**. The initial broad run
-had 1,840 passes and three old-default assertion failures. Those assertions were corrected and both
-whole test files rerun successfully (18 and 12 tests); the 46 new policy-status tests also passed.
-This was not a second complete sweep after the test-only corrections. The local verification summary
-records that distinction. No remaining failed current case is known.
+**Full-suite verification, September 27 follow-up:** one complete backend run finished with
+**1,891 passed, 180 existing skips, zero failures**, one dependency warning, in 712.56 seconds.
+All 2,071 cases were collected and run in that invocation after the test-only corrections. Evidence:
+[full log](artifacts/verification-2026-09-27/backend-clean-full-sweep.log) and
+[machine-readable result](artifacts/verification-2026-09-27/backend-clean-full-sweep.json).
+The earlier combined-run verification record is retained as history; the clean full run supersedes it.
 
 **Frontend:** 166 tests, production build and three browser fixture checks passed. The optional automated
 actual-server mutation test remains skipped; manual real-server checks covered the successful saved
