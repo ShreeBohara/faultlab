@@ -2,6 +2,11 @@
 
 For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
 
+September 27 Phase 31 follow-up: [report-finalization fix, offline reconstruction and saved-dashboard
+rehearsal](part2/REPORT_FINALIZATION_FIX_2026-09-27.md). This is a new runtime, with no paid calls;
+the historical reserved evaluation remains INCOMPLETE. Use the current status page for final check
+counts and the [saved-evidence demo guide](part2/PHASE31_DEMO_GUIDE.md) for a read-only presentation.
+
 Updated September 20, 2026 on macOS. Team: Gatekeeper. Product: FaultLab. React evidence UI, FastAPI coordinator and a separate private-world HTTP simulator run locally. Use the [quick start](user-guide.md) for runnable steps and [Phase 3 results](part2/PHASE3_RESULTS.md) for current measurements. Earlier records below are preserved history.
 
 ## Current Phase 3 setup and verification

@@ -10,6 +10,37 @@ The implementation and saved-evidence verification below are complete. On Septem
 then authorized the lead to independently review the follow-ups and perform justified bounded work.
 GitHub publication remains pending explicit approval.
 
+### Phase 31 and report-finalization follow-up
+
+The owner authorized the recommended write-up/demo and focused offline follow-up. No new paid
+experiment is planned in this round; the latest reserved result remains INCOMPLETE.
+
+- [x] Prepare the [Phase 31 write-up](docs/part2/PHASE31_WRITEUP.md) and
+  [four-minute demo guide](docs/part2/PHASE31_DEMO_GUIDE.md), with separate development,
+  reserved-evaluation and active-policy claims.
+- [x] Investigate repeated notification polling. [Review](docs/part2/NOTIFICATION_PROGRESS_REVIEW_2026-09-27.md)
+  confirms the older v2/v3 progress summaries already regressed. Keep v4; do not add a duplicate v5.
+- [x] Implement a narrow final-report hook fix and precise diagnostics; independently review guard,
+  citation, stop and budget behavior. Preserve the captured original development failure as a fixture.
+- [x] Verify the fix with 45 focused checks and a fresh offline world reconstruction, comparing the
+  original and corrected modules with the same captured answers. The correct result is SAFE_UNRESOLVED,
+  with no extra business effects. [Fix and evidence](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
+- [x] Rehearse the saved-evidence dashboard using an isolated copy; provider calls disabled and writes
+  rejected. Verify the original trial pair, all eight checks and retained baseline. Clarify one misleading
+  main-loop sentence; 166 frontend checks and the production build pass after that text change.
+- [x] Record the new runtime and complete one clean backend invocation: **1,952 passed, 180 existing
+  skips, zero failures**, one dependency warning, in 697.17 seconds. Preserve the earlier cloud-read
+  failures separately. Save code, documents and diagnostic evidence on the local backup branch and
+  in `/Users/shree/FaultLab_Backups/2026-09-27/phase31-followup/`; no push.
+
+Current runtime: `b9410f5e77f2b98e6a621ee5adabc20c7ac65ea042f8a9d7049dedadaec7d719`.
+The quoted live results still use `3da193e3…`; this offline correction is not a new live result.
+Some Desktop source/dependency files became iCloud placeholders. The runtime and main database
+are now readable; all 241,000 main-store records and 142,417 events match the preserved backup.
+Unavailable originals have not been replaced. The source/evidence backups outside Desktop remain
+the recovery copies. Keep the project downloaded before using it; do not treat file existence alone
+as evidence that a cloud-backed database or dependency can be read.
+
 - [x] Establish this status page and replace conflicting continuation pointers; preserve old notes.
 - [x] Fix successful replay parsing and verify a real saved replay in the dashboard.
 - [x] Decode Actor citations using the evidence available when the model was called, before report hooks.
@@ -120,16 +151,18 @@ storage work. A second task environment, general agent onboarding, successful re
 
 ## Evidence and reading order
 
-1. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
-2. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
-3. [Historical repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
+1. [Phase 31 write-up](docs/part2/PHASE31_WRITEUP.md), [demo guide](docs/part2/PHASE31_DEMO_GUIDE.md),
+   and [offline report-finalization correction](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
+2. [Latest fresh repair and reserved-case results](docs/part2/PROSPECTIVE_REPAIR_RESULTS_2026-09-27.md).
+3. [September 27 earlier review and compatibility results](docs/part2/CURRENT_REVIEW_2026-09-27.md).
+4. [Historical repair-generation result: Phase 28](docs/part2/PHASE28_RESULTS.md) and its
    [declared protocol](docs/part2/PHASE28_EXPERIMENT.md).
-4. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
-5. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
+5. [Phase 24 unseen-case result](docs/part2/PHASE24_RESULTS.md).
+6. [Phase 30 narrow reporting probe](docs/part2/PHASE30_RESULTS.md): recommended for a later experiment,
    not adopted and not an end-to-end result.
-6. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
-7. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
-8. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
+7. [Phase 1 results](docs/part2/PHASE1_RESULTS.md): native agent, incident export and regression evidence.
+8. [Original month plan](docs/part2/PLAN.md): a historical roadmap, not a completed-feature list.
+9. [Preserved handoff notes](memory/history/2026-09-27-before-consolidation/README.md) for detailed history.
 
 The original [specification checklist](../FaultLab_Specs/specs/001-faultlab-loop/tasks.md)
 ends at Phase 15: 234/239 checked. This is not a product completion percentage. T065, T088,
@@ -205,6 +238,12 @@ are saved at `e38f7db`. The final results are saved on the same local backup bra
 were not moved.
 The fresh experiment's sealed source and offline tests are saved at `7000ced`; its results and current
 status are saved in the subsequent local checkpoint. No GitHub push was made.
+The Phase 31 report-finalization code/tests and dashboard wording are saved locally at `0eb7da7`;
+the completed write-up, demo and validation record are saved in the following checkpoint on the
+same backup branch. `artifacts/phase31-followup-2026-09-27/final-checkpoint.json` records the exact
+final commit and verifies every saved source file against the working folder. Main and its index
+remain unchanged. The separate `phase31-followup/` backup contains a complete source bundle,
+both diagnostic worlds, review records, logs, a demo screenshot and a verified file manifest.
 
 Ignored `artifacts/` contains roughly 4.5 GB of databases, worlds and evidence. A source clone does
 not carry it. `/Users/shree/FaultLab_Backups/2026-09-26/lab-after-phase28.sqlite3` matches the
@@ -221,16 +260,25 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
+**Current runtime `b9410f5e…`:** one complete backend run passed **1,952 tests**, with **180 existing
+skips**, zero failures and one dependency deprecation warning, in 697.17 seconds.
+[Full log](artifacts/phase31-followup-2026-09-27/full-backend-hydrated.log).
+Frontend **166 tests and production build passed** after the main-loop wording change. Manual
+verification covered the original/corrected report-hook reconstruction, direct world-state inspection,
+and the real saved dashboard trial pair. [Verification note](docs/part2/REPORT_FINALIZATION_FIX_2026-09-27.md).
+The earlier invocation hit three failures and six setup errors reading the unhydrated main database;
+its full log remains preserved. No test was changed or newly skipped to obtain the clean result.
+
 Audit baseline on September 27: **1,805 backend tests passed, 180 skipped, two failed**;
 **124 frontend tests**, production build and **three browser fixture checks passed**.
 The optional actual-server smoke was skipped.
 
-**Current full-suite verification:** after the 503 fix, one complete backend invocation finished with
+**Previous live runtime verification:** after the 503 fix, one complete backend invocation finished with
 **1,920 passed, 180 existing skips, zero failures**, one dependency warning, in 702.49 seconds.
 [Full log](artifacts/verification-2026-09-27/backend-full-after-service-retry.log) and
 [result](artifacts/verification-2026-09-27/backend-full-after-service-retry.json).
 The earlier clean 1,891-pass run and combined-run record remain preserved; the latest full run
-supersedes them for the current runtime. Separate focused Actor/provider checks: 66 passed;
+supersedes them for runtime `3da193e3…`. Separate focused Actor/provider checks: 66 passed;
 shared checks of both experiment entry points: 74 passed. Offline checks made no provider calls.
 
 **Frontend:** 166 tests, production build and three browser fixture checks passed. The optional automated
@@ -256,15 +304,17 @@ the separately declared live compatibility follow-up is tracked above.
 - The new status display independently reads development evidence, matching unseen checks and the actual
   campaign active-policy pointer. Saved qualifications match Phase 17 **1/9**, Phase 23 **3/30** and Phase 28
   **9/49**, with zero mismatches across 88 attempts. It never promotes or activates a policy.
-- All **37 historical result files** match the pre-change hashes, including Claude's already-corrected
-  Phase 28 report. The scorer, interpreter and Actor system prompt remain unchanged by this work.
-- The prospective runner/partition passed **102 offline checks**. All 98 application files match
-  the pre-run source checkpoint; the experiment did not change the runtime. All 318 new worlds and
+- All **37 historical result files** matched the consolidation's pre-change hashes, including Claude's
+  already-corrected Phase 28 report. The scorer and Actor system prompt remain unchanged. The later
+  report-finalization fix intentionally changes the interpreter under a new runtime identity.
+- The prospective runner/partition passed **102 offline checks**. At completion of that live experiment,
+  all 98 application files matched the pre-run source checkpoint; it did not change the runtime. All 318 worlds and
   saved readbacks were reconstructed; fresh exact-ID Weave reads verified three selected episodes.
-- **Newly diagnosed limitation:** a rejected generated policy used `defer_unresolved` then tried a
-  business read in its report hook. This prevented submission of a real model report; the generic
-  “no final report” reason was misleading. Preserve the three failures; fix diagnostics/handling
-  separately under a new runtime. The selected repair does not use this sequence.
+- **Fixed offline under a new runtime:** a rejected generated policy used `defer_unresolved` then
+  tried a business read in its report hook, preventing submission of a real answer. Finalization now
+  skips closed business I/O while preserving applicable receipt guards and charged policy steps;
+  other hook-budget failures get precise diagnostics. The three historical failures remain unchanged.
+  The selected live repair does not use this sequence. This fix does not prove live completion gain.
 
 Preserve original reports, failed trials and evaluation partitions. Do not weaken C1–C8, qualifying
 thresholds or gates, substitute a corrected model answer, or present a replay as fresh execution.
@@ -272,11 +322,14 @@ thresholds or gates, substitute a corrected model answer, or present a replay as
 ## Next recommended work
 
 Claude's original program ends at **Phase 31: the write-up and event demo**, not at complete product
-acceptance. The additional prospective study is now finished. Prepare that write-up with the real
-development improvement and the honest INCOMPLETE reserved result; no further paid run is active.
+acceptance. Those documents and the saved-evidence rehearsal are complete, as is the separate offline
+report-hook correction. No further paid run is active.
 
-For the next product change, first reproduce the report-hook failure offline and improve its handling
-and diagnostics. Then investigate why an agent polls an operation it has never attempted. Any later
-experiment must declare how agent-caused untriggered faults count before running, freeze the new runtime
-if code changes, and reserve fresh cases. Do not retroactively change this gate or replace its missing
-exposure. Broader environments and onboarding remain separate product work.
+The next product question is whether a small, explicit record of attempted writes can prevent repeated
+polling of a never-started notification without causing report errors. The
+[notification review](docs/part2/NOTIFICATION_PROGRESS_REVIEW_2026-09-27.md) explains why the old v2/v3
+progress summaries should not simply be reintroduced. First design a narrow v4 comparison with reporting
+guard cases and an all-attempt denominator; only then consider a new paid experiment. Declare how
+agent-caused untriggered faults count, freeze the new runtime, and reserve fresh cases before execution.
+Keep the current evaluation INCOMPLETE; never replace its missing exposure or reuse it as unseen.
+Original promotion/transfer acceptance, broader environments and onboarding remain separate work.
