@@ -76,13 +76,14 @@ export function validateCompletionStudy(value: unknown, campaignId: string, stud
     const identified = replayHash ? text(value.replay_of) && replayHash !== value.incumbent_hash
       : text(value.selected_candidate_version) && hash(value.selected_candidate_hash)
         && value.selected_candidate_hash !== value.incumbent_hash && selected.length === 1
+    const validatedPolicyHash = replayHash ?? value.selected_candidate_hash
     if (value.status !== 'COMPLETED' || !object(value.validation_assessment)
       || value.validation_assessment.decision !== 'OBSERVED_IMPROVEMENT' || !identified
       || !validation.some(trial => trial.arm === 'B0') || !validation.some(trial => trial.arm === 'L')) return malformed()
     for (const trial of validation) {
       if (trial.lifecycle !== 'COMPLETED' || trial.outcome === null || trial.outcome === 'LAB_ERROR'
         || (trial.fault_scheduled && !trial.fault_triggered) || value.evidence[trial.episode_id] !== 'weave_verified'
-        || (trial.arm === 'L' && (trial.policy_hash !== value.selected_candidate_hash || trial.outcome === 'VIOLATION' || trial.failed_checks?.length))) return malformed()
+        || (trial.arm === 'L' && (trial.policy_hash !== validatedPolicyHash || trial.outcome === 'VIOLATION' || trial.failed_checks?.length))) return malformed()
     }
     // The backend owns the fixed per-case improvement predicate. This guard
     // only prevents a contradictory or unfinished projection claiming a gain.

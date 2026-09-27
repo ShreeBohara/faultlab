@@ -45,10 +45,21 @@ def runtime_fingerprints():
         'trace_contract_version': 2,
     }
 
+def resolve_actor_context_protocol(configuration, explicit=None):
+    """An explicit study arm wins; historical configurations without a choice retain v1."""
+    from app.agents.progress import ACTOR_CONTEXT_PROTOCOL_V1, ACTOR_CONTEXT_PROTOCOLS
+    selected = explicit if explicit is not None else configuration.get(
+        'actor_context_protocol', ACTOR_CONTEXT_PROTOCOL_V1)
+    if selected not in ACTOR_CONTEXT_PROTOCOLS:
+        raise ValueError('Unknown actor context protocol')
+    return selected
+
 def frozen_configuration(settings,caps,profile):
     from app.agents.actor import ACTOR_PROMPT_HASH
     from app.agents.progress import actor_context_protocols
     from app.referee.checks import scorer_hash
+    selected_context = resolve_actor_context_protocol(
+        {'actor_context_protocol': settings.faultlab_actor_context_protocol})
     schema=ROOT/'contracts'
     service_hash=tree_hash(ROOT/'backend/app/simulator')
     contract=content_hash({'schemas':{p.name:file_hash(p) for p in sorted(schema.glob('*.schema.json'))},'service_hash':service_hash})
@@ -69,4 +80,4 @@ def frozen_configuration(settings,caps,profile):
         pricing={'actor':{'model':'','input_dollars_per_million':-1.0,'output_dollars_per_million':-1.0,'per_call_dollar_upper_bound':None},'explorer':{'model':'','input_dollars_per_million':-1.0,'output_dollars_per_million':-1.0,'per_call_dollar_upper_bound':None},'mechanic':{'model':'','input_dollars_per_million':-1.0,'output_dollars_per_million':-1.0,'per_call_dollar_upper_bound':None},'per_call_dollar_upper_bound':None}
         lab_model='deterministic-reference/internal-smoke'
         lab_pricing={'model':'','input_dollars_per_million':-1.0,'output_dollars_per_million':-1.0}
-    return {**runtime_fingerprints(),'schema_version':'faultlab/v1','model':models['actor'],'models':models,'pricing':pricing,'model_settings':model_request_settings(models['actor']),'model_settings_by_role':{role:model_request_settings(model) for role,model in models.items()},'actor_response_protocol':actor_response_protocol(),'actor_context_protocols':actor_context_protocols(),'lab_model':lab_model,'lab_model_settings':model_request_settings(lab_model),'lab_pricing':lab_pricing,'actor_prompt_hash':ACTOR_PROMPT_HASH,'adapter_hash':tree_hash(ROOT/'backend/app/adapters'),'interpreter_hash':content_hash({name:file_hash(Path(__file__).with_name(name)) for name in ('policy_interpreter.py','policy_state.py','budgets.py')}),'scorer_hash':scorer_hash(),'contract_hash':contract,'service_hash':service_hash,'capability_hash':content_hash({'scope':'orders.upgrade_then_confirm/v1','tools':['get_order','update_order','get_operation_status','send_confirmation'],'hooks':['after_upgrade_response','before_confirmation','after_notification_response','before_final_report']}),'dependency_lock_hash':dependency,'source_hash':tree_hash(ROOT/'backend/app/agents'),'episode_budget':EpisodeBudget().model_dump(mode='json'),'campaign_budget':caps.model_dump(mode='json'),'profile_id':profile}
+    return {**runtime_fingerprints(),'schema_version':'faultlab/v1','model':models['actor'],'models':models,'pricing':pricing,'model_settings':model_request_settings(models['actor']),'model_settings_by_role':{role:model_request_settings(model) for role,model in models.items()},'actor_response_protocol':actor_response_protocol(),'actor_context_protocols':actor_context_protocols(),'actor_context_protocol':selected_context,'lab_model':lab_model,'lab_model_settings':model_request_settings(lab_model),'lab_pricing':lab_pricing,'actor_prompt_hash':ACTOR_PROMPT_HASH,'adapter_hash':tree_hash(ROOT/'backend/app/adapters'),'interpreter_hash':content_hash({name:file_hash(Path(__file__).with_name(name)) for name in ('policy_interpreter.py','policy_state.py','budgets.py')}),'scorer_hash':scorer_hash(),'contract_hash':contract,'service_hash':service_hash,'capability_hash':content_hash({'scope':'orders.upgrade_then_confirm/v1','tools':['get_order','update_order','get_operation_status','send_confirmation'],'hooks':['after_upgrade_response','before_confirmation','after_notification_response','before_final_report']}),'dependency_lock_hash':dependency,'source_hash':tree_hash(ROOT/'backend/app/agents'),'episode_budget':EpisodeBudget().model_dump(mode='json'),'campaign_budget':caps.model_dump(mode='json'),'profile_id':profile}

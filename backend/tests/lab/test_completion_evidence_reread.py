@@ -220,13 +220,30 @@ async def test_full_study_runs_end_to_end_under_v4_indexed_evidence(tmp_path):
 
 
 @pytest.mark.anyio
-async def test_default_actor_context_is_still_v1(tmp_path):
-    """The default is unchanged on purpose; Phase 17 must pass v4 explicitly."""
+@pytest.mark.parametrize('explicit,expected', [
+    (None, ACTOR_CONTEXT_PROTOCOL_V4),
+    (ACTOR_CONTEXT_PROTOCOL_V1, ACTOR_CONTEXT_PROTOCOL_V1),
+])
+async def test_default_actor_context_follows_the_campaign_and_explicit_v1_is_preserved(
+        tmp_path, explicit, expected):
+    """New campaigns use v4; historical study arms can still request v1."""
     c, campaign, provider, remote, client = await harness(tmp_path)
     try:
-        queued = await queue_completion_study(c, campaign.campaign_id)
-        assert queued['actor_context_protocol'] == ACTOR_CONTEXT_PROTOCOL_V1
+        queued = await queue_completion_study(c, campaign.campaign_id,
+                                              actor_context_protocol=explicit)
         await c.tasks[queued['study_id']]
+        result = c.store.get_record('completion_studies', queued['study_id'])
+        assert result['decision'] == 'OBSERVED_IMPROVEMENT', result.get('error_type')
+        assert queued['actor_context_protocol'] == result['actor_context_protocol'] == expected
+        assert c.store.get_record('configurations', campaign.configuration_hash)['actor_context_protocol'] \
+            == ACTOR_CONTEXT_PROTOCOL_V4
+        assert c.store.get_record('completion_plans', queued['study_id'])['actor_context_protocol'] \
+            == expected
+        stamped = {event['payload'].get('actor_context_protocol')
+                   for row in result['trial_rows']
+                   for event in c.store.events(row['trial']['episode_id'])['events']
+                   if event['type'] == 'actor_output'}
+        assert stamped == {expected}
     finally:
         await client.aclose()
 

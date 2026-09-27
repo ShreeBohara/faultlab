@@ -67,11 +67,63 @@ function observedStudy(): CompletionStudy {
   return saved
 }
 
+function observedReplay(): CompletionStudy {
+  const saved = observedStudy()
+  saved.candidates = []
+  saved.replay_of = 'policy-replayed'
+  saved.replay_policy_hash = saved.selected_candidate_hash
+  delete saved.selected_candidate_version
+  delete saved.selected_candidate_hash
+  // A replay runs only validation; it does not repeat controls or propose a policy.
+  saved.trial_rows = saved.trial_rows.filter(row => row.stage === 'validation')
+  return saved
+}
+
 it('allows an observed completion result with original baseline violations and candidate safety preserved', () => {
   const saved = observedStudy()
   saved.trial_rows[0] = row('episode-before', 'B0', 'VIOLATION')
   expect(validateCompletionStudy(saved, campaign.campaign_id).decision).toBe('OBSERVED_IMPROVEMENT')
   expect(saved.trial_rows[0].trial.failed_checks).toEqual(['C6'])
+})
+
+it('accepts observed improvement from the exact replayed policy without inventing a selected candidate', () => {
+  const saved = observedReplay()
+  const parsed = validateCompletionStudy(saved, campaign.campaign_id, saved.study_id)
+  expect(parsed.decision).toBe('OBSERVED_IMPROVEMENT')
+  expect(parsed.replay_policy_hash).toBe('b'.repeat(64))
+  expect(parsed.selected_candidate_hash).toBeUndefined()
+  expect(parsed.candidates).toEqual([])
+  expect(parsed.ordinary_policy_accepted).toBe(false)
+})
+
+it.each([
+  ['mismatched replay hash', (s: CompletionStudy) => { s.replay_policy_hash = 'c'.repeat(64) }],
+  ['malformed replay hash', (s: CompletionStudy) => { s.replay_policy_hash = 'not-a-policy-hash' }],
+  ['missing replay identity', (s: CompletionStudy) => { delete s.replay_of }],
+  ['missing replay hash', (s: CompletionStudy) => { delete s.replay_policy_hash }],
+  ['a different candidate trial', (s: CompletionStudy) => { s.trial_rows[1].trial.policy_hash = 'c'.repeat(64) }],
+  ['missing candidate evidence', (s: CompletionStudy) => { delete s.evidence['episode-after'] }],
+  ['missing baseline evidence', (s: CompletionStudy) => { delete s.evidence['episode-before'] }],
+  ['local-only candidate evidence', (s: CompletionStudy) => { s.evidence['episode-after'] = 'local_only' }],
+  ['a candidate check failure', (s: CompletionStudy) => { s.trial_rows[1].trial.failed_checks = ['C6'] }],
+  ['an untriggered candidate fault', (s: CompletionStudy) => { s.trial_rows[1].trial.fault_triggered = false }],
+  ['an unfinished baseline trial', (s: CompletionStudy) => { s.trial_rows[0].trial.lifecycle = 'INTERRUPTED' }],
+  ['a negative validation decision', (s: CompletionStudy) => { s.validation_assessment!.decision = 'NO_CHANGE' }],
+  ['ordinary proposals attached', (s: CompletionStudy) => { s.candidates = study().candidates }],
+] as const)('withholds a positive replay with %s', (_, change) => {
+  const saved = observedReplay(); change(saved)
+  expect(() => validateCompletionStudy(saved, campaign.campaign_id)).toThrow(/Malformed/)
+})
+
+it('renders a saved successful replay read-only without a malformed-data warning', async () => {
+  const saved = observedReplay()
+  vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => [saved] })))
+  render(<CompletionStudyPanel campaignId={campaign.campaign_id} activePolicy="policy-v0" onEpisode={vi.fn()} />)
+  await screen.findByRole('table')
+  expect(screen.getByText(/^Study decision:/).textContent).toContain('observed improvement')
+  expect(screen.queryByRole('alert')).toBeNull()
+  expect(screen.queryByText('Generated candidates')).toBeNull()
+  expect(vi.mocked(fetch).mock.calls.every(([, options]) => options?.method === 'GET')).toBe(true)
 })
 
 it.each([

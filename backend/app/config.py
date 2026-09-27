@@ -9,6 +9,11 @@ from app.contracts.models import CampaignBudget, CAMPAIGN_TOKEN_LIMIT
 
 
 ROOT_ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
+DEFAULT_ROLE_MODELS = {
+    'wandb_model': 'deepseek-ai/DeepSeek-V3.1',
+    'wandb_explorer_model': 'deepseek-ai/DeepSeek-V4-Pro-0813',
+    'wandb_mechanic_model': 'deepseek-ai/DeepSeek-V4-Pro-0813',
+}
 
 
 class ConfigurationError(ValueError):
@@ -35,9 +40,10 @@ class Settings:
     faultlab_simulator_url: str = 'http://127.0.0.1:8001'
     faultlab_control_token: str = field(default='', repr=False)
     faultlab_live_enabled: bool = False
+    faultlab_actor_context_protocol: str = 'faultlab-actor-context/v4-indexed-evidence'
     # Allows an explicitly bounded Inference/Weave-only experiment without
     # publishing a Finished W&B run that would trigger additional Aria spending.
-    faultlab_aria_publish_enabled: bool = True
+    faultlab_aria_publish_enabled: bool = False
     faultlab_confirmed_entity: str = ''
     faultlab_model_call_cap: int = 6000
     faultlab_token_cap: int = CAMPAIGN_TOKEN_LIMIT
@@ -85,8 +91,20 @@ class Settings:
         for setting in fields(cls):
             name = setting.name.upper()
             value = os.environ.get(name, file_values.get(name))
+            # Old .env templates shipped empty model placeholders. Adopt the
+            # tested defaults for those placeholders without modifying the file.
+            # An explicitly blank process override still disables that selection.
+            if setting.name in DEFAULT_ROLE_MODELS and name not in os.environ and not value:
+                value = None
             if value is None:
-                values[setting.name] = setting.default if setting.default is not MISSING else ''
+                # Application startup uses the tested role split. Explicit values,
+                # including blank process overrides and the legacy shared lab model, win.
+                legacy_lab = os.environ.get('FAULTLAB_LAB_MODEL', file_values.get('FAULTLAB_LAB_MODEL'))
+                default_model = DEFAULT_ROLE_MODELS.get(setting.name)
+                if setting.name in ('wandb_explorer_model', 'wandb_mechanic_model') and legacy_lab:
+                    default_model = ''
+                values[setting.name] = default_model if default_model is not None else (
+                    setting.default if setting.default is not MISSING else '')
             elif setting.type is bool:
                 if value.strip().lower() not in ('true','false','1','0',''):
                     raise ConfigurationError((name,))
@@ -98,6 +116,9 @@ class Settings:
                     raise ConfigurationError((name,)) from None
             else:
                 values[setting.name] = (value or '').strip()
+        from app.agents.progress import ACTOR_CONTEXT_PROTOCOLS
+        if values['faultlab_actor_context_protocol'] not in ACTOR_CONTEXT_PROTOCOLS:
+            raise ConfigurationError(('FAULTLAB_ACTOR_CONTEXT_PROTOCOL',))
         return cls(**values)
 
     def require_wandb(self, require_model: bool = False) -> None:

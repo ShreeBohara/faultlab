@@ -105,6 +105,61 @@ def test_live_defaults_deny_dispatch():
     with pytest.raises(ConfigurationError):settings.require_live()
 
 
+def test_application_defaults_match_tested_roles_and_context_without_enabling_calls(tmp_path):
+    settings = Settings.from_env(tmp_path / 'missing.env')
+    assert settings.role_models == {
+        'actor': 'deepseek-ai/DeepSeek-V3.1',
+        'explorer': 'deepseek-ai/DeepSeek-V4-Pro-0813',
+        'mechanic': 'deepseek-ai/DeepSeek-V4-Pro-0813',
+    }
+    assert settings.faultlab_actor_context_protocol == 'faultlab-actor-context/v4-indexed-evidence'
+    assert not settings.faultlab_live_enabled
+    assert not settings.faultlab_aria_publish_enabled
+    assert not settings.faultlab_pricing_verified
+    assert settings.faultlab_dollar_cap == 100
+    with pytest.raises(ConfigurationError):
+        settings.require_live()
+
+
+def test_explicit_role_and_historical_context_overrides_survive_defaults(tmp_path, monkeypatch):
+    env_file = tmp_path / '.env'
+    env_file.write_text('WANDB_MODEL=actor-custom\nWANDB_EXPLORER_MODEL=explorer-custom\n'
+                        'WANDB_MECHANIC_MODEL=mechanic-custom\n'
+                        'FAULTLAB_ACTOR_CONTEXT_PROTOCOL=faultlab-actor-context/v1\n')
+    settings = Settings.from_env(env_file)
+    assert settings.role_models == {'actor': 'actor-custom', 'explorer': 'explorer-custom', 'mechanic': 'mechanic-custom'}
+    assert settings.faultlab_actor_context_protocol == 'faultlab-actor-context/v1'
+    monkeypatch.setenv('WANDB_MECHANIC_MODEL', '')
+    assert Settings.from_env(env_file).model_for('mechanic') == 'actor-custom'
+
+
+def test_legacy_explicit_lab_model_keeps_precedence_over_application_defaults(tmp_path):
+    env_file = tmp_path / '.env'
+    env_file.write_text('FAULTLAB_LAB_MODEL=legacy-shared\n')
+    settings = Settings.from_env(env_file)
+    assert settings.model_for('explorer') == settings.model_for('mechanic') == 'legacy-shared'
+
+
+def test_old_empty_env_model_placeholders_adopt_defaults_without_file_edits(tmp_path):
+    env_file = tmp_path / '.env'
+    original = 'WANDB_MODEL=\nWANDB_EXPLORER_MODEL=\nWANDB_MECHANIC_MODEL=\n'
+    env_file.write_text(original)
+    assert Settings.from_env(env_file).role_models == {
+        'actor': config.DEFAULT_ROLE_MODELS['wandb_model'],
+        'explorer': config.DEFAULT_ROLE_MODELS['wandb_explorer_model'],
+        'mechanic': config.DEFAULT_ROLE_MODELS['wandb_mechanic_model'],
+    }
+    assert env_file.read_text() == original
+
+
+@pytest.mark.parametrize('protocol', ['', 'unknown', 'faultlab-actor-context/v99'])
+def test_unknown_default_context_is_rejected_by_name_only(tmp_path, monkeypatch, protocol):
+    monkeypatch.setenv('FAULTLAB_ACTOR_CONTEXT_PROTOCOL', protocol)
+    with pytest.raises(ConfigurationError) as error:
+        Settings.from_env(tmp_path / 'missing.env')
+    assert error.value.missing_fields == ('FAULTLAB_ACTOR_CONTEXT_PROTOCOL',)
+
+
 def test_concurrent_local_capability_creation_is_atomic(tmp_path):
     from concurrent.futures import ThreadPoolExecutor
     settings = Settings(faultlab_artifact_dir=str(tmp_path))

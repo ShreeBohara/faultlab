@@ -43,7 +43,8 @@ class Actor:
         while meter.usage.actor_calls<meter.caps.actor_calls:
             final=meter.final_turn
             # All delivered observations are retained. Reject excess input, never omit contradictory evidence.
-            user=turn_message([o.model_dump(mode='json') for o in broker.journal.observations],
+            request_observations=[o.model_dump(mode='json') for o in broker.journal.observations]
+            user=turn_message(request_observations,
                               final_report_required=final,
                               remaining_actor_calls=meter.caps.actor_calls-meter.usage.actor_calls,
                               protocol=protocol,journal=broker.journal,logical_calls=getattr(broker,'logical_calls',()))
@@ -95,7 +96,7 @@ class Actor:
                     'response_format_hash':content_hash(response_format),
                     'final_report_required':final,
                     'remaining_actor_calls_at_request':user['remaining_actor_calls'],
-                    'delivered_evidence_ids':[o.evidence_id for o in broker.journal.observations],
+                    'delivered_evidence_ids':[row['evidence_id'] for row in request_observations],
                     'raw':generation.content})
             try: action=ACTION_ADAPTER.validate_json(generation.content)
             except (ValidationError,ValueError) as error:
@@ -118,16 +119,17 @@ class Actor:
                 # was shown; decoding them is parsing the declared alphabet, not repairing. The
                 # decode is total and exact-match only, and an unmatched token passes through
                 # verbatim so it still fails C6. Both forms are retained below.
+                # The report hook can append observations after the Actor answered. Its new
+                # labels were not in that request and cannot make a guessed citation valid.
                 emitted=action.report
                 if protocol in INDEXED_EVIDENCE_PROTOCOLS:
-                    rows=[o.model_dump(mode='json') for o in broker.journal.observations]
                     action=action.model_copy(update={'report':emitted.model_copy(update={
-                        'evidence_ids':decode_citations(emitted.evidence_ids,rows)})})
+                        'evidence_ids':decode_citations(emitted.evidence_ids,request_observations)})})
                 payload={'report':action.report.model_dump(mode='json')}
                 if action.report is not emitted:
                     payload.update(emitted_report=emitted.model_dump(mode='json'),
                                    citation_protocol=protocol,
-                                   evidence_labels=evidence_labels(rows))
+                                   evidence_labels=evidence_labels(request_observations))
                 broker.journal.store.append_event(broker.journal.episode_id,tick=meter.usage.ticks,role='actor',type='report_submitted',payload=payload)
                 return action.report
             if final:

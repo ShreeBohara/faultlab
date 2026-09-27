@@ -54,7 +54,7 @@ def _configuration(configuration):
     required = {"model", "actor_prompt_hash", "adapter_hash", "source_hash", "contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash", "episode_budget", "model_settings"}
     if not isinstance(configuration, dict) or not required <= set(configuration):
         raise ValueError("Complete independently frozen target configuration required")
-    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing", "algorithm_hash", "runtime_hash", "trace_contract_version", "actor_response_protocol", "actor_context_protocols"}
+    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing", "algorithm_hash", "runtime_hash", "trace_contract_version", "actor_response_protocol", "actor_context_protocols", "actor_context_protocol"}
     if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"] or not isinstance(configuration.get("lab_model", ""), str):
         raise ValueError("Unreviewed target configuration fields or service URL")
     def no_location(value):
@@ -87,6 +87,10 @@ def _configuration(configuration):
         from app.agents.progress import actor_context_protocols
         if configuration["actor_context_protocols"] != actor_context_protocols():
             raise ValueError("Target actor context protocols are unsupported")
+    if "actor_context_protocol" in configuration:
+        from app.agents.progress import ACTOR_CONTEXT_PROTOCOLS
+        if configuration["actor_context_protocol"] not in ACTOR_CONTEXT_PROTOCOLS:
+            raise ValueError("Target selected actor context protocol is unsupported")
     models=configuration.get("models")
     settings_by_role=configuration.get("model_settings_by_role")
     if models is not None:

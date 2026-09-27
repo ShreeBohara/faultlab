@@ -2,9 +2,11 @@
 
 ## Continuation context
 
-For the September 20 Part 2 implementation state, read `CLAUDE.md` and
-`memory/README.md`, then `docs/part2/PHASE3_RESULTS.md`. Earlier handoffs remain
-historical evidence; their budgets, counts and working-tree descriptions are not current.
+Read `CURRENT_STATUS.md` first for the current implementation checklist, configuration,
+budget and evidence links. `CLAUDE.md`, `CONTINUE_HERE.md` and the memory entry points
+all refer there. Historical result files must remain unchanged; add corrections in new notes.
+Earlier handoffs are archived under `memory/history/2026-09-27-before-consolidation/`.
+Do not use their old budgets, runtime pins or next-step instructions as current state.
 
 ## Current scope
 

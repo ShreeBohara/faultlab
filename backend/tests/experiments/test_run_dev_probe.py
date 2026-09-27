@@ -209,10 +209,38 @@ def test_policies_are_read_by_hash_and_their_content_verified(tmp_path):
         probe.load_policies(tmp_path / 'missing.sqlite3')
 
 
-@pytest.mark.skipif(not probe.DEFAULT_SOURCE_STORE.is_file(), reason='needs the local lab store')
-def test_the_real_store_holds_both_policies_unchanged():
-    found = probe.load_policies(probe.DEFAULT_SOURCE_STORE)   # opened read-only
-    assert (found['L'].version, found['L'].decision) == (CANDIDATE_VERSION, 'PROPOSED')
+@pytest.mark.parametrize('arm', ['B0', 'L'])
+def test_policy_loading_refuses_ambiguous_hashes_instead_of_picking_a_version(tmp_path, arm):
+    path = source_store(tmp_path / 'lab.sqlite3')
+    store = LabStore(path)
+    original_id = 'policy-v0' if arm == 'B0' else CANDIDATE_VERSION
+    duplicate = copy.deepcopy(store.get_record('policies', original_id))
+    duplicate['version'] = 'policy-offline-duplicate'
+    store.put_record('policies', duplicate['version'], duplicate)
+    store.close()
+    with pytest.raises(PlanningError, match=f'exactly one stored policy with the declared {arm} hash, found 2'):
+        probe.load_policies(path)
+
+
+@pytest.mark.skipif(not probe.DEFAULT_SOURCE_STORE.is_file(), reason='needs the optional local historical lab store')
+def test_the_real_store_retains_the_original_policy_versions_unchanged():
+    # The store is append-only evidence, not the Phase 20 snapshot: later studies may legitimately
+    # propose the same content under a new version. Verify the original records by identity here;
+    # the hermetic test above keeps the frozen runner's ambiguous-hash refusal covered.
+    connection = sqlite3.connect(f'file:{probe.DEFAULT_SOURCE_STORE}?mode=ro', uri=True)
+    try:
+        for version_id, policy_hash, decision in (
+            ('policy-v0', probe.BASELINE_POLICY_HASH, 'BASELINE'),
+            (CANDIDATE_VERSION, probe.CANDIDATE_POLICY_HASH, 'PROPOSED'),
+        ):
+            row = connection.execute("SELECT payload FROM records WHERE kind='policies' AND id=?",
+                                     (version_id,)).fetchone()
+            assert row is not None, f'The original historical policy {version_id} is missing'
+            version = PolicyVersion.model_validate_json(row[0])
+            assert (version.version, version.policy_hash, version.decision) == (version_id, policy_hash, decision)
+            assert content_hash(version.content) == policy_hash
+    finally:
+        connection.close()
 
 
 @pytest.mark.skipif(not probe.DEFAULT_SETTINGS.is_file(), reason='needs the Phase 17 settings file')

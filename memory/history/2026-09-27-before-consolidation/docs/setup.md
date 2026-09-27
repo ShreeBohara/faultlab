@@ -1,0 +1,185 @@
+# Setup record
+
+Updated September 20, 2026 on macOS. Team: Gatekeeper. Product: FaultLab. React evidence UI, FastAPI coordinator and a separate private-world HTTP simulator run locally. Use the [quick start](user-guide.md) for runnable steps and [Phase 3 results](part2/PHASE3_RESULTS.md) for current measurements. Earlier records below are preserved history.
+
+## Current Phase 3 setup and verification
+
+Completed checks: **519 backend tests, 100 frontend tests, production build and three browser fixtures**. Actual UI checks opened live search and both completion studies, original proposals, reports and Weave links. The unchanged final backend restart preserved all 30,812 records, events, pointers and paid-call ledgers; readiness makes no provider calls.
+
+The running backend uses `artifacts/phase3-2026-09-20/settings-b2.json`: Actor V3.1, Explorer and Mechanic V4 Pro-0813, Aria off, same confirmed W&B project and $400 allocation inside the shared $1,000 ceiling. The `.env` file was not changed. `settings.json` in the same directory preserves the A/B configuration with Mechanic V3.1. Both use the same frozen runtime `155a436c5651707568348ed0a91d5afb5a12b2df1dc9c6b1e20e5fc452f22adb`. B2's configuration is `2a7fe11fe2631bbbd9e1fdfb3c634863085c4eb2c131daa6217f2799e801621a`.
+
+Phase 3 retained 34 live episodes and 223 model requests. Every trace is now verified. A and B ended NO_CHANGE; B2 stopped INCOMPLETE on an untriggered source fault before its Mechanic was called. No candidate was accepted or activated. Combined Phase 2/3 conservative charges are $23.81478; actual billed dollars remain unavailable. Detailed counts, the distinction between saved decision evidence and later trace synchronization, and remaining proof requirements are in the results report.
+
+## Current Phase 2 setup and verification
+
+Runtime 2 uses DeepSeek V3.1 for Actor and Mechanic, and DeepSeek V4 Pro-0813 for Explorer with thinking disabled. The confirmed destination is **`shreetbohara-quinstreet/Faultlab`**, including the capital F. Matching input/output prices per million tokens are $0.55/$1.65 for V3.1 and $1.31/$3.96 for V4. Aria publication remains disabled.
+
+The saved non-secret settings are `artifacts/phase2-2026-09-20/settings.json`. They set a $400 per-campaign allocation, 6,000 model calls and 204 million combined tokens. Each call admits at most 32,000 input and 2,000 output tokens. Phase 2's separately authorized $1,000 cumulative ceiling covers all its campaigns, stores and probes together; it is tracked across those records, not enforced by a single global account limiter. Existing protected-study reservations remain enabled. Unknown prices or usage are never treated as zero.
+
+The frozen runtime fingerprint is `1261f1f30b3212ec9440e6faf14055656ea44c6a47ed0856563167b0892891a8`; the main $400 configuration is `c58c7dc19ecb1eb63d1c00bacd84fc1dd0628f8cab6f44d73cffb4c52414f4ef`. Keep source, role settings, rates, caps and the local store consistent when reusing registrations. A CLI in another terminal must load the same overrides as the backend. The quick start includes a helper to load the saved settings without changing `.env`.
+
+Runtime 2's `faultlab-reference-final-report/v1` protocol requests a strict report schema on the reference Actor's already report-required turns. It applies equally to baseline and candidate arms, with the same prompt, business tools, eight-turn/90-second limits and fixed checks. The model's original response is retained and scored; no answer is rewritten. Correct structure does not guarantee correct evidence citations. Native smolagents behavior is unchanged. This is a baseline engineering change, not a learned policy improvement.
+
+Latest completed checks: **471 backend tests, 61 frontend tests, production build and three browser fixtures passed**. Manual dashboard inspection after restart loaded the imported B incident, opened its saved execution through **Saved execution ID → Open saved execution**, displayed three trials/24 calls, and opened the original C6-failing report. That read-only action made no new model calls. The opt-in automated actual-server smoke was skipped; the manual workflow passed. Independent UI and accounting review found no blocking issue. Live results:
+
+- C2 (`campaign-add97a955f8f4f3a961aa62a14286807`) ended `NO_CHANGE`: six completed tasks, two safe unresolved, zero violations, but only five of eight scheduled faults triggered. No repair was proposed or accepted.
+- B's saved incident was exported to `artifacts/phase2-2026-09-20/incident-b-export`, validated against reference registration `orders-v1-c58c7dc19ecb1eb6`, and played back without model calls. Fresh execution `execution-dcf7936ab295477fb7588f38584f8bbe` in campaign `campaign-1c19ec5bb8db4988b8493d3ea19d48df` produced two safe unresolved results and one C6 citation violation. The original C5 missing-report failure reproduced zero of three times. All three Weave traces verified; this was baseline incident execution, not accepted-policy transfer.
+- C3 (`campaign-c59a93f87b03419d967eb43e076c99b0`) completed 36 valid development trials, with all 30 faults triggered and no infrastructure errors. The 18 live-model trials had 12 completed, three correctly rejected, two safe unresolved and one violation. The 18 handwritten-reference trials had 15 completed, three correctly rejected and no violations. All 18 live traces and the evaluation verified.
+
+Phase 2 totals: 149 episodes (131 live and 18 offline), 886 model calls including four schema probes, 131 verified live episode traces and no unknown usage. Conservative dispatched bound: $18.92256; known token-price estimate: $1.77596; actual billed dollars unavailable. No learned policy was accepted, so accepted-policy restart persistence, protected final evaluation and independent-agent transfer remain unclaimed. The backend restarted unchanged with saved campaigns, pointers and counts preserved; that does not demonstrate persistence of an accepted policy.
+
+## Workspace
+
+`faultlab/` was created beside `Brainstorm/`, `Hackthon_info/`, and `Idea_Planning_docs/`.
+Those folders were left unchanged. There was no parent Git repository; only `faultlab/`
+was initialized, with branch `main`.
+
+The GitHub owner confirmed by the user is `ShreeBohara`. The remote is now the user-confirmed public
+repository `https://github.com/ShreeBohara/faultlab`. GitHub authentication was
+verified using the existing local login; no global Git configuration was changed.
+
+## Foundation tool and dependency versions — September 12
+
+| Component | Version |
+| --- | --- |
+| Node.js | 20.19.0 |
+| npm | 10.8.2 |
+| Python in `.venv` | 3.12.8 |
+| Git | 2.52.0 |
+| GitHub CLI | 2.88.1 |
+| React / React DOM | 19.3.0 |
+| TypeScript | 7.0.2 |
+| Vite | 8.3.0 |
+| Vite React plugin | 6.1.1 |
+| FastAPI | 0.141.1 |
+| Uvicorn | 0.52.4 |
+| python-dotenv | 1.2.3 |
+| OpenAI-compatible Python client | 3.13.0 |
+| Weave | 0.53.9 |
+| pytest | 9.1.1 |
+| httpx | 0.28.1 |
+
+`backend/requirements.lock` captures the complete installed Python environment;
+`backend/requirements.txt` records exact direct dependencies. npm's resolved dependencies
+are locked in `frontend/package-lock.json`.
+
+The shell initially selected Python 3.8 inside the new directory. The empty setup
+environment was recreated with the already installed Python 3.12.8. `scripts/setup.sh`
+explicitly uses `python3.12` (or `FAULTLAB_PYTHON`) and checks the environment version.
+No system tools were installed or upgraded.
+
+## Historical foundation checks — September 12
+
+These checks predate live implementation and the owner's decision to make the repository public. They are not the current provider or visibility status.
+
+| Component | Result | Evidence / next action |
+| --- | --- | --- |
+| Python dependencies | Passed | `pip check`: no broken requirements. |
+| Backend tests | Passed | All 20 tests passed with outbound DNS and socket connections blocked: seven health/configuration tests and 13 provider-check tests. |
+| Provider SDK compatibility | Passed offline | Installed OpenAI client construction and Weave settings/op APIs checked without network access; mocked cases verify attribution, bounds, sanitized errors, and trace verification. |
+| Frontend production build | Passed | `npm run build` passed TypeScript and Vite compilation. |
+| Frontend dependencies | Passed | Install audit reported zero vulnerabilities. |
+| Browser → Vite → backend | Passed | Browser at `http://127.0.0.1:5173` showed `Backend connected`, `status: ok`, `service: faultlab-backend`; recheck also succeeded. |
+| Local development binding | Passed | Uvicorn on `127.0.0.1:8000`; Vite on `127.0.0.1:5173`. |
+| Secret exclusions | Passed | `.env`, secret variants, virtualenv, node_modules, build output, and local database paths are ignored; `.env.example` remains trackable. |
+| GitHub authentication | Passed | Existing ShreeBohara login verified; owner confirmed. |
+| GitHub remote | Passed | `ShreeBohara/faultlab` created and independently verified private; `main` pushed and GitHub's commit SHA matched the local scaffold commit. |
+| W&B access / models | Not tested | Await key entry in local `.env` and user's confirmation before discovery. |
+| W&B generation / Weave upload | Not tested | Discover models, save one verified ID as `WANDB_MODEL`, then explicitly run one traced request. |
+| TypeSafe | Blocked | Not configured — awaiting sponsor instructions. |
+
+The foundation tests reported an upstream Starlette/AnyIO deprecation warning;
+it does not prevent health checks or tests from passing.
+
+## Historical provider setup — September 12, superseded
+
+The initial setup recorded `WANDB_ENTITY=shreetbohara-quinstreet` and `WANDB_PROJECT=faultlab`.
+At that checkpoint access and credits had not been verified. Subsequent live work confirmed the destination `shreetbohara-quinstreet/Faultlab`; use that capitalization and the current settings above. Credentials remain in the existing local `.env`.
+
+The original provider-check sequence was:
+
+```sh
+./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet
+```
+
+Save an exact returned ID to local `WANDB_MODEL`. Only then run the explicit one-request
+generation check:
+
+```sh
+./scripts/check-provider.sh wandb --generate --confirm-entity shreetbohara-quinstreet
+```
+
+That initial generation check used 32 output tokens and a 20-second request timeout, with SDK
+automatic retries disabled. The script uses the same explicit entity/project for
+inference attribution and Weave, and verifies the saved trace before claiming success.
+Normal startup, the browser, health checks, and offline tests never call either service.
+No live connection result was claimed at that foundation checkpoint. Current live checks and traces are recorded above; the current quick start uses the 2,000-output-token limit.
+
+For TypeSafe, obtain the sponsor's official quickstart or sample request, endpoint,
+model ID, authentication instructions, and credentials. The reserved `TYPESAFE_*`
+settings do not establish its protocol. No fallback provider is used.
+
+## Official references consulted
+
+- [Vite getting started and Node requirements](https://vite.dev/guide/)
+- [W&B Inference endpoint, attribution, discovery, and Weave integration](https://docs.wandb.ai/weave/guides/integrations/inference)
+- [Weave Python SDK source](https://github.com/wandb/weave)
+
+Keep this file factual: update the result rows after actual checks, and keep real keys,
+authorization headers, local secret files, and SDK debug dumps out of the repository.
+
+## Implementation baseline (2026-09-12)
+
+The explicit implementation request supersedes setup-only scope. Before adding product code,
+`./scripts/test.sh` passed 20 backend tests and the TypeScript/Vite production build (139 ms
+Vite phase). Existing FastAPI/React/provider checks remain prior scaffold work. No `.env`
+contents were printed or overwritten and no provider calls were made. New schemas use
+Pydantic 2.13.5; runtime integration pins are listed in requirements.txt/requirements.lock.
+
+The initial frozen profiles were: `offline-v1`, labeled offline deterministic smoke; `live-v1`, requiring
+`FAULTLAB_LIVE_ENABLED=true`, a matching `FAULTLAB_CONFIRMED_ENTITY`, configured W&B
+model/project/credentials and explicit Start. Initial provider budget maxima were 6000 model calls,
+60M combined tokens and $100 with verified pricing. Unknown cost was not zero. The
+1064-call reserve protects audit, external and selector studies. Each episode admits at
+most 18 HTTP attempts, 8 actor calls, 4 waits, 20 ticks, 32 policy steps and 90 seconds.
+Capability scope is orders.upgrade_then_confirm/v1. Registry identities are reviewed locally;
+no API or bundle can install arbitrary code. See integration-ledger.md for evidence gates.
+
+Input admission for the initial gpt-oss model uses locally stored, digest-verified o200k
+BPE ranks through tiktoken 0.14.0, with a framing reserve. Startup and tests never download
+tokenizer assets. Unknown model families retain a conservative byte bound until reviewed.
+The tokenizer metadata/license lives in contracts/tokenizer; actual provider usage remains
+separate from conservative admission/reservation counts. Oversized essential evidence must
+be reported as an input/harness limitation, not an invented agent mistake.
+
+
+## Current implementation commands
+
+Run `./scripts/setup.sh` to install the locked local dependencies. For live Phase 2 work, follow the explicit model/rate/cap overrides in the [quick start](user-guide.md), using `./scripts/start-simulator.sh`, `./scripts/start-live-backend.sh` and `./scripts/start-frontend.sh` in three terminals. Starting services makes no provider calls. Keep code and settings frozen during an experiment; the live launcher disables automatic reload. The general live launcher without overrides uses a different default Actor and a $100 campaign cap. `./scripts/start-backend.sh` is the development server, not the frozen live launcher. The UI is
+http://127.0.0.1:5173. `./scripts/test.sh` runs backend tests, UI tests, build and browser
+fixtures without providers. Browser tests use local Google Chrome when available; otherwise
+install the local Playwright Chromium dependency with `cd frontend && npx playwright install chromium`.
+With backend/simulator running, `cd frontend && FAULTLAB_BROWSER_LOCAL=1 npm run test:browser`
+adds the actual local HTTP workflow. See README.md and docs/regression-runner.md for all
+read-only export and explicitly enabled fresh-run commands.
+
+Live campaign admission additionally requires verified nonnegative input/output pricing,
+exact `FAULTLAB_PRICING_MODEL` match and `FAULTLAB_PRICING_VERIFIED=true`. Unknown pricing
+blocks campaign admission; it is never interpreted as zero dollars. The separate one-request
+provider compatibility check remains independently bounded. Historical GPT-OSS, Llama and DeepSeek compatibility observations remain in [model selection](model-selection.md); they do not replace the current frozen role settings above.
+
+
+## Historical live verification — 2026-09-13
+
+That verification used DeepSeek V4 Pro-0813 with W&B’s documented thinking disabled, JSON mode, temperature zero, 32K input/2K output admission and matching verified prices. The then-current quick-start connection check and healthy order passed with verified Weave readback. The full suite passed 356 backend tests, 20 frontend tests, production build and three browser checks; the opt-in offline browser execution was skipped and the actual live V4 dashboard was checked separately. Historical learning outcomes, including unreached repair stages, remain explicit in `docs/learning-results.md`.
+
+
+## Historical Phase 1 verification — 2026-09-20
+
+422 backend tests and 34 frontend tests passed, with the production build and three browser fixtures. The final registration-label change was followed by a fresh frontend test/build pass. Actual browser checks verified the local HTTP connection, one completed offline baseline (one fresh world, zero model calls), reload/read-only playback, incident inspection, and a three-world live regression with all three parent/tool traces read back from Weave.
+
+Phase 1 used V3.1 as Actor, V4 Pro 0813 as Explorer, and separately tested V4 Pro and V3.1 as Mechanic. These were explicit launcher overrides; the general launcher still defaults to Llama 3.1 8B. The current walkthrough records the overrides and matching rates. No `.env` was overwritten, no system-wide tool was installed, and startup remained provider-free.
+
+The corrected learning and independent baselines produced 226 recorded episodes across their stores (19 offline/reference), 1,400 model calls and 203 verified model traces. A provider connection failure, a request timeout, and three earlier rootless regression traces are preserved and explained. The $100 total ceiling was respected: $29.80986 conservative dispatched bound, $2.780649 estimated from known usage, actual billed dollars unavailable. No learned repair was accepted; Aria publication, protected audit and accepted-policy transfer remain unclaimed.
+
+See [Phase 1 results](part2/PHASE1_RESULTS.md), [checklist](part2/PHASE1_TASKS.md) and [quick start](user-guide.md). The new GitHub Actions workflow runs the existing offline checks without credentials; remote CI execution is still pending a future push. Local services were idle at that checkpoint with results saved. No push or deployment was performed for Phase 1.

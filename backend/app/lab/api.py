@@ -113,6 +113,12 @@ def create_router(get_coordinator):
     @router.get('/campaigns/{id}')
     @guarded
     async def detail(id:str): return c().get(id)
+    @router.get('/campaigns/{id}/policy-status')
+    @guarded
+    async def policy_status(id:str):
+        from app.lab.policy_status import policy_status as summarize_policy_status
+        c().get(id)
+        return summarize_policy_status(c().store, id)
     @router.get('/episodes/{id}')
     @guarded
     async def episode(id:str): return safe_episode(id)

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { createElement as h, StrictMode } from 'react'
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EvidenceScreen } from '../src/components/EvidenceScreen'
 import { ThemeToggle } from '../src/components/ThemeToggle'
@@ -170,6 +170,21 @@ it('rejects unsafe Aria links before saving attributed manual capture', async ()
 })
 
 import { RunControls } from '../src/components/RunControls'
+it('keeps current new-campaign roles and context separate from the saved campaign Actor', () => {
+  const configured = { ...config, models: { actor: 'current-actor', explorer: 'current-explorer', mechanic: 'override-mechanic' }, actor_context_protocol: 'faultlab-actor-context/v4-indexed-evidence' }
+  render(h(RunControls, { config: configured, campaign, replay: false, onCampaign: vi.fn(), onReplay: vi.fn() }))
+  const setup = screen.getByText('Current setup for new live campaigns').parentElement!
+  for (const value of [...Object.values(configured.models), configured.actor_context_protocol]) expect(within(setup).getByText(value)).toBeTruthy()
+  expect(within(setup).queryByText(campaign.model)).toBeNull()
+  expect(screen.getByText(campaign.model)).toBeTruthy()
+  expect(writes).toEqual([])
+})
+it('labels a missing current Actor context as unreported, never as the saved campaign default', () => {
+  render(h(RunControls, { config: { ...config, lab_model: 'legacy-lab-model' }, campaign, replay: false, onCampaign: vi.fn(), onReplay: vi.fn() }))
+  expect(screen.getByText('Not reported by this backend')).toBeTruthy()
+  expect(screen.getAllByText('legacy-lab-model')).toHaveLength(2)
+  expect(writes).toEqual([])
+})
 it('acknowledges Stop only after the next persisted state is received', async () => {
   const running = { ...campaign, state: 'RUNNING' as const, state_seq: 5 }
   const stopped = { ...campaign, state: 'STOPPED' as const, state_seq: 6, stop_requested: true }

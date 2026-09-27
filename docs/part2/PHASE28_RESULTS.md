@@ -165,9 +165,13 @@ a controlled comparison.
 ## What this establishes, and what it does not
 
 **Establishes, on development cases:**
-- **The loop learned a second kind of repair on its own.** Pointed at the upgrade-side gap, the unchanged loop
-  (Explorer, Mechanic, the unchanged `assess_pairs` with the transposed source clause, validation) produced certified
-  repairs that re-send the upgrade.
+- **The loop learned a second kind of repair on its own, once pointed at the gap.** Given the upgrade-side source
+  case, the completion loop produced certified repairs that re-send the upgrade: the Mechanic's proposals, the source
+  gate under the unchanged `assess_pairs` with the transposed source clause, then validation.
+  - **Correction (2026-09-27, prompted by an independent audit):** an earlier draft listed the Explorer as part of
+    this loop. It is not. Completion studies never call the Explorer (it lives in the challenge path,
+    `backend/app/lab/challenge.py`). The source failure case was chosen by us, not discovered. Phase 28 therefore
+    did not exercise autonomous discovery, generated challenges or promotion.
   - That is the move a hand-written policy used to close this gap in Phase 26 (36 of 36).
   - The loop's earlier, notification-side repairs never re-sent the upgrade, and completed 0 of 63 such trials.
 - **It is not a fluke of one draw:** 9 of 49 attempts, 8 distinct policies, Wilson [10%, 31%].

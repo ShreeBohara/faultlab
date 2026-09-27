@@ -99,7 +99,7 @@ class LabCoordinator:
 
     def config_status(self):
         models=self.settings.role_models
-        return {'schema_version':'faultlab/v1','model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
+        return {'schema_version':'faultlab/v1','model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'actor_context_protocol':self.settings.faultlab_actor_context_protocol,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
 
     async def readiness(self):
         from app.lab.readiness import simulator_readiness

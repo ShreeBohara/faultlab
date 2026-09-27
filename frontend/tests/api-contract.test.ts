@@ -41,6 +41,14 @@ describe('canonical API contracts', () => {
     expect(validateConfig(config)).toEqual(config)
     expect(() => validateConfig({ ...config, live_enabled: 'true' })).toThrow('Malformed')
   })
+  it('reads the configured Actor context without assigning a default to older saved responses', () => {
+    expect(validateConfig(config).actor_context_protocol).toBeUndefined()
+    const current = { ...config, actor_context_protocol: 'faultlab-actor-context/v4-indexed-evidence' }
+    expect(validateConfig(current).actor_context_protocol).toBe(current.actor_context_protocol)
+    for (const actor_context_protocol of [null, '', '   ', 4]) {
+      expect(() => validateConfig({ ...config, actor_context_protocol })).toThrow(/Malformed/)
+    }
+  })
   it('accepts the endpoint ingestion projection and preserves verified evidence references', () => {
     expect(validateExperiments(verifiedExperiments)).toEqual(verifiedExperiments)
     const ingestion = verifiedExperiments.ingestions[0]

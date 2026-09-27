@@ -113,7 +113,8 @@ async def test_frozen_audit_initializes_evaluation_before_fresh_episodes(tmp_pat
 @pytest.mark.anyio
 async def test_retry_readback_unlocks_aria_publication_without_reexecution(tmp_path):
     from app.telemetry.aria_bridge import AriaBridge
-    c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path),wandb_entity='entity',wandb_project='project'))
+    # This fixture deliberately exercises the opt-in publication path.
+    c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path),wandb_entity='entity',wandb_project='project',faultlab_aria_publish_enabled=True))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline'))
     e=episode(c,campaign); c.transition(campaign.campaign_id,'COMPLETED')
     calls=[]
@@ -148,8 +149,9 @@ async def test_retry_readback_unlocks_aria_publication_without_reexecution(tmp_p
 
 
 @pytest.mark.anyio
-async def test_verified_weave_does_not_publish_finished_campaign_without_aria_setup(tmp_path):
-    c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path),wandb_entity='entity',wandb_project='project'))
+@pytest.mark.parametrize('enabled,expected_state', [(False, 'publication_disabled'), (True, 'awaiting_aria_setup')])
+async def test_verified_weave_does_not_publish_finished_campaign_without_aria_setup(tmp_path, enabled, expected_state):
+    c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path),wandb_entity='entity',wandb_project='project',faultlab_aria_publish_enabled=enabled))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline'))
     e=episode(c,campaign); c.transition(campaign.campaign_id,'COMPLETED')
     verified={'episode_id':e.episode_id,'source':'weave_verified','root_call_id':'actual-local-fixture-call','findings':[]}
@@ -161,7 +163,7 @@ async def test_verified_weave_does_not_publish_finished_campaign_without_aria_se
             raise AssertionError('Aria remains explicitly pending')
     existing_gateway=object(); c.evidence_gateway=existing_gateway
     result=await c._publish_completion(campaign.campaign_id,bridge=Bridge())
-    assert result['state']=='awaiting_aria_setup' and c.get(campaign.campaign_id).aria_status=='PENDING'
+    assert result['state']==expected_state and c.get(campaign.campaign_id).aria_status=='PENDING'
     assert not calls and not c.store.list_records('aria_publish_intents') and not c.store.list_records('aria_runs')
     assert c.store.get_record('evidence',e.episode_id)==verified and c.evidence_gateway is existing_gateway
     assert c.get(campaign.campaign_id).active_policy_version=='policy-v0'

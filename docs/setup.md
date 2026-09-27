@@ -1,5 +1,7 @@
 # Setup record
 
+For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
+
 Updated September 20, 2026 on macOS. Team: Gatekeeper. Product: FaultLab. React evidence UI, FastAPI coordinator and a separate private-world HTTP simulator run locally. Use the [quick start](user-guide.md) for runnable steps and [Phase 3 results](part2/PHASE3_RESULTS.md) for current measurements. Earlier records below are preserved history.
 
 ## Current Phase 3 setup and verification
@@ -155,7 +157,7 @@ be reported as an input/harness limitation, not an invented agent mistake.
 
 ## Current implementation commands
 
-Run `./scripts/setup.sh` to install the locked local dependencies. For live Phase 2 work, follow the explicit model/rate/cap overrides in the [quick start](user-guide.md), using `./scripts/start-simulator.sh`, `./scripts/start-live-backend.sh` and `./scripts/start-frontend.sh` in three terminals. Starting services makes no provider calls. Keep code and settings frozen during an experiment; the live launcher disables automatic reload. The general live launcher without overrides uses a different default Actor and a $100 campaign cap. `./scripts/start-backend.sh` is the development server, not the frozen live launcher. The UI is
+Run `./scripts/setup.sh` to install the locked local dependencies. For live Phase 2 work, follow the explicit model/rate/cap overrides in the [quick start](user-guide.md), using `./scripts/start-simulator.sh`, `./scripts/start-live-backend.sh` and `./scripts/start-frontend.sh` in three terminals. Starting services makes no provider calls. Keep code and settings frozen during an experiment; the live launcher disables automatic reload. Both launchers now use the application model/context defaults described in CURRENT_STATUS.md, with explicit environment overrides respected. The live launcher does not assert historical prices; verified prices must be configured before live admission. The default campaign cap remains $100. `./scripts/start-backend.sh` is the development server, not the frozen live launcher. The UI is
 http://127.0.0.1:5173. `./scripts/test.sh` runs backend tests, UI tests, build and browser
 fixtures without providers. Browser tests use local Google Chrome when available; otherwise
 install the local Playwright Chromium dependency with `cd frontend && npx playwright install chromium`.

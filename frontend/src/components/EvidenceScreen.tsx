@@ -21,6 +21,7 @@ import { ContextStudyPanel } from './ContextStudyPanel'
 import { SearchAttemptsPanel } from './SearchAttemptsPanel'
 import { ResourceNote } from './common'
 import { ThemeToggle } from './ThemeToggle'
+import { PolicyStatusPanel } from './PolicyStatusPanel'
 const storedCampaign = () => { try { return localStorage.getItem('faultlab:campaign') || '' } catch { return '' } }
 export function EvidenceScreen() {
   const [campaignId, setCampaignId] = useState(storedCampaign)
@@ -51,6 +52,7 @@ export function EvidenceScreen() {
     {health.error && <div role="alert" className="error connection-error">{health.error} Start the local backend with <code>./scripts/start-backend.sh</code>, then check again.</div>}<ResourceNote resource={config} />
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
     <ResourceNote resource={campaignResource} />{replay && <ReplayView campaign={campaign} />}
+    <PolicyStatusPanel key={`policy-status:${campaignId}`} campaignId={campaignId} />
     <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
     <PromotionComparison campaignId={campaignId} matrix={matrix.data} policies={policies.data} />
     <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>

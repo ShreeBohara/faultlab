@@ -1442,12 +1442,30 @@ def test_a_complete_record_and_closing_entry_pass_and_a_bare_record_does_not(tmp
 REAL_PROTOCOL = ROOT / 'docs/part2/PHASE29_EXPERIMENT.md'
 
 
-def test_the_owners_answer_gate_on_the_real_protocol_text(tmp_path, monkeypatch):
+def test_the_cancelled_phase_protocol_still_refuses_launch_review(tmp_path):
+    """Cancellation did not approve the draft. The actual saved protocol still fails the
+    review gate that run_live checks before reading credentials or creating a paid-run claim."""
+    real = REAL_PROTOCOL.read_text()
+    assert '\n## Cancellation (2026-09-25;' in real
+    assert '**Phase 29 is cancelled before any paid call.**' in real
+    assert probe.REVIEW_PENDING_MARKER.lower() in probe.status_block(real).lower()
+    with pytest.raises(probe.PlanningError, match='NOT yet reviewed'):
+        probe.check_review(real, probe.sha256_file(REAL_PROTOCOL), probe.sha256_file(probe.__file__),
+                           'unused-plan-pin-review-status-refuses-first', root=tmp_path)
+
+
+def test_the_owners_answer_gate_on_the_historical_review_protocol_text(tmp_path, monkeypatch):
     """Review round 2 (the round-2 reviewer's $0 launch rehearsal, as a test): on the REAL protocol text, whose
     status block quotes the program-level approval, round 1's substring test passed a record that reused that phrase,
     or the one-letter answer "N", with no closing entry at all. Closed as the runbook says (review-pending phrase
-    gone, bare Reviewed line), only the owner's own answer on the closing line passes."""
+    gone, bare Reviewed line), only the owner's own answer on the closing line passes.
+    This is an in-memory rehearsal of the historical review, not approval to revive Phase 29:
+    the later Cancellation section stays on disk and is checked separately above."""
     real = REAL_PROTOCOL.read_text()
+    before_log, log_heading, log_and_later = real.partition('\n' + probe.REVIEW_LOG_HEADING + '\n')
+    assert log_heading, 'the historical protocol must retain its Review log'
+    review_log, _, _ = log_and_later.partition('\n## ')
+    real = before_log + log_heading + review_log
     head, _, body = real.partition('\n## ')
     h2 = [line for line in ('## ' + body).splitlines() if line.startswith('## ')]
     assert h2[-1] == probe.REVIEW_LOG_HEADING, 'the Review log is the protocol\'s last section'

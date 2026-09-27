@@ -23,6 +23,7 @@ export function fixtureResponse(url: string, currentCampaign: Campaign = campaig
   if (url.includes('/episodes/')) return episode
   if (url.endsWith('/matrix')) return matrix
   if (url.endsWith('/experiments')) return experiments
+  if (url.endsWith('/policy-status')) return { schema_version: 'faultlab-policy-status/v1', campaign_id: currentCampaign.campaign_id, active_policy: { version: currentCampaign.active_policy_version, hash }, studies: [] }
   if (url.endsWith('/aria-evidence') || url.endsWith('/regressions') || url.endsWith('/completion-studies') || url.endsWith('/context-studies') || url.endsWith('/search-attempts')) return []
   if (url.includes('/campaigns/')) return currentCampaign
   throw new Error(`Unexpected fixture request: ${url}`)

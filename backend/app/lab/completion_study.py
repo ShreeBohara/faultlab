@@ -13,7 +13,7 @@ from app.agents.mechanic import Mechanic
 from app.contracts.models import (
     FaultSpec, MechanicNoChange, canonical_json, content_hash, new_id, utc_now,
 )
-from app.agents.progress import ACTOR_CONTEXT_PROTOCOL_V1, ACTOR_CONTEXT_PROTOCOLS
+from app.agents.progress import ACTOR_CONTEXT_PROTOCOLS
 from app.lab.baseline_study import summarize
 from app.lab.budgets import CampaignLedger, StopRequested
 from app.lab.diagnosis import (
@@ -160,6 +160,7 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
     case_manifest_id names one declared case manifest (CASE_MANIFESTS). Leaving it out is
     exactly today's study: the default manifest, and a record without the key.
     """
+    from app.lab.configuration import resolve_actor_context_protocol
     coordinator.settings.require_live()
     evidence_protocol = evidence_protocol or DEFAULT_EVIDENCE_PROTOCOL
     if evidence_protocol not in EVIDENCE_PROTOCOLS:
@@ -181,6 +182,11 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
         if campaign.mode != 'baseline' or campaign.config_profile_id != 'live-v1' or campaign.state != 'IDLE':
             raise StoreConflict('Completion study requires a fresh idle live baseline campaign')
         coordinator.validate_core_configuration(campaign)
+        configuration = coordinator.store.get_record('configurations', campaign.configuration_hash) or {}
+        try:
+            selected_context = resolve_actor_context_protocol(configuration, actor_context_protocol)
+        except ValueError as error:
+            raise StoreConflict(str(error)) from error
         if coordinator.active_id is not None:
             raise StoreConflict('Another fresh execution is active')
         if any(r['campaign_id'] == campaign_id for r in coordinator.store.list_records('completion_studies')):
@@ -205,7 +211,7 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
                   'incumbent_hash': baseline.policy_hash, 'model': campaign.model,
                   'manifest': manifest, 'manifest_hash': content_hash(manifest),
                   'evidence_protocol': evidence_protocol,
-                  'actor_context_protocol': actor_context_protocol or ACTOR_CONTEXT_PROTOCOL_V1,
+                  'actor_context_protocol': selected_context,
                   'replay_of': replay.version if replay else None,
                   'replay_policy_hash': replay.policy_hash if replay else None,
                   'reserved_model_calls': MODEL_CALL_RESERVATION, 'slots': planned_slots(manifest),

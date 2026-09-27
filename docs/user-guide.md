@@ -2,9 +2,19 @@
 
 FaultLab tests an AI agent that upgrades a mock order to express shipping and sends a truthful confirmation. It deliberately makes the mock APIs fail, repeats failures, and asks a model to propose recovery rules. It keeps a rule only when repeated checks show improvement without breaking healthy behavior. Orders and notifications are synthetic; live model requests use your W&B credits.
 
-Current work: [Phase 6 checklist](part2/PHASE6_TASKS.md) and [measured results](part2/PHASE6_RESULTS.md). [Phase 5](part2/PHASE5_RESULTS.md), [Phase 4](part2/PHASE4_RESULTS.md), [Phase 3](part2/PHASE3_RESULTS.md) and [Phase 2](part2/PHASE2_RESULTS.md) results remain available. You can inspect saved results first, then use this guide to start a new live learning campaign. Learning changes a small recovery policy around the agent; it does not train the model's weights. No learned repair has been accepted. A valid run may finish without a repair. Aria publication is disabled for this walkthrough.
+Start with [current status](../CURRENT_STATUS.md) for the latest results and remaining budget. This guide explains how to inspect saved evidence and start a new campaign. Learning changes a small recovery policy around the agent; it does not train model weights. No generated policy has been accepted through the original promotion gates. Aria remains deferred.
 
-## New: search attempts and completion recovery
+## Read the three result indicators
+
+Load a saved campaign using **Open saved campaign → Load recording**. This only reads evidence.
+
+- **Development qualified**: the saved generated candidate met the displayed development requirements. A replay is identified separately; it is not a new generated repair.
+- **Unseen-case result**: a separate evaluation of that exact candidate. “Not run” means there is no matching saved check. A completed check can still say HARM.
+- **Active policy**: the policy the selected campaign actually uses. Development qualification and unseen-case checks never activate a policy by themselves.
+
+Try `campaign-ba37f75678284372ad5dcc2b3635481e` for a Phase 28 development success, or `campaign-9bc991df39ff4c61a2668f87fac5bac1` for the later unseen-case HARM result from a different policy. Both retain `policy-v0`. The successful saved replay `campaign-9a412c8862714aac89e6851e7d7706e1` has 42 recorded validation trials and should open without a malformed-study warning. None of these actions runs a new test.
+
+## Search attempts and completion recovery
 
 **Search attempts** shows what the Explorer asked to test. A changed seed alone is not a new fault schedule. If it repeats a schedule, the attempt is saved as a duplicate and no additional agent trial is run for it. An attempt, an executed trial and a triggered fault are different counts. Expand a selection to inspect its actual schedule and original model answer.
 
@@ -15,7 +25,7 @@ Current work: [Phase 6 checklist](part2/PHASE6_TASKS.md) and [measured results](
 3. **Start only when you want fresh paid work:** run `./scripts/run-completion-study.sh --execute-live --wait` from the repository root. The backend saves a fixed plan before calling models: three failure cases and three healthy controls, at most two generated proposals, paired source checks, and—only if a proposal qualifies—42 further validation trials. Each trial gets a fresh shop. The maximum reservation is 484 model calls, plus the campaign's existing protected reserve.
 4. **Read the saved result.** Use `./scripts/run-completion-study.sh --status STUDY_ID`, or load its campaign ID in the dashboard. These are read-only. `OBSERVED_IMPROVEMENT` means a completion gain on the declared development cases, not a promoted policy. `NO_CHANGE` means the experiment did not establish that gain. `INCOMPLETE` means execution or evidence stopped; original attempts remain saved and are not automatically replayed.
 
-## New: the attempt-context comparison
+## Historical attempt-context comparison
 
 **Attempt-context study** asks a different question again: does the agent do better if it is told, each turn, what it has already tried? Both sides run the same model, the same tools, the same empty policy and the same checks. Only the per-turn message differs. It never proposes or activates a policy.
 
@@ -34,7 +44,7 @@ Current work: [Phase 6 checklist](part2/PHASE6_TASKS.md) and [measured results](
 | Weave | Stores model/tool traces and evaluation evidence. FaultLab reads evidence back before using it to justify a repair. |
 | Fixed Referee | Checks the original report against actual simulator outcomes using eight fixed rules. The model cannot change these rules. |
 
-## Inspect the saved Phase 2 results first
+## Older examples: saved Phase 2 results
 
 If the dashboard is already connected, paste a campaign ID into **Open saved campaign**, then click **Load recording**. This reads saved evidence and makes no model calls. It does not restart the campaign.
 
@@ -68,37 +78,25 @@ cd /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab
 Run one service in each window and leave it running:
 
 ```sh
-# Terminal 1
+# Terminal 1 — mock shop
 ./scripts/start-simulator.sh
-# Terminal 2 — latest Phase 3 settings
-WANDB_ENTITY=shreetbohara-quinstreet \
-WANDB_PROJECT=Faultlab \
-WANDB_MODEL=deepseek-ai/DeepSeek-V3.1 \
-WANDB_EXPLORER_MODEL=deepseek-ai/DeepSeek-V4-Pro-0813 \
-WANDB_MECHANIC_MODEL=deepseek-ai/DeepSeek-V4-Pro-0813 \
-FAULTLAB_CONFIRMED_ENTITY=shreetbohara-quinstreet \
-FAULTLAB_INPUT_DOLLARS_PER_MILLION=0.55 \
-FAULTLAB_OUTPUT_DOLLARS_PER_MILLION=1.65 \
-FAULTLAB_PRICING_MODEL=deepseek-ai/DeepSeek-V3.1 \
-FAULTLAB_REASONING_INPUT_DOLLARS_PER_MILLION=1.31 \
-FAULTLAB_REASONING_OUTPUT_DOLLARS_PER_MILLION=3.96 \
-FAULTLAB_REASONING_PRICING_MODEL=deepseek-ai/DeepSeek-V4-Pro-0813 \
-FAULTLAB_ARIA_PUBLISH_ENABLED=false \
-FAULTLAB_MODEL_CALL_CAP=6000 \
-FAULTLAB_TOKEN_CAP=204000000 \
-FAULTLAB_DOLLAR_CAP=400 \
-./scripts/start-live-backend.sh
-# Terminal 3
+# Terminal 2 — backend; reading evidence needs no live enablement
+./scripts/start-backend.sh
+# Terminal 3 — dashboard
 ./scripts/start-frontend.sh
 ```
 
-For a fresh installation, run `./scripts/setup.sh` once first. Keep services that are already running with the correct settings; do not launch duplicate copies. If the backend on port 8000 needs different settings, wait until its experiment is finished before stopping it with Ctrl+C and restarting. Restarting during an experiment interrupts that experiment.
+For a fresh installation, run `./scripts/setup.sh` once first. Keep already-running services. Before restarting the backend, check that it has no running experiment.
 
-**Why.** The dashboard needs a coordinator and a mock service to perform the experiment.
+**Why.** The dashboard reads the coordinator’s saved records. The simulator is needed when executing a fresh task.
 
-**Backend.** The live launcher preserves your existing `.env`. The explicit settings above use DeepSeek V3.1 for the task agent and repair model, and V4 Pro 0813 for fault discovery in `shreetbohara-quinstreet/Faultlab`. Without these overrides, the general launcher currently defaults to Llama 3.1 8B for the task agent. It sets ceilings of 6,000 calls, 204 million tokens and $400 per campaign, with verified model rates. Starting services makes no model calls. Keep settings and source unchanged during a campaign; the live launcher disables automatic reloads.
+**Backend.** Both launchers use the same application defaults: DeepSeek V3.1 for the Actor, DeepSeek V4 Pro 0813 for Explorer and Mechanic, and v4 indexed evidence for the reference Actor. Explicit process settings override `.env`; nonempty `.env` model values override defaults. Empty model placeholders from older `.env` templates use the tested defaults; an explicitly blank process model override still takes precedence. Existing `.env` files are never edited. Aria is off by default. Old frozen records keep their original configuration. The Phase 30 reporting hint is not included.
 
-**Frontend.** Open `http://127.0.0.1:5173` and look for **Backend connected** and **deepseek-ai/DeepSeek-V3.1** in Run desk. The page reads health and configuration; it has not started a run. If disconnected, check the backend terminal and click **Check again**.
+**Frontend.** Open `http://127.0.0.1:5173`. Look for **Backend connected** and **Current setup for new campaigns**. This configuration is separate from the selected saved campaign’s model. Loading the page makes no model calls.
+
+**Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start `./scripts/start-live-backend.sh` instead of the development backend. The live launcher disables automatic reload and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. For this project the confirmed destination is `shreetbohara-quinstreet/Faultlab`.
+
+Older `.env` files with empty model placeholders now select the tested defaults without rewriting the file. If you choose a different model, set its name explicitly and check the displayed setup before creating a campaign. Never paste your key into the frontend or documentation. `/api/readiness` lists missing configuration names without contacting the provider.
 
 ## 2 Check the model connection
 
@@ -125,7 +123,7 @@ WANDB_ENTITY=shreetbohara-quinstreet WANDB_PROJECT=Faultlab WANDB_MODEL='deepsee
 
 This checks whether the whole product can upgrade and confirm an order without injected faults. The backend calls the real model and local mock APIs, checks the final report and verifies its Weave trace. In the frontend, paste the printed campaign ID into **Open saved campaign** and click **Load recording**. A successful task has a `COMPLETED` outcome and eight passing checks; keep the actual result even if it differs. This is one healthy episode; the 36-trial research baseline is separate.
 
-Model discovery is available with `./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet`. To switch models, also update matching verified prices and create a new campaign. The live launcher records its pricing source. The $400 setting above applies to one campaign. Phases 2 and 3 share the same authorized **$1,000 total ceiling across all their experiments and stores**; it is not an automatic account-wide limiter. Before each paid dispatch, include prior conservative charges and the next batch's allowance in that total. Changing a campaign cap changes its frozen configuration, so do not change it during a run or when trying to reuse an exact registration or accepted policy. The earlier Phase 1 had its own $100 ceiling.
+Model discovery is available with `./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet`. To switch models, also update matching verified prices and create a new campaign. Per-campaign caps are not an account-wide limiter: include all previous charges and the next planned batch in the shared allowance shown in [current status](../CURRENT_STATUS.md). Do not change source, settings or budgets during an experiment, or weaken compatibility checks to reuse a historical policy.
 
 ## 3 Create and start one learning run
 

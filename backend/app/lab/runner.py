@@ -6,9 +6,9 @@ from app.adapters.business_tools import BusinessToolBroker
 from app.adapters.prototype import EpisodeContext,run_prototype
 from app.agents.reference import ReferenceActor
 from app.agents.actor import ActorReportError
-from app.agents.progress import ACTOR_CONTEXT_PROTOCOL_V1,ACTOR_CONTEXT_PROTOCOLS
 from app.providers.runtime import RuntimeProviderError
 from app.lab.budgets import EpisodeMeter,StopRequested,BudgetExhausted
+from app.lab.configuration import resolve_actor_context_protocol
 from app.lab.policy_interpreter import PolicyInterpreter
 from app.telemetry.tracing import episode_deadline
 
@@ -18,6 +18,8 @@ class EpisodeRunner:
         self.trace,self.scorer,self.actor=trace,scorer,actor
 
     async def run(self,campaign,recipe,policy,*,purpose='discovery',arm='B0',trial_index=0,study_id=None,evidence_context_id=None,selector_id=None,fixture_id='standard-v1',ledger=None,reservation=None,stop=None,source_mode='live',agent_registration_id='orders-v1',actor=None,episode_id=None,actor_context_protocol=None):
+        frozen=self.store.get_record('configurations',campaign.configuration_hash) or {}
+        selected_context=resolve_actor_context_protocol(frozen,actor_context_protocol)
         episode_id=episode_id or new_id('episode')
         if agent_registration_id=='orders-v1':
             registered=self.store.get_record('campaign_registrations',campaign.campaign_id)
@@ -39,13 +41,11 @@ class EpisodeRunner:
         journal=Journal(self.store,episode_id,intent)
         broker=BusinessToolBroker(self.world_client,world['world_id'],world['capability'],journal,meter)
         interpreter=PolicyInterpreter(policy.content,broker)
-        frozen=self.store.get_record('configurations',campaign.configuration_hash) or {}
         actor_model=(frozen.get('models') or {}).get('actor',campaign.model)
         metadata={**provenance.model_dump(mode='json'),'model_id':actor_model,'policy_hash':policy.policy_hash,'contract_hash':frozen.get('contract_hash'),'scorer_hash':frozen.get('scorer_hash')}
         broker.trace=self.trace; broker.metadata=metadata
-        if actor_context_protocol is not None and actor_context_protocol not in ACTOR_CONTEXT_PROTOCOLS: raise ValueError('Unknown actor context protocol')
         context=EpisodeContext(provenance,broker,interpreter,self.provider,policy.content,policy.policy_hash,policy.decision,metadata,self.trace,
-                               actor_context_protocol=actor_context_protocol or ACTOR_CONTEXT_PROTOCOL_V1)
+                               actor_context_protocol=selected_context)
         report=None; lab_error=False; interrupted=False
         try:
             chosen=actor or self.actor or (ReferenceActor() if arm=='B1' else run_prototype)

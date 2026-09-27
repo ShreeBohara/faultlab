@@ -375,6 +375,27 @@ footer > span:first-child { color: var(--ink); font-weight: 600; }
 .skip-link:focus { top: 10px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
+.policy-status-panel { margin-bottom: 22px; }
+.policy-status-study + .policy-status-study { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 18px; }
+.policy-status-identity { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; margin: 14px 0 10px; font-size: 12px; }
+.policy-status-identity > strong { overflow-wrap: anywhere; }
+.policy-status-identity details { max-width: 100%; }
+.policy-status-identity summary, .unseen-check summary { cursor: pointer; color: var(--muted); font-size: 11px; }
+.policy-status-columns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 6px; background: var(--surface); overflow: hidden; }
+.policy-status-columns > section { min-width: 0; padding: 17px; }
+.policy-status-columns > section + section { border-left: 1px solid var(--line); }
+.policy-status-columns h3 { margin: 0 0 12px; font-size: 11px; color: var(--muted); font-weight: 500; }
+.policy-status-columns p { margin: 7px 0; font-size: 12px; }
+.policy-status-columns .policy-status-value { font-size: 17px; line-height: 1.3; font-weight: 600; }
+.policy-status-columns .status-good { color: var(--teal); }
+.policy-status-columns .status-bad { color: var(--red); }
+.policy-status-columns code, .policy-status-identity code { overflow-wrap: anywhere; }
+.unseen-check + .unseen-check { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 10px; }
+.new-campaign-config { border: 1px solid var(--line); border-radius: 5px; padding: 12px; margin-bottom: 14px; }
+.new-campaign-config summary { cursor: pointer; font-size: 11px; font-weight: 600; }
+.new-campaign-config .facts { margin-top: 10px; }
+.new-campaign-config dd { overflow-wrap: anywhere; }
+
 /* Wide screens show the six stages as one pipeline with connectors. */
 @media (min-width: 1280px) {
   .summary-stages { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 22px; }
@@ -405,6 +426,8 @@ footer > span:first-child { color: var(--ink); font-weight: 600; }
 }
 
 @media (max-width: 700px) {
+  .policy-status-columns { grid-template-columns: 1fr; }
+  .policy-status-columns > section + section { border-left: 0; border-top: 1px solid var(--line); }
   .workspace { padding: 0 16px; }
   .masthead { min-height: 82px; gap: 10px; }
   .brand { font-size: 19px; gap: 9px; }
