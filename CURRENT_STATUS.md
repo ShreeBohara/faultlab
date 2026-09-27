@@ -43,6 +43,20 @@ GitHub publication remains pending explicit approval.
   [Full current review and results](docs/part2/CURRENT_REVIEW_2026-09-27.md) records both executions
   separately, manual findings, pricing, current spending and the recommended next experiment.
 
+### Authorized next experiment — preparation in progress
+
+The owner authorized a fresh repair-generation experiment followed by one reserved-case
+evaluation on September 27. [Prospective declaration](docs/part2/PROSPECTIVE_REPAIR_2026-09-27.md).
+This extends the evidence beyond Claude's original Phase 31 write-up/demo; it does not
+reopen Phase 28 or activate a policy.
+
+- [x] Declare up to ten development attempts; select the first strongly qualified new saved-policy hash.
+- [x] Separate $100 generation and $60 evaluation pools, within the remaining $181.77.
+- [x] Finish independent review and 102 offline checks; reserve three unexposed combinations and seal
+  all inputs before generation. Frozen configuration `88e97d68…`; same tested application runtime.
+- [ ] Execute the bounded program once; preserve unsuccessful or incomplete results.
+- [ ] Independently reconstruct the actual effects, outputs, traces and cost; save a local backup.
+
 **Decision:** do not perform the suggested immediate “Phase 28 unseen-case check.” The frozen Phase 28
 protocol explicitly disallows that routing. The old unseen-case generator also excludes notification
 development cases but not `upgrade-v1`, so a different seed could repeat known upgrade faults. Instead,
