@@ -56,7 +56,7 @@ prompt, limits, scorer, cases, candidate gates and code remain unchanged during 
 
 The normal fixed state machine terminates the campaign. In addition, stop on any invalid
 world-integrity record, two consecutive LAB_ERROR episodes, an explicit authentication or
-configuration failure, or six hours elapsed. A WAITING_EVIDENCE pause may receive at most
+configuration failure, less than 2 GiB free local disk, or six hours elapsed. A WAITING_EVIDENCE pause may receive at most
 three telemetry-only retries per pending episode, even if the state temporarily changes.
 Await each retry request's terminal status and then at least 30 seconds before another.
 These synchronize saved traces only. Stop if verification is still unavailable;

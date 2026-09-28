@@ -12,10 +12,28 @@ project. Finishing Claude's experiment program did not establish full product ac
 
 **Active next increment: original learning workflow, then durability.** The owner authorized the
 recommended offline end-to-end exercise and a bounded live original campaign. Preparation is in
-progress: real-world accepted/rejected/interrupted reference fixtures, historical rejection audit,
-and a fix that keeps optional transport retries from consuming later required comparison calls.
-The two configured models are available. No new generation call has been made yet; new spending
-remains $0. Source, caps and stop rules will be frozen before the live run. Follow
+progress. Real-world accepted/rejected/interrupted reference fixtures passed: 121 worlds,
+2,094 independent comparisons, including restart and fresh exported-bundle execution. This is
+explicitly manual/scripted evidence, not generated learning. The retry-budget fix passed 51 focused
+checks; three complete workflow tests also passed. Full backend: **2,019 passed, 180 existing skips,
+zero failures**, one existing warning, 1,174.73 seconds. [The declared live original campaign](docs/PRODUCT_LOOP_RUN_2026-09-27.md)
+`c701e850…` finished normally **NO_CHANGE**: seven tasks completed, zero violations, seven verified
+remote traces; eight Explorer requests included one correctly declined duplicate. Four episodes
+fully triggered their recipes; three contained unreached status-read faults (one also triggered
+its notification fault). No counterexample or candidate qualified; baseline remains active.
+**New conservative charge $1.05 / 39 requests; carried total $856.96.** Measured token pricing
+is $0.15324862, separately from the unknown provider-billed cost. Manual dashboard/reload checks
+preserved the same 39 requests. Independent audit passed **188 checks**, including all seven worlds,
+31 exact Actor request hashes and 34 fresh read-only Weave readbacks. Exposure was four full recipes,
+one partial and two absent. No further inference calls were made.
+The durability review found that a second backend can wrongly interrupt the first backend's jobs;
+an exclusive owner guard and remaining job recovery are being implemented in a separate checkout,
+`/Users/shree/FaultLab_Worktrees/product-durability-2026-09-27`. The original checkout remains frozen
+at live runtime `60f27623…` until integration. Isolated focused checks cover exclusive ownership,
+read-only archives, independent SQL readers and interrupted-job recovery. Frontend checks passed
+200 tests, production build and eight browser tests; manual archive browsing confirms disabled
+mutations and recovery from a missing saved ID. Atomic job/budget finalization and CLI writer
+ownership are now being completed before the full verification pass. Follow
 [original-workflow memory](memory/context/product-loop-2026-09-27.md) for this active increment.
 
 Continue to use the milestones below as hypotheses, not a fixed script. Exercise independent
@@ -41,7 +59,7 @@ dependency warning, in 714.97 seconds. The verified local source/evidence checkp
 `artifacts/product-core-2026-09-27/final-checkpoint.json`; its external recovery copy is
 `/Users/shree/FaultLab_Backups/2026-09-27/product-core/`.
 
-**New spending: $0; carried historical accounting: $855.91.** No GitHub push. No historical verdict,
+**That completed core increment spent $0; prior historical accounting was $855.91.** No GitHub push. No historical verdict,
 active pointer or result report was changed. This work establishes specific product correctness and
 usability improvements, not a generated accepted policy, successful unseen validation, repaired-policy
 transfer or a second task. Those product milestones remain open.
@@ -245,10 +263,11 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-The carried historical accounting is **$855.91 conservatively charged**. Under the previously recorded
-$1,000 allowance, that leaves **$144.09** mathematically. The owner has since reported adding more
-than $1,000 and repeatedly authorized further work with generous resources: **$144.09 is not a newly
-imposed limit for the remaining project**. The actual provider balance and billed cost are unavailable;
+The current carried accounting is **$856.96 conservatively charged**: the previous $855.91 plus
+$1.05 for the completed original-workflow campaign (39 requests, exact bound $1.04662).
+Its token-priced estimate is $0.15324862; provider billing is unknown. The independent audit and
+current durability implementation made zero new inference calls. The owner has repeatedly authorized
+further work with generous resources; the old $1,000 allowance is historical. The actual provider balance and billed cost are unavailable;
 do not invent either, reset prior charges or interpret generous resources as permission for unbounded
 unattended spending. Declare and monitor the next experiment's allocation and verify its exact prices.
 
