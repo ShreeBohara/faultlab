@@ -10,6 +10,28 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
+**Reviewed campaign setup and native-agent execution are implemented, verified and saved locally.**
+The dashboard now offers reference/native selection, explicit registration, six public cases, an immutable
+saved plan and a separate Start action. Every original learning phase uses the selected agent. Native
+provider-identity/accounting failures are classified as lab errors; native audit freezing and a guard
+against calling same-implementation reruns independent portability are implemented. Public recordings
+include unsuccessful runs and the plan. Current campaign state also keeps history labels up to date.
+
+Current runtime: `d1845765fa1c120ad4afd936461ddb4e4d909972209b160d6eebd63d6b3c64fb`.
+**Full backend: 2,224 passed, 180 existing skips, zero failures**, two warnings, 791.81 seconds.
+**Frontend: 219 tests, production build and ten browser fixtures passed**; one opt-in actual-backend check
+was skipped. Actual UI checks ran all six public cases, verified a real recording download, and preserved
+138 records / 64 events / six policy pointers across restart. Independent manual audit passed 160 checks;
+153 scripted-native worlds passed 2,324 independent comparisons. A further final-source dashboard run,
+CLI audit freeze and archive check passed; all old database hashes/mtimes stayed unchanged. These
+checks establish execution and evidence integrity, not new live learning or generated-policy acceptance.
+[Onboarding review](docs/PRODUCT_ONBOARDING_REVIEW_2026-09-27.md) and
+[implementation memory](memory/context/product-onboarding-2026-09-27.md) contain the details.
+The exact source checkpoint and verified recovery manifest are recorded in
+`artifacts/product-onboarding-2026-09-27/final-checkpoint.json`; external backup:
+`/Users/shree/FaultLab_Backups/2026-09-27/product-onboarding/`. Main/index/history/secrets are preserved.
+All temporary services and browser tabs are closed. No GitHub push.
+
 **Durability increment completed and verified.** The original learning workflow was
 exercised end to end, then the app's ownership, recovery and local operation were hardened. One writable
 coordinator now owns each store before recovery; archive mode never initializes or recovers records;
@@ -18,7 +40,7 @@ CLI registration, import/execution and portability preparation now use the ownin
 launcher makes the data directory explicit. The dashboard handles missing saved IDs without repeated
 requests and distinguishes full, partial and absent fault exposure.
 
-Current runtime: `7dfdfe29fd210c70b5b83915f0cd47b144e03d49ffe172a9dfa722c50bd523f0`.
+Durability runtime: `7dfdfe29fd210c70b5b83915f0cd47b144e03d49ffe172a9dfa722c50bd523f0`.
 The complete backend suite passed on this frozen source: **2,123 passed, 180 existing skips, zero failures**,
 two warnings (Starlette deprecation and the explicit fork ownership test), 727.37 seconds. Three old restart
 fixtures were corrected to close the first store; all recovery assertions stayed intact. Frontend:
@@ -30,14 +52,6 @@ SQLite files retained their hashes and modification times after archive browsing
 [Durability review](docs/PRODUCT_DURABILITY_REVIEW_2026-09-27.md) and
 [current implementation memory](memory/context/product-durability-2026-09-27.md) record the evidence.
 
-**Next product increment in progress in the isolated checkout:** supported-agent selection through every original-loop phase and an
-explicit supported task/development-case plan. The ordinary campaign still uses the reference Actor;
-existing native smolagents registration/regression support is not yet ordinary campaign selection.
-The original runtime remains the verified durability checkpoint while onboarding is implemented and
-reviewed in `/Users/shree/FaultLab_Worktrees/product-durability-2026-09-27`. The local source/evidence
-checkpoint is in `artifacts/product-durability-2026-09-27/final-checkpoint.json`; its external recovery
-copy is `/Users/shree/FaultLab_Backups/2026-09-27/product-durability/`.
-
 **The latest live original campaign is closed NO_CHANGE.**
 [Declared run](docs/PRODUCT_LOOP_RUN_2026-09-27.md) `c701e850…`, frozen runtime `60f27623…`,
 completed seven tasks with zero violations and seven verified traces. Eight Explorer requests included
@@ -48,7 +62,7 @@ baseline remains active. Independent audit passed 188 checks, including 34 read-
 [Closed result](docs/PRODUCT_LOOP_RESULTS_2026-09-27.md). No repeat campaign is planned merely to seek success.
 
 **Spending:** $1.04662 conservative bound for those 39 live requests ($1.05 carried); measured token-priced
-estimate $0.15324862, provider-billed cost unavailable. **Carried total $856.96. Durability work: $0 in
+estimate $0.15324862, provider-billed cost unavailable. **Carried total $856.96. Durability and onboarding work: $0 in
 provider calls.** All historical evidence is preserved. No GitHub push.
 
 Continue to use the milestones below as hypotheses, not a fixed script. Exercise independent
@@ -311,9 +325,9 @@ prices and the required non-secret process settings are documented in the
 
 ## Source and backups
 
-Latest product reliability work is saved on local `backup/part2-2026-09-22`; exact commit, unchanged
-main/index, and complete saved-tree verification are in
-`artifacts/product-core-2026-09-27/final-checkpoint.json`. The external `product-core/` recovery copy
+Latest verified source is saved on local `backup/part2-2026-09-22`; exact commit and unchanged main/index
+are in `artifacts/product-onboarding-2026-09-27/final-checkpoint.json`. Its external `product-onboarding/`
+copy includes source, test/native-fixture evidence and both actual manual workspaces. The earlier `product-core/` recovery copy
 contains a self-contained source bundle, new diagnostic stores/worlds, manual screenshots, full check
 logs, current notes and a verified hash manifest. Historical evidence backups below remain intact.
 No GitHub push was made. Do not reset or stage everything relative to the intentionally old main.
@@ -351,7 +365,15 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Current runtime `58cd13b6…`:** one complete backend invocation passed **2,010 tests**, with
+**Current runtime `d1845765…`:** full backend 2,224 passed / 180 existing skips / zero failures, 791.81 seconds;
+219 frontend tests / build / ten browser fixtures pass. Two backend warnings: upstream Starlette alias and
+the explicit POSIX fork ownership test. Vite bundle 502.10 kB minified / 118.64 kB gzip produces a size advisory.
+Actual setup/six cases/download/restart/final-source freeze/archive and independent raw audits passed.
+[Full log](artifacts/product-onboarding-2026-09-27/full-backend-final.log),
+[review](docs/PRODUCT_ONBOARDING_REVIEW_2026-09-27.md). The incomplete isolated suite is preserved;
+missing historical fixtures and invalid old test doubles were diagnosed, not silently skipped.
+
+**Previous core runtime `58cd13b6…`:** one complete backend invocation passed **2,010 tests**, with
 **180 existing skips**, zero failures and one dependency deprecation warning, in 714.97 seconds.
 [Full log](artifacts/product-core-2026-09-27/full-backend.log) and
 [result](artifacts/product-core-2026-09-27/full-backend-result.json). Frontend **192 tests and build
@@ -426,8 +448,13 @@ thresholds or gates, substitute a corrected model answer, or present a replay as
 Claude's original program ends at **Phase 31: the write-up and event demo**. That research-program
 milestone is complete; the broader product goal is not. No paid run is active.
 
-The owner accepted the following direction, while explicitly asking the next lead to question and
-improve it based on actual evidence:
+The core path, local durability and reviewed two-agent setup have now been implemented and checked.
+The next concrete usability gap is bringing bundle validation/import into the dashboard with a review
+before fresh execution; the CLI path already exists. Repair effectiveness, a separately versioned second
+task and clean-machine/hosted deployment acceptance remain separate open milestones. A new live native
+check should be prospectively declared, bounded and interpreted honestly; do not reuse a closed partition.
+
+The owner accepted the following broader direction; revise it using actual evidence:
 
 1. **Complete the core workflow.** Trace connecting an agent/task, fault discovery, reproduction,
    diagnosis, repair, challenge, acceptance/rejection and saved regression as one usable flow.

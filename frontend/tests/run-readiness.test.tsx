@@ -9,6 +9,7 @@ import { RunReadiness } from '../src/components/RunReadiness'
 import { campaign, config, fixtureResponse, readiness } from './fixtures'
 
 beforeEach(() => {
+  vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, json: async () => fixtureResponse(url) })))
   const storage = () => ({ getItem: () => null, setItem: vi.fn() })
   vi.stubGlobal('localStorage', storage()); vi.stubGlobal('sessionStorage', storage())
 })
@@ -33,24 +34,24 @@ it('checks readiness once on mount and only rechecks on explicit request without
   expect(vi.mocked(globalThis.fetch).mock.calls.every(([, options]) => options?.method === 'GET')).toBe(true)
 })
 
-it('permits offline execution with a ready simulator despite missing live settings', () => {
+it('permits offline execution with a ready simulator despite missing live settings', async () => {
   render(h(RunControls, { config, campaign: { ...campaign, state: 'IDLE' }, replay: false, onCampaign: vi.fn(), onReplay: vi.fn(), readiness: { data: readiness, loading: false, error: null }, onCheckReadiness: vi.fn() }))
-  expect((screen.getByRole('button', { name: 'Run baseline' }) as HTMLButtonElement).disabled).toBe(false)
+  await screen.findByText(/Legacy campaign · no explicit run plan/)
   expect((screen.getByRole('button', { name: /Start campaign/ }) as HTMLButtonElement).disabled).toBe(false)
-  expect((screen.getByRole('option', { name: 'Live · configured model' }) as HTMLOptionElement).disabled).toBe(true)
+  await waitFor(() => expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false))
 })
 
-it('blocks dispatch when the simulator is unavailable while keeping campaign creation and saved playback available', () => {
+it('blocks dispatch when the simulator is unavailable while keeping campaign creation and saved playback available', async () => {
   const unavailable = { ...readiness, ready: false, simulator: { ready: false, code: 'SIMULATOR_UNAVAILABLE', message: 'Start the local simulator before executing a campaign.' } }
-  const create = vi.spyOn(api, 'create')
+  const start = vi.spyOn(api, 'start')
   render(h(RunControls, { config, campaign: { ...campaign, state: 'IDLE' }, replay: false, onCampaign: vi.fn(), onReplay: vi.fn(), readiness: { data: unavailable, loading: false, error: null }, onCheckReadiness: vi.fn() }))
   expect(screen.getByText('Simulator unavailable')).toBeTruthy()
   expect(screen.getByText('SIMULATOR_UNAVAILABLE')).toBeTruthy()
-  for (const name of ['Run baseline', /Start campaign/]) expect((screen.getByRole('button', { name }) as HTMLButtonElement).disabled).toBe(true)
-  expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false)
+  for (const name of [/Start campaign/]) expect((screen.getByRole('button', { name }) as HTMLButtonElement).disabled).toBe(true)
+  await waitFor(() => expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false))
   expect((screen.getByRole('button', { name: 'Recorded playback' }) as HTMLButtonElement).disabled).toBe(false)
-  fireEvent.click(screen.getByRole('button', { name: 'Run baseline' }))
-  expect(create).not.toHaveBeenCalled()
+  fireEvent.click(screen.getByRole('button', { name: /Start campaign/ }))
+  expect(start).not.toHaveBeenCalled()
 })
 
 it('keeps readiness failures visible and explicitly retryable', () => {
@@ -61,10 +62,10 @@ it('keeps readiness failures visible and explicitly retryable', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Check run readiness' }))
   expect(check).toHaveBeenCalledOnce()
 })
-it.each([{ loading: true, error: null }, { loading: false, error: 'Unavailable' }])('waits for a verified readiness response before dispatch with %j', resource => {
+it.each([{ loading: true, error: null }, { loading: false, error: 'Unavailable' }])('waits for a verified readiness response before dispatch with %j', async resource => {
   render(h(RunControls, { config, campaign: { ...campaign, state: 'IDLE' }, replay: false, onCampaign: vi.fn(), onReplay: vi.fn(), readiness: resource, onCheckReadiness: vi.fn() }))
-  for (const name of ['Run baseline', /Start campaign/]) expect((screen.getByRole('button', { name }) as HTMLButtonElement).disabled).toBe(true)
-  expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false)
+  for (const name of [/Start campaign/]) expect((screen.getByRole('button', { name }) as HTMLButtonElement).disabled).toBe(true)
+  await waitFor(() => expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false))
 })
 
 it('does not accept contradictory readiness or a claimed provider check', () => {

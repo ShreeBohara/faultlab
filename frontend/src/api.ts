@@ -108,6 +108,13 @@ export function validateExecutionPage(value: unknown, before?: number): Regressi
     || (value.has_more && (!executions.length || (before !== undefined && (value.next_before as number) >= before)))) return malformed('regression execution history cursor or identity')
   return { executions, next_before: value.next_before as number | null, has_more: value.has_more }
 }
+export function validateRecording(value: unknown, campaignId: string): Record<string, unknown> {
+  // The backend owns sanitization and historical schema compatibility. Preserve
+  // its complete archive while refusing a recording for another campaign.
+  if (!object(value) || value.recording_version !== 'faultlab-development-recording/v1' || value.campaign_id !== campaignId) return malformed('campaign recording identity')
+  return value
+}
+
 const contract = <T,>(name: string) => (v: unknown) => validateContract<T>(name, v)
 const identified = <T,>(name: string, key: string, expected: string) => (value: unknown) => { const record = validateContract<T>(name, value); if (!object(value) || value[key] !== expected) return malformed(`${name} identity`); return record }
 const list = <T,>(name: string) => (v: unknown) => validateList<T>(name, v)
@@ -117,6 +124,7 @@ export const api = {
   readiness: () => request('/readiness', validateReadiness),
   campaigns: (before?: number) => request(`/campaigns?limit=20${before === undefined ? '' : `&before=${before}`}`, value => validateCampaignPage(value, before)),
   campaign: (campaignId: string) => request(`/campaigns/${id(campaignId)}`, identified<Campaign>('Campaign', 'campaign_id', campaignId)),
+  recording: (campaignId: string) => request(`/campaigns/${id(campaignId)}/recording`, value => validateRecording(value, campaignId)),
   create: (input: CampaignRequest) => request('/campaigns', contract<Campaign>('Campaign'), input),
   start: (campaignId: string) => request(`/campaigns/${id(campaignId)}/start`, contract<Campaign>('Campaign'), {}),
   stop: (campaignId: string) => request(`/campaigns/${id(campaignId)}/stop`, contract<Campaign>('Campaign'), {}),

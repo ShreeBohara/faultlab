@@ -1,5 +1,6 @@
 import type { Campaign, Episode, Event, PolicyVersion } from '../src/generated/contracts'
 import type { ConfigStatus, Matrix, ReadinessStatus } from '../src/api'
+import { runOptions } from './run-fixtures'
 export const hash = 'a'.repeat(64)
 export const config: ConfigStatus = { schema_version: 'faultlab/v1', model: 'not-configured', model_configured: false, live_enabled: false, profile_ids: ['offline-v1', 'live-v1'], sponsor: { weave: 'PENDING', aria: 'PENDING' }, active_campaign_id: null }
 export const readiness: ReadinessStatus = { ready: true, simulator: { ready: true, code: 'READY', message: 'Local simulator and control access are ready.' }, live_configuration: { ready: false, missing_fields: ['WANDB_API_KEY'] }, provider_access: 'not_checked', provider_calls: 0, models: { actor: '', explorer: '', mechanic: '' } }
@@ -19,6 +20,9 @@ export function fixtureResponse(url: string, currentCampaign: Campaign = campaig
   if (url.endsWith('/health')) return { status: 'ok', service: 'faultlab-backend' }
   if (url.endsWith('/config/status')) return config
   if (url.endsWith('/readiness')) return readiness
+  if (url.endsWith('/run-options')) return runOptions
+  if (url.endsWith('/plan')) return { campaign_id: currentCampaign.campaign_id, status: 'LEGACY', plan: null }
+  if (url.endsWith('/recording')) return { recording_version: 'faultlab-development-recording/v1', campaign_id: currentCampaign.campaign_id, campaign: currentCampaign, episodes: [episode], events: { [episode.episode_id]: events }, completeness_notes: ['Only public development evidence is included.'] }
   if (new URL(url, 'http://local').pathname === '/api/campaigns') return { campaigns: [currentCampaign], next_before: null, has_more: false }
   if (/\/regressions\/[^/]+\/executions\?/.test(url)) return { executions: [], next_before: null, has_more: false }
   if (url.endsWith('/policies')) return [baseline]

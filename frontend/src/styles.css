@@ -227,6 +227,18 @@ h1 em { font-style: normal; color: var(--accent); }
 .run-readiness { border-bottom: 1px solid var(--line); margin-bottom: 16px; padding-bottom: 12px; font-size: 11px; }
 .run-readiness h3 { margin: 0; }
 .run-readiness .text-button { font-size: 10px; }
+.setup-field { margin-bottom: 12px; }
+.setup-field label { margin-bottom: 0; }
+.run-setup > .split-heading { margin-bottom: 14px; }
+.run-setup h3, .frozen-plan h3 { font-size: 12px; margin: 0 0 8px; }
+.supported-task, .plan-preview { padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; margin: 14px 0; }
+.supported-task h3 { margin-top: 6px; }
+.supported-task p, .plan-preview p { margin-bottom: 0; }
+.agent-selection { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.agent-selection details { font-size: 11px; }
+.agent-selection ul { padding-left: 18px; }
+.frozen-plan, .recording-download { margin-top: 15px; padding-top: 12px; border-top: 1px solid var(--line); }
+.recording-download .muted { margin-bottom: 0; }
 .timeline-panel { border-top: 2px solid var(--accent); min-height: 540px; }
 .policy-panel { border-top: 2px solid var(--amber); }
 label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 12px; }

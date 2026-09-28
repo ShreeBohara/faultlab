@@ -8,6 +8,12 @@ from app.contracts.models import FaultSpec, PortabilityResult, Usage, content_ha
 from app.integrations.regression_runner import add_usage
 
 
+def require_independent_target(source, target):
+    if (source.adapter_entrypoint_id == target.adapter_entrypoint_id
+            or source.source_hash == target.source_hash):
+        raise ValueError('Independent portability requires a different reviewed agent implementation; use regression execution to rerun this agent')
+
+
 class PortabilityStudy:
     def __init__(self, store, registry):
         self.store, self.registry = store, registry
@@ -48,6 +54,7 @@ class PortabilityStudy:
             raise ValueError("A new target learning campaign requires separately declared lineage and validation cases")
         target = self.registry.verify(target_registration_id, target_configuration)
         source = self.registry.get(source_registration_id)
+        require_independent_target(source, target)
         if target.provenance_class != "external":
             raise ValueError("Internal smoke cannot satisfy the independent external study")
         if (source.contract_hash, source.capability_hash, source.oracle_hash) != (target.contract_hash, target.capability_hash, target.oracle_hash):

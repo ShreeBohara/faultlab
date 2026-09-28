@@ -2,6 +2,14 @@
 
 For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
 
+September 27 reviewed campaign onboarding: [workflow and verification](PRODUCT_ONBOARDING_REVIEW_2026-09-27.md).
+Use the [quick start](user-guide.md) to choose a reviewed agent/task/case, save an idle immutable plan,
+then explicitly Start. Registration and setup make no model calls. Current source `d1845765…` passed
+**2,224 backend tests, 180 existing skips, zero failures**, two warnings, 791.81 seconds. Frontend:
+**219 tests, build and ten browser fixtures passed**, one opt-in actual-backend skip. Actual six-case
+UI execution, recording download, restart, audit freeze and archive verification passed. New provider
+cost $0; temporary services stopped. Previous dated results below remain historical evidence.
+
 September 27 product durability: use the [local operation guide](local-operation.md) for the paired
 launcher, explicit data directory, read-only archive and recovery behavior. The [durability review](PRODUCT_DURABILITY_REVIEW_2026-09-27.md)
 records ownership, atomic job finalization, independent dashboard reads and actual manual restart checks.

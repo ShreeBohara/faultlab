@@ -9,6 +9,7 @@ from app.contracts.models import CampaignRequest,StrictModel,Id,Episode,canonica
 from app.lab.storage import StoreConflict,ReadOnlyStore
 from app.lab.budgets import BudgetExhausted
 from app.lab.operator_actions import FreezePortabilityRequest,RegistrationRequest
+from app.lab.run_plans import RunPlanRequest
 
 class EmptyRequest(StrictModel): pass
 class RetryRequest(StrictModel): episode_ids:list[Id]|None=Field(default=None,max_length=200)
@@ -76,7 +77,7 @@ def error_response(error):
     return JSONResponse(status_code=status,content={'error':{'code':code,'message':message,'request_id':new_id('request')}})
 
 
-def create_router(get_coordinator):
+def create_router(get_coordinator, *, get_settings=None):
     router=APIRouter(prefix='/api')
     reader = ContextVar('dashboard_reader', default=None)
     def c():
@@ -103,7 +104,10 @@ def create_router(get_coordinator):
             @wraps(fn)
             async def wrapped(*args,**kwargs):
                 try:
-                    if fn.__name__ != 'readiness' and getattr(c(), 'read_only', False):
+                    read_only=(get_settings().faultlab_read_only
+                               if fn.__name__ == 'create_planned' and get_settings is not None
+                               else getattr(c(), 'read_only', False))
+                    if fn.__name__ != 'readiness' and read_only:
                         raise ReadOnlyStore()
                     return await fn(*args,**kwargs)
                 except Exception as error: return error_response(error)
@@ -124,6 +128,59 @@ def create_router(get_coordinator):
                     return result if isinstance(result,Response) else JSONResponse(content=jsonable_encoder(result))
                 except Exception as error: return error_response(error)
         return wrapped
+
+    def setup_options():
+        # Setup inspection must not acquire a writer or trigger restart recovery.
+        # Production supplies settings independently of the lazy coordinator.
+        from app.lab.run_plans import build_run_options
+        from app.lab.storage import ReadOnlyLabStore
+        store=None
+        try:
+            settings=get_settings() if get_settings is not None else c().settings
+            path=settings.artifact_path / 'lab.sqlite3'
+            if path.exists():
+                store=ReadOnlyLabStore(path)
+                store.begin_snapshot()
+            return build_run_options(settings,store)
+        finally:
+            if store is not None: store.close()
+
+    @router.get('/run-options')
+    def run_options():
+        try: return setup_options()
+        except Exception as error: return error_response(error)
+
+    @router.post('/planned-campaigns',status_code=201)
+    @guarded
+    async def create_planned(request:RunPlanRequest):
+        import asyncio
+        from app.lab.run_plans import prepare_run_plan
+        def prepare_and_create():
+            options=setup_options()
+            if request.expected_store_identity != options['data_store']['identity']:
+                raise StoreConflict('Selected data store changed; review the current setup')
+            if request.expected_setup_hash != options['setup_hash']:
+                raise StoreConflict('Configured setup changed; review the current setup')
+            if request.config_profile_id=='live-v1':
+                selected=next((row for row in options['agents']
+                               if row['registered'] and row['registration_id']==request.agent_registration_id),None)
+                if selected is None:
+                    raise StoreConflict('Register the current reviewed agent before creating a live campaign')
+                if request.mode=='compare' and not selected['compare_available']:
+                    raise StoreConflict('Comparison requires an accepted policy for this exact registered configuration')
+            coordinator=c()
+            prepared=prepare_run_plan(coordinator.store,coordinator.settings,request)
+            return coordinator.create(prepared.campaign_request,run_plan=prepared)
+        # Source inspection and transactional setup must not block Stop or an
+        # active episode's event-loop deadline. Owner validation remains inside.
+        return await asyncio.to_thread(prepare_and_create)
+
+    @router.get('/campaigns/{id}/plan')
+    @guarded
+    def campaign_plan(id:str):
+        from app.lab.run_plans import read_run_plan
+        c().get(id)
+        return read_run_plan(c().store,id)
 
     @router.get('/config/status')
     @guarded

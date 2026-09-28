@@ -115,7 +115,9 @@ async def test_runner_rejects_unknown_context_before_creating_a_world_or_record(
     store.put_record('configurations', identity, frozen, immutable=True)
     world = SimpleNamespace(create=AsyncMock())
     runner = EpisodeRunner(store, world)
-    campaign = SimpleNamespace(configuration_hash=identity)
+    campaign = Campaign(campaign_id='campaign-invalid-context', mode='baseline',
+        task_text='Upgrade and confirm', order_id='order-1', config_profile_id='live-v1',
+        model='openai/gpt-oss-120b', configuration_hash=identity)
     try:
         with pytest.raises(ValueError, match='Unknown actor context protocol'):
             await runner.run(campaign, None, None, actor_context_protocol=explicit)

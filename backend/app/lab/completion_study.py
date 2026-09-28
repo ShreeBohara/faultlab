@@ -181,6 +181,8 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
         campaign = coordinator.get(campaign_id)
         if campaign.mode != 'baseline' or campaign.config_profile_id != 'live-v1' or campaign.state != 'IDLE':
             raise StoreConflict('Completion study requires a fresh idle live baseline campaign')
+        from app.lab.runner import reject_native_reference_study
+        reject_native_reference_study(coordinator.store,campaign)
         coordinator.validate_core_configuration(campaign)
         configuration = coordinator.store.get_record('configurations', campaign.configuration_hash) or {}
         try:
@@ -251,6 +253,8 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
         store.put_record('completion_studies', study_id, record)
     def check():
         if stop(): raise StopRequested()
+        from app.lab.runner import reject_native_reference_study
+        reject_native_reference_study(coordinator.store,campaign)
         coordinator.validate_core_configuration(campaign)
         if content_hash(build_case_manifest(record.get('case_manifest_id', DEFAULT_CASE_MANIFEST))) != record['manifest_hash']:
             raise StoreConflict('Completion case manifest changed during execution')

@@ -3,7 +3,7 @@ import { api, type CampaignPage } from '../api'
 import type { Campaign } from '../generated/contracts'
 import { Badge, Empty, Field, Panel, label } from './common'
 
-export function CampaignHistory({ selectedId, refreshKey, onOpen }: { selectedId: string; refreshKey: number; onOpen: (id: string) => void }) {
+export function CampaignHistory({ selectedId, currentCampaign, refreshKey, onOpen }: { selectedId: string; currentCampaign?: Campaign; refreshKey: number; onOpen: (id: string) => void }) {
   const [page, setPage] = useState<CampaignPage>()
   const [choice, setChoice] = useState('')
   const [loading, setLoading] = useState(false)
@@ -42,13 +42,16 @@ export function CampaignHistory({ selectedId, refreshKey, onOpen }: { selectedId
     }
   }
 
-  const selected = page?.campaigns.find(campaign => campaign.campaign_id === (choice || selectedId))
+  // History is a bounded snapshot. The selected campaign's live record already
+  // follows execution, so use it for the matching row without reloading history.
+  const campaigns = page?.campaigns.map(campaign => currentCampaign?.campaign_id === selectedId && campaign.campaign_id === selectedId ? currentCampaign : campaign)
+  const selected = campaigns?.find(campaign => campaign.campaign_id === (choice || selectedId))
   return <Panel title="Campaign history" className="history-panel" aside={<span className="small-label">Read saved evidence</span>}>
     <p className="muted">Open a saved campaign without starting or resuming it. New execution is a separate action in the Run desk.</p>
     <div className="history-controls">
       <div className="history-picker"><label htmlFor="saved-campaign-history">Saved campaigns</label><select id="saved-campaign-history" value={selected?.campaign_id ?? ''} disabled={!page?.campaigns.length} onChange={event => setChoice(event.target.value)}>
         <option value="">Select a saved campaign</option>
-        {page?.campaigns.map(campaign => <option key={campaign.campaign_id} value={campaign.campaign_id}>{campaign.created_at ? new Date(campaign.created_at).toLocaleString() : 'Time not recorded'} · {campaign.mode} · {label(campaign.state ?? 'IDLE')} · {campaign.order_id} · {campaign.campaign_id}</option>)}
+        {campaigns?.map(campaign => <option key={campaign.campaign_id} value={campaign.campaign_id}>{campaign.created_at ? new Date(campaign.created_at).toLocaleString() : 'Time not recorded'} · {campaign.mode} · {label(campaign.state ?? 'IDLE')} · {campaign.order_id} · {campaign.campaign_id}</option>)}
       </select></div>
       <button disabled={!selected} onClick={() => { if (selected) onOpen(selected.campaign_id) }}>Open selected campaign</button>
       <button className="text-button" disabled={loading} onClick={() => setRefresh(value => value + 1)}>Refresh history</button>

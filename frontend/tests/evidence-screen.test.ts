@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EvidenceScreen } from '../src/components/EvidenceScreen'
 import { ThemeToggle } from '../src/components/ThemeToggle'
 import { api, request } from '../src/api'
+import { runApi } from '../src/runPlans'
+import { runOptions } from './run-fixtures'
 import { campaign, episode, fixtureResponse, verifiedExperiments } from './fixtures'
 let writes: string[]
 beforeEach(() => {
@@ -12,7 +14,7 @@ beforeEach(() => {
   vi.stubGlobal('localStorage', storage()); vi.stubGlobal('sessionStorage', storage()); writes = []
   HTMLElement.prototype.scrollIntoView = vi.fn()
   vi.stubGlobal('fetch', vi.fn(async (url: string, options: RequestInit) => {
-    if (options?.method === 'POST') { writes.push(url); if (url.endsWith('/campaigns')) return { ok: true, json: async () => ({ ...campaign, state: 'IDLE', latest_episode_id: null, state_seq: 0 }) }; if (url.endsWith('/start')) return { ok: true, json: async () => ({ ...campaign, state: 'RUNNING', state_seq: 1 }) } }
+    if (options?.method === 'POST') { writes.push(url); if (url.endsWith('/planned-campaigns')) return { ok: true, json: async () => ({ ...campaign, state: 'IDLE', latest_episode_id: null, state_seq: 0 }) }; if (url.endsWith('/start')) return { ok: true, json: async () => ({ ...campaign, state: 'RUNNING', state_seq: 1 }) } }
     return { ok: true, json: async () => fixtureResponse(String(url)) }
   }))
 })
@@ -53,7 +55,7 @@ describe('evidence screen behavior', () => {
     await screen.findByText('Backend connected')
     expect(screen.getByText(/No main-loop trials recorded/)).toBeTruthy()
     expect(screen.getByText(/Independent external validation is/)).toBeTruthy()
-    expect((screen.getByRole('button', { name: 'Compare' }) as HTMLButtonElement).disabled).toBe(true)
+    expect((await screen.findByRole('option', { name: 'Compare · accepted policy required' }) as HTMLOptionElement).disabled).toBe(true)
     expect(writes).toEqual([])
   })
   it('restores campaign and event cursor on reload; replay performs zero mutations', async () => {
@@ -74,9 +76,10 @@ describe('evidence screen behavior', () => {
   })
   it('requires a separate explicit Start after campaign creation', async () => {
     render(h(EvidenceScreen)); await screen.findByText('Backend connected')
+    await waitFor(() => expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false))
     fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }))
-    await waitFor(() => expect(writes).toEqual(['/api/campaigns']))
-    await screen.findByText(/Campaign created. Press Start/)
+    await waitFor(() => expect(writes).toEqual(['/api/planned-campaigns']))
+    await screen.findByText(/Campaign created. Review its frozen plan/)
     expect(localStorage.getItem('faultlab:campaign')).toBe(campaign.campaign_id)
   })
   it('opens the matching stored episode from a matrix cell', async () => {
@@ -170,18 +173,20 @@ it('rejects unsafe Aria links before saving attributed manual capture', async ()
 })
 
 import { RunControls } from '../src/components/RunControls'
-it('keeps current new-campaign roles and context separate from the saved campaign Actor', () => {
+it('keeps current new-campaign roles and context separate from the saved campaign Actor', async () => {
   const configured = { ...config, models: { actor: 'current-actor', explorer: 'current-explorer', mechanic: 'override-mechanic' }, actor_context_protocol: 'faultlab-actor-context/v4-indexed-evidence' }
+  vi.spyOn(runApi, 'options').mockResolvedValue({ ...runOptions, models: configured.models })
   render(h(RunControls, { config: configured, campaign, replay: false, onCampaign: vi.fn(), onReplay: vi.fn() }))
-  const setup = screen.getByText('Current setup for new live campaigns').parentElement!
+  const setup = (await screen.findByText('Current setup for new live campaigns')).parentElement!
   for (const value of [...Object.values(configured.models), configured.actor_context_protocol]) expect(within(setup).getByText(value)).toBeTruthy()
   expect(within(setup).queryByText(campaign.model)).toBeNull()
   expect(screen.getByText(campaign.model)).toBeTruthy()
   expect(writes).toEqual([])
 })
-it('labels a missing current Actor context as unreported, never as the saved campaign default', () => {
+it('labels a missing current Actor context as unreported, never as the saved campaign default', async () => {
+  vi.spyOn(runApi, 'options').mockResolvedValue({ ...runOptions, models: { actor: config.model, explorer: 'legacy-lab-model', mechanic: 'legacy-lab-model' } })
   render(h(RunControls, { config: { ...config, lab_model: 'legacy-lab-model' }, campaign, replay: false, onCampaign: vi.fn(), onReplay: vi.fn() }))
-  expect(screen.getByText('Not reported by this backend')).toBeTruthy()
+  expect(await screen.findByText('Not reported by this backend')).toBeTruthy()
   expect(screen.getAllByText('legacy-lab-model')).toHaveLength(2)
   expect(writes).toEqual([])
 })

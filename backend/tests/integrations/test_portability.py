@@ -98,3 +98,13 @@ def test_unsupported_or_unfrozen_study_rejected_before_calls(store, registry, ex
     if change == "new_target_campaign": kwargs["policy_source"] = "new_target_campaign"
     with pytest.raises(ValueError): asyncio.run(PortabilityStudy(store, registry).run(**kwargs))
     assert calls == []
+
+
+def test_same_native_implementation_cannot_claim_independent_portability(store, registry, external, baseline, accepted, frozen):
+    registration,_=external
+    calls,kwargs=arguments(store,registry,external,registration,baseline,accepted,frozen)
+    before=[tuple(row) for row in store.db.execute('SELECT * FROM records ORDER BY rowid')]
+    with pytest.raises(ValueError,match='different reviewed agent implementation'):
+        asyncio.run(PortabilityStudy(store,registry).run(**kwargs))
+    assert calls==[]
+    assert [tuple(row) for row in store.db.execute('SELECT * FROM records ORDER BY rowid')]==before

@@ -57,7 +57,9 @@ class SearchBenchmark:
         if baseline.version!='policy-v0' or baseline.content.rules: raise ValueError('Selector comparison requires frozen B0 empty overlay')
         if 'selection_comparison' not in self.ledger.reservations: raise ValueError('Protected comparison reservation unavailable')
         comparison_id=comparison_id or new_id('comparison'); contexts=[new_id('selector-context') for _ in range(2)]
-        record=SearchComparison(comparison_id=comparison_id,status='RUNNING',campaign_id=campaign.campaign_id,manifest_hash=manifest['manifest_hash'],registration_id='orders-v1',policy_hash=baseline.policy_hash,generator_hash=development['manifest_hash'],validator_hash=file_hash(ROOT/'backend/app/simulator/faults.py'),deduplication_hash=content_hash(manifest['deduplication']),selector_order=manifest['selector_order'],systematic_digest=content_hash({'order':manifest['systematic_order'],'variants':manifest['systematic_variants']}),context_ids=contexts,trial_ids=[],usage=Usage(),stopping_reason='Study running')
+        from app.lab.runner import planned_registration_id
+        registration_id=planned_registration_id(self.store,campaign)
+        record=SearchComparison(comparison_id=comparison_id,status='RUNNING',campaign_id=campaign.campaign_id,manifest_hash=manifest['manifest_hash'],registration_id=registration_id,policy_hash=baseline.policy_hash,generator_hash=development['manifest_hash'],validator_hash=file_hash(ROOT/'backend/app/simulator/faults.py'),deduplication_hash=content_hash(manifest['deduplication']),selector_order=manifest['selector_order'],systematic_digest=content_hash({'order':manifest['systematic_order'],'variants':manifest['systematic_variants']}),context_ids=contexts,trial_ids=[],usage=Usage(),stopping_reason='Study running')
         self.store.put_record('search_comparisons',comparison_id,record)
         trials=[]; outcomes=[]; all_done=True
         def measured(): return {'model_calls':self.ledger.used_calls,'charged_token_upper_bound':self.ledger.used_tokens,'input_tokens':self.ledger.measured_input,'output_tokens':self.ledger.measured_output,'known_cost_dollars':self.ledger.used_cost or 0.0,'unknown_cost_calls':self.ledger.unknown_cost_calls,'unknown_token_calls':self.ledger.unknown_token_calls}
@@ -70,7 +72,7 @@ class SearchBenchmark:
                 for slot in range(8):
                     from app.contracts.models import Provenance
                     planned_episode=new_id('episode')
-                    provenance=Provenance(campaign_id=campaign.campaign_id,episode_id=planned_episode,origin='faultlab_evaluation',split='development',arm='B0',source_mode='live',experiment_purpose='selection_comparison',trial_index=0,study_id=comparison_id,evidence_context_id=contexts[arm_index],selector_id=selector,execution_epoch=campaign.execution_epoch)
+                    provenance=Provenance(campaign_id=campaign.campaign_id,episode_id=planned_episode,origin='faultlab_evaluation',split='development',arm='B0',source_mode='live',experiment_purpose='selection_comparison',trial_index=0,study_id=comparison_id,evidence_context_id=contexts[arm_index],selector_id=selector,execution_epoch=campaign.execution_epoch,agent_registration_id=registration_id)
                     config=self.store.get_record('configurations',campaign.configuration_hash)
                     explorer.trace=getattr(self.runner,'trace',None)
                     explorer.metadata={**provenance.model_dump(mode='json'),'model_id':(config.get('models') or {}).get('explorer',campaign.model),'policy_hash':baseline.policy_hash,'contract_hash':config['contract_hash'],'scorer_hash':config['scorer_hash']}

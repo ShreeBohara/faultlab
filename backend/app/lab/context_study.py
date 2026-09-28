@@ -266,6 +266,8 @@ async def queue_context_study(coordinator, campaign_id, changed_protocol=DEFAULT
         campaign = coordinator.get(campaign_id)
         if campaign.mode != 'baseline' or campaign.config_profile_id != 'live-v1' or campaign.state != 'IDLE':
             raise StoreConflict('Context study requires a fresh idle live baseline campaign')
+        from app.lab.runner import reject_native_reference_study
+        reject_native_reference_study(coordinator.store,campaign)
         coordinator.validate_core_configuration(campaign)
         if coordinator.active_id is not None:
             raise StoreConflict('Another fresh execution is active')
@@ -337,6 +339,8 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation)
 
     def check():
         if stop(): raise StopRequested()
+        from app.lab.runner import reject_native_reference_study
+        reject_native_reference_study(coordinator.store,campaign)
         coordinator.validate_core_configuration(campaign)
         if content_hash(case_manifest(record['protocol_by_arm']['P1'])) != record['manifest_hash']:
             raise StoreConflict('Context case manifest changed during execution')

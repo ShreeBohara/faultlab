@@ -58,6 +58,8 @@ async def queue_portability(coordinator,campaign_id,request):
     if registration.model!=coordinator.settings.wandb_model: raise ValueError('Target model differs from explicit configured runtime')
     source=coordinator.store.get_record('campaign_registrations',campaign_id)
     if not source: raise ValueError('Source registration unavailable')
+    from app.integrations.portability import require_independent_target
+    require_independent_target(registry.get(source['registration_id']),registration)
     fixed=PortabilityStudy(coordinator.store,registry)
     fixed._freeze(external_freeze,registration,target,coordinator.policies.baseline(),policy)
     if coordinator.store.get_record('portability_freezes',external_freeze['freeze_hash']): raise StoreConflict('Frozen external study already executed')

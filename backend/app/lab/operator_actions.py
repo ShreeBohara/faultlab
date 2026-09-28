@@ -216,6 +216,10 @@ async def freeze_and_queue_portability(coordinator, campaign_id, request):
                     coordinator.store.get_record('configurations', registration.configuration_hash))
     if registration.model != coordinator.settings.wandb_model:
         raise ValueError('Target model differs from configured runtime')
+    source = coordinator.store.get_record('campaign_registrations', campaign_id)
+    if not source: raise ValueError('Source registration unavailable')
+    from app.integrations.portability import require_independent_target
+    require_independent_target(registry.get(source['registration_id']), registration)
     previous = coordinator.store.get_record('external_freezes', campaign_id)
     if previous:
         if previous.get('registration', {}).get('registration_id') != registration.registration_id:

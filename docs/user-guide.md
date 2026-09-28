@@ -6,6 +6,31 @@ Use `--archive` to inspect an existing store without recovery, execution or writ
 See [local operation and recovery](local-operation.md) for the complete commands and data guidance.
 The dashboard displays the selected store; existing historical directories are never moved.
 
+## Create a reviewed campaign
+
+In **Run desk → New campaign**, choose **Offline reference smoke** for a provider-free first run.
+Choose one of the six **Public development case** options, review the task and authorized order,
+then click **Create campaign**. This saves an idle campaign; it does not execute the agent.
+Read the **Frozen campaign plan**, then click **Start campaign**. Changing the setup form afterward
+does not change that saved plan. A changed runtime or model requires a new plan; old evidence remains
+readable. The supported task is express shipping upgrade followed by a truthful confirmation.
+The instructions field does not define new tools, arbitrary tasks or a new scoring contract.
+
+For configured paid work, choose **Live reviewed agent**, select **FaultLab reference Actor** or
+**smolagents ToolCallingAgent 1.26.0**, then **Register configured agent**. Registration checks installed
+source and the adapter contract; it makes no provider call and does not establish agent quality or
+provider access. Baseline runs use the chosen public case. **Learn** uses the bounded development
+search; **Compare** requires an accepted policy for the exact selected configuration. Every original
+learning stage uses the selected agent, while the B1 handwritten control is labeled separately.
+Reference-only context, completion and dependent heldout research studies are unavailable for native
+campaigns. Independent portability requires a different reviewed implementation; rerunning the same
+native agent is a regression measurement, not independent validation.
+
+Use **Download campaign recording** to save the plan, configuration, registration and public
+development evidence, including failed attempts and `NO_CHANGE` runs. The JSON download makes no
+provider call. Protected trials and private simulator state are excluded. This recording is an
+evidence archive; the separately validated regression bundle is the executable test artifact.
+
 Current product navigation: use **Campaign history → Saved campaigns → Open selected campaign**
 to browse saved runs. **Load older campaigns** reads the next page; **Refresh history** returns to
 newest-created runs. The pasted-ID field remains available. Opening history never starts or resumes
@@ -100,32 +125,30 @@ C3's live model completed 12 tasks, correctly rejected three, safely left two un
 
 ## 1 Start the application
 
-**Do this.** Open three Terminal windows. In each, run:
+**Do this.** In a terminal, select a fresh directory for new work:
 
 ```sh
 cd /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab
+./scripts/start-local.sh --data-dir /Users/shree/FaultLab_Runs/my-workspace
 ```
 
-Run one service in each window and leave it running:
+This starts the simulator, backend and dashboard together with live execution disabled. Keep the
+terminal open; Ctrl+C stops the services it started. The launcher refuses occupied ports before opening
+stores. Stop an existing launcher before switching workspaces. Existing data is never moved automatically.
+For a fresh installation, run `./scripts/setup.sh` once first; reuse an existing installed environment.
 
-```sh
-# Terminal 1 — mock shop
-./scripts/start-simulator.sh
-# Terminal 2 — backend; reading evidence needs no live enablement
-./scripts/start-backend.sh
-# Terminal 3 — dashboard
-./scripts/start-frontend.sh
-```
+To inspect existing history, select its directory explicitly with `--archive`. This starts a read-only
+backend and dashboard without a simulator. See [local operation](local-operation.md) for independent
+service commands and recovery behavior.
 
-For a fresh installation, run `./scripts/setup.sh` once first. Keep already-running services. Before restarting the backend, check that it has no running experiment.
+**Why.** Selecting the directory makes clear which saved experiments are being read and where new
+worlds will be written. The simulator is needed only when executing a fresh task.
 
-**Why.** The dashboard reads the coordinator’s saved records. The simulator is needed when executing a fresh task.
-
-**Backend.** Both launchers use the same application defaults: DeepSeek V3.1 for the Actor, DeepSeek V4 Pro 0813 for Explorer and Mechanic, and v4 indexed evidence for the reference Actor. Explicit process settings override `.env`; nonempty `.env` model values override defaults. Empty model placeholders from older `.env` templates use the tested defaults; an explicitly blank process model override still takes precedence. Existing `.env` files are never edited. Aria is off by default. Old frozen records keep their original configuration. The Phase 30 reporting hint is not included.
+**Backend.** The launchers use the same application defaults: DeepSeek V3.1 for the Actor, DeepSeek V4 Pro 0813 for Explorer and Mechanic, and v4 indexed evidence for the reference Actor. Explicit process settings override `.env`; nonempty `.env` model values override defaults. Empty model placeholders from older `.env` templates use the tested defaults; an explicitly blank process model override still takes precedence. Existing `.env` files are never edited. Aria is off by default. Old frozen records keep their original configuration. The Phase 30 reporting hint is not included.
 
 **Frontend.** Open `http://127.0.0.1:5173`. Look for **Backend connected** and **Current setup for new campaigns**. This configuration is separate from the selected saved campaign’s model. Loading the page makes no model calls.
 
-**Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start `./scripts/start-live-backend.sh` instead of the development backend. The live launcher disables automatic reload and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. For this project the confirmed destination is `shreetbohara-quinstreet/Faultlab`.
+**Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start the paired launcher with `--live` and the same explicit `--data-dir`. The live launcher uses a stable backend and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. For this project the confirmed destination is `shreetbohara-quinstreet/Faultlab`.
 
 Older `.env` files with empty model placeholders now select the tested defaults without rewriting the file. If you choose a different model, set its name explicitly and check the displayed setup before creating a campaign. Never paste your key into the frontend or documentation. `/api/readiness` lists missing configuration names without contacting the provider.
 
@@ -158,7 +181,7 @@ Model discovery is available with `./scripts/check-provider.sh wandb --list-mode
 
 ## 3 Create and start one learning run
 
-**Do this in the dashboard.** In **Run desk**, choose **Execution profile → Live · configured model**, then **Campaign mode → Learn**. Keep the supplied task and enter an order label such as `order-live-demo`. If playback is active, click **Exit playback**. Click **Create campaign**. Review the campaign ID, model and budget, then click **Start campaign** once.
+**Do this in the dashboard.** In **Run desk**, choose **Execution profile → Live reviewed agent**, select and register the reviewed agent, then choose **Campaign mode → Learn**. Keep the supplied task and enter an order label such as `order-live-demo`. If playback is active, click **Exit playback**. Click **Create campaign**. Review the frozen plan, model and budget, then click **Start campaign** once.
 
 **Why.** Create fixes what you are testing. Start explicitly begins the paid experiment. The supported task is order upgrade and confirmation; free text does not define arbitrary new tools or workflows.
 
@@ -168,7 +191,7 @@ Runtime 2 asks for a strict final-report structure when the agent reaches its re
 
 **Frontend.** The campaign receipt shows recorded settings. Its state and reason change as work proceeds, and the evidence panels fill with saved results.
 
-**Terminal alternative.** This creates and starts the same kind of learning run. Use either this command or the dashboard sequence for a single campaign:
+**Terminal reference alternative.** This legacy command creates and starts a reference-agent learning run. Use the dashboard's reviewed plan flow to select the native agent or a named baseline case:
 
 ```sh
 ./scripts/run-demo.sh --mode learn --execute-live --wait

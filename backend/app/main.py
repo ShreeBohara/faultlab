@@ -10,19 +10,29 @@ from fastapi.responses import JSONResponse
 def create_app(*, settings=None, coordinator=None):
     lock=RLock()
     current=coordinator
+    selected=settings or getattr(coordinator, 'settings', None)
+
+    def get_settings():
+        nonlocal selected
+        with lock:
+            if current is not None and hasattr(current, 'settings'):
+                return current.settings
+            if selected is None:
+                from app.config import Settings
+                selected=Settings.from_env()
+            return selected
 
     def get_coordinator():
         nonlocal current
         with lock:
             if current is None:
-                from app.config import Settings
-                selected = settings or Settings.from_env()
-                if selected.faultlab_read_only:
+                configured = get_settings()
+                if configured.faultlab_read_only:
                     from app.lab.dashboard import ArchiveCoordinator
-                    current = ArchiveCoordinator(selected)
+                    current = ArchiveCoordinator(configured)
                 else:
                     from app.lab.coordinator import LabCoordinator
-                    current=LabCoordinator(selected)
+                    current=LabCoordinator(configured)
             return current
 
     @asynccontextmanager
@@ -44,7 +54,7 @@ def create_app(*, settings=None, coordinator=None):
         return JSONResponse(status_code=422,content={'error':{'code':'INVALID_REQUEST','message':'Request does not match the FaultLab contract.','request_id':str(uuid4())}})
 
     from app.lab.api import create_router
-    app.include_router(create_router(get_coordinator))
+    app.include_router(create_router(get_coordinator, get_settings=get_settings))
     return app
 
 app=create_app()

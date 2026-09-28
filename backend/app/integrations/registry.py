@@ -130,11 +130,39 @@ def freeze_target_configuration(source_configuration, model_id):
     target = {**source, "model": model_id, "source_hash": verify_native_source(),
         "adapter_hash": adapter_hash(), "actor_prompt_hash": native_prompt_hash(),
         "external_source_revision": REVISION, "external_agent_version": "smolagents/1.26.0"}
+    # These protocols belong to the reference Actor's request builder. The
+    # native adapter keeps its own reviewed prompt, memory and text transport.
+    # Historical configurations remain readable; new identities state only the
+    # protocols that their selected implementation actually executes.
+    for field in ("actor_response_protocol", "actor_context_protocols", "actor_context_protocol"):
+        target.pop(field, None)
     if "models" in target:
         target["models"]={**target["models"],"actor":model_id}
         target["model_settings_by_role"]={**target["model_settings_by_role"],"actor":model_request_settings(model_id)}
     target["model_settings"]=model_request_settings(model_id)
     return target
+
+
+def current_registration_configuration(settings, caps, profile, registration):
+    """Derive current configured semantics for a reviewed implementation."""
+    from app.lab.configuration import frozen_configuration
+    current = frozen_configuration(settings, caps, profile)
+    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+        if profile != "live-v1":
+            raise ValueError("Native agent execution requires the live configuration profile")
+        return freeze_target_configuration(current, current["model"])
+    if registration.adapter_entrypoint_id != "orders-prototype-v1":
+        raise ValueError("Unreviewed adapter entrypoint")
+    return current
+
+
+def reviewed_actor_matches(actor, registration):
+    """Check an explicit in-process override against the reviewed factory."""
+    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+        from app.integrations.external_agent import SmolagentsActor
+        return type(actor) is SmolagentsActor and actor.model_id == registration.model
+    from app.adapters.prototype import run_prototype
+    return actor is run_prototype and registration.adapter_entrypoint_id == "orders-prototype-v1"
 
 
 class AgentRegistry:
@@ -165,7 +193,7 @@ class AgentRegistry:
             reset_profile_id="fresh-orders-v1", oracle_hash=target["scorer_hash"], policy_hooks=HOOKS,
             model=target["model"], prompt_hash=target["actor_prompt_hash"], configuration_hash=config_hash,
             dependency_lock_hash=target["dependency_lock_hash"], budget_compatible=True, dry_run_status="PASSED",
-            limitations=["Dry-run conformance covers reviewed source and local contract mappings; provider access and external outcome measurements remain pending.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."])
+            limitations=["Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."])
         self._save(registration, target)
         return registration
 

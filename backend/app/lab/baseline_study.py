@@ -86,9 +86,12 @@ async def _execute(coordinator,campaign,baseline,manifest,record,ledger,reservat
             # The live model's scores publish remotely; reference scores are a
             # separate explicitly offline evaluation. Both inventories precede
             # every actor call and every prediction comes from persisted C1-C8.
+            from app.lab.runner import planned_registration_id,B1_CONTROL_ID
+            planned=planned_registration_id(coordinator.store,campaign)!='orders-v1'
             for arm in ARMS:
+                arm_registration=B1_CONTROL_ID if planned and arm=='B1' else registration
                 batch_id=study_id+'-'+arm
-                provenance=Provenance(campaign_id=id,episode_id=batch_id,origin='prototype',split='development',arm=arm,source_mode=record['source_mode_by_arm'][arm],experiment_purpose='discovery',trial_index=0,study_id=study_id,evidence_context_id=study_id,execution_epoch=campaign.execution_epoch,agent_registration_id=registration)
+                provenance=Provenance(campaign_id=id,episode_id=batch_id,origin='prototype',split='development',arm=arm,source_mode=record['source_mode_by_arm'][arm],experiment_purpose='discovery',trial_index=0,study_id=study_id,evidence_context_id=study_id,execution_epoch=campaign.execution_epoch,agent_registration_id=arm_registration)
                 metadata={**provenance.model_dump(mode='json'),'model_id':campaign.model if arm=='B0' else 'deterministic-reference/internal-smoke','policy_hash':baseline.policy_hash,'contract_hash':config['contract_hash'],'scorer_hash':config['scorer_hash']}
                 sessions[arm]=await publisher.begin(batch_id,metadata,expected_episode_ids=[slot['episode_id'] for slot in record['slots'] if slot['arm']==arm],frozen=False)
                 record['telemetry'][arm]={'batch_id':batch_id,'status':'PENDING' if arm=='B0' else 'local_only'}

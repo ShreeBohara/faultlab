@@ -16,6 +16,9 @@ def episode_events(store, episode_id):
 
 def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     campaign=store.get_record('campaigns',campaign_id)
+    from app.lab.run_plans import read_run_plan
+    saved_plan=read_run_plan(store,campaign_id) if campaign else None
+    binding=store.get_record('campaign_registrations',campaign_id)
     all_episodes=[e for e in store.list_records('episodes') if e.get('campaign_id')==campaign_id and e.get('split')=='development']
     allowed={e['episode_id'] for e in all_episodes}
     selected=allowed if episode_ids is None else allowed.intersection(episode_ids)
@@ -57,6 +60,10 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     challenge_ids={c['challenge_id'] for c in store.list_records('challenge_campaigns') if c.get('campaign_id')==campaign_id}
     challenges=[c for c in store.list_records('challenges') if c.get('challenge_id') in challenge_ids]
     result={'recording_version':'faultlab-development-recording/v1','campaign_id':campaign_id,
+        'campaign':campaign,
+        'configuration':store.get_record('configurations',campaign['configuration_hash']) if campaign else None,
+        'run_plan':saved_plan,
+        'agent_registration':store.get_record('agent_registrations',binding['registration_id']) if binding else None,
         'episodes':episodes,'events':{e['episode_id']:episode_events(store,e['episode_id']) for e in episodes},
         'observations':[o for o in store.list_records('observations') if o.get('episode_id') in selected],
         'policies':policies,'proposals':proposals,'campaign_proposals':owned,'mechanic_outputs':mechanic,

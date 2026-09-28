@@ -14,8 +14,21 @@ EVIDENCE_PROTOCOLS = (COMPACT_EVIDENCE_V1, COMPACT_EVIDENCE_V2)
 TASK_OUTCOME_CLAUSE = (' task_outcome is the adjudicated public outcome of that episode, '
                        'the same value grouped in observed_outcomes.')
 
-def runtime_contract():
-    return {'actor_contract':ACTOR_PROMPT,'episode_limits':EpisodeBudget().model_dump(mode='json'),
+def runtime_contract(store=None,campaign=None):
+    actor_contract=ACTOR_PROMPT
+    if store is not None and campaign is not None:
+        from app.lab.runner import campaign_run_plan
+        plan=campaign_run_plan(store,campaign)
+        if plan and plan['agent']=='smolagents':
+            from app.integrations.registry import AgentRegistry,NATIVE_FILES
+            from app.integrations.external_agent import TASK_CONTRACT,TRANSPORT_CONTRACT
+            registration=AgentRegistry(store).get(plan['agent_registration_id'])
+            actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent',
+                            'task_contract':TASK_CONTRACT,'transport_contract':TRANSPORT_CONTRACT,
+                            'memory':'Fresh native agent and empty native memory for each episode; original reports cite full delivered evidence IDs.',
+                            'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
+                            'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+    return {'actor_contract':actor_contract,'episode_limits':EpisodeBudget().model_dump(mode='json'),
             'hook_execution':'Rules run in array order. Each rule tests when once on entry; each visited step retests only_if and consumes a policy step, including skipped steps. Policy reads and same-identity retries consume HTTP attempts and ticks; waits consume ticks and polling cycles. Hook steps do not consume actor model turns and do not recursively invoke hooks. Newly delivered observations appear on the next original actor turn. No hook can rewrite a report or create a new authorized operation.',
             'hook_boundaries':{
                 'after_upgrade_response':'Once after an executed actor update_order has delivered its result or exhausted adapter retries. Policy retries and status reads do not invoke this hook again.',
@@ -93,7 +106,7 @@ class Diagnostician:
             key='intervention-'+content_hash({'counterexample_id':counter.counterexample_id,'control':recipe,'treatment':treatment})[:24]
             options[key]=(change,treatment)
         evidence_ids=[o.evidence_id for bundle in evidence for o in bundle.observations]
-        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'observed_control_trials':observed_outcomes(reduction,content_hash(recipe),counter.target_invariant),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations','observed_treatment_trials':observed_outcomes(reduction,content_hash(value[1]),counter.target_invariant)} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(),'reduction':reduction}
+        context={'counterexample_id':counter.counterexample_id,'target_invariant':counter.target_invariant,'reproduction_counts':{'attempted':counter.attempted_count,'valid':counter.valid_count,'target_violations':counter.target_violation_count},'evidence_ids':evidence_ids[:36],'intervention_ids':list(options),'control_fault_spec':recipe.model_dump(mode='json'),'observed_control_trials':observed_outcomes(reduction,content_hash(recipe),counter.target_invariant),'interventions':[{'id':key,'change':value[0],'treatment_fault_spec':value[1].model_dump(mode='json'),'prediction':'removes_violation','expected_result':'3/3 control target violations and zero treatment target violations','observed_treatment_trials':observed_outcomes(reduction,content_hash(value[1]),counter.target_invariant)} for key,value in options.items()],'observations':summarize_evidence(evidence),'runtime_contract':runtime_contract(self.store,campaign),'reduction':reduction}
         proposal_ref,proposal,raws=await self.mechanic.diagnose(context)
         variants=[]
         if proposal and proposal.requested_intervention_id in options:

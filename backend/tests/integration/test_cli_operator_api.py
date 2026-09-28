@@ -133,6 +133,8 @@ def test_archive_rejects_both_remote_operator_actions(fixture_store):
 def test_portability_freeze_is_owned_then_queue_has_saved_record(fixture_store, monkeypatch):
     settings, owner, directory, campaign, _ = fixture_store
     body = upload(owner, directory, campaign)
+    target = operator_actions.register_agent(owner.store, settings, 'smolagents')
+    body['agent_registration_id'] = target.registration_id
     port = {key: body[key] for key in ('expected_store_identity', 'agent_registration_id', 'execute_live')}
     owner.store.put_record('audit_freezes', campaign.campaign_id, {
         'learned_arm_available': True,

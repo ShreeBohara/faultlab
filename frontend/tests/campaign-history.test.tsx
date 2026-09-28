@@ -45,6 +45,31 @@ it('loads older pages on demand and refreshes back to the newest page', async ()
   expect(within(selector).queryByRole('option', { name: /campaign-older/ })).toBeNull()
 })
 
+it('updates the matching history row and selected status from the current campaign without reloading pages', async () => {
+  const running = { ...first, state: 'RUNNING' as const, state_seq: 3 }
+  const read = vi.spyOn(api, 'campaigns').mockResolvedValueOnce({ ...firstPage, campaigns: [running] }).mockResolvedValueOnce(finalPage).mockResolvedValueOnce({ ...firstPage, campaigns: [running] })
+  const props = { selectedId: first.campaign_id, currentCampaign: running, refreshKey: 0, onOpen: vi.fn() }
+  const view = render(h(CampaignHistory, props))
+  await screen.findByText(/1 saved campaigns loaded/)
+  fireEvent.click(screen.getByRole('button', { name: 'Load older campaigns' }))
+  await screen.findByText(/2 saved campaigns loaded/)
+  view.rerender(h(CampaignHistory, { ...props, currentCampaign: { ...running, state: 'COMPLETED', state_seq: 4 } }))
+  expect(screen.getByText('Completed', { exact: true })).toBeTruthy()
+  expect(screen.getByRole('option', { name: /campaign-newest/ }).textContent).toContain('Completed')
+  expect(screen.getByRole('option', { name: /campaign-older/ }).textContent).toContain('Stopped')
+  expect(read).toHaveBeenCalledTimes(2)
+  expect(screen.getByText(/2 saved campaigns loaded/)).toBeTruthy()
+  fireEvent.change(screen.getByLabelText('Saved campaigns'), { target: { value: older.campaign_id } })
+  expect(screen.getByText('Stopped', { exact: true })).toBeTruthy()
+  expect(screen.queryByText('Completed', { exact: true })).toBeNull()
+  fireEvent.change(screen.getByLabelText('Saved campaigns'), { target: { value: first.campaign_id } })
+  fireEvent.click(screen.getByRole('button', { name: 'Refresh history' }))
+  await screen.findByText(/1 saved campaigns loaded/)
+  expect(read).toHaveBeenCalledTimes(3)
+  expect(screen.getByText('Completed', { exact: true })).toBeTruthy()
+  expect(screen.queryByRole('option', { name: /campaign-older/ })).toBeNull()
+})
+
 it('preserves loaded history when an older-page read fails and permits an explicit retry', async () => {
   const read = vi.spyOn(api, 'campaigns').mockResolvedValueOnce(firstPage).mockRejectedValueOnce(new Error('Backend unavailable.')).mockResolvedValueOnce(finalPage)
   render(h(CampaignHistory, { selectedId: first.campaign_id, refreshKey: 0, onOpen: vi.fn() }))

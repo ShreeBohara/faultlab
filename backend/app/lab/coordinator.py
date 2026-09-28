@@ -272,29 +272,49 @@ class LabCoordinator:
         if not readiness['ready']:
             raise ServiceNotReady(readiness['simulator']['code']+': '+readiness['simulator']['message'])
 
-    def create(self,request):
+    def create(self,request,*,run_plan=None):
         if request.config_profile_id not in ('offline-v1','live-v1'): raise ValueError('Unknown frozen configuration profile')
         if request.config_profile_id=='offline-v1' and request.mode!='baseline': raise ValueError('Offline profile supports labeled reference smoke only')
         caps=CampaignBudget(model_calls=self.settings.faultlab_model_call_cap,tokens=self.settings.faultlab_token_cap,dollars=float(self.settings.faultlab_dollar_cap))
         from app.lab.configuration import frozen_configuration
-        frozen=frozen_configuration(self.settings,caps,request.config_profile_id)
+        if run_plan is not None and run_plan.campaign_request!=request:
+            raise StoreConflict('Prepared plan differs from the requested campaign')
+        frozen=run_plan.configuration if run_plan is not None else frozen_configuration(self.settings,caps,request.config_profile_id)
         configuration_hash=content_hash(frozen)
-        self.store.put_record('configurations',configuration_hash,frozen,immutable=True)
         from app.integrations.registry import AgentRegistry
-        registration=AgentRegistry(self.store).register_reference(frozen)
-        campaign=Campaign(campaign_id=new_id('campaign'),mode=request.mode,task_text=request.task_text,order_id=request.order_id,config_profile_id=request.config_profile_id,model=frozen['model'],configuration_hash=configuration_hash,caps=caps)
-        if request.mode in ('learn','compare'):
-            accepted=self.store.get_pointer(f'accepted-policy:{configuration_hash}')
-            if accepted:
-                version=self.policies.get(accepted)
-                if version and version.decision=='ACCEPTED': campaign.active_policy_version=accepted
-            if request.mode=='compare' and campaign.active_policy_version=='policy-v0': raise StoreConflict('No accepted policy exists for this frozen configuration')
-        self.save(campaign)
         from app.lab.configuration import source_provenance
-        self.store.put_record('campaign_provenance',campaign.campaign_id,
-                              {**source_provenance(),'aria_publication_enabled':self.settings.faultlab_aria_publish_enabled},immutable=True)
-        self.store.put_record('campaign_registrations',campaign.campaign_id,{'registration_id':registration.registration_id},immutable=True)
-        self.store.compare_and_set_pointer(f'active-policy:{campaign.campaign_id}',None,campaign.active_policy_version)
+        # No partially created campaign may escape if a plan, registration or
+        # immutable pointer cannot be bound to the same selected configuration.
+        with self.store.transaction():
+            self.store.put_record('configurations',configuration_hash,frozen,immutable=True)
+            registry=AgentRegistry(self.store)
+            if run_plan is not None and request.config_profile_id=='offline-v1':
+                # The provider-free built-in option is prepared in a private
+                # value sink; its reviewed registration becomes durable here.
+                expected=registry.register_reference(frozen,internal_smoke=True)
+                if expected!=run_plan.registration:
+                    raise StoreConflict('Prepared offline registration differs from the reviewed control')
+            registration=(registry.verify(run_plan.registration.registration_id,frozen)
+                          if run_plan is not None else registry.register_reference(frozen))
+            campaign=Campaign(campaign_id=new_id('campaign'),mode=request.mode,task_text=request.task_text,order_id=request.order_id,config_profile_id=request.config_profile_id,model=frozen['model'],configuration_hash=configuration_hash,caps=caps)
+            if request.mode in ('learn','compare'):
+                accepted=self.store.get_pointer(f'accepted-policy:{configuration_hash}')
+                if accepted:
+                    version=self.policies.get(accepted)
+                    if version and version.decision=='ACCEPTED': campaign.active_policy_version=accepted
+                if request.mode=='compare' and campaign.active_policy_version=='policy-v0': raise StoreConflict('No accepted policy exists for this frozen configuration')
+            self.save(campaign)
+            self.store.put_record('campaign_registrations',campaign.campaign_id,{'registration_id':registration.registration_id},immutable=True)
+            marker={}
+            if run_plan is not None:
+                from app.lab.run_plans import attach_run_plan
+                marker=attach_run_plan(self.store,campaign,run_plan)
+            self.store.put_record('campaign_provenance',campaign.campaign_id,
+                                  {**source_provenance(),'aria_publication_enabled':self.settings.faultlab_aria_publish_enabled,**marker},immutable=True)
+            self.store.compare_and_set_pointer(f'active-policy:{campaign.campaign_id}',None,campaign.active_policy_version)
+            if run_plan is not None:
+                from app.lab.run_plans import validate_run_plan
+                validate_run_plan(self.store,self.settings,campaign)
         return campaign
 
     def validate_current_caps(self,campaign):
@@ -305,6 +325,9 @@ class LabCoordinator:
     def validate_core_configuration(self,campaign):
         from app.lab.configuration import frozen_configuration
         current_caps=self.validate_current_caps(campaign)
+        from app.lab.run_plans import validate_run_plan
+        if validate_run_plan(self.store,self.settings,campaign) is not None:
+            return self.store.get_record('configurations',campaign.configuration_hash)
         current=frozen_configuration(self.settings,current_caps,campaign.config_profile_id)
         if content_hash(current)!=campaign.configuration_hash:
             raise StoreConflict('Frozen model, source, contract or budget configuration changed; create a new campaign')
@@ -393,8 +416,12 @@ class LabCoordinator:
             if campaign.mode=='learn': await self._learning_cycle(campaign,runner)
             elif campaign.mode=='compare': await self._comparison(campaign,runner)
             else:
-                recipe=FaultSpec(seed=0,primitives=[])
-                trial=await runner.run(campaign,recipe,self.policies.baseline(),arm='B0' if live else 'B1',source_mode='live' if live else 'offline_fixture',ledger=self.ledgers[id] if live else None,stop=lambda:self.get(id).stop_requested)
+                from app.lab.run_plans import validate_run_plan
+                plan=validate_run_plan(self.store,self.settings,campaign)
+                selection=plan['selection'] if plan else None
+                recipe=(FaultSpec.model_validate(selection['fault_spec']) if selection else FaultSpec(seed=0,primitives=[]))
+                fixture_id=selection['fixture_id'] if selection else 'standard-v1'
+                trial=await runner.run(campaign,recipe,self.policies.baseline(),fixture_id=fixture_id,arm='B0' if live else 'B1',source_mode='live' if live else 'offline_fixture',ledger=self.ledgers[id] if live else None,stop=lambda:self.get(id).stop_requested)
                 current=self.get(id); current.latest_episode_id=trial.episode_id; current.usage=trial.usage; self.save(current)
                 if live and trial.lifecycle=='COMPLETED' and self.evidence_gateway:
                     from app.lab.evidence import EvidenceContext,WaitingEvidence

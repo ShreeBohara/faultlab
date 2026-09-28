@@ -12,7 +12,13 @@ class Reproducer:
     async def source(self,campaign,source_trial,recipe,policy,*,fixture_id='standard-v1',stop=lambda:False):
         if not valid_trial(source_trial) or source_trial.outcome!='VIOLATION' or not source_trial.failed_checks: raise ValueError('A valid triggered source violation is required')
         target=sorted(source_trial.failed_checks,key=lambda v:int(v[1:]))[0]
-        counter=Counterexample(counterexample_id=new_id('counterexample'),campaign_id=campaign.campaign_id,agent_registration_id='orders-v1',source_episode_id=source_trial.episode_id,target_invariant=target,scenario_hash=content_hash(recipe),configuration_hash=campaign.configuration_hash,report_ref=source_trial.episode_id,verdict_ref=self.store.get_record('episodes',source_trial.episode_id)['verdict']['verdict_id'])
+        from app.lab.runner import planned_registration_id
+        registration_id=planned_registration_id(self.store,campaign)
+        if registration_id!='orders-v1':
+            episode=self.store.get_record('episodes',source_trial.episode_id) or {}
+            if episode.get('agent_registration_id')!=registration_id or episode.get('configuration_hash')!=campaign.configuration_hash:
+                raise ValueError('Source episode differs from the selected campaign agent')
+        counter=Counterexample(counterexample_id=new_id('counterexample'),campaign_id=campaign.campaign_id,agent_registration_id=registration_id,source_episode_id=source_trial.episode_id,target_invariant=target,scenario_hash=content_hash(recipe),configuration_hash=campaign.configuration_hash,report_ref=source_trial.episode_id,verdict_ref=self.store.get_record('episodes',source_trial.episode_id)['verdict']['verdict_id'])
         self.store.put_record('counterexamples',counter.counterexample_id,counter)
         self.store.put_record('counterexample_recipes',counter.counterexample_id,{'source_recipe':recipe.model_dump(mode='json'),'fixture_id':fixture_id},immutable=True)
         name=f'reproduce:{counter.counterexample_id}'; self.ledger.reserve(name,24)

@@ -436,6 +436,8 @@ def certified_source(store, study_id):
 async def queue_heldout_check(coordinator, campaign_id, certified_study_id, *, partition_dir=None,
                               manifest_hash=None, predicate=None):
     coordinator.settings.require_live()
+    from app.lab.runner import reject_native_reference_study
+    reject_native_reference_study(coordinator.store,coordinator.get(campaign_id))
     study = certified_source(coordinator.store, certified_study_id)
     plan = check_plan(partition_dir, manifest_hash, predicate)
     cases = plan['cases']
@@ -443,6 +445,8 @@ async def queue_heldout_check(coordinator, campaign_id, certified_study_id, *, p
         campaign = coordinator.get(campaign_id)
         if campaign.mode != 'baseline' or campaign.config_profile_id != 'live-v1' or campaign.state != 'IDLE':
             raise StoreConflict('Held-out check requires a fresh idle live baseline campaign')
+        from app.lab.runner import reject_native_reference_study
+        reject_native_reference_study(coordinator.store,campaign)
         coordinator.validate_core_configuration(campaign)
         if coordinator.active_id is not None:
             raise StoreConflict('Another fresh execution is active')

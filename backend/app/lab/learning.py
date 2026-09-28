@@ -82,12 +82,13 @@ async def run_learning_cycle(coordinator,campaign,runner):
             if not fallback.primitives:
                 fallback=FaultSpec.model_validate_json(canonical_json(next(c for c in load_cases('development') if c['fault_spec']['primitives'])['fault_spec']))
             from app.lab.tracing import trace_metadata
+            from app.lab.runner import planned_registration_id
             planned_episode_id=new_id('episode')
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
             configuration=store.get_record('configurations',current.configuration_hash)
-            explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer')
-            mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic')
-            selection_ref,output=await explorer.select({'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract()},fallback=fallback)
+            explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer',agent_registration_id=planned_registration_id(store,current))
+            mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic',agent_registration_id=planned_registration_id(store,current))
+            selection_ref,output=await explorer.select({'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract(store,current)},fallback=fallback)
             if output is None: continue  # A rejected proposal consumes its slot, not an Actor episode.
             recipe=output.fault_spec; fixture='history-v1' if any(p.kind=='F3' for p in recipe.primitives) else 'standard-v1'
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
@@ -128,7 +129,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 name=f'candidate:{id}:{candidate_count}'; ledger.reserve(name,CANDIDATE_CALLS)
                 candidate_count+=1
                 try:
-                    proposal_context={'campaign_id':id,'source_context_id':source_context,'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'candidate_history':list(candidate_history),'challenge_counterexamples':list(feedback),'source_validation_feedback':list(source_feedback),'runtime_contract':runtime_contract(),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
+                    proposal_context={'campaign_id':id,'source_context_id':source_context,'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'candidate_history':list(candidate_history),'challenge_counterexamples':list(feedback),'source_validation_feedback':list(source_feedback),'runtime_contract':runtime_contract(store,current),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
                     proposal_ref,proposal,raws=await mechanic.propose(proposal_context,reservation=name)
                     proposal_record={'campaign_id':id,'proposal_ref':proposal_ref,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,'raw_outputs':raws}
                     def save_proposal(**fields):

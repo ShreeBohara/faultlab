@@ -66,7 +66,8 @@ class PairedEvaluator:
         session=None
         try:
             if self.publisher:
-                metadata={'campaign_id':campaign.campaign_id,'episode_id':batch_id,'origin':'faultlab_evaluation','split':batch.split,'source_mode':'live','experiment_purpose':purpose,'arm':'L','execution_epoch':campaign.execution_epoch,'trial_index':0,'study_id':campaign.campaign_id,'evidence_context_id':campaign.campaign_id,'agent_registration_id':'orders-v1','model_id':campaign.model,'policy_hash':candidate.policy_hash,'contract_hash':frozen['contract_hash'],'scorer_hash':frozen['scorer_hash']}
+                from app.lab.runner import planned_registration_id
+                metadata={'campaign_id':campaign.campaign_id,'episode_id':batch_id,'origin':'faultlab_evaluation','split':batch.split,'source_mode':'live','experiment_purpose':purpose,'arm':'L','execution_epoch':campaign.execution_epoch,'trial_index':0,'study_id':campaign.campaign_id,'evidence_context_id':campaign.campaign_id,'agent_registration_id':planned_registration_id(self.store,campaign),'model_id':campaign.model,'policy_hash':candidate.policy_hash,'contract_hash':frozen['contract_hash'],'scorer_hash':frozen['scorer_hash']}
                 session=await self.publisher.begin(batch_id,metadata,expected_episode_ids=list(planned.values()),frozen=False)
             for case_index,case in enumerate(cases):
                 recipe=FaultSpec.model_validate_json(canonical_json(case['fault_spec']))

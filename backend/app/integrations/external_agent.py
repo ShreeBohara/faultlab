@@ -17,6 +17,8 @@ from app.contracts.models import TaskReport, ToolAction, ReportAction, canonical
 from app.contracts.tokens import validate_model_input
 from app.agents.actor import ActorReportError
 from app.lab.budgets import BudgetExhausted, StopRequested
+from app.lab.provider_failures import record_provider_failure
+from app.providers.runtime import RuntimeProviderError
 
 TOOLS = ("get_order", "update_order", "get_operation_status", "send_confirmation")
 TASK_CONTRACT = {
@@ -35,6 +37,9 @@ class _Bridge:
         self.closed = threading.Event()
         self.futures = set()
         self.lock = threading.Lock()
+        self.fatal_provider_error = None
+        self.cost_known = True
+        self.measured_cost = 0.0
 
     def call(self, coroutine):
         if self.closed.is_set():
@@ -58,7 +63,34 @@ class _Bridge:
             for future in self.futures:
                 future.cancel()
 
+    def account(self, generation):
+        """One reconciliation for each charged call's returned usage metadata."""
+        meter = self.context.broker.meter
+        if generation.input_tokens is not None:
+            meter.usage.input_tokens += generation.input_tokens
+        if generation.output_tokens is not None:
+            meter.usage.output_tokens += generation.output_tokens
+        if generation.cost_usd is None:
+            self.cost_known = False
+        else:
+            self.measured_cost += generation.cost_usd
+        meter.usage.cost_dollars = self.measured_cost if self.cost_known else None
+        if meter.campaign:
+            meter.campaign.reconcile(generation)
+
+    def fail_provider(self, error):
+        # Native parser recovery remains native behavior. A transport failure or
+        # wrong provider identity is a lab failure, never a new model attempt.
+        self.fatal_provider_error = error
+        if error.generation is None:
+            self.cost_known = False
+            self.context.broker.meter.usage.cost_dollars = None
+        record_provider_failure(self.context.broker.journal.store, error,
+                                role='actor', metadata=self.context.metadata)
+
     async def generate(self, messages, tools):
+        if self.fatal_provider_error is not None:
+            raise self.fatal_provider_error
         context = self.context
         meter = context.broker.meter
         meter.check()
@@ -81,19 +113,28 @@ class _Bridge:
         })})
         validate_model_input(public, context.metadata["model_id"])
         meter.model_call()
-        generation = await context.provider.complete(public, role="actor", max_output_tokens=2000,
-            timeout_seconds=min(20, max(.01, meter.caps.wall_seconds - meter.usage.wall_seconds)))
-        if generation.input_tokens is not None:
-            meter.usage.input_tokens += generation.input_tokens
-        if generation.output_tokens is not None:
-            meter.usage.output_tokens += generation.output_tokens
-        if generation.cost_usd is not None:
-            meter.usage.cost_dollars = (meter.usage.cost_dollars or 0) + generation.cost_usd
-        if meter.campaign:
-            meter.campaign.reconcile(generation)
+        # Admission charges the request before it returns. Cancellation or a
+        # deadline may leave that cost unknown; account() restores a total only
+        # when all returned generations provide a known charge.
+        meter.usage.cost_dollars = None
+        try:
+            generation = await context.provider.complete(public, role="actor", max_output_tokens=2000,
+                timeout_seconds=min(20, max(.01, meter.caps.wall_seconds - meter.usage.wall_seconds)))
+        except RuntimeProviderError as error:
+            if error.generation is not None:
+                self.account(error.generation)
+            self.fail_provider(error)
+            raise
+        self.account(generation)
+        if generation.model_id != context.metadata["model_id"]:
+            error = RuntimeProviderError('Provider returned a different frozen model', generation=generation)
+            self.fail_provider(error)
+            raise error
         return generation
 
     async def dispatch(self, name, arguments):
+        if self.fatal_provider_error is not None:
+            raise self.fatal_provider_error
         context = self.context
         meter = context.broker.meter
         meter.check()
@@ -212,14 +253,18 @@ class SmolagentsActor:
             try:
                 result = await asyncio.to_thread(agent.run, task, reset=True, max_steps=8)
             except Exception as error:
+                if bridge.fatal_provider_error is not None:
+                    raise bridge.fatal_provider_error from error
                 original = error
                 seen = set()
                 while original is not None and id(original) not in seen:
                     seen.add(id(original))
-                    if isinstance(original, (ActorReportError, BudgetExhausted, StopRequested)):
+                    if isinstance(original, (ActorReportError, BudgetExhausted, StopRequested, RuntimeProviderError)):
                         raise original
                     original = original.__cause__
                 raise
+            if bridge.fatal_provider_error is not None:
+                raise bridge.fatal_provider_error
             try:
                 return TaskReport.model_validate_json(canonical_json(result))
             except ValueError:

@@ -35,7 +35,7 @@ test('creation is separate from Start and duplicate clicks cannot enqueue extra 
   await expect(page.getByRole('button', { name: 'Create campaign' })).toBeEnabled()
   await page.getByRole('button', { name: 'Create campaign' }).click()
   await expect(page.getByRole('button', { name: /Start campaign/ })).toBeEnabled()
-  expect(writes).toEqual(['/api/campaigns'])
+  expect(writes).toEqual(['/api/planned-campaigns'])
   await page.getByRole('button', { name: /Start campaign/ }).dblclick({ force: true })
   await expect(page.getByRole('button', { name: /Start campaign/ })).toBeDisabled()
   expect(writes.filter(p => p.endsWith('/start'))).toHaveLength(1)
@@ -82,22 +82,24 @@ test('history is read-only and Stop follows only the selected active campaign', 
 
 test('readiness distinguishes backend health from simulator access and rechecks without writes', async ({ page }) => {
   const writes: string[] = []; let checks = 0
+  const readyCampaign = { ...campaign, state: 'IDLE' as const }
+  await page.addInitScript(id => localStorage.setItem('faultlab:campaign', id), campaign.campaign_id)
   await page.route('**/api/**', async route => {
     if (route.request().method() !== 'GET') writes.push(route.request().url())
     if (route.request().url().endsWith('/readiness')) {
       checks++
       await route.fulfill({ json: checks === 1 ? { ...readiness, ready: false, simulator: { ready: false, code: 'SIMULATOR_UNAVAILABLE', message: 'Start the local simulator before executing a campaign.' } } : readiness }); return
     }
-    await route.fulfill({ json: fixtureResponse(route.request().url()) })
+    await route.fulfill({ json: fixtureResponse(route.request().url(), readyCampaign) })
   })
   await page.goto('/')
   await expect(page.getByText('Backend connected')).toBeVisible()
   await expect(page.getByText('Simulator unavailable', { exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Run baseline', exact: true })).toBeDisabled()
+  await expect(page.getByRole('button', { name: /Start campaign/ })).toBeDisabled()
   await page.getByRole('button', { name: 'Check run readiness' }).click()
   await expect(page.getByText('Simulator ready', { exact: true })).toBeVisible()
   await expect(page.getByText('Live configuration incomplete')).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Run baseline', exact: true })).toBeEnabled()
+  await expect(page.getByRole('button', { name: /Start campaign/ })).toBeEnabled()
   expect(checks).toBe(2); expect(writes).toEqual([])
   await page.screenshot({ path: test.info().outputPath('offline-readiness.png'), fullPage: true })
 })
@@ -137,7 +139,8 @@ test('actual local offline smoke creates fresh world and survives reload', async
   await page.goto('/')
   await expect(page.getByText('Backend connected')).toBeVisible()
   await expect(page.getByLabel('Execution profile')).toHaveValue('offline-v1')
-  await page.getByRole('button', { name: 'Run baseline', exact: true }).click()
+  await page.getByRole('button', { name: 'Create campaign', exact: true }).click()
+  await page.getByRole('button', { name: /Start campaign/ }).click()
   await expect(page.getByText(/Start accepted/)).toBeVisible()
   await expect(page.locator('.matrix-panel tbody tr')).toHaveCount(1, { timeout: 20000 })
   await expect(page.locator('.matrix-panel tbody')).toContainText('Offline reference smoke')
@@ -212,7 +215,7 @@ test('archive browsing shows its location, verified source evidence and disabled
   await expect(page.getByText('Fresh execution disabled', { exact: true })).toBeVisible()
   await expect(page.getByText('7 verified source episodes', { exact: true })).toBeVisible()
   await expect(page.getByText(/Campaign telemetry:/)).toContainText('Locally recorded')
-  for (const name of ['Create campaign', /Start campaign/, 'Run baseline', 'Compare', 'Stop', 'Reset future world', 'Retry evidence sync']) {
+  for (const name of ['Create campaign', /Start campaign/, 'Stop', 'Reset future world', 'Retry evidence sync']) {
     await expect(page.getByRole('button', { name, exact: typeof name === 'string' })).toBeDisabled()
   }
   await page.getByLabel('Saved regression').selectOption(regressionCase.regression_id)

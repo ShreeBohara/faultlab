@@ -18,6 +18,19 @@ beforeEach(() => {
 })
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.unstubAllGlobals(); vi.restoreAllMocks() })
 
+it('keeps the history status consistent with completed campaign polls without refreshing history', async () => {
+  localStorage.setItem('faultlab:campaign', campaign.campaign_id)
+  vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, json: async () => fixtureResponse(String(url)) })))
+  const running = { ...campaign, state: 'RUNNING' as const, state_seq: 2 }
+  const history = vi.spyOn(api, 'campaigns').mockResolvedValue({ campaigns: [running], next_before: null, has_more: false })
+  vi.spyOn(api, 'campaign').mockResolvedValueOnce(running).mockResolvedValue(campaign)
+  render(h(EvidenceScreen))
+  await screen.findByText(/1 saved campaigns loaded/)
+  await waitFor(() => expect(screen.getByRole('option', { name: /campaign-fixture/ }).textContent).toContain('Running'))
+  await waitFor(() => expect(screen.getByRole('option', { name: /campaign-fixture/ }).textContent).toContain('Completed'), { timeout: 2000 })
+  expect(history).toHaveBeenCalledOnce()
+})
+
 it('shows one recoverable missing-campaign notice without polling missing child records or selecting history automatically', async () => {
   const missing = 'campaign-from-another-store'
   localStorage.setItem('faultlab:campaign', missing)
@@ -69,7 +82,7 @@ it('allows archive navigation and bundle inspection while disabling every saved-
   expect(screen.getByText(archiveConfig.data_store.path)).toBeTruthy()
   expect(screen.getByText('Fresh execution disabled')).toBeTruthy()
   expect(screen.queryByText('Simulator unavailable')).toBeNull()
-  for (const name of ['Create campaign', /Start campaign/, 'Run baseline', 'Compare', 'Stop', 'Reset future world', 'Retry evidence sync']) {
+  for (const name of ['Create campaign', /Start campaign/, 'Stop', 'Reset future world', 'Retry evidence sync']) {
     const button = screen.getByRole('button', { name, exact: typeof name === 'string' }) as HTMLButtonElement
     expect(button.disabled).toBe(true)
     fireEvent.click(button)

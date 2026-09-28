@@ -19,7 +19,9 @@ def freeze_campaign(store, settings, campaign_id):
     config=store.get_record('configurations',campaign.configuration_hash)
     if not config or content_hash(config)!=campaign.configuration_hash:
         raise ValueError('Campaign configuration failed integrity validation')
-    if frozen_configuration(settings,campaign.caps,campaign.config_profile_id)!=config:
+    from app.lab.run_plans import validate_run_plan
+    plan=validate_run_plan(store,settings,campaign)
+    if plan is None and frozen_configuration(settings,campaign.caps,campaign.config_profile_id)!=config:
         raise ValueError('Current source or model settings differ from the recorded campaign')
     policies=PolicyRepository(store); baseline=policies.baseline()
     policy=policies.get(campaign.active_policy_version)
