@@ -33,6 +33,8 @@ def summarize(trials):
 async def queue_baseline_study(coordinator,campaign_id):
     """The API's explicit live request is required; this function only queues."""
     from app.referee.manifests import load_manifest
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store,campaign_id)
     coordinator.settings.require_live()
     manifest=load_manifest('development')
     if len(manifest['cases'])!=6 or manifest['trials_per_case']!=3:

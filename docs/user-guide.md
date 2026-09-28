@@ -42,6 +42,87 @@ open a previous run. The list is restricted to that exact bundle and manifest. A
 keeps its recorded INCOMPLETE status and stop reason. **Run fresh regression** remains a separate
 explicit action that creates new worlds and may spend provider credits.
 
+## Import, review and rerun a regression
+
+The **Imported regressions** panel works without opening a campaign. Choose a regression ZIP downloaded
+from **Portable regression** (up to 24 MiB), then select **Save imported bundle**. Saving checks the file
+and stores it as read-only data: no model calls, no fresh trials, no campaign and no policy change.
+Saving the same ZIP again returns the same saved import without duplicating anything, and the panel says
+so. A refusal appears directly under the file chooser; nothing is saved and you choose the file again.
+
+The ZIP is checked before anything is saved and its contents are never run. It must contain exactly the
+reviewed bundle files as regular files (no folders, links, encryption or unusual compression), stay within
+the size limits, match every digest in its manifest, and carry a runner file byte-identical to the one
+installed here. The fields the importer copies or later uses — the recorded task and order, and the source
+agent registration — must also be well formed. Every refusal starts with *Import refused; nothing was
+saved.* and names the reason without echoing file contents:
+
+- **Not a ZIP archive** — for example a campaign recording JSON. That file is an evidence archive, not a
+  runnable bundle.
+- **Structure or size** — unexpected names, links, folders, encryption or oversized entries.
+- **Unsupported version** — an older FaultLab schema, runner or execution profile. Keep that file and
+  inspect it with the runtime that produced it.
+- **Contents do not match** — the bundle was edited or is incomplete, or a recorded field such as the
+  task, order or source registration is malformed.
+- **Private content** — private evaluator fields or a configured credential value.
+
+**Review** shows the original policy and its hash, fault recipe, source model and configuration, trial
+outcomes, fault exposure and bundled reports. **How source trials were produced** says whether the
+source trials were an *offline scripted fixture (no model calls)*, a *live model run*, recorded playback
+or a mix; the saved-imports list shows the same. A scripted fixture's violations are scripted answers,
+not failures of the named source model. All of it is labeled *imported historical observations;
+not verified locally*.
+
+**The rerun uses the bundle's recorded instructions.** Review shows the **exact task sent to the
+agent**, its **authorized order**, and where they came from: recorded in the bundle by its source
+campaign, or — only for a bundle that records no task — the FaultLab default task. Every fresh trial
+sends exactly that text, so read it before running; a bundle from someone else can carry any
+instruction up to 2,000 characters. The same task is repeated next to the run button. A source decision of ACCEPTED stays a historical label: it never becomes an
+accepted or active policy here. Saved imports and their runs stay readable after restart and in archive
+mode; archive mode disables upload, execution and cancellation.
+
+**Fresh rerun (separate, may spend credits).** The **Run imported regression in fresh worlds** button
+works only when the backend was started with live execution configured and the simulator is ready.
+While it is disabled, the panel lists each actual reason and what to do: live execution off (configure
+the live settings, then restart with `./scripts/start-local.sh --live --data-dir …`), named missing
+settings, simulator not ready, read-only archive, no compatible target selected, another campaign
+active, or an unresolved earlier request. To run: in **Run desk**, choose **Live reviewed agent**,
+register the agent you want to test, return to the import and select **Refresh import review**, choose
+that **Fresh target registration** (the built-in offline smoke agent is not offered: it cannot run
+imported regressions), and read the task and limits. Selecting the button opens a confirmation that
+repeats the target, the task and the spending bound; only **Confirm billable fresh run** sends it.
+
+**Spending bound.** One run reserves 24 actor turns (3 trials × 8 turns). The reference agent may
+resend a request once when its transport fails before any answer arrives; such retries are charged, so
+one run can make at most 48 billable model requests, and FaultLab enforces that ceiling. The native
+smolagents adapter makes no retries (at most 24). The configured campaign call and dollar caps also
+still apply. The backend rechecks the store, the bundle manifest and the target registration against
+current settings, then runs the exact bundled policy and task for three trials in new synthetic worlds.
+It stops early (INCOMPLETE) if a trial is invalid, interrupted or its scheduled fault never fires.
+
+Each run gets its own request identity. Retrying or checking that same request after a timeout returns
+the same run; it cannot start a second one. Selecting the button again later is an intentional new run:
+it gets a new identity and new worlds. **Cancel unadmitted request** records a durable cancellation and confirms that nothing ran; if
+the request had already started, the dashboard says so and opens that run instead of stopping it. To stop a run in
+progress, open its accounting campaign (**Open active campaign**, or a fresh trial link) and use **Stop**;
+recorded trials and charges are kept, the run is marked INCOMPLETE and nothing is replayed.
+
+Results show the **actual target** (agent, model, registration and configuration), fault exposure and
+effects for every fresh trial, and one plain verdict for the artifact kind: for an incident fixture,
+*Incident reproduced as expected* means the regression still catches the failure; for a policy bundle,
+*did not prevent the violation* is the bad outcome. **Charged to its accounting ledger** is the complete
+charge, including transport retries and calls made during a trial that was cut off by a crash. If
+FaultLab itself fails mid-run (for example the simulator becomes unreachable), the result shows a
+classified infrastructure error, separate from any agent mistake. A small accounting campaign holds
+each run's budget and evidence; it is not the tested agent, is hidden from Campaign history, and
+refuses every other kind of work — ordinary Start, studies, comparisons, audits, portability, freezes
+and the Portable regression rerun. Its Run desk receipt shows this one execution's budget. The
+bundled policy runs under a separate local ID (`imported-…`) with the exact same content and hash; the
+**Recovery policy** panel marks it *imported historical decision*. It cannot be used for comparisons,
+final audits, portability or freezes. Use **Download fresh execution recording** to keep the run's
+public evidence; it names the actual target separately from the accounting campaign. Original imported
+evidence and fresh results always stay separate.
+
 The Run desk's **Run readiness** check separates backend connectivity, simulator readiness and
 live configuration. It makes no model calls and does not verify provider account access. Offline
 reference runs need the simulator but no provider credentials. Live configuration errors name the
@@ -147,6 +228,8 @@ worlds will be written. The simulator is needed only when executing a fresh task
 **Backend.** The launchers use the same application defaults: DeepSeek V3.1 for the Actor, DeepSeek V4 Pro 0813 for Explorer and Mechanic, and v4 indexed evidence for the reference Actor. Explicit process settings override `.env`; nonempty `.env` model values override defaults. Empty model placeholders from older `.env` templates use the tested defaults; an explicitly blank process model override still takes precedence. Existing `.env` files are never edited. Aria is off by default. Old frozen records keep their original configuration. The Phase 30 reporting hint is not included.
 
 **Frontend.** Open `http://127.0.0.1:5173`. Look for **Backend connected** and **Current setup for new campaigns**. This configuration is separate from the selected saved campaign’s model. Loading the page makes no model calls.
+
+**Local-only access.** The backend answers only requests addressed to `localhost`, `127.0.0.1` or `[::1]`, and accepts changes (uploads, runs, registrations) only from a page on one of those hosts. Other host names get HTTP 403, which stops a web page on another site from reading this store or starting a paid run through DNS tricks. If you deliberately use another local name, list it in the `FAULTLAB_ALLOWED_HOSTS` process variable (comma-separated) before starting the backend.
 
 **Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start the paired launcher with `--live` and the same explicit `--data-dir`. The live launcher uses a stable backend and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. For this project the confirmed destination is `shreetbohara-quinstreet/Faultlab`.
 
@@ -300,7 +383,7 @@ phase2 ./scripts/run-regression.sh execute \
   --profile sandbox-v1 --execute-live
 ```
 
-The backend validates and imports the bundle as data, creates a separate baseline campaign and ledger, and runs the exact bundled empty policy in three new worlds. It preserves B's original record. It can use at most 24 Actor calls, with a $0.5016 conservative dispatched bound at the frozen V3.1 rates; admission also preserves capacity for protected studies. This checks whether the incident happens again. It cannot promote a policy or prove a learned improvement.
+The backend validates and imports the bundle as data, creates a separate baseline campaign and ledger, and runs the exact bundled empty policy in three new worlds. It preserves B's original record. It reserves 24 Actor turns, a $0.5016 conservative dispatched bound at the frozen V3.1 rates; a charged transport retry (at most one per turn) can add up to 24 more requests, so the worst case is 48 requests ($1.0032). Admission also preserves capacity for protected studies. This checks whether the incident happens again. It cannot promote a policy or prove a learned improvement.
 
 The command returns a new execution ID. Read `http://127.0.0.1:8000/api/regression-executions/EXECUTION_ID` for its status and episode IDs, and keep every result. A completed execution does not itself prove remote trace verification. The targeted evidence-sync command below can verify its completed episodes in their new campaign. Add this campaign's charged bound to the Phase 2 total; do not count playback records as new model trials.
 

@@ -14,6 +14,8 @@ from app.lab.configuration import file_hash, frozen_configuration
 def freeze_campaign(store, settings, campaign_id):
     campaign=store.get_model('campaigns',campaign_id,Campaign)
     if campaign is None: raise ValueError('Unknown campaign')
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(store,campaign_id)
     if campaign.state not in ('COMPLETED','NO_CHANGE','STOPPED'):
         raise ValueError('Stop or complete the campaign before freezing')
     config=store.get_record('configurations',campaign.configuration_hash)
@@ -27,6 +29,8 @@ def freeze_campaign(store, settings, campaign_id):
     policy=policies.get(campaign.active_policy_version)
     if policy is None or policy.decision not in ('ACCEPTED','BASELINE'):
         raise ValueError('An immutable baseline or accepted policy is required')
+    from app.lab.policies import imported_policy,IMPORTED_POLICY_REFUSAL
+    if imported_policy(store,policy): raise ValueError(IMPORTED_POLICY_REFUSAL)
     identity={'baseline_policy_hash':baseline.policy_hash,
         'model_hash':content_hash({'models':config.get('models',{'actor':config['model']}),'settings':config.get('model_settings_by_role',{'actor':config['model_settings']})}),
         'prompt_hash':config['actor_prompt_hash'],'budget_hash':content_hash({'episode':config['episode_budget'],'campaign':config['campaign_budget']}),

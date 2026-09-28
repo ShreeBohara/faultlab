@@ -140,6 +140,9 @@ class SearchBenchmark:
 async def queue_search(coordinator,campaign_id):
     from app.lab.budgets import CampaignLedger
     from app.lab.storage import StoreConflict
+    from app.lab.policies import require_ordinary_campaign
+    # Before the ledger below: constructing it persists a budget record.
+    require_ordinary_campaign(coordinator.store,campaign_id)
     campaign=coordinator.get(campaign_id); coordinator.settings.require_live()
     coordinator.validate_core_configuration(campaign)
     if (any(r['campaign_id']==campaign_id for r in coordinator.store.list_records('search_comparisons'))

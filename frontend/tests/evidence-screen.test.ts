@@ -85,7 +85,7 @@ describe('evidence screen behavior', () => {
   it('opens the matching stored episode from a matrix cell', async () => {
     localStorage.setItem('faultlab:campaign', campaign.campaign_id)
     render(h(EvidenceScreen)); await screen.findByText('episode started')
-    const button = screen.getByRole('button', { name: `${episode.episode_id} ↗` })
+    const button = await screen.findByRole('button', { name: `${episode.episode_id} ↗` })
     fireEvent.click(button)
     expect(button.getAttribute('aria-pressed')).toBe('true')
     expect(screen.getByText(episode.world_id)).toBeTruthy()

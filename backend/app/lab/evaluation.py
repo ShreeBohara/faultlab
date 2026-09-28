@@ -132,11 +132,15 @@ class PairedEvaluator:
 
 
 async def queue_evaluation(coordinator,request):
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store,request.campaign_id)
     campaign=coordinator.get(request.campaign_id)
     if coordinator.active_id: raise StoreConflict('Another fresh execution is active')
     if len(request.policy_versions) not in (1,2): raise ValueError('One or two frozen policy versions required')
     policies=[coordinator.policies.get(v) for v in request.policy_versions]
     if any(p is None or p.decision not in ('ACCEPTED','BASELINE') for p in policies): raise ValueError('Only immutable accepted policies may be compared')
+    from app.lab.policies import imported_policy,IMPORTED_POLICY_REFUSAL
+    if any(imported_policy(coordinator.store,p) for p in policies): raise ValueError(IMPORTED_POLICY_REFUSAL)
     coordinator.settings.require_live()
     coordinator.validate_core_configuration(campaign)
     if request.purpose=='final_audit':

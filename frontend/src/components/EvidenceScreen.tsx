@@ -23,6 +23,8 @@ import { ResourceNote } from './common'
 import { ThemeToggle } from './ThemeToggle'
 import { PolicyStatusPanel } from './PolicyStatusPanel'
 import { CampaignHistory } from './CampaignHistory'
+import { BundleImports } from './BundleImports'
+import { importApi } from '../bundleImports'
 const storedCampaign = () => { try { return localStorage.getItem('faultlab:campaign') || '' } catch { return '' } }
 export function EvidenceScreen() {
   const [campaignId, setCampaignId] = useState(storedCampaign)
@@ -42,12 +44,16 @@ export function EvidenceScreen() {
   // A saved ID may belong to another local store. Resolve it once before asking
   // every panel for dependent records; a 404 must not become a page of retries.
   const evidenceCampaignId = campaign?.campaign_id ?? ''
-  const matrix = useResource(evidenceCampaignId ? `matrix:${evidenceCampaignId}` : null, () => api.matrix(evidenceCampaignId))
+  const importOwner = useResource(evidenceCampaignId ? `import-owner:${config.data?.data_store?.identity ?? 'current'}:${evidenceCampaignId}` : null, () => importApi.owner(evidenceCampaignId), null)
+  const importedOwner = importOwner.data?.imported_owner ? importOwner.data : null
+  const showOrdinary = !campaign || importOwner.data?.imported_owner === false
+  const ordinaryId = showOrdinary ? evidenceCampaignId : ''
+  const matrix = useResource(ordinaryId ? `matrix:${ordinaryId}` : null, () => api.matrix(ordinaryId))
   const policies = useResource('policies', api.policies)
-  const regressions = useResource(evidenceCampaignId ? `regressions:${evidenceCampaignId}` : null, () => api.regressions(evidenceCampaignId))
-  const experiments = useResource(evidenceCampaignId ? `experiments:${evidenceCampaignId}` : null, () => getExperiments(evidenceCampaignId))
+  const regressions = useResource(ordinaryId ? `regressions:${ordinaryId}` : null, () => api.regressions(ordinaryId))
+  const experiments = useResource(ordinaryId ? `experiments:${ordinaryId}` : null, () => getExperiments(ordinaryId))
   const registrations = useResource('registrations', api.registrations)
-  const aria = useResource(evidenceCampaignId ? `aria:${evidenceCampaignId}` : null, () => api.aria(evidenceCampaignId))
+  const aria = useResource(ordinaryId ? `aria:${ordinaryId}` : null, () => api.aria(ordinaryId))
   const episodeId = evidenceCampaignId ? selectedEpisode ?? campaign?.latest_episode_id ?? null : null
   const episode = useResource(episodeId ? `episode:${episodeId}` : null, () => api.episode(episodeId!))
   const events = useEvents(episodeId)
@@ -56,6 +62,7 @@ export function EvidenceScreen() {
   useEffect(() => { if (!campaignId && config.data?.active_campaign_id) selectCampaign(config.data.active_campaign_id) }, [campaignId, config.data?.active_campaign_id])
   useEffect(() => { if (missingCampaign) { setSelectedEpisode(null); setOptimistic(undefined); setReplay(false) } }, [missingCampaign])
   function selectEpisode(id: string) { setSelectedEpisode(id); document.getElementById('evidence-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+  function selectImportedEpisode(owner: string, id: string) { selectCampaign(owner); setSelectedEpisode(id); setReplay(false); document.getElementById('evidence-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
   return <main className="workspace"><a className="skip-link" href="#evidence-workspace">Skip to evidence</a><header className="masthead"><a className="brand" href="#"><span className="monogram" aria-hidden="true">F<span>∕</span>L</span><span>FaultLab<small>BY GATEKEEPER</small></span></a><div className="header-right"><span className="environment">LOCAL EXPERIMENT LAB</span><span className={`connection-state ${health.error ? 'disconnected' : health.data ? 'connected' : ''}`} role="status"><span aria-hidden="true" />{health.error ? 'Backend unavailable' : health.data ? 'Backend connected' : 'Checking connection…'}</span><div className="header-actions"><button className="text-button" onClick={() => setHealthAttempt(v => v + 1)} disabled={health.loading}>Check again</button><ThemeToggle /></div></div></header>
     <section className="intro"><div><p className="eyebrow">Controlled experiments for AI agents</p><h1>Find the fault.<br /><em>Test the repair.</em></h1><p className="description">Test an agent against service failures. Inspect every attempt and recovery rule.</p></div><div className="lab-index"><span className="index-label">THE LEARNING LOOP</span><ol><li>Discover <span>→</span> Reproduce</li><li>Diagnose <span>→</span> Repair</li><li>Challenge <span>→</span> Evaluate</li></ol><p>Failed challenges return to repair.</p></div></section>
     {health.error && <div role="alert" className="error connection-error">{health.error} Start the local backend with <code>./scripts/start-backend.sh</code>, then check again.</div>}<ResourceNote resource={config} />
@@ -63,11 +70,14 @@ export function EvidenceScreen() {
     <CampaignHistory selectedId={campaignId} currentCampaign={campaign} refreshKey={historyRevision} onOpen={selectCampaign} />
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
     {missingCampaign ? <section className="notice" role="alert"><h2>Saved campaign unavailable</h2><p><code>{campaignId}</code> is not in the current store. Choose a campaign from history or enter another saved ID. No execution was started.</p><button onClick={campaignResource.refresh}>Retry saved campaign</button></section> : <ResourceNote resource={campaignResource} />}{replay && <ReplayView campaign={campaign} />}
-    <PolicyStatusPanel key={`policy-status:${evidenceCampaignId}`} campaignId={evidenceCampaignId} />
+    <ResourceNote resource={importOwner} />
+    {importedOwner && <section className="notice" aria-label="Imported regression accounting context"><h2>Budget and evidence owner for an imported regression</h2><p>This campaign holds accounting records for import <code>{importedOwner.import_id}</code>, execution <code>{importedOwner.execution_id}</code>. It is not an ordinary learning campaign.</p><p>Actual target: {importedOwner.target.agent} · {importedOwner.target.model} · <code>{importedOwner.target.agent_registration_id}</code>. Inspect the selected fresh report in the evidence timeline below.</p></section>}
+    <BundleImports key={config.data?.data_store?.identity ?? 'unavailable'} config={config.data} readiness={readiness} replay={replay} onEpisode={selectImportedEpisode} />
+    {showOrdinary && <><PolicyStatusPanel key={`policy-status:${evidenceCampaignId}`} campaignId={evidenceCampaignId} />
     <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
-    <PromotionComparison campaignId={evidenceCampaignId} matrix={matrix.data} policies={policies.data} />
-    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} onOpenCampaign={id => { selectCampaign(id); setReplay(false) }} readiness={readiness} onCheckReadiness={() => setReadinessAttempt(attempt => attempt + 1)} />{!missingCampaign && <><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></>}</div>
-    {!missingCampaign && <>
+    <PromotionComparison campaignId={evidenceCampaignId} matrix={matrix.data} policies={policies.data} /></>}
+    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} importOwner={campaign ? importOwner : undefined} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} onOpenCampaign={id => { selectCampaign(id); setReplay(false) }} readiness={readiness} onCheckReadiness={() => setReadinessAttempt(attempt => attempt + 1)} />{!missingCampaign && <><Timeline episode={episode} events={events} />{showOrdinary && <PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} />}</>}</div>
+    {!missingCampaign && showOrdinary && <>
     <OutcomeMatrix matrix={matrix} selectedEpisode={episodeId} onEpisode={selectEpisode} />
     <SearchAttemptsPanel key={`search:${evidenceCampaignId}`} campaignId={evidenceCampaignId} onEpisode={selectEpisode} />
     <CompletionStudyPanel key={`completion:${evidenceCampaignId}`} campaignId={evidenceCampaignId} activePolicy={campaign?.active_policy_version} onEpisode={selectEpisode} />

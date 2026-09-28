@@ -79,6 +79,17 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
             and {row['trial']['episode_id'] for row in e['trial_rows']}<=selected],
         'completeness_notes':['Only public development evidence is included; protected evaluation records and private world state are excluded.',
             'Legacy raw outputs without campaign, policy or intervention ownership cannot be attributed and are excluded.']}
+    imported=store.get_record('import_execution_owners',campaign_id)
+    if imported:
+        target=imported['target']
+        result.update(imported_execution={key:imported[key] for key in
+            ('import_id','request_id','execution_id','regression_id','target','role','policy_activation')},
+            campaign_role='regression_budget_owner',
+            target_configuration=store.get_record('configurations',target['configuration_hash']),
+            target_agent_registration=store.get_record('agent_registrations',target['agent_registration_id']),
+            policy_import_provenance={p['version']:store.get_record('policy_imports',p['version'])
+                for p in policies if store.get_record('policy_imports',p['version'])})
+        result['completeness_notes'].append('The campaign is an accounting owner; imported_execution identifies the actual fresh target. Imported policy decisions and source evidence remain historical, without local acceptance or source verification.')
     # Convert nested validated models first, then reject secret/private keys and
     # literal configured credentials. Never redact an original report silently.
     return public_json(json.loads(canonical_json(result)),secrets=secrets,max_bytes=64*1024*1024)

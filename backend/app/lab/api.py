@@ -10,6 +10,7 @@ from app.lab.storage import StoreConflict,ReadOnlyStore
 from app.lab.budgets import BudgetExhausted
 from app.lab.operator_actions import FreezePortabilityRequest,RegistrationRequest
 from app.lab.run_plans import RunPlanRequest
+from app.lab.bundle_imports import ImportedExecutionRequest
 
 class EmptyRequest(StrictModel): pass
 class RetryRequest(StrictModel): episode_ids:list[Id]|None=Field(default=None,max_length=200)
@@ -105,7 +106,7 @@ def create_router(get_coordinator, *, get_settings=None):
             async def wrapped(*args,**kwargs):
                 try:
                     read_only=(get_settings().faultlab_read_only
-                               if fn.__name__ == 'create_planned' and get_settings is not None
+                               if fn.__name__ in ('create_planned','upload_bundle','execute_bundle_import','cancel_bundle_import_request') and get_settings is not None
                                else getattr(c(), 'read_only', False))
                     if fn.__name__ != 'readiness' and read_only:
                         raise ReadOnlyStore()
@@ -192,7 +193,7 @@ def create_router(get_coordinator, *, get_settings=None):
     @guarded
     def history(before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
         coordinator=c()
-        page=coordinator.store.campaign_page(before=before,limit=limit)
+        page=coordinator.store.campaign_page(before=before,limit=limit,exclude_import_owners=True)
         return {'campaigns':[coordinator.get(id) for id in page['campaign_ids']],
                 'next_before':page['next_before'],'has_more':page['has_more']}
     @router.post('/campaigns',status_code=201)
@@ -483,6 +484,70 @@ def create_router(get_coordinator, *, get_settings=None):
         from app.lab.operator_actions import read_import_request,import_and_execute
         body=await read_import_request(request)
         return await import_and_execute(c(),body)
+    def import_store_preflight(expected):
+        # Refuse a stale destination before creating a lazy writable coordinator.
+        if get_settings is not None:
+            from app.contracts.models import content_hash
+            settings=get_settings()
+            path=str((settings.artifact_path/'lab.sqlite3').expanduser().resolve())
+            if expected != content_hash({'local_store_path':path}):
+                raise StoreConflict('Selected import store differs from this backend')
+    @router.post('/bundle-imports',status_code=201)
+    @guarded
+    async def upload_bundle(request:Request):
+        import asyncio
+        from app.lab.bundle_imports import read_zip_request,save_import,_inspect_upload
+        expected=request.headers.get('x-faultlab-store-identity')
+        import_store_preflight(expected)
+        data=await read_zip_request(request)
+        settings=get_settings() if get_settings is not None else c().settings
+        prepared=await asyncio.to_thread(_inspect_upload,data,
+            (settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token))
+        detail,created=await save_import(c(),expected,data,prepared=prepared,with_status=True)
+        # Re-saving the same ZIP returns the saved import; say so instead of a silent reopen.
+        return {**detail,'import_status':'created' if created else 'existing'}
+    @router.get('/bundle-imports')
+    @guarded
+    def bundle_import_history(before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
+        from app.lab.bundle_imports import import_page
+        return import_page(c().store,before=before,limit=limit)
+    @router.get('/bundle-imports/{id}')
+    @guarded
+    def bundle_import_detail(id:str):
+        from app.lab.bundle_imports import import_detail
+        return import_detail(c().store,c().settings,id)
+    @router.get('/bundle-imports/{id}/executions')
+    @guarded
+    def bundle_import_executions(id:str,before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
+        from app.lab.bundle_imports import execution_page
+        return execution_page(c().store,id,before=before,limit=limit)
+    @router.get('/bundle-imports/{id}/requests/{request_id}')
+    @guarded
+    def bundle_import_request(id:str,request_id:str):
+        from app.lab.bundle_imports import request_view
+        return request_view(c().store,id,request_id)
+    @router.post('/bundle-imports/{id}/execute',status_code=202)
+    @guarded
+    async def execute_bundle_import(id:str,request:ImportedExecutionRequest):
+        from app.lab.bundle_imports import execute_import
+        import_store_preflight(request.expected_store_identity)
+        return await execute_import(c(),id,request)
+    @router.post('/bundle-imports/{id}/requests/{request_id}/cancel')
+    @guarded
+    async def cancel_bundle_import_request(id:str,request_id:str,request:ImportedExecutionRequest):
+        from app.lab.bundle_imports import cancel_request
+        import_store_preflight(request.expected_store_identity)
+        return await cancel_request(c(),id,request_id,request)
+    @router.get('/policies/{id}/import-provenance')
+    @guarded
+    def imported_policy_provenance(id:str):
+        from app.lab.bundle_imports import policy_import_provenance
+        return policy_import_provenance(c().store,id)
+    @router.get('/campaigns/{id}/import-owner')
+    @guarded
+    def imported_campaign_owner(id:str):
+        from app.lab.bundle_imports import import_owner
+        return import_owner(c().store,id)
     @router.post('/regressions/{id}/execute',status_code=202)
     @guarded
     async def execute(id:str,request:ExecutionRequest):

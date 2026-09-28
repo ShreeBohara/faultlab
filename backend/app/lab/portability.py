@@ -47,9 +47,13 @@ def interrupt_portability(store,record,reason):
 async def queue_portability(coordinator,campaign_id,request):
     from app.integrations.registry import AgentRegistry
     from app.integrations.portability import PortabilityStudy
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store,campaign_id)
     campaign=coordinator.get(campaign_id); coordinator.settings.require_live()
     policy=coordinator.policies.get(request.policy_version or campaign.active_policy_version)
     if not policy or policy.decision!='ACCEPTED': raise ValueError('An accepted policy is required for unchanged external transfer')
+    from app.lab.policies import imported_policy,IMPORTED_POLICY_REFUSAL
+    if imported_policy(coordinator.store,policy): raise ValueError(IMPORTED_POLICY_REFUSAL)
     external_freeze=coordinator.store.get_record('external_freezes',campaign_id)
     if not external_freeze: raise StoreConflict('Independent external registration and manifest must be frozen first')
     registry=AgentRegistry(coordinator.store); registration=registry.get(request.agent_registration_id)

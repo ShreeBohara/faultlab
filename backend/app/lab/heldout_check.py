@@ -435,6 +435,8 @@ def certified_source(store, study_id):
 
 async def queue_heldout_check(coordinator, campaign_id, certified_study_id, *, partition_dir=None,
                               manifest_hash=None, predicate=None):
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store, campaign_id)
     coordinator.settings.require_live()
     from app.lab.runner import reject_native_reference_study
     reject_native_reference_study(coordinator.store,coordinator.get(campaign_id))

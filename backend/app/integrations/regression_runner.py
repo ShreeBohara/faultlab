@@ -173,6 +173,67 @@ def add_usage(total, usage):
     return Usage(**values)
 
 
+def persisted_trial_issues(raw_episode, private_inputs, trial, recipe, policy, registration, index, fixture_id, scorer_hash):
+    """Check returned claims against the persisted facts before scoring a rerun."""
+    try:
+        episode = Episode.model_validate_json(canonical_json(raw_episode))
+    except (ValueError, TypeError):
+        return ["SAVED_EPISODE_INVALID"]
+    issues = []
+    expected = {
+        "episode_id": trial.episode_id, "world_id": trial.world_id,
+        "configuration_hash": registration.configuration_hash,
+        "agent_registration_id": registration.registration_id,
+        "model": registration.model, "policy_hash": policy.policy_hash,
+        "policy_version": policy.version, "scenario_hash": content_hash(recipe),
+        "arm": "B0" if policy.decision == "BASELINE" else "L", "trial_index": index,
+        "split": "development", "experiment_purpose": "reproduction",
+    }
+    if any(getattr(episode, key) != value for key, value in expected.items()):
+        issues.append("SAVED_EPISODE_IDENTITY_MISMATCH")
+    if episode.source_mode not in ("live", "offline_fixture"):
+        issues.append("REPLAY_IS_NOT_FRESH_EXECUTION")
+    if not isinstance(private_inputs, dict) or private_inputs.get("fixture_id") != fixture_id or private_inputs.get("recipe") != recipe.model_dump(mode="json"):
+        issues.append("SAVED_RECIPE_OR_FIXTURE_MISMATCH")
+    verdict = episode.verdict
+    if verdict and (verdict.episode_id != episode.episode_id or verdict.scorer_hash != scorer_hash):
+        issues.append("SAVED_VERDICT_IDENTITY_MISMATCH")
+    faults = verdict.fault_executions if verdict else []
+    scheduled = bool(recipe.primitives)
+    # An empty/partial fault ledger cannot establish exposure through all([]).
+    triggered = scheduled and len(faults) == len(recipe.primitives) and all(f.triggered for f in faults)
+    facts = {
+        "scenario_hash": episode.scenario_hash, "policy_hash": episode.policy_hash,
+        "arm": episode.arm, "trial_index": episode.trial_index,
+        "lifecycle": episode.lifecycle, "outcome": verdict.outcome if verdict else "LAB_ERROR",
+        "fault_scheduled": scheduled, "fault_triggered": triggered,
+        "usage": episode.usage, "reason": episode.reason,
+    }
+    failed_checks = {c.check_id for c in verdict.checks if not c.passed} if verdict else set()
+    if any(getattr(trial, key) != value for key, value in facts.items()) or set(trial.failed_checks) != failed_checks:
+        issues.append("RETURNED_TRIAL_CONTRADICTS_SAVED_EPISODE")
+    if len(trial.failed_checks) != len(set(trial.failed_checks)):
+        issues.append("DUPLICATE_FAILED_CHECK")
+    if episode.lifecycle == "COMPLETED" and len(faults) != len(recipe.primitives):
+        issues.append("SAVED_FAULT_LEDGER_INCOMPLETE")
+    if len({fault.fault_id for fault in faults}) != len(faults):
+        issues.append("SAVED_FAULT_LEDGER_DUPLICATES")
+    return issues
+
+
+def retained_usage(trial, raw_episode):
+    """A contradictory callback cannot reduce known recorded charges."""
+    try:
+        saved = Usage.model_validate_json(canonical_json(raw_episode["usage"]))
+    except (ValueError, TypeError, KeyError):
+        return trial.usage
+    values = {key: max(getattr(saved, key), getattr(trial.usage, key))
+              for key in Usage.model_fields if key != "cost_dollars"}
+    values["cost_dollars"] = (max(saved.cost_dollars, trial.usage.cost_dollars)
+                              if saved.cost_dollars is not None and trial.usage.cost_dollars is not None else None)
+    return Usage(**values)
+
+
 class RegressionRunner:
     def __init__(self, store, registry):
         self.store, self.registry = store, registry
@@ -191,7 +252,7 @@ class RegressionRunner:
         record = RegressionExecution(execution_id=execution_id or new_id("execution"), bundle_id=inspected.bundle.bundle_id, manifest_hash=inspected.bundle.manifest_hash,
             registration_id=registration.registration_id, profile_id=PROFILE_ID, mode=mode, explicit_action=explicit,
             policy_hash=inspected.bundle.policy_hash, configuration_hash=registration.configuration_hash,
-            declared_budget=inspected.bundle.caps, usage=Usage(), episode_ids=[], world_ids=[], status="PENDING" if explicit else "COMPLETED")
+            declared_budget=inspected.bundle.caps, usage=Usage(cost_dollars=0.0) if explicit else Usage(), episode_ids=[], world_ids=[], status="PENDING" if explicit else "COMPLETED")
         self.store.put_record("regression_executions", record.execution_id, record)
         return record
 
@@ -223,6 +284,9 @@ class RegressionRunner:
         self.store.put_record("regression_executions", record.execution_id, record)
         recipe = inspected.bundle.retained_recipe or inspected.bundle.source_recipe
         attempts = []
+        scored_attempts = []
+        valid_attempts = []
+        integrity_errors = []
         existing_episodes = {row.get("episode_id") for row in self.store.list_records("episodes")}
         existing_worlds = {row.get("world_id") for row in self.store.list_records("episodes")}
         try:
@@ -232,35 +296,47 @@ class RegressionRunner:
                 persisted = self.store.get_record("episodes", trial.episode_id)
                 private_inputs = self.store.get_record("private_episode_inputs", trial.episode_id)
                 attempts.append(trial)
-                record.usage = add_usage(record.usage, trial.usage)
+                record.usage = add_usage(record.usage, retained_usage(trial, persisted))
                 self.store.put_record("regression_attempts", record.execution_id, {"trials": attempts})
                 valid_identity = trial.episode_id not in record.episode_ids and trial.world_id not in record.world_ids and trial.episode_id not in {t.episode_id for t in inspected.trial_results} and trial.world_id not in {t.world_id for t in inspected.trial_results} and trial.episode_id not in existing_episodes and trial.world_id not in existing_worlds
-                valid_persisted = persisted is not None and all(persisted.get(key) == expected for key, expected in {
-                    "episode_id": trial.episode_id, "world_id": trial.world_id, "configuration_hash": registration.configuration_hash,
-                    "agent_registration_id": registration_id, "policy_hash": policy.policy_hash}.items())
-                valid_persisted = valid_persisted and private_inputs is not None and private_inputs.get("fixture_id") == inspected.bundle.fixture_id
+                issues = persisted_trial_issues(persisted, private_inputs, trial, recipe, policy, registration,
+                                                index, inspected.bundle.fixture_id, target_configuration["scorer_hash"])
+                if not valid_identity:
+                    issues.append("FRESH_IDENTITY_REUSED")
                 record.episode_ids.append(trial.episode_id)
                 record.world_ids.append(trial.world_id)
                 self.store.put_record("regression_executions", record.execution_id, record)
-                if not valid_identity or not valid_persisted or trial.policy_hash != record.policy_hash or trial.scenario_hash != content_hash(recipe) or trial.trial_index != index:
-                    record.stop_reason = "Fresh trial identity or immutable configuration mismatch"
+                if issues:
+                    integrity_errors.append({"episode_id": trial.episode_id, "issues": issues})
+                    self.store.put_record("regression_trial_errors", record.execution_id, {"errors": integrity_errors})
+                    record.stop_reason = "Fresh trial contradicts saved evidence; lab integrity error, all attempts retained"
                     break
+                if trial.lifecycle == "COMPLETED" and trial.outcome not in (None, "LAB_ERROR", "INTERRUPTED"):
+                    scored_attempts.append(trial)
                 if trial.lifecycle != "COMPLETED" or trial.outcome in (None, "LAB_ERROR", "INTERRUPTED") or (recipe.primitives and not trial.fault_triggered):
                     record.stop_reason = "Fresh trial invalid, interrupted or untriggered; all attempts retained"
                     break
+                valid_attempts.append(trial)
             record.status = "COMPLETED" if len(attempts) == 3 and not record.stop_reason else "INCOMPLETE"
         except asyncio.CancelledError:
             record.status = "INCOMPLETE"
             record.stop_reason = "Execution interrupted; no automatic rerun"
-        except Exception:
+        except Exception as error:
             record.status = "INCOMPLETE"
             record.stop_reason = "Execution failed; no automatic rerun"
+            # Keep the classified cause (code, class and code location only; never raw
+            # exception text) so an infrastructure failure is not mistaken for, or lost
+            # behind, an ordinary incomplete run.
+            from app.lab.readiness import execution_failure
+            self.store.put_record("regression_execution_errors", record.execution_id,
+                                  {"execution_id": record.execution_id, **execution_failure(error)})
         source_modes = sorted({(self.store.get_record("episodes", trial.episode_id) or {}).get("source_mode", "unknown") for trial in attempts})
         assertions = {
             "target_invariant": inspected.bundle.target_invariant,
             "required_trials": 3, "attempted": len(attempts),
-            "target_failures": sum(inspected.bundle.target_invariant in trial.failed_checks for trial in attempts),
-            "reproduced": record.status == "COMPLETED" and all(inspected.bundle.target_invariant in trial.failed_checks for trial in attempts),
+            "target_failures": sum(inspected.bundle.target_invariant in trial.failed_checks for trial in scored_attempts),
+            "valid_trials": len(valid_attempts), "lab_integrity_errors": len(integrity_errors),
+            "reproduced": record.status == "COMPLETED" and len(valid_attempts) == 3 and all(inspected.bundle.target_invariant in trial.failed_checks for trial in valid_attempts),
             "fresh": True,
             "source_modes": source_modes,
             "provider_backed": source_modes == ["live"],

@@ -1,6 +1,6 @@
 # FaultLab — current status
 
-Updated **September 27, 2026**. This is the single current status and continuation page.
+Updated **September 28, 2026**. This is the single current status and continuation page.
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
@@ -10,6 +10,20 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
+**Implemented and reviewed, not yet committed: dashboard bundle import, review and a separate fresh
+rerun.** The whole feature is now in this main folder (the product worktree copies are stale). A saved
+regression ZIP is checked and stored as data with no provider calls; the review shows the source trials,
+how they were produced, and the exact task and order the rerun will send; a fresh rerun is a separate,
+confirmed, bounded action whose accounting campaign refuses all other work. Three independent $0 reviews
+(September 28) found real gaps — the task sent to the agent was not shown, the accounting campaign admitted
+paid studies, malformed bundle fields could break the imports list, and the backend accepted any Host
+header — and every finding was fixed with tests; see *Review fixes* in the
+[import review](docs/PRODUCT_IMPORT_REVIEW_2026-09-27.md).
+Import runtime: `cfe5ac07c6ef571f7be5f57cc8f56cbce4084496c3d157d3b222c0e9bb0f6738`. Full backend **2,363 passed, 180 existing skips, zero failures** (two known warnings); frontend **254 unit tests, production build and 13 browser fixtures passed** (one opt-in actual-backend check skipped). Provider calls 0, cost $0; main HEAD/index unchanged; no push.
+**Next:** the PM commits, then the owner declares the bounded real-model validation (worst case 72
+requests across the two targets, or cap each execution at 24; see the review doc). Original historical
+stores remain untouched. See [current increment memory](memory/context/product-import-2026-09-27.md).
+
 **Reviewed campaign setup and native-agent execution are implemented, verified and saved locally.**
 The dashboard now offers reference/native selection, explicit registration, six public cases, an immutable
 saved plan and a separate Start action. Every original learning phase uses the selected agent. Native
@@ -17,7 +31,7 @@ provider-identity/accounting failures are classified as lab errors; native audit
 against calling same-implementation reruns independent portability are implemented. Public recordings
 include unsuccessful runs and the plan. Current campaign state also keeps history labels up to date.
 
-Current runtime: `d1845765fa1c120ad4afd936461ddb4e4d909972209b160d6eebd63d6b3c64fb`.
+Onboarding runtime: `d1845765fa1c120ad4afd936461ddb4e4d909972209b160d6eebd63d6b3c64fb`.
 **Full backend: 2,224 passed, 180 existing skips, zero failures**, two warnings, 791.81 seconds.
 **Frontend: 219 tests, production build and ten browser fixtures passed**; one opt-in actual-backend check
 was skipped. Actual UI checks ran all six public cases, verified a real recording download, and preserved
@@ -365,7 +379,11 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Current runtime `d1845765…`:** full backend 2,224 passed / 180 existing skips / zero failures, 791.81 seconds;
+**Import increment runtime `cfe5ac07…` (September 28, after review fixes):** Full backend **2,363 passed, 180 existing skips, zero failures** (two known warnings); frontend **254 unit tests, production build and 13 browser fixtures passed** (one opt-in actual-backend check skipped).
+Manual $0 check: import → review → confirmed fresh rerun with the scripted native target, archive reopen,
+refusals and the local-host guard, on a scratch store and non-default ports.
+
+**Onboarding runtime `d1845765…`:** full backend 2,224 passed / 180 existing skips / zero failures, 791.81 seconds;
 219 frontend tests / build / ten browser fixtures pass. Two backend warnings: upstream Starlette alias and
 the explicit POSIX fork ownership test. Vite bundle 502.10 kB minified / 118.64 kB gzip produces a size advisory.
 Actual setup/six cases/download/restart/final-source freeze/archive and independent raw audits passed.
@@ -449,8 +467,8 @@ Claude's original program ends at **Phase 31: the write-up and event demo**. Tha
 milestone is complete; the broader product goal is not. No paid run is active.
 
 The core path, local durability and reviewed two-agent setup have now been implemented and checked.
-The next concrete usability gap is bringing bundle validation/import into the dashboard with a review
-before fresh execution; the CLI path already exists. Repair effectiveness, a separately versioned second
+Dashboard bundle import with a review before a separate, confirmed fresh execution is now implemented
+and reviewed (September 28); it awaits the PM commit and the owner's bounded real-model validation. Repair effectiveness, a separately versioned second
 task and clean-machine/hosted deployment acceptance remain separate open milestones. A new live native
 check should be prospectively declared, bounded and interpreted honestly; do not reuse a closed partition.
 

@@ -87,7 +87,7 @@ it('allows archive navigation and bundle inspection while disabling every saved-
     expect(button.disabled).toBe(true)
     fireEvent.click(button)
   }
-  fireEvent.change(screen.getByLabelText('Saved regression'), { target: { value: regressionCase.regression_id } })
+  fireEvent.change(await screen.findByLabelText('Saved regression'), { target: { value: regressionCase.regression_id } })
   expect((screen.getByRole('button', { name: 'Download regression' }) as HTMLButtonElement).disabled).toBe(false)
   fireEvent.click(screen.getByRole('button', { name: 'Inspect saved bundle' }))
   await screen.findByText('sandbox-v1')

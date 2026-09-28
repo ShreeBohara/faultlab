@@ -260,6 +260,8 @@ def assess(rows, manifest):
 
 async def queue_context_study(coordinator, campaign_id, changed_protocol=DEFAULT_CHANGED_PROTOCOL):
     """The API's explicit live request is required; this function only queues."""
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store, campaign_id)
     coordinator.settings.require_live()
     manifest = case_manifest(changed_protocol)
     async with coordinator.lock:

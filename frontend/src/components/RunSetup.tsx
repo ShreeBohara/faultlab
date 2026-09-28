@@ -36,7 +36,7 @@ export function RunSetup({ config, replay, readiness, onCampaign }: { config?: C
     try { await work() } catch (error) { setError(error instanceof Error ? error.message : 'The request was not accepted. Refresh run options before trying again.') }
     finally { locked.current = false; setBusy(null) }
   }
-  return <section className="run-setup" aria-label="New campaign setup">
+  return <section id="new-campaign-setup" className="run-setup" aria-label="New campaign setup">
     <div className="split-heading"><h3>New campaign</h3><button className="text-button" disabled={!!busy || options.loading} onClick={options.refresh}>Refresh run options</button></div>
     <ResourceNote resource={options} />
     {value && <>

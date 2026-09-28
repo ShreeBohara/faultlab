@@ -29,8 +29,12 @@ def retain_audit_progress(store,record):
 
 
 async def queue_audit(coordinator,campaign,policy):
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store,campaign.campaign_id)
     coordinator.validate_core_configuration(campaign)
     if policy.decision!='ACCEPTED': raise StoreConflict('A learned audit arm requires an accepted policy; baseline is not a learned arm')
+    from app.lab.policies import imported_policy,IMPORTED_POLICY_REFUSAL
+    if imported_policy(coordinator.store,policy): raise StoreConflict(IMPORTED_POLICY_REFUSAL)
     frozen=coordinator.store.get_record('audit_freezes',campaign.campaign_id)
     if not frozen or frozen.get('policy_hash')!=policy.policy_hash or frozen.get('configuration_hash')!=campaign.configuration_hash:
         raise StoreConflict('Matching immutable audit freeze is required before final execution')

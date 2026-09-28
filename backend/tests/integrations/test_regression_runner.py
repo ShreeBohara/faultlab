@@ -5,7 +5,7 @@ import json
 
 import pytest
 
-from app.contracts.models import TrialResult, Usage, content_hash, canonical_json
+from app.contracts.models import Episode, Verdict, CheckResult, FaultExecution, TrialResult, Usage, content_hash, canonical_json
 from app.integrations.regression_runner import RegressionRunner, inspect_bundle, TRUSTED_TEMPLATE
 
 
@@ -107,16 +107,29 @@ def test_duplicate_json_keys_are_rejected(bundle):
 
 def trial(recipe, policy, index, *, duplicate=False, outcome="VIOLATION"):
     return TrialResult(episode_id="fresh-0" if duplicate else f"fresh-{index}", world_id="world-0" if duplicate else f"world-{index}",
-        scenario_hash=content_hash(recipe), policy_hash=policy.policy_hash, arm="B0", trial_index=index,
+        scenario_hash=content_hash(recipe), policy_hash=policy.policy_hash, arm="B0" if policy.decision == "BASELINE" else "L", trial_index=index,
         lifecycle="COMPLETED", outcome=outcome, failed_checks=["C3"] if outcome == "VIOLATION" else [], fault_scheduled=True, fault_triggered=True,
         usage=Usage(model_calls=2, actor_calls=2, http_attempts=3))
 
 
-def persist_trial(store, registration, result, *, fixture_id="standard-v1"):
-    store.put_record("episodes", result.episode_id, {"episode_id": result.episode_id, "world_id": result.world_id,
-        "campaign_id": "offline-regression", "configuration_hash": registration.configuration_hash,
-        "agent_registration_id": registration.registration_id, "policy_hash": result.policy_hash, "source_mode": "offline_fixture"})
-    store.put_record("private_episode_inputs", result.episode_id, {"fixture_id": fixture_id})
+def persist_trial(store, registration, result, recipe, policy, *, fixture_id="standard-v1"):
+    configuration = store.get_record("configurations", registration.configuration_hash)
+    verdict = Verdict(verdict_id=f"verdict-{result.episode_id}", episode_id=result.episode_id,
+        outcome=result.outcome, checks=[CheckResult(check_id=f"C{i}", passed=f"C{i}" not in result.failed_checks,
+        category="offline_fixture") for i in range(1, 9)], supported_completion=False, useful_resolution="invalid",
+        upgrade_effects=1, notification_effects=1, decision_tick=0, horizon_tick=5,
+        scorer_hash=configuration["scorer_hash"], fault_executions=[FaultExecution(fault_id=f"fault-{index}",
+        triggered=result.fault_triggered) for index, _ in enumerate(recipe.primitives)])
+    episode = Episode(episode_id=result.episode_id, world_id=result.world_id, task_id=f"task-{result.episode_id}",
+        campaign_id="offline-regression", origin="faultlab_evaluation", split="development", arm=result.arm,
+        source_mode="offline_fixture", experiment_purpose="reproduction", trial_index=result.trial_index,
+        study_id="offline-regression", evidence_context_id="offline-regression", execution_epoch=0,
+        configuration_hash=registration.configuration_hash, agent_registration_id=registration.registration_id,
+        model=registration.model, policy_hash=result.policy_hash, policy_version=policy.version,
+        scenario_hash=result.scenario_hash, lifecycle=result.lifecycle, verdict=verdict, usage=result.usage)
+    store.put_record("episodes", result.episode_id, episode)
+    store.put_record("private_episode_inputs", result.episode_id,
+        {"fixture_id": fixture_id, "recipe": recipe.model_dump(mode="json")})
     return result
 
 
@@ -141,7 +154,7 @@ def test_fresh_three_trials_retained_with_new_ids_and_no_rerun(bundle, store, re
     calls = []
     async def run_fresh(recipe, registered, policy, index, *, fixture_id):
         calls.append(index)
-        return persist_trial(store, registered, trial(recipe, policy, index), fixture_id=fixture_id)
+        return persist_trial(store, registered, trial(recipe, policy, index), recipe, policy, fixture_id=fixture_id)
     result = asyncio.run(runner.execute(directory, target, registration.registration_id, explicit_live=True, profile_id="sandbox-v1", run_fresh=run_fresh, execution_id="explicit-offline-fixture"))
     assert calls == [0, 1, 2] and result.status == "COMPLETED"
     assert len(set(result.world_ids)) == 3
@@ -155,7 +168,7 @@ def test_fresh_three_trials_retained_with_new_ids_and_no_rerun(bundle, store, re
 def test_duplicate_world_and_failed_attempt_remain_incomplete(bundle, store, registry, external):
     directory, _ = bundle
     registration, target = external
-    async def run_fresh(recipe, registered, policy, index, *, fixture_id): return persist_trial(store, registered, trial(recipe, policy, index, duplicate=True), fixture_id=fixture_id)
+    async def run_fresh(recipe, registered, policy, index, *, fixture_id): return persist_trial(store, registered, trial(recipe, policy, index, duplicate=True), recipe, policy, fixture_id=fixture_id)
     result = asyncio.run(RegressionRunner(store, registry).execute(directory, target, registration.registration_id,
         explicit_live=True, profile_id="sandbox-v1", run_fresh=run_fresh))
     assert result.status == "INCOMPLETE" and len(result.episode_ids) == 2
@@ -182,7 +195,7 @@ def test_reduced_f3_recipe_retains_original_history_fixture(bundle, store, regis
         assert not recipe.primitives
         observed_fixtures.append(fixture_id)
         result = trial(recipe, policy, index).model_copy(update={"fault_scheduled": False, "fault_triggered": False})
-        return persist_trial(store, registered, result, fixture_id=fixture_id)
+        return persist_trial(store, registered, result, recipe, policy, fixture_id=fixture_id)
     result = asyncio.run(RegressionRunner(store, registry).execute(directory, target, registration.registration_id,
         explicit_live=True, profile_id="sandbox-v1", run_fresh=run_fresh))
     assert result.status == "COMPLETED"
@@ -193,7 +206,7 @@ def test_changed_reset_fixture_is_incomplete(bundle, store, registry, external):
     directory, _ = bundle
     registration, target = external
     async def run_fresh(recipe, registered, policy, index, *, fixture_id):
-        return persist_trial(store, registered, trial(recipe, policy, index), fixture_id="history-v1")
+        return persist_trial(store, registered, trial(recipe, policy, index), recipe, policy, fixture_id="history-v1")
     result = asyncio.run(RegressionRunner(store, registry).execute(directory, target, registration.registration_id,
         explicit_live=True, profile_id="sandbox-v1", run_fresh=run_fresh))
     assert result.status == "INCOMPLETE" and len(result.episode_ids) == 1
@@ -211,7 +224,7 @@ def test_rejected_candidate_comparison_can_run_fresh_without_becoming_accepted(b
     decisions=[]
     async def fresh(recipe,registered,selected,index,*,fixture_id):
         decisions.append(selected.decision)
-        return persist_trial(store,registered,trial(recipe,selected,index),fixture_id=fixture_id)
+        return persist_trial(store,registered,trial(recipe,selected,index),recipe,selected,fixture_id=fixture_id)
     result=asyncio.run(RegressionRunner(store,registry).execute(directory,target,registration.registration_id,
         explicit_live=True,profile_id='sandbox-v1',run_fresh=fresh))
     assert result.status=='COMPLETED' and decisions==['REJECTED']*3

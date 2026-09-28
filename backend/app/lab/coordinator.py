@@ -334,7 +334,9 @@ class LabCoordinator:
         return current
 
     async def admit_activity(self,id):
+        from app.lab.policies import require_ordinary_campaign
         async with self.lock:
+            require_ordinary_campaign(self.store,id)
             if self.active_id is not None: raise StoreConflict('Another fresh execution is active')
             campaign=self.get(id)
             self.validate_current_caps(campaign)
@@ -346,6 +348,8 @@ class LabCoordinator:
     async def start(self,id):
         async with self.lock:
             campaign=self.get(id)
+            if self.store.get_record('import_execution_owners',id):
+                raise StoreConflict('Imported regression owners cannot start ordinary campaigns; use the reviewed import execution action')
             if self.active_id==id: return campaign
             if self.active_id is not None: raise StoreConflict('Another fresh execution is active')
             if campaign.state!='IDLE': raise StoreConflict('This campaign already started; create a new run')

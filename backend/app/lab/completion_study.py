@@ -161,6 +161,8 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
     exactly today's study: the default manifest, and a record without the key.
     """
     from app.lab.configuration import resolve_actor_context_protocol
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store, campaign_id)
     coordinator.settings.require_live()
     evidence_protocol = evidence_protocol or DEFAULT_EVIDENCE_PROTOCOL
     if evidence_protocol not in EVIDENCE_PROTOCOLS:

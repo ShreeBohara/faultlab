@@ -125,6 +125,13 @@ def import_bundle(store, inspected, payloads, campaign_id):
     with store.transaction():
         if not previous:
             store.put_record('policies', policy.version, policy, immutable=True)
+            # A foreign version keeps its historical decision label; mark it so local
+            # acceptance gates (comparison, audit, portability, freeze) refuse it.
+            store.put_record('policy_imports', policy.version, {
+                'imported': True, 'import_id': bundle.bundle_id, 'source_policy_version': policy.version,
+                'source_policy_hash': policy.policy_hash, 'historical_decision': policy.decision,
+                'local_acceptance': False, 'source_policy': policy.model_dump(mode='json'),
+                'path': 'cli_import_and_execute'}, immutable=True)
         store.put_record('bundles', bundle.bundle_id, manifest_payload(bundle), immutable=True)
         store.put_record('bundle_files', bundle.bundle_id, payloads, immutable=True)
         store.put_record('bundle_imports', bundle.bundle_id, {
@@ -171,10 +178,11 @@ def _prepare_import(coordinator, request):
             public_json(_json(text), max_bytes=MAX_BUNDLE_FILE,
                         secrets=(settings.wandb_api_key, settings.typesafe_api_key, settings.faultlab_control_token))
     recording = _json(request.files.get('evidence.json', '{}'))
-    task = recording.get('execution_task') or {}
-    campaign_request = CampaignRequest(
-        task_text=task.get('task_text') or 'Upgrade the authorized order to express shipping, then record one truthful confirmation.',
-        order_id=task.get('order_id') or 'order-regression', mode='baseline', config_profile_id='live-v1')
+    # Same checked task as the dashboard import; a malformed task is refused, never guessed.
+    from app.lab.bundle_imports import recorded_execution_task
+    task = recorded_execution_task(recording)
+    campaign_request = CampaignRequest(task_text=task['task_text'], order_id=task['order_id'],
+                                       mode='baseline', config_profile_id='live-v1')
     return inspected, campaign_request
 
 
@@ -203,6 +211,8 @@ async def import_and_execute(coordinator, request):
 
 async def freeze_and_queue_portability(coordinator, campaign_id, request):
     require_owner(coordinator, request.expected_store_identity)
+    from app.lab.policies import require_ordinary_campaign
+    require_ordinary_campaign(coordinator.store, campaign_id)
     coordinator.settings.require_live()
     campaign = coordinator.get(campaign_id)
     if coordinator.active_id is not None:

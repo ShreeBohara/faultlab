@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { PolicyVersion } from '../generated/contracts'
-import type { Resource } from '../useResource'
+import { useResource, type Resource } from '../useResource'
+import { importApi } from '../bundleImports'
 import { object, request } from '../api'
 import { Badge, Empty, EpisodeLinks, Field, Hash, Json, Panel, ResourceNote } from './common'
 
@@ -30,14 +31,19 @@ export function policyDiff(current: PolicyVersion, parent?: PolicyVersion) {
 export function PolicyPanel({ policies, active, onEpisode }: { policies: Resource<PolicyVersion[]>; active?: string; onEpisode: (id: string) => void }) {
   const [selected, setSelected] = useState('')
   const policy = policies.data?.find(p => p.version === (selected || active)) ?? policies.data?.at(-1)
+  const provenance = useResource(policy ? `policy-import:${policy.version}` : null, () => importApi.provenance(policy!.version), null)
+  const imported = provenance.data?.imported ? provenance.data : null
   const parent = policies.data?.find(p => p.version === policy?.parent_version)
   const diff = policy && policyDiff(policy, parent)
   return <Panel title="Recovery policy" number="03" className="policy-panel"><ResourceNote resource={policies} />
     <p className="muted">Only a persisted accepted decision changes the active policy.</p>
-    {policies.data?.length ? <label>Immutable version<select value={policy?.version ?? ''} onChange={e => setSelected(e.target.value)}>{policies.data.map(p => <option key={p.version} value={p.version}>{p.version} · {p.decision}{p.version === active ? ' · active' : ''}</option>)}</select></label> : <Empty>No policy versions recorded.</Empty>}
-    {policy && <><div className="policy-title"><h3>{policy.version}</h3><Badge value={policy.decision} /></div><dl className="facts"><Field name="Author">{policy.author === 'manual' ? 'Handwritten reference / operator' : policy.author}</Field><Field name="Active version">{active ?? 'Not recorded'}</Field><Field name="Parent">{policy.parent_version ?? 'None — baseline'}</Field><Field name="Exact content hash"><Hash value={policy.policy_hash} /></Field><Field name="Decision reference"><code>{policy.decision_ref ?? 'No decision record'}</code></Field><Field name="Proposal reference"><code>{policy.raw_proposal_ref ?? 'No model proposal'}</code></Field></dl>
+    {policies.data?.length ? <label>Immutable version<select value={policy?.version ?? ''} onChange={e => setSelected(e.target.value)}>{policies.data.map(p => <option key={p.version} value={p.version}>{p.version}{p.version === active ? ' · active' : ''}</option>)}</select></label> : <Empty>No policy versions recorded.</Empty>}
+    <ResourceNote resource={provenance} />
+    {policy && <><div className="policy-title"><h3>{policy.version}</h3>{imported ? <span className="badge">Imported historical decision · {imported.historical_decision}</span> : provenance.data ? <Badge value={policy.decision} /> : <Badge value="UNVERIFIED" />}</div>
+      {imported && <p className="notice">Source policy <code>{imported.source_policy_version}</code> from import <code>{imported.import_id}</code>. Its historical decision is not local acceptance or activation. Original source reports and proposal provenance are available in Imported regressions.</p>}
+      <dl className="facts"><Field name="Author">{policy.author === 'manual' ? 'Handwritten reference / operator' : policy.author}</Field><Field name="Active version">{active ?? 'Not recorded'}</Field><Field name="Parent">{policy.parent_version ?? 'None — baseline'}</Field><Field name="Exact content hash"><Hash value={policy.policy_hash} /></Field><Field name="Decision reference"><code>{policy.decision_ref ?? 'No decision record'}</code></Field><Field name="Proposal reference"><code>{policy.raw_proposal_ref ?? 'No model proposal'}</code></Field></dl>
       <h3>Structural diff {parent ? `from ${parent.version}` : ''}</h3>{diff && (!diff.added.length && !diff.removed.length) ? <p className="empty">No rule changes. {policy.decision === 'BASELINE' && 'Empty overlay is the baseline.'}</p> : <div className="policy-diff">{diff?.removed.map((r, i) => <pre className="removed" key={`r${i}`}>− {JSON.stringify(r, null, 2)}</pre>)}{diff?.added.map((r, i) => <pre className="added" key={`a${i}`}>+ {JSON.stringify(r, null, 2)}</pre>)}</div>}
-      {policy.raw_proposal_ref && <OriginalProposal key={policy.version} policy={policy} />}
-      <h3>Development sources</h3><EpisodeLinks ids={policy.development_episode_ids} onSelect={onEpisode} /><Json value={policy} title="Policy content and complete provenance" /></>}
+      {provenance.data?.imported === false && policy.raw_proposal_ref && <OriginalProposal key={policy.version} policy={policy} />}
+      <h3>Development sources</h3>{provenance.data?.imported === false ? <EpisodeLinks ids={policy.development_episode_ids} onSelect={onEpisode} /> : <p className="muted">Local episode links are unavailable for imported or unverified source provenance.</p>}<Json value={policy} title="Policy content and complete provenance" /></>}
   </Panel>
 }

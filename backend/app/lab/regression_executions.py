@@ -17,19 +17,56 @@ def interrupt_regression(store,execution_id,reason):
     if episodes:
         from app.lab.evaluation import aggregate_usage
         from types import SimpleNamespace
-        record.usage=aggregate_usage([SimpleNamespace(usage=Usage.model_validate_json(__import__('json').dumps(e['usage']))) for e in episodes])
+        observed=aggregate_usage([SimpleNamespace(usage=Usage.model_validate_json(__import__('json').dumps(e['usage']))) for e in episodes])
+        # A mismatched callback may have already recorded larger/unknown usage.
+        # Recovery must not turn that retained uncertainty into a smaller bill.
+        values={key:max(getattr(record.usage,key),getattr(observed,key)) for key in Usage.model_fields if key!='cost_dollars'}
+        values['cost_dollars']=(max(record.usage.cost_dollars,observed.cost_dollars)
+            if record.usage.cost_dollars is not None and observed.cost_dollars is not None else None)
+        record.usage=Usage(**values)
+    _include_owner_charges(store,record)
     record.status='INCOMPLETE'; record.stop_reason=reason
     store.put_record('regression_executions',execution_id,record)
     return record
 
 
+def _include_owner_charges(store,record):
+    """An imported execution's accounting owner holds only this job, so its ledger is
+    the complete charge record. Episode usage is saved only when a trial ends; after a
+    process loss mid-trial, rebuilt usage alone would understate calls already paid."""
+    owner=next((row for row in store.list_records('import_execution_owners')
+                if row.get('execution_id')==record.execution_id),None)
+    budget=store.get_record('budgets',owner['owner_campaign_id']) if owner else None
+    if not budget or not budget.get('used_calls'): return
+    values=record.usage.model_dump()
+    values['model_calls']=max(values['model_calls'],budget['used_calls'])
+    values['input_tokens']=max(values['input_tokens'],budget.get('measured_input_tokens',0))
+    values['output_tokens']=max(values['output_tokens'],budget.get('measured_output_tokens',0))
+    charged=budget.get('actual_cost_dollars')
+    # Known cost stays known only while every charged call has a known cost.
+    values['cost_dollars']=(max(values['cost_dollars'],charged)
+        if values['cost_dollars'] is not None and charged is not None else None)
+    record.usage=Usage(**values)
+
+
 async def execute_regression(coordinator,regression_id,request):
     from app.integrations.registry import AgentRegistry
     from app.integrations.regression_runner import RegressionRunner
+    from app.lab.policies import require_ordinary_campaign
     regression=coordinator.store.get_record('regressions',regression_id)
     if not regression: raise KeyError(regression_id)
+    # Every refusal below precedes the export, validation record and admission:
+    # a refused request leaves the store and the artifact directory unchanged.
+    require_ordinary_campaign(coordinator.store,regression['campaign_id'])
     policy=coordinator.policies.get(request.policy_version)
     if policy is None: raise ValueError('Immutable bundled policy required')
+    # An imported policy runs only for the bundle it arrived in; an ordinary regression
+    # must record its own bundled policy version, never a foreign same-content alias.
+    # Aliases made by the reviewed dashboard import run only through that import.
+    provenance=coordinator.store.get_record('policy_imports',policy.version)
+    if provenance is not None and (provenance.get('import_id')!=regression.get('bundle_id')
+                                   or provenance.get('path')!='cli_import_and_execute'):
+        raise ValueError('Imported policies run only through their reviewed import execution')
     if request.execute_live is not True or request.execution_profile_id!='sandbox-v1': raise ValueError('Explicit reviewed execution profile required')
     coordinator.settings.require_live()
     campaign=coordinator.get(regression['campaign_id'])
@@ -54,6 +91,18 @@ async def execute_regression(coordinator,regression_id,request):
         try: ledger.release(reservation)
         finally: await coordinator.finish_activity(campaign.campaign_id,activity_id=execution_id)
         raise
+    return schedule_regression(coordinator,campaign=campaign,checked=checked,registration=registration,
+        target=target,policy=policy,ledger=ledger,execution_id=execution_id,reservation=reservation,
+        directory=directory,record=record)
+
+
+def schedule_regression(coordinator,*,campaign,checked,registration,target,policy,ledger,
+                        execution_id,reservation,directory,record):
+    """Start only an already durable admission; shared by CLI and reviewed imports."""
+    from app.integrations.registry import AgentRegistry
+    from app.integrations.regression_runner import RegressionRunner
+    registry=AgentRegistry(coordinator.store)
+    fixed=RegressionRunner(coordinator.store,registry)
     async def execute():
         runner=None; owned=False; finalized=False; finalization_failed=False; reason=None; error_record=None
         def finalize(result,assertions):

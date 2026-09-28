@@ -22,6 +22,9 @@ export function fixtureResponse(url: string, currentCampaign: Campaign = campaig
   if (url.endsWith('/readiness')) return readiness
   if (url.endsWith('/run-options')) return runOptions
   if (url.endsWith('/plan')) return { campaign_id: currentCampaign.campaign_id, status: 'LEGACY', plan: null }
+  if (url.endsWith('/import-provenance')) return { imported: false }
+  if (url.endsWith('/import-owner')) return { imported_owner: false }
+  if (new URL(url, 'http://local').pathname === '/api/bundle-imports') return { items: [], next_before: null, has_more: false }
   if (url.endsWith('/recording')) return { recording_version: 'faultlab-development-recording/v1', campaign_id: currentCampaign.campaign_id, campaign: currentCampaign, episodes: [episode], events: { [episode.episode_id]: events }, completeness_notes: ['Only public development evidence is included.'] }
   if (new URL(url, 'http://local').pathname === '/api/campaigns') return { campaigns: [currentCampaign], next_before: null, has_more: false }
   if (/\/regressions\/[^/]+\/executions\?/.test(url)) return { executions: [], next_before: null, has_more: false }

@@ -1,7 +1,17 @@
 """Default tests prohibit network; explicit HTTP tests allow loopback only."""
 import ipaddress
+import os
 import socket
 import pytest
+
+# Weave reads this once, at its first import, and otherwise registers an atexit
+# Sentry upload that runs after these per-test socket guards are gone. Pin it before
+# pytest imports any test module (some import the SDK directly); see app/__init__.py.
+os.environ['WANDB_ERROR_REPORTING'] = 'false'
+# In-process test clients address the app by synthetic host names (httpx
+# base_url 'http://test', Starlette TestClient 'testserver'). Production allows only
+# localhost, 127.0.0.1 and ::1 (app.main.LOCAL_HOSTS); tests opt in explicitly.
+os.environ.setdefault('FAULTLAB_ALLOWED_HOSTS', 'test,testserver,lab')
 
 
 def _local(host):

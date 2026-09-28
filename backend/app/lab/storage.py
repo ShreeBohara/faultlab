@@ -88,7 +88,7 @@ class LabStore:
             rows = self.db.execute('SELECT payload FROM records WHERE kind=? ORDER BY rowid',(kind,)).fetchall()
         return [json.loads(row['payload']) for row in rows]
 
-    def campaign_page(self, *, before=None, limit=20):
+    def campaign_page(self, *, before=None, limit=20, exclude_import_owners=False):
         """Bounded, stable creation-order history, without parsing other records.
 
         Updating a campaign preserves its rowid. A new campaign between page
@@ -97,6 +97,8 @@ class LabStore:
         if not 1 <= limit <= 100 or (before is not None and before < 1):
             raise ValueError('Invalid campaign history cursor or limit')
         clause = '' if before is None else ' AND rowid < ?'
+        if exclude_import_owners:
+            clause += " AND id NOT IN (SELECT id FROM records WHERE kind='import_execution_owners')"
         parameters = (limit + 1,) if before is None else (before, limit + 1)
         with self.lock:
             rows = self.db.execute(
