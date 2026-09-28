@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Event } from './generated/contracts'
-import { api, validateEvents } from './api'
-export type Resource<T> = { data?: T; error: string | null; loading: boolean; updatedAt?: number }
+import { api, ApiError, validateEvents } from './api'
+export type Resource<T> = { data?: T; error: string | null; loading: boolean; updatedAt?: number; errorStatus?: number; retrying?: boolean; refresh?: () => void }
 export const pollDelay = (failures: number) => failures ? Math.min(6000, 750 * 2 ** failures) : 750
 export function useResource<T>(key: string | null, fetcher: () => Promise<T>, interval: number | null = 750): Resource<T> {
   const latest = useRef(fetcher); latest.current = fetcher
+  const [revision, setRevision] = useState(0)
+  const refresh = useCallback(() => setRevision(value => value + 1), [])
   const [state, setState] = useState<Resource<T> & { key: string | null }>({ key, error: null, loading: !!key })
   useEffect(() => {
     let cancelled = false; let timer: number; let failures = 0
@@ -17,14 +19,17 @@ export function useResource<T>(key: string | null, fetcher: () => Promise<T>, in
         failures = 0; setState({ key, data, error: null, loading: false, updatedAt: Date.now() })
       } catch (error) {
         if (cancelled) return
-        failures++; setState(old => ({ ...old, error: error instanceof Error ? error.message : 'Local backend unavailable.', loading: false }))
+        const errorStatus = error instanceof ApiError ? error.status : undefined
+        const missing = errorStatus === 404
+        failures++; setState(old => ({ ...(missing ? { key } : old), error: error instanceof Error ? error.message : 'Local backend unavailable.', errorStatus, retrying: !missing && interval !== null, loading: false }))
+        if (missing) return
       }
       if (!cancelled && interval !== null) timer = window.setTimeout(poll, failures ? pollDelay(failures) : interval)
     }
     void poll()
     return () => { cancelled = true; window.clearTimeout(timer) }
-  }, [key, interval])
-  return state.key === key ? state : { error: null, loading: !!key }
+  }, [key, interval, revision])
+  return { ...(state.key === key ? state : { error: null, loading: !!key }), refresh }
 }
 export function useEvents(episodeId: string | null): Resource<Event[]> {
   const cache = useRef<{ id: string | null; events: Event[]; after: number }>({ id: null, events: [], after: 0 })

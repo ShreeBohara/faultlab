@@ -37,36 +37,44 @@ export function EvidenceScreen() {
   const config = useResource('config', api.config)
   const readiness = useResource(`readiness:${readinessAttempt}`, api.readiness, null)
   const campaignResource = useResource(campaignId ? `campaign:${campaignId}` : null, () => api.campaign(campaignId))
-  const campaign = campaignResource.data?.campaign_id === campaignId && (!optimistic || (campaignResource.data.state_seq ?? 0) >= (optimistic.state_seq ?? 0)) ? campaignResource.data : optimistic?.campaign_id === campaignId ? optimistic : undefined
-  const matrix = useResource(campaignId ? `matrix:${campaignId}` : null, () => api.matrix(campaignId))
+  const missingCampaign = campaignResource.errorStatus === 404
+  const campaign = missingCampaign ? undefined : campaignResource.data?.campaign_id === campaignId && (!optimistic || (campaignResource.data.state_seq ?? 0) >= (optimistic.state_seq ?? 0)) ? campaignResource.data : optimistic?.campaign_id === campaignId ? optimistic : undefined
+  // A saved ID may belong to another local store. Resolve it once before asking
+  // every panel for dependent records; a 404 must not become a page of retries.
+  const evidenceCampaignId = campaign?.campaign_id ?? ''
+  const matrix = useResource(evidenceCampaignId ? `matrix:${evidenceCampaignId}` : null, () => api.matrix(evidenceCampaignId))
   const policies = useResource('policies', api.policies)
-  const regressions = useResource(campaignId ? `regressions:${campaignId}` : null, () => api.regressions(campaignId))
-  const experiments = useResource(campaignId ? `experiments:${campaignId}` : null, () => getExperiments(campaignId))
+  const regressions = useResource(evidenceCampaignId ? `regressions:${evidenceCampaignId}` : null, () => api.regressions(evidenceCampaignId))
+  const experiments = useResource(evidenceCampaignId ? `experiments:${evidenceCampaignId}` : null, () => getExperiments(evidenceCampaignId))
   const registrations = useResource('registrations', api.registrations)
-  const aria = useResource(campaignId ? `aria:${campaignId}` : null, () => api.aria(campaignId))
-  const episodeId = selectedEpisode ?? campaign?.latest_episode_id ?? null
+  const aria = useResource(evidenceCampaignId ? `aria:${evidenceCampaignId}` : null, () => api.aria(evidenceCampaignId))
+  const episodeId = evidenceCampaignId ? selectedEpisode ?? campaign?.latest_episode_id ?? null : null
   const episode = useResource(episodeId ? `episode:${episodeId}` : null, () => api.episode(episodeId!))
   const events = useEvents(episodeId)
-  function selectCampaign(id: string) { setCampaignId(id); setCampaignInput(id); setSelectedEpisode(null); setOptimistic(undefined); try { localStorage.setItem('faultlab:campaign', id) } catch { /* Persistence unavailable. */ } }
+  function selectCampaign(id: string) { if (id === campaignId) campaignResource.refresh?.(); setCampaignId(id); setCampaignInput(id); setSelectedEpisode(null); setOptimistic(undefined); try { localStorage.setItem('faultlab:campaign', id) } catch { /* Persistence unavailable. */ } }
   function receiveCampaign(value: Campaign) { selectCampaign(value.campaign_id); setOptimistic(value); setReplay(false); setHistoryRevision(revision => revision + 1) }
   useEffect(() => { if (!campaignId && config.data?.active_campaign_id) selectCampaign(config.data.active_campaign_id) }, [campaignId, config.data?.active_campaign_id])
+  useEffect(() => { if (missingCampaign) { setSelectedEpisode(null); setOptimistic(undefined); setReplay(false) } }, [missingCampaign])
   function selectEpisode(id: string) { setSelectedEpisode(id); document.getElementById('evidence-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
   return <main className="workspace"><a className="skip-link" href="#evidence-workspace">Skip to evidence</a><header className="masthead"><a className="brand" href="#"><span className="monogram" aria-hidden="true">F<span>∕</span>L</span><span>FaultLab<small>BY GATEKEEPER</small></span></a><div className="header-right"><span className="environment">LOCAL EXPERIMENT LAB</span><span className={`connection-state ${health.error ? 'disconnected' : health.data ? 'connected' : ''}`} role="status"><span aria-hidden="true" />{health.error ? 'Backend unavailable' : health.data ? 'Backend connected' : 'Checking connection…'}</span><div className="header-actions"><button className="text-button" onClick={() => setHealthAttempt(v => v + 1)} disabled={health.loading}>Check again</button><ThemeToggle /></div></div></header>
     <section className="intro"><div><p className="eyebrow">Controlled experiments for AI agents</p><h1>Find the fault.<br /><em>Test the repair.</em></h1><p className="description">Test an agent against service failures. Inspect every attempt and recovery rule.</p></div><div className="lab-index"><span className="index-label">THE LEARNING LOOP</span><ol><li>Discover <span>→</span> Reproduce</li><li>Diagnose <span>→</span> Repair</li><li>Challenge <span>→</span> Evaluate</li></ol><p>Failed challenges return to repair.</p></div></section>
     {health.error && <div role="alert" className="error connection-error">{health.error} Start the local backend with <code>./scripts/start-backend.sh</code>, then check again.</div>}<ResourceNote resource={config} />
+    {config.data?.data_store && <section className="notice" aria-label="Data store"><h2>{config.data.data_store.read_only ? 'Read-only archive' : 'Local data store'}</h2><p><code>{config.data.data_store.path}</code></p>{config.data.data_store.read_only && <p>Browse saved history, inspect evidence, download bundles and use playback. Starting work and saving changes are disabled for this archive.</p>}</section>}
     <CampaignHistory selectedId={campaignId} refreshKey={historyRevision} onOpen={selectCampaign} />
     <div className="campaign-bar"><form onSubmit={e => { e.preventDefault(); selectCampaign(campaignInput.trim()) }}><label htmlFor="campaign-id">Open saved campaign</label><input id="campaign-id" value={campaignInput} onChange={e => setCampaignInput(e.target.value)} placeholder="campaign ID" maxLength={128} /><button disabled={!campaignInput.trim()}>Load recording</button></form><span>{campaign ? `${campaign.mode.toUpperCase()} · ${campaign.config_profile_id}` : 'No campaign selected'} · faultlab/v1</span></div>
-    <ResourceNote resource={campaignResource} />{replay && <ReplayView campaign={campaign} />}
-    <PolicyStatusPanel key={`policy-status:${campaignId}`} campaignId={campaignId} />
+    {missingCampaign ? <section className="notice" role="alert"><h2>Saved campaign unavailable</h2><p><code>{campaignId}</code> is not in the current store. Choose a campaign from history or enter another saved ID. No execution was started.</p><button onClick={campaignResource.refresh}>Retry saved campaign</button></section> : <ResourceNote resource={campaignResource} />}{replay && <ReplayView campaign={campaign} />}
+    <PolicyStatusPanel key={`policy-status:${evidenceCampaignId}`} campaignId={evidenceCampaignId} />
     <RunSummary campaign={campaign} matrix={matrix.data} experiments={experiments.data} policies={policies.data} />
-    <PromotionComparison campaignId={campaignId} matrix={matrix.data} policies={policies.data} />
-    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} onOpenCampaign={id => { selectCampaign(id); setReplay(false) }} readiness={readiness} onCheckReadiness={() => setReadinessAttempt(attempt => attempt + 1)} /><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></div>
+    <PromotionComparison campaignId={evidenceCampaignId} matrix={matrix.data} policies={policies.data} />
+    <div className="evidence-grid" id="evidence-workspace"><RunControls config={config.data} campaign={campaign} replay={replay} onCampaign={receiveCampaign} onReplay={setReplay} onOpenCampaign={id => { selectCampaign(id); setReplay(false) }} readiness={readiness} onCheckReadiness={() => setReadinessAttempt(attempt => attempt + 1)} />{!missingCampaign && <><Timeline episode={episode} events={events} /><PolicyPanel policies={policies} active={campaign?.active_policy_version} onEpisode={selectEpisode} /></>}</div>
+    {!missingCampaign && <>
     <OutcomeMatrix matrix={matrix} selectedEpisode={episodeId} onEpisode={selectEpisode} />
-    <SearchAttemptsPanel key={`search:${campaignId}`} campaignId={campaignId} onEpisode={selectEpisode} />
-    <CompletionStudyPanel key={`completion:${campaignId}`} campaignId={campaignId} activePolicy={campaign?.active_policy_version} onEpisode={selectEpisode} />
-    <ContextStudyPanel key={`context:${campaignId}`} campaignId={campaignId} onEpisode={selectEpisode} />
+    <SearchAttemptsPanel key={`search:${evidenceCampaignId}`} campaignId={evidenceCampaignId} onEpisode={selectEpisode} />
+    <CompletionStudyPanel key={`completion:${evidenceCampaignId}`} campaignId={evidenceCampaignId} activePolicy={campaign?.active_policy_version} onEpisode={selectEpisode} />
+    <ContextStudyPanel key={`context:${evidenceCampaignId}`} campaignId={evidenceCampaignId} onEpisode={selectEpisode} />
     <ResourceNote resource={experiments} /><div className="section-caption"><span>FROM INCIDENT TO A TESTED REPAIR</span><span>Hypotheses, attempts and failed gates stay visible.</span></div><div className="experiment-grid"><CounterexamplePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><DiagnosticPanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /><ChallengePanel records={experiments.data?.counterexamples} onEpisode={selectEpisode} /></div>
     <ResourceNote resource={regressions} /><div className="support-grid"><RegressionControls key={campaignId} cases={regressions.data} registrations={registrations.data} policies={policies.data} config={config.data} replay={replay} onEpisode={selectEpisode} /><PortabilityPanel registrations={registrations} portabilityIds={experiments.data?.portability_ids} onEpisode={selectEpisode} /><SponsorEvidence config={config.data} campaign={campaign} experiments={experiments.data} aria={aria} replay={replay} /></div>
+    </>}
     <footer><span>FaultLab / Gatekeeper</span><span>Read-only startup · fixed Referee · durable local evidence</span><code>GET /api/health → {health.data?.service ?? 'pending'}</code></footer>
   </main>
 }

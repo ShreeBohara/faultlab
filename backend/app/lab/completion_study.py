@@ -476,19 +476,16 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
     finally:
         for slot in record['slots']:
             if slot['status'] == 'RUNNING': slot['status'] = 'INTERRUPTED'
-        record['ended_at'] = utc_now().isoformat(); save(); ledger.release(reservation)
-        if not stop():
-            state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
-            coordinator.transition(campaign_id, state, record['reason'])
+        record['ended_at'] = utc_now().isoformat()
         try:
-            if owned and runner:
-                for resource in (runner.world_client, runner.provider, getattr(runner, 'telemetry_worker', None)):
-                    if resource:
-                        try: await asyncio.wait_for(resource.close(), timeout=2)
-                        except Exception: pass
+            with ledger.finalizing(reservation):
+                save()
+                if not stop():
+                    state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
+                    coordinator.transition(campaign_id, state, record['reason'])
         finally:
-            async with coordinator.lock:
-                if coordinator.active_id == campaign_id: coordinator.active_id = None
+            await coordinator.finish_activity(campaign_id,runner,owned=owned,activity_id=study_id)
+
 
 
 # Phase 28 (docs/part2/PHASE28_DESIGN.md section 8.1): a second, upgrade-side case manifest, a

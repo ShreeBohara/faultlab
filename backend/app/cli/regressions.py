@@ -1,53 +1,101 @@
 """Trusted local bundle commands. Validation and playback never execute code or calls."""
 import argparse
 import json
+import errno
 from pathlib import Path
+import httpx
 from app.config import Settings
-from app.contracts.models import Campaign,CampaignBudget,RegressionCase,Counterexample,FaultSpec,ReductionResult,DiagnosticResult,ChallengeResult,TrialResult,PolicyVersion,canonical_json,content_hash,new_id
-from app.lab.storage import LabStore
-from app.lab.configuration import frozen_configuration
-from app.integrations.registry import AgentRegistry,freeze_target_configuration
+from app.contracts.models import Campaign,Counterexample,FaultSpec,ReductionResult,DiagnosticResult,ChallengeResult,TrialResult,PolicyVersion,canonical_json
+from app.cli.stores import (writable_store, saved_store, owned_store,
+                            expected_store_identity, OWNERSHIP_ERRORS, ownership_error)
+from app.integrations.registry import AgentRegistry
 from app.integrations.regression_runner import RegressionRunner,inspect_bundle
 from app.cli.client import request,print_json
 
 
 def current_configuration(settings):
-    caps=CampaignBudget(model_calls=settings.faultlab_model_call_cap,tokens=settings.faultlab_token_cap,dollars=float(settings.faultlab_dollar_cap))
-    return frozen_configuration(settings,caps,'live-v1' if settings.wandb_model else 'offline-v1')
+    from app.lab.operator_actions import current_configuration as freeze_configuration
+    return freeze_configuration(settings)
 
 
 def register(store,settings,agent):
-    registry=AgentRegistry(store);current=current_configuration(settings)
-    if agent=='smolagents':
-        if not settings.wandb_model:raise ValueError('Configure the target model before native-agent registration')
-        return registry.register_smolagents(freeze_target_configuration(current,settings.wandb_model))
-    return registry.register_reference(current,internal_smoke=not bool(settings.wandb_model))
+    from app.lab.operator_actions import register_agent
+    return register_agent(store,settings,agent)
+
+
+def _connection_refused(error):
+    pending,seen=[error],set()
+    while pending:
+        current=pending.pop()
+        if current is None or id(current) in seen:continue
+        seen.add(id(current))
+        if isinstance(current,OSError) and current.errno==errno.ECONNREFUSED:return True
+        pending.extend((current.__cause__,current.__context__))
+    return False
+
+
+def register_remote_or_offline(settings,agent):
+    if settings.faultlab_read_only:
+        from app.lab.storage import ReadOnlyStore
+        raise ReadOnlyStore()
+    try:
+        return request('POST','/api/agent-registrations',{
+            'expected_store_identity':expected_store_identity(settings),'agent':agent})
+    except httpx.ConnectError as error:
+        # A responding backend owns admission. Never fall back after rejection,
+        # timeout, a reset, or an ambiguous transport error.
+        if not _connection_refused(error):raise
+        with writable_store(settings) as store:
+            return register(store,settings,agent).model_dump(mode='json')
 
 
 def import_for_execution(store,inspected,bundle_dir,campaign_id):
     """Persist validated data with explicit imported provenance, without activation."""
     from app.integrations.regression_runner import _read
-    from app.lab.regressions import validate_bundle,artifact_kind,manifest_payload
-    bundle=inspected.bundle;policy=inspected.policy
-    payloads={entry.path:_read(Path(bundle_dir)/entry.path).decode('utf-8') for entry in bundle.files}
-    validate_bundle(bundle,payloads)
-    previous=store.get_record('policies',policy.version)
-    if previous and (previous.get('policy_hash')!=policy.policy_hash or previous.get('content')!=policy.content.model_dump(mode='json')):
-        raise ValueError('Imported policy identity conflicts with local history')
-    if not previous:store.put_record('policies',policy.version,policy,immutable=True)
-    store.put_record('bundles',bundle.bundle_id,manifest_payload(bundle),immutable=True)
-    store.put_record('bundle_files',bundle.bundle_id,payloads,immutable=True)
-    store.put_record('bundle_imports',bundle.bundle_id,{'bundle_id':bundle.bundle_id,'manifest_hash':bundle.manifest_hash,'source_configuration_hash':bundle.configuration_hash,'mode':'validated_data_import','source_evidence_verified_locally':False},immutable=True)
-    lineage=json.loads(payloads['lineage.json'])
-    counter=lineage['counterexample']
-    kind=artifact_kind(bundle,policy)
-    case=RegressionCase(regression_id=new_id('regression'),artifact_kind=kind,campaign_id=campaign_id,counterexample_id=counter['counterexample_id'],target_invariant=bundle.target_invariant,
-        first_failing_policy=policy.version,accepted_policy=policy.version if kind=='accepted_policy_bundle' else None,
-        reduction_ref=counter['counterexample_id'] if lineage['reduction'] else None,
-        diagnostic_ref=lineage['diagnostic']['diagnostic_id'] if lineage['diagnostic'] else None,
-        challenge_ref=lineage['challenge']['challenge_id'] if lineage['challenge'] else None,bundle_id=bundle.bundle_id)
-    store.put_record('regressions',case.regression_id,case,immutable=True)
-    return case
+    from app.lab.operator_actions import import_bundle
+    payloads={entry.path:_read(Path(bundle_dir)/entry.path).decode('utf-8') for entry in inspected.bundle.files}
+    return import_bundle(store,inspected,payloads,campaign_id)
+
+
+def inspect_locally(settings,args,inspected):
+    """Reuse fixed validation against an ephemeral registry, never saved history."""
+    with owned_store(':memory:') as scratch:
+        if args.agent:
+            with saved_store(settings) as saved:
+                registration=AgentRegistry(saved).get(args.agent)
+                target=saved.get_record('configurations',registration.configuration_hash)
+            scratch.put_record('configurations',registration.configuration_hash,target,immutable=True)
+            scratch.put_record('agent_registrations',registration.registration_id,registration,immutable=True)
+        else:
+            registration=register(scratch,settings,'reference')
+            target=scratch.get_record('configurations',registration.configuration_hash)
+        fixed=RegressionRunner(scratch,AgentRegistry(scratch))
+        if args.command=='validate':
+            return fixed.validate(args.bundle,target,registration.registration_id).execution.model_dump(mode='json')
+        result=fixed.playback(args.bundle,target,registration.registration_id)
+        return {'execution':result.model_dump(mode='json'),'recorded_trials':[t.model_dump(mode='json') for t in inspected.trial_results],'fresh':False}
+
+
+def execute_remote(settings,args,inspected):
+    """The owning backend imports and queues; the CLI never opens its database."""
+    if not args.execute_live or not args.agent or args.profile!='sandbox-v1':
+        raise ValueError('Explicit --execute-live, registered --agent and --profile sandbox-v1 required')
+    if settings.faultlab_read_only:
+        from app.lab.storage import ReadOnlyStore
+        raise ReadOnlyStore()
+    from app.integrations.regression_runner import _read
+    from app.lab.operator_actions import ImportExecutionRequest,MAX_UPLOAD_BYTES
+    from app.lab.regressions import runnable_policy,validate_bundle
+    runnable_policy(inspected.bundle,inspected.policy)
+    payloads={entry.path:_read(args.bundle/entry.path).decode('utf-8') for entry in inspected.bundle.files}
+    validate_bundle(inspected.bundle,payloads)
+    body=ImportExecutionRequest(
+        expected_store_identity=expected_store_identity(settings),
+        manifest=_read(args.bundle/'manifest.json').decode('utf-8'),files=payloads,
+        agent_registration_id=args.agent,execution_profile_id=args.profile,execute_live=True).model_dump(mode='json')
+    if len(json.dumps(body,ensure_ascii=False).encode('utf-8'))>MAX_UPLOAD_BYTES:
+        raise ValueError('Bundle upload exceeds the transport bound')
+    return request('POST','/api/regressions/import-and-execute',body)
 
 
 def compile_incident(store,settings,counterexample_id,*,policy_version=None,challenge_id=None):
@@ -97,49 +145,36 @@ def main():
     export=commands.add_parser('export');target=export.add_mutually_exclusive_group(required=True)
     target.add_argument('--regression');target.add_argument('--counterexample')
     export.add_argument('--policy');export.add_argument('--challenge');export.add_argument('--output',type=Path,required=True)
-    args=parser.parse_args();settings=Settings.from_env();store=LabStore(settings.artifact_path/'lab.sqlite3')
+    args=parser.parse_args()
     try:
+        settings=Settings.from_env()
         if args.command=='register':
-            print_json(register(store,settings,args.agent).model_dump(mode='json'));return 0
+            print_json(register_remote_or_offline(settings,args.agent))
+            return 0
         if args.command=='export':
             from app.lab.regressions import RegressionCompiler
             if args.output.exists():raise ValueError('Export requires a new output directory')
-            if args.counterexample:
-                bundle=compile_incident(store,settings,args.counterexample,policy_version=args.policy,challenge_id=args.challenge)
-                row=next(r for r in store.list_records('regressions') if r['bundle_id']==bundle.bundle_id)
-            else:
-                if args.policy or args.challenge: raise ValueError('Policy/challenge options apply to counterexample export')
-                row=store.get_record('regressions',args.regression)
-                if not row:raise ValueError('Unknown regression')
-            path=RegressionCompiler(store,secrets=(settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token)).export(row['bundle_id'],args.output)
+            with (writable_store(settings) if args.counterexample else saved_store(settings)) as store:
+                if args.counterexample:
+                    bundle=compile_incident(store,settings,args.counterexample,policy_version=args.policy,challenge_id=args.challenge)
+                    row=next(r for r in store.list_records('regressions') if r['bundle_id']==bundle.bundle_id)
+                else:
+                    if args.policy or args.challenge: raise ValueError('Policy/challenge options apply to counterexample export')
+                    row=store.get_record('regressions',args.regression)
+                    if not row:raise ValueError('Unknown regression')
+                path=RegressionCompiler(store,secrets=(settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token)).export(row['bundle_id'],args.output)
             print_json({'manifest':str(path.resolve()),'regression_id':row['regression_id'],'artifact_kind':row.get('artifact_kind','incident_fixture'),'execution_performed':False});return 0
         inspected=inspect_bundle(args.bundle)
-        registry=AgentRegistry(store)
-        registration=registry.get(args.agent) if args.agent else register(store,settings,'reference')
-        target=store.get_record('configurations',registration.configuration_hash)
-        fixed=RegressionRunner(store,registry)
-        if args.command=='validate':
-            print_json(fixed.validate(args.bundle,target,registration.registration_id).execution.model_dump(mode='json'))
-        elif args.command=='playback':
-            result=fixed.playback(args.bundle,target,registration.registration_id)
-            print_json({'execution':result.model_dump(mode='json'),'recorded_trials':[t.model_dump(mode='json') for t in inspected.trial_results],'fresh':False})
+        if args.command in ('validate','playback'):
+            print_json(inspect_locally(settings,args,inspected))
         else:
-            if not args.execute_live or not args.agent or args.profile!='sandbox-v1':raise ValueError('Explicit --execute-live, registered --agent and --profile sandbox-v1 required')
-            settings.require_live()
-            fixed.validate(args.bundle,target,registration.registration_id)
-            if registration.model!=settings.wandb_model:raise ValueError('Registered target model differs from configured runtime')
-            from app.lab.regressions import runnable_policy
-            runnable_policy(inspected.bundle,inspected.policy)
-            recording=json.loads((args.bundle/'evidence.json').read_text()) if (args.bundle/'evidence.json').is_file() else {}
-            task=recording.get('execution_task') or {}
-            c=request('POST','/api/campaigns',{'task_text':task.get('task_text') or 'Upgrade the authorized order to express shipping, then record one truthful confirmation.','order_id':task.get('order_id') or 'order-regression','mode':'baseline','config_profile_id':'live-v1'})
-            case=import_for_execution(store,inspected,args.bundle,c['campaign_id'])
-            print_json(request('POST',f'/api/regressions/{case.regression_id}/execute',{'agent_registration_id':registration.registration_id,'execution_profile_id':args.profile,'policy_version':inspected.policy.version,'execute_live':True}))
+            print_json(execute_remote(settings,args,inspected))
         return 0
+    except OWNERSHIP_ERRORS as error:
+        print_json(ownership_error(error));return 1
     except Exception as error:
         # Avoid echoing raw untrusted bundle fields or local credentials.
         print_json({'status':'REJECTED','error_type':type(error).__name__,'message':'Bundle, registration or configured execution did not satisfy the trusted runner contract. Inspect local setup and frozen identities.'})
         return 1
-    finally:store.close()
 
 if __name__=='__main__':raise SystemExit(main())

@@ -1,5 +1,8 @@
 # Original workflow continuation — September 27, 2026
 
+Durability is now integrated. See [current durability memory](product-durability-2026-09-27.md) and CURRENT_STATUS.md for current verification. This entry preserves the original workflow/live-run record.
+
+
 Status: declared live run complete; independent audit and isolated durability implementation underway. The owner explicitly authorized
 the recommended original-workflow exercise and bounded live run, with generous time and
 budget. No GitHub push is authorized. Aria remains deferred.

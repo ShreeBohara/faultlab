@@ -1,5 +1,7 @@
 """Full original loop over real HTTP worlds with declared reference JSON inputs."""
 import json
+import asyncio
+import sqlite3
 import pytest
 
 from app.integrations.regression_runner import inspect_bundle
@@ -133,3 +135,32 @@ async def test_original_workflow_with_real_worlds_and_declared_reference_inputs(
     assert len(result['restart']['bundle_trials']) == 3
     assert all(trial['outcome'] == trial['lifecycle'] == 'COMPLETED' and not trial['failed_checks']
                for trial in result['restart']['bundle_trials'])
+
+
+@pytest.mark.anyio
+@pytest.mark.localhost_http
+@pytest.mark.parametrize('cancel',[False,True])
+async def test_source_passed_candidate_becomes_incomplete_after_lab_failure(tmp_path,monkeypatch,cancel):
+    from app.lab.challenge import Challenger
+    async def fail(*args,**kwargs):
+        if cancel: raise asyncio.CancelledError()
+        raise ValueError('SECRET_LAB_FAILURE')
+    monkeypatch.setattr(Challenger,'run',fail)
+    path=tmp_path/'lab-failure'
+    if cancel:
+        with pytest.raises(asyncio.CancelledError): await exercise(path,'accepted')
+    else:
+        result=await exercise(path,'accepted')
+        assert result['campaign']['state']=='ERROR'
+        assert result['records']['source_validation_results'][0]['classification']=='PASSED'
+    with sqlite3.connect('file:'+str(path/'lab.sqlite3')+'?mode=ro',uri=True) as db:
+        rows=lambda kind:[json.loads(row[0]) for row in db.execute('SELECT payload FROM records WHERE kind=?',(kind,))]
+        qualification,=rows('candidate_qualifications')
+        assert qualification['decision']=='INCOMPLETE'
+        assert qualification['source_classification']=='PASSED'
+        assert qualification['interruption_reason']
+        assert 'SECRET_LAB_FAILURE' not in str(qualification)
+        candidate=next(row for row in rows('policies') if row['version']==qualification['candidate_version'])
+        assert candidate['decision']=='INCOMPLETE'
+        assert not rows('promotion_decisions')
+        assert db.execute("SELECT count(*) FROM pointers WHERE name LIKE 'accepted-policy:%'").fetchone()[0]==0

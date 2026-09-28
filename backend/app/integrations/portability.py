@@ -41,7 +41,7 @@ class PortabilityStudy:
 
     async def run(self, *, external_freeze, source_registration_id, target_registration_id,
         target_configuration, baseline_policy, accepted_policy, run_fresh, explicit_live,
-        stop=None, policy_source="transferred_unchanged", source_mode="live"):
+        stop=None, policy_source="transferred_unchanged", source_mode="live", finalize=None):
         if explicit_live is not True:
             raise ValueError("External sandbox study requires explicit live action")
         if policy_source != "transferred_unchanged":
@@ -123,11 +123,17 @@ class PortabilityStudy:
         except Exception:
             result.status = "INCOMPLETE"
             result.limitations.append("Execution or compatibility failed after start; prior attempts retained.")
-        self.store.put_record("portability", result.portability_id, result)
-        self.store.put_record("portability_metrics", result.portability_id, {
+        metrics = {
             "required_pairs": 18, "required_trials": 36, "attempted": len(attempts), "pair_count": len(result.trial_pairs),
             "by_arm": {arm: dict(counts) for arm, counts in counters.items()}, "usage": usage,
             "source_mode": source_mode, "policy_source": policy_source, "policy_hash": accepted_policy.policy_hash,
             "target_configuration_hash": target.configuration_hash, "fresh_external_acceptance": result.status == "COMPLETED" and source_mode == "live",
-        }, immutable=True)
+        }
+        if finalize is not None:
+            # The scheduler commits this result with its request and reservation.
+            # Direct callers retain the original persistence behavior.
+            finalize(result,metrics)
+        else:
+            self.store.put_record("portability",result.portability_id,result)
+            self.store.put_record("portability_metrics",result.portability_id,metrics,immutable=True)
         return result

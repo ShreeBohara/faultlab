@@ -66,25 +66,26 @@ def test_evidence_read_does_not_hold_scheduler_event_loop(tmp_path):
         c.transition(saved.campaign_id, 'RUNNING')
         entered = threading.Event()
         release = threading.Event()
-        original = c.store.list_campaign_episodes
+        from app.lab.storage import ReadOnlyLabStore
+        original = ReadOnlyLabStore.list_campaign_episodes
 
-        def slow_reader(id):
+        def slow_reader(store, id):
             entered.set()
             assert release.wait(3), 'Read must be released by scheduler while it runs'
-            return original(id)
+            return original(store, id)
 
-        c.store.list_campaign_episodes = slow_reader
         try:
-            async with httpx.AsyncClient(transport=httpx.ASGITransport(app=create_app(coordinator=c)), base_url='http://test') as client:
-                read = asyncio.create_task(client.get(f'/api/campaigns/{saved.campaign_id}/matrix'))
-                assert await asyncio.to_thread(entered.wait, 2)
-                try:
-                    response = await asyncio.wait_for(client.post(f'/api/campaigns/{saved.campaign_id}/stop', json={}), .5)
-                    assert response.status_code == 202
-                    assert response.json()['state'] == 'STOPPED'
-                finally:
-                    release.set()
-                assert (await read).status_code == 200
+            with patch.object(ReadOnlyLabStore, 'list_campaign_episodes', slow_reader):
+                async with httpx.AsyncClient(transport=httpx.ASGITransport(app=create_app(coordinator=c)), base_url='http://test') as client:
+                    read = asyncio.create_task(client.get(f'/api/campaigns/{saved.campaign_id}/matrix'))
+                    assert await asyncio.to_thread(entered.wait, 2)
+                    try:
+                        response = await asyncio.wait_for(client.post(f'/api/campaigns/{saved.campaign_id}/stop', json={}), .5)
+                        assert response.status_code == 202
+                        assert response.json()['state'] == 'STOPPED'
+                    finally:
+                        release.set()
+                    assert (await read).status_code == 200
         finally:
             release.set()
             c.active_id = None

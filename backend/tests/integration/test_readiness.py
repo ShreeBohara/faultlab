@@ -100,6 +100,18 @@ def test_safe_error_metadata_never_serializes_sdk_response():
     assert 'secret' not in json.dumps(result)
 
 
+def test_oversized_evidence_has_safe_pre_dispatch_diagnostics():
+    from app.contracts.tokens import ModelInputLimit, validate_model_input
+    from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT
+    with pytest.raises(ModelInputLimit) as captured:
+        validate_model_input([{'role': 'user', 'content': 'secret-evidence-' * 3000}], 'unknown-model')
+    result = execution_failure(captured.value)
+    assert result['code'] == 'INPUT_LIMIT'
+    assert result['provider_dispatch'] is False
+    assert result['input_token_bound'] > result['input_token_limit'] == MODEL_INPUT_TOKEN_LIMIT
+    assert 'secret-evidence' not in json.dumps(result)
+
+
 def test_inference_only_execution_does_not_dispatch_existing_aria_automation(tmp_path):
     class Bridge:
         async def publish_campaign(self, *args, **kwargs):

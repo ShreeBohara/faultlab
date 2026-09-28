@@ -46,7 +46,12 @@ def execution_failure(error):
     Static explanations and code locations are enough to locate a failure safely.
     """
     from app.providers.runtime import RuntimeProviderError
-    if isinstance(error, RuntimeProviderError):
+    from app.contracts.tokens import ModelInputLimit
+    if isinstance(error, ModelInputLimit):
+        result = {'code': 'INPUT_LIMIT', 'message': 'Saved evidence exceeds the model input limit. This request was rejected before provider dispatch.',
+                  'input_token_bound': error.token_bound, 'input_token_limit': error.token_limit,
+                  'provider_dispatch': False}
+    elif isinstance(error, RuntimeProviderError):
         result = {'code': error.code, 'message': 'A model request failed; inspect the saved provider diagnostics.',
                   'diagnostics': error.diagnostics}
     elif isinstance(error, httpx.HTTPStatusError):
@@ -61,7 +66,7 @@ def execution_failure(error):
         result = {'code': 'EXECUTION_ERROR', 'message': 'Execution failed; inspect the saved error class and code location.'}
     names = {'ValueError', 'TypeError', 'KeyError', 'RuntimeError', 'AttributeError', 'TimeoutError',
              'ConnectionError', 'ConnectError', 'ConnectTimeout', 'ReadTimeout', 'HTTPStatusError',
-             'ConfigurationError', 'RuntimeProviderError', 'StoreConflict', 'ValidationError', 'AssertionError'}
+             'ConfigurationError', 'RuntimeProviderError', 'ModelInputLimit', 'StoreConflict', 'ValidationError', 'AssertionError'}
     result['error_class'] = type(error).__name__ if type(error).__name__ in names else 'UnexpectedError'
     root = Path(__file__).resolve().parents[1]
     locations = []

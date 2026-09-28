@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 from app.config import Settings
 from app.contracts.models import Campaign, content_hash
-from app.lab.storage import LabStore
+from app.cli.stores import writable_store, OWNERSHIP_ERRORS, ownership_error
 from app.lab.policies import PolicyRepository
 from app.referee.freeze import freeze_core
 from app.referee.manifests import AUDIT_DIR
@@ -48,11 +48,13 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--campaign',required=True)
     args=parser.parse_args()
-    settings=Settings.from_env(); store=LabStore(settings.artifact_path/'lab.sqlite3')
     try:
         from app.cli.client import print_json
-        print_json(freeze_campaign(store,settings,args.campaign))
+        settings=Settings.from_env()
+        with writable_store(settings) as store:
+            print_json(freeze_campaign(store,settings,args.campaign))
+    except OWNERSHIP_ERRORS as error:
+        parser.error(ownership_error(error)['message'])
     except (ValueError,OSError): parser.error('Freeze rejected: campaign must be complete with unchanged source/configuration and immutable policy. No execution started.')
-    finally: store.close()
 
 if __name__=='__main__':main()

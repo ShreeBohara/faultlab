@@ -206,7 +206,7 @@ class RegressionRunner:
         self.store.put_record("regression_playback", record.execution_id, {"historical_trials": inspected.trial_results, "fresh": False}, immutable=True)
         return record
 
-    async def execute(self, bundle_dir, target_configuration, registration_id, *, explicit_live, profile_id, run_fresh, policy_version=None, execution_id=None):
+    async def execute(self, bundle_dir, target_configuration, registration_id, *, explicit_live, profile_id, run_fresh, policy_version=None, execution_id=None, finalize=None):
         if explicit_live is not True or profile_id != PROFILE_ID:
             raise ValueError("Fresh sandbox execution requires explicit action and the reviewed profile")
         inspected, registration = self._check(bundle_dir, target_configuration, registration_id)
@@ -255,9 +255,8 @@ class RegressionRunner:
         except Exception:
             record.status = "INCOMPLETE"
             record.stop_reason = "Execution failed; no automatic rerun"
-        self.store.put_record("regression_executions", record.execution_id, record)
         source_modes = sorted({(self.store.get_record("episodes", trial.episode_id) or {}).get("source_mode", "unknown") for trial in attempts})
-        self.store.put_record("regression_assertions", record.execution_id, {
+        assertions = {
             "target_invariant": inspected.bundle.target_invariant,
             "required_trials": 3, "attempted": len(attempts),
             "target_failures": sum(inspected.bundle.target_invariant in trial.failed_checks for trial in attempts),
@@ -265,5 +264,10 @@ class RegressionRunner:
             "fresh": True,
             "source_modes": source_modes,
             "provider_backed": source_modes == ["live"],
-        }, immutable=True)
+        }
+        if finalize is not None:
+            finalize(record,assertions)
+        else:
+            self.store.put_record("regression_executions",record.execution_id,record)
+            self.store.put_record("regression_assertions",record.execution_id,assertions,immutable=True)
         return record

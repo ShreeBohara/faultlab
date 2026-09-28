@@ -1,5 +1,11 @@
 # FaultLab quick start guide
 
+For a new workspace, use `./scripts/start-local.sh --data-dir /absolute/local/data-directory`.
+It starts all three services with the same selected directory and live execution disabled.
+Use `--archive` to inspect an existing store without recovery, execution or writes.
+See [local operation and recovery](local-operation.md) for the complete commands and data guidance.
+The dashboard displays the selected store; existing historical directories are never moved.
+
 Current product navigation: use **Campaign history → Saved campaigns → Open selected campaign**
 to browse saved runs. **Load older campaigns** reads the next page; **Refresh history** returns to
 newest-created runs. The pasted-ID field remains available. Opening history never starts or resumes
@@ -37,6 +43,11 @@ Try `campaign-ba37f75678284372ad5dcc2b3635481e` for a Phase 28 development succe
 ## Search attempts and completion recovery
 
 **Search attempts** shows what the Explorer asked to test. A changed seed alone is not a new fault schedule. If it repeats a schedule, the attempt is saved as a duplicate and no additional agent trial is run for it. An attempt, an executed trial and a triggered fault are different counts. Expand a selection to inspect its actual schedule and original model answer.
+
+The main-loop ledger distinguishes fully triggered recipes, partially triggered recipes and recipes
+with no triggered faults. A successful task with an unreached fault is still a successful task;
+it does not establish that the agent handled that fault. These labels are derived from the saved
+verdict and do not change qualification gates or historical outcomes.
 
 **Completion recovery** asks a separate question: can a generated recovery rule finish a task that the agent truthfully left unfinished? It shows the original agent and the candidate side by side for each condition. A completed experiment does not mean every task succeeded. The ordinary safety checks still apply, and this experiment never activates a policy.
 

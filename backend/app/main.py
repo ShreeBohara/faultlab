@@ -16,8 +16,13 @@ def create_app(*, settings=None, coordinator=None):
         with lock:
             if current is None:
                 from app.config import Settings
-                from app.lab.coordinator import LabCoordinator
-                current=LabCoordinator(settings or Settings.from_env())
+                selected = settings or Settings.from_env()
+                if selected.faultlab_read_only:
+                    from app.lab.dashboard import ArchiveCoordinator
+                    current = ArchiveCoordinator(selected)
+                else:
+                    from app.lab.coordinator import LabCoordinator
+                    current=LabCoordinator(selected)
             return current
 
     @asynccontextmanager

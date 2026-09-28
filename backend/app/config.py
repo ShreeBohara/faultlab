@@ -37,6 +37,7 @@ class Settings:
     typesafe_model: str = ""
 
     faultlab_artifact_dir: str = 'artifacts'
+    faultlab_read_only: bool = False
     faultlab_simulator_url: str = 'http://127.0.0.1:8001'
     faultlab_control_token: str = field(default='', repr=False)
     faultlab_live_enabled: bool = False
@@ -148,6 +149,8 @@ class Settings:
         missing = []
         if not self.faultlab_live_enabled:
             missing.append('FAULTLAB_LIVE_ENABLED')
+        if self.faultlab_read_only:
+            missing.append('FAULTLAB_READ_ONLY')
         if self.faultlab_confirmed_entity != self.wandb_entity:
             missing.append('FAULTLAB_CONFIRMED_ENTITY')
         if not (1 <= self.faultlab_model_call_cap <= 6000):

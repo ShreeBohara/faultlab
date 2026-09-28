@@ -1,6 +1,7 @@
 """Explicit scheduler requests for protected comparison and portability studies."""
 import argparse
 from app.cli.client import request,print_json
+from app.cli.stores import OWNERSHIP_ERRORS,ownership_error
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -15,22 +16,15 @@ def main():
     if args.study=='portability':body['agent_registration_id']=args.agent
     try:
         if args.study=='portability':
-            from pathlib import Path
             from app.config import Settings
-            from app.lab.storage import LabStore
-            from app.integrations.registry import AgentRegistry
-            from app.referee.freeze import freeze_external
-            settings=Settings.from_env();settings.require_live()
-            store=LabStore(settings.artifact_path/'lab.sqlite3')
-            try:
-                frozen=store.get_record('audit_freezes',args.campaign)
-                if not frozen or not frozen.get('learned_arm_available'):raise ValueError('Freeze a completed campaign with accepted policy first')
-                registry=AgentRegistry(store);reg=registry.get(args.agent)
-                registry.verify(args.agent,store.get_record('configurations',reg.configuration_hash))
-                value=freeze_external(Path(frozen['path']).parent,reg)
-                store.put_record('external_freezes',args.campaign,value,immutable=True)
-            finally:store.close()
+            from app.cli.stores import expected_store_identity
+            from app.lab.storage import ReadOnlyStore
+            settings=Settings.from_env()
+            if settings.faultlab_read_only:raise ReadOnlyStore()
+            body['expected_store_identity']=expected_store_identity(settings)
+            suffix='freeze-and-portability'
         print_json(request('POST',f'/api/campaigns/{args.campaign}/{suffix}',body));return 0
+    except OWNERSHIP_ERRORS as error:print_json(ownership_error(error));return 1
     except Exception:print_json({'status':'REJECTED','message':'Local study admission failed; verify completed campaign, immutable freeze, registered target and protected budget.'});return 1
 
 if __name__=='__main__':raise SystemExit(main())

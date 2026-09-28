@@ -1,14 +1,20 @@
 """Admission always precedes effects; unknown usage never refunds reservations."""
 from __future__ import annotations
+from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass
 from functools import wraps
 import time
-from app.contracts.models import CampaignBudget, EpisodeBudget, Usage, canonical_json
+from app.contracts.models import CampaignBudget, EpisodeBudget, Usage, canonical_json, utc_now
 
 class BudgetExhausted(RuntimeError):
     pass
 
 class StopRequested(RuntimeError):
+    pass
+
+class JobFinalizationError(RuntimeError):
+    """Terminal job state and reservation release could not be committed."""
     pass
 
 PROTECTED = {'final_audit':384,'portability':288,'selection_comparison':392}
@@ -103,6 +109,33 @@ class CampaignLedger:
     def release(self, name):
         self.reservations.pop(name,None)
         self._save()
+
+    @contextmanager
+    def finalizing(self,name):
+        """Commit terminal records with release, or retain the recoverable job.
+
+        The caller must perform only synchronous local persistence in this scope.
+        Charges are never refunded; only the reservation mutation is rolled back.
+        """
+        with self.store.lock:
+            reservations=deepcopy(self.reservations)
+            try:
+                with self.store.transaction():
+                    yield
+                    self.release(name)
+            except BaseException as error:
+                self.reservations=reservations
+                # A surrounding campaign may become ERROR after this exception.
+                # Keep prospective proof of the exact abandoned reservation so
+                # restart need not reinterpret any historical terminal campaign.
+                if name in reservations:
+                    self.store.put_record('reservation_finalization_failures',self.campaign_id+':'+name,{
+                        'campaign_id':self.campaign_id,'reservation':name,'status':'PENDING',
+                        'reason':'Atomic job finalization failed; saved effects are not replayed',
+                        'recorded_at':utc_now().isoformat()})
+                if isinstance(error,Exception):
+                    raise JobFinalizationError('Job finalization failed; saved work awaits recovery') from error
+                raise
 
     @synchronized
     def consume_call(self, *, reservation=None, role='actor'):

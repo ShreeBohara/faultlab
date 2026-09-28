@@ -243,10 +243,14 @@ def test_restart_marks_a_running_check_interrupted_and_releases_its_reservation(
     c.store.put_record('heldout_checks', 'heldout-check-1', {'check_id': 'heldout-check-1', 'campaign_id': campaign.campaign_id,
                                                              'status': 'RUNNING', 'decision': 'PENDING'})
     c.store.put_record('budgets', campaign.campaign_id, {'reservations': {'promotion:batch-1': 288, 'other': 5}})
+    c.store.close()
     restarted = LabCoordinator(settings(tmp_path))
-    check = restarted.store.get_record('heldout_checks', 'heldout-check-1')
-    assert check['status'] == 'INTERRUPTED' and check['decision'] == 'INCOMPLETE'
-    assert restarted.store.get_record('budgets', campaign.campaign_id)['reservations'] == {'other': 5}
+    try:
+        check = restarted.store.get_record('heldout_checks', 'heldout-check-1')
+        assert check['status'] == 'INTERRUPTED' and check['decision'] == 'INCOMPLETE'
+        assert restarted.store.get_record('budgets', campaign.campaign_id)['reservations'] == {'other': 5}
+    finally:
+        restarted.store.close()
 
 
 def stored_violation(c, campaign_id, policy_hash, episode_id='episode-held-1'):
@@ -288,9 +292,13 @@ def test_a_restart_recovers_a_stored_candidate_failure_as_harm(tmp_path):
     stored_violation(c, campaign.campaign_id, 'p' * 64)
     c.store.put_record('heldout_checks', 'heldout-check-2', {'check_id': 'heldout-check-2', 'campaign_id': campaign.campaign_id,
                                                              'status': 'RUNNING', 'decision': 'PENDING', 'policy_hash': 'p' * 64})
+    c.store.close()
     restarted = LabCoordinator(settings(tmp_path))
-    check = restarted.store.get_record('heldout_checks', 'heldout-check-2')
-    assert check['decision'] == 'HARM' and check['status'] == 'COMPLETED' and check['candidate_failures'] == ['episode-held-1']
+    try:
+        check = restarted.store.get_record('heldout_checks', 'heldout-check-2')
+        assert check['decision'] == 'HARM' and check['status'] == 'COMPLETED' and check['candidate_failures'] == ['episode-held-1']
+    finally:
+        restarted.store.close()
 
 
 def test_a_report_filed_before_a_stop_is_graded_normally():
@@ -337,9 +345,13 @@ def test_a_restart_with_a_failing_scan_still_starts_and_records_it(tmp_path, mon
                                                              'status': 'RUNNING', 'decision': 'PENDING', 'policy_hash': 'p' * 64})
     import app.lab.heldout_check as module
     monkeypatch.setattr(module, 'stored_candidate_failures', lambda *a, **k: (_ for _ in ()).throw(OSError('bad row')))
+    c.store.close()
     restarted = LabCoordinator(settings(tmp_path))
-    check = restarted.store.get_record('heldout_checks', 'heldout-check-3')
-    assert check['status'] == 'INTERRUPTED' and check['recovery_error'] == 'OSError'
+    try:
+        check = restarted.store.get_record('heldout_checks', 'heldout-check-3')
+        assert check['status'] == 'INTERRUPTED' and check['recovery_error'] == 'OSError'
+    finally:
+        restarted.store.close()
 
 
 # ================================================================= Phase 22: predicate v2

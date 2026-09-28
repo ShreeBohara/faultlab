@@ -1,8 +1,8 @@
 import type { Campaign, CampaignRequest, Episode, Event, PolicyVersion, Counterexample, RegressionCase, AgentRegistration, AriaAnalysis, RegressionBundle, RegressionExecution, DiagnosticResult, ChallengeResult, PortabilityResult, EvaluationBatch } from './generated/contracts'
 import { validateContract, validateList } from './generated/validate'
 
-export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; lab_model?: string; models?: { actor: string; explorer: string; mechanic: string }; actor_context_protocol?: string; model_configured: boolean; live_enabled: boolean; profile_ids: string[]; sponsor: { weave: string; aria: string }; active_campaign_id: string | null; execution_profiles?: { profile_id: string; caps: import('./generated/contracts').EpisodeBudget; requires_live: boolean }[] }
-export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L' | 'P1'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
+export type ConfigStatus = { schema_version: 'faultlab/v1'; model: string; lab_model?: string; models?: { actor: string; explorer: string; mechanic: string }; actor_context_protocol?: string; model_configured: boolean; live_enabled: boolean; profile_ids: string[]; sponsor: { weave: string; aria: string }; active_campaign_id: string | null; data_store?: { identity: string; path: string; read_only: boolean }; execution_profiles?: { profile_id: string; caps: import('./generated/contracts').EpisodeBudget; requires_live: boolean }[] }
+export type MatrixCell = { episode_id: string | null; scenario_alias: string; arm: 'B0' | 'B1' | 'L' | 'P1'; policy_hash: string; outcome: string | null; lifecycle: string; fault_scheduled: boolean; fault_triggered: boolean; fault_count?: number; triggered_fault_count?: number; source_mode: 'live' | 'replay' | 'offline_fixture'; telemetry_provenance: string; usage?: import('./generated/contracts').Usage }
 export type Matrix = { campaign_id: string; cells: MatrixCell[]; counts: Record<string, number> }
 export type EventPage = { events: Event[]; next_after: number; has_more: boolean }
 export type CampaignPage = { campaigns: Campaign[]; next_before: number | null; has_more: boolean }
@@ -14,6 +14,9 @@ const id = encodeURIComponent
 export const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(x => typeof x === 'string')
 const malformed = (label: string): never => { throw new Error(`Malformed ${label} response. The last verified data is retained.`) }
+export class ApiError extends Error {
+  constructor(readonly status: number, message: string) { super(message); this.name = 'ApiError' }
+}
 
 export async function request<T>(path: string, decode: (value: unknown) => T, body?: unknown): Promise<T> {
   // Shared GETs preserve one outstanding fetch per resource across StrictMode mounts.
@@ -27,10 +30,13 @@ export async function request<T>(path: string, decode: (value: unknown) => T, bo
       const timeout = window.setTimeout(() => controller.abort(), 8000)
       try {
         const response = await fetch(`/api${path}`, { method, signal: controller.signal, headers: body === undefined ? undefined : { 'Content-Type': 'application/json' }, body: body === undefined ? undefined : JSON.stringify(body) })
-        const data: unknown = await response.json()
+        const data: unknown = await response.json().catch(error => {
+          if (!response.ok) throw new ApiError(response.status, `The backend returned HTTP ${response.status}.`)
+          throw error
+        })
         if (!response.ok) {
           const message = object(data) && object(data.error) && typeof data.error.message === 'string' ? data.error.message : `The backend returned HTTP ${response.status}.`
-          throw new Error(message)
+          throw new ApiError(response.status, message)
         }
         return data
       } catch (error) {
@@ -46,6 +52,7 @@ export function validateConfig(v: unknown): ConfigStatus {
   if (!object(v) || v.schema_version !== 'faultlab/v1' || typeof v.model !== 'string' || typeof v.model_configured !== 'boolean' || typeof v.live_enabled !== 'boolean' || !strings(v.profile_ids) || !object(v.sponsor) || typeof v.sponsor.weave !== 'string' || typeof v.sponsor.aria !== 'string' || !(v.active_campaign_id === null || typeof v.active_campaign_id === 'string')) return malformed('configuration')
   if (v.models !== undefined && (!object(v.models) || typeof v.models.actor !== 'string' || typeof v.models.explorer !== 'string' || typeof v.models.mechanic !== 'string')) return malformed('role models')
   if (v.actor_context_protocol !== undefined && (typeof v.actor_context_protocol !== 'string' || !v.actor_context_protocol.trim())) return malformed('Actor context protocol')
+  if (v.data_store !== undefined && (!object(v.data_store) || typeof v.data_store.identity !== 'string' || !v.data_store.identity.trim() || typeof v.data_store.path !== 'string' || !v.data_store.path.trim() || typeof v.data_store.read_only !== 'boolean')) return malformed('data store')
   if (v.execution_profiles !== undefined) {
     if (!Array.isArray(v.execution_profiles)) return malformed('execution profiles')
     for (const profile of v.execution_profiles) { if (!object(profile) || typeof profile.profile_id !== 'string' || typeof profile.requires_live !== 'boolean') return malformed('execution profile'); validateContract('EpisodeBudget', profile.caps) }
@@ -66,6 +73,8 @@ export function validateMatrix(v: unknown): Matrix {
   if (!object(v) || typeof v.campaign_id !== 'string' || !Array.isArray(v.cells) || !object(v.counts) || !Object.values(v.counts).every(n => Number.isInteger(n) && (n as number) >= 0)) return malformed('matrix')
   for (const c of v.cells) {
     if (!object(c) || !(c.episode_id === null || typeof c.episode_id === 'string') || typeof c.scenario_alias !== 'string' || typeof c.policy_hash !== 'string' || !['B0', 'B1', 'L', 'P1'].includes(String(c.arm)) || !(c.outcome === null || outcomes.includes(String(c.outcome))) || !['CREATED', 'RUNNING', 'SCORING', 'COMPLETED', 'INTERRUPTED', 'LAB_ERROR', 'NOT_RUN'].includes(String(c.lifecycle)) || typeof c.fault_scheduled !== 'boolean' || typeof c.fault_triggered !== 'boolean' || !['live', 'replay', 'offline_fixture'].includes(String(c.source_mode)) || typeof c.telemetry_provenance !== 'string') return malformed('matrix cell')
+    for (const key of ['fault_count', 'triggered_fault_count']) if (c[key] !== undefined && (!Number.isSafeInteger(c[key]) || (c[key] as number) < 0)) return malformed('matrix fault count')
+    if (typeof c.fault_count === 'number' && typeof c.triggered_fault_count === 'number' && c.triggered_fault_count > c.fault_count) return malformed('matrix fault counts')
     if (c.usage) validateContract('Usage', c.usage)
   }
   return v as Matrix

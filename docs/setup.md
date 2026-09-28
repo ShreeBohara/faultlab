@@ -2,6 +2,15 @@
 
 For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
 
+September 27 product durability: use the [local operation guide](local-operation.md) for the paired
+launcher, explicit data directory, read-only archive and recovery behavior. The [durability review](PRODUCT_DURABILITY_REVIEW_2026-09-27.md)
+records ownership, atomic job finalization, independent dashboard reads and actual manual restart checks.
+Frontend: **206 tests, production build and eight browser fixtures passed**. A fresh offline dashboard
+run completed one upgrade/confirmation and all eight checks with zero model calls; a real restart
+preserved every saved record/event/pointer. Final full backend: **2,123 passed, 180 existing skips, zero failures**, two warnings, 727.37 seconds.
+Three test fixtures were corrected to close the first owner before simulating restart; all assertions
+remain. New provider cost $0.
+
 September 27 product reliability work: [core workflow audit and verification](PRODUCT_CORE_REVIEW_2026-09-27.md).
 Campaign history, saved regression execution history and readiness are now in the dashboard. Saved-record reads run outside
 the scheduler event loop. Retained candidate violations, lab/world clock disagreement, interrupted

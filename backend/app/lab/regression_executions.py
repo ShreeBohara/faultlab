@@ -1,7 +1,7 @@
 """Trusted registration execution through the single-active bounded scheduler."""
 import asyncio
 from app.contracts.models import RegressionExecution,RegressionBundle,Usage,EpisodeBudget,content_hash,new_id
-from app.lab.budgets import CampaignLedger,StopRequested
+from app.lab.budgets import CampaignLedger,StopRequested,JobFinalizationError
 from app.lab.storage import StoreConflict
 from app.lab.regressions import RegressionCompiler,runnable_policy
 
@@ -55,7 +55,15 @@ async def execute_regression(coordinator,regression_id,request):
         finally: await coordinator.finish_activity(campaign.campaign_id,activity_id=execution_id)
         raise
     async def execute():
-        runner=None; owned=False
+        runner=None; owned=False; finalized=False; finalization_failed=False; reason=None; error_record=None
+        def finalize(result,assertions):
+            nonlocal finalized
+            with ledger.finalizing(reservation):
+                coordinator.store.put_record('regression_executions',execution_id,result)
+                if result.status=='INCOMPLETE':
+                    interrupt_regression(coordinator.store,execution_id,result.stop_reason)
+                coordinator.store.put_record('regression_assertions',execution_id,assertions,immutable=True)
+            finalized=True
         try:
             runner,owned=await coordinator._get_runner(True)
             target_campaign=campaign.model_copy(deep=True); target_campaign.model=registration.model; target_campaign.configuration_hash=registration.configuration_hash
@@ -64,21 +72,23 @@ async def execute_regression(coordinator,regression_id,request):
                 fixture=fixture_id
                 if fixture!=checked.bundle.fixture_id: raise ValueError('Frozen initial-state fixture changed')
                 return await runner.run(target_campaign,recipe,transferred,purpose='reproduction',arm='B0' if transferred.decision=='BASELINE' else 'L',trial_index=index,study_id=execution_id,evidence_context_id=execution_id,fixture_id=fixture,ledger=ledger,reservation=reservation,stop=lambda:coordinator.get(campaign.campaign_id).stop_requested,agent_registration_id=reviewed.registration_id,actor=actor)
-            await fixed.execute(directory,target,registration.registration_id,explicit_live=True,profile_id='sandbox-v1',run_fresh=fresh,policy_version=policy,execution_id=execution_id)
+            await fixed.execute(directory,target,registration.registration_id,explicit_live=True,profile_id='sandbox-v1',run_fresh=fresh,policy_version=policy,execution_id=execution_id,finalize=finalize)
+        except JobFinalizationError:
+            finalization_failed=True
+            raise
         except (asyncio.CancelledError,StopRequested):
-            interrupt_regression(coordinator.store,execution_id,'Execution interrupted; saved effects are not replayed')
+            reason='Execution interrupted; saved effects are not replayed'
             raise
         except Exception as error:
             from app.lab.readiness import execution_failure
-            interrupt_regression(coordinator.store,execution_id,'Execution failed; saved effects are not replayed')
-            coordinator.store.put_record('regression_execution_errors',execution_id,{'execution_id':execution_id,**execution_failure(error)})
+            reason='Execution failed; saved effects are not replayed'
+            error_record={'execution_id':execution_id,**execution_failure(error)}
         finally:
             try:
-                saved=coordinator.store.get_record('regression_executions',execution_id)
-                if saved and saved['status'] in ('PENDING','RUNNING'):
-                    interrupt_regression(coordinator.store,execution_id,'Execution ended without completion; saved effects are not replayed')
-            finally:
-                try: ledger.release(reservation)
-                finally: await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=execution_id)
+                if not finalized and not finalization_failed:
+                    with ledger.finalizing(reservation):
+                        interrupt_regression(coordinator.store,execution_id,reason or 'Execution ended without completion; saved effects are not replayed')
+                        if error_record: coordinator.store.put_record('regression_execution_errors',execution_id,error_record)
+            finally: await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=execution_id)
     coordinator.tasks[execution_id]=asyncio.create_task(execute())
     return record

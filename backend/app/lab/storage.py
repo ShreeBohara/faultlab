@@ -1,6 +1,6 @@
 """One serialized SQLite writer, parameterized records and atomic state transitions."""
 from __future__ import annotations
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import json
 from pathlib import Path
 import sqlite3
@@ -12,36 +12,59 @@ class StoreConflict(ValueError):
     pass
 
 
+class ReadOnlyStore(StoreConflict):
+    pass
+
+
 class LabStore:
+    read_only = False
+
     def __init__(self, path):
         self.path = str(path)
         if self.path != ':memory:':
             Path(self.path).parent.mkdir(parents=True, exist_ok=True)
         self.lock = RLock()
+        self._closed = False
+        self._close_callbacks = []
         self.db = sqlite3.connect(self.path, check_same_thread=False, isolation_level=None)
-        self.db.row_factory = sqlite3.Row
-        self.db.execute('PRAGMA foreign_keys=ON')
-        self.db.execute('PRAGMA journal_mode=WAL')
-        self.db.execute('PRAGMA busy_timeout=5000')
-        self.db.executescript('''
-          CREATE TABLE IF NOT EXISTS records(kind TEXT NOT NULL,id TEXT NOT NULL,payload TEXT NOT NULL,immutable INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(kind,id));
-          CREATE TABLE IF NOT EXISTS episode_registry(id TEXT PRIMARY KEY,campaign_id TEXT NOT NULL);
-          CREATE TABLE IF NOT EXISTS events(episode_id TEXT NOT NULL REFERENCES episode_registry(id),seq INTEGER NOT NULL,payload TEXT NOT NULL,PRIMARY KEY(episode_id,seq));
-          CREATE TABLE IF NOT EXISTS ingestion_keys(project TEXT NOT NULL,root TEXT NOT NULL,episode_id TEXT NOT NULL REFERENCES episode_registry(id),PRIMARY KEY(project,root),UNIQUE(project,episode_id));
-          CREATE TABLE IF NOT EXISTS pointers(name TEXT PRIMARY KEY,value TEXT NOT NULL);
-        ''')
+        try:
+            self.db.row_factory = sqlite3.Row
+            self.db.execute('PRAGMA foreign_keys=ON')
+            self.db.execute('PRAGMA journal_mode=WAL')
+            self.db.execute('PRAGMA busy_timeout=5000')
+            self.db.executescript('''
+              CREATE TABLE IF NOT EXISTS records(kind TEXT NOT NULL,id TEXT NOT NULL,payload TEXT NOT NULL,immutable INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(kind,id));
+              CREATE TABLE IF NOT EXISTS episode_registry(id TEXT PRIMARY KEY,campaign_id TEXT NOT NULL);
+              CREATE INDEX IF NOT EXISTS episode_registry_campaign ON episode_registry(campaign_id,id);
+              CREATE TABLE IF NOT EXISTS events(episode_id TEXT NOT NULL REFERENCES episode_registry(id),seq INTEGER NOT NULL,payload TEXT NOT NULL,PRIMARY KEY(episode_id,seq));
+              CREATE TABLE IF NOT EXISTS ingestion_keys(project TEXT NOT NULL,root TEXT NOT NULL,episode_id TEXT NOT NULL REFERENCES episode_registry(id),PRIMARY KEY(project,root),UNIQUE(project,episode_id));
+              CREATE TABLE IF NOT EXISTS pointers(name TEXT PRIMARY KEY,value TEXT NOT NULL);
+            ''')
+        except BaseException:
+            self.db.close()
+            raise
 
     @contextmanager
     def transaction(self):
         with self.lock:
-            self.db.execute('BEGIN IMMEDIATE')
+            # Nested record/ledger helpers participate in an outer atomic change.
+            # Savepoints also let a caller catch one inner failure without
+            # accidentally committing its partially written records.
+            nested = self.db.in_transaction
+            self._savepoint_index = getattr(self, '_savepoint_index', 0) + 1
+            savepoint = f'faultlab_{self._savepoint_index}'
+            self.db.execute(f'SAVEPOINT {savepoint}' if nested else 'BEGIN IMMEDIATE')
             try:
                 yield self.db
+                self.db.execute(f'RELEASE SAVEPOINT {savepoint}' if nested else 'COMMIT')
             except BaseException:
-                self.db.execute('ROLLBACK')
+                if self.db.in_transaction:
+                    if nested:
+                        self.db.execute(f'ROLLBACK TO SAVEPOINT {savepoint}')
+                        self.db.execute(f'RELEASE SAVEPOINT {savepoint}')
+                    else:
+                        self.db.execute('ROLLBACK')
                 raise
-            else:
-                self.db.execute('COMMIT')
 
     def get_record(self, kind, id):
         with self.lock:
@@ -171,6 +194,56 @@ class LabStore:
                 raise StoreConflict('Stale expected parent')
             db.execute('INSERT INTO pointers VALUES(?,?) ON CONFLICT(name) DO UPDATE SET value=excluded.value',(name,value))
 
+    def on_close(self, callback):
+        """Release resources tied to this connection even on explicit store close."""
+        if not callable(callback):
+            raise TypeError('Store close callback must be callable')
+        with self.lock:
+            if not self._closed:
+                self._close_callbacks.append(callback)
+                return
+        callback()
+
     def close(self):
         with self.lock:
+            if self._closed:
+                return
+            self._closed = True
+            callbacks, self._close_callbacks = self._close_callbacks, []
+            # ExitStack runs every callback, including when connection closure or
+            # an earlier callback raises. Ownership ends after the DB is closed.
+            with ExitStack() as cleanup:
+                for callback in callbacks:
+                    cleanup.callback(callback)
+                self.db.close()
+
+
+class ReadOnlyLabStore(LabStore):
+    """A separate reader; never creates a store, schema, policy or recovery record."""
+    read_only = True
+
+    def __init__(self, path):
+        if str(path) == ':memory:':
+            raise ValueError('A read-only view requires an existing file-backed store')
+        target = Path(path).expanduser().resolve()
+        self.path = str(target)
+        self.lock = RLock()
+        self._closed = False
+        self._close_callbacks = []
+        self.db = sqlite3.connect(target.as_uri() + '?mode=ro', uri=True,
+                                  check_same_thread=False, isolation_level=None)
+        try:
+            self.db.row_factory = sqlite3.Row
+            self.db.execute('PRAGMA query_only=ON')
+            self.db.execute('PRAGMA busy_timeout=1000')
+        except BaseException:
             self.db.close()
+            raise
+
+    def begin_snapshot(self):
+        self.db.execute('BEGIN')
+
+    @contextmanager
+    def transaction(self):
+        raise ReadOnlyStore('Saved archive is read-only; select a writable store for new work')
+        yield  # pragma: no cover — retain the context-manager protocol

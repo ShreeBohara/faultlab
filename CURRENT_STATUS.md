@@ -10,31 +10,46 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Active next increment: original learning workflow, then durability.** The owner authorized the
-recommended offline end-to-end exercise and a bounded live original campaign. Preparation is in
-progress. Real-world accepted/rejected/interrupted reference fixtures passed: 121 worlds,
-2,094 independent comparisons, including restart and fresh exported-bundle execution. This is
-explicitly manual/scripted evidence, not generated learning. The retry-budget fix passed 51 focused
-checks; three complete workflow tests also passed. Full backend: **2,019 passed, 180 existing skips,
-zero failures**, one existing warning, 1,174.73 seconds. [The declared live original campaign](docs/PRODUCT_LOOP_RUN_2026-09-27.md)
-`c701e850…` finished normally **NO_CHANGE**: seven tasks completed, zero violations, seven verified
-remote traces; eight Explorer requests included one correctly declined duplicate. Four episodes
-fully triggered their recipes; three contained unreached status-read faults (one also triggered
-its notification fault). No counterexample or candidate qualified; baseline remains active.
-**New conservative charge $1.05 / 39 requests; carried total $856.96.** Measured token pricing
-is $0.15324862, separately from the unknown provider-billed cost. Manual dashboard/reload checks
-preserved the same 39 requests. Independent audit passed **188 checks**, including all seven worlds,
-31 exact Actor request hashes and 34 fresh read-only Weave readbacks. Exposure was four full recipes,
-one partial and two absent. No further inference calls were made.
-The durability review found that a second backend can wrongly interrupt the first backend's jobs;
-an exclusive owner guard and remaining job recovery are being implemented in a separate checkout,
-`/Users/shree/FaultLab_Worktrees/product-durability-2026-09-27`. The original checkout remains frozen
-at live runtime `60f27623…` until integration. Isolated focused checks cover exclusive ownership,
-read-only archives, independent SQL readers and interrupted-job recovery. Frontend checks passed
-200 tests, production build and eight browser tests; manual archive browsing confirms disabled
-mutations and recovery from a missing saved ID. Atomic job/budget finalization and CLI writer
-ownership are now being completed before the full verification pass. Follow
-[original-workflow memory](memory/context/product-loop-2026-09-27.md) for this active increment.
+**Durability increment completed and verified.** The original learning workflow was
+exercised end to end, then the app's ownership, recovery and local operation were hardened. One writable
+coordinator now owns each store before recovery; archive mode never initializes or recovers records;
+dashboard queries use independent read-only snapshots; job finalization and reservation release are atomic.
+CLI registration, import/execution and portability preparation now use the owning backend. A paired local
+launcher makes the data directory explicit. The dashboard handles missing saved IDs without repeated
+requests and distinguishes full, partial and absent fault exposure.
+
+Current runtime: `7dfdfe29fd210c70b5b83915f0cd47b144e03d49ffe172a9dfa722c50bd523f0`.
+The complete backend suite passed on this frozen source: **2,123 passed, 180 existing skips, zero failures**,
+two warnings (Starlette deprecation and the explicit fork ownership test), 727.37 seconds. Three old restart
+fixtures were corrected to close the first store; all recovery assertions stayed intact. Frontend:
+**206 tests, production build and eight browser fixtures passed** (one opt-in actual-backend test skipped).
+Actual manual checks used both the archive and a fresh offline store: one upgrade, one confirmation,
+all eight fixed checks, zero model calls. A real process restart preserved all 23 records, eight events
+and the policy pointer exactly. A second coordinator was refused before recovery. All eight closed live
+SQLite files retained their hashes and modification times after archive browsing.
+[Durability review](docs/PRODUCT_DURABILITY_REVIEW_2026-09-27.md) and
+[current implementation memory](memory/context/product-durability-2026-09-27.md) record the evidence.
+
+**Next product increment in progress in the isolated checkout:** supported-agent selection through every original-loop phase and an
+explicit supported task/development-case plan. The ordinary campaign still uses the reference Actor;
+existing native smolagents registration/regression support is not yet ordinary campaign selection.
+The original runtime remains the verified durability checkpoint while onboarding is implemented and
+reviewed in `/Users/shree/FaultLab_Worktrees/product-durability-2026-09-27`. The local source/evidence
+checkpoint is in `artifacts/product-durability-2026-09-27/final-checkpoint.json`; its external recovery
+copy is `/Users/shree/FaultLab_Backups/2026-09-27/product-durability/`.
+
+**The latest live original campaign is closed NO_CHANGE.**
+[Declared run](docs/PRODUCT_LOOP_RUN_2026-09-27.md) `c701e850…`, frozen runtime `60f27623…`,
+completed seven tasks with zero violations and seven verified traces. Eight Explorer requests included
+one correctly declined duplicate. Exposure was four full recipes, one partial and two absent; the
+status-read faults were not reached because the Actor already had terminal receipts. This is an Explorer
+planning limitation, not an Actor mistake or FaultLab dispatch failure. No source candidate qualified;
+baseline remains active. Independent audit passed 188 checks, including 34 read-only Weave readbacks.
+[Closed result](docs/PRODUCT_LOOP_RESULTS_2026-09-27.md). No repeat campaign is planned merely to seek success.
+
+**Spending:** $1.04662 conservative bound for those 39 live requests ($1.05 carried); measured token-priced
+estimate $0.15324862, provider-billed cost unavailable. **Carried total $856.96. Durability work: $0 in
+provider calls.** All historical evidence is preserved. No GitHub push.
 
 Continue to use the milestones below as hypotheses, not a fixed script. Exercise independent
 architectural judgment and verify manually as well as with tests. Time and budget are generous;

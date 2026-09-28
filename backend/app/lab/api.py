@@ -1,12 +1,14 @@
 """Strict, read-safe localhost dashboard API; lazy dependency preserves health."""
 from typing import Literal
+from contextvars import ContextVar
 from pydantic import Field,ValidationError
-from fastapi import APIRouter,Query
+from fastapi import APIRouter,Query,Request
 from fastapi.responses import JSONResponse,Response
 from app.config import ConfigurationError
 from app.contracts.models import CampaignRequest,StrictModel,Id,Episode,canonical_json,new_id
-from app.lab.storage import StoreConflict
+from app.lab.storage import StoreConflict,ReadOnlyStore
 from app.lab.budgets import BudgetExhausted
+from app.lab.operator_actions import FreezePortabilityRequest,RegistrationRequest
 
 class EmptyRequest(StrictModel): pass
 class RetryRequest(StrictModel): episode_ids:list[Id]|None=Field(default=None,max_length=200)
@@ -61,7 +63,10 @@ class ExecutionRequest(StrictModel):
 
 def error_response(error):
     from app.lab.readiness import ServiceNotReady
-    if isinstance(error,KeyError): status,code,message=404,'NOT_FOUND','Unknown record'
+    from app.lab.ownership import StoreInUse
+    if isinstance(error,StoreInUse): status,code,message=409,'STORE_IN_USE','Another FaultLab backend owns this store. Use that backend or select a separate data directory.'
+    elif isinstance(error,ReadOnlyStore): status,code,message=409,'READ_ONLY_ARCHIVE','This store is a read-only archive. Select a writable data directory for new work.'
+    elif isinstance(error,KeyError): status,code,message=404,'NOT_FOUND','Unknown record'
     elif isinstance(error,(StoreConflict,BudgetExhausted)): status,code,message=409,'CONFLICT',str(error)
     elif isinstance(error,ConfigurationError): status,code,message=503,'SERVICE_UNAVAILABLE','Live configuration is not ready: '+', '.join(error.missing_fields)
     elif isinstance(error,ServiceNotReady): status,code,message=503,'SERVICE_NOT_READY',str(error)
@@ -73,7 +78,10 @@ def error_response(error):
 
 def create_router(get_coordinator):
     router=APIRouter(prefix='/api')
-    def c(): return get_coordinator() if callable(get_coordinator) else get_coordinator
+    reader = ContextVar('dashboard_reader', default=None)
+    def c():
+        view = reader.get()
+        return view if view is not None else (get_coordinator() if callable(get_coordinator) else get_coordinator)
     def record(kind,id):
         found=c().store.get_record(kind,id)
         if found is None: raise KeyError(id)
@@ -94,7 +102,10 @@ def create_router(get_coordinator):
         if iscoroutinefunction(fn):
             @wraps(fn)
             async def wrapped(*args,**kwargs):
-                try: return await fn(*args,**kwargs)
+                try:
+                    if fn.__name__ != 'readiness' and getattr(c(), 'read_only', False):
+                        raise ReadOnlyStore()
+                    return await fn(*args,**kwargs)
                 except Exception as error: return error_response(error)
         else:
             # FastAPI runs synchronous readers in its worker pool. Include JSON
@@ -103,7 +114,13 @@ def create_router(get_coordinator):
             @wraps(fn)
             def wrapped(*args,**kwargs):
                 try:
-                    result=fn(*args,**kwargs)
+                    from app.lab.dashboard import dashboard_view
+                    with dashboard_view(c()) as view:
+                        token = reader.set(view)
+                        try:
+                            result=fn(*args,**kwargs)
+                        finally:
+                            reader.reset(token)
                     return result if isinstance(result,Response) else JSONResponse(content=jsonable_encoder(result))
                 except Exception as error: return error_response(error)
         return wrapped
@@ -177,10 +194,11 @@ def create_router(get_coordinator):
     @guarded
     def matrix(id:str):
         c().get(id); episodes=records('episodes',id)
-        cells=[]; counts={'valid_attempted':0,'completed':0,'violations':0,'safe_unresolved':0,'correctly_rejected':0,'lab_errors':0,'interrupted':0,'scheduled':0,'triggered':0,'untriggered':0}
+        cells=[]; counts={'valid_attempted':0,'completed':0,'violations':0,'safe_unresolved':0,'correctly_rejected':0,'lab_errors':0,'interrupted':0,'scheduled':0,'triggered':0,'untriggered':0,'partially_triggered':0,'none_triggered':0}
         for episode in episodes:
             if episode['experiment_purpose'] in ('diagnostic_profile','selection_comparison','portability') or episode['study_id']!=id: continue
             verdict=episode.get('verdict') or {}; faults=verdict.get('fault_executions',[])
+            fault_count=len(faults); triggered_fault_count=sum(bool(f['triggered']) for f in faults)
             outcome=verdict.get('outcome'); scheduled=bool(faults); triggered=scheduled and all(f['triggered'] for f in faults)
             if episode['lifecycle']=='INTERRUPTED': counts['interrupted']+=1
             elif episode['lifecycle']=='LAB_ERROR': counts['lab_errors']+=1
@@ -189,7 +207,9 @@ def create_router(get_coordinator):
                 key={'COMPLETED':'completed','VIOLATION':'violations','SAFE_UNRESOLVED':'safe_unresolved','CORRECTLY_REJECTED':'correctly_rejected'}.get(outcome)
                 if key: counts[key]+=1
             counts['scheduled']+=int(scheduled); counts['triggered']+=int(triggered); counts['untriggered']+=int(scheduled and not triggered)
-            cells.append({'episode_id':episode['episode_id'],'scenario_alias':episode['scenario_hash'][:10],'arm':episode['arm'],'policy_hash':episode['policy_hash'],'outcome':outcome,'lifecycle':episode['lifecycle'],'fault_scheduled':scheduled,'fault_triggered':triggered,'source_mode':episode['source_mode'],'telemetry_provenance':(c().store.get_record('evidence',episode['episode_id']) or {}).get('source','local_only'),'usage':episode['usage']})
+            counts['partially_triggered']+=int(0<triggered_fault_count<fault_count)
+            counts['none_triggered']+=int(scheduled and triggered_fault_count==0)
+            cells.append({'episode_id':episode['episode_id'],'scenario_alias':episode['scenario_hash'][:10],'arm':episode['arm'],'policy_hash':episode['policy_hash'],'outcome':outcome,'lifecycle':episode['lifecycle'],'fault_scheduled':scheduled,'fault_triggered':triggered,'fault_count':fault_count,'triggered_fault_count':triggered_fault_count,'source_mode':episode['source_mode'],'telemetry_provenance':(c().store.get_record('evidence',episode['episode_id']) or {}).get('source','local_only'),'usage':episode['usage']})
         return {'campaign_id':id,'cells':cells,'counts':counts}
     @router.get('/evidence-retries/{id}')
     @guarded
@@ -368,11 +388,21 @@ def create_router(get_coordinator):
     @router.get('/agent-registrations')
     @guarded
     def registrations(): return records('agent_registrations')
+    @router.post('/agent-registrations',status_code=201)
+    @guarded
+    async def register_agent(request:RegistrationRequest):
+        from app.lab.operator_actions import register_owned_agent
+        return register_owned_agent(c(),request)
     @router.post('/campaigns/{id}/portability',status_code=202)
     @guarded
     async def portability_start(id:str,request:PortabilityRequest):
         from app.lab.portability import queue_portability
         return await queue_portability(c(),id,request)
+    @router.post('/campaigns/{id}/freeze-and-portability',status_code=202)
+    @guarded
+    async def freeze_portability_start(id:str,request:FreezePortabilityRequest):
+        from app.lab.operator_actions import freeze_and_queue_portability
+        return await freeze_and_queue_portability(c(),id,request)
     @router.get('/portability-requests/{id}')
     @guarded
     def portability_request(id:str): return record('portability_requests',id)
@@ -390,6 +420,12 @@ def create_router(get_coordinator):
     def execution_history(id:str,before:int|None=Query(None,ge=1,le=9223372036854775807),limit:int=Query(20,ge=1,le=100)):
         regression=record('regressions',id)
         return c().store.regression_execution_page(regression['bundle_id'],before=before,limit=limit)
+    @router.post('/regressions/import-and-execute',status_code=202)
+    @guarded
+    async def import_execution(request:Request):
+        from app.lab.operator_actions import read_import_request,import_and_execute
+        body=await read_import_request(request)
+        return await import_and_execute(c(),body)
     @router.post('/regressions/{id}/execute',status_code=202)
     @guarded
     async def execute(id:str,request:ExecutionRequest):

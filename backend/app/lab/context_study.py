@@ -20,6 +20,7 @@ still execute. Phase 3 B2 lost an entire paid run to a single untriggered fault;
 a measurement batch should preserve the rest of its evidence.
 """
 import asyncio
+from app.lab.budgets import JobFinalizationError
 from copy import deepcopy
 
 from app.agents.progress import (ACTOR_CONTEXT_PROTOCOL_V1, ACTOR_CONTEXT_PROTOCOL_V2,
@@ -313,7 +314,7 @@ async def queue_context_study(coordinator, campaign_id, changed_protocol=DEFAULT
 
 async def _execute(coordinator, campaign, baseline, record, ledger, reservation):
     store = coordinator.store; study_id = record['study_id']; campaign_id = campaign.campaign_id
-    runner = None; owned = False; rows = []; sessions = {}; profiles = {}
+    runner = None; owned = False; rows = []; sessions = {}; profiles = {}; finalization_failed = False
     start_calls = ledger.used_calls
     start_input, start_output = ledger.measured_input, ledger.measured_output
     start_cost, start_unknown_cost = ledger.used_cost or 0, ledger.unknown_cost_calls
@@ -424,13 +425,16 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation)
         # Persist the decision before any remote call. A restart during a slow
         # telemetry finish would otherwise rewrite a fully paid study as
         # INTERRUPTED with a null assessment, and it could never be rerun.
-        save()
+        with ledger.finalizing(reservation): save()
         for arm, session in sessions.items():
             try:
                 record['telemetry'][arm] = await session.finish(
                     summarize([row['trial'] for row in rows if row['trial'].arm == arm]))
             except Exception:
                 record['telemetry'].setdefault(arm, {})['status'] = 'weave_pending'
+    except JobFinalizationError:
+        finalization_failed = True
+        raise
     except (StopRequested, asyncio.CancelledError):
         record.update(status='INTERRUPTED', decision='INCOMPLETE',
                       reason='Stopped; attempted effects retained without resuming or replaying')
@@ -448,17 +452,13 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation)
             for arm in ARMS}
         record['verified_evidence'] = sum(1 for value in record['evidence'].values()
                                           if value == 'weave_verified')
-        record['ended_at'] = utc_now().isoformat(); save(); ledger.release(reservation)
-        if not stop():
-            state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
-            coordinator.transition(campaign_id, state, record['reason'])
+        record['ended_at'] = utc_now().isoformat()
         try:
-            if owned and runner:
-                for resource in (runner.world_client, runner.provider,
-                                 getattr(runner, 'telemetry_worker', None)):
-                    if resource:
-                        try: await asyncio.wait_for(resource.close(), timeout=2)
-                        except Exception: pass
+            if not finalization_failed:
+                with ledger.finalizing(reservation):
+                    save()
+                    if not stop():
+                        state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
+                        coordinator.transition(campaign_id, state, record['reason'])
         finally:
-            async with coordinator.lock:
-                if coordinator.active_id == campaign_id: coordinator.active_id = None
+            await coordinator.finish_activity(campaign_id,runner,owned=owned,activity_id=study_id)

@@ -262,7 +262,11 @@ async def exercise(path, mode):
             # A coordinator restart must not replay any episode or change a terminal
             # verdict/pointer. A fresh campaign picks up only a real accepted pointer.
             count_before = len(coordinator.store.list_records('episodes'))
-            restarted = LabCoordinator(settings, store=coordinator.store, runner=coordinator.runner)
+            await coordinator.close()
+            restarted = LabCoordinator(settings)
+            restarted.runner = OfflineRunner(restarted.store, world, provider)
+            restarted.evidence_gateway = OfflineEvidence(restarted.store, 'offline-fixture/original-loop')
+            coordinator = restarted
             fresh = restarted.create(CampaignRequest(task_text=campaign.task_text, order_id=campaign.order_id,
                 mode='learn', config_profile_id='live-v1'))
             summary['restart'] = {'historical_campaign': restarted.get(campaign.campaign_id).model_dump(mode='json'),
@@ -299,8 +303,8 @@ async def exercise(path, mode):
             return summary
         finally:
             provider.release.set()
-            await world.close()
-            coordinator.store.close()
+            try: await coordinator.close()
+            finally: await world.close()
 
 
 def summarize(coordinator, campaign_id, provider, before):

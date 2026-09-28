@@ -8,7 +8,7 @@ export function AriaEvidenceForm({ campaignId, disabled }: { campaignId: string;
   const [error, setError] = useState<string | null>(null)
   const locked = useRef(false)
   return <details className="aria-form"><summary>Capture observed Aria evidence</summary><p className="muted">Record actual W&B automation history and attributed analysis. This form saves a pointer; it never invokes Aria. The backend requires a matching registered campaign run and automation.</p><form onSubmit={async e => {
-    e.preventDefault(); if (locked.current) return
+    e.preventDefault(); if (disabled || locked.current) return
     const form = new FormData(e.currentTarget)
     const get = (name: string) => String(form.get(name) ?? '').trim()
     const nullable = (name: string) => get(name) || null

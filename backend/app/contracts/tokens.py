@@ -23,6 +23,15 @@ DEEPSEEK_TOKENIZER_HASH='32b34a41212e92f62e859cbbea121ae705a1fabbf157d9acf22d134
 DEEPSEEK_V4_TOKENIZER_HASH='8f9f37ca37fdc4f5fd36d5cf4d3b0e8392edb4e894fd10cc0d70b4957c8633cf'
 
 
+class ModelInputLimit(ValueError):
+    """Local admission rejected an oversized request before provider dispatch."""
+
+    def __init__(self, token_bound):
+        self.token_bound = token_bound
+        self.token_limit = MODEL_INPUT_TOKEN_LIMIT
+        super().__init__(f'Essential evidence exceeds the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token input budget')
+
+
 def _load_encoding(filename,digest,pattern,name):
     import tiktoken
     path=Path(__file__).resolve().parents[3]/'contracts/tokenizer'/filename
@@ -86,5 +95,5 @@ def input_token_bound(messages,model):
 def validate_model_input(messages,model):
     count=input_token_bound(messages,model)
     if count>MODEL_INPUT_TOKEN_LIMIT:
-        raise ValueError(f'Essential evidence exceeds the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token input budget')
+        raise ModelInputLimit(count)
     return count

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { bundle, campaign, config, episode, fixtureResponse, matrix, readiness, regressionCase } from './fixtures'
+import { bundle, campaign, config, episode, fixtureResponse, matrix, readiness, registration, regressionCase, verifiedExperiments } from './fixtures'
 
 test('saved evidence reload, exact trial drilldown and playback produce only reads', async ({ page }) => {
   const writes: string[] = []; const errors: string[] = []
@@ -151,4 +151,83 @@ test('actual local offline smoke creates fresh world and survives reload', async
   expect(writes.length).toBe(count)
   expect(writes).toHaveLength(2)
   await page.screenshot({ path: test.info().outputPath('actual-offline-evidence.png'), fullPage: true })
+})
+
+test('an absent remembered campaign pauses once and recovers through explicit retry or saved history', async ({ page }) => {
+  const missing = 'campaign-from-another-store'
+  const missingReads: string[] = []; const writes: string[] = []; const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.clock.install()
+  await page.addInitScript(id => localStorage.setItem('faultlab:campaign', id), missing)
+  await page.route('**/api/**', async route => {
+    const request = route.request()
+    if (request.method() !== 'GET') writes.push(request.url())
+    if (request.url().includes(missing)) {
+      missingReads.push(new URL(request.url()).pathname)
+      await route.fulfill({ status: 404, json: { error: { message: 'Unknown record' } } }); return
+    }
+    await route.fulfill({ json: fixtureResponse(request.url()) })
+  })
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Saved campaign unavailable' })).toBeVisible()
+  await expect(page.getByRole('alert')).toHaveCount(1)
+  await expect(page.getByText(/Retrying with backoff/)).toHaveCount(0)
+  await page.clock.fastForward(30000)
+  expect(missingReads).toEqual([`/api/campaigns/${missing}`])
+  await expect(page.getByLabel('Open saved campaign', { exact: true })).toHaveValue(missing)
+  await page.getByRole('button', { name: 'Retry saved campaign' }).click()
+  await expect(page.getByRole('heading', { name: 'Saved campaign unavailable' })).toBeVisible()
+  expect(missingReads).toHaveLength(2)
+  await page.screenshot({ path: test.info().outputPath('missing-campaign-recovery.png'), fullPage: true })
+  await page.getByLabel('Saved campaigns', { exact: true }).selectOption(campaign.campaign_id)
+  await page.getByRole('button', { name: 'Open selected campaign' }).click()
+  await expect(page.getByText('episode started', { exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Saved campaign unavailable' })).toHaveCount(0)
+  expect(writes).toEqual([]); expect(errors).toEqual([])
+})
+
+test('archive browsing shows its location, verified source evidence and disabled mutations while downloads and playback work', async ({ page }) => {
+  const writes: string[] = []; const errors: string[] = []
+  const archivePath = '/local/historical-evidence/lab.sqlite3'
+  const current = { ...campaign, state: 'IDLE' as const }
+  const savedSources = { ...verifiedExperiments, evidence: Array.from({ length: 7 }, (_, index) => ({ ...verifiedExperiments.evidence[0], episode_id: `episode-verified-${index}` })) }
+  page.on('pageerror', error => errors.push(error.message))
+  await page.addInitScript(id => localStorage.setItem('faultlab:campaign', id), campaign.campaign_id)
+  await page.route('**/api/**', async route => {
+    const request = route.request(); const path = new URL(request.url()).pathname
+    if (request.method() !== 'GET') writes.push(path)
+    if (path.endsWith('/download')) { await route.fulfill({ contentType: 'application/zip', body: Buffer.from('PK\u0005\u0006' + '\u0000'.repeat(18)) }); return }
+    const response = path.endsWith('/config/status') ? { ...config, data_store: { identity: 'archive-fixture', path: archivePath, read_only: true } }
+      : path.endsWith('/readiness') ? { ...readiness, ready: false, simulator: { ready: false, code: 'READ_ONLY_ARCHIVE', message: 'This archive cannot start work.' } }
+      : path.endsWith('/experiments') ? savedSources
+      : path.endsWith('/regressions') ? [regressionCase]
+      : path.endsWith('/agent-registrations') ? [registration]
+      : path.endsWith('/bundle') ? bundle
+      : fixtureResponse(request.url(), current)
+    await route.fulfill({ json: response })
+  })
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Read-only archive' })).toBeVisible()
+  await expect(page.getByText(archivePath, { exact: true })).toBeVisible()
+  await expect(page.getByText('Fresh execution disabled', { exact: true })).toBeVisible()
+  await expect(page.getByText('7 verified source episodes', { exact: true })).toBeVisible()
+  await expect(page.getByText(/Campaign telemetry:/)).toContainText('Locally recorded')
+  for (const name of ['Create campaign', /Start campaign/, 'Run baseline', 'Compare', 'Stop', 'Reset future world', 'Retry evidence sync']) {
+    await expect(page.getByRole('button', { name, exact: typeof name === 'string' })).toBeDisabled()
+  }
+  await page.getByLabel('Saved regression').selectOption(regressionCase.regression_id)
+  await page.getByRole('button', { name: 'Inspect saved bundle' }).click()
+  await expect(page.getByText('No saved executions for this bundle.')).toBeVisible()
+  await page.getByLabel('Reviewed agent').selectOption(registration.registration_id)
+  await page.getByLabel('Immutable policy').selectOption('policy-v0')
+  await expect(page.getByRole('button', { name: /Run fresh regression/ })).toBeDisabled()
+  const download = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Download regression' }).click()
+  expect((await download).suggestedFilename()).toMatch(/\.zip$/)
+  await page.getByText('Capture observed Aria evidence', { exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Save evidence capture' })).toBeDisabled()
+  await page.getByRole('button', { name: 'Recorded playback', exact: true }).click()
+  await expect(page.getByText('Recorded playback · read only')).toBeVisible()
+  expect(writes).toEqual([]); expect(errors).toEqual([])
+  await page.screenshot({ path: test.info().outputPath('archive-and-verified-sources.png'), fullPage: true })
 })

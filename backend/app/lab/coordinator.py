@@ -13,8 +13,24 @@ TERMINAL={'NO_CHANGE','STOPPED','COMPLETED','ERROR'}
 
 class LabCoordinator:
     def __init__(self,settings,store=None,runner=None):
+        from app.lab.ownership import CoordinatorLease
+        path=store.path if store is not None else settings.artifact_path/'lab.sqlite3'
+        # Recovery is a writer action. Ownership precedes opening a writable
+        # connection, policy initialization and every crash-recovery mutation.
+        self._lease=CoordinatorLease.acquire(path,store_identity=store)
+        self._closed=False
+        try:
+            self.store=store if store is not None else LabStore(path)
+            self.store.on_close(self._lease.close)
+            self._initialize(settings,runner)
+        except BaseException:
+            try:
+                if store is None and hasattr(self,'store'): self.store.close()
+            finally: self._lease.close()
+            raise
+
+    def _initialize(self,settings,runner):
         self.settings=settings
-        self.store=store or LabStore(settings.artifact_path/'lab.sqlite3')
         self.policies=PolicyRepository(self.store)
         self.runner=runner
         self.active_id=None; self.tasks={}; self.ledgers={}; self.evidence_events={}; self.lock=asyncio.Lock()
@@ -24,108 +40,193 @@ class LabCoordinator:
             if raw_episode['lifecycle'] in ('CREATED','RUNNING','SCORING'):
                 raw_episode['lifecycle']='INTERRUPTED'; raw_episode['reason']='Process restart interrupted execution'; raw_episode['ended_at']=utc_now().isoformat()
                 self.store.put_record('episodes',raw_episode['episode_id'],raw_episode)
+        self._recover_auxiliary_jobs()
+        # Only these prospective failure markers authorize cleanup on a terminal
+        # campaign. Prior terminal campaigns/records are never reinterpreted.
+        for key_record in self.store.list_records('reservation_finalization_failures'):
+            if key_record.get('status')!='PENDING': continue
+            campaign_id=key_record['campaign_id']; reservation=key_record['reservation']
+            with self.store.transaction():
+                self._release_abandoned_reservation(campaign_id,reservation)
+                key_record.update(status='RECOVERED',recovered_at=utc_now().isoformat())
+                self.store.put_record('reservation_finalization_failures',campaign_id+':'+reservation,key_record)
         for kind in ('baseline_studies','completion_studies','context_studies'):
             for study in self.store.list_records(kind):
                 if study['status'] in ('QUEUED','RUNNING'):
-                    study['status']='INTERRUPTED'; study['reason']='Process restart interrupted fixed study; attempts cannot be replayed'
-                    if kind in ('completion_studies','context_studies'):
-                        study['decision']='INCOMPLETE'
-                        for slot in study['slots']:
-                            if slot['status']=='RUNNING': slot['status']='INTERRUPTED'
-                    self.store.put_record(kind,study['study_id'],study)
-                    # An interrupted study's model-call reservation is never spent;
-                    # leaving it in the ledger permanently understates the campaign's
-                    # remaining cap for every later admission check.
-                    budget=self.store.get_record('budgets',study.get('campaign_id',''))
-                    if budget and isinstance(budget.get('reservations'),dict):
-                        prefix={'completion_studies':'completion:','context_studies':'context:','baseline_studies':'baseline:'}[kind]
-                        released={name:value for name,value in budget['reservations'].items() if name!=prefix+study['study_id']}
-                        if released!=budget['reservations']:
-                            budget['reservations']=released
-                            self.store.put_record('budgets',study['campaign_id'],budget)
+                    with self.store.transaction():
+                        study['status']='INTERRUPTED'; study['reason']='Process restart interrupted fixed study; attempts cannot be replayed'
+                        if kind in ('completion_studies','context_studies'):
+                            study['decision']='INCOMPLETE'
+                            for slot in study['slots']:
+                                if slot['status']=='RUNNING': slot['status']='INTERRUPTED'
+                        self.store.put_record(kind,study['study_id'],study)
+                        # An interrupted study's model-call reservation is never spent;
+                        # leaving it in the ledger permanently understates the campaign's
+                        # remaining cap for every later admission check.
+                        budget=self.store.get_record('budgets',study.get('campaign_id',''))
+                        if budget and isinstance(budget.get('reservations'),dict):
+                            prefix={'completion_studies':'completion:','context_studies':'context:','baseline_studies':'baseline:'}[kind]
+                            released={name:value for name,value in budget['reservations'].items() if name!=prefix+study['study_id']}
+                            if released!=budget['reservations']:
+                                budget['reservations']=released
+                                self.store.put_record('budgets',study['campaign_id'],budget)
         # A held-out check runs on a dedicated campaign; its evaluator reservation is
         # named 'promotion:<batch>' and is never spent after a restart.
         for check in self.store.list_records('heldout_checks'):
             if check['status'] in ('QUEUED','RUNNING'):
-                check['status']='INTERRUPTED'; check['decision']='INCOMPLETE'
-                check['reason']='Process restart interrupted the held-out check; attempts cannot be replayed'
-                integrity_findings=[]
-                try:
-                    from app.lab.heldout_check import stored_candidate_failures,heldout_integrity_findings,world_integrity_assessment,WORLD_INTEGRITY_PROTOCOL
-                    integrity_findings=heldout_integrity_findings(self.store,check)
-                    stored=stored_candidate_failures(self.store,check.get('campaign_id'),check.get('policy_hash'),excluded_episode_ids={row['episode_id'] for row in integrity_findings})
-                except Exception as scan_error:
-                    stored=[]; check['recovery_error']=type(scan_error).__name__
-                    if check.get('world_integrity_protocol')==WORLD_INTEGRITY_PROTOCOL:
-                        if check.get('assessment') is not None: check['diagnostic_legacy_assessment']=check['assessment']
-                        check['reason']='World execution integrity could not be verified after restart'
-                        check['assessment']={'decision':'INCOMPLETE','rule':'world_integrity_unavailable','reason':check['reason']}
-                if integrity_findings and 'recovery_error' not in check:
-                    prior=check.get('assessment')
-                    assessment=world_integrity_assessment(prior,integrity_findings,stored)
-                    if prior is not None: check['diagnostic_legacy_assessment']=prior
-                    check.update(world_integrity_findings=integrity_findings,candidate_failures=stored,
-                                 decision=assessment['decision'],reason=assessment['reason'],assessment=assessment,
-                                 status='COMPLETED' if assessment['decision']=='HARM' else 'INTERRUPTED',ended_at=utc_now().isoformat())
-                elif stored:
-                    reason='A candidate trial failed a C1-C8 check (recovered from stored trials after a restart)'
-                    check.update(status='COMPLETED',decision='HARM',candidate_failures=stored,reason=reason,
-                                 ended_at=utc_now().isoformat(),
-                                 assessment={'decision':'HARM','rule':'check_failure','reason':reason,'candidate_failures':stored})
-                self.store.put_record('heldout_checks',check['check_id'],check)
-                budget=self.store.get_record('budgets',check.get('campaign_id',''))
-                if budget and isinstance(budget.get('reservations'),dict):
-                    released={name:value for name,value in budget['reservations'].items() if not name.startswith('promotion:')}
-                    if released!=budget['reservations']:
-                        budget['reservations']=released
-                        self.store.put_record('budgets',check['campaign_id'],budget)
+                with self.store.transaction():
+                    check['status']='INTERRUPTED'; check['decision']='INCOMPLETE'
+                    check['reason']='Process restart interrupted the held-out check; attempts cannot be replayed'
+                    integrity_findings=[]
+                    try:
+                        from app.lab.heldout_check import stored_candidate_failures,heldout_integrity_findings,world_integrity_assessment,WORLD_INTEGRITY_PROTOCOL
+                        integrity_findings=heldout_integrity_findings(self.store,check)
+                        stored=stored_candidate_failures(self.store,check.get('campaign_id'),check.get('policy_hash'),excluded_episode_ids={row['episode_id'] for row in integrity_findings})
+                    except Exception as scan_error:
+                        stored=[]; check['recovery_error']=type(scan_error).__name__
+                        if check.get('world_integrity_protocol')==WORLD_INTEGRITY_PROTOCOL:
+                            if check.get('assessment') is not None: check['diagnostic_legacy_assessment']=check['assessment']
+                            check['reason']='World execution integrity could not be verified after restart'
+                            check['assessment']={'decision':'INCOMPLETE','rule':'world_integrity_unavailable','reason':check['reason']}
+                    if integrity_findings and 'recovery_error' not in check:
+                        prior=check.get('assessment')
+                        assessment=world_integrity_assessment(prior,integrity_findings,stored)
+                        if prior is not None: check['diagnostic_legacy_assessment']=prior
+                        check.update(world_integrity_findings=integrity_findings,candidate_failures=stored,
+                                     decision=assessment['decision'],reason=assessment['reason'],assessment=assessment,
+                                     status='COMPLETED' if assessment['decision']=='HARM' else 'INTERRUPTED',ended_at=utc_now().isoformat())
+                    elif stored:
+                        reason='A candidate trial failed a C1-C8 check (recovered from stored trials after a restart)'
+                        check.update(status='COMPLETED',decision='HARM',candidate_failures=stored,reason=reason,
+                                     ended_at=utc_now().isoformat(),
+                                     assessment={'decision':'HARM','rule':'check_failure','reason':reason,'candidate_failures':stored})
+                    self.store.put_record('heldout_checks',check['check_id'],check)
+                    budget=self.store.get_record('budgets',check.get('campaign_id',''))
+                    if budget and isinstance(budget.get('reservations'),dict):
+                        released={name:value for name,value in budget['reservations'].items() if not name.startswith('promotion:')}
+                        if released!=budget['reservations']:
+                            budget['reservations']=released
+                            self.store.put_record('budgets',check['campaign_id'],budget)
         for retry in self.store.list_records('evidence_retries'):
             if retry['status'] in ('QUEUED','RUNNING'):
                 retry['status']='INTERRUPTED'; self.store.put_record('evidence_retries',retry['request_id'],retry)
         for request in self.store.list_records('evaluation_requests'):
             if request['status'] in ('QUEUED','RUNNING'):
-                request.update(status='INTERRUPTED',reason='Process restart interrupted evaluation; saved attempts are not replayed',ended_at=utc_now().isoformat())
-                self.store.put_record('evaluation_requests',request['request_id'],request)
-                budget=self.store.get_record('budgets',request.get('campaign_id',''))
-                reservation='promotion:'+request.get('batch_id','')
-                if budget and reservation in budget.get('reservations',{}):
-                    budget['reservations'].pop(reservation)
-                    self.store.put_record('budgets',request['campaign_id'],budget)
-        interrupted_regressions=[]
+                with self.store.transaction():
+                    request.update(status='INTERRUPTED',reason='Process restart interrupted evaluation; saved attempts are not replayed',ended_at=utc_now().isoformat())
+                    self.store.put_record('evaluation_requests',request['request_id'],request)
+                    budget=self.store.get_record('budgets',request.get('campaign_id',''))
+                    reservation='promotion:'+request.get('batch_id','')
+                    if budget and reservation in budget.get('reservations',{}):
+                        budget['reservations'].pop(reservation)
+                        self.store.put_record('budgets',request['campaign_id'],budget)
         for execution in self.store.list_records('regression_executions'):
             if execution['mode']=='FRESH_SANDBOX' and execution['status'] in ('PENDING','RUNNING'):
                 from app.lab.regression_executions import interrupt_regression
-                interrupt_regression(self.store,execution['execution_id'],'Process restart interrupted execution; saved effects are not replayed')
-                interrupted_regressions.append('regression:'+execution['execution_id'])
-        if interrupted_regressions:
-            # Budgets are keyed by campaign, not by a field in their payload.
-            for campaign in self.store.list_records('campaigns'):
-                budget=self.store.get_record('budgets',campaign['campaign_id'])
-                if budget and any(name in budget.get('reservations',{}) for name in interrupted_regressions):
-                    for name in interrupted_regressions: budget['reservations'].pop(name,None)
-                    self.store.put_record('budgets',campaign['campaign_id'],budget)
+                with self.store.transaction():
+                    interrupt_regression(self.store,execution['execution_id'],'Process restart interrupted execution; saved effects are not replayed')
+                    # Legacy execution records omit campaign identity; release only
+                    # this exact globally unique job reservation, wherever stored.
+                    for campaign in self.store.list_records('campaigns'):
+                        self._release_abandoned_reservation(campaign['campaign_id'],'regression:'+execution['execution_id'])
         for raw in self.store.list_records('campaigns'):
             c=Campaign.model_validate_json(__import__('json').dumps(raw))
             if c.state not in TERMINAL and c.state!='IDLE':
-                budget=self.store.get_record('budgets',c.campaign_id)
-                if budget and isinstance(budget.get('reservations'),dict):
-                    # Only unfinished job reservations are abandoned. Protected
-                    # future work, unknown names and already charged usage survive.
-                    prefixes=('candidate:','reproduce:','reduce:','intervention:','pair-retry:','promotion:')
-                    released={name:value for name,value in budget['reservations'].items() if not name.startswith(prefixes)}
-                    if released!=budget['reservations']:
-                        budget['reservations']=released
-                        self.store.put_record('budgets',c.campaign_id,budget)
-                for qualification in self.store.list_records('candidate_qualifications'):
-                    if qualification.get('campaign_id')!=c.campaign_id or qualification.get('decision')!='PROPOSED': continue
-                    qualification.update(decision='INCOMPLETE',interruption_reason='Process restart interrupted qualification; saved attempts are not replayed')
-                    self.store.put_record('candidate_qualifications',qualification['qualification_ref'],qualification)
-                    candidate=self.policies.get(qualification['candidate_version'])
-                    if candidate is not None and candidate.decision=='PROPOSED':
-                        candidate.decision='INCOMPLETE'; self.policies.save(candidate)
-                c.execution_epoch+=1; c.stop_requested=True; c.state='STOPPED'; c.state_seq+=1
-                c.terminal_reason='Interrupted by process restart; create a fresh explicit run'
-                self.save(c)
+                with self.store.transaction():
+                    budget=self.store.get_record('budgets',c.campaign_id)
+                    if budget and isinstance(budget.get('reservations'),dict):
+                        # Only unfinished job reservations are abandoned. Protected
+                        # future work, unknown names and already charged usage survive.
+                        prefixes=('candidate:','reproduce:','reduce:','intervention:','pair-retry:','promotion:')
+                        released={name:value for name,value in budget['reservations'].items() if not name.startswith(prefixes)}
+                        if released!=budget['reservations']:
+                            budget['reservations']=released
+                            self.store.put_record('budgets',c.campaign_id,budget)
+                    self.incomplete_qualifications(c.campaign_id,'Process restart interrupted qualification; saved attempts are not replayed')
+                    c.execution_epoch+=1; c.stop_requested=True; c.state='STOPPED'; c.state_seq+=1
+                    c.terminal_reason='Interrupted by process restart; create a fresh explicit run'
+                    self.save(c)
+    def _release_abandoned_reservation(self,campaign_id,name):
+        budget=self.store.get_record('budgets',campaign_id)
+        if budget and name in budget.get('reservations',{}):
+            budget['reservations'].pop(name)
+            self.store.put_record('budgets',campaign_id,budget)
+
+    def _recover_auxiliary_jobs(self):
+        """Recover only durable unfinished jobs, never unused future capacity."""
+        reason='Process restart interrupted study; saved attempts are not replayed'
+        from app.lab.audit import retain_audit_progress
+        from app.lab.search_benchmark import retain_search_progress
+        from app.lab.portability import interrupt_portability
+        for record in self.store.list_records('audit_results'):
+            if record['status'] not in ('QUEUED','PENDING','RUNNING'): continue
+            with self.store.transaction():
+                retain_audit_progress(self.store,record)
+                record.update(status='INCOMPLETE',reason=reason,ended_at=utc_now().isoformat())
+                self.store.put_record('audit_results',record['batch_id'],record)
+                self._release_abandoned_reservation(record['campaign_id'],'final_audit')
+        comparisons={row['comparison_id']:row for row in self.store.list_records('search_comparisons')}
+        for record in comparisons.values():
+            if record['status'] not in ('QUEUED','PENDING','RUNNING'): continue
+            with self.store.transaction():
+                retain_search_progress(self.store,record)
+                record.update(status='INCOMPLETE',stopping_reason=reason)
+                self.store.put_record('search_comparisons',record['comparison_id'],record)
+                self._release_abandoned_reservation(record['campaign_id'],'selection_comparison')
+        for record in self.store.list_records('search_requests'):
+            if record['status'] not in ('QUEUED','PENDING','RUNNING'): continue
+            comparison=comparisons.get(record.get('comparison_id'))
+            campaign_id=record.get('campaign_id') or (comparison or {}).get('campaign_id')
+            record.update(status=comparison['status'] if comparison else 'INCOMPLETE',reason=reason,
+                          ended_at=utc_now().isoformat())
+            if campaign_id: record['campaign_id']=campaign_id
+            with self.store.transaction():
+                self.store.put_record('search_requests',record['request_id'],record)
+                if campaign_id: self._release_abandoned_reservation(campaign_id,'selection_comparison')
+        requests=self.store.list_records('portability_requests')
+        recovered_results=set()
+        for record in requests:
+            if record['status'] not in ('QUEUED','PENDING','RUNNING'): continue
+            with self.store.transaction():
+                interrupt_portability(self.store,record,reason)
+                self.store.put_record('portability_requests',record['request_id'],record)
+                self._release_abandoned_reservation(record['campaign_id'],'portability')
+            if record.get('portability_id'): recovered_results.add(record['portability_id'])
+        # Older writers persisted a result before linking the queued request.
+        # Bind such a result through its immutable freeze, never by policy alone.
+        freezes={row['portability_id']:row['freeze']['freeze_hash']
+                 for row in self.store.list_records('portability_freezes')}
+        campaigns={}
+        for campaign in self.store.list_records('campaigns'):
+            freeze=self.store.get_record('external_freezes',campaign['campaign_id'])
+            if freeze: campaigns.setdefault(freeze['freeze_hash'],[]).append(campaign['campaign_id'])
+        for result in self.store.list_records('portability'):
+            if result['status'] not in ('PENDING','RUNNING') or result['portability_id'] in recovered_results: continue
+            owners=campaigns.get(freezes.get(result['portability_id']),[])
+            if len(owners)==1:
+                recovery={'campaign_id':owners[0],'portability_id':result['portability_id'],
+                          'freeze_hash':freezes[result['portability_id']]}
+                with self.store.transaction():
+                    interrupt_portability(self.store,recovery,reason)
+                    self.store.put_record('portability_recovery',result['portability_id'],recovery)
+                    self._release_abandoned_reservation(owners[0],'portability')
+            else:
+                result['status']='INCOMPLETE'
+                if len(result['limitations'])<16: result['limitations'].append(reason)
+                self.store.put_record('portability',result['portability_id'],result)
+
+    def incomplete_qualifications(self,campaign_id,reason,*,error=None):
+        """Finalize current pending work without changing prior terminal decisions."""
+        for qualification in self.store.list_records('candidate_qualifications'):
+            if qualification.get('campaign_id')!=campaign_id or qualification.get('decision')!='PROPOSED': continue
+            qualification.update(decision='INCOMPLETE',interruption_reason=reason)
+            if error is not None: qualification['error']=error
+            candidate=self.policies.get(qualification['candidate_version'])
+            with self.store.transaction():
+                self.store.put_record('candidate_qualifications',qualification['qualification_ref'],qualification)
+                if candidate is not None and candidate.decision=='PROPOSED':
+                    candidate.decision='INCOMPLETE'
+                    self.policies.save(candidate)
 
     def save(self,campaign):
         campaign.updated_at=utc_now(); self.store.put_record('campaigns',campaign.campaign_id,campaign)
@@ -149,8 +250,9 @@ class LabCoordinator:
         return self.save(campaign)
 
     def config_status(self):
+        from app.lab.dashboard import store_descriptor
         models=self.settings.role_models
-        return {'schema_version':'faultlab/v1','model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'actor_context_protocol':self.settings.faultlab_actor_context_protocol,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
+        return {'schema_version':'faultlab/v1','data_store':store_descriptor(self.store),'model':models['actor'] or 'not-configured','lab_model':models['explorer'] or 'not-configured','models':models,'actor_context_protocol':self.settings.faultlab_actor_context_protocol,'model_configured':bool(all(models.values()) and self.settings.wandb_api_key),'live_enabled':self.settings.faultlab_live_enabled,'profile_ids':['offline-v1','live-v1'],'sponsor':{'weave':'PENDING','aria':'PENDING'},'active_campaign_id':self.active_id,'execution_profiles':[{'profile_id':'sandbox-v1','caps':__import__('app.contracts.models',fromlist=['EpisodeBudget']).EpisodeBudget().model_dump(mode='json'),'requires_live':True}]}
 
     async def readiness(self):
         from app.lab.readiness import simulator_readiness
@@ -486,12 +588,19 @@ class LabCoordinator:
             if id in self.evidence_events: self.evidence_events[id].set()
 
     async def close(self):
-        if self.active_id is not None:
-            try: await self.stop(self.active_id)
-            except KeyError: pass
-        pending=[t for t in self.tasks.values() if not t.done()]
-        if pending:
-            done,pending=await asyncio.wait(pending,timeout=2)
-            for task in pending: task.cancel()
-            await asyncio.gather(*pending,return_exceptions=True)
-        self.store.close()
+        if self._closed: return
+        self._closed=True
+        try:
+            if self.active_id is not None:
+                try: await self.stop(self.active_id)
+                except KeyError: pass
+            pending=[t for t in self.tasks.values() if not t.done()]
+            if pending: await asyncio.wait(pending,timeout=2)
+        finally:
+            try:
+                pending=[t for t in self.tasks.values() if not t.done()]
+                for task in pending: task.cancel()
+                if pending: await asyncio.gather(*pending,return_exceptions=True)
+            finally:
+                try: self.store.close()
+                finally: self._lease.close()

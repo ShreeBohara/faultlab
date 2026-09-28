@@ -15,6 +15,7 @@ Two declared forms, chosen by the request:
   decides. v1 on the first replica of each case is stored beside it, descriptive only.
 """
 import asyncio
+from app.lab.budgets import JobFinalizationError
 import json
 from copy import deepcopy
 from fractions import Fraction
@@ -498,7 +499,7 @@ async def queue_heldout_check(coordinator, campaign_id, certified_study_id, *, p
 
 async def _execute(coordinator, campaign, baseline, candidate, cases, record, ledger):
     store = coordinator.store; campaign_id = campaign.campaign_id
-    runner = None; owned = False
+    runner = None; owned = False; finalization_failed = False
     start_calls, start_bound = ledger.used_calls, ledger.used_dollar_upper_bound
     stop = lambda: coordinator.get(campaign_id).stop_requested
     def save():
@@ -522,6 +523,9 @@ async def _execute(coordinator, campaign, baseline, candidate, cases, record, le
         record.update(batch_id=batch.batch_id, assessment=result, decision=result['decision'], reason=result['reason'],
                       status='INCOMPLETE' if result['decision'] == 'INCOMPLETE' else 'COMPLETED',
                       trials=len(batch.trials), pairs=len(batch.trial_pairs))
+    except JobFinalizationError:
+        finalization_failed = True
+        raise
     except (StopRequested, asyncio.CancelledError):
         record.update(status='INTERRUPTED', decision='INCOMPLETE', reason='Stopped; attempted effects retained')
     except Exception as error:
@@ -571,18 +575,11 @@ async def _execute(coordinator, campaign, baseline, candidate, cases, record, le
                                           'world_integrity_findings':record.get('world_integrity_findings',[])})
         record['ended_at'] = utc_now().isoformat()
         try:
-            save()
-            if not stop():
-                state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
-                coordinator.transition(campaign_id, state, record['reason'])
-        except Exception:
-            pass
-        try:
-            if owned and runner:
-                for resource in (runner.world_client, runner.provider, getattr(runner, 'telemetry_worker', None)):
-                    if resource:
-                        try: await asyncio.wait_for(resource.close(), timeout=2)
-                        except Exception: pass
+            if not finalization_failed:
+                with store.transaction():
+                    save()
+                    if not stop():
+                        state = {'COMPLETED': 'COMPLETED', 'INCOMPLETE': 'ERROR', 'INTERRUPTED': 'STOPPED'}[record['status']]
+                        coordinator.transition(campaign_id, state, record['reason'])
         finally:
-            async with coordinator.lock:
-                if coordinator.active_id == campaign_id: coordinator.active_id = None
+            await coordinator.finish_activity(campaign_id,runner,owned=owned,activity_id=record['check_id'])

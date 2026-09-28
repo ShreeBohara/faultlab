@@ -129,14 +129,10 @@ async def _execute(coordinator,campaign,baseline,manifest,record,ledger,reservat
         record['by_arm']={arm:summarize([t for t in trials if t.arm==arm]) for arm in ARMS}
         record['usage']=summarize(trials)['usage']
         record['charged_model_calls']=ledger.used_calls-start_calls; record['charged_token_upper_bound']=ledger.used_tokens-start_tokens
-        record['ended_at']=utc_now().isoformat(); save(); ledger.release(reservation)
-        if not stop(): coordinator.transition(id,'COMPLETED',record['reason'])
+        record['ended_at']=utc_now().isoformat()
         try:
-            if owned and runner:
-                for resource in (runner.world_client,runner.provider,getattr(runner,'telemetry_worker',None)):
-                    if resource:
-                        try: await asyncio.wait_for(resource.close(),timeout=2)
-                        except Exception: pass
+            with ledger.finalizing(reservation):
+                save()
+                if not stop(): coordinator.transition(id,'COMPLETED',record['reason'])
         finally:
-            async with coordinator.lock:
-                if coordinator.active_id==id: coordinator.active_id=None
+            await coordinator.finish_activity(id,runner,owned=owned,activity_id=study_id)

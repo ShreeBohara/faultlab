@@ -3,7 +3,7 @@ import asyncio
 from dataclasses import dataclass
 from app.contracts.models import EvaluationBatch,FaultSpec,Usage,canonical_json,content_hash,new_id,utc_now
 from app.lab.reproduction import valid_trial
-from app.lab.budgets import BudgetExhausted,StopRequested
+from app.lab.budgets import JobFinalizationError,BudgetExhausted,StopRequested
 from app.lab.storage import StoreConflict
 
 
@@ -48,7 +48,7 @@ def observed_candidate_violations(batch):
 
 class PairedEvaluator:
     def __init__(self,store,runner,ledger,*,publisher=None): self.store,self.runner,self.ledger,self.publisher=store,runner,ledger,publisher
-    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True,actor_context_protocol=None,batch_id=None):
+    async def run(self,campaign,cases,incumbent,candidate,*,purpose='promotion',reservation=None,stop=lambda:False,allow_lab_retry=True,actor_context_protocol=None,batch_id=None,finalize_request=None):
         batch_id=batch_id or new_id('batch'); own=reservation is None
         if own:
             reservation=f'{purpose}:{batch_id}'
@@ -118,13 +118,12 @@ class PairedEvaluator:
             self.store.put_record('evaluation_errors',batch_id,{'batch_id':batch_id,'campaign_id':campaign.campaign_id,**execution_failure(error),'recorded_at':utc_now().isoformat()})
             raise
         finally:
-            try:
+            with self.ledger.finalizing(reservation) if own else self.store.transaction():
                 batch.trial_pairs=list(pairs); batch.trials=list(trials)
                 complete=not interrupted and paired_complete(batch,len(cases)*3)
                 batch.decision='NO_CHANGE' if complete else 'INCOMPLETE'
                 save_progress('Complete repeated evidence; fixed promotion predicate still required' if complete else reason)
-            finally:
-                if own: self.ledger.release(reservation)
+                if finalize_request: finalize_request(batch)
         if session and complete:
             try: await session.finish({'decision':batch.decision,'valid_pairs':len(pairs),'attempted_episodes':len(trials),'reason':batch.reason})
             except Exception: pass
@@ -154,12 +153,20 @@ async def queue_evaluation(coordinator,request):
         await coordinator.finish_activity(campaign.campaign_id,activity_id=request_id)
         raise
     async def execute():
-        runner=None; owned=False
+        runner=None; owned=False; finalized=False; finalization_failed=False
+        def finalize_request(batch):
+            nonlocal finalized
+            record.update(status='INTERRUPTED' if coordinator.get(campaign.campaign_id).stop_requested else 'INCOMPLETE' if batch.decision=='INCOMPLETE' else 'COMPLETED',reason=batch.reason,ended_at=utc_now().isoformat())
+            coordinator.store.put_record('evaluation_requests',request_id,record)
+            finalized=True
         try:
             record['status']='RUNNING'; coordinator.store.put_record('evaluation_requests',request_id,record)
             runner,owned=await coordinator._get_runner(True)
-            batch=await PairedEvaluator(coordinator.store,runner,ledger,publisher=getattr(coordinator,'evaluation_publisher',None)).run(campaign,load_cases('promotion'),policies[0],policies[-1],batch_id=batch_id,stop=lambda:coordinator.get(campaign.campaign_id).stop_requested)
+            batch=await PairedEvaluator(coordinator.store,runner,ledger,publisher=getattr(coordinator,'evaluation_publisher',None)).run(campaign,load_cases('promotion'),policies[0],policies[-1],batch_id=batch_id,stop=lambda:coordinator.get(campaign.campaign_id).stop_requested,finalize_request=finalize_request)
             record.update(status='INTERRUPTED' if coordinator.get(campaign.campaign_id).stop_requested else 'INCOMPLETE' if batch.decision=='INCOMPLETE' else 'COMPLETED',reason=batch.reason)
+        except JobFinalizationError:
+            finalization_failed=True
+            raise
         except (asyncio.CancelledError,StopRequested):
             record.update(status='INTERRUPTED',reason='Execution interrupted; saved attempts are not replayed')
             raise
@@ -168,8 +175,10 @@ async def queue_evaluation(coordinator,request):
             record.update(status='INTERRUPTED' if coordinator.get(campaign.campaign_id).stop_requested else 'INCOMPLETE',reason='Execution failed; saved attempts are not replayed',error=execution_failure(error))
         finally:
             try:
-                record['ended_at']=utc_now().isoformat()
-                coordinator.store.put_record('evaluation_requests',request_id,record)
+                if not finalized and not finalization_failed:
+                    with ledger.finalizing('promotion:'+batch_id):
+                        record['ended_at']=utc_now().isoformat()
+                        coordinator.store.put_record('evaluation_requests',request_id,record)
             finally:
                 await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=request_id)
     coordinator.tasks[request_id]=asyncio.create_task(execute())

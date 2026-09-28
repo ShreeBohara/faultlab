@@ -29,3 +29,40 @@ def test_ingestion_dedup_conflict_and_fk(tmp_path):
     assert store.associate_ingestion('p','root','e')
     assert not store.associate_ingestion('p','root','e')
     with pytest.raises(StoreConflict): store.associate_ingestion('p','other','e')
+
+def test_outer_transaction_rolls_back_records_and_pointer_after_nested_writes(tmp_path):
+    store=LabStore(tmp_path/'lab.db')
+    store.put_record('jobs','j',{'state':'RUNNING'})
+    with pytest.raises(KeyboardInterrupt):
+        with store.transaction():
+            store.put_record('jobs','j',{'state':'COMPLETED'})
+            store.compare_and_set_pointer('active',None,'policy-v1')
+            raise KeyboardInterrupt()
+    assert store.get_record('jobs','j')=={'state':'RUNNING'}
+    assert store.get_pointer('active') is None
+    assert not store.db.in_transaction
+    store.close()
+
+def test_caught_inner_failure_rolls_back_only_its_changes(tmp_path):
+    store=LabStore(tmp_path/'lab.db')
+    with store.transaction():
+        store.put_record('jobs','kept',{'state':'RUNNING'})
+        with pytest.raises(ValueError):
+            with store.transaction():
+                store.put_record('jobs','discarded',{'state':'COMPLETED'})
+                raise ValueError('Injected failure')
+        store.put_record('jobs','also-kept',{'state':'QUEUED'})
+    assert len(store.list_records('jobs'))==2
+    assert store.get_record('jobs','discarded') is None
+    store.close()
+
+def test_schema_initialization_failure_closes_the_opened_connection(tmp_path):
+    import sqlite3
+    from unittest.mock import patch
+    connection=sqlite3.connect(tmp_path/'lab.db',isolation_level=None)
+    connection.execute('CREATE TABLE episode_registry(id TEXT PRIMARY KEY)')
+    with patch('app.lab.storage.sqlite3.connect',return_value=connection):
+        with pytest.raises(sqlite3.OperationalError):
+            LabStore(tmp_path/'lab.db')
+    with pytest.raises(sqlite3.ProgrammingError):
+        connection.execute('SELECT 1')

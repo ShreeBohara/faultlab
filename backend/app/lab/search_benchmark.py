@@ -1,14 +1,54 @@
 """Predeclared eight × three selector study with isolated histories and no repair."""
+import asyncio
 from copy import deepcopy
-from app.contracts.models import SearchComparison,FaultSpec,Usage,canonical_json,content_hash,new_id
+from app.contracts.models import SearchComparison,FaultSpec,Usage,canonical_json,content_hash,new_id,utc_now
 from app.lab.reproduction import reproduced,valid_trial
 from app.lab.challenge import schedule_identity
 from app.lab.evaluation import aggregate_usage
+from app.lab.budgets import JobFinalizationError
 from app.agents.explorer import Explorer
+
+
+def retain_search_progress(store,record):
+    episodes=[episode for episode in store.list_campaign_episodes(record['campaign_id'])
+              if episode.get('experiment_purpose')=='selection_comparison'
+              and episode.get('study_id')==record['comparison_id']]
+    record['trial_ids']=list(dict.fromkeys(record.get('trial_ids',[])+[episode['episode_id'] for episode in episodes
+                            if store.get_record('trials',episode['episode_id'])]))
+    # SearchComparison has a fixed schema. In-flight episode/world references
+    # that have no returned TrialResult live in a supplemental progress record.
+    store.put_record('search_progress',record['comparison_id'],{
+        'comparison_id':record['comparison_id'],'campaign_id':record['campaign_id'],
+        'episode_ids':[episode['episode_id'] for episode in episodes],
+        'world_ids':[episode['world_id'] for episode in episodes]})
+    selections=[row['usage'] for row in store.list_records('selections')
+                if row.get('context',{}).get('study_id')==record['comparison_id'] and row.get('usage')]
+    if episodes or selections:
+        from types import SimpleNamespace
+        usage=aggregate_usage([SimpleNamespace(usage=Usage.model_validate(episode['usage'])) for episode in episodes])
+        usage.model_calls+=sum(row.get('model_calls',0) for row in selections)
+        usage.input_tokens+=sum(row.get('input_tokens') or 0 for row in selections)
+        usage.output_tokens+=sum(row.get('output_tokens') or 0 for row in selections)
+        if usage.cost_dollars is not None and all(row.get('cost_dollars') is not None for row in selections):
+            usage.cost_dollars+=sum(row['cost_dollars'] for row in selections)
+        elif selections: usage.cost_dollars=None
+        # Retain any recorded selector usage; episode usage describes Actor work
+        # only and must never erase already charged selection requests.
+        prior=Usage.model_validate(record.get('usage') or {})
+        previous_calls=prior.model_calls
+        for field in ('http_attempts','actor_calls','model_calls','input_tokens','output_tokens','wait_cycles','ticks','policy_steps','wall_seconds'):
+            setattr(prior,field,max(getattr(prior,field),getattr(usage,field)))
+        if prior.cost_dollars is not None and usage.cost_dollars is not None:
+            prior.cost_dollars=max(prior.cost_dollars,usage.cost_dollars)
+        elif previous_calls==0: prior.cost_dollars=usage.cost_dollars
+        else: prior.cost_dollars=None
+        record['usage']=prior.model_dump(mode='json')
+    return record
+
 
 class SearchBenchmark:
     def __init__(self,store,runner,ledger,*,evidence_gateway=None): self.store,self.runner,self.ledger,self.evidence_gateway=store,runner,ledger,evidence_gateway
-    async def run(self,campaign,baseline,*,stop=lambda:False):
+    async def run(self,campaign,baseline,*,stop=lambda:False,comparison_id=None,finalize_request=None):
         from app.referee.manifests import load_manifest
         from app.referee.reducer import reducer_hash
         from app.lab.configuration import file_hash,ROOT
@@ -16,7 +56,7 @@ class SearchBenchmark:
         if manifest['development_manifest_hash']!=development['manifest_hash']: raise ValueError('Frozen development identity mismatch')
         if baseline.version!='policy-v0' or baseline.content.rules: raise ValueError('Selector comparison requires frozen B0 empty overlay')
         if 'selection_comparison' not in self.ledger.reservations: raise ValueError('Protected comparison reservation unavailable')
-        comparison_id=new_id('comparison'); contexts=[new_id('selector-context') for _ in range(2)]
+        comparison_id=comparison_id or new_id('comparison'); contexts=[new_id('selector-context') for _ in range(2)]
         record=SearchComparison(comparison_id=comparison_id,status='RUNNING',campaign_id=campaign.campaign_id,manifest_hash=manifest['manifest_hash'],registration_id='orders-v1',policy_hash=baseline.policy_hash,generator_hash=development['manifest_hash'],validator_hash=file_hash(ROOT/'backend/app/simulator/faults.py'),deduplication_hash=content_hash(manifest['deduplication']),selector_order=manifest['selector_order'],systematic_digest=content_hash({'order':manifest['systematic_order'],'variants':manifest['systematic_variants']}),context_ids=contexts,trial_ids=[],usage=Usage(),stopping_reason='Study running')
         self.store.put_record('search_comparisons',comparison_id,record)
         trials=[]; outcomes=[]; all_done=True
@@ -73,43 +113,77 @@ class SearchBenchmark:
                             await self.evidence_gateway.get(trial.episode_id,EvidenceContext(campaign.campaign_id,comparison_id,contexts[arm_index],selector))
                     history.append(summary)
                 arm_ends[selector]=measured()
+        except asyncio.CancelledError:
+            all_done=False
+            raise
         except Exception:
             all_done=False
         finally:
-            record.status='COMPLETED' if all_done else 'INCOMPLETE'; record.usage=aggregate_usage(trials)
-            end=measured(); delta={k:end[k]-study_start[k] for k in study_start}
-            record.usage.model_calls=delta['model_calls']; record.usage.input_tokens=delta['input_tokens']; record.usage.output_tokens=delta['output_tokens']; record.usage.cost_dollars=delta['known_cost_dollars'] if delta['unknown_cost_calls']==0 else None
-            per_selector={}
-            for selector,start in arm_starts.items():
-                finish=arm_ends.get(selector,end)
-                per_selector[selector]={'total':{k:finish[k]-start[k] for k in start},'actor_usage':aggregate_usage(actor_trials[selector]).model_dump(mode='json'),'selection_records':[self.store.get_record('selections',row['selection_ref'])['usage'] for row in outcomes if row['selector']==selector and row.get('selection_ref') and self.store.get_record('selections',row['selection_ref']) and 'usage' in self.store.get_record('selections',row['selection_ref'])]}
-            record.stopping_reason='All sixteen predeclared selection slots retained; outcomes are empirical' if all_done else 'Stopped, incomplete evidence, or exhausted declared budget'
-            self.store.put_record('search_comparisons',comparison_id,record)
-            self.store.put_record('search_results',comparison_id,{'comparison_id':comparison_id,'slots':outcomes,'charged_model_calls':delta['model_calls'],'charged_token_upper_bound':delta['charged_token_upper_bound'],'by_selector':per_selector,'usage_metadata_known':delta['unknown_token_calls']==0,'zero_findings_cost_per_finding':None},immutable=True)
-            self.ledger.release('selection_comparison')
+            with self.ledger.finalizing('selection_comparison'):
+                record.status='COMPLETED' if all_done else 'INCOMPLETE'; record.usage=aggregate_usage(trials)
+                end=measured(); delta={k:end[k]-study_start[k] for k in study_start}
+                record.usage.model_calls=delta['model_calls']; record.usage.input_tokens=delta['input_tokens']; record.usage.output_tokens=delta['output_tokens']; record.usage.cost_dollars=delta['known_cost_dollars'] if delta['unknown_cost_calls']==0 else None
+                per_selector={}
+                for selector,start in arm_starts.items():
+                    finish=arm_ends.get(selector,end)
+                    per_selector[selector]={'total':{k:finish[k]-start[k] for k in start},'actor_usage':aggregate_usage(actor_trials[selector]).model_dump(mode='json'),'selection_records':[self.store.get_record('selections',row['selection_ref'])['usage'] for row in outcomes if row['selector']==selector and row.get('selection_ref') and self.store.get_record('selections',row['selection_ref']) and 'usage' in self.store.get_record('selections',row['selection_ref'])]}
+                record.stopping_reason='All sixteen predeclared selection slots retained; outcomes are empirical' if all_done else 'Stopped, incomplete evidence, or exhausted declared budget'
+                retained=retain_search_progress(self.store,record.model_dump(mode='json'))
+                record=SearchComparison.model_validate(retained)
+                self.store.put_record('search_comparisons',comparison_id,record)
+                self.store.put_record('search_results',comparison_id,{'comparison_id':comparison_id,'slots':outcomes,'charged_model_calls':delta['model_calls'],'charged_token_upper_bound':delta['charged_token_upper_bound'],'by_selector':per_selector,'usage_metadata_known':delta['unknown_token_calls']==0,'zero_findings_cost_per_finding':None},immutable=True)
+                if finalize_request: finalize_request(record)
         return record
 
 async def queue_search(coordinator,campaign_id):
-    import asyncio
     from app.lab.budgets import CampaignLedger
     from app.lab.storage import StoreConflict
     campaign=coordinator.get(campaign_id); coordinator.settings.require_live()
     coordinator.validate_core_configuration(campaign)
-    if any(r['campaign_id']==campaign_id for r in coordinator.store.list_records('search_comparisons')): raise StoreConflict('This frozen selector study already exists')
+    if (any(r['campaign_id']==campaign_id for r in coordinator.store.list_records('search_comparisons'))
+            or any(r.get('campaign_id')==campaign_id for r in coordinator.store.list_records('search_requests'))):
+        raise StoreConflict('This frozen selector study already exists')
     ledger=coordinator.ledgers.setdefault(campaign_id,CampaignLedger(coordinator.store,campaign_id,campaign.caps,dollar_bounds=coordinator.settings.model_call_dollar_bounds))
+    if 'selection_comparison' not in ledger.reservations: raise StoreConflict('Protected comparison reservation unavailable')
     await coordinator.admit_activity(campaign_id)
     campaign=coordinator.get(campaign_id)
-    request_id=new_id('search-request')
+    request_id=new_id('search-request'); comparison_id=new_id('comparison')
+    record={'request_id':request_id,'campaign_id':campaign_id,'comparison_id':comparison_id,
+            'status':'QUEUED','created_at':utc_now().isoformat()}
+    try: coordinator.store.put_record('search_requests',request_id,record)
+    except BaseException:
+        await coordinator.finish_activity(campaign_id,activity_id=request_id)
+        raise
     async def execute():
-        runner=None; owned=False
+        runner=None; owned=False; finalized=False; finalization_failed=False
+        def finalize_request(result):
+            nonlocal finalized
+            record.update(status=result.status,ended_at=utc_now().isoformat())
+            coordinator.store.put_record('search_requests',request_id,record)
+            finalized=True
         try:
+            record['status']='RUNNING'; coordinator.store.put_record('search_requests',request_id,record)
             runner,owned=await coordinator._get_runner(True)
-            result=await SearchBenchmark(coordinator.store,runner,ledger,evidence_gateway=coordinator.evidence_gateway).run(campaign,coordinator.policies.baseline(),stop=lambda:coordinator.get(campaign_id).stop_requested)
-            coordinator.store.put_record('search_requests',request_id,{'request_id':request_id,'comparison_id':result.comparison_id,'status':result.status})
-        except Exception:
-            coordinator.store.put_record('search_requests',request_id,{'request_id':request_id,'status':'INCOMPLETE'})
+            result=await SearchBenchmark(coordinator.store,runner,ledger,evidence_gateway=coordinator.evidence_gateway).run(campaign,coordinator.policies.baseline(),stop=lambda:coordinator.get(campaign_id).stop_requested,comparison_id=comparison_id,finalize_request=finalize_request)
+            record['status']=result.status
+        except JobFinalizationError:
+            finalization_failed=True
+            raise
+        except asyncio.CancelledError:
+            record.update(status='INCOMPLETE',reason='Study cancelled; saved attempts are not replayed')
+            raise
+        except Exception as error:
+            from app.lab.readiness import execution_failure
+            record.update(status='INCOMPLETE',reason='Study failed; saved attempts are not replayed',error=execution_failure(error))
         finally:
-            await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=request_id)
+            try:
+                if not finalized and not finalization_failed:
+                    with ledger.finalizing('selection_comparison'):
+                        if record['status'] in ('QUEUED','RUNNING'):
+                            record.update(status='INCOMPLETE',reason='Study ended without completion; saved attempts are not replayed')
+                        record['ended_at']=utc_now().isoformat()
+                        coordinator.store.put_record('search_requests',request_id,record)
+            finally: await coordinator.finish_activity(campaign.campaign_id,runner,owned=owned,activity_id=request_id)
     coordinator.tasks[request_id]=asyncio.create_task(execute())
     return {'request_id':request_id,'status':'QUEUED'}
 

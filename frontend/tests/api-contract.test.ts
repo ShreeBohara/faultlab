@@ -27,6 +27,20 @@ describe('canonical API contracts', () => {
     expect(() => validateMatrix({ ...matrix, counts: { valid_attempted: -1 } })).toThrow('Malformed')
     expect(() => validateMatrix({ ...matrix, cells: [{ ...matrix.cells[0], outcome: 'PROBABLY_GOOD' }] })).toThrow('Malformed')
   })
+  it('validates optional per-fault trigger counts without requiring them on historical projections', () => {
+    expect(validateMatrix(matrix).cells[0].fault_count).toBeUndefined()
+    const cell = { ...matrix.cells[0], fault_scheduled: true, fault_triggered: false, fault_count: 2, triggered_fault_count: 1 }
+    const current = { ...matrix, cells: [cell], counts: { ...matrix.counts, partially_triggered: 1, none_triggered: 0 } }
+    expect(validateMatrix(current)).toEqual(current)
+    for (const key of ['fault_count', 'triggered_fault_count']) {
+      for (const value of [-1, 0.5, null, '2', Number.MAX_SAFE_INTEGER + 1]) {
+        expect(() => validateMatrix({ ...current, cells: [{ ...cell, [key]: value }] })).toThrow('Malformed matrix fault count')
+      }
+    }
+    expect(() => validateMatrix({ ...current, cells: [{ ...cell, triggered_fault_count: 3 }] })).toThrow('Malformed matrix fault counts')
+    expect(() => validateMatrix({ ...current, counts: { partially_triggered: -1, none_triggered: 0 } })).toThrow('Malformed matrix')
+    expect(() => validateMatrix({ ...current, counts: { partially_triggered: 1, none_triggered: 0.5 } })).toThrow('Malformed matrix')
+  })
   it('preserves sequence gaps from hidden events but rejects duplicates, cross-episode events and stalls', () => {
     expect(validateEvents({ events, next_after: 5, has_more: false }, episode.episode_id, 0).next_after).toBe(5)
     expect(() => validateEvents({ events: [...events].reverse(), next_after: 5, has_more: false }, episode.episode_id, 0)).toThrow('ordering')
@@ -47,6 +61,15 @@ describe('canonical API contracts', () => {
     expect(validateConfig(current).actor_context_protocol).toBe(current.actor_context_protocol)
     for (const actor_context_protocol of [null, '', '   ', 4]) {
       expect(() => validateConfig({ ...config, actor_context_protocol })).toThrow(/Malformed/)
+    }
+  })
+  it('accepts optional explicit data-store identity and rejects ambiguous archive flags', () => {
+    expect(validateConfig(config).data_store).toBeUndefined()
+    const data_store = { identity: 'store-fixture', path: '/local/archive/lab.sqlite3', read_only: true }
+    expect(validateConfig({ ...config, data_store }).data_store).toEqual(data_store)
+    expect(validateConfig({ ...config, data_store: { ...data_store, read_only: false } }).data_store?.read_only).toBe(false)
+    for (const invalid of [null, {}, { ...data_store, read_only: 'false' }, { ...data_store, identity: '' }, { ...data_store, path: null }]) {
+      expect(() => validateConfig({ ...config, data_store: invalid })).toThrow('Malformed data store')
     }
   })
   it('accepts the endpoint ingestion projection and preserves verified evidence references', () => {

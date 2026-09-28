@@ -1,4 +1,5 @@
 """Actual find/reproduce/reduce/intervene/propose/challenge/promote orchestration."""
+import asyncio
 from app.contracts.models import new_id,FaultSpec,MechanicNoChange,canonical_json,content_hash
 from app.agents.explorer import Explorer,development_coverage
 from app.agents.mechanic import Mechanic
@@ -219,3 +220,13 @@ async def run_learning_cycle(coordinator,campaign,runner):
     except WaitingEvidence as error:
         store.put_record('continuations',id,{'campaign_id':id,'execution_epoch':campaign.execution_epoch,'status':'WAITING_EVIDENCE','reason':str(error),'candidate_count':candidate_count,'history':history})
         coordinator.transition(id,'WAITING_EVIDENCE',str(error))
+    except asyncio.CancelledError:
+        coordinator.incomplete_qualifications(id,'Execution cancelled; saved qualification attempts are not replayed')
+        raise
+    except Exception as error:
+        from app.lab.readiness import execution_failure
+        coordinator.incomplete_qualifications(id,'Execution ended before qualification completed; saved attempts are not replayed',
+                                             error=execution_failure(error))
+        raise
+    finally:
+        if stop(): coordinator.incomplete_qualifications(id,'External stop interrupted qualification; saved attempts are not replayed')

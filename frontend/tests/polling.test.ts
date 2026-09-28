@@ -2,6 +2,7 @@
 import { act, cleanup, renderHook } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { useResource } from '../src/useResource'
+import { ApiError } from '../src/api'
 afterEach(() => { cleanup(); vi.useRealTimers() })
 it('allows one outstanding call and retains verified data during 1.5/3/6-second reconnect backoff', async () => {
   vi.useFakeTimers()
@@ -28,4 +29,34 @@ it.each([true, false])('does not poll or retry an on-demand resource after succe
   expect(fetcher).toHaveBeenCalledOnce()
   expect(result.current.loading).toBe(false)
   expect(succeeds ? result.current.data : result.current.error).toBe(succeeds ? 'checked' : 'unavailable')
+})
+it('drops unavailable saved data on 404 and only retries after an explicit refresh', async () => {
+  vi.useFakeTimers()
+  const fetcher = vi.fn().mockResolvedValueOnce('saved record').mockRejectedValueOnce(new ApiError(404, 'Unknown record')).mockResolvedValue('restored record')
+  const { result } = renderHook(() => useResource('saved', fetcher))
+  await act(() => vi.advanceTimersByTimeAsync(0))
+  expect(result.current.data).toBe('saved record')
+  await act(() => vi.advanceTimersByTimeAsync(750))
+  expect(result.current.errorStatus).toBe(404)
+  expect(result.current.retrying).toBe(false)
+  expect(result.current.data).toBeUndefined()
+  await act(() => vi.advanceTimersByTimeAsync(30000))
+  expect(fetcher).toHaveBeenCalledTimes(2)
+  await act(async () => result.current.refresh?.())
+  expect(fetcher).toHaveBeenCalledTimes(3)
+  expect(result.current.data).toBe('restored record')
+  expect(result.current.error).toBeNull()
+  expect(result.current.errorStatus).toBeUndefined()
+})
+it('keeps HTTP 503 failures transient and retries with backoff', async () => {
+  vi.useFakeTimers()
+  const fetcher = vi.fn().mockRejectedValueOnce(new ApiError(503, 'Temporarily unavailable')).mockResolvedValue('recovered')
+  const { result } = renderHook(() => useResource('saved', fetcher))
+  await act(() => vi.advanceTimersByTimeAsync(0))
+  expect(result.current.retrying).toBe(true)
+  expect(result.current.errorStatus).toBe(503)
+  await act(() => vi.advanceTimersByTimeAsync(1499))
+  expect(fetcher).toHaveBeenCalledOnce()
+  await act(() => vi.advanceTimersByTimeAsync(1))
+  expect(result.current.data).toBe('recovered')
 })

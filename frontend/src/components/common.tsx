@@ -11,7 +11,7 @@ export function Panel({ title, number, children, className = '', aside }: { titl
   return <section className={`panel ${className}`}><div className="panel-heading"><h2>{number && <span className="section-number">{number}</span>}{title}</h2>{aside}</div>{children}</section>
 }
 export function Empty({ children }: { children: ReactNode }) { return <p className="empty">{children}</p> }
-export function ResourceNote({ resource }: { resource: Resource<unknown> }) { return resource.error ? <p role="alert" className="error">{resource.data ? 'Stale data · ' : ''}{resource.error} Retrying with backoff.</p> : resource.loading ? <p className="muted" role="status">Loading stored evidence…</p> : null }
+export function ResourceNote({ resource }: { resource: Resource<unknown> }) { return resource.error ? <div role="alert" className="error">{resource.data ? 'Stale data · ' : ''}{resource.error} {resource.retrying ? 'Retrying with backoff.' : 'Automatic retry is paused.'}{resource.refresh && <button className="text-button" onClick={resource.refresh}>Retry loading</button>}</div> : resource.loading ? <p className="muted" role="status">Loading stored evidence…</p> : null }
 export function Json({ value, title = 'Inspect stored record' }: { value: unknown; title?: string }) { return <details className="json"><summary>{title}</summary><pre>{JSON.stringify(value, null, 2)}</pre></details> }
 export function Field({ name, children }: { name: string; children: ReactNode }) { return <div><dt>{name}</dt><dd>{children ?? 'Not recorded'}</dd></div> }
 export function Hash({ value }: { value?: string | null }) { return <code className="hash">{value ?? 'Not recorded'}</code> }

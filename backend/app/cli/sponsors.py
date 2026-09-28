@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 from app.config import Settings, ConfigurationError
-from app.lab.storage import LabStore
+from app.cli.stores import writable_store, OWNERSHIP_ERRORS, ownership_error
 from app.telemetry.aria_bridge import validate_automation_setup
 from app.telemetry.safety import TelemetryError
 
@@ -21,10 +21,11 @@ def main():
         if not settings.wandb_entity or not settings.wandb_project:
             raise ValueError('Configure the actual W&B team/project first')
         record=validate_automation_setup(json.loads(args.record.read_text()),project=settings.project_path)
-        store=LabStore(settings.artifact_path/'lab.sqlite3')
-        try:store.put_record('aria_setup',settings.project_path,record,immutable=True)
-        finally:store.close()
+        with writable_store(settings) as store:
+            store.put_record('aria_setup',settings.project_path,record,immutable=True)
         print(json.dumps({'status':'observed_setup_recorded','automation_id':record['automation_id'],'invocation_performed':False,'remote_verification':False}))
+    except OWNERSHIP_ERRORS as error:
+        parser.error(ownership_error(error)['message'])
     except (ValueError,OSError,TelemetryError,ConfigurationError):
         parser.error('Evidence must match the reviewed project, Finished filter, Aria prompt, entitlement observations and actual UI reference. No record saved.')
     return 0
