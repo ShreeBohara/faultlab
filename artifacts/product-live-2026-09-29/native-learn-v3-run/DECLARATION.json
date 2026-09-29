@@ -1,0 +1,48 @@
+{
+  "title": "History-informed original loop against the native smolagents agent: step 1 baseline study (creates history), step 2 v3-history Learn campaign",
+  "declared_at_utc": "2026-09-29T09:58:58+00:00",
+  "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+  "store": "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3",
+  "agent_registration_id": "smolagents-1.26.0-19a1127cdc8406d8",
+  "agent_inputs": {
+    "prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+    "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+  },
+  "identities": {
+    "algorithm_hash": "8fb8ab2ad0a1e61afa3e1ec83cb18adacdfdd697fe05f6530ca50c79623a8cfe",
+    "runtime_hash": "08e4c20dc6a3e841bb42032e5b61618cd08289d9a162ad30f683bb98ea0348c8",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+  },
+  "source_commit": "b85715c (backup/part2-2026-09-22), runtime 08e4c20d, discovery v3 available: True",
+  "step1": {
+    "what": "product baseline study on planned native campaign campaign-aaceaf2fa0554540adb1008d286e2f7d (all 6 public development cases x 3 x 2 arms; dev-1 in the plan is nominal; no hand-picked cases)",
+    "max_calls": "144 reserved + up to 144 charged transport retries = 288",
+    "conservative_max_dollars": 6.02,
+    "expected_dollars_conservative": 2.2,
+    "stop_rules": "stop at once on any LAB_ERROR/INTERRUPTED (after the single allowed retry), any B1 control deviation, INCOMPLETE, > 288 calls, 45 minutes"
+  },
+  "step2": {
+    "what": "one Learn campaign with discovery protocol faultlab-discovery/v3-history in the SAME store, planned only after step 1 ends; the history summary is frozen into the plan at creation (hash + record cutoff recorded in DECLARATION-step2.json before Start). The Explorer chooses freely; a re-pick of a development-case recipe surfaced by the history is allowed and will be reported as such.",
+    "bounds": {
+      "calls_per_native_episode_max": 16,
+      "v4_requests_max": 128,
+      "discovery_requests_max": 144,
+      "discovery_conservative_max_dollars": 3.47,
+      "campaign_requests_max": 4936,
+      "campaign_conservative_ceiling_dollars": 106.87,
+      "expected_conservative_dollars": "8-25",
+      "expected_token_priced_dollars": "1-4"
+    },
+    "stop_rules": "Product ends itself on NO_CHANGE/COMPLETED/ERROR/STOPPED. Watcher v2 stops on: more than 8 discovery selections; before any counterexample, used_calls > 144 or charged > 3.47 dollars (step-2 campaign's own budget); disk < 2 GiB; 6 hours. Operator stops on world-integrity failure, two consecutive LAB_ERROR, auth/config/frozen-model failure, source drift. Never restart, replace or reroll; if a source appears the loop continues within the ledger ceiling.",
+    "meanings": "ACCEPTED would be the project's first generated-policy acceptance and is conditional on post-run integrity checks; it would not show transfer, held-out safety or generality, and the source may be a re-pick of a public development recipe surfaced by history. NO_CHANGE/REJECTED are honest outcomes."
+  },
+  "pre_checks": {
+    "processes": "none before start (pgrep -fl 'uvicorn|vite|pytest|app\\.local')",
+    "prices": "checked 2026-09-29T03:24Z (same UTC day)",
+    "tests": "backend 2,683 passed / 180 skipped / 0 failed on 08e4c20d (verifier)",
+    "data_dir": "new",
+    "readiness": "ready, provider_calls 0",
+    "ledger_before_dollars": 869.13
+  }
+}

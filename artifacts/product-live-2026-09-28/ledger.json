@@ -42,8 +42,26 @@
       "charged_rounded_up": 7.53,
       "token_priced_estimate": 0.95,
       "carried_after": 869.13
+    },
+    {
+      "stage": "native v3 history-informed: step 1 baseline study",
+      "campaign": "campaign-aaceaf2fa0554540adb1008d286e2f7d",
+      "calls": 112,
+      "charged_exact": 2.3408,
+      "charged_rounded_up": 2.35,
+      "token_priced_estimate": 0.26,
+      "carried_after": 871.48
+    },
+    {
+      "stage": "native v3 history-informed: step 2 learn campaign (first live candidates, source validation, challenge; STOPPED at 6 h during evidence wait)",
+      "campaign": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+      "calls": 747,
+      "charged_exact": 15.9017,
+      "charged_rounded_up": 15.91,
+      "token_priced_estimate": 2.2,
+      "carried_after": 887.39
     }
   ],
-  "carried_total": 869.13,
-  "updated_at_utc": "2026-09-29T07:19:07+00:00"
+  "carried_total": 887.39,
+  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

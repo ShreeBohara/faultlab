@@ -1,0 +1,16 @@
+{
+  "step": "2 (v3-history Learn campaign)",
+  "declared_at_utc": "2026-09-29T10:04:06+00:00",
+  "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+  "plan_hash": "604a7a158c6185534ff6c8c14b48f58a04166de09ea442379b5a36eb8ed63c2e",
+  "configuration_hash": "19a1127cdc8406d8bb72021a251761be26e7f39187dd6e0921cc1ed843883354",
+  "discovery": {
+    "protocol": "faultlab-discovery/v3-history",
+    "status": "AVAILABLE",
+    "record_cutoff": 963,
+    "summary_hash": "8781d32f769bd18c476de1533523ea8c9da85331ea49a2bf031274edcbbc94b8"
+  },
+  "history_rows": 0,
+  "step1_result": "baseline study baseline-study-5c46013797f34cb8b8c68e643f255ea8 COMPLETED: 112 calls, $2.3408 conservative; B0 7/18 violated (dev-5 C3 3/3); B1 15 COMPLETED + 3 CORRECTLY_REJECTED",
+  "references": "DECLARATION.json (sha256 36ab50e8...) step2 bounds, stop rules and meanings apply unchanged"
+}
