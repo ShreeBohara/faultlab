@@ -1,0 +1,39 @@
+{
+ "title": "Native adapter v2 live: step 1 baseline study (probe), step 2 v3-history Learn campaign only on GO",
+ "declared_at_utc": "2026-09-29T23:35:57+00:00",
+ "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+ "plan": "PLAN.md sha256 037aa6fbe4c8da26f10f6d1852d576411168d0fb66aaee574d3f747d38893034; compute_go.py sha256 5145f28c762a672ed719e573be7329a41fd5ced7dd91f34c73f44dae3e67df1a",
+ "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3",
+ "baseline_campaign_id": "campaign-1f350c6d8861419f9e2d246e104fb6ab",
+ "agent_registration_id": "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4",
+ "agent_inputs": {
+  "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+  "prompt_hash": "cee3aedab1a0476e7d0d656c8a68ac4982ade315a82c70e3731a8ba5b7a2bee0",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "adapter_hash": "d27c374f4836f554795207c4bcf7caa84abb75105b69328cd0848a4569338898",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "identities": {
+  "algorithm_hash": "7afabd51a2a4f6bb74ca780996d2512be85169299a88c67b94c319a7e2121fe8",
+  "runtime_hash": "ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "source_commit": "c9db705 (backup/part2-2026-09-22 tip 3a34215), runtime ac7a12d2",
+ "step1": {
+  "max_calls": 288,
+  "conservative_max_dollars": 6.02,
+  "expected_dollars_conservative": 2.35,
+  "stop_rules": "any LAB_ERROR/INTERRUPTED, any B1 control deviation, INCOMPLETE, > 288 calls, 45 minutes"
+ },
+ "decision_rule": "GO iff COMPLETED, 0 lab errors, 0 B1 deviations, dev-5 C3 >= 2 of 3, C5 <= 2 of 15 outside dev-5 (compute_go.py)",
+ "step2_bounds": {
+  "campaign_requests_max": 4936,
+  "campaign_conservative_ceiling_dollars": 106.87,
+  "discovery_requests_max_before_counterexample": 144,
+  "discovery_conservative_max_dollars": 3.47,
+  "max_hours": 10,
+  "operator_evidence_retries_max": 3
+ },
+ "prices": "price-check.json (2026-09-29T23:34Z, unchanged)",
+ "ledger_before_dollars": 887.39
+}

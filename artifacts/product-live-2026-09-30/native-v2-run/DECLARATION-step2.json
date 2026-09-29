@@ -1,0 +1,25 @@
+{
+ "step": "2 (v3-history Learn campaign on native adapter v2)",
+ "declared_at_utc": "2026-09-29T23:39:46+00:00",
+ "campaign_id": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+ "plan_hash": "bcf9baee848c90351bbe8f86a6a7bb18fb12d98a732ab2cabd01fd339369b123",
+ "configuration_hash": "e5bfdfc21e5c56a4ec60414679d527954c73fb50e3eeb20b0bebf1cdeff5dd64",
+ "discovery": {
+  "protocol": "faultlab-discovery/v3-history",
+  "status": "AVAILABLE",
+  "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+  "record_cutoff": 923,
+  "episode_ids_hash": "602ff197c0348198dcc09207e12976b43311bb56de10df4b8ef86423b44de6bc",
+  "summary_hash": "0a86839ff0bebfafe8082b085cee33303e6bedf5992c8cd634d0f07a6855144d"
+ },
+ "step1_result": {
+  "decision": "GO",
+  "dev5_c3": "3 of 3",
+  "c5_outside_dev5": "2 of 15",
+  "b0_violated": "5 of 18",
+  "b0_c5_total": 5,
+  "lab_errors": 0,
+  "b1_deviations": 0
+ },
+ "references": "DECLARATION.json sha256 95270952b8fad242abe8081b8aaa7e3176b14ad8509bdd18edd34d353ceb798b; its step2_bounds and PLAN.md section 4 stop rules apply unchanged"
+}

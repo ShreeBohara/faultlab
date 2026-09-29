@@ -1,67 +1,85 @@
 {
-  "schema": "faultlab-carried-ledger/v1",
-  "note": "Conservative upper-bound charges; provider-billed amounts unknown. Owner added funds 2026-09-28 (amount not stated); old $1,000 cap no longer binds.",
-  "entries": [
-    {
-      "stage": "carried before 2026-09-28 runs",
-      "carried": 856.96,
-      "source": "artifacts/product-loop-2026-09-27/final-checkpoint.json"
-    },
-    {
-      "stage": "native smolagents baseline probe",
-      "campaign": "campaign-e5b0165883ee4dcfab262e1c8f3d595b",
-      "calls": 102,
-      "charged_exact": 2.1318,
-      "charged_rounded_up": 2.14,
-      "token_priced_estimate": 0.2334,
-      "carried_after": 859.1
-    },
-    {
-      "stage": "discovery v2 live run (INCOMPLETE, Explorer connection failure after 5/8 slots)",
-      "campaign": "campaign-a301846e8722418eaafc71923c6e1819",
-      "calls": 41,
-      "charged_exact": 1.03054,
-      "charged_rounded_up": 1.04,
-      "token_priced_estimate": 0.13,
-      "carried_after": 860.14
-    },
-    {
-      "stage": "discovery v2 complete live run (8/8 fully fired, NO_CHANGE)",
-      "campaign": "campaign-17d60a9e97524a4a94858b14eabe8279",
-      "calls": 57,
-      "charged_exact": 1.45176,
-      "charged_rounded_up": 1.46,
-      "token_priced_estimate": 0.24,
-      "carried_after": 861.6
-    },
-    {
-      "stage": "native original-loop live learn (2 C5 sources reproduced/reduced/diagnosed INCONCLUSIVE; NO_CHANGE)",
-      "campaign": "campaign-7ee35abedd204d2895b180bbd75e66dc",
-      "calls": 346,
-      "charged_exact": 7.5208,
-      "charged_rounded_up": 7.53,
-      "token_priced_estimate": 0.95,
-      "carried_after": 869.13
-    },
-    {
-      "stage": "native v3 history-informed: step 1 baseline study",
-      "campaign": "campaign-aaceaf2fa0554540adb1008d286e2f7d",
-      "calls": 112,
-      "charged_exact": 2.3408,
-      "charged_rounded_up": 2.35,
-      "token_priced_estimate": 0.26,
-      "carried_after": 871.48
-    },
-    {
-      "stage": "native v3 history-informed: step 2 learn campaign (first live candidates, source validation, challenge; STOPPED at 6 h during evidence wait)",
-      "campaign": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
-      "calls": 747,
-      "charged_exact": 15.9017,
-      "charged_rounded_up": 15.91,
-      "token_priced_estimate": 2.2,
-      "carried_after": 887.39
-    }
-  ],
-  "carried_total": 887.39,
-  "updated_at_utc": "2026-09-29T16:07:05+00:00"
+ "schema": "faultlab-carried-ledger/v1",
+ "note": "Conservative upper-bound charges; provider-billed amounts unknown. Owner added funds 2026-09-28 (amount not stated); old $1,000 cap no longer binds.",
+ "entries": [
+  {
+   "stage": "carried before 2026-09-28 runs",
+   "carried": 856.96,
+   "source": "artifacts/product-loop-2026-09-27/final-checkpoint.json"
+  },
+  {
+   "stage": "native smolagents baseline probe",
+   "campaign": "campaign-e5b0165883ee4dcfab262e1c8f3d595b",
+   "calls": 102,
+   "charged_exact": 2.1318,
+   "charged_rounded_up": 2.14,
+   "token_priced_estimate": 0.2334,
+   "carried_after": 859.1
+  },
+  {
+   "stage": "discovery v2 live run (INCOMPLETE, Explorer connection failure after 5/8 slots)",
+   "campaign": "campaign-a301846e8722418eaafc71923c6e1819",
+   "calls": 41,
+   "charged_exact": 1.03054,
+   "charged_rounded_up": 1.04,
+   "token_priced_estimate": 0.13,
+   "carried_after": 860.14
+  },
+  {
+   "stage": "discovery v2 complete live run (8/8 fully fired, NO_CHANGE)",
+   "campaign": "campaign-17d60a9e97524a4a94858b14eabe8279",
+   "calls": 57,
+   "charged_exact": 1.45176,
+   "charged_rounded_up": 1.46,
+   "token_priced_estimate": 0.24,
+   "carried_after": 861.6
+  },
+  {
+   "stage": "native original-loop live learn (2 C5 sources reproduced/reduced/diagnosed INCONCLUSIVE; NO_CHANGE)",
+   "campaign": "campaign-7ee35abedd204d2895b180bbd75e66dc",
+   "calls": 346,
+   "charged_exact": 7.5208,
+   "charged_rounded_up": 7.53,
+   "token_priced_estimate": 0.95,
+   "carried_after": 869.13
+  },
+  {
+   "stage": "native v3 history-informed: step 1 baseline study",
+   "campaign": "campaign-aaceaf2fa0554540adb1008d286e2f7d",
+   "calls": 112,
+   "charged_exact": 2.3408,
+   "charged_rounded_up": 2.35,
+   "token_priced_estimate": 0.26,
+   "carried_after": 871.48
+  },
+  {
+   "stage": "native v3 history-informed: step 2 learn campaign (first live candidates, source validation, challenge; STOPPED at 6 h during evidence wait)",
+   "campaign": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+   "calls": 747,
+   "charged_exact": 15.9017,
+   "charged_rounded_up": 15.91,
+   "token_priced_estimate": 2.2,
+   "carried_after": 887.39
+  },
+  {
+   "stage": "native adapter v2 live: step 1 baseline study (declared GO: dev-5 C3 3/3, C5 2 of 15 outside dev-5)",
+   "campaign": "campaign-1f350c6d8861419f9e2d246e104fb6ab",
+   "calls": 99,
+   "charged_exact": 2.0691,
+   "charged_rounded_up": 2.07,
+   "token_priced_estimate": 0.21,
+   "carried_after": 889.46
+  },
+  {
+   "stage": "native adapter v2 live: step 2 v3-history Learn campaign (ERROR: Explorer CONNECTION_ERROR twice after 5 selections; 3 C4 sources, 2 FLAKY, 1 INCONCLUSIVE)",
+   "campaign": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+   "calls": 199,
+   "charged_exact": 4.39062,
+   "charged_rounded_up": 4.4,
+   "token_priced_estimate": 0.44,
+   "carried_after": 893.86
+  }
+ ],
+ "carried_total": 893.86,
+ "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

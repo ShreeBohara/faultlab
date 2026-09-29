@@ -1,0 +1,14 @@
+{
+ "checked_at_utc": "2026-09-29T23:34:36+00:00",
+ "source": "https://wandb.ai/site/pricing/inference/",
+ "checked_by": "Claude (PM) via WebFetch",
+ "deepseek-ai/DeepSeek-V3.1": {
+  "input_per_million": 0.55,
+  "output_per_million": 1.65
+ },
+ "deepseek-ai/DeepSeek-V4-Pro-0813": {
+  "input_per_million": 1.31,
+  "output_per_million": 3.96
+ },
+ "note": "Unchanged from the 2026-09-29T03:24Z check."
+}

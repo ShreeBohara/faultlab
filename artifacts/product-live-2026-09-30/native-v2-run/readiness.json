@@ -1,0 +1,19 @@
+{
+  "ready": true,
+  "simulator": {
+    "ready": true,
+    "code": "READY",
+    "message": "Local simulator and control access are ready."
+  },
+  "live_configuration": {
+    "ready": true,
+    "missing_fields": []
+  },
+  "provider_access": "not_checked",
+  "provider_calls": 0,
+  "models": {
+    "actor": "deepseek-ai/DeepSeek-V3.1",
+    "explorer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "mechanic": "deepseek-ai/DeepSeek-V4-Pro-0813"
+  }
+}

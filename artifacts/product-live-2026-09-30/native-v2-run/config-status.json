@@ -1,0 +1,41 @@
+{
+  "schema_version": "faultlab/v1",
+  "data_store": {
+    "identity": "26c188de67557d6ee3493b93b65285dc14a16cbff9bec0cfcd55efe567d6bc8d",
+    "path": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3",
+    "read_only": false
+  },
+  "model": "deepseek-ai/DeepSeek-V3.1",
+  "lab_model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "models": {
+    "actor": "deepseek-ai/DeepSeek-V3.1",
+    "explorer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "mechanic": "deepseek-ai/DeepSeek-V4-Pro-0813"
+  },
+  "actor_context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+  "model_configured": true,
+  "live_enabled": true,
+  "profile_ids": [
+    "offline-v1",
+    "live-v1"
+  ],
+  "sponsor": {
+    "weave": "PENDING",
+    "aria": "PENDING"
+  },
+  "active_campaign_id": null,
+  "execution_profiles": [
+    {
+      "profile_id": "sandbox-v1",
+      "caps": {
+        "http_attempts": 18,
+        "actor_calls": 8,
+        "wait_cycles": 4,
+        "ticks": 20,
+        "policy_steps": 32,
+        "wall_seconds": 90
+      },
+      "requires_live": true
+    }
+  ]
+}

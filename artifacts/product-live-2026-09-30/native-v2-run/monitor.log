@@ -1,0 +1,11 @@
+23:40:02 state=RUNNING used_calls=0 charged=0.0 selections=0 counterexamples=0 policy=policy-v0
+23:40:32 state=REPRODUCING used_calls=30 charged=0.6848799999999999 selections=2 counterexamples=1 policy=policy-v0
+23:41:02 state=REDUCING used_calls=46 charged=1.0192800000000004 selections=2 counterexamples=1 policy=policy-v0
+23:41:33 state=REPRODUCING used_calls=71 charged=1.5996599999999987 selections=4 counterexamples=2 policy=policy-v0
+23:42:03 state=REDUCING used_calls=93 charged=2.0594599999999974 selections=4 counterexamples=2 policy=policy-v0
+23:42:33 state=REPRODUCING used_calls=118 charged=2.610900000000001 selections=5 counterexamples=3 policy=policy-v0
+23:43:03 state=REDUCING used_calls=141 charged=3.091600000000004 selections=5 counterexamples=3 policy=policy-v0
+23:43:33 state=REDUCING used_calls=179 charged=3.8858000000000095 selections=5 counterexamples=3 policy=policy-v0
+23:44:03 state=REDUCING used_calls=196 charged=4.241100000000012 selections=5 counterexamples=3 policy=policy-v0
+23:44:33 state=ERROR used_calls=199 charged=4.390620000000011 selections=5 counterexamples=3 policy=policy-v0
+FINAL ERROR CONNECTION_ERROR: A model request failed; inspect the saved provider diagnostics. state=ERROR used_calls=199 charged=4.390620000000011 selections=5 counterexamples=3 policy=policy-v0 operator_retries=0 states=['RUNNING', 'REPRODUCING', 'REDUCING', 'REPRODUCING', 'REDUCING', 'REPRODUCING', 'REDUCING', 'ERROR']
