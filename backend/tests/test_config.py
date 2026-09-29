@@ -141,6 +141,44 @@ def test_existing_capability_that_is_not_a_regular_file_is_refused(tmp_path):
         Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
 
 
+def _open_descriptors():
+    return len(os.listdir('/dev/fd'))
+
+
+def test_existing_capability_that_is_a_directory_is_refused_and_closes_its_descriptor(tmp_path):
+    # Verification finding (LOW, September 28): a directory raised a raw IsADirectoryError
+    # from fdopen and left the opened descriptor behind.
+    (tmp_path / 'control-capability').mkdir(mode=0o700)
+    settings = Settings(faultlab_artifact_dir=str(tmp_path))
+    before = _open_descriptors()
+    for _ in range(3):
+        with pytest.raises(ConfigurationError) as error:
+            settings.local_control_token()
+        assert error.value.missing_fields == ('FAULTLAB_CONTROL_TOKEN',)
+        assert not isinstance(error.value, IsADirectoryError)
+    assert _open_descriptors() == before
+    assert sorted(path.name for path in tmp_path.iterdir()) == ['control-capability']  # no stray candidate file
+
+
+def test_refused_capability_file_leaves_no_open_descriptor(tmp_path):
+    path = tmp_path / 'control-capability'
+    path.write_text('t' * 43)
+    path.chmod(0o644)
+    settings = Settings(faultlab_artifact_dir=str(tmp_path))
+    before = _open_descriptors()
+    with pytest.raises(ConfigurationError):
+        settings.local_control_token()
+    assert _open_descriptors() == before
+
+
+def test_capability_that_is_not_text_is_refused_as_configuration(tmp_path):
+    path = tmp_path / 'control-capability'
+    path.write_bytes(bytes(range(128, 256)))
+    path.chmod(0o600)
+    with pytest.raises(ConfigurationError):
+        Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
+
+
 def test_live_defaults_deny_dispatch():
     settings = Settings(wandb_api_key='fixture',wandb_entity='team',wandb_project='p',wandb_model='m')
     with pytest.raises(ConfigurationError):settings.require_live()

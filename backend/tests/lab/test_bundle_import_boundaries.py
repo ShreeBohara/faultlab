@@ -506,3 +506,51 @@ def test_semantics_refusal_names_each_differing_identity_and_the_simulator_cause
     assert 'earlier or different simulator build' in message and 'saved evidence stays reviewable' in message
     scorer = imports.semantics_mismatch(current, SimpleNamespace(**{**current, 'scorer_hash': 'b' * 64}))
     assert 'fixed scorer: bundle bbbbbbbb…' in scorer and 'simulator build' not in scorer
+
+
+# Verification finding (LOW, September 28): GET /api/bundle-imports said runnable: true for an
+# other-simulator bundle while its detail view and execution refused it. The list now applies
+# the detail view's check, so the two always agree.
+
+@pytest.mark.anyio
+async def test_imports_list_and_detail_agree_on_runnable_for_both_simulator_builds(tmp_path):
+    if not OTHER_SIMULATOR_ZIP.is_file() or not REAL_ZIP.is_file():
+        pytest.skip('Real download fixtures are not in this checkout')
+    c = await runtime(tmp_path / 'target')
+    try:
+        identity = store_descriptor(c.store)['identity']
+        other = await imports.save_import(c, identity, OTHER_SIMULATOR_ZIP.read_bytes())
+        same = await imports.save_import(c, identity, REAL_ZIP.read_bytes())
+        saved = c.store.get_record(imports.IMPORT_KIND, other['import_id'])
+        assert saved['runnable'] is True            # the summary saved at import time predates the check
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=create_app(coordinator=c)), base_url='http://127.0.0.1') as client:
+            listed = {item['import_id']: item for item in (await client.get('/api/bundle-imports')).json()['items']}
+            details = {ident: (await client.get(f'/api/bundle-imports/{ident}')).json() for ident in listed}
+        for ident, item in listed.items():
+            assert (item['runnable'], item['runnable_reason']) == (details[ident]['runnable'], details[ident]['runnable_reason'])
+        assert listed[other['import_id']]['runnable'] is False
+        assert 'earlier or different simulator build' in listed[other['import_id']]['runnable_reason']
+        assert listed[same['import_id']]['runnable'] is True and listed[same['import_id']]['runnable_reason'] is None
+        assert c.store.get_record(imports.IMPORT_KIND, other['import_id']) == saved   # read, never rewritten
+    finally:
+        await c.close()
+
+
+@pytest.mark.anyio
+async def test_a_damaged_saved_import_is_listed_not_runnable_without_hiding_the_others(tmp_path):
+    if not REAL_ZIP.is_file():
+        pytest.skip('Real download fixture is not in this checkout')
+    c = await runtime(tmp_path / 'target')
+    try:
+        detail = await imports.save_import(c, store_descriptor(c.store)['identity'], REAL_ZIP.read_bytes())
+        saved = c.store.get_record(imports.IMPORT_KIND, detail['import_id'])
+        c.store.put_record(imports.IMPORT_KIND, 'import-damaged', {**saved, 'import_id': 'import-damaged',
+                                                                  'manifest_hash': 'f' * 64}, immutable=True)
+        items = imports.import_page(c.store)['items']
+        assert [item['import_id'] for item in items] == ['import-damaged', detail['import_id']]
+        assert items[0]['runnable'] is False and 'integrity check' in items[0]['runnable_reason']
+        assert items[1]['runnable'] is True
+        with pytest.raises(StoreConflict):
+            imports.import_detail(c.store, c.settings, 'import-damaged')
+    finally:
+        await c.close()

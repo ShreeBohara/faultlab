@@ -1,6 +1,6 @@
 # FaultLab — current status
 
-Updated **September 28, 2026**. This is the single current status and continuation page.
+Updated **September 29, 2026 (UTC)**. This is the single current status and continuation page.
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
@@ -10,12 +10,58 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Current runtime: `c0a8aad71dfebe4407e159f7459edcef37a7d14ac6bb3c736990128e180ccaac`** (algorithm
-`e5dce72c…`), local and uncommitted; simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`**, the same
-simulator identity as the last checkpoint (`8e497da`, runtime `cfe5ac07…`). Runtime chain since that
-checkpoint: `cfe5ac07` → `bb87c764` (hardening: task-text display, dotenv guard, lazy simulator entry point;
-the lazy entry point changed the simulator identity to service `f70c8fb1…` / contract `1099eda7…`) →
-`9f53eb8c` (discovery v2) → `c9b1b7e6` (fixes from the two September 28 reviews) → **`c0a8aad7`**.
+**Current runtime: `c9af0a47013a1140ed9ccce80a26e6912de1f86e89cfd73ae9c1881cf8f49775`** (algorithm
+`6d6433df…`), local and uncommitted, on top of checkpoint commit `e7340c9` (runtime `c0a8aad7…`); simulator
+service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…` unchanged, so checkpoint
+bundles stay rerunnable; every agent must be registered again. Chain: `cfe5ac07` → `bb87c764` → `9f53eb8c`
+(discovery v2) → `c9b1b7e6` → `c0a8aad7` (simulator revert, committed as `e7340c9`) → `debc86f3` (transport
+retry, below) → **`c9af0a47`** (its review fixes, below).
+
+**September 29 (builder, $0): one bounded transport retry for every model role, and fixes.** Details:
+[transport retry note](docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md); evidence `artifacts/product-retry-2026-09-29/builder/`.
+Two independent $0 reviews (accounting READY, correctness READY_WITH_CHANGES) found no accounting bug and six small
+items; **all six are handled** (runtime `debc86f3` → `c9af0a47`; evidence `…/fixer/`, note section 11):
+- **Cost and token figures after a retry (documented; one convention now in code):** per record, tokens are the
+  answered request's only and the cost is unknown (`cost_dollars: null`) for a retried selection or Mechanic output
+  and for an Actor or native episode after any lost request (the Actor now matches the native bridge). For the
+  campaign, every attempt is charged its full call, token and dollar bound, but after the first retry the budget
+  shows usage as not fully known (`usage_metadata_known: false`, `actual_cost_dollars: null`) for the rest of that
+  campaign. Conservative and honest; not an accounting error. Live runs already had null costs (the provider reports none).
+- **Mechanic retry labels:** `mechanic_diagnosis` / `mechanic_proposal` / `mechanic_completion` (was `mechanic_mechanic`).
+- **Retry bounds are discovery-only:** the 8/16 Explorer retry bound and the 160-request / $4.27 worst case cover
+  **discovery**; later Explorer (challenge, selection comparison) and all Mechanic retries have no separate count and
+  are bounded by one retry per request and the campaign caps. The dashboard now says "during discovery" plus one line.
+- **Task display, digits:** a U+FE0E/U+FE0F after a digit, `#` or `*` is now marked unless it is inside a keycap
+  (1️⃣); plain only after a pictograph (❤️). The builder's rule had left one hidden bit per digit.
+- **Native drift companion** lists why each native tick-0 row stays drift. **Imports list re-check:** no change
+  (measured 0.32 s for 100 items; not polled), as the reviewer advised.
+- **FaultLab bug fixed:** campaign `a301846e` ended ERROR after one Explorer `APIConnectionError`. The Explorer,
+  the Mechanic and the native smolagents transport now follow the Actor's exact rule (one shared module): one
+  blind retry of the identical request, only when no answer arrived (connection error, timeout, HTTP 503 after
+  1 s; never after any answer, never other statuses/auth/config/model mismatch), charged on the ledger before it is
+  sent from unreserved capacity (refused → the original failure stands), recorded, and a second failure ends the
+  campaign as before. Native: the retry sits inside `_Bridge.generate`, so smolagents sees one step and the same
+  messages; it is charged as a model call, never an actor turn (≤ 8 generations + ≤ 8 retries per episode).
+- **Discovery budget decision:** a retry is **not** one of v2's 16 Explorer requests; it is declared separately as
+  `explorer_transport_retries_max` (8 v1 / 16 v2, **discovery requests only**) and every new plan freezes the rule as
+  `transport_retry` (dashboard plan text shows both). v2 **discovery-phase** worst case is now 160 requests / about
+  $4.27 (was 144 / $3.47); later-phase retries are bounded per request and by the campaign caps.
+- **Native report tick fixed** (real tick), so new native stores pass `check_clock_drift.py` as is. For old native
+  stores use `scripts/experiments/check_clock_drift_native.py` (same scan, plus the declared rule: tick 0 + equal
+  attempt counts + integrity VALID). `check_clock_drift.py` stays byte-identical because closed runners pin its
+  sha256 (editing it failed 78 pin tests). On a read-only copy of the native-probe store: drifted 0, 13 cleared.
+- **Verification LOW issues 2–5 fixed:** presentation selector unmarked only after a pictograph or inside a keycap
+  (review fix; the builder's "emoji base" rule still let digits through); Run desk
+  "Recorded task" and history "Saved task" use `TaskText`; the imports list agrees with the detail view on
+  `runnable`; a capability directory raises `ConfigurationError` and closes its descriptor. Issue 1 (caller gate
+  counts B1 controls) is still open.
+- **Manual $0 check:** the full offline original loop under a v2 plan, with lost Explorer, Mechanic (connection and
+  503) and Actor requests, reached the same COMPLETED result and accepted-policy content as a clean run, with exactly
+  4 retries recorded and 4 extra requests charged.
+- **Found, not fixed (LOW, pre-existing):** selection records keep `input_tokens: null` when a provider returns no
+  usage; the dashboard's Usage contract rejects null and the fault-search panel then refuses the whole list.
+- **Next:** register the agents again under `c9af0a47`, then a new, separately declared 8-slot v2 campaign
+  (never merged with `a301846e`'s partial 5 of 8).
 
 **PM decision (September 28): the simulator identity change is reverted.** Compatibility of previously
 exported bundles and existing registrations matters more than a control-capability file created at import
@@ -126,8 +172,8 @@ the adapter's dotenv guard; a bundle from an earlier or different simulator buil
 requests across the two targets, or cap each execution at 24; see the review doc) **under the current
 runtime, after registering the targets again and using the restored fixture above**. Original historical
 stores remain untouched. See [current increment memory](memory/context/product-import-2026-09-27.md).
-The five LOW issues from the independent verification (above) are open. Fix issue 1 (gate scope) before discovery-v2
-Run A, and issues 2–3 (task display) before a paid rerun of an outside bundle. None of them blocks the commit.
+Of the five LOW issues from the independent verification (above), issues 2–5 were fixed on September 29 (runtime
+`debc86f3`; the task-display rule was tightened for digits in `c9af0a47`); issue 1 (caller-gate scope) is still open.
 
 **Reviewed campaign setup and native-agent execution are implemented, verified and saved locally.**
 The dashboard now offers reference/native selection, explicit registration, six public cases, an immutable
@@ -411,7 +457,12 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-The current carried accounting is **$856.96 conservatively charged**: the previous $855.91 plus
+**Current carried accounting: $860.14 conservatively charged** = $856.96 below + $2.14 for the September 28 native
+baseline probe ([result](docs/PRODUCT_NATIVE_PROBE_2026-09-28.md)) + $1.04 for the INCOMPLETE discovery-v2 run
+`a301846e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md)). The September 29 transport-retry work made no
+provider call ($0).
+
+The previous carried accounting was **$856.96 conservatively charged**: the previous $855.91 plus
 $1.05 for the completed original-workflow campaign (39 requests, exact bound $1.04662).
 Its token-priced estimate is $0.15324862; provider billing is unknown. The independent audit and
 current durability implementation made zero new inference calls. The owner has repeatedly authorized
@@ -483,6 +534,37 @@ commitments, independent audits, current reports and a self-contained source bun
 Its manifests record copied file hashes; credentials and SQLite transient sidecars are excluded.
 
 ## Verification and known issues
+
+**Current runtime `c9af0a47…` (September 29, review fixes; evidence `artifacts/product-retry-2026-09-29/fixer/`):**
+one clean run of each suite after the last code edit. Full backend **2,651 passed, 180 existing skips, 0 failed**, the
+2 known warnings, 932.61 s; audit hook: **0 outside connections or lookups**, `.env` touched only by the 3 synthetic
+events in `test_env_guard.py`. Frontend **312 unit tests** (18 files), production build (size advisory only), **15
+browser tests passed, 1 opt-in skipped**; Node guard logged nothing. New or changed tests cover the Mechanic request
+kinds, unknown cost after a retry (Explorer, Mechanic, Actor; loss-free controls keep the known cost), the checker's
+reasons, digit/keycap/pictograph task display (unit, component and random-mix oracle), and the "during discovery"
+text. Negative control on a scratch copy whose reverted files equal the builder's: backend 12 and frontend 7 of the
+new or changed tests fail; the rest check unchanged behaviour. Manual $0: the real dashboard marks a selector after
+each digit in the Run desk, saved plan and history, and keeps keycaps and pictographs plain; the companion checker
+reads the native-probe store as before (0 drifted, 13 cleared) and gives the Phase 1 store's reason per row. The
+console 404 on first load is Chrome's `/favicon.ico` request (no icon shipped), not an API call. Historical stores:
+9,409 files, no content or size change, only the 3 known `-shm` timestamps moved. HEAD `cbbf957`, backup branch and
+index unchanged; nothing committed. Identities: runtime `c9af0a47…`, algorithm `6d6433df…`, service `3ce5bcd2…`,
+contract `6f9d7783…`, interpreter `6da0714a…`, `check_clock_drift.py` `fa25ab9d…`.
+
+**Previous runtime `debc86f3…` (September 29, builder; since reviewed twice, see *Current work*):** one clean run of each
+suite after the last code edit. Full backend **2,642 passed, 180 existing skips, 0 failed**, the 2 known warnings,
+950.60 s; audit hook: **0 outside connections or lookups**, `.env` touched only by the 3 synthetic events in
+`test_env_guard.py`. Frontend **310 unit tests** (18 files), production build (size advisory only), **15 browser
+tests passed, 1 opt-in skipped**; Node guard logged nothing. New tests: `tests/agents/test_role_transport_retry.py`,
+`tests/lab/test_campaign_transport_retry.py`, `tests/lab/test_native_transport_retry.py`,
+`tests/lab/test_transport_retry_plans.py`, additions to `test_bundle_import_boundaries.py` and `test_config.py`;
+frontend `transport-retry.test.tsx` plus task-text and discovery additions. Negative control: run on the checkpoint `e7340c9`
+code, the new tests fail (backend 14 of 17, frontend all 8 new or changed; the 3 backend passes assert behaviour
+that did not change, e.g. a retry the budget refuses). That control predates the checker companion.
+A first full run failed 78 closed-runner pin tests because `check_clock_drift.py` had been edited; it was restored to
+its pinned bytes (see above). Historical `.sqlite3`/`-wal` files: 9,176 checked, hashes unchanged; only the 3 known
+`-shm` timestamps moved. HEAD `cbbf957` and the real index unchanged; nothing committed. Evidence:
+`artifacts/product-retry-2026-09-29/builder/` (`suites/`, `negative-controls/`, `checker-native-probe/`, `manual/`).
 
 *Independently re-verified by verifier4 (September 28): every count below was reproduced exactly (backend 2,562 /
 180 skipped / 0 failed; frontend 303, build, 15 + 1 opt-in skip); see* Independent verification *under* Current work.

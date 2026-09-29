@@ -12,7 +12,16 @@ request in the same slot, with the refusal reasons. Declared budget per campaign
 unchanged slot cap (8), at most two Explorer requests per slot (16), at most one Actor
 episode per slot (8). Every refusal is an immutable selection record. The pre-check never
 changes what the Actor sees or how any episode is scored.
+
+Transport retries (both protocols, app.agents.transport_retry): an Explorer request that
+received no answer (connection error, timeout, HTTP 503) may be re-sent once. A retry is
+the same request, not a new selection request, so it does NOT count toward
+``explorer_requests_max`` (counting it would let a network fault use up a slot's re-plan).
+It is bounded separately and declared as ``explorer_transport_retries_max`` (one per
+request: 8 under v1, 16 under v2), and charged on the campaign ledger before it is sent.
+Plans saved before this field existed declare no Explorer retry.
 """
+from app.agents.transport_retry import RETRIES_PER_REQUEST
 from app.lab.challenge import SCHEDULE_IDENTITY_V1, SCHEDULE_IDENTITY_V2, identity_for
 
 DISCOVERY_V1 = 'faultlab-discovery/v1'
@@ -30,13 +39,15 @@ def declaration(protocol, caps, *, caller=None):
     slots = caps.discovery_selections if hasattr(caps, 'discovery_selections') else caps['discovery_selections']
     if protocol == DISCOVERY_V1:
         return {'protocol': DISCOVERY_V1, 'schedule_identity': SCHEDULE_IDENTITY_V1, 'slots': slots,
-                'explorer_requests_max': slots, 'actor_episodes_max': slots, 'replans_per_slot': 0,
+                'explorer_requests_max': slots, 'explorer_transport_retries_max': slots * RETRIES_PER_REQUEST,
+                'actor_episodes_max': slots, 'replans_per_slot': 0,
                 'dispatch_rule': V1_DISPATCH_RULE, 'pre_check': None}
     if protocol == DISCOVERY_V2:
         if caller is None: raise ValueError('Discovery v2 requires a supported caller model')
         from app.lab.reachability import LABELLER_VERSION
         return {'protocol': DISCOVERY_V2, 'schedule_identity': SCHEDULE_IDENTITY_V2, 'slots': slots,
-                'explorer_requests_max': 2 * slots, 'actor_episodes_max': slots, 'replans_per_slot': 1,
+                'explorer_requests_max': 2 * slots, 'explorer_transport_retries_max': 2 * slots * RETRIES_PER_REQUEST,
+                'actor_episodes_max': slots, 'replans_per_slot': 1,
                 'dispatch_rule': V2_DISPATCH_RULE,
                 'pre_check': {'labeller': LABELLER_VERSION, 'caller_model': caller.descriptor()}}
     raise ValueError('Unknown discovery protocol')
@@ -74,6 +85,7 @@ class DiscoveryV2:
         self.block = block
         self.identity = identity_for(block['schedule_identity'])
         self.explorer_requests = 0
+        self.transport_retries = 0
         self.actor_episodes = 0
         self._normal_path = None
 
@@ -98,6 +110,10 @@ class DiscoveryV2:
         if self.explorer_requests >= self.block['explorer_requests_max']:
             raise BudgetViolation('Declared Explorer request budget exhausted')
         self.explorer_requests += 1
+
+    def transport_retry_available(self):
+        """Within the declared Explorer transport-retry bound (none if the plan declared none)."""
+        return self.transport_retries < (self.block.get('explorer_transport_retries_max') or 0)
 
     def admit_episode(self):
         if self.actor_episodes >= self.block['actor_episodes_max']:

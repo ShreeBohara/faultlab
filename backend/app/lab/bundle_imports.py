@@ -43,9 +43,10 @@ DEFAULT_ORDER_ID = 'order-regression'
 REQUIRED_TRIALS = 3
 # Three trials of at most eight actor turns each are reserved before admission.
 RESERVED_ACTOR_TURNS = REQUIRED_TRIALS * EpisodeBudget().actor_calls
-# The reference agent may resend a request whose transport failed before any
-# answer arrived. Such retries are charged but never reserved; this ceiling bounds
-# them per fresh execution, independently of the configured campaign caps.
+# The reference and native agents may resend a request whose transport failed before
+# any answer arrived (app.agents.transport_retry). Such retries are charged but never
+# reserved; this ceiling bounds them per fresh execution, independently of the
+# configured campaign caps.
 TRANSPORT_RETRY_ALLOWANCE = RESERVED_ACTOR_TURNS
 REQUEST_CEILING = RESERVED_ACTOR_TURNS + TRANSPORT_RETRY_ALLOWANCE
 _ID = TypeAdapter(Id)
@@ -367,8 +368,45 @@ def _summary(record):
 
 
 def import_page(store, *, before=None, limit=20):
+    """Saved imports, newest first, with the same runnable verdict as each detail view."""
     rows, page = _page(store, IMPORT_KIND, before=before, limit=limit)
-    return {'items': [_summary(json.loads(row['payload'])) for row in rows], **page}
+    items = []; installed = []
+    def semantics():
+        if not installed: installed.append(_installed_semantics())
+        return installed[0]
+    for row in rows:
+        record = _summary(json.loads(row['payload']))
+        try:
+            _, bundle, payloads, _ = _saved(store, record['import_id'])
+        except Exception:
+            # One damaged saved import must not hide the others; its detail view reports why.
+            if record.get('runnable'):
+                record = {**record, 'runnable': False,
+                          'runnable_reason': 'The saved import failed its integrity check; open it for details'}
+        else:
+            record = _current_runnable(record, bundle, payloads, semantics)
+        items.append(record)
+    return {'items': items, **page}
+
+
+def _current_runnable(record, bundle, payloads, installed=None):
+    """A saved summary's runnable verdict re-checked against today's runtime.
+
+    The summary saved at import time can be stale: a task check added later, or a bundle
+    whose simulator/contract build differs from the installed one. The list and the detail
+    view both use this, so they always agree.
+    """
+    if record['runnable'] and _saved_task(payloads) is None:
+        # Summaries saved before task checks existed stay readable but cannot run.
+        record = {**record, 'runnable': False,
+                  'runnable_reason': 'The recorded execution task is malformed; stored for inspection only'}
+    if record['runnable']:
+        # A bundle from an earlier simulator/contract build cannot run on any target here; say so
+        # at the bundle level too, instead of only when a target is selected.
+        problem = semantics_mismatch((installed or _installed_semantics)(), bundle)
+        if problem:
+            record = {**record, 'runnable': False, 'runnable_reason': problem}
+    return record
 
 
 def _target(store, settings, registration_id, bundle):
@@ -452,16 +490,7 @@ def import_detail(store, settings, import_id):
     descriptor = store_descriptor(store)
     descriptor['read_only'] = settings.faultlab_read_only
     task = _saved_task(payloads)
-    if task is None and record['runnable']:
-        # Summaries saved before task checks existed stay readable but cannot run.
-        record = {**record, 'runnable': False,
-                  'runnable_reason': 'The recorded execution task is malformed; stored for inspection only'}
-    if record['runnable']:
-        # A bundle from an earlier simulator/contract build cannot run on any target here; say so
-        # at the bundle level too, instead of only when a target is selected.
-        problem = semantics_mismatch(_installed_semantics(), bundle)
-        if problem:
-            record = {**record, 'runnable': False, 'runnable_reason': problem}
+    record = _current_runnable(record, bundle, payloads)
     return {**record,
         'historical': {'trials': bundle.model_dump(mode='json')['trial_results'],
             'recording': _json(payloads['evidence.json']) if 'evidence.json' in payloads else None,

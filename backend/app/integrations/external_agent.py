@@ -21,6 +21,8 @@ from app.agents.actor import ActorReportError
 from app.lab.budgets import BudgetExhausted, StopRequested
 from app.lab.provider_failures import record_provider_failure
 from app.providers.runtime import RuntimeProviderError
+from app.agents.transport_retry import (SERVICE_UNAVAILABLE_DELAY_SECONDS, blind_retry_allowed,
+                                        retry_payload, service_unavailable)
 
 TOOLS = ("get_order", "update_order", "get_operation_status", "send_confirmation")
 TASK_CONTRACT = {
@@ -119,14 +121,35 @@ class _Bridge:
         # deadline may leave that cost unknown; account() restores a total only
         # when all returned generations provide a known charge.
         meter.usage.cost_dollars = None
-        try:
-            generation = await context.provider.complete(public, role="actor", max_output_tokens=2000,
-                timeout_seconds=min(20, max(.01, meter.caps.wall_seconds - meter.usage.wall_seconds)))
-        except RuntimeProviderError as error:
-            if error.generation is not None:
-                self.account(error.generation)
-            self.fail_provider(error)
-            raise
+        for transport_attempt in range(2):
+            try:
+                generation = await context.provider.complete(public, role="actor", max_output_tokens=2000,
+                    timeout_seconds=min(20, max(.01, meter.caps.wall_seconds - meter.usage.wall_seconds)))
+                break
+            except RuntimeProviderError as error:
+                if error.generation is not None:
+                    self.account(error.generation)
+                if transport_attempt > 0 or not blind_retry_allowed(error):
+                    self.fail_provider(error)
+                    raise
+                # The reference Actor's rule (app.agents.transport_retry), applied below
+                # the native loop: the identical messages are re-sent once, inside this
+                # same generate() call, so smolagents sees one model step and the model
+                # sees exactly what it would have seen. meter.transport_retry() charges
+                # the campaign ledger (model calls, tokens, dollars) and this episode's
+                # model_calls before sending, never an actor turn; if it cannot be
+                # admitted the original failure stays fatal, as before.
+                self.cost_known = False
+                meter.usage.cost_dollars = None
+                record_provider_failure(self.context.broker.journal.store, error,
+                                        role='actor', metadata=self.context.metadata)
+                if service_unavailable(error):
+                    await asyncio.sleep(SERVICE_UNAVAILABLE_DELAY_SECONDS)
+                if not meter.transport_retry():
+                    self.fatal_provider_error = error
+                    raise
+                context.broker.journal.store.append_event(context.provenance.episode_id, tick=meter.usage.ticks,
+                    role="actor", type="actor_transport_retry", payload=retry_payload(error, transport_attempt + 1))
         self.account(generation)
         if generation.model_id != context.metadata["model_id"]:
             error = RuntimeProviderError('Provider returned a different frozen model', generation=generation)
@@ -150,7 +173,7 @@ class _Bridge:
             result = await context.interpreter.invoke("before_final_report", proposal, ReportAction(kind="report", report=report))
             if result.blocked:
                 raise ValueError(canonical_json({"blocked_report": result.reasons, "observations": result.observations}))
-            context.broker.journal.store.append_event(context.provenance.episode_id, role="actor", type="report_submitted", payload={"report": report.model_dump(mode="json")})
+            context.broker.journal.store.append_event(context.provenance.episode_id, tick=meter.usage.ticks, role="actor", type="report_submitted", payload={"report": report.model_dump(mode="json")})
             return report.model_dump(mode="json")
         if meter.usage.actor_calls >= meter.caps.actor_calls or meter.business_closed:
             raise ValueError("Final report required; business call was not dispatched")

@@ -265,9 +265,21 @@ def _read_private_capability(path: Path) -> str:
         descriptor = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_NONBLOCK', 0))
     except OSError:
         raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',)) from None
-    with os.fdopen(descriptor, 'r') as file:
-        info = os.fstat(file.fileno())
+    # Check the opened object before wrapping it: a directory opens on some systems, and
+    # fdopen would then raise a raw IsADirectoryError and leave the descriptor open.
+    try:
+        info = os.fstat(descriptor)
         foreign_owner = hasattr(os, 'getuid') and info.st_uid != os.getuid()
         if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) & 0o077 or foreign_owner:
             raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
-        return file.read().strip()
+        file = os.fdopen(descriptor, 'r')
+    except BaseException as error:
+        os.close(descriptor)
+        if isinstance(error, (ConfigurationError, OSError)):
+            raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',)) from None
+        raise
+    with file:
+        try:
+            return file.read().strip()
+        except (OSError, UnicodeDecodeError):
+            raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',)) from None

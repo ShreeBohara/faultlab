@@ -41,14 +41,34 @@ const codePoint = (character: string) => `U+${character.codePointAt(0)!.toString
  * and the like. A string of them can carry a whole hidden sentence behind one visible word.
  */
 const DEFAULT_IGNORABLE = /^\p{Default_Ignorable_Code_Point}$/u
-/** Text/emoji presentation selectors: one directly after a visible character is ordinary (for example ❤️). */
+/** Text/emoji presentation selectors: one directly after a pictograph, or inside a keycap, is ordinary (for example ❤️ or 1️⃣). */
 const PRESENTATION_SELECTORS = new Set(['\uFE0E', '\uFE0F'])
+/**
+ * Pictographs (Unicode Extended_Pictographic: ❤, ©, ®, ↔, ™, 😀 and the like), whose presentation
+ * selector switches between a text and an emoji drawing. Only these, and a keycap base below,
+ * take an unmarked presentation selector. After a letter, a digit, # or * outside a keycap, a
+ * regional indicator or any other character the selector changes nothing (or almost nothing) on
+ * screen, so leaving it unmarked would let text carry one hidden bit per character. (Unicode's
+ * wider Emoji property also lists 0–9, # and *, which is why it is not used here.)
+ */
+const PICTOGRAPH = /^\p{Extended_Pictographic}$/u
+/** Keycap bases: a selector after 0–9, # or * is ordinary only as the middle of a keycap (base, selector, U+20E3), as in 1️⃣. */
+const KEYCAP_BASE = /^[0-9#*]$/
+const COMBINING_KEYCAP = '\u20E3'
+export const emojiBase = (character: string) => PICTOGRAPH.test(character) && visibleCharacter(character)
+/** May the presentation selector at `at` stay unmarked? Only directly after a pictograph, or inside a keycap sequence. */
+export function ordinarySelector(characters: string[], at: number): boolean {
+  if (!PRESENTATION_SELECTORS.has(characters[at]) || at === 0) return false
+  const before = characters[at - 1]
+  return emojiBase(before) || (KEYCAP_BASE.test(before) && characters[at + 1] === COMBINING_KEYCAP)
+}
 
 /**
  * For each character of one line: is it shown as a ⟨U+…⟩ marker?
  *
  * Marked: every default-ignorable character, except a single U+FE0E/U+FE0F directly after a
- * visible character; every other character that is not visible, not an ordinary space or tab,
+ * pictograph or as the middle of a keycap (0–9, # or *, the selector, then U+20E3); every
+ * other character that is not visible, not an ordinary space or tab,
  * and not a combining mark drawn on a visible base. A combining mark with no visible base
  * before it on its line (for example on a blank line) is marked too, so it cannot vanish.
  */
@@ -58,7 +78,7 @@ export function markedCharacters(characters: string[]): boolean[] {
     let mark: boolean
     if (character === ' ' || character === '\t' || character === '\n') { mark = false; base = false }
     else if (DEFAULT_IGNORABLE.test(character)) {
-      mark = !(PRESENTATION_SELECTORS.has(character) && at > 0 && visibleCharacter(characters[at - 1]))
+      mark = !ordinarySelector(characters, at)
       if (mark) base = false
     }
     else if (visibleCharacter(character)) { mark = false; base = true }

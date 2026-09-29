@@ -1,7 +1,8 @@
 """Bounded selection and explicitly labeled fixed invalid-output fallback."""
 from pathlib import Path
 from app.providers.runtime import RuntimeProviderError
-from app.lab.provider_failures import record_provider_failure
+from app.lab.provider_failures import record_provider_failure,record_transport_retry
+from app.agents.transport_retry import charge_ledger_retry,complete_with_one_retry,request_usage
 from app.contracts.tokens import validate_model_input
 from app.contracts.models import ExplorerOutput,EpisodeBudget,FaultSpec,canonical_json,new_id,content_hash
 from app.lab.challenge import schedule_identity,identity_for
@@ -249,14 +250,29 @@ class Explorer:
         if v2 is not None: v2.admit_request()  # The declared selection budget refuses before any charge.
         self.ledger.consume_call(reservation=reservation,role='explorer')
         from app.lab.tracing import phase_span
-        try:
-            async with phase_span(self.trace,'select_experiment',self.metadata,{'challenge':challenge,'selection_index':context.get('selection_index',context.get('proposal_index'))}) as span:
+        span_inputs={'challenge':challenge,'selection_index':context.get('selection_index',context.get('proposal_index'))}
+        async def send(retry):
+            async with phase_span(self.trace,'select_experiment',self.metadata,{**span_inputs,'transport_retry':True} if retry else span_inputs) as span:
                 generation=await self.provider.complete(messages,role='explorer',max_output_tokens=2000,timeout_seconds=20)
                 if span: span.set_output({'raw_proposal':generation.content})
-        except RuntimeProviderError as error:
+            return generation
+        def failed(error):
             if error.generation is not None: self.ledger.reconcile(error.generation)
-            record_provider_failure(self.store,error,role='explorer',metadata=self.metadata or context)
-            raise
+            return record_provider_failure(self.store,error,role='explorer',metadata=self.metadata or context)
+        def admit():
+            # The shared blind-retry rule (app.agents.transport_retry). A retry re-sends this
+            # same request; it is not a new selection request, so it never uses one of the
+            # declared discovery requests. Under v2 it is bounded by the plan's declared
+            # explorer_transport_retries_max, and it is always charged on the ledger first.
+            if v2 is not None and not v2.transport_retry_available(): return False
+            if not charge_ledger_retry(self.ledger,'explorer'): return False
+            if v2 is not None: v2.transport_retries+=1
+            return True
+        def record(error,failure_id):
+            return record_transport_retry(self.store,error,role='explorer',failure_id=failure_id,metadata=self.metadata or context,
+                request={'kind':'explorer_selection','challenge':challenge,'selection_index':span_inputs['selection_index'],
+                         'slot_request':context.get('slot_request') if v2 is not None else None})
+        generation,retries=await complete_with_one_retry(send,failed=failed,admit=admit,record=record)
         self.ledger.reconcile(generation)
         if self.metadata and generation.model_id!=expected:
             raise RuntimeProviderError('Provider returned a different frozen model')
@@ -296,6 +312,6 @@ class Explorer:
                     if not label['all_forced']:
                         decision.update(status='SKIPPED_UNREACHABLE',reason='NOT_ALL_FAULTS_FORCED',refused_fault_spec=refused_spec)
                         selected=None  # No Actor episode and no substitute fault for this request.
-        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':{'model_calls':1,'input_tokens':generation.input_tokens,'output_tokens':generation.output_tokens,'cost_dollars':generation.cost_usd}},immutable=True)
+        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {})},immutable=True)
         if precheck_error is not None: raise precheck_error
         return selection_id,selected

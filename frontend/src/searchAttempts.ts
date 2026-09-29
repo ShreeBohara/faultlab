@@ -14,6 +14,13 @@ export type SearchAttempt = {
     refused_fault_spec?: FaultSpec | null; reachability?: Reachability | null
   }
   selected_output: ExplorerOutput | null; output: ExplorerOutput | null; raw_response: string; usage: Usage; provenance: string; error: string | null
+  /** A charged blind retry of this request after it received no answer (at most one). */
+  transport_retries?: TransportRetry[]
+}
+export type TransportRetry = { retry_id: string; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1; http_status?: 503; retry_delay_seconds?: 1; provider_failure_id: string }
+function transportRetries(value: unknown): value is TransportRetry[] {
+  return Array.isArray(value) && value.length <= 1 && value.every(retry => object(retry) && nonempty(retry.retry_id) && nonempty(retry.provider_failure_id) && retry.attempt === 1
+    && (retry.code === 'HTTP_ERROR' ? retry.http_status === 503 && retry.retry_delay_seconds === 1 : ['CONNECTION_ERROR', 'REQUEST_TIMEOUT'].includes(String(retry.code)) && retry.http_status === undefined))
 }
 const nonempty = (value: unknown): value is string => typeof value === 'string' && value.length > 0
 const hash = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
@@ -51,7 +58,8 @@ export function validateSearchAttempts(value: unknown, campaignId: string): Sear
     if (!object(row) || row.campaign_id !== campaignId || !nonempty(row.selection_ref) || refs.has(row.selection_ref)
       || !Number.isInteger(row.selection_index) || (row.selection_index as number) < 0
       || !hash(row.configuration_hash) || !hash(row.policy_hash) || !object(row.search_decision)
-      || typeof row.raw_response !== 'string' || !nonempty(row.provenance) || !(row.error === null || typeof row.error === 'string')) return malformed()
+      || typeof row.raw_response !== 'string' || !nonempty(row.provenance) || !(row.error === null || typeof row.error === 'string')
+      || !(row.transport_retries === undefined || transportRetries(row.transport_retries))) return malformed()
     const decision = row.search_decision
     const v2 = decision.discovery_protocol !== undefined
     if (!(v2 ? V2_STATUSES : V1_STATUSES).includes(String(decision.status))
@@ -63,7 +71,10 @@ export function validateSearchAttempts(value: unknown, campaignId: string): Sear
     const output = row.output === null ? null : validateContract<ExplorerOutput>('ExplorerOutput', row.output)
     if ((decision.status === 'SELECTED') !== !!selected_output || (decision.status !== 'INVALID_OUTPUT' && !decision.schedule_hash)) return malformed()
     refs.add(row.selection_ref)
-    return { ...row, selected_output, output, usage: validateContract<Usage>('Usage', row.usage) } as SearchAttempt
+    const usage = validateContract<Usage>('Usage', row.usage)
+    // Both requests of a retried selection are charged, and the saved usage says so.
+    if ((usage.model_calls ?? 1) !== 1 + ((row.transport_retries as TransportRetry[] | undefined)?.length ?? 0)) return malformed()
+    return { ...row, selected_output, output, usage } as SearchAttempt
   })
 }
 export const getSearchAttempts = (campaignId: string) => request(`/campaigns/${encodeURIComponent(campaignId)}/search-attempts`, value => validateSearchAttempts(value, campaignId))

@@ -11,7 +11,10 @@ export type SearchSpace = { maximum_primitives: number; kinds: string[]; occurre
 export type DevelopmentCase = { case_id: string; label: string; description: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec }
 export type DiscoveryProtocolId = 'faultlab-discovery/v1' | 'faultlab-discovery/v2-reachability'
 export type CallerModel = { caller_id: string; agent: 'reference'; max_business_calls: number; adapter_attempts: number; client_timeout_seconds: number; wait_action: boolean; ticks_per_http_attempt: number; http_attempts: number; ticks: number; polling: string; unknown_status_checks?: number; resends_failed_writes?: boolean; validated_against: string; facts: string[] }
-export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel } }
+/** explorer_transport_retries_max: one charged retry per Explorer request that got no answer; not a request itself. Absent or null in plans saved before it existed (none declared). */
+export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; explorer_transport_retries_max?: number | null; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel } }
+/** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py). */
+export type TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
 export type DiscoveryOption = { protocol_id: DiscoveryProtocolId; default: boolean; label: string; description: string; supported_agents: AgentKind[]; unsupported_reason?: string; declaration: DiscoveryDeclaration }
 export type RunAgent = { agent: AgentKind; label: string; status: 'READY' | 'UNAVAILABLE'; reason_code: string; message: string; configuration_hash: string | null; proposed_registration_id: string | null; registered: boolean; registration_id: string | null; model: string; source_conformance: 'VERIFIED' | 'UNAVAILABLE'; provider_access: 'not_checked'; behavior_verified: false; compare_available: boolean; accepted_policy_version: string | null; limitations: string[] }
 export type RunOptions = {
@@ -28,7 +31,7 @@ export type PlanSelection =
   | { kind: 'development_case'; case_id: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec; scenario_hash: string; manifest_hash: string }
   | { kind: 'development_search'; manifest_hash: string; search_space: SearchSpace }
   | { kind: 'protected_comparison'; partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
-export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; plan_hash: string }
+export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; transport_retry?: TransportRetryDeclaration | null; plan_hash: string }
 export type CampaignPlan = { campaign_id: string; status: 'PLANNED'; plan: RunPlan } | { campaign_id: string; status: 'LEGACY'; plan: null }
 export type PlannedCampaignRequest = { expected_store_identity: string; expected_setup_hash: string; task_definition_id: typeof TASK_DEFINITION; agent_registration_id?: string; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; development_case_id?: string; discovery_protocol?: DiscoveryProtocolId }
 
@@ -52,12 +55,21 @@ export function discoveryDeclaration(value: unknown): value is DiscoveryDeclarat
     || !['slots', 'explorer_requests_max', 'actor_episodes_max'].every(key => positive(value[key])) || ![0, 1].includes(value.replans_per_slot as number)) return false
   const v2 = value.protocol === 'faultlab-discovery/v2-reachability', slots = value.slots as number
   if (value.explorer_requests_max !== slots * (v2 ? 2 : 1) || value.actor_episodes_max !== slots || value.replans_per_slot !== (v2 ? 1 : 0)) return false
+  // At most one transport retry per Explorer request; older plans declare none (absent or null).
+  if (!(value.explorer_transport_retries_max === undefined || value.explorer_transport_retries_max === null || value.explorer_transport_retries_max === value.explorer_requests_max)) return false
   if (!v2) return value.pre_check === null
   const check = value.pre_check
   if (!object(check) || !text(check.labeller) || !object(check.caller_model)) return false
   const caller = check.caller_model
   return caller.agent === 'reference' && text(caller.caller_id) && positive(caller.max_business_calls) && positive(caller.adapter_attempts)
     && typeof caller.client_timeout_seconds === 'number' && caller.wait_action === false && stringList(caller.facts) && text(caller.validated_against)
+}
+const same = (value: unknown, expected: string[]) => Array.isArray(value) && value.length === expected.length && value.every((item, index) => item === expected[index])
+/** The declared transport retry rule, exactly as the backend freezes it. */
+export function transportRetry(value: unknown, actorCalls: number): value is TransportRetryDeclaration {
+  return object(value) && value.protocol === 'faultlab-transport-retry/v1' && value.retries_per_request === 1
+    && same(value.roles, ['actor', 'explorer', 'mechanic']) && same(value.retryable, ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'])
+    && value.service_unavailable_delay_seconds === 1 && value.actor_retries_per_episode_max === actorCalls && text(value.rule)
 }
 function discoveryOptions(value: unknown): boolean {
   if (!Array.isArray(value) || !value.length) return false
@@ -127,6 +139,7 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
   } else if (plan.mode === 'learn') {
     if (selection.kind !== 'development_search' || !digest(selection.manifest_hash) || !searchSpace(selection.search_space)) return malformed('campaign plan search space')
   } else if (selection.kind !== 'protected_comparison' || !comparison(selection)) return malformed('campaign plan comparison')
+  if (!(plan.transport_retry === undefined || plan.transport_retry === null || transportRetry(plan.transport_retry, (plan.episode_budget as Required<EpisodeBudget>).actor_calls))) return malformed('campaign plan transport retry rule')
   if (plan.discovery !== undefined && plan.discovery !== null) {
     // Only Learn declares a discovery protocol; v2 pre-checks only the reference Actor.
     if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery) || (plan.discovery.protocol === 'faultlab-discovery/v2-reachability' && plan.agent !== 'reference')) return malformed('campaign plan discovery protocol')

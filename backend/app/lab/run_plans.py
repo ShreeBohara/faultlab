@@ -14,6 +14,7 @@ from pydantic import Field, model_validator
 from app.contracts.models import (AgentRegistration, Campaign, CampaignBudget,
     CampaignRequest, Digest, EpisodeBudget, FaultSpec, Id, PolicyVersion, SendableTaskText,
     StrictModel, canonical_json, content_hash)
+from app.agents.transport_retry import RETRIES_PER_REQUEST, declaration as transport_retry_declaration
 from app.integrations.registry import AgentRegistry
 from app.lab.configuration import frozen_configuration
 from app.lab.dashboard import store_descriptor
@@ -95,6 +96,9 @@ class DiscoveryPlan(StrictModel):
     schedule_identity: Literal['faultlab-schedule-identity/v1-sorted', 'faultlab-schedule-identity/v2-order-aware']
     slots: int = Field(ge=1, le=8)
     explorer_requests_max: int = Field(ge=1, le=16)
+    # One charged transport retry per Explorer request; it does not count toward
+    # explorer_requests_max. None: a plan saved before retries existed declares none.
+    explorer_transport_retries_max: int | None = Field(default=None, ge=0, le=16)
     actor_episodes_max: int = Field(ge=1, le=8)
     replans_per_slot: int = Field(ge=0, le=1)
     dispatch_rule: str = Field(min_length=1, max_length=600)
@@ -105,10 +109,29 @@ class DiscoveryPlan(StrictModel):
         v2 = self.protocol == DISCOVERY_V2
         if (self.schedule_identity.endswith('v2-order-aware') != v2 or self.replans_per_slot != (1 if v2 else 0)
                 or self.explorer_requests_max != self.slots * (2 if v2 else 1) or self.actor_episodes_max != self.slots
+                or (self.explorer_transport_retries_max is not None
+                    and self.explorer_transport_retries_max != self.explorer_requests_max * RETRIES_PER_REQUEST)
                 or (self.pre_check is not None) != v2):
             raise ValueError('Inconsistent discovery protocol declaration')
         if v2 and (not isinstance(self.pre_check.get('caller_model'), dict) or self.pre_check['caller_model'].get('agent') != 'reference'):
             raise ValueError('Discovery v2 declares the reference Actor caller model only')
+        return self
+
+
+class TransportRetryPlan(StrictModel):
+    """The frozen model-request retry rule (app.agents.transport_retry) of a reviewed plan."""
+    protocol: Literal['faultlab-transport-retry/v1']
+    retries_per_request: Literal[1]
+    roles: list[Literal['actor', 'explorer', 'mechanic']] = Field(min_length=3, max_length=3)
+    retryable: list[Literal['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']] = Field(min_length=3, max_length=3)
+    service_unavailable_delay_seconds: Literal[1]
+    actor_retries_per_episode_max: int = Field(ge=1, le=8)
+    rule: str = Field(min_length=1, max_length=800)
+
+    @model_validator(mode='after')
+    def exact_lists(self):
+        if self.roles != ['actor', 'explorer', 'mechanic'] or self.retryable != ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']:
+            raise ValueError('Inconsistent transport retry declaration')
         return self
 
 
@@ -131,6 +154,8 @@ class SavedRunPlan(StrictModel):
     initial_policy_hash: Digest
     selection: Selection
     discovery: DiscoveryPlan | None = None
+    # None: saved before the shared transport-retry rule was declared in plans.
+    transport_retry: TransportRetryPlan | None = None
     plan_hash: Digest
 
 
@@ -354,6 +379,7 @@ def prepare_run_plan(store, settings, request):
             'initial_policy_version': initial.version,
             'initial_policy_hash': initial.policy_hash, 'selection': selection}
     if request.mode == 'learn': plan['discovery'] = deepcopy(discovery)
+    plan['transport_retry'] = transport_retry_declaration(configuration['episode_budget']['actor_calls'])
     return PreparedRunPlan(campaign_request, deepcopy(configuration), registration, deepcopy(plan))
 
 
@@ -458,7 +484,12 @@ def validate_run_plan(store, settings, campaign):
     if content_hash(current) != plan['configuration_hash']:
         raise StoreConflict('Current source, model or campaign limits differ from the saved plan')
     registry.verify(registration.registration_id, current)
+    # Execution applies the installed retry rule, so the saved plan must declare exactly it.
+    if plan.get('transport_retry') != transport_retry_declaration(plan['episode_budget']['actor_calls']):
+        raise StoreConflict('The installed model transport retry rule differs from the saved plan')
     discovery = plan.get('discovery')
+    if discovery is not None and discovery.get('explorer_transport_retries_max') != discovery['explorer_requests_max'] * RETRIES_PER_REQUEST:
+        raise StoreConflict('The saved discovery plan does not declare the installed Explorer transport retry bound')
     if discovery is not None and discovery['protocol'] == DISCOVERY_V2:
         if discovery['pre_check']['caller_model'] != _reference_caller().descriptor():
             raise StoreConflict('The installed reachability caller model differs from the saved discovery plan')

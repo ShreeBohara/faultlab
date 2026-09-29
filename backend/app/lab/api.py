@@ -314,7 +314,7 @@ def create_router(get_coordinator, *, get_settings=None):
                 'policy_hash':context['policy_hash'],'search_decision':row['search_decision'],
                 'selected_output':row.get('selected_output'),'output':row.get('output'),
                 'raw_response':row['raw'],'usage':row['usage'],'provenance':row['provenance'],
-                'error':row.get('error')})
+                'error':row.get('error'),'transport_retries':row.get('transport_retries',[])})
         return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded

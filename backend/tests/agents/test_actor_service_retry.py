@@ -238,3 +238,42 @@ async def test_cancellation_during_delay_is_not_caught_or_charged_as_retry(tmp_p
     assert len(h.requests)==h.ledger.used_calls==1
     assert len(h.store.list_records('provider_failures'))==1
     h.store.close()
+
+
+class PricedActorProvider:
+    """Scripted answers that report tokens and a dollar cost (the real provider reports no cost)."""
+    def __init__(self,answers): self.answers=list(answers)
+    async def complete(self,messages,**kwargs):
+        item=self.answers.pop(0)
+        if isinstance(item,BaseException): raise item
+        return RuntimeGeneration(canonical_json(item),MODEL,input_tokens=100,output_tokens=20,cost_usd=.001)
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize('lose_first',[False,True])
+async def test_episode_cost_is_unknown_after_a_lost_request(tmp_path,monkeypatch,lose_first):
+    """Review finding (LOW, September 29): one cost convention for every role. The lost request
+    returned no usage, so the episode's cost is unknown (as the native bridge already records it);
+    tokens are the answered requests' only; the ledger charged both requests in full."""
+    h=setup(tmp_path,monkeypatch,[])
+    lost=RuntimeProviderError('scripted loss',code='CONNECTION_ERROR',error_class='APIConnectionError')
+    h.context.provider=PricedActorProvider(([lost] if lose_first else [])+[REPORT])
+    await Actor()(h.intent,h.context)
+    assert (h.meter.usage.input_tokens,h.meter.usage.output_tokens)==(100,20)
+    assert h.meter.usage.model_calls==h.ledger.used_calls==1+lose_first and h.meter.usage.actor_calls==1
+    if lose_first:
+        assert h.meter.usage.cost_dollars is None
+        assert h.store.get_record('budgets','campaign-test')['actual_cost_dollars'] is None
+    else:
+        assert h.meter.usage.cost_dollars==pytest.approx(.001)
+    h.store.close()
+
+
+@pytest.mark.anyio
+async def test_episode_cost_is_unknown_when_a_lost_request_ends_the_episode(tmp_path,monkeypatch):
+    h=setup(tmp_path,monkeypatch,[])
+    lost=lambda:RuntimeProviderError('scripted loss',code='CONNECTION_ERROR',error_class='APIConnectionError')
+    h.context.provider=PricedActorProvider([TOOL,lost(),lost()])
+    with pytest.raises(RuntimeProviderError): await Actor()(h.intent,h.context)
+    assert h.meter.usage.model_calls==3 and h.meter.usage.cost_dollars is None
+    h.store.close()

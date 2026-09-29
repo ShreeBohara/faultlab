@@ -2,8 +2,8 @@ import { describeTaskText, escapedTaskText, TASK_TEXT_MAX_CHARACTERS } from '../
 
 /**
  * Shows a task instruction faithfully: invisible characters, including every default-ignorable
- * character such as variation selectors (one emoji presentation selector after a visible
- * character excepted), appear as ⟨U+…⟩ markers; long blank padding collapses into one visible
+ * character such as variation selectors (one emoji presentation selector after a pictograph or
+ * inside a keycap excepted), appear as ⟨U+…⟩ markers; long blank padding collapses into one visible
  * marker that counts every hidden character on those lines. Any marked character brings the
  * warning and the escaped copy. The recorded text itself is never changed.
  */

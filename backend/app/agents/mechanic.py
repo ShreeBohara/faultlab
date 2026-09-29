@@ -1,11 +1,14 @@
 """Genuine model proposals retained verbatim; format repair never supplies a policy."""
 from pathlib import Path
 from app.providers.runtime import RuntimeProviderError
-from app.lab.provider_failures import record_provider_failure
+from app.lab.provider_failures import record_provider_failure,record_transport_retry
+from app.agents.transport_retry import charge_ledger_retry,complete_with_one_retry,request_usage
 from app.contracts.tokens import validate_model_input
 from pydantic import TypeAdapter,ValidationError
 from app.contracts.models import MechanicOutput,DiagnosticProposal,canonical_json,new_id
 PROMPTS=Path(__file__).with_name('prompts')
+# The request kind recorded with a transport retry, by prompt (mechanic.md is the policy proposal).
+REQUEST_KINDS={'diagnosis.md':'mechanic_diagnosis','mechanic.md':'mechanic_proposal','completion.md':'mechanic_completion'}
 
 class Mechanic:
     def __init__(self,provider,store,ledger):
@@ -14,28 +17,36 @@ class Mechanic:
     async def _generate(self,prompt,context,adapter,*,reservation=None,allow_format_repair=True,validate_result=None):
         context={**context,'output_schema':adapter.json_schema()}
         messages=[{'role':'system','content':(PROMPTS/prompt).read_text()},{'role':'user','content':canonical_json(context)}]
-        raws=[]; request_id=new_id('mechanic-request')
+        raws=[]; request_id=new_id('mechanic-request'); request_kind=REQUEST_KINDS[prompt]  # before any charge
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('mechanic') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         for attempt in range(2 if allow_format_repair else 1):
             validate_model_input(messages,expected)
             self.ledger.consume_call(reservation=reservation,role='mechanic')
             from app.lab.tracing import phase_span
-            try:
-                async with phase_span(self.trace,'diagnose' if prompt=='diagnosis.md' else 'propose_policy',self.metadata,{'format_attempt':attempt,'evidence_ids':context.get('evidence_ids',[]),'parent_version':context.get('parent_version')}) as span:
+            span_inputs={'format_attempt':attempt,'evidence_ids':context.get('evidence_ids',[]),'parent_version':context.get('parent_version')}
+            async def send(retry):
+                async with phase_span(self.trace,'diagnose' if prompt=='diagnosis.md' else 'propose_policy',self.metadata,{**span_inputs,'transport_retry':True} if retry else span_inputs) as span:
                     generation=await self.provider.complete(messages,role='mechanic',max_output_tokens=2000,timeout_seconds=20)
                     if span: span.set_output({'raw_proposal':generation.content})
-            except RuntimeProviderError as error:
+                return generation
+            def failed(error):
                 if error.generation is not None: self.ledger.reconcile(error.generation)
-                record_provider_failure(self.store,error,role='mechanic',metadata=self.metadata or context)
-                raise
+                return record_provider_failure(self.store,error,role='mechanic',metadata=self.metadata or context)
+            def record(error,failure_id):
+                return record_transport_retry(self.store,error,role='mechanic',failure_id=failure_id,metadata=self.metadata or context,
+                    request={'kind':request_kind,'request_id':request_id,'format_attempt':attempt})
+            # The shared blind-retry rule (app.agents.transport_retry): one retry of this same
+            # request, charged on the ledger first from unreserved capacity, never after an answer.
+            # A format repair (the second attempt above) is a new request, not a retry.
+            generation,retries=await complete_with_one_retry(send,failed=failed,admit=lambda:charge_ledger_retry(self.ledger,'mechanic'),record=record)
             self.ledger.reconcile(generation)
             if self.metadata and generation.model_id!=expected:
                 raise RuntimeProviderError('Provider returned a different frozen model')
             raws.append(generation.content)
             ref=new_id('mechanic')
             metadata=self.metadata or {}
-            self.store.put_record('mechanic_outputs',ref,{'raw':generation.content,'role':'mechanic','prompt':prompt,'attempt':attempt,'model_id':generation.model_id,'request_id':request_id,'campaign_id':metadata.get('campaign_id') or context.get('campaign_id'),'episode_id':metadata.get('episode_id'),'usage':{'model_calls':1,'input_tokens':generation.input_tokens,'output_tokens':generation.output_tokens,'cost_dollars':generation.cost_usd}},immutable=True)
+            self.store.put_record('mechanic_outputs',ref,{'raw':generation.content,'role':'mechanic','prompt':prompt,'attempt':attempt,'model_id':generation.model_id,'request_id':request_id,'campaign_id':metadata.get('campaign_id') or context.get('campaign_id'),'episode_id':metadata.get('episode_id'),'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {})},immutable=True)
             try:
                 result=adapter.validate_json(generation.content)
                 errors=validate_result(result) if validate_result else []

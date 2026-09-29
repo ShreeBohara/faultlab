@@ -53,7 +53,7 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     known={p.get('request_id') for p in mechanic}
     mechanic.extend(m for m in store.list_records('mechanic_outputs') if m.get('campaign_id')==campaign_id and (not m.get('request_id') or m['request_id'] not in known))
     selections=[]
-    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage')
+    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries')
     for selection in store.list_records('selections'):
         if selection.get('context',{}).get('campaign_id')==campaign_id:
             selections.append({k:selection[k] for k in fields if k in selection})
@@ -70,6 +70,8 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
         'selections':selections,'diagnostics':diagnostics,'interventions':interventions,'challenges':challenges,
         'campaign_provenance':store.get_record('campaign_provenance',campaign_id),
         'execution_errors':[e for e in store.list_records('execution_errors') if e.get('campaign_id')==campaign_id],
+        # Charged Explorer/Mechanic blind retries (Actor retries are actor_transport_retry episode events).
+        'transport_retries':[r for r in store.list_records('transport_retries') if r.get('campaign_id')==campaign_id],
         'sponsor_publication_deferrals':[e for e in store.list_records('sponsor_publication_deferrals') if e.get('campaign_id')==campaign_id],
         'source_validation_results':[e for e in store.list_records('source_validation_results') if e.get('campaign_id')==campaign_id],
         'candidate_qualifications':[e for e in store.list_records('candidate_qualifications') if e.get('campaign_id')==campaign_id],

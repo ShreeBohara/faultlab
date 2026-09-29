@@ -6,6 +6,7 @@ import { api } from '../src/api'
 import { runApi, validateCampaignPlan, validateRunOptions, type RunOptions } from '../src/runPlans'
 import { RunSetup } from '../src/components/RunSetup'
 import { CampaignPlan } from '../src/components/CampaignPlan'
+import { LATER_PHASE_RETRIES } from '../src/components/DiscoveryProtocol'
 import { SearchAttemptsPanel } from '../src/components/SearchAttemptsPanel'
 import { validateSearchAttempts, type SearchAttempt } from '../src/searchAttempts'
 import { campaign, config, fixtureResponse, hash, readiness } from './fixtures'
@@ -28,6 +29,8 @@ it('accepts the declared discovery protocols and rejects an inconsistent or over
     [v1, { ...v2, default: true }],                                              // v2 is never the default
     [v1, { ...v2, supported_agents: ['reference', 'smolagents'] }],              // never pre-checks the native agent
     [v1, { ...v2, declaration: { ...discoveryV2, explorer_requests_max: 8 } }],  // budget must be two requests per slot
+    [v1, { ...v2, declaration: { ...discoveryV2, explorer_transport_retries_max: 32 } }],  // at most one retry per request
+    [{ ...v1, declaration: { ...discoveryV1, explorer_transport_retries_max: 16 } }, v2],
     [v1, { ...v2, declaration: { ...discoveryV2, pre_check: null } }],
     [{ ...v1, declaration: { ...discoveryV1, replans_per_slot: 1 } }, v2],
   ]) expect(() => validateRunOptions({ ...runOptions, learn: { ...runOptions.learn, discovery_protocols: protocols } })).toThrow('Malformed')
@@ -43,7 +46,7 @@ it('validates the frozen discovery block and shows it in the saved plan', async 
   render(h(CampaignPlan, { campaign, resource: { data: { campaign_id: campaign.campaign_id, status: 'PLANNED', plan: learnPlan(discoveryV2) }, error: null, loading: false } }))
   const region = screen.getByRole('region', { name: 'Saved campaign plan' })
   expect(within(region).getByText('v2 · reachability pre-check')).toBeTruthy()
-  expect(within(region).getByText(/at most 16 Explorer requests · at most 8 Actor episodes · one re-plan per refused slot/)).toBeTruthy()
+  expect(within(region).getByText(/at most 16 Explorer requests · at most 16 charged Explorer transport retries during discovery \(one per request with no answer\) · at most 8 Actor episodes · one re-plan per refused slot/)).toBeTruthy()
   expect(within(region).getAllByText(/no wait action/).some(node => node.tagName === 'LI')).toBe(true)
   // Review finding: the caller model must not claim a re-send after UNKNOWN, and must say which Actor it describes.
   expect(within(region).getAllByText(/does not send a failed write again/).some(node => node.tagName === 'LI')).toBe(true)
@@ -64,7 +67,8 @@ it('declares v2 for the reference agent explicitly and never offers it for the n
   expect((screen.getByLabelText('Discovery protocol') as HTMLSelectElement).value).toBe('faultlab-discovery/v1')
   fireEvent.change(screen.getByLabelText('Discovery protocol'), { target: { value: 'faultlab-discovery/v2-reachability' } })
   const preview = screen.getByRole('region', { name: 'Current plan preview' })
-  expect(within(preview).getByText(/v2 · reachability pre-check · 8 slots · at most 16 Explorer requests · at most 8 Actor episodes/)).toBeTruthy()
+  expect(within(preview).getByText(/v2 · reachability pre-check · 8 slots · at most 16 Explorer requests · at most 16 charged Explorer transport retries during discovery \(one per request with no answer\) · at most 8 Actor episodes/)).toBeTruthy()
+  expect(screen.getByText(LATER_PHASE_RETRIES)).toBeTruthy()  // the declared retry bound is discovery-only
   await waitFor(() => expect((screen.getByRole('button', { name: 'Create campaign' }) as HTMLButtonElement).disabled).toBe(false))
   fireEvent.click(screen.getByRole('button', { name: 'Create campaign' }))
   await waitFor(() => expect(create).toHaveBeenCalledOnce())
@@ -110,4 +114,24 @@ it.each([
 ] as const)('rejects %s', (_, mutate) => {
   const rows = v2rows(); mutate(rows)
   expect(() => validateSearchAttempts(rows, campaign.campaign_id)).toThrow(/Malformed/)
+})
+
+// Transport retries (September 29): one charged retry per Explorer request that got no answer is
+// declared beside the request budget, never inside it; plans saved earlier declare none.
+it('shows the declared Explorer transport retry bound, and says so when an older plan declares none', () => {
+  const older = { ...discoveryV2 }; delete older.explorer_transport_retries_max
+  for (const [discovery, expected] of [[discoveryV2, 'at most 16 charged Explorer transport retries during discovery (one per request with no answer)'],
+    [discoveryV1, 'at most 8 charged Explorer transport retries during discovery (one per request with no answer)'],
+    [older, 'no Explorer transport retry declared'], [{ ...older, explorer_transport_retries_max: null }, 'no Explorer transport retry declared']] as const) {
+    const plan = learnPlan(discovery as typeof discoveryV1)
+    expect(validateCampaignPlan({ campaign_id: campaign.campaign_id, status: 'PLANNED', plan }, campaign.campaign_id).status).toBe('PLANNED')
+    render(h(CampaignPlan, { campaign, resource: { data: { campaign_id: campaign.campaign_id, status: 'PLANNED', plan }, error: null, loading: false } }))
+    const region = screen.getByRole('region', { name: 'Saved campaign plan' })
+    const budget = within(region).getByText(/Explorer requests/)
+    expect(budget.textContent).toContain(`at most ${discovery.explorer_requests_max} Explorer requests · ${expected} · at most 8 Actor episodes`)
+    // Review finding (LOW, September 29): the declared number covers discovery only; the box says
+    // how retries in later phases are bounded. A plan that declared no retries gets no such line.
+    expect(within(region).queryByText(LATER_PHASE_RETRIES) !== null).toBe(typeof discovery.explorer_transport_retries_max === 'number')
+    cleanup()
+  }
 })

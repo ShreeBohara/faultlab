@@ -39,6 +39,7 @@ export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: str
     {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {decisionLabel[row.search_decision.status]}</summary>
       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>
       {row.search_decision.reason && <p>Recorded reason: {row.search_decision.reason.replaceAll('_', ' ').toLowerCase()}.</p>}
+      {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">Transport retry: the first request received no answer ({retry.code === 'HTTP_ERROR' ? `HTTP ${retry.http_status}` : retry.code.replaceAll('_', ' ').toLowerCase()}), so the identical request was sent once more. Both requests are charged ({row.usage.model_calls} model requests); this is not a new selection request. Provider failure <code>{retry.provider_failure_id}</code>.</p>)}
       <p>Schedule identity: <Hash value={row.search_decision.schedule_hash} /></p>
       {(row.selected_output ?? row.output)?.fault_spec.primitives.map((primitive, index) => <p key={index}>{primitive.kind} · {primitive.target_service}.{primitive.target_tool} · occurrence {primitive.occurrence}</p>)}
       <Reachability row={row} rows={rows} />

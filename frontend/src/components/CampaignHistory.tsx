@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api, type CampaignPage } from '../api'
 import type { Campaign } from '../generated/contracts'
 import { Badge, Empty, Field, Panel, label } from './common'
+import { TaskText } from './TaskText'
 
 export function CampaignHistory({ selectedId, currentCampaign, refreshKey, onOpen }: { selectedId: string; currentCampaign?: Campaign; refreshKey: number; onOpen: (id: string) => void }) {
   const [page, setPage] = useState<CampaignPage>()
@@ -61,6 +62,6 @@ export function CampaignHistory({ selectedId, currentCampaign, refreshKey, onOpe
     {error && <p className="error" role="alert">{page ? 'Previously loaded history remains available. ' : ''}{error} Use Refresh history to try again.</p>}
     {!loading && !error && page?.campaigns.length === 0 && <Empty>No saved campaigns yet. Create a new campaign in the Run desk.</Empty>}
     {!!page?.campaigns.length && <p className="muted">{page.campaigns.length} saved campaigns loaded · newest created first{page.has_more ? ' · older campaigns available' : ''}. Refresh returns to the newest page.</p>}
-    {selected && <div className="history-selection"><Badge value={selected.state ?? 'IDLE'} /><dl className="facts compact"><Field name="Saved task">{selected.task_text}</Field><Field name="Saved campaign"><code>{selected.campaign_id}</code></Field></dl></div>}
+    {selected && <div className="history-selection"><Badge value={selected.state ?? 'IDLE'} /><dl className="facts compact"><Field name="Saved task"><TaskText text={selected.task_text} /></Field><Field name="Saved campaign"><code>{selected.campaign_id}</code></Field></dl></div>}
   </Panel>
 }
