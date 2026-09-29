@@ -1,0 +1,235 @@
+{
+  "campaign_id": "campaign-17d60a9e97524a4a94858b14eabe8279",
+  "valid": true,
+  "problems": [],
+  "primary_fully_fired_slots": 8,
+  "slots_declared": 8,
+  "baseline_c701e850": 4,
+  "slots": [
+    {
+      "slot": 0,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-3bed7be9e8444b65a6683869a2693905",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    },
+    {
+      "slot": 1,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-d454d9ff9a4b4d40bdea133e4ff52412",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    },
+    {
+      "slot": 2,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-b1c94ea9273c4b7dbdfcd1270f202c29",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F4 orders.get_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 5
+    },
+    {
+      "slot": 3,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-e3150ecb570c4588b74f17d327d1e2cf",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F4 notifications.send_confirmation #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 4
+    },
+    {
+      "slot": 4,
+      "requests": 2,
+      "decisions": [
+        "SKIPPED_UNREACHABLE",
+        "SELECTED (re-plan)"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-6a204333084942edb6e7843a8e0e5ac0",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 7
+    },
+    {
+      "slot": 5,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-7310c8f20407426e8f054229988385fd",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F1 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 4
+    },
+    {
+      "slot": 6,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-eecd5b1e328e4497989adac443563ec9",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F3 orders.get_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 4
+    },
+    {
+      "slot": 7,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-21742c55f7f04d29bdb7ce39b9903dca",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F4 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    }
+  ],
+  "secondary": {
+    "explorer_requests": 9,
+    "discovery_episodes": 8,
+    "decisions": {
+      "SELECTED": 8,
+      "SKIPPED_UNREACHABLE": 1
+    },
+    "refused_picks": 1,
+    "refused_not_forced_or_impossible": 1,
+    "refused_duplicate": 0,
+    "refusal_reason_codes": {
+      "N2_UNNEEDED_STATUS_CHECK": 1
+    },
+    "replans": 1,
+    "replans_that_ran": 1,
+    "slots_without_episode": 0,
+    "fallback_slots": 0,
+    "forced_faults_fired": "8 of 8",
+    "outcomes": {
+      "SAFE_UNRESOLVED": 3,
+      "COMPLETED": 5
+    },
+    "distinct_fault_targets_fully_fired": [
+      "F1 orders.update_order",
+      "F2 orders.update_order",
+      "F3 orders.get_order",
+      "F4 notifications.send_confirmation",
+      "F4 orders.get_order",
+      "F4 orders.update_order"
+    ],
+    "multi_fault_or_deeper_fully_fired": 0
+  }
+}

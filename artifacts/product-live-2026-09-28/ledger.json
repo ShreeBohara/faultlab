@@ -24,8 +24,17 @@
       "charged_rounded_up": 1.04,
       "token_priced_estimate": 0.13,
       "carried_after": 860.14
+    },
+    {
+      "stage": "discovery v2 complete live run (8/8 fully fired, NO_CHANGE)",
+      "campaign": "campaign-17d60a9e97524a4a94858b14eabe8279",
+      "calls": 57,
+      "charged_exact": 1.45176,
+      "charged_rounded_up": 1.46,
+      "token_priced_estimate": 0.24,
+      "carried_after": 861.6
     }
   ],
-  "carried_total": 860.14,
-  "updated_at_utc": "2026-09-29T04:03:01+00:00"
+  "carried_total": 861.6,
+  "updated_at_utc": "2026-09-29T07:07:52+00:00"
 }

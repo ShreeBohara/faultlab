@@ -1,0 +1,60 @@
+{
+  "title": "Discovery protocol v2 live Learn run, replacement for the INCOMPLETE campaign-a301846e (separately declared; results never merged)",
+  "declared_at_utc": "2026-09-29T07:04:55+00:00",
+  "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+  "campaign_id": "campaign-17d60a9e97524a4a94858b14eabe8279",
+  "agent_registration_id": "orders-v1-4c46925cb3fec22c",
+  "identities": {
+    "algorithm_hash": "6d6433df6e0b86c6d65f33c09bf481d83783fde9f0882b4252db2d196d01fd84",
+    "runtime_hash": "c9af0a47013a1140ed9ccce80a26e6912de1f86e89cfd73ae9c1881cf8f49775",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+    "plan_hash": "a38e439465c4bfb2cc2f5ea24e96d7acb9f17bc9ea5632f27ca7f11472c9d2f6",
+    "configuration_hash": "4c46925cb3fec22c198145a00759a39383d2424c919708c44b191b42b7b51972"
+  },
+  "source_commit": "291324d (backup/part2-2026-09-22)",
+  "plan_discovery_equals_run_options": true,
+  "caller": {
+    "caller_id": "reference-actor/policy-v0/v2",
+    "unknown_status_checks": 3,
+    "resends_failed_writes": false
+  },
+  "transport_retry": {
+    "protocol": "faultlab-transport-retry/v1",
+    "retries_per_request": 1,
+    "roles": [
+      "actor",
+      "explorer",
+      "mechanic"
+    ],
+    "retryable": [
+      "CONNECTION_ERROR",
+      "REQUEST_TIMEOUT",
+      "HTTP_503"
+    ],
+    "service_unavailable_delay_seconds": 1,
+    "actor_retries_per_episode_max": 8,
+    "rule": "At most one blind retry of the identical request, only when no answer arrived: a connection error, a timeout, or HTTP 503 after a one-second wait. Never after any answer, even an empty or malformed one, and never for other HTTP statuses, authentication, configuration or model-identity failures. The retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only; if the budget cannot cover it the original failure stands. It never uses an actor turn or a discovery request. A second failure ends the work as before."
+  },
+  "explorer_transport_retries_max": 16,
+  "same_as_c701e850_except": "discovery protocol v2, runtime, data folder, transport retry",
+  "bounds": {
+    "discovery_requests_max": 160,
+    "discovery_conservative_max_dollars": 4.27,
+    "campaign_requests_max": 4936,
+    "campaign_conservative_max_dollars": 107,
+    "expected_conservative_dollars": 1.8,
+    "expected_token_priced_dollars": "0.2-0.6"
+  },
+  "primary": "fully-fired discovery slots out of 8 (c701e850 v1: 4 of 8), computed by compute_primary.py (sha256 9b5b7ba9...), readings per plans/discovery-v2/PLAN.md section 9",
+  "stop_rules": "product ends itself on NO_CHANGE/COMPLETED/ERROR/STOPPED; watcher stops on: discovery accounting (used_calls > 160 or charged > 4.27 dollars before any post-discovery state), disk < 2 GiB, 6 hours; operator stops on world-integrity failure, two consecutive LAB_ERROR, auth/config/frozen-model failure, source drift. Never restart, replace or reroll; if a source appears the loop continues within the ledger ceiling.",
+  "pre_checks": {
+    "caller_gate": "PASS, failing_points []",
+    "prices": "checked 2026-09-29T03:24Z (same UTC day)",
+    "data_dir": "new",
+    "ports": "free",
+    "power": "AC",
+    "disk": "22 GiB free",
+    "readiness": "ready, provider_calls 0",
+    "ledger_before_dollars": 860.14
+  }
+}
