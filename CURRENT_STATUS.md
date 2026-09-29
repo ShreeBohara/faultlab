@@ -10,7 +10,7 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run;
-current code is **`5583dcad…`** (dependability fixes, below; $0, offline only). Nothing pushed. Carried conservative total **$869.13**
+current code is **`5583dcad…`** (dependability fixes, below; $0, offline only). Nothing pushed. Carried conservative total **$887.39**
 (ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
 
 | run | result | doc |
@@ -39,8 +39,8 @@ native report tick; dotenv credential guard; offline-test network silence.
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
 **Current runtime: `5583dcad5ac94be8a502f62dd5176d7804d48555fd7f012be9c9f114a5302010`** (algorithm
-`5c95f2a9…`), local and uncommitted, on top of checkpoint branch `backup/part2-2026-09-22` (runtime
-`08e4c20d…`); simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…`
+`5c95f2a9…`), committed locally as `94b130e` on backup branch `backup/part2-2026-09-22` (previous checkpoint
+`af5a3fb`, runtime `08e4c20d…`); simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…`
 unchanged, so checkpoint bundles stay rerunnable. **Every agent must be registered again under `5583dcad`
 before a live run.** Chain: `cfe5ac07` → `bb87c764` → `9f53eb8c` (discovery v2) → `c9b1b7e6` → `c0a8aad7`
 (simulator revert, committed as `e7340c9`) → `debc86f3` (transport retry, below) → `c9af0a47` (its review
@@ -588,10 +588,14 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-**Current carried accounting: $860.14 conservatively charged** = $856.96 below + $2.14 for the September 28 native
-baseline probe ([result](docs/PRODUCT_NATIVE_PROBE_2026-09-28.md)) + $1.04 for the INCOMPLETE discovery-v2 run
-`a301846e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md)). The September 29 transport-retry work made no
-provider call ($0).
+**Current carried accounting: $887.39 conservatively charged** (ledger
+`artifacts/product-live-2026-09-28/ledger.json`) = $856.96 below
++ $2.14 native baseline probe `e5b01658` ([result](docs/PRODUCT_NATIVE_PROBE_2026-09-28.md))
++ $1.04 INCOMPLETE discovery-v2 run `a301846e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md))
++ $1.46 complete discovery-v2 run `17d60a9e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md))
++ $7.53 native original-loop learn `7ee35abe` ([result](docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md))
++ $2.35 v3 baseline study `aaceaf2f` + $15.91 v3 learn campaign `a2fbffe3` ([result](docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md)).
+The transport-retry, discovery-v3 and dependability builds made no provider call ($0).
 
 The previous carried accounting was **$856.96 conservatively charged**: the previous $855.91 plus
 $1.05 for the completed original-workflow campaign (39 requests, exact bound $1.04662).
@@ -666,7 +670,14 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Current runtime `08e4c20d…` (September 29, discovery v3 review fixes; evidence `artifacts/product-discovery-v3-2026-09-29/fixer/`):**
+**Current runtime `5583dcad…` (September 29, dependability round; evidence `artifacts/product-dependability-2026-09-29/verify/`):**
+an independent verifier ran each suite once after the last edit, in the workspace and in a fresh clone on non-default ports:
+* workspace backend **2,756 passed, 180 skipped, 0 failed** (1,080 s); fresh clone **2,704 passed, 232 skipped, 0 failed** (1,118 s; the extra skips are the tests that need two git-ignored files);
+* frontend **329 unit tests**; production build passed; **17 browser tests passed, 1 opt-in skipped**;
+* gates and scorer unchanged (`checks.py` hash, `assess_pairs` text and AST, 30 of 30 functions); simulator service `3ce5bcd2…`, contract `6f9d7783…`, interpreter `6da0714a…` unchanged;
+* 48 files (36 changed, 12 new) committed as `94b130e`; main `cbbf957` untouched; nothing pushed; $0, no provider calls.
+
+**Previous runtime `08e4c20d…` (September 29, discovery v3 review fixes; evidence `artifacts/product-discovery-v3-2026-09-29/fixer/`):**
 one run of each suite after the last code edit:
 * full backend **2,683 passed, 180 existing skips, 0 failed**, with the 2 known warnings, in 928.06 s;
 * frontend **320 unit tests** (19 files);
