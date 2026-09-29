@@ -7,7 +7,8 @@ an attempt that the real Actor rarely makes, a fault placed there is called FORC
 it would rarely fire, and a paid episode is wasted. This gate measures exactly that.
 
 For every stored development episode in scope (the reference Actor driven by ``--model``,
-baseline policy-v0, lifecycle COMPLETED, with its matching non-diagnostic world file), the
+source_mode ``live`` -- never a handwritten B1 reference-control episode -- baseline
+policy-v0, lifecycle COMPLETED, with its matching non-diagnostic world file), the
 episode's own recipe is labelled with the INSTALLED caller model. Each modelled attempt
 ``n`` on each tool:service of that path is a hypothetical FORCED point: a fault placed on
 attempt ``n`` would be labelled FORCED. The gate counts, per recipe, how many stored
@@ -90,8 +91,13 @@ def load_rows(stores=None, world_dirs=None, *, model=DEFAULT_MODEL):
             episodes = {}
             for ident, payload in db.execute("select id,payload from records where kind='episodes'"):
                 episode = json.loads(payload)
+                # Only the live Actor's own behaviour measures the caller model. A legacy baseline
+                # study's B1 arm is the handwritten deterministic ReferenceActor: it carries the
+                # campaign's model label but source_mode 'offline_fixture' and makes no model call,
+                # so it is excluded here (September 28 prerequisite; 36 such stored episodes).
                 if (episode.get('split') == 'development' and episode.get('policy_version') == 'policy-v0'
-                        and episode.get('model') == model and episode.get('lifecycle') == 'COMPLETED'):
+                        and episode.get('model') == model and episode.get('lifecycle') == 'COMPLETED'
+                        and episode.get('source_mode') == 'live'):
                     episodes[ident] = episode
             inputs = {}
             for ident, payload in db.execute("select id,payload from records where kind='private_episode_inputs'"):
