@@ -1,6 +1,6 @@
 import development from '../../audit/development.json' with { type: 'json' }
 import type { Campaign } from '../src/generated/contracts'
-import type { AgentHistory, DiscoveryDeclaration, RunOptions, RunPlan, TransportRetryDeclaration } from '../src/runPlans'
+import type { AgentHistory, DiscoveryDeclaration, EvidenceRetryDeclaration, RunOptions, RunPlan, TransportRetryDeclaration } from '../src/runPlans'
 
 const hash = 'a'.repeat(64)
 export const discoveryV1: DiscoveryDeclaration = { protocol: 'faultlab-discovery/v1', schedule_identity: 'faultlab-schedule-identity/v1-sorted', slots: 8, explorer_requests_max: 8, explorer_transport_retries_max: 8, actor_episodes_max: 8, replans_per_slot: 0, dispatch_rule: 'Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.', pre_check: null }
@@ -32,6 +32,14 @@ export const agentHistory = (available = true): AgentHistory => ({ schema_versio
 /** As the backend freezes it into every new plan (app/agents/transport_retry.py declaration(8)). */
 export const transportRetryRule: TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1', retries_per_request: 1, roles: ['actor', 'explorer', 'mechanic'], retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'], service_unavailable_delay_seconds: 1, actor_retries_per_episode_max: 8,
   rule: 'At most one blind retry of the identical request, only when no answer arrived: a connection error, a timeout, or HTTP 503 after a one-second wait. Never after any answer, even an empty or malformed one, and never for other HTTP statuses, authentication, configuration or model-identity failures. The retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only; if the budget cannot cover it the original failure stands. It never uses an actor turn or a discovery request. A second failure ends the work as before.' }
+/** As the backend freezes it into every new Learn plan (app/lab/evidence_wait.py declaration()). */
+export const evidenceRetryRule: EvidenceRetryDeclaration = { protocol: 'faultlab-evidence-retry/v2', trigger: 'WAITING_EVIDENCE', automatic_retries_per_wait: 3, automatic_retries_per_campaign: 6,
+  delays_seconds: [30, 120, 300], path: 'retry-evidence', telemetry_only: true, repeats_model_requests: false, repeats_business_actions: false, charged_model_calls: 0, after_last_retry: 'NEEDS_OPERATOR',
+  rule: 'While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 times per wait and at most 6 times per campaign.' }
+/** The first rule (per-wait limit only), never run live: a saved v1 plan still reads, and Start refuses it. */
+export const evidenceRetryRuleV1: EvidenceRetryDeclaration = { protocol: 'faultlab-evidence-retry/v1', trigger: 'WAITING_EVIDENCE', automatic_retries_per_wait: 3, delays_seconds: [30, 120, 300],
+  path: 'retry-evidence', telemetry_only: true, repeats_model_requests: false, repeats_business_actions: false, charged_model_calls: 0, after_last_retry: 'NEEDS_OPERATOR',
+  rule: 'While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 times per wait.' }
 export const runOptions: RunOptions = {
   schema_version: 'faultlab-run-options/v1', setup_hash: hash, data_store: { identity: 'b'.repeat(64), path: '/local/fixture-store/lab.sqlite3', read_only: false },
   task: { task_definition_id: 'orders.upgrade_then_confirm/v1', label: 'Express upgrade, then confirmation', description: 'Upgrade one authorized synthetic order, then record one truthful confirmation. The tools and fixed scorer cover this task only.', task_text_default: 'Upgrade this order to express shipping, then send its confirmation.' },

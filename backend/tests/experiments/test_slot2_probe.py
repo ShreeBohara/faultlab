@@ -27,6 +27,14 @@ from app.providers.runtime import RuntimeProvider, RuntimeProviderError  # noqa:
 
 STORE = ROOT / 'artifacts/lab.sqlite3'
 
+# The Phase 17 settings file lives under the git-ignored artifacts/ folder, so a fresh clone does not have it.
+# Tests that read it skip there with this reason (as test_run_dev_probe.py and test_run_gap_probe.py already
+# do); where the file exists they run unchanged.
+PHASE17_SETTINGS_ABSENT = not (ROOT / probe.DECLARED_SETTINGS).is_file()
+NO_PHASE17_SETTINGS = ('needs the Phase 17 settings file (artifacts/phase16-2026-09-22/settings-phase17.json; '
+                       'git-ignored, so a fresh clone does not have it)')
+needs_phase17_settings = pytest.mark.skipif(PHASE17_SETTINGS_ABSENT, reason=NO_PHASE17_SETTINGS)
+
 
 @pytest.fixture(autouse=True)
 def no_real_process_list(monkeypatch):
@@ -88,6 +96,8 @@ def real_plan():
 
 @pytest.fixture(scope='module')
 def dry_settings():
+    if PHASE17_SETTINGS_ABSENT:
+        pytest.skip(NO_PHASE17_SETTINGS)
     return probe.settings_from_file(ROOT / probe.DECLARED_SETTINGS, env_path=os.devnull)
 
 
@@ -339,6 +349,7 @@ def test_check_pins_and_the_freeze_refuse_each_altered_pin(dry_settings, tmp_pat
         probe.check_freeze({**pins, 'source_hash': '0' * 64})
 
 
+@needs_phase17_settings
 def test_build_plan_runs_the_pin_and_freeze_checks(monkeypatch):
     def refuse(message):
         def check(*_, **__):

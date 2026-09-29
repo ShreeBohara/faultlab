@@ -1,6 +1,129 @@
-# Setup record
+# Setup
 
-For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md). Dated verification sections below describe their original runs.
+## Install and test (start here)
+
+These steps were re-run in a fresh clone on 2026-09-29 (macOS on Apple silicon). CI runs the same
+scripts on Ubuntu 24.04. Windows has not been tried. Offline work needs no accounts or keys and
+makes no model calls.
+
+**You need:**
+
+- **Python 3.12.** `.python-version` says 3.12.8. `setup.sh` runs `python3.12`, or the interpreter
+  named in `FAULTLAB_PYTHON`.
+- **Node and npm.** Node 20.19 or a later 20.x, or Node 22.12 or later. This is `package.json`'s
+  `engines` range (`^20.19.0 || >=22.12.0`). `.nvmrc` pins 20.19.0, which CI also uses.
+- **A browser for the browser tests.** Google Chrome in its usual macOS place is used when present.
+  Otherwise install Playwright's Chromium once: `cd frontend && npx playwright install chromium`.
+  On Linux, add `--with-deps`.
+
+**1. Install (about 1 minute; 32 seconds in the fresh clone).**
+
+```sh
+git clone <this repository> faultlab
+cd faultlab
+./scripts/setup.sh
+```
+
+`setup.sh` creates `.venv`, installs the locked Python packages (`backend/requirements.lock`) and runs
+`npm ci` for the locked frontend packages. It downloads about 100 Python and 110 npm packages.
+
+It also creates `.env` when there is none. That file is a copy of `.env.example` (safe defaults, no
+keys), readable only by you (mode 0600). The W&B project named in it is the team's; set your own before
+a live run. An existing `.env` is never overwritten. Offline work needs nothing in it.
+Fill it in only for live runs (see the [quick start](user-guide.md)), and never commit it.
+
+**2. Test (about 18 minutes; the backend stage alone takes 15 to 17).**
+
+```sh
+./scripts/test.sh                          # all four stages: backend, frontend, build, browser
+./scripts/test.sh frontend build browser   # only the quick stages, about 40 seconds
+```
+
+- **Every stage runs**, even when an earlier one fails.
+- **The script ends with a summary**: one PASSED or FAILED line per stage. It exits non-zero if any
+  stage failed.
+- **Ctrl+C stops the whole run at once** (exit 130). Later stages do not start, so no dashboard is
+  started for the browser stage.
+- **The browser stage starts its own dashboard** on port 5173 (or `FAULTLAB_DASHBOARD_PORT`). If
+  something already listens there, the stage stops with Playwright's "already used" error. It does not
+  test that other dashboard. Set `FAULTLAB_BROWSER_REUSE_DASHBOARD=1` only when you mean to test a
+  dashboard you started yourself.
+
+Results on 2026-09-29:
+
+| where | backend | frontend unit | build | browser |
+|---|---|---|---|---|
+| fresh clone | 2,704 passed, 232 skipped, 0 failed (19 min) | 329 passed | passes | 17 passed, 1 skipped |
+| the team's workspace | 2,756 passed, 180 skipped, 0 failed (18 min) | 329 passed | passes | 17 passed, 1 skipped |
+
+- **The build prints one warning**, about a bundle larger than 500 kB. It is only advice.
+- **The skipped browser test** is the opt-in real-backend test described below.
+- **A fresh clone skips more tests** (232 instead of 180). Many experiment tests need the team's
+  local lab stores, frozen code trees or settings files under `artifacts/`, which Git ignores. Those
+  tests skip and name the file or store they need. `../.venv/bin/python -m pytest -rs`, run inside
+  `backend/`, lists the reasons.
+  No test should fail in a clone. A failure there is a real problem.
+- **One browser test uses the real backend and is off by default.** To run it, start the simulator
+  and backend without a dashboard, then run the browser tests with `FAULTLAB_BROWSER_LOCAL=1`:
+
+  ```sh
+  ./scripts/start-local.sh --no-frontend --data-dir "$HOME/FaultLab_Runs/browser-check"
+  cd frontend && FAULTLAB_BROWSER_LOCAL=1 npm run test:browser     # in a second terminal
+  ```
+
+**3. Run it (offline, no model calls).**
+
+```sh
+./scripts/start-local.sh --data-dir "$HOME/FaultLab_Runs/my-workspace"
+```
+
+- **What starts:** the simulator, the backend and the dashboard, all using that one data folder.
+  The folder is created if needed. Keep it outside the repository.
+- **Try one run:** open http://127.0.0.1:5173, choose **Offline reference smoke**, then create and
+  start a campaign.
+- **Or from a second terminal:** `./scripts/run-demo.sh --mode baseline --wait` runs one offline
+  reference attempt and prints the result.
+- **To stop:** press Ctrl+C in the first terminal. That stops all three services.
+
+[Local operation](local-operation.md) covers archives, recovery and running services one at a time.
+
+**Ports.** Three settings choose the local ports. Unset means the usual port.
+
+| setting | service | default |
+|---|---|---|
+| `FAULTLAB_SIMULATOR_PORT` | simulator (the fake shop) | 8001 |
+| `FAULTLAB_BACKEND_PORT` | backend API | 8000 |
+| `FAULTLAB_DASHBOARD_PORT` | dashboard | 5173 |
+
+Export them in each terminal you use, before any FaultLab script. Every script reads them:
+
+- `start-local.sh` and the three separate start scripts;
+- the dashboard's `/api` proxy and the browser tests;
+- the command-line tools behind `run-demo.sh`, `export-evidence.sh`, `run-audit.sh` and the
+  `run-*-study.sh` scripts.
+
+For example, a second checkout can run next to the first:
+
+```sh
+export FAULTLAB_SIMULATOR_PORT=18001 FAULTLAB_BACKEND_PORT=18000 FAULTLAB_DASHBOARD_PORT=15173
+./scripts/start-local.sh --data-dir "$HOME/FaultLab_Runs/second-workspace"
+```
+
+A value that is not a whole number from 1 to 65535 is refused before anything starts.
+
+The command-line tools print `Using the FaultLab backend at http://127.0.0.1:PORT.` before they create,
+start or stop anything. If no backend answers, they name the address they tried and whether
+`FAULTLAB_BACKEND_PORT` was set.
+
+## Setup history (dated records)
+
+For current results, remaining work and budget, read [CURRENT_STATUS.md](../CURRENT_STATUS.md).
+The dated sections below describe their original runs and are kept as history.
+
+- **Their commands and test counts are not current instructions.** Use the section above.
+- **Local-only references:** paths under `artifacts/` and the campaign and settings references below
+  belong to the team's own git-ignored evidence. A fresh clone does not include them.
+- **Where the IDs are:** the experiment IDs are in the dated results reports under `docs/part2/`.
 
 September 27 reviewed campaign onboarding: [workflow and verification](PRODUCT_ONBOARDING_REVIEW_2026-09-27.md).
 Use the [quick start](user-guide.md) to choose a reviewed agent/task/case, save an idle immutable plan,
@@ -43,7 +166,7 @@ Phase 3 retained 34 live episodes and 223 model requests. Every trace is now ver
 
 ## Current Phase 2 setup and verification
 
-Runtime 2 uses DeepSeek V3.1 for Actor and Mechanic, and DeepSeek V4 Pro-0813 for Explorer with thinking disabled. The confirmed destination is **`shreetbohara-quinstreet/Faultlab`**, including the capital F. Matching input/output prices per million tokens are $0.55/$1.65 for V3.1 and $1.31/$3.96 for V4. Aria publication remains disabled.
+Runtime 2 uses DeepSeek V3.1 for Actor and Mechanic, and DeepSeek V4 Pro-0813 for Explorer with thinking disabled. The destination was the team's confirmed W&B entity and project (the project name is case-sensitive); use your own `WANDB_ENTITY` and `WANDB_PROJECT`. Matching input/output prices per million tokens are $0.55/$1.65 for V3.1 and $1.31/$3.96 for V4. Aria publication remains disabled.
 
 The saved non-secret settings are `artifacts/phase2-2026-09-20/settings.json`. They set a $400 per-campaign allocation, 6,000 model calls and 204 million combined tokens. Each call admits at most 32,000 input and 2,000 output tokens. Phase 2's separately authorized $1,000 cumulative ceiling covers all its campaigns, stores and probes together; it is tracked across those records, not enforced by a single global account limiter. Existing protected-study reservations remain enabled. Unknown prices or usage are never treated as zero.
 
@@ -53,9 +176,9 @@ Runtime 2's `faultlab-reference-final-report/v1` protocol requests a strict repo
 
 Latest completed checks: **471 backend tests, 61 frontend tests, production build and three browser fixtures passed**. Manual dashboard inspection after restart loaded the imported B incident, opened its saved execution through **Saved execution ID → Open saved execution**, displayed three trials/24 calls, and opened the original C6-failing report. That read-only action made no new model calls. The opt-in automated actual-server smoke was skipped; the manual workflow passed. Independent UI and accounting review found no blocking issue. Live results:
 
-- C2 (`campaign-add97a955f8f4f3a961aa62a14286807`) ended `NO_CHANGE`: six completed tasks, two safe unresolved, zero violations, but only five of eight scheduled faults triggered. No repair was proposed or accepted.
-- B's saved incident was exported to `artifacts/phase2-2026-09-20/incident-b-export`, validated against reference registration `orders-v1-c58c7dc19ecb1eb6`, and played back without model calls. Fresh execution `execution-dcf7936ab295477fb7588f38584f8bbe` in campaign `campaign-1c19ec5bb8db4988b8493d3ea19d48df` produced two safe unresolved results and one C6 citation violation. The original C5 missing-report failure reproduced zero of three times. All three Weave traces verified; this was baseline incident execution, not accepted-policy transfer.
-- C3 (`campaign-c59a93f87b03419d967eb43e076c99b0`) completed 36 valid development trials, with all 30 faults triggered and no infrastructure errors. The 18 live-model trials had 12 completed, three correctly rejected, two safe unresolved and one violation. The 18 handwritten-reference trials had 15 completed, three correctly rejected and no violations. All 18 live traces and the evaluation verified.
+- C2 ended `NO_CHANGE`: six completed tasks, two safe unresolved, zero violations, but only five of eight scheduled faults triggered. No repair was proposed or accepted.
+- B's saved incident was exported to `artifacts/phase2-2026-09-20/incident-b-export`, validated against the runtime 2 reference registration, and played back without model calls. A fresh execution in a new campaign produced two safe unresolved results and one C6 citation violation. The original C5 missing-report failure reproduced zero of three times. All three Weave traces verified; this was baseline incident execution, not accepted-policy transfer.
+- C3 completed 36 valid development trials, with all 30 faults triggered and no infrastructure errors. The 18 live-model trials had 12 completed, three correctly rejected, two safe unresolved and one violation. The 18 handwritten-reference trials had 15 completed, three correctly rejected and no violations. All 18 live traces and the evaluation verified.
 
 Phase 2 totals: 149 episodes (131 live and 18 offline), 886 model calls including four schema probes, 131 verified live episode traces and no unknown usage. Conservative dispatched bound: $18.92256; known token-price estimate: $1.77596; actual billed dollars unavailable. No learned policy was accepted, so accepted-policy restart persistence, protected final evaluation and independent-agent transfer remain unclaimed. The backend restarted unchanged with saved campaigns, pointers and counts preserved; that does not demonstrate persistence of an accepted policy.
 
@@ -124,20 +247,22 @@ it does not prevent health checks or tests from passing.
 
 ## Historical provider setup — September 12, superseded
 
-The initial setup recorded `WANDB_ENTITY=shreetbohara-quinstreet` and `WANDB_PROJECT=faultlab`.
-At that checkpoint access and credits had not been verified. Subsequent live work confirmed the destination `shreetbohara-quinstreet/Faultlab`; use that capitalization and the current settings above. Credentials remain in the existing local `.env`.
+The initial setup recorded the team's W&B entity and a lower-case project name.
+At that checkpoint access and credits had not been verified. Subsequent live work confirmed the team's
+destination with a capitalised project name. Use your own entity and project, spelled exactly as in W&B.
+Credentials remain in the local `.env`.
 
 The original provider-check sequence was:
 
 ```sh
-./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet
+./scripts/check-provider.sh wandb --list-models --confirm-entity YOUR_WANDB_ENTITY
 ```
 
 Save an exact returned ID to local `WANDB_MODEL`. Only then run the explicit one-request
 generation check:
 
 ```sh
-./scripts/check-provider.sh wandb --generate --confirm-entity shreetbohara-quinstreet
+./scripts/check-provider.sh wandb --generate --confirm-entity YOUR_WANDB_ENTITY
 ```
 
 That initial generation check used 32 output tokens and a 20-second request timeout, with SDK
@@ -226,4 +351,4 @@ verification remains 1,952 backend passes / 180 existing skips, 166 frontend pas
 production build; those suites were not rerun for this handoff. Checked local links, saved-source
 contents, historical file preservation and HEAD/index preservation. Handoff verification and the
 exact local checkpoint are recorded under `artifacts/product-continuation-2026-09-27/` and backed
-up outside Desktop in `/Users/shree/FaultLab_Backups/2026-09-27/product-continuation/`.
+up in a folder outside the repository on the team's machine.

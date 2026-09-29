@@ -28,6 +28,14 @@ from app.providers.runtime import RuntimeProvider, RuntimeProviderError  # noqa:
 
 STORE = ROOT / 'artifacts/lab.sqlite3'
 
+# The Phase 17 settings file lives under the git-ignored artifacts/ folder, so a fresh clone does not have it.
+# Tests that read it skip there with this reason (as test_run_dev_probe.py and test_run_gap_probe.py already
+# do); where the file exists they run unchanged.
+PHASE17_SETTINGS_ABSENT = not (ROOT / probe.DECLARED_SETTINGS).is_file()
+NO_PHASE17_SETTINGS = ('needs the Phase 17 settings file (artifacts/phase16-2026-09-22/settings-phase17.json; '
+                       'git-ignored, so a fresh clone does not have it)')
+needs_phase17_settings = pytest.mark.skipif(PHASE17_SETTINGS_ABSENT, reason=NO_PHASE17_SETTINGS)
+
 
 @pytest.fixture(autouse=True)
 def no_real_process_list(monkeypatch):
@@ -187,6 +195,8 @@ def real_plan():
 
 @pytest.fixture(scope='module')
 def dry_settings():
+    if PHASE17_SETTINGS_ABSENT:
+        pytest.skip(NO_PHASE17_SETTINGS)
     return probe.settings_from_file(ROOT / probe.DECLARED_SETTINGS, env_path=os.devnull)
 
 
@@ -315,6 +325,7 @@ def test_the_dry_plan_never_reads_env_and_refuses_an_altered_settings_file(tmp_p
         probe.build_plan(settings_path=altered)
 
 
+@needs_phase17_settings
 def test_build_plan_runs_the_pin_check(monkeypatch):
     def refuse(*_, **__):
         raise probe.PlanningError('pins sentinel')

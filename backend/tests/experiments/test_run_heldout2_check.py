@@ -370,11 +370,19 @@ FILLED_FILES = {'DECLARED_PROTOCOL_SHA256': held.PROTOCOL,
                 'DECLARED_PHASE23_RUNNER_SHA256': 'scripts/experiments/run_full_loop_fixed_n.py',
                 'DECLARED_FREEZE_SHA256': 'artifacts/phase22-2026-09-24/gate-freeze-after.json'}
 
+# The freeze record lives under the git-ignored artifacts/ folder, so a fresh clone does not have it; its pin
+# check skips there with this reason. The other named files are tracked, and a missing one still fails.
+GIT_IGNORED_FILES = {'artifacts/phase22-2026-09-24/gate-freeze-after.json':
+                     'needs the Phase 22 gate freeze record (artifacts/phase22-2026-09-24/gate-freeze-after.json; '
+                     'git-ignored, so a fresh clone does not have it)'}
+
 
 @pytest.mark.parametrize('name', sorted(FILLED_FILES))
 def test_a_filled_pin_matches_its_file(name):
     if SHIPPED_PINS[name] == held.PLACEHOLDER:
         pytest.skip('not filled until the Phase 22 freeze')
+    if FILLED_FILES[name] in GIT_IGNORED_FILES and not (ROOT / FILLED_FILES[name]).is_file():
+        pytest.skip(GIT_IGNORED_FILES[FILLED_FILES[name]])
     assert sha(ROOT / FILLED_FILES[name]) == SHIPPED_PINS[name]
 
 

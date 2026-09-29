@@ -5,14 +5,15 @@ the local control capability. Keep active data on a local disk that remains down
 cloud placeholder files are unsuitable for an active SQLite store. Existing data is never
 moved or merged by these commands.
 
-From the repository root, start a new offline workspace:
+Install first with [Setup](setup.md#install-and-test-start-here). Then, from the repository root,
+start a new offline workspace:
 
 ```sh
 ./scripts/start-local.sh --data-dir "$HOME/Library/Application Support/FaultLab/workspace"
 ```
 
 The launcher starts the simulator, backend and dashboard on localhost ports 8001, 8000
-and 5173, with one shared data directory. Open `http://127.0.0.1:5173`. Choose **Offline
+and 5173 (see [Ports](#ports) to change them), with one shared data directory. Open `http://127.0.0.1:5173`. Choose **Offline
 reference smoke**, create a campaign and start it to exercise a fresh synthetic world
 without a model call. This is a handwritten reference, not learned-repair evidence.
 Ctrl+C stops only the services launched by this command. It keeps the simulator available
@@ -40,7 +41,10 @@ keeps Aria publication disabled. Never print credentials or put them into browse
 
 Legacy `start-backend.sh`, `start-simulator.sh` and `start-frontend.sh` commands remain
 available. If using them separately, provide the same `FAULTLAB_ARTIFACT_DIR` to both backend
-and simulator. `FAULTLAB_READ_ONLY=true` enables archive mode for the backend. Relative
+and simulator. They read the same port settings. When `FAULTLAB_SIMULATOR_PORT` is set, the two
+backend scripts point the backend at that port, unless `FAULTLAB_SIMULATOR_URL` is also set in
+the terminal. Without either, the backend uses `FAULTLAB_SIMULATOR_URL` from `.env` or its default,
+`http://127.0.0.1:8001`. `FAULTLAB_READ_ONLY=true` enables archive mode for the backend. Relative
 artifact paths retain their existing repository-relative meaning; the legacy default is
 still `artifacts`, so existing users do not silently switch to an empty store.
 
@@ -65,3 +69,36 @@ For a portable evidence backup, stop the owning services first and preserve the 
 world files and exported bundles together. A SQLite database copied during active writing
 without its WAL can omit committed evidence. Use SQLite's backup API for an intentional live
 snapshot. A Git source checkpoint does not include ignored runtime evidence or credentials.
+
+## Ports
+
+Three environment settings choose the ports. Unset or empty means the usual port:
+
+| setting | service | default |
+|---|---|---|
+| `FAULTLAB_SIMULATOR_PORT` | simulator | 8001 |
+| `FAULTLAB_BACKEND_PORT` | backend API | 8000 |
+| `FAULTLAB_DASHBOARD_PORT` | dashboard | 5173 |
+
+- **Where they apply:** the paired launcher and the separate start scripts; the dashboard's `/api`
+  proxy and the browser tests; and the command-line tools behind `run-demo.sh`,
+  `export-evidence.sh`, `run-audit.sh` and the `run-*-study.sh` scripts.
+- **Set them in every terminal.** Export them before any FaultLab script, including the command-line
+  tools. Otherwise a command may reach a different backend that still owns port 8000.
+- **Checked before anything starts.** A value that is not a whole number from 1 to 65535 is refused.
+  The paired launcher also refuses two services on the same port.
+- **The launcher connects the services.** It points the backend at the selected simulator port and
+  the dashboard at the selected backend port.
+- **With no settings, every command is the same as before.** The only difference is that the launcher
+  now also passes `FAULTLAB_BACKEND_PORT` and `FAULTLAB_DASHBOARD_PORT` (8000 and 5173) to the services
+  it starts. Nothing in the backend or simulator reads them, and the dashboard resolves the same values.
+- **The command-line tools say which backend they use.** Before they create, start or stop anything they
+  print `Using the FaultLab backend at http://127.0.0.1:PORT.` If no backend answers, they name the
+  address they tried and whether `FAULTLAB_BACKEND_PORT` was set.
+
+A second checkout can run beside the first with its own ports and its own data directory:
+
+```sh
+export FAULTLAB_SIMULATOR_PORT=18001 FAULTLAB_BACKEND_PORT=18000 FAULTLAB_DASHBOARD_PORT=15173
+./scripts/start-local.sh --data-dir "$HOME/FaultLab_Runs/second-workspace"
+```

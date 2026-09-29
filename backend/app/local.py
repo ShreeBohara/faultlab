@@ -9,11 +9,25 @@ import subprocess
 import sys
 import threading
 
+from app.ports import configured_port
+
 
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def launch_plan(data_dir, *, archive=False, live=False, frontend=True):
+def service_ports(environ=None):
+    """The simulator, backend and dashboard ports (FAULTLAB_*_PORT, defaults 8001, 8000 and 5173)."""
+    ports = {'simulator': configured_port('FAULTLAB_SIMULATOR_PORT', environ),
+             'backend': configured_port('FAULTLAB_BACKEND_PORT', environ),
+             'dashboard': configured_port('FAULTLAB_DASHBOARD_PORT', environ)}
+    if len(set(ports.values())) != len(ports):
+        raise ValueError('FAULTLAB_SIMULATOR_PORT, FAULTLAB_BACKEND_PORT and FAULTLAB_DASHBOARD_PORT '
+                         'must be three different ports.')
+    return ports
+
+
+def launch_plan(data_dir, *, archive=False, live=False, frontend=True, ports=None):
+    ports = service_ports() if ports is None else ports
     path = Path(data_dir).expanduser().resolve()
     if archive and live:
         raise ValueError('Archive mode cannot enable live execution.')
@@ -26,19 +40,23 @@ def launch_plan(data_dir, *, archive=False, live=False, frontend=True):
                        FAULTLAB_READ_ONLY='true' if archive else 'false',
                        FAULTLAB_LIVE_ENABLED='true' if live else 'false',
                        FAULTLAB_ARIA_PUBLISH_ENABLED='false',
-                       FAULTLAB_SIMULATOR_URL='http://127.0.0.1:8001')
+                       FAULTLAB_SIMULATOR_URL=f'http://127.0.0.1:{ports["simulator"]}',
+                       # The dashboard's Vite server reads these two (frontend/local-ports.ts).
+                       FAULTLAB_BACKEND_PORT=str(ports['backend']),
+                       FAULTLAB_DASHBOARD_PORT=str(ports['dashboard']))
     commands = []
     if not archive:
         commands.append(('simulator', [sys.executable, '-m', 'uvicorn',
-                         'app.simulator.main:app', '--host', '127.0.0.1', '--port', '8001',
-                         '--timeout-keep-alive', '75'], ROOT / 'backend', 8001))
+                         'app.simulator.main:app', '--host', '127.0.0.1', '--port', str(ports['simulator']),
+                         '--timeout-keep-alive', '75'], ROOT / 'backend', ports['simulator']))
     commands.append(('backend', [sys.executable, '-m', 'uvicorn',
-                     'app.main:app', '--host', '127.0.0.1', '--port', '8000', '--no-access-log'], ROOT / 'backend', 8000))
+                     'app.main:app', '--host', '127.0.0.1', '--port', str(ports['backend']), '--no-access-log'],
+                     ROOT / 'backend', ports['backend']))
     if frontend:
         npm = shutil.which('npm')
         if npm is None:
             raise ValueError('npm is required for the dashboard; use --no-frontend for API-only work.')
-        commands.append(('dashboard', [npm, 'run', 'dev'], ROOT / 'frontend', 5173))
+        commands.append(('dashboard', [npm, 'run', 'dev'], ROOT / 'frontend', ports['dashboard']))
     return path, environment, commands
 
 
@@ -94,7 +112,10 @@ def supervise(commands, environment):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog='Ports: FAULTLAB_SIMULATOR_PORT, FAULTLAB_BACKEND_PORT and FAULTLAB_DASHBOARD_PORT '
+               '(defaults 8001, 8000 and 5173).')
     parser.add_argument('--data-dir', required=True, type=Path,
                         help='Explicit directory for this store and its worlds; existing history is never moved.')
     parser.add_argument('--archive', action='store_true', help='Read an existing store without a simulator, recovery or writes.')
@@ -102,13 +123,15 @@ def main(argv=None):
     parser.add_argument('--no-frontend', action='store_true', help='Start API services only.')
     args = parser.parse_args(argv)
     try:
+        ports = service_ports()
         path, environment, commands = launch_plan(args.data_dir, archive=args.archive,
-                                                  live=args.live, frontend=not args.no_frontend)
+                                                  live=args.live, frontend=not args.no_frontend, ports=ports)
         check_ports(commands)
     except ValueError as error:
         parser.error(str(error))
     print(f'FaultLab {"read-only archive" if args.archive else "local workspace"}: {path}', flush=True)
-    print('Dashboard: http://127.0.0.1:5173' if not args.no_frontend else 'API: http://127.0.0.1:8000', flush=True)
+    print(f'Dashboard: http://127.0.0.1:{ports["dashboard"]}' if not args.no_frontend
+          else f'API: http://127.0.0.1:{ports["backend"]}', flush=True)
     print('Press Ctrl+C to stop these services. Starting services makes no model calls.', flush=True)
     return supervise(commands, environment)
 

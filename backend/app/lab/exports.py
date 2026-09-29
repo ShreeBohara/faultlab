@@ -72,6 +72,9 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
         'execution_errors':[e for e in store.list_records('execution_errors') if e.get('campaign_id')==campaign_id],
         # Charged Explorer/Mechanic blind retries (Actor retries are actor_transport_retry episode events).
         'transport_retries':[r for r in store.list_records('transport_retries') if r.get('campaign_id')==campaign_id],
+        # Telemetry-only evidence retries (manual and declared automatic) and the evidence waits they served.
+        'evidence_retries':[r for r in store.list_records('evidence_retries') if r.get('campaign_id')==campaign_id],
+        'evidence_waits':[w for w in store.list_records('evidence_waits') if w.get('campaign_id')==campaign_id],
         'sponsor_publication_deferrals':[e for e in store.list_records('sponsor_publication_deferrals') if e.get('campaign_id')==campaign_id],
         'source_validation_results':[e for e in store.list_records('source_validation_results') if e.get('campaign_id')==campaign_id],
         'candidate_qualifications':[e for e in store.list_records('candidate_qualifications') if e.get('campaign_id')==campaign_id],

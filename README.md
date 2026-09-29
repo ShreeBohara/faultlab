@@ -51,7 +51,7 @@ The run shown on this page used DeepSeek V3.1 in every model role. Later runs sp
 
 ## Recorded hackathon run
 
-The hackathon run shown above is `campaign-44085f54a24144b78252d8eea211ebb8`. Every number below comes from its saved records, and all 143 of its traces were read back from Weave and matched against the local evidence.
+The hackathon run shown above is `campaign-44085f54a24144b78252d8eea211ebb8`. It is saved in the team's local store; a fresh clone does not include it. Every number below comes from its saved records, and all 143 of its traces were read back from Weave and matched against the local evidence.
 
 - The Explorer found a real failure. With a delayed upgrade response, the assistant kept polling for status and never filed its final report. Three of the eight checks failed.
 - The failure repeated 3 out of 3 times in fresh shops, and the lab reduced it to the smallest delay that still broke the assistant.
@@ -95,28 +95,42 @@ Dark and light themes switch from the header. `node scripts/capture-dashboard.mj
 
 ## Run it yourself
 
-Offline mode needs no accounts and makes no paid calls. You need Python 3.12, Node 20.19 or newer, and npm.
+Offline mode needs no accounts and makes no paid calls. You need:
+
+- Python 3.12 (3.12.8 is pinned in `.python-version`);
+- Node 20.19 or a later 20.x, or Node 22.12 or later, with npm (`.nvmrc` pins 20.19.0);
+- for the browser tests, Google Chrome or Playwright's Chromium (`cd frontend && npx playwright install chromium`).
+
+Install (about a minute), then run every offline check (about 18 minutes, mostly the backend suite):
 
 ```sh
 ./scripts/setup.sh
 ./scripts/test.sh
 ```
 
-Then, in three terminals:
+`setup.sh` also creates `.env` if there is none: a copy of `.env.example` (safe defaults, no keys),
+readable only by you. Offline work needs nothing in it. The W&B project named in it is the team's;
+use your own for live runs. `test.sh` runs the backend, frontend, build and browser stages and prints
+one PASSED or FAILED line for each. [Setup](docs/setup.md) gives the expected results and timings.
+
+Start the fake shop, the lab and the dashboard together, with a data folder outside the repository:
 
 ```sh
-./scripts/start-simulator.sh    # the fake shop, port 8001
-./scripts/start-backend.sh      # the lab, port 8000
-./scripts/start-frontend.sh     # the dashboard, port 5173
+./scripts/start-local.sh --data-dir "$HOME/FaultLab_Runs/my-workspace"
 ```
 
-Open http://127.0.0.1:5173 and run one offline reference attempt:
+Open http://127.0.0.1:5173, choose **Offline reference smoke**, then create and start a campaign.
+Or run one offline reference attempt from a second terminal:
 
 ```sh
 ./scripts/run-demo.sh --mode baseline --wait
 ```
 
-A live run uses real models through W&B. If `.env` does not exist, copy `.env.example` to `.env`; add your W&B key, project and model names, and follow [the current step-by-step guide](docs/user-guide.md). Keep an existing `.env` and never commit it.
+Ctrl+C in the first terminal stops all three services. The simulator, backend and dashboard use ports
+8001, 8000 and 5173. To use other ports, set `FAULTLAB_SIMULATOR_PORT`, `FAULTLAB_BACKEND_PORT` and
+`FAULTLAB_DASHBOARD_PORT` in every terminal first (see [Setup](docs/setup.md)).
+
+A live run uses real models through W&B. Add your own W&B key, entity, project and model names to `.env`, and follow [the step-by-step guide](docs/user-guide.md). Keep an existing `.env` and never commit it.
 
 ## Read more
 

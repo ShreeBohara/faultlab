@@ -155,7 +155,8 @@ export const api = {
   challenge: (challengeId: string) => request(`/challenges/${id(challengeId)}`, contract<ChallengeResult>('ChallengeResult')),
   portability: (portabilityId: string) => request(`/portability/${id(portabilityId)}`, contract<PortabilityResult>('PortabilityResult')),
   evaluation: (batchId: string) => request(`/evaluations/${id(batchId)}`, contract<EvaluationBatch>('EvaluationBatch')),
-  retry: (campaignId: string) => request(`/campaigns/${id(campaignId)}/retry-evidence`, v => { if (!object(v)) return malformed('retry'); return v }, {}),
+  /** Telemetry-only evidence retry. With episode IDs, only those, in the given order (the backend accepts at most 200); without, every campaign episode. */
+  retry: (campaignId: string, episodeIds?: string[]) => request(`/campaigns/${id(campaignId)}/retry-evidence`, v => { if (!object(v)) return malformed('retry'); return v }, episodeIds?.length ? { episode_ids: episodeIds.slice(0, 200) } : {}),
   reset: () => request('/reset-demo', v => { if (!object(v) || typeof v.reset_id !== 'string' || v.status !== 'READY_FOR_FRESH_RUN') return malformed('reset'); return v }, { fixture_profile_id: 'standard-v1' }),
 }
 export function safeEvidenceUrl(value: string | null | undefined): string | null {

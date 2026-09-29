@@ -23,6 +23,14 @@ rwp = probe.rwp
 
 STORE = ROOT / 'artifacts/lab.sqlite3'
 
+# The Phase 17 settings file lives under the git-ignored artifacts/ folder, so a fresh clone does not have it.
+# Tests that read it skip there with this reason (as test_run_dev_probe.py and test_run_gap_probe.py already
+# do); where the file exists they run unchanged.
+PHASE17_SETTINGS_ABSENT = not (ROOT / probe.DECLARED_SETTINGS).is_file()
+NO_PHASE17_SETTINGS = ('needs the Phase 17 settings file (artifacts/phase16-2026-09-22/settings-phase17.json; '
+                       'git-ignored, so a fresh clone does not have it)')
+needs_phase17_settings = pytest.mark.skipif(PHASE17_SETTINGS_ABSENT, reason=NO_PHASE17_SETTINGS)
+
 
 def _tree_is_phase22_configuration():
     """Phase 30 is pinned to the Phase 22 configuration (2cf63e93...). A later backend/app change moves the
@@ -88,6 +96,7 @@ def test_the_rebuild_and_word_rule_are_phase27s_pinned_harness(tmp_path, monkeyp
     assert 'not the pinned Phase 21 harness' in probe.phase27_harness_problem()
 
 
+@needs_phase17_settings
 def test_the_process_rule_is_phase26s_pinned_runner_and_fails_closed(tmp_path, monkeypatch):
     assert probe.sha256_file(probe.PHASE26_RUNNER) == probe.PHASE26_RUNNER_SHA256
     assert probe.phase26_runner_problem() is None
@@ -270,6 +279,7 @@ def test_build_plan_refuses_a_cap_above_the_programs(monkeypatch):
         probe.build_plan()
 
 
+@needs_phase17_settings
 def test_build_plan_refuses_an_altered_settings_file(tmp_path):
     settings = tmp_path / 'settings.json'
     settings.write_text((ROOT / probe.DECLARED_SETTINGS).read_text() + '\n')
@@ -1083,6 +1093,8 @@ class APIConnectionError(Exception):
 
 @pytest.fixture(scope='module')
 def dry_settings():
+    if PHASE17_SETTINGS_ABSENT:
+        pytest.skip(NO_PHASE17_SETTINGS)
     return probe.settings_from_file(ROOT / probe.DECLARED_SETTINGS, env_path=os.devnull)
 
 

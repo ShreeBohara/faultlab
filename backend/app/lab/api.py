@@ -287,6 +287,13 @@ def create_router(get_coordinator, *, get_settings=None):
     @router.post('/campaigns/{id}/retry-evidence',status_code=202)
     @guarded
     async def retry(id:str,request:RetryRequest): return await c().retry_evidence(id,request.episode_ids)
+    @router.get('/campaigns/{id}/evidence-wait')
+    @guarded
+    def evidence_wait(id:str):
+        # Saved records only (declared rule, current wait, past waits); the dashboard reads it once per
+        # campaign state change, never on a timer.
+        from app.lab.evidence_wait import evidence_wait_status
+        return evidence_wait_status(c().store,c().get(id))
     @router.get('/campaigns/{id}/experiments')
     @guarded
     def experiments(id:str):

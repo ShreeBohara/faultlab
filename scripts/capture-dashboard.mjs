@@ -1,12 +1,17 @@
 // Capture the dashboard for docs and posts. Requires the simulator, backend and frontend to be running
 // (see README quick start) and Google Chrome. Only GET requests are allowed; any write attempt fails the capture.
 //   node scripts/capture-dashboard.mjs [campaign-id] [dark|light] [output-dir]
+// The dashboard address follows FAULTLAB_DASHBOARD_PORT (default 5173), like the other FaultLab scripts.
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { mkdir } from 'node:fs/promises'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const { chromium, expect } = await import(resolve(root, 'frontend/node_modules/@playwright/test/index.mjs'))
 const [campaign = 'campaign-44085f54a24144b78252d8eea211ebb8', theme = 'dark', outDir = resolve(root, 'docs/assets')] = process.argv.slice(2)
+const dashboardPort = process.env.FAULTLAB_DASHBOARD_PORT || '5173'
+if (!/^[1-9][0-9]{0,4}$/.test(dashboardPort) || Number(dashboardPort) > 65535) {
+  throw new Error(`FAULTLAB_DASHBOARD_PORT must be a whole port number from 1 to 65535 (got '${dashboardPort}').`)
+}
 const chrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const browser = await chromium.launch({ headless: true, ...(process.platform === 'darwin' ? { executablePath: chrome } : {}) })
 try {
@@ -15,10 +20,10 @@ try {
   page.on('pageerror', e => errors.push(e.message))
   await page.route('**/api/**', route => { if (route.request().method() !== 'GET') { writes.push(route.request().url()); return route.abort() } return route.continue() })
   await page.addInitScript(([id, t]) => { localStorage.setItem('faultlab:campaign', id); localStorage.setItem('faultlab:theme', t) }, [campaign, theme])
-  await page.goto('http://127.0.0.1:5173/', { waitUntil: 'domcontentloaded' })
+  await page.goto(`http://127.0.0.1:${dashboardPort}/`, { waitUntil: 'domcontentloaded' })
   const summary = page.locator('.summary-panel')
   await expect(page.getByText('Backend connected', { exact: true })).toBeVisible()
-  await expect(summary).toContainText('Trials recorded')
+  await expect(summary).toContainText('Main-loop trials')
   await expect(summary.locator('.stat-strip strong').first()).not.toHaveText('—')
   await expect(page.locator('[role="alert"]')).toHaveCount(0)
   await expect(page.locator('html')).toHaveAttribute('data-theme', theme)

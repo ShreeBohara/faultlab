@@ -24,6 +24,14 @@ from app.providers.runtime import RuntimeProvider, RuntimeProviderError  # noqa:
 
 STORE = ROOT / 'artifacts/lab.sqlite3'
 
+# The Phase 17 settings file lives under the git-ignored artifacts/ folder, so a fresh clone does not have it.
+# Tests that read it skip there with this reason (as test_run_dev_probe.py and test_run_gap_probe.py already
+# do); where the file exists they run unchanged.
+PHASE17_SETTINGS_ABSENT = not (ROOT / probe.DECLARED_SETTINGS).is_file()
+NO_PHASE17_SETTINGS = ('needs the Phase 17 settings file (artifacts/phase16-2026-09-22/settings-phase17.json; '
+                       'git-ignored, so a fresh clone does not have it)')
+needs_phase17_settings = pytest.mark.skipif(PHASE17_SETTINGS_ABSENT, reason=NO_PHASE17_SETTINGS)
+
 
 def _tree_is_phase27_configuration():
     """Phase 27 is pinned to the Phase 22 configuration (2cf63e93...). A later backend/app change
@@ -256,6 +264,7 @@ class Sentinel(Exception):
     pass
 
 
+@needs_phase17_settings
 def test_build_plan_refuses_altered_pinned_files(tmp_path, monkeypatch):
     # Review round 1 (M33): the settings file's own sha256 is checked, not only the configuration it
     # yields. The same settings with one extra newline keep the configuration but not the sha256.
@@ -273,6 +282,7 @@ def test_build_plan_refuses_altered_pinned_files(tmp_path, monkeypatch):
         probe.build_plan(phase20_store=fake_store)
 
 
+@needs_phase17_settings
 def test_check_files_refuses_an_edited_freeze_record_or_settings_file(tmp_path, monkeypatch):
     # Review round 1 (M24). Only the files' hashes are checked; the real freeze record is not copied.
     (tmp_path / probe.DECLARED_SETTINGS).parent.mkdir(parents=True)
@@ -1385,6 +1395,8 @@ class APIConnectionError(Exception):
 
 @pytest.fixture(scope='module')
 def dry_settings():
+    if PHASE17_SETTINGS_ABSENT:
+        pytest.skip(NO_PHASE17_SETTINGS)
     return probe.settings_from_file(ROOT / probe.DECLARED_SETTINGS, env_path=os.devnull)
 
 

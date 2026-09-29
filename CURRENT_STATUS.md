@@ -4,10 +4,13 @@ Updated **September 29, 2026 (UTC)**. This is the single current status and cont
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
+**Install and test:** [Setup](docs/setup.md#install-and-test-start-here) has the current commands,
+timings and expected results for a fresh clone, and the port settings.
+
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
-Runtime `c9af0a47…` for these runs (local backup commit `9970718`+); current code is `08e4c20d…` (discovery v3
-with its review fixes, below, offline only). Nothing pushed. Carried conservative total **$869.13**
+Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run;
+current code is **`5583dcad…`** (dependability fixes, below; $0, offline only). Nothing pushed. Carried conservative total **$869.13**
 (ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
 
 | run | result | doc |
@@ -19,8 +22,9 @@ with its review fixes, below, offline only). Nothing pushed. Carried conservativ
 
 | History-informed (v3) original loop vs native agent | **First live POLICY_GAP diagnosis, first live generated candidates, source validation and challenge.** 4 C5 sources (3/3 each); candidate 1 passed source validation, challenge found a counterexample → REJECTED; candidate 2 failed source validation. STOPPED at the 6 h limit during a Weave evidence wait (FaultLab gap: no automatic telemetry retry). Native agent's report-writing failures (hex evidence IDs, calls after final-report-required) are the binding limit | `docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md` |
 
-Carried total now **$887.39**. Still unproven live: promotion and ACCEPTED. Open FaultLab defects from this run:
-automatic bounded evidence retry; a stop during an evidence wait is recorded as UnexpectedError.
+Carried total now **$887.39**. Still unproven live: promotion and ACCEPTED. The run's two FaultLab defects (no
+automatic evidence retry; a stop during an evidence wait saved as UnexpectedError) are **fixed offline, not yet
+run live** (*Current work*, first paragraph).
 **Built after these runs ($0, not run live): discovery protocol v3 (history-informed)**, an opt-in answer to the
 7ee35abe gap. Two $0 reviews found no leak and no gate change. All 9 of their findings are applied. It is
 described under *Current work*.
@@ -34,13 +38,42 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Current runtime: `08e4c20dc6a3e841bb42032e5b61618cd08289d9a162ad30f683bb98ea0348c8`** (algorithm
-`8fb8ab2a…`), local and uncommitted, on top of checkpoint commit `e7340c9` (runtime `c0a8aad7…`); simulator
-service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…` unchanged, so checkpoint
-bundles stay rerunnable; every agent must be registered again. Chain: `cfe5ac07` → `bb87c764` → `9f53eb8c`
-(discovery v2) → `c9b1b7e6` → `c0a8aad7` (simulator revert, committed as `e7340c9`) → `debc86f3` (transport
-retry, below) → `c9af0a47` (its review fixes, below) → `a8a32234` (discovery v3, next paragraph) →
-**`08e4c20d`** (discovery v3 review fixes, same paragraph).
+**Current runtime: `5583dcad5ac94be8a502f62dd5176d7804d48555fd7f012be9c9f114a5302010`** (algorithm
+`5c95f2a9…`), local and uncommitted, on top of checkpoint branch `backup/part2-2026-09-22` (runtime
+`08e4c20d…`); simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…`
+unchanged, so checkpoint bundles stay rerunnable. **Every agent must be registered again under `5583dcad`
+before a live run.** Chain: `cfe5ac07` → `bb87c764` → `9f53eb8c` (discovery v2) → `c9b1b7e6` → `c0a8aad7`
+(simulator revert, committed as `e7340c9`) → `debc86f3` (transport retry, below) → `c9af0a47` (its review
+fixes, below) → `a8a32234` (discovery v3, below) → `08e4c20d` (discovery v3 review fixes; the checkpoint) →
+`c4157e33` (builder A: automatic evidence retry, truthful stop during a wait) → `4016cff9` (builder B: ports,
+launcher, CLI, test runner, CI, docs) → **`5583dcad`** (fixer: both reviews' findings, next paragraph).
+
+**September 29 (builders A and B, two reviewers, fixer; $0, not run live): a more dependable product.**
+Evidence: `artifacts/product-dependability-2026-09-29/` (`builder-a/`, `builder-b/`, `review-builder-a/`,
+`reviewer-b/`, `fixer/`).
+* **Automatic evidence retry** (rule `faultlab-evidence-retry/v2`, frozen into every new Learn plan). While a
+  Learn campaign waits for verified Weave evidence, FaultLab retries it by itself: at most **3 times per wait**
+  (30 s, 120 s, 300 s) and at most **6 times per campaign**. Each retry only re-sends saved trace records and
+  reads them back: no episode, business call or model request is repeated, and nothing is charged. When a
+  limit is reached the Run desk shows **Needs operator**; its button retries only that wait's episodes,
+  blocked episode first, and a retry job skips episodes already verified. Plans saved before the rule keep
+  manual retry only. A v1-rule plan (per-wait limit only, never run live) still reads, and Start refuses it.
+* **Stops and limits are recorded truthfully.** A stop during a wait ends STOPPED with a plain reason; the
+  qualification is INCOMPLETE with an interruption record, not an error. A stop during episodes keeps the
+  Stop's own reason. A budget limit inside a qualification is recorded as `BUDGET_EXHAUSTED`, not an error.
+  After a Stop no automatic retry starts, and one already running ends at its next step.
+* **Clean install and local use:** the 33 tests that need two git-ignored files skip in a clone, naming the
+  file. `test.sh` runs every stage, prints PASSED/FAILED per stage, and Ctrl+C stops it at once (exit 130).
+  `FAULTLAB_SIMULATOR_PORT`, `FAULTLAB_BACKEND_PORT` and `FAULTLAB_DASHBOARD_PORT` choose the ports; unset
+  means 8001/8000/5173 as before. The command-line tools print which backend they use and name the address
+  if none answers. CI is split into two jobs; it has not run on GitHub (no push without the owner's OK).
+  README and setup docs no longer contain owner paths, the W&B entity or local-only IDs.
+* **Reviews:** 9 evidence findings and 7 install findings, all applied. Two parts were not done: blanking
+  the team's project name in `.env.example` (the reviewer asked for a separate, reviewed change) and running
+  CI (needs a push). Each fix has a test that fails on the old code (`fixer/mutation-checks.log`).
+* **Suites under `5583dcad`, after the last edit:** backend **2,756 passed, 180 skipped, 0 failed**; frontend **329** unit
+  tests; build passed; browser **17 passed, 1 opt-in skip** (17 new backend tests and 1 new frontend test;
+  `fixer/full-test-sh-run*.log`).
 
 **September 29 (builder, then fixer, $0): discovery protocol v3 (history-informed), opt-in; v1 stays the default.**
 Design and results: [discovery v3 note](docs/DISCOVERY_V3_HISTORY_2026-09-29.md); section 12 covers the review fixes.
@@ -110,7 +143,7 @@ Evidence: `artifacts/product-discovery-v3-2026-09-29/builder/`, `…/review-inte
     * both registrations are still the same agent under the stricter rule.
 * **Format:** the frozen history is now `faultlab-agent-history/v2`. Only scratch evidence stores held v1 plans.
 * **Next for a live try:**
-  1. Register again under `08e4c20d`.
+  1. Register again under the current runtime (`5583dcad`).
   2. Run the baseline study in the **new store** first, then create the v3 learn plan there.
   3. Review the frozen history (composition, builds) and press *Check against the store now*.
   4. Declare the run, and report its result as history-informed.

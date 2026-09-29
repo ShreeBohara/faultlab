@@ -292,6 +292,15 @@ textarea { resize: vertical; line-height: 1.6; }
 .badge-completed, .badge-accepted, .badge-weave_verified, .badge-passed, .badge-passed_observed, .badge-supported { background: var(--teal-surface); border-color: var(--teal-line); color: var(--teal); }
 .badge-violation, .badge-lab_error, .badge-failed, .badge-counterexample_found, .badge-rejected, .badge-contradicted { background: var(--red-surface); color: var(--red); border-color: var(--red-line); }
 .badge-safe_unresolved, .badge-inconclusive, .badge-incomplete, .badge-waiting_evidence, .badge-weave_error, .badge-flaky, .badge-interrupted { background: var(--amber-surface); color: var(--amber); border-color: var(--amber-line); }
+/* Evidence wait (Run desk): declared automatic telemetry retries, then "needs operator". */
+.badge-needs_operator { background: var(--red-surface); color: var(--red); border-color: var(--red-line); }
+.badge-automatic_retry_scheduled, .badge-automatic_retry_running, .badge-reading_evidence { background: var(--accent-surface); color: var(--accent); border-color: var(--accent-line); }
+.badge-evidence_verified { background: var(--teal-surface); color: var(--teal); border-color: var(--teal-line); }
+.badge-manual_retry_only, .badge-running_at_stop, .badge-not_started, .badge-still_unverified, .badge-timed_out { background: var(--amber-surface); color: var(--amber); border-color: var(--amber-line); }
+.evidence-wait { margin-top: 12px; padding: 10px 12px; border-left: 2px solid var(--amber); border-radius: 0 4px 4px 0; background: var(--amber-surface); font-size: 11px; line-height: 1.7; }
+.evidence-wait.needs-operator { border-color: var(--red); background: var(--red-surface); }
+.evidence-wait h3 { margin: 0; }
+.evidence-wait .retry-attempts { margin: 8px 0; padding-left: 18px; }
 .badge-correctly_rejected { background: var(--blue-surface); color: var(--blue); border-color: var(--blue-line); }
 .badge-offline_fixture, .badge-internal_smoke { background: var(--amber-surface); color: var(--amber); border-color: var(--amber-line); }
 .badge-proposed, .badge-running, .badge-locally_minimal, .badge-reduced { background: var(--accent-surface); color: var(--accent); border-color: var(--accent-line); }

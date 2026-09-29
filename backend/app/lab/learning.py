@@ -9,8 +9,9 @@ from app.lab.evidence import EvidenceContext,WaitingEvidence
 from app.lab.evaluation import PairedEvaluator,load_cases,paired_complete,observed_candidate_violations
 from app.lab.challenge import Challenger,schedule_identity
 from app.lab.promotion import promotion_decision,commit_promotion
-from app.lab.budgets import CANDIDATE_CALLS
+from app.lab.budgets import CANDIDATE_CALLS,BudgetExhausted,StopRequested
 from app.lab.tracing import execute_phase,execute_sync_phase
+from app.lab import evidence_wait
 
 def source_validation_assessment(batch,target_invariant):
     """Keep failure to reproduce separate from the candidate's observed mistakes."""
@@ -87,31 +88,45 @@ async def run_learning_cycle(coordinator,campaign,runner):
     context=EvidenceContext(id,id,id)
     candidate_count=0; history=[]; discovery_evidence=[]; repair_histories={}
     explorer.trace=getattr(runner,'trace',None); mechanic.trace=getattr(runner,'trace',None)
+    evidence_rule=None  # Set from the plan below, before any evidence is read.
     async def evidence_for(trials):
         bundles=[]
-        for trial in trials:
+        for index,trial in enumerate(trials):
             if not coordinator.evidence_gateway: raise WaitingEvidence('Real retrieved development evidence required')
-            while not stop():
-                try:
-                    bundles.append(await coordinator.evidence_gateway.get(trial.episode_id,context,stopped=stop))
+            wait=None
+            read_cut_short=False  # True only when the stop arrived while a Weave read was in progress
+            try:
+                while not stop():
+                    try:
+                        bundle=await coordinator.evidence_gateway.get(trial.episode_id,context,stopped=stop)
+                    except WaitingEvidence as error:
+                        if stop(): read_cut_short=True; break
+                        if wait is None:
+                            # One wait per blocked episode; it also retries this batch's later episodes.
+                            wait=evidence_wait.EvidenceWait(coordinator,id,trial.episode_id,[t.episode_id for t in trials[index:]],evidence_rule)
+                        await wait.hold(str(error),stop)
+                        continue
+                    bundles.append(bundle)
+                    if wait is not None: wait.resolve()
+                    read_cut_short=stop()  # the stop landed while this (successful) read ran
                     break
-                except WaitingEvidence as error:
-                    import asyncio
-                    previous=coordinator.get(id).state
-                    coordinator.transition(id,'WAITING_EVIDENCE',str(error))
-                    event=coordinator.evidence_events.setdefault(id,asyncio.Event())
-                    event.clear()
-                    while not event.is_set() and not stop():
-                        try: await asyncio.wait_for(event.wait(),timeout=.5)
-                        except TimeoutError: pass
-                    if not stop(): coordinator.transition(id,previous)
-            if stop():
-                from app.lab.budgets import StopRequested
-                raise StopRequested()
+                if stop():
+                    # An open wait ends STOPPED with its own plain reason. A stop that landed during a Weave read is
+                    # named as such. A stop that came before any read (for example during the episodes whose
+                    # evidence this is) adds no reason: the campaign keeps the reason its Stop already saved.
+                    if wait is not None and wait.open: raise wait.stopped()
+                    if read_cut_short:
+                        raise StopRequested('External stop requested while reading Weave evidence; remote effects are retained')
+                    raise StopRequested()
+            except BaseException as error:
+                if wait is not None and wait.open: wait.end(error)
+                raise
         return bundles
     try:
         identity,v2=discovery_session(store,campaign,coordinator.policies.get(coordinator.get(id).active_policy_version))
         frozen_history=discovery_history(store,campaign)  # None unless the plan declared discovery v3
+        # The plan's declared automatic evidence retry (app.lab.evidence_wait), or None: manual retry only.
+        evidence_rule=evidence_wait.campaign_rule(store,campaign)
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -275,6 +290,18 @@ async def run_learning_cycle(coordinator,campaign,runner):
         coordinator.transition(id,'WAITING_EVIDENCE',str(error))
     except asyncio.CancelledError:
         coordinator.incomplete_qualifications(id,'Execution cancelled; saved qualification attempts are not replayed')
+        raise
+    except StopRequested as error:
+        # A stop (operator Stop or a watcher's Stop request) is not an execution error.
+        if isinstance(error,evidence_wait.EvidenceWaitStopped):
+            coordinator.incomplete_qualifications(id,evidence_wait.STOPPED_WAIT_REASON,interruption=error.interruption)
+        else:
+            coordinator.incomplete_qualifications(id,'External stop interrupted qualification; saved attempts are not replayed')
+        raise
+    except BudgetExhausted as error:
+        # A declared budget limit is not an execution error either; the campaign itself ends NO_CHANGE with the reason.
+        coordinator.incomplete_qualifications(id,'Budget exhausted before qualification completed; saved attempts are not replayed',
+                                             interruption={'kind':'BUDGET_EXHAUSTED','reason':str(error) or 'Budget exhausted'})
         raise
     except Exception as error:
         from app.lab.readiness import execution_failure

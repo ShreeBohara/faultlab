@@ -2,6 +2,8 @@
 
 For a new workspace, use `./scripts/start-local.sh --data-dir /absolute/local/data-directory`.
 It starts all three services with the same selected directory and live execution disabled.
+Install and test first with [Setup](setup.md#install-and-test-start-here), which also explains how to
+choose other ports.
 Use `--archive` to inspect an existing store without recovery, execution or writes.
 See [local operation and recovery](local-operation.md) for the complete commands and data guidance.
 The dashboard displays the selected store; existing historical directories are never moved.
@@ -144,7 +146,12 @@ Load a saved campaign using **Open saved campaign → Load recording**. This onl
 - **Unseen-case result**: a separate evaluation of that exact candidate. “Not run” means there is no matching saved check. A completed check can still say HARM.
 - **Active policy**: the policy the selected campaign actually uses. Development qualification and unseen-case checks never activate a policy by themselves.
 
-Try `campaign-ba37f75678284372ad5dcc2b3635481e` for a Phase 28 development success, or `campaign-9bc991df39ff4c61a2668f87fac5bac1` for the later unseen-case HARM result from a different policy. Both retain `policy-v0`. The successful saved replay `campaign-9a412c8862714aac89e6851e7d7706e1` has 42 recorded validation trials and should open without a malformed-study warning. None of these actions runs a new test.
+To see them, open a saved learning campaign from **Campaign history**. A fresh install starts with
+**No saved campaigns yet**, so run a campaign first or select a data folder that already holds some.
+The team's own examples live only in its local stores: a Phase 28 development success, a later
+unseen-case HARM result from a different policy, and a saved replay with 42 recorded validation
+trials. Their campaign IDs are listed in [the September 27 status notes](part2/STATUS_NOTES_2026-09-27.md).
+Opening a saved campaign never runs a new test.
 
 ## Search attempts and completion recovery
 
@@ -157,7 +164,7 @@ verdict and do not change qualification gates or historical outcomes.
 
 **Completion recovery** asks a separate question: can a generated recovery rule finish a task that the agent truthfully left unfinished? It shows the original agent and the candidate side by side for each condition. A completed experiment does not mean every task succeeded. The ordinary safety checks still apply, and this experiment never activates a policy.
 
-1. **Inspect saved work first.** Open campaign `campaign-3f20fcd4d4b14566a6203d9c110e744c` using **Open saved campaign → Load recording**. The frontend reads saved study rows from the backend; this makes no model calls. Expand **Completion recovery**, then open an episode to see its original report and Referee verdict. The main-loop matrix excludes these separate study trials deliberately. This saved study ended NO_CHANGE: both generated rules completed zero of three source tasks. The follow-up campaign `campaign-892eee83577a409b82e02deaf73a1a9e` stopped INCOMPLETE before any repair proposal because the agent never called the tool where a fault was scheduled. Later trace synchronization did not resume it.
+1. **Inspect saved work first.** Open a campaign that ran a completion study with **Open saved campaign → Load recording** (or from **Campaign history**). The frontend reads saved study rows from the backend; this makes no model calls. Expand **Completion recovery**, then open an episode to see its original report and Referee verdict. The main-loop matrix excludes these separate study trials deliberately. The team's saved study (in its local store only; IDs in [Phase 3 results](part2/PHASE3_RESULTS.md)) ended NO_CHANGE: both generated rules completed zero of three source tasks. Its follow-up stopped INCOMPLETE before any repair proposal because the agent never called the tool where a fault was scheduled. Later trace synchronization did not resume it.
 2. **To run a new experiment, first start the services and confirm live settings as described below.** This makes the selected models, credits and simulator available. The completion command uses the running backend's settings; it does not change `.env`.
 3. **Start only when you want fresh paid work:** run `./scripts/run-completion-study.sh --execute-live --wait` from the repository root. The backend saves a fixed plan before calling models: three failure cases and three healthy controls, at most two generated proposals, paired source checks, and—only if a proposal qualifies—42 further validation trials. Each trial gets a fresh shop. The maximum reservation is 484 model calls, plus the campaign's existing protected reserve.
 4. **Read the saved result.** Use `./scripts/run-completion-study.sh --status STUDY_ID`, or load its campaign ID in the dashboard. These are read-only. `OBSERVED_IMPROVEMENT` means a completion gain on the declared development cases, not a promoted policy. `NO_CHANGE` means the experiment did not establish that gain. `INCOMPLETE` means execution or evidence stopped; original attempts remain saved and are not automatically replayed.
@@ -166,7 +173,7 @@ verdict and do not change qualification gates or historical outcomes.
 
 **Attempt-context study** asks a different question again: does the agent do better if it is told, each turn, what it has already tried? Both sides run the same model, the same tools, the same empty policy and the same checks. Only the per-turn message differs. It never proposes or activates a policy.
 
-1. **Inspect the saved work first.** Open campaign `campaign-cd872e2df96c4d45bc56f2be5307ec85` with **Open saved campaign → Load recording** and expand **Attempt-context study**. Sixty trials, thirty per side. The result is `regression`: the changed side finished one transient-notification case the control never finished, and it also broke the terminally-rejected-upgrade report three times out of three by writing `NOT_STARTED` where the contract requires `NOT_REQUIRED`. Campaign `campaign-65e356ebc1e04e3c8165d329152c56d5` holds the one declared follow-up, which did not fix it. **Nothing from either study was adopted.**
+1. **Inspect the saved work first.** Open a campaign that ran an attempt-context study with **Open saved campaign → Load recording** and expand **Attempt-context study**. The team's saved study (in its local store only; IDs in [Phase 4 results](part2/PHASE4_RESULTS.md)) has sixty trials, thirty per side. The result is `regression`: the changed side finished one transient-notification case the control never finished, and it also broke the terminally-rejected-upgrade report three times out of three by writing `NOT_STARTED` where the contract requires `NOT_REQUIRED`. A second campaign holds the one declared follow-up, which did not fix it. **Nothing from either study was adopted.**
 2. **To run a new comparison** you need a new declared protocol in `backend/app/agents/progress.py`, then `./scripts/run-context-study.sh --execute-live --changed-protocol NAME --wait`. The plan is saved before any model call: ten public cases, three fresh shops per case per side, 480 reserved model calls on top of the campaign's protected reserve.
 3. **Read the saved result** with `./scripts/run-context-study.sh --status STUDY_ID`, or `python scripts/experiments/summarize_context_study.py STUDY_ID` for the tables. Both are read-only. `OBSERVED_IMPROVEMENT` needs a completion gain *and* no failed check and no case going backwards. `REGRESSION` means the changed side broke something. A case whose trials were invalid is named and left out of the decision rather than rerun.
 
@@ -183,22 +190,26 @@ verdict and do not change qualification gates or historical outcomes.
 
 ## Older examples: saved Phase 2 results
 
-If the dashboard is already connected, paste a campaign ID into **Open saved campaign**, then click **Load recording**. This reads saved evidence and makes no model calls. It does not restart the campaign.
+These examples are in the team's local store only; a fresh install does not have them. Their campaign,
+execution and study IDs are recorded in [Phase 2 results](part2/PHASE2_RESULTS.md), and the two saved
+regression IDs in [this note](part2/PHASE2_REGRESSION_IDS_2026-09-29.md). To open any
+saved campaign, paste its ID into **Open saved campaign** and click **Load recording**, or pick it from
+**Campaign history**. This reads saved evidence and makes no model calls. It does not restart the campaign.
 
-| Record to open | What it shows |
+| Record | What it shows |
 |---|---|
-| C2: `campaign-add97a955f8f4f3a961aa62a14286807` | Runtime 2 learning ended `NO_CHANGE`: eight episodes, six completed tasks, two safe unresolved and zero violations. Only five of eight scheduled faults triggered. No repair was proposed or accepted; this is not proof that all faults were handled. |
-| B: `campaign-5a0af912a5244423b61b5f13cff4ec0f` | The earlier reproduced failure, a failed repair proposal and its exported incident. Use **Reproduce & reduce**, **Recovery policy** and **Portable regression** to inspect them. |
-| C3: `campaign-c59a93f87b03419d967eb43e076c99b0` | Opens its saved campaign evidence. The separate 36-trial comparison is summarized below and in the [saved study record](http://127.0.0.1:8000/api/baseline-studies/baseline-study-498d5e0e42594330a282c45dcf5193cc); it is excluded from the dashboard’s main-loop counts. |
+| C2 | Runtime 2 learning ended `NO_CHANGE`: eight episodes, six completed tasks, two safe unresolved and zero violations. Only five of eight scheduled faults triggered. No repair was proposed or accepted; this is not proof that all faults were handled. |
+| B | The earlier reproduced failure, a failed repair proposal and its exported incident. Use **Reproduce & reduce**, **Recovery policy** and **Portable regression** to inspect them. |
+| C3 | Its saved campaign evidence. The separate 36-trial comparison is summarized below and in its saved baseline-study record (`/api/baseline-studies/STUDY_ID` on the backend); it is excluded from the dashboard’s main-loop counts. |
 
-The same saved B incident was also tested in three fresh runtime 2 worlds. Execution `execution-dcf7936ab295477fb7588f38584f8bbe` belongs to new campaign `campaign-1c19ec5bb8db4988b8493d3ea19d48df`: two safe unresolved results and one incorrect-citation violation (C6). The original missing-report failure (C5) reproduced **zero of three** times. All three Weave traces were verified. This tested the empty baseline policy; it did not demonstrate a learned repair. The [saved execution record](http://127.0.0.1:8000/api/regression-executions/execution-dcf7936ab295477fb7588f38584f8bbe) lists the three episode IDs. Regression execution has its own status; an idle campaign is not its result.
+The same saved B incident was also tested in three fresh runtime 2 worlds, as a regression execution in a new campaign: two safe unresolved results and one incorrect-citation violation (C6). The original missing-report failure (C5) reproduced **zero of three** times. All three Weave traces were verified. This tested the empty baseline policy; it did not demonstrate a learned repair. The saved execution record (`/api/regression-executions/EXECUTION_ID` on the backend) lists the three episode IDs. Regression execution has its own status; an idle campaign is not its result.
 
-To inspect those three fresh trials in the dashboard:
+To inspect a saved regression execution in the dashboard:
 
-1. Load campaign `campaign-1c19ec5bb8db4988b8493d3ea19d48df`.
-2. In **Portable regression → Saved regression**, select `regression-9a121aa5527840dcafc4ba07272d35de`, then click **Inspect saved bundle**.
-3. Paste `execution-dcf7936ab295477fb7588f38584f8bbe` into **Saved execution ID**, then click **Open saved execution**.
-4. Check the three recorded trials and 24 model calls. Click the third episode to read its original report and the failed C6 check.
+1. Load the campaign that ran it.
+2. In **Portable regression → Saved regression**, select the regression, then click **Inspect saved bundle**.
+3. Paste the execution ID into **Saved execution ID**, then click **Open saved execution**.
+4. Check the recorded trials and model calls. Click an episode to read its original report and failed checks. (For the B incident: three trials, 24 model calls, and the third episode failed C6.)
 
 These steps only read saved records; they do not start or resume a run. **Run fresh regression** is a different, paid action.
 
@@ -209,14 +220,19 @@ C3's live model completed 12 tasks, correctly rejected three, safely left two un
 **Do this.** In a terminal, select a fresh directory for new work:
 
 ```sh
-cd /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab
-./scripts/start-local.sh --data-dir /Users/shree/FaultLab_Runs/my-workspace
+cd path/to/faultlab
+./scripts/start-local.sh --data-dir "$HOME/FaultLab_Runs/my-workspace"
 ```
+
+Use any folder outside the repository; it is created if needed.
 
 This starts the simulator, backend and dashboard together with live execution disabled. Keep the
 terminal open; Ctrl+C stops the services it started. The launcher refuses occupied ports before opening
 stores. Stop an existing launcher before switching workspaces. Existing data is never moved automatically.
 For a fresh installation, run `./scripts/setup.sh` once first; reuse an existing installed environment.
+The services use ports 8001 (simulator), 8000 (backend) and 5173 (dashboard). If those are taken, export
+`FAULTLAB_SIMULATOR_PORT`, `FAULTLAB_BACKEND_PORT` and `FAULTLAB_DASHBOARD_PORT` in every terminal you use
+for FaultLab, then start again; the addresses below change to match.
 
 To inspect existing history, select its directory explicitly with `--archive`. This starts a read-only
 backend and dashboard without a simulator. See [local operation](local-operation.md) for independent
@@ -231,7 +247,7 @@ worlds will be written. The simulator is needed only when executing a fresh task
 
 **Local-only access.** The backend answers only requests addressed to `localhost`, `127.0.0.1` or `[::1]`, and accepts changes (uploads, runs, registrations) only from a page on one of those hosts. Other host names get HTTP 403, which stops a web page on another site from reading this store or starting a paid run through DNS tricks. If you deliberately use another local name, list it in the `FAULTLAB_ALLOWED_HOSTS` process variable (comma-separated) before starting the backend.
 
-**Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start the paired launcher with `--live` and the same explicit `--data-dir`. The live launcher uses a stable backend and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. For this project the confirmed destination is `shreetbohara-quinstreet/Faultlab`.
+**Before a new paid run.** Confirm the remaining shared allowance in [current status](../CURRENT_STATUS.md), configure the chosen W&B entity/project and current verified prices in your private environment, then start the paired launcher with `--live` and the same explicit `--data-dir`. The live launcher uses a stable backend and permits live admission; it does not dispatch a campaign, supply old price assertions, or increase your allowance. The default per-campaign cap is $100. The verified-rate fields and exact pricing model IDs are listed in `.env.example`; they must match every configured role model. Use your own W&B entity and project (`WANDB_ENTITY`, `WANDB_PROJECT`), spelled exactly as in W&B; the project name is case-sensitive.
 
 Older `.env` files with empty model placeholders now select the tested defaults without rewriting the file. If you choose a different model, set its name explicitly and check the displayed setup before creating a campaign. Never paste your key into the frontend or documentation. `/api/readiness` lists missing configuration names without contacting the provider.
 
@@ -239,10 +255,12 @@ Older `.env` files with empty model placeholders now select the tested defaults 
 
 **Do this.** In a fourth terminal in the same application folder, run:
 
+Replace `YOUR_WANDB_ENTITY` and `YOUR_WANDB_PROJECT` with your own W&B entity and project:
+
 ```sh
-WANDB_ENTITY=shreetbohara-quinstreet WANDB_PROJECT=Faultlab WANDB_MODEL='deepseek-ai/DeepSeek-V3.1' \
+WANDB_ENTITY=YOUR_WANDB_ENTITY WANDB_PROJECT=YOUR_WANDB_PROJECT WANDB_MODEL='deepseek-ai/DeepSeek-V3.1' \
   ./scripts/smoke-sponsors.sh \
-  --confirm-entity shreetbohara-quinstreet \
+  --confirm-entity YOUR_WANDB_ENTITY \
   --max-output-tokens 2000
 ```
 
@@ -260,7 +278,7 @@ WANDB_ENTITY=shreetbohara-quinstreet WANDB_PROJECT=Faultlab WANDB_MODEL='deepsee
 
 This checks whether the whole product can upgrade and confirm an order without injected faults. The backend calls the real model and local mock APIs, checks the final report and verifies its Weave trace. In the frontend, paste the printed campaign ID into **Open saved campaign** and click **Load recording**. A successful task has a `COMPLETED` outcome and eight passing checks; keep the actual result even if it differs. This is one healthy episode; the 36-trial research baseline is separate.
 
-Model discovery is available with `./scripts/check-provider.sh wandb --list-models --confirm-entity shreetbohara-quinstreet`. To switch models, also update matching verified prices and create a new campaign. Per-campaign caps are not an account-wide limiter: include all previous charges and the next planned batch in the shared allowance shown in [current status](../CURRENT_STATUS.md). Do not change source, settings or budgets during an experiment, or weaken compatibility checks to reuse a historical policy.
+Model discovery is available with `./scripts/check-provider.sh wandb --list-models --confirm-entity YOUR_WANDB_ENTITY`. To switch models, also update matching verified prices and create a new campaign. Per-campaign caps are not an account-wide limiter: include all previous charges and the next planned batch in the shared allowance shown in [current status](../CURRENT_STATUS.md). Do not change source, settings or budgets during an experiment, or weaken compatibility checks to reuse a historical policy.
 
 ## 3 Create and start one learning run
 
@@ -299,7 +317,7 @@ You do not need to click through these stages. The backend advances automaticall
 
 **Frontend.** Watch **Fault × policy ledger**. Click an episode ID to open its original observations, report and **Fixed Referee verdict** in **Evidence timeline**. Use **Reproduce & reduce**, **Tested diagnosis** and **Adversarial challenge** to inspect the evidence behind a proposal. After selecting an older episode, reload the campaign with **Load recording** to follow its latest episode again.
 
-**If the state is WAITING_EVIDENCE.** Use **Retry evidence sync** for this campaign. It retries saved evidence without repeating completed business calls. Once verified, the already-authorized learning loop may resume and make further model calls. The terminal wait command returns at this state; continue watching the dashboard.
+**If the state is WAITING_EVIDENCE.** A Learn plan saved since September 29 declares an automatic evidence retry (rule `faultlab-evidence-retry/v2`). FaultLab retries the saved evidence by itself: at most 3 times per wait (30 s, 120 s and 300 s apart) and at most 6 times per campaign. These retries are telemetry only: no episode, business call or model request is repeated, and nothing is charged. When a limit is reached, the Run desk shows **Needs operator**. Its **Retry evidence sync now** button retries only the episodes that wait needs, blocked episode first. Older plans keep manual retry only: use **Retry evidence sync** for the campaign. Once the evidence is verified, the already-authorized learning loop may resume and make further model calls. **Stop** works at any time and ends the campaign as STOPPED. The terminal wait command returns at this state; continue watching the dashboard.
 
 **If you need to stop.** Load the active campaign and click **Stop**. This prevents new work and preserves evidence. An already-dispatched request may have committed. **Recorded playback** changes how you view the record; it does not stop a running campaign.
 
@@ -336,7 +354,11 @@ The backend reads saved records into JSON; the frontend continues displaying the
 
 For read-only inspection today, open the saved Phase 2 campaign or execution ID in the dashboard. The commands below preserve the earlier runtime 2 procedure. The current Phase 3 runtime has a new configuration and contract identity, so reusing that old registration for fresh execution can correctly fail compatibility checks. Use a newly compatible export and registration for new execution; do not weaken those checks.
 
-The existing export is `artifacts/phase2-2026-09-20/incident-b-export`. These commands use that local archive and the existing runtime 2 registration, `orders-v1-c58c7dc19ecb1eb6`. They require this workspace's saved database and files; those local artifacts are not supplied by a fresh Git clone.
+The commands need a saved regression bundle, the registration it was validated against and the
+non-secret settings file of the backend that ran it. Replace `BUNDLE_DIR`, `REGISTRATION_ID`,
+`REGRESSION_ID` and `SETTINGS_JSON` with your own. The team's runtime 2 registration is named in
+[the Phase 2 experiment](part2/PHASE2_EXPERIMENT.md). Its incident B export and settings file are in the
+team's git-ignored `artifacts/phase2-2026-09-20/` folder, which a fresh Git clone does not supply.
 
 **Load the same settings in your command terminal.** Backend launch settings do not automatically carry into another terminal. From the repository root, define this helper once:
 
@@ -344,33 +366,33 @@ The existing export is `artifacts/phase2-2026-09-20/incident-b-export`. These co
 phase2() {
   .venv/bin/python -c \
     'import json,os,sys; os.environ.update(json.load(open(sys.argv[1]))); os.execvp(sys.argv[2],sys.argv[2:])' \
-    artifacts/phase2-2026-09-20/settings.json "$@"
+    SETTINGS_JSON "$@"
 }
 ```
 
-It loads only the saved non-secret Phase 2 settings for the command you supply. Credentials remain in the existing `.env`; the helper does not print or change them. It does not start any experiment by itself.
+It loads only the saved non-secret settings for the command you supply. Credentials remain in the existing `.env`; the helper does not print or change them. It does not start any experiment by itself.
 
 **1. Check the package.** This verifies the files, hashes and compatible registered agent. It makes no provider calls, but saves a local validation record.
 
 ```sh
 phase2 ./scripts/run-regression.sh validate \
-  --bundle artifacts/phase2-2026-09-20/incident-b-export \
-  --agent orders-v1-c58c7dc19ecb1eb6
+  --bundle BUNDLE_DIR \
+  --agent REGISTRATION_ID
 ```
 
 **2. Read the old trials.** This prints the archived results. It makes no provider or business calls and creates no fresh test world. Archive playback is not evidence that today's agent reproduces the old failure.
 
 ```sh
 phase2 ./scripts/run-regression.sh playback \
-  --bundle artifacts/phase2-2026-09-20/incident-b-export \
-  --agent orders-v1-c58c7dc19ecb1eb6
+  --bundle BUNDLE_DIR \
+  --agent REGISTRATION_ID
 ```
 
 **Optional: make another export copy.** This packages the same saved incident without running it. Choose an output directory that does not already exist:
 
 ```sh
 phase2 ./scripts/run-regression.sh export \
-  --regression regression-3312dfc637c54cc98b201bf5fe5b9dc4 \
+  --regression REGRESSION_ID \
   --output artifacts/my-b-incident
 ```
 
@@ -378,18 +400,18 @@ phase2 ./scripts/run-regression.sh export \
 
 ```sh
 phase2 ./scripts/run-regression.sh execute \
-  --bundle artifacts/phase2-2026-09-20/incident-b-export \
-  --agent orders-v1-c58c7dc19ecb1eb6 \
+  --bundle BUNDLE_DIR \
+  --agent REGISTRATION_ID \
   --profile sandbox-v1 --execute-live
 ```
 
 The backend validates and imports the bundle as data, creates a separate baseline campaign and ledger, and runs the exact bundled empty policy in three new worlds. It preserves B's original record. It reserves 24 Actor turns, a $0.5016 conservative dispatched bound at the frozen V3.1 rates; a charged transport retry (at most one per turn) can add up to 24 more requests, so the worst case is 48 requests ($1.0032). Admission also preserves capacity for protected studies. This checks whether the incident happens again. It cannot promote a policy or prove a learned improvement.
 
-The command returns a new execution ID. Read `http://127.0.0.1:8000/api/regression-executions/EXECUTION_ID` for its status and episode IDs, and keep every result. A completed execution does not itself prove remote trace verification. The targeted evidence-sync command below can verify its completed episodes in their new campaign. Add this campaign's charged bound to the Phase 2 total; do not count playback records as new model trials.
+The command returns a new execution ID. Read `http://127.0.0.1:8000/api/regression-executions/EXECUTION_ID` (use your `FAULTLAB_BACKEND_PORT` if you changed it) for its status and episode IDs, and keep every result. A completed execution does not itself prove remote trace verification. The targeted evidence-sync command below can verify its completed episodes in their new campaign. Add this campaign's charged bound to the Phase 2 total; do not count playback records as new model trials.
 
 ## After the first run
 
-The walkthrough covers one learning campaign with Inference and Weave. Broader validation is tracked in the sibling `FaultLab_Specs/specs/001-faultlab-loop/tasks.md`:
+The walkthrough covers one learning campaign with Inference and Weave. Broader validation is tracked in `FaultLab_Specs/specs/001-faultlab-loop/tasks.md`, a folder beside the repository on the team's machine (not part of this repository):
 
 | Task | Required evidence |
 |---|---|
@@ -404,7 +426,7 @@ The walkthrough covers one learning campaign with Inference and Weave. Broader v
 
 The startup example uses the frozen Phase 2 model roles, not a claim that they are the best available models. An accepted learned policy is still required before its restart persistence, protected final evaluation or independent-agent transfer can be demonstrated. The native smolagents baseline is already recorded in Phase 1; a baseline alone does not establish transfer.
 
-**Large evidence histories.** A campaign-wide retry currently has a 60-second deadline and can spend it rereading already-verified traces. If that happens, use the API's targeted retry with only the missing completed episode IDs; it does not rerun business actions. For example, replace the placeholders and send:
+**Large evidence histories.** A campaign-wide retry currently has a 60-second deadline and can spend it rereading already-verified traces. If that happens, use the API's targeted retry with only the missing completed episode IDs; it does not rerun business actions. For example, replace the placeholders (and port 8000, if you set `FAULTLAB_BACKEND_PORT`) and send:
 
 ```sh
 curl -s -X POST http://127.0.0.1:8000/api/campaigns/CAMPAIGN_ID/retry-evidence \

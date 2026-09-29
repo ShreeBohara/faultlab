@@ -32,6 +32,11 @@ export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_ide
   history?: AgentHistory | null }
 /** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py). */
 export type TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
+/** The automatic evidence retry rule frozen into a Learn plan (backend app/lab/evidence_wait.py): telemetry only, bounded per wait
+ * and (v2) per campaign. v1 had no campaign limit; it was never run live, and Start refuses a saved v1 plan. */
+type EvidenceRetryBase = { trigger: 'WAITING_EVIDENCE'; automatic_retries_per_wait: 3; delays_seconds: [30, 120, 300]; path: 'retry-evidence'; telemetry_only: true; repeats_model_requests: false; repeats_business_actions: false; charged_model_calls: 0; after_last_retry: 'NEEDS_OPERATOR'; rule: string }
+export type EvidenceRetryDeclaration = (EvidenceRetryBase & { protocol: 'faultlab-evidence-retry/v1'; automatic_retries_per_campaign?: undefined })
+  | (EvidenceRetryBase & { protocol: 'faultlab-evidence-retry/v2'; automatic_retries_per_campaign: 6 })
 export type DiscoveryOption = { protocol_id: DiscoveryProtocolId; default: boolean; label: string; description: string; supported_agents: AgentKind[]; unsupported_reason?: string; declaration: DiscoveryDeclaration }
 export type RunAgent = { agent: AgentKind; label: string; status: 'READY' | 'UNAVAILABLE'; reason_code: string; message: string; configuration_hash: string | null; proposed_registration_id: string | null; registered: boolean; registration_id: string | null; model: string; source_conformance: 'VERIFIED' | 'UNAVAILABLE'; provider_access: 'not_checked'; behavior_verified: false; compare_available: boolean; accepted_policy_version: string | null; limitations: string[] }
 export type RunOptions = {
@@ -48,7 +53,7 @@ export type PlanSelection =
   | { kind: 'development_case'; case_id: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec; scenario_hash: string; manifest_hash: string }
   | { kind: 'development_search'; manifest_hash: string; search_space: SearchSpace }
   | { kind: 'protected_comparison'; partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
-export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; transport_retry?: TransportRetryDeclaration | null; plan_hash: string }
+export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; transport_retry?: TransportRetryDeclaration | null; evidence_retry?: EvidenceRetryDeclaration | null; plan_hash: string }
 export type CampaignPlan = { campaign_id: string; status: 'PLANNED'; plan: RunPlan } | { campaign_id: string; status: 'LEGACY'; plan: null }
 export type PlannedCampaignRequest = { expected_store_identity: string; expected_setup_hash: string; task_definition_id: typeof TASK_DEFINITION; agent_registration_id?: string; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; development_case_id?: string; discovery_protocol?: DiscoveryProtocolId }
 
@@ -127,6 +132,16 @@ export function transportRetry(value: unknown, actorCalls: number): value is Tra
     && same(value.roles, ['actor', 'explorer', 'mechanic']) && same(value.retryable, ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'])
     && value.service_unavailable_delay_seconds === 1 && value.actor_retries_per_episode_max === actorCalls && text(value.rule)
 }
+/** The declared automatic evidence retry rule, exactly as the backend freezes it into a Learn plan. */
+export function evidenceRetry(value: unknown): value is EvidenceRetryDeclaration {
+  if (!object(value)) return false
+  const limit = value.protocol === 'faultlab-evidence-retry/v2' ? value.automatic_retries_per_campaign === 6
+    : value.protocol === 'faultlab-evidence-retry/v1' && !('automatic_retries_per_campaign' in value)
+  return limit && value.trigger === 'WAITING_EVIDENCE' && value.automatic_retries_per_wait === 3
+    && Array.isArray(value.delays_seconds) && value.delays_seconds.length === 3 && [30, 120, 300].every((delay, index) => (value.delays_seconds as unknown[])[index] === delay)
+    && value.path === 'retry-evidence' && value.telemetry_only === true && value.repeats_model_requests === false && value.repeats_business_actions === false
+    && value.charged_model_calls === 0 && value.after_last_retry === 'NEEDS_OPERATOR' && text(value.rule)
+}
 function discoveryOptions(value: unknown): boolean {
   if (!Array.isArray(value) || !value.length) return false
   const ids = new Set<string>()
@@ -197,6 +212,8 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
     if (selection.kind !== 'development_search' || !digest(selection.manifest_hash) || !searchSpace(selection.search_space)) return malformed('campaign plan search space')
   } else if (selection.kind !== 'protected_comparison' || !comparison(selection)) return malformed('campaign plan comparison')
   if (!(plan.transport_retry === undefined || plan.transport_retry === null || transportRetry(plan.transport_retry, (plan.episode_budget as Required<EpisodeBudget>).actor_calls))) return malformed('campaign plan transport retry rule')
+  // Only a Learn plan waits for evidence, so only a Learn plan may declare automatic evidence retries.
+  if (!(plan.evidence_retry === undefined || plan.evidence_retry === null || (plan.mode === 'learn' && evidenceRetry(plan.evidence_retry)))) return malformed('campaign plan evidence retry rule')
   if (plan.discovery !== undefined && plan.discovery !== null) {
     // Only Learn declares a discovery protocol; the pre-check (v2, v3 with pre-check) models only the reference Actor.
     if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery, true) || (preChecked(plan.discovery.protocol) && plan.agent !== 'reference')

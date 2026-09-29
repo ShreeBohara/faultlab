@@ -11,6 +11,9 @@ from app.adapters.business_tools import WorldClient
 
 TERMINAL={'NO_CHANGE','STOPPED','COMPLETED','ERROR'}
 
+class EvidenceRetryAfterStop(StopRequested):
+    """An automatic evidence retry refused because its campaign's Stop was already requested."""
+
 class LabCoordinator:
     def __init__(self,settings,store=None,runner=None):
         from app.lab.ownership import CoordinatorLease
@@ -110,6 +113,12 @@ class LabCoordinator:
         for retry in self.store.list_records('evidence_retries'):
             if retry['status'] in ('QUEUED','RUNNING'):
                 retry['status']='INTERRUPTED'; self.store.put_record('evidence_retries',retry['request_id'],retry)
+        # An open evidence wait belongs to an execution this restart interrupts (its campaign becomes STOPPED below).
+        for wait in self.store.list_records('evidence_waits'):
+            if wait.get('ended_at') is None:
+                wait.update(status='INTERRUPTED',resolution='INTERRUPTED',next_automatic_retry_at=None,ended_at=utc_now().isoformat(),
+                            message='Process restart interrupted the evidence wait; no automatic retry continues after a restart.')
+                self.store.put_record('evidence_waits',wait['wait_id'],wait)
         for request in self.store.list_records('evaluation_requests'):
             if request['status'] in ('QUEUED','RUNNING'):
                 with self.store.transaction():
@@ -215,12 +224,17 @@ class LabCoordinator:
                 if len(result['limitations'])<16: result['limitations'].append(reason)
                 self.store.put_record('portability',result['portability_id'],result)
 
-    def incomplete_qualifications(self,campaign_id,reason,*,error=None):
-        """Finalize current pending work without changing prior terminal decisions."""
+    def incomplete_qualifications(self,campaign_id,reason,*,error=None,interruption=None):
+        """Finalize current pending work without changing prior terminal decisions.
+
+        ``error`` is a safe execution failure (readiness.execution_failure); a stop is not an error and
+        passes ``interruption`` instead (e.g. STOPPED_DURING_EVIDENCE_WAIT from app.lab.evidence_wait).
+        """
         for qualification in self.store.list_records('candidate_qualifications'):
             if qualification.get('campaign_id')!=campaign_id or qualification.get('decision')!='PROPOSED': continue
             qualification.update(decision='INCOMPLETE',interruption_reason=reason)
             if error is not None: qualification['error']=error
+            if interruption is not None: qualification['interruption']=interruption
             candidate=self.policies.get(qualification['candidate_version'])
             with self.store.transaction():
                 self.store.put_record('candidate_qualifications',qualification['qualification_ref'],qualification)
@@ -438,7 +452,10 @@ class LabCoordinator:
             if self.aria_bridge and not self.get(id).stop_requested:
                 await self._publish_completion(id)
         except (BudgetExhausted,StopRequested) as error:
-            self.transition(id,'NO_CHANGE' if not self.get(id).stop_requested else 'STOPPED',str(error) or 'Budget or stop boundary')
+            stopped=self.get(id).stop_requested
+            # An empty StopRequested (a model-call charge or evidence read that noticed the Stop) adds nothing:
+            # keep the reason the Stop already saved rather than the vague 'Budget or stop boundary'.
+            self.transition(id,'STOPPED' if stopped else 'NO_CHANGE',str(error) or (None if stopped else 'Budget or stop boundary'))
         except asyncio.CancelledError:
             if not self.get(id).stop_requested:
                 await self.stop(id)
@@ -550,17 +567,32 @@ class LabCoordinator:
         gateway=EvidenceGateway(self.store,self.settings.project_path,trace=trace,worker=worker)
         return worker,gateway,DatasetPublisher(worker,outbox,self.settings.project_path)
 
-    async def retry_evidence(self,id,episode_ids=None):
+    async def retry_evidence(self,id,episode_ids=None,*,automatic=None):
+        """Telemetry-only evidence retry: re-send saved trace records and read them back; never re-execute.
+
+        ``automatic`` (app.lab.evidence_wait) marks a declared automatic retry of one evidence wait
+        ({evidence_wait_id, attempt, attempts_max}). An operator's request is ``trigger: manual``.
+        An explicit episode list (automatic, or the dashboard's needs-operator notice) is tried in the
+        given order, blocked episode first; no list means every campaign episode, in id order. At most
+        one retry job runs per campaign: while one is QUEUED or RUNNING, that job's record is returned
+        instead. An automatic retry is refused once a Stop was requested (EvidenceRetryAfterStop).
+        """
         self.get(id)
         episodes={e['episode_id']:e for e in self.store.list_records('episodes') if e['campaign_id']==id}
         requested=set(episodes) if episode_ids is None else set(episode_ids)
         if not requested<=set(episodes): raise ValueError('Unregistered campaign episode')
+        order=list(dict.fromkeys(episode_ids)) if episode_ids is not None else sorted(requested)
         async with self.lock:
+            # Checked again under the lock: a Stop may have arrived while this request waited for it.
+            if automatic is not None and self.get(id).stop_requested:
+                raise EvidenceRetryAfterStop('Stop requested; no automatic evidence retry is started')
             for old in self.store.list_records('evidence_retries'):
                 if old['campaign_id']==id and old['status'] in ('QUEUED','RUNNING'):
                     return old
-            record={'request_id':new_id('evidence-retry'),'campaign_id':id,'episode_ids':sorted(requested),'status':'QUEUED','outcomes':{},'datasets':{}}
-            for episode_id in sorted(requested):
+            record={'request_id':new_id('evidence-retry'),'campaign_id':id,'episode_ids':sorted(requested),'status':'QUEUED','outcomes':{},'datasets':{},
+                    'trigger':'automatic' if automatic is not None else 'manual','requested_at':utc_now().isoformat()}
+            if automatic is not None: record['automatic']=dict(automatic)
+            for episode_id in order:
                 e=episodes[episode_id]
                 eligible=e['source_mode']=='live' and e['lifecycle']=='COMPLETED' and e['split']=='development' and e['arm']!='B1'
                 record['outcomes'][episode_id]={'status':'PENDING' if eligible else 'SKIPPED_INELIGIBLE'}
@@ -571,6 +603,10 @@ class LabCoordinator:
     async def _retry_evidence_job(self,record):
         worker=None; id=record['campaign_id']
         def save(): self.store.put_record('evidence_retries',record['request_id'],record)
+        # An automatic retry belongs to a running campaign's evidence wait: a Stop ends it at the next step
+        # instead of letting it run on for up to the 60-second job deadline. An operator's retry is not stopped.
+        automatic=record.get('trigger')=='automatic'
+        stopped=(lambda:self.get(id).stop_requested) if automatic else (lambda:False)
         record['status']='RUNNING'; save()
         try:
             eligible=[eid for eid,result in record['outcomes'].items() if result['status']=='PENDING']
@@ -583,13 +619,20 @@ class LabCoordinator:
                     worker,gateway,publisher=await self._evidence_retry_services()
                     await worker.start()
                     for episode_id in eligible:
+                        if (self.store.get_record('evidence',episode_id) or {}).get('source')=='weave_verified':
+                            # Already verified: nothing to re-send, so the deadline goes to the episodes still pending.
+                            record['outcomes'][episode_id]={'status':'VERIFIED','already_verified':True}; save(); continue
+                        if stopped():
+                            record['outcomes'][episode_id]={'status':'PENDING','reason':'Campaign stopped before this episode was re-sent'}
+                            save(); continue
                         try:
-                            bundle=await gateway.retry(episode_id)
+                            bundle=await (gateway.retry(episode_id,stopped=stopped) if automatic else gateway.retry(episode_id))
                             record['outcomes'][episode_id]={'status':'VERIFIED' if bundle.source=='weave_verified' else 'PENDING'}
                         except Exception:
                             record['outcomes'][episode_id]={'status':'PENDING','reason':'Saved evidence synchronization is unavailable'}
                         save()
                     for raw in bundles:
+                        if stopped(): break
                         bundle=RegressionBundle.model_validate_json(__import__('json').dumps(raw))
                         await self.publish_regression_dataset(bundle,publisher=publisher)
                         record['datasets'][bundle.bundle_id]=self.store.get_record('regression_datasets',bundle.bundle_id); save()

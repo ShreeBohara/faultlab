@@ -22,6 +22,7 @@ export function fixtureResponse(url: string, currentCampaign: Campaign = campaig
   if (url.endsWith('/readiness')) return readiness
   if (url.endsWith('/run-options')) return runOptions
   if (url.endsWith('/plan')) return { campaign_id: currentCampaign.campaign_id, status: 'LEGACY', plan: null }
+  if (url.endsWith('/evidence-wait')) return { schema_version: 'faultlab-evidence-wait/v1', campaign_id: currentCampaign.campaign_id, campaign_state: currentCampaign.state, declared: null, declared_note: 'Not declared: this campaign has no reviewed plan. Only manual Retry evidence sync applies.', status: 'NOT_WAITING', needs_operator: false, message: 'This campaign is not waiting for evidence.', current: null, waits: [], waits_total: 0, automatic_retries_total: 0 }
   if (url.endsWith('/import-provenance')) return { imported: false }
   if (url.endsWith('/import-owner')) return { imported_owner: false }
   if (new URL(url, 'http://local').pathname === '/api/bundle-imports') return { items: [], next_before: null, has_more: false }
