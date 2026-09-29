@@ -17,7 +17,10 @@ with its review fixes, below, offline only). Nothing pushed. Carried conservativ
 | Discovery v2 complete run (reference V3.1) | **8/8 slots fully fired vs v1 4/8** (p=0.038, not a concurrent control); 1 pick refused + re-planned; NO_CHANGE (no source) | `docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md` |
 | Original loop vs native agent | **First live reproduce → reduce → diagnose of real sources**: 2 C5 sources, each 3/3, both diagnosed INCONCLUSIVE → no candidate → NO_CHANGE. The repairable C3 failure was never exposed (Explorer never picked a rejected upgrade) | `docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md` |
 
-Still unproven live: a generated candidate, source validation, challenge, promotion, ACCEPTED.
+| History-informed (v3) original loop vs native agent | **First live POLICY_GAP diagnosis, first live generated candidates, source validation and challenge.** 4 C5 sources (3/3 each); candidate 1 passed source validation, challenge found a counterexample → REJECTED; candidate 2 failed source validation. STOPPED at the 6 h limit during a Weave evidence wait (FaultLab gap: no automatic telemetry retry). Native agent's report-writing failures (hex evidence IDs, calls after final-report-required) are the binding limit | `docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md` |
+
+Carried total now **$887.39**. Still unproven live: promotion and ACCEPTED. Open FaultLab defects from this run:
+automatic bounded evidence retry; a stop during an evidence wait is recorded as UnexpectedError.
 **Built after these runs ($0, not run live): discovery protocol v3 (history-informed)**, an opt-in answer to the
 7ee35abe gap. Two $0 reviews found no leak and no gate change. All 9 of their findings are applied. It is
 described under *Current work*.
