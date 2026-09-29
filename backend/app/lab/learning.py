@@ -42,14 +42,30 @@ def discovery_session(store,campaign,incumbent):
     v2 refuses to start for a target it cannot pre-check faithfully (a native agent or a
     policy with rules) rather than mislabel its picks; the reviewed plan already refuses them.
     """
-    from app.lab.discovery_protocol import campaign_discovery,DISCOVERY_V2,DiscoveryV2
+    from app.lab.discovery_protocol import campaign_discovery,BASE_PROTOCOL,DISCOVERY_V2,DiscoveryV2
     from app.lab.challenge import identity_for
     from app.lab.runner import campaign_run_plan
     block=campaign_discovery(store,campaign)
-    if block['protocol']!=DISCOVERY_V2: return identity_for(block['schedule_identity']),None
+    # v3-history-reachability dispatches exactly as v2; v3-history exactly as v1.
+    if BASE_PROTOCOL.get(block['protocol'])!=DISCOVERY_V2: return identity_for(block['schedule_identity']),None
     plan=campaign_run_plan(store,campaign)
     session=DiscoveryV2(block,agent=plan['agent'],incumbent=incumbent)
     return session.identity,session
+
+def discovery_history(store,campaign):
+    """Discovery v3: the frozen agent history the Explorer reads, or None for v1/v2 and older plans.
+
+    Re-verified against the store at the plan's record cutoff before the first Explorer request;
+    a difference raises agent_history.HistoryChanged (a StoreConflict), so no request is sent, and the
+    campaign ends ERROR with the plain reason AGENT_HISTORY_CHANGED (app.lab.readiness.execution_failure).
+    """
+    from app.lab.discovery_protocol import campaign_discovery
+    if campaign_discovery(store,campaign).get('history') is None: return None
+    from app.lab.runner import campaign_run_plan
+    from app.lab.run_plans import verify_plan_history
+    plan=campaign_run_plan(store,campaign)
+    verify_plan_history(store,plan)
+    return {'discovery_protocol':plan['discovery']['protocol'],'agent_history':plan['discovery']['history']['summary']}
 
 def replan_allowed(record):
     decision=(record or {}).get('search_decision') or {}
@@ -95,6 +111,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
         return bundles
     try:
         identity,v2=discovery_session(store,campaign,coordinator.policies.get(coordinator.get(id).active_policy_version))
+        frozen_history=discovery_history(store,campaign)  # None unless the plan declared discovery v3
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -111,15 +128,15 @@ async def run_learning_cycle(coordinator,campaign,runner):
             mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic',agent_registration_id=planned_registration_id(store,current))
             slot_context={'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract(store,current)}
             if v2 is None:
-                selection_ref,output=await explorer.select(slot_context,fallback=fallback)
+                selection_ref,output=await explorer.select(slot_context,fallback=fallback,discovery_history=frozen_history)
             else:
-                selection_ref,output=await explorer.select({**slot_context,'slot_request':1},fallback=fallback,discovery_v2=v2)
+                selection_ref,output=await explorer.select({**slot_context,'slot_request':1},fallback=fallback,discovery_v2=v2,discovery_history=frozen_history)
                 refused=store.get_record('selections',selection_ref)
                 if output is None and replan_allowed(refused) and not stop():
                     # One re-plan in the same slot, told exactly why the pick was refused.
                     from app.lab.discovery_protocol import slot_feedback
                     selection_ref,output=await explorer.select({**slot_context,'slot_request':2,'replan_of':selection_ref,
-                                                                'slot_feedback':slot_feedback(refused)},fallback=fallback,discovery_v2=v2)
+                                                                'slot_feedback':slot_feedback(refused)},fallback=fallback,discovery_v2=v2,discovery_history=frozen_history)
             if output is None: continue  # A rejected proposal consumes its slot, not an Actor episode.
             if v2 is not None: v2.admit_episode()
             recipe=output.fault_spec; fixture='history-v1' if any(p.kind=='F3' for p in recipe.primitives) else 'standard-v1'

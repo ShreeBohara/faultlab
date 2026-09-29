@@ -260,7 +260,8 @@ def test_discovery_setting_is_learn_only_and_older_plans_mean_v1(owner):
     with pytest.raises(ValueError, match='Learn'):
         request(owner, registration, mode='baseline', development_case_id='dev-2', discovery_protocol=DISCOVERY_V1)
     options = build_run_options(owner.settings, owner.store)
-    assert [row['protocol_id'] for row in options['learn']['discovery_protocols']] == [DISCOVERY_V1, DISCOVERY_V2]
+    # Discovery v3's two forms (September 29) follow v1 and v2; see test_agent_history.py.
+    assert [row['protocol_id'] for row in options['learn']['discovery_protocols']][:2] == [DISCOVERY_V1, DISCOVERY_V2]
     v2 = learn_campaign(owner, DISCOVERY_V2)
     saved = read_run_plan(owner.store, v2)['plan']['discovery']
     assert saved['protocol'] == DISCOVERY_V2 and saved['schedule_identity'].endswith('v2-order-aware')

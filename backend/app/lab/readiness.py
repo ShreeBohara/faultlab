@@ -47,7 +47,12 @@ def execution_failure(error):
     """
     from app.providers.runtime import RuntimeProviderError
     from app.contracts.tokens import ModelInputLimit
-    if isinstance(error, ModelInputLimit):
+    from app.lab.agent_history import HistoryChanged
+    if isinstance(error, HistoryChanged):
+        # Discovery v3 refused before any Explorer request. Its messages are fixed FaultLab text with hash
+        # prefixes (never exception text from a provider or SDK), so the plain reason is kept.
+        result = {'code': HistoryChanged.code, 'message': str(error), 'provider_dispatch': False}
+    elif isinstance(error, ModelInputLimit):
         result = {'code': 'INPUT_LIMIT', 'message': 'Saved evidence exceeds the model input limit. This request was rejected before provider dispatch.',
                   'input_token_bound': error.token_bound, 'input_token_limit': error.token_limit,
                   'provider_dispatch': False}
@@ -66,7 +71,8 @@ def execution_failure(error):
         result = {'code': 'EXECUTION_ERROR', 'message': 'Execution failed; inspect the saved error class and code location.'}
     names = {'ValueError', 'TypeError', 'KeyError', 'RuntimeError', 'AttributeError', 'TimeoutError',
              'ConnectionError', 'ConnectError', 'ConnectTimeout', 'ReadTimeout', 'HTTPStatusError',
-             'ConfigurationError', 'RuntimeProviderError', 'ModelInputLimit', 'StoreConflict', 'ValidationError', 'AssertionError'}
+             'ConfigurationError', 'RuntimeProviderError', 'ModelInputLimit', 'StoreConflict', 'ValidationError', 'AssertionError',
+             'HistoryChanged'}
     result['error_class'] = type(error).__name__ if type(error).__name__ in names else 'UnexpectedError'
     root = Path(__file__).resolve().parents[1]
     locations = []

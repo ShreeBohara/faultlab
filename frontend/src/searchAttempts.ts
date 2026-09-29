@@ -1,6 +1,7 @@
 import { object, request } from './api'
 import { validateContract } from './generated/validate'
 import type { ExplorerOutput, FaultSpec, Usage } from './generated/contracts'
+import { historyRowMatch, type HistoryRowMatch } from './runPlans'
 
 export type FaultLabel = { index: number; fault: string; kind: string; target: string; attempt: number; agent_attempts_seen: number; rule: string | null; verdict: 'FORCED' | 'NOT_FORCED' | 'IMPOSSIBLE'; reason_code: string; explanation: string }
 export type Reachability = { labeller: string; all_forced: boolean; recipe: string[]; faults: FaultLabel[]; agent_path: string[]; agent_business_calls: number; fixture_id: string; caller_model: Record<string, unknown> }
@@ -9,13 +10,15 @@ export type SearchAttempt = {
   selection_ref: string; campaign_id: string; selection_index: number; configuration_hash: string; policy_hash: string
   search_decision: {
     status: SearchDecisionStatus; schedule_hash: string | null; reason: string | null; prior_selection_refs: string[]; prior_episode_refs: string[]
-    // Present only under the declared discovery protocol v2.
-    discovery_protocol?: 'faultlab-discovery/v2-reachability'; identity_version?: string; slot_request?: 1 | 2; replan_of?: string | null
+    // Present only under a declared pre-checked protocol: v2, or v3 with the pre-check (v2's dispatch plus the frozen agent history).
+    discovery_protocol?: 'faultlab-discovery/v2-reachability' | 'faultlab-discovery/v3-history-reachability'; identity_version?: string; slot_request?: 1 | 2; replan_of?: string | null
     refused_fault_spec?: FaultSpec | null; reachability?: Reachability | null
   }
   selected_output: ExplorerOutput | null; output: ExplorerOutput | null; raw_response: string; usage: Usage; provenance: string; error: string | null
   /** A charged blind retry of this request after it received no answer (at most one). */
   transport_retries?: TransportRetry[]
+  /** Discovery v3 only: the frozen history row this pick re-tries, or null (checked, no match). Absent for v1/v2. */
+  matches_history_row?: HistoryRowMatch | null
 }
 export type TransportRetry = { retry_id: string; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1; http_status?: 503; retry_delay_seconds?: 1; provider_failure_id: string }
 function transportRetries(value: unknown): value is TransportRetry[] {
@@ -39,7 +42,7 @@ function reachability(value: unknown): value is Reachability {
 }
 
 function validateV2(decision: Record<string, unknown>) {
-  if (decision.discovery_protocol !== 'faultlab-discovery/v2-reachability' || !nonempty(decision.identity_version) || ![1, 2].includes(decision.slot_request as number)
+  if (!['faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history-reachability'].includes(String(decision.discovery_protocol)) || !nonempty(decision.identity_version) || ![1, 2].includes(decision.slot_request as number)
     || !(decision.replan_of === null || nonempty(decision.replan_of)) || (decision.slot_request === 2) !== nonempty(decision.replan_of)) return malformed()
   const refusedStatus = ['SKIPPED_DUPLICATE', 'SKIPPED_UNREACHABLE', 'PRECHECK_FAILED'].includes(String(decision.status))
   if (refusedStatus !== (decision.refused_fault_spec !== null && decision.refused_fault_spec !== undefined)) return malformed()
@@ -59,7 +62,8 @@ export function validateSearchAttempts(value: unknown, campaignId: string): Sear
       || !Number.isInteger(row.selection_index) || (row.selection_index as number) < 0
       || !hash(row.configuration_hash) || !hash(row.policy_hash) || !object(row.search_decision)
       || typeof row.raw_response !== 'string' || !nonempty(row.provenance) || !(row.error === null || typeof row.error === 'string')
-      || !(row.transport_retries === undefined || transportRetries(row.transport_retries))) return malformed()
+      || !(row.transport_retries === undefined || transportRetries(row.transport_retries))
+      || !(row.matches_history_row === undefined || historyRowMatch(row.matches_history_row))) return malformed()
     const decision = row.search_decision
     const v2 = decision.discovery_protocol !== undefined
     if (!(v2 ? V2_STATUSES : V1_STATUSES).includes(String(decision.status))

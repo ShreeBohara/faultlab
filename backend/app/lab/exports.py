@@ -53,7 +53,7 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     known={p.get('request_id') for p in mechanic}
     mechanic.extend(m for m in store.list_records('mechanic_outputs') if m.get('campaign_id')==campaign_id and (not m.get('request_id') or m['request_id'] not in known))
     selections=[]
-    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries')
+    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row')
     for selection in store.list_records('selections'):
         if selection.get('context',{}).get('campaign_id')==campaign_id:
             selections.append({k:selection[k] for k in fields if k in selection})
@@ -81,6 +81,22 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
             and {row['trial']['episode_id'] for row in e['trial_rows']}<=selected],
         'completeness_notes':['Only public development evidence is included; protected evaluation records and private world state are excluded.',
             'Legacy raw outputs without campaign, policy or intervention ownership cannot be attributed and are excluded.']}
+    history=(((saved_plan or {}).get('plan') or {}).get('discovery') or {}).get('history')
+    if history is not None:
+        # Discovery v3: which reproduced sources re-try a recipe row the Explorer was shown (derived from the
+        # frozen summary; each v3 selection also carries its own matches_history_row).
+        from app.lab.agent_history import MATCH_BASIS,history_row_match
+        sources=[]
+        for counter in counters:
+            recipe=(store.get_record('counterexample_recipes',counter['counterexample_id']) or {}).get('source_recipe')
+            sources.append({'counterexample_id':counter['counterexample_id'],'source_episode_id':counter.get('source_episode_id'),
+                            'reproduced':counter.get('reproduced'),'source_recipe_recorded':recipe is not None,
+                            'matches_history_row':history_row_match(history['summary'],recipe) if recipe is not None else None})
+        result['discovery_history_matches']={'summary_hash':history['summary_hash'],'record_cutoff':history['record_cutoff'],
+            'basis':MATCH_BASIS,'sources':sources,
+            'claim_rule':'Results of a discovery v3 campaign are history-informed. A source whose recipe matches a history row '
+                         're-tries recorded evidence the Explorer was shown; report it as history-informed, never as independent '
+                         'discovery, and name the store and the frozen summary hash.'}
     imported=store.get_record('import_execution_owners',campaign_id)
     if imported:
         target=imported['target']

@@ -11,6 +11,8 @@ PROMPT=Path(__file__).with_name('prompts').joinpath('explorer.md').read_text()
 CHALLENGER=Path(__file__).with_name('prompts').joinpath('challenger.md').read_text()
 # Appended only under the declared discovery protocol v2; v1 prompts stay byte-identical.
 DISCOVERY_V2_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v2.md').read_text()
+# Appended only under the declared discovery protocol v3 (agent history); v1/v2 stay byte-identical.
+DISCOVERY_V3_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v3_history.md').read_text()
 PUBLIC_INVARIANTS={
     'C1':'Stay within the authorized order, original operation identities and requested upgrade; at most one upgrade effect.',
     'C2':'Claim upgrade success only with a delivered matching terminal success receipt.',
@@ -222,12 +224,15 @@ class Explorer:
     def __init__(self,provider,store,ledger):
         self.provider,self.store,self.ledger=provider,store,ledger
         self.trace=None; self.metadata=None
-    async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None):
+    async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None,discovery_history=None):
         # The selector benchmark and active challenge have separately declared
         # duplicate/repetition rules. Do not silently change those protocols.
         discovery=not challenge and 'development_history' in context and not context.get('study_id') and not context.get('selector_id')
         # Discovery protocol v2 applies only when the campaign declared it (app.lab.discovery_protocol).
         v2=discovery_v2 if discovery else None
+        # Discovery protocol v3: the plan's frozen agent history ({'discovery_protocol','agent_history'}),
+        # read-only context for ordinary discovery requests only. None leaves v1/v2 requests unchanged.
+        history=discovery_history if discovery else None
         search=None; seen={}
         if discovery:
             metadata=self.metadata or {}
@@ -239,11 +244,13 @@ class Explorer:
                 search,seen=discovery_search_ledger_v2(self.store,context,campaign_id=self.ledger.campaign_id)
                 context={**context,**(await v2.context())}
             context={**context,'search_ledger':search}
+            if history is not None:
+                context={**context,'discovery_protocol':history['discovery_protocol'],'agent_history':history['agent_history']}
         # Supply the reviewed wire contract, not a sample solution or a repaired
         # recipe. Discovery and challenge use the same exact field names.
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
                  'episode_limits':EpisodeBudget().model_dump(mode='json'),'public_invariants':PUBLIC_INVARIANTS}
-        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')},{'role':'user','content':canonical_json(context)}]
+        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')+('\n'+DISCOVERY_V3_PROMPT if history is not None else '')},{'role':'user','content':canonical_json(context)}]
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         validate_model_input(messages,expected)
@@ -282,6 +289,13 @@ class Explorer:
         selected=parsed
         if selected is None and fallback is not None:
             selected=ExplorerOutput(fault_spec=fallback,hypothesis='Fixed fallback after invalid Explorer output; no learned selection claim')
+        # Discovery v3 only: does this pick re-try a recipe row the Explorer was shown? Derived before any
+        # duplicate or pre-check refusal, and saved on the selection record, so a source can be reported as
+        # history-informed rather than as independent discovery. v1/v2 records never get the field.
+        history_match=None
+        if history is not None and selected is not None:
+            from app.lab.agent_history import history_row_match
+            history_match=history_row_match(history['agent_history'],selected.fault_spec)
         decision=None; precheck_error=None
         if discovery:
             identity=v2.identity if v2 is not None else schedule_identity
@@ -312,6 +326,6 @@ class Explorer:
                     if not label['all_forced']:
                         decision.update(status='SKIPPED_UNREACHABLE',reason='NOT_ALL_FAULTS_FORCED',refused_fault_spec=refused_spec)
                         selected=None  # No Actor episode and no substitute fault for this request.
-        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {})},immutable=True)
+        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {}),**({'matches_history_row':history_match} if history is not None else {})},immutable=True)
         if precheck_error is not None: raise precheck_error
         return selection_id,selected

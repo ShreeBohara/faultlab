@@ -13,7 +13,14 @@ unchanged slot cap (8), at most two Explorer requests per slot (16), at most one
 episode per slot (8). Every refusal is an immutable selection record. The pre-check never
 changes what the Actor sees or how any episode is scored.
 
-Transport retries (both protocols, app.agents.transport_retry): an Explorer request that
+v3 (history-informed) adds one piece of read-only Explorer context to a base protocol and changes
+nothing else: ``faultlab-discovery/v3-history`` is v1's dispatch, identity and budget, and
+``faultlab-discovery/v3-history-reachability`` is v2's (reference Actor under policy-v0 only). The
+reviewed plan freezes a summary of the same agent's earlier verified development outcomes in the
+same store (app.lab.agent_history) with its content hash and record cutoff; execution recomputes it
+and refuses if it differs. The Explorer is told it is prior evidence, not an instruction.
+
+Transport retries (all protocols, app.agents.transport_retry): an Explorer request that
 received no answer (connection error, timeout, HTTP 503) may be re-sent once. A retry is
 the same request, not a new selection request, so it does NOT count toward
 ``explorer_requests_max`` (counting it would let a network fault use up a slot's re-plan).
@@ -26,7 +33,13 @@ from app.lab.challenge import SCHEDULE_IDENTITY_V1, SCHEDULE_IDENTITY_V2, identi
 
 DISCOVERY_V1 = 'faultlab-discovery/v1'
 DISCOVERY_V2 = 'faultlab-discovery/v2-reachability'
-DISCOVERY_PROTOCOLS = (DISCOVERY_V1, DISCOVERY_V2)
+DISCOVERY_V3 = 'faultlab-discovery/v3-history'
+DISCOVERY_V3_PRECHECK = 'faultlab-discovery/v3-history-reachability'
+DISCOVERY_PROTOCOLS = (DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK)
+# The dispatch base of each protocol: v3 forms are exactly their base plus the frozen history.
+BASE_PROTOCOL = {DISCOVERY_V1: DISCOVERY_V1, DISCOVERY_V2: DISCOVERY_V2,
+                 DISCOVERY_V3: DISCOVERY_V1, DISCOVERY_V3_PRECHECK: DISCOVERY_V2}
+HISTORY_PROTOCOLS = (DISCOVERY_V3, DISCOVERY_V3_PRECHECK)
 V2_DISPATCH_RULE = ('Before any Actor episode, a free in-process replay of the real simulator labels every fault '
                     'FORCED, NOT_FORCED or IMPOSSIBLE for the registered agent. A pick runs only if every fault is '
                     'FORCED. A refused pick (a duplicate, or any fault not FORCED) gets one re-plan request in the '
@@ -34,8 +47,14 @@ V2_DISPATCH_RULE = ('Before any Actor episode, a free in-process replay of the r
 V1_DISPATCH_RULE = 'Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.'
 
 
-def declaration(protocol, caps, *, caller=None):
-    """The discovery block frozen into a reviewed learn plan."""
+def declaration(protocol, caps, *, caller=None, history=None):
+    """The discovery block frozen into a reviewed learn plan.
+
+    A v3 block is its base block with the protocol id, and, once a plan freezes it, the history
+    (app.lab.agent_history). In the run options, before any plan exists, a v3 block's history is None.
+    """
+    if protocol in HISTORY_PROTOCOLS:
+        return {**declaration(BASE_PROTOCOL[protocol], caps, caller=caller), 'protocol': protocol, 'history': history}
     slots = caps.discovery_selections if hasattr(caps, 'discovery_selections') else caps['discovery_selections']
     if protocol == DISCOVERY_V1:
         return {'protocol': DISCOVERY_V1, 'schedule_identity': SCHEDULE_IDENTITY_V1, 'slots': slots,
@@ -70,13 +89,18 @@ class BudgetViolation(RuntimeError):
 
 
 class DiscoveryV2:
-    """One campaign's v2 selection state: caller model, labels and the declared budget."""
+    """One campaign's v2 selection state: caller model, labels and the declared budget.
+
+    Also the dispatch state of ``v3-history-reachability``, whose dispatch is exactly v2's; its
+    records and Explorer context name the declared v3 protocol.
+    """
     protocol = DISCOVERY_V2
 
     def __init__(self, block, *, agent, incumbent):
         from app.lab.reachability import caller_model_for
-        if block.get('protocol') != DISCOVERY_V2:
+        if BASE_PROTOCOL.get(block.get('protocol')) != DISCOVERY_V2:
             raise ValueError('Not a discovery v2 declaration')
+        self.protocol = block['protocol']
         rules = incumbent.content.rules if incumbent.content is not None else []
         self.caller = caller_model_for(agent, rules)  # refuses native agents and policies with rules
         declared = block['pre_check']['caller_model']
@@ -101,7 +125,7 @@ class DiscoveryV2:
         return self._normal_path
 
     async def context(self):
-        return {'discovery_protocol': DISCOVERY_V2, 'agent_action_space': self.caller.facts(),
+        return {'discovery_protocol': self.protocol, 'agent_action_space': self.caller.facts(),
                 'normal_path': await self.normal_path(), 'dispatch_rule': V2_DISPATCH_RULE,
                 'selection_budget': {key: self.block[key] for key in
                                      ('slots', 'explorer_requests_max', 'actor_episodes_max', 'replans_per_slot')}}

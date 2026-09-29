@@ -6,7 +6,8 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
-Runtime `c9af0a47…` (local backup commit `9970718`+). Nothing pushed. Carried conservative total **$869.13**
+Runtime `c9af0a47…` for these runs (local backup commit `9970718`+); current code is `08e4c20d…` (discovery v3
+with its review fixes, below, offline only). Nothing pushed. Carried conservative total **$869.13**
 (ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
 
 | run | result | doc |
@@ -17,6 +18,9 @@ Runtime `c9af0a47…` (local backup commit `9970718`+). Nothing pushed. Carried 
 | Original loop vs native agent | **First live reproduce → reduce → diagnose of real sources**: 2 C5 sources, each 3/3, both diagnosed INCONCLUSIVE → no candidate → NO_CHANGE. The repairable C3 failure was never exposed (Explorer never picked a rejected upgrade) | `docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md` |
 
 Still unproven live: a generated candidate, source validation, challenge, promotion, ACCEPTED.
+**Built after these runs ($0, not run live): discovery protocol v3 (history-informed)**, an opt-in answer to the
+7ee35abe gap. Two $0 reviews found no leak and no gate change. All 9 of their findings are applied. It is
+described under *Current work*.
 Built and verified this session: bundle import → review → fresh rerun; discovery protocol v2 (reachability
 pre-check); order-aware schedule identity; bounded transport retry (Explorer, Mechanic, native agent);
 native report tick; dotenv credential guard; offline-test network silence.
@@ -27,12 +31,86 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Current runtime: `c9af0a47013a1140ed9ccce80a26e6912de1f86e89cfd73ae9c1881cf8f49775`** (algorithm
-`6d6433df…`), local and uncommitted, on top of checkpoint commit `e7340c9` (runtime `c0a8aad7…`); simulator
+**Current runtime: `08e4c20dc6a3e841bb42032e5b61618cd08289d9a162ad30f683bb98ea0348c8`** (algorithm
+`8fb8ab2a…`), local and uncommitted, on top of checkpoint commit `e7340c9` (runtime `c0a8aad7…`); simulator
 service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…` unchanged, so checkpoint
 bundles stay rerunnable; every agent must be registered again. Chain: `cfe5ac07` → `bb87c764` → `9f53eb8c`
 (discovery v2) → `c9b1b7e6` → `c0a8aad7` (simulator revert, committed as `e7340c9`) → `debc86f3` (transport
-retry, below) → **`c9af0a47`** (its review fixes, below).
+retry, below) → `c9af0a47` (its review fixes, below) → `a8a32234` (discovery v3, next paragraph) →
+**`08e4c20d`** (discovery v3 review fixes, same paragraph).
+
+**September 29 (builder, then fixer, $0): discovery protocol v3 (history-informed), opt-in; v1 stays the default.**
+Design and results: [discovery v3 note](docs/DISCOVERY_V3_HISTORY_2026-09-29.md); section 12 covers the review fixes.
+Evidence: `artifacts/product-discovery-v3-2026-09-29/builder/`, `…/review-integrity/`, `…/reviewer-product/` and
+`…/fixer/`.
+* **Why:** in 7ee35abe the Explorer never picked a rejected upgrade, although the same native agent failed C3 on
+  `dev-5` in 6 of 6 saved baseline episodes.
+* **What v3 adds:** one read-only Explorer input, `agent_history`. It summarises the same agent's earlier verified
+  development outcomes in the same store, per recipe: verified episodes, outcomes and failed checks.
+* **Frozen at plan time.** The plan stores the summary, its hash, the store's record cutoff and the agent identity.
+  At creation, at first Start and before the first Explorer request, FaultLab recomputes the history at that
+  cutoff; any difference refuses the run. Later records, the campaign's own included, never enter it.
+* **Same agent** = adapter entry point + model + scorer + prompt, plus (since the review) the simulator contract
+  and service, the capability set, the model request settings and the per-episode limits:
+  * native agent: native prompt and source hashes;
+  * reference Actor: prompt, context protocol and response protocol.
+
+  Not the configuration hash, the FaultLab runtime or the adapter code, so re-registering keeps the history. Each
+  history row lists the runtime and adapter builds its episodes ran under. Only the plan's starting policy counts.
+* **What is used:**
+  * development-split, discovery-purpose, non-B1 episodes from exactly two product paths:
+    * `baseline_study`: B0 slots of a baseline study (fixed six cases × 3 trials);
+    * `learn_discovery`: a learn campaign's own discovery picks;
+  * **never** a baseline campaign's own single-case run, because its case is the operator's choice. A review
+    showed three dev-5-only runs could otherwise curate the history;
+  * only COMPLETED, non-lab-error, Weave-verified episodes. Lab errors, interrupted, unfinished and unverified
+    episodes are excluded and counted.
+  
+  Promotion, held-out and final-audit records are never read into it. A seeded test proves this, and a mutant
+  without the filters fails that test.
+* **Two protocol ids:**
+  * `faultlab-discovery/v3-history`: exactly v1 plus the history, for the reference and native agents;
+  * `…/v3-history-reachability`: exactly v2 plus the history, reference only.
+
+  Budgets and the transport-retry rule are those of the base protocol. With no prior history the plan says so
+  plainly. Slot dispatch, budget and schedule identity are then exactly the base protocol's. But the Explorer is
+  still sent the v3 prompt section and an empty history, so such a run is **not** a v1/v2 run and must not be
+  pooled with one.
+
+  The dashboard shows the history, its hash, the cutoff, its composition and each row's builds in the saved plan.
+  Failed checks are shown with their names, and a **Check against the store now** button asks on demand whether
+  Start would accept the plan. The recording carries all of it.
+* **History-informed results are marked:** every v3 selection record has `matches_history_row` (the history row
+  the pick re-tries, or null). The search-attempts panel, the source panel and the recording
+  (`discovery_history_matches`) show it. Any v3 result must say "history-informed" and name the store, the
+  composition and the summary hash. A matching source is never "independent discovery".
+* **A changed history** is refused at Start (409, plain message). Caught before the first Explorer request, it
+  ends the campaign as `AGENT_HISTORY_CHANGED` with that message, no longer a generic `EXECUTION_ERROR`.
+* **v1/v2 unchanged:** Explorer messages in 4 scripted scenarios are byte-identical to before the change (pinned).
+* **Suites under `08e4c20d`, after the last code edit:**
+  * backend **2,683 passed, 180 skips, 0 failed** (10 new tests);
+  * frontend **320** unit tests passed (3 new);
+  * build passed;
+  * browser **16 passed, 1 opt-in skip**.
+
+  The builder's run under `a8a32234` had 2,673 / 317 / 16. The reviewers' two finding probes now fail, as
+  intended; their three safety probes and the protected-data mutation check still behave as before.
+* **Manual checks ($0, final code):**
+  * scratch store, real product API, scripted native transport:
+    * three single-case dev-5 baseline runs, started through Start, gave a v3 plan with **NO_PRIOR_HISTORY**;
+    * after the product's baseline study, a v3 plan froze **18** B0 episodes over 6 cases (dev-5 3, not 6), from
+      1 study and 1 build;
+    * a changed record made the on-demand check say CHANGED, and Start was refused with 409; 0 selections;
+  * read only, on the saved stores (all 8 unchanged, 0 saved v3 plans):
+    * v3 would show `dev-5` C3 3/3 from `native-probe`;
+    * it would show **no** rejected-upgrade row from `native-learn`, because that store had no study;
+    * both registrations are still the same agent under the stricter rule.
+* **Format:** the frozen history is now `faultlab-agent-history/v2`. Only scratch evidence stores held v1 plans.
+* **Next for a live try:**
+  1. Register again under `08e4c20d`.
+  2. Run the baseline study in the **new store** first, then create the v3 learn plan there.
+  3. Review the frozen history (composition, builds) and press *Check against the store now*.
+  4. Declare the run, and report its result as history-informed.
 
 **September 29 (builder, $0): one bounded transport retry for every model role, and fixes.** Details:
 [transport retry note](docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md); evidence `artifacts/product-retry-2026-09-29/builder/`.
@@ -552,7 +630,33 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Current runtime `c9af0a47…` (September 29, review fixes; evidence `artifacts/product-retry-2026-09-29/fixer/`):**
+**Current runtime `08e4c20d…` (September 29, discovery v3 review fixes; evidence `artifacts/product-discovery-v3-2026-09-29/fixer/`):**
+one run of each suite after the last code edit:
+* full backend **2,683 passed, 180 existing skips, 0 failed**, with the 2 known warnings, in 928.06 s;
+* frontend **320 unit tests** (19 files);
+* production build (size advisory only);
+* **16 browser tests passed, 1 opt-in skipped**.
+
+Identities: runtime `08e4c20d…`, algorithm `8fb8ab2a…`. These are unchanged: service `3ce5bcd2…`, contract
+`6f9d7783…`, interpreter `6da0714a…`, reference Actor prompt `12eabe7f…`, native prompt `2251542869cf…` and
+native adapter `61497db3…`. `referee/`, `simulator/` and `contracts/` are identical to `backup/part2-2026-09-22`.
+All 8 saved run stores were read only with `mode=ro&immutable=1` and kept their sizes and modification times.
+HEAD `cbbf957` and the empty index are unchanged; nothing was committed. After the suites, only this file and the
+discovery v3 note were edited, and no test reads either.
+
+**Previous runtime `a8a32234…` (September 29, discovery v3 builder; evidence `artifacts/product-discovery-v3-2026-09-29/builder/`):**
+one run of each suite after the last code edit:
+* full backend **2,673 passed, 180 existing skips, 0 failed**, with the 2 known warnings, in 927.49 s;
+* frontend **317 unit tests** (19 files);
+* production build (size advisory only);
+* **16 browser tests passed, 1 opt-in skipped**.
+
+Identities: runtime `a8a32234…`, algorithm `eea45d1d…`; service `3ce5bcd2…`, contract `6f9d7783…`, interpreter,
+reference Actor prompt `12eabe7f…` and native prompt `2251542869cf…` unchanged. The two native stores read (only
+with `mode=ro&immutable=1`) kept their sizes and modification times. HEAD and index are unchanged; nothing was
+committed.
+
+**Previous runtime `c9af0a47…` (September 29, review fixes; evidence `artifacts/product-retry-2026-09-29/fixer/`):**
 one clean run of each suite after the last code edit. Full backend **2,651 passed, 180 existing skips, 0 failed**, the
 2 known warnings, 932.61 s; audit hook: **0 outside connections or lookups**, `.env` touched only by the 3 synthetic
 events in `test_env_guard.py`. Frontend **312 unit tests** (18 files), production build (size advisory only), **15

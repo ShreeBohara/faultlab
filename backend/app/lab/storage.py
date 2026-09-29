@@ -139,6 +139,54 @@ class LabStore:
     # evidence/ingestion ids equal their episode_id (evidence.py). Both hold for every
     # writer and for all 214 campaigns in the store as of Phase 19.
 
+    def max_record_rowid(self):
+        """The highest record row number now: a record cutoff (discovery v3 history).
+
+        An update keeps a row's number (ON CONFLICT DO UPDATE) and a new record gets a higher
+        one, so reading only rows at or below a cutoff never admits a record added later.
+        """
+        with self.lock:
+            row = self.db.execute('SELECT COALESCE(MAX(rowid),0) AS cutoff FROM records').fetchone()
+        return int(row['cutoff'])
+
+    def records_upto(self, kind, cutoff, *, where=None):
+        """Records of one kind at or below a row-number cutoff, in row order.
+
+        ``where`` maps top-level JSON field names to required exact values; the filter runs in
+        SQLite so unrelated payloads are never parsed. Returns (rowid, payload) pairs.
+        """
+        clauses, parameters = ['kind=?', 'rowid<=?'], [kind, int(cutoff)]
+        for field, value in (where or {}).items():
+            if not isinstance(field, str) or not field.isidentifier():
+                raise ValueError('Invalid record filter field')
+            clauses.append(f"json_extract(payload,'$.{field}')=?"); parameters.append(value)
+        with self.lock:
+            rows = self.db.execute('SELECT rowid,payload FROM records WHERE ' + ' AND '.join(clauses)
+                                   + ' ORDER BY rowid', parameters).fetchall()
+        return [(row['rowid'], json.loads(row['payload'])) for row in rows]
+
+    def record_fields_upto(self, kind, cutoff, fields):
+        """Only the named JSON fields (dotted paths) of records at or below a cutoff, in row order.
+
+        SQLite extracts the values, so large unrelated parts of each payload are never loaded into
+        Python. Returns (rowid, {path: value}) pairs; a missing field is None and JSON booleans read
+        back as 1/0 (SQLite's json_extract).
+        """
+        paths = list(fields)
+        for path in paths:
+            if not isinstance(path, str) or not all(part.isidentifier() for part in path.split('.')):
+                raise ValueError('Invalid record field path')
+        columns = ','.join(f"json_quote(json_extract(payload,'$.{path}'))" for path in paths)
+        with self.lock:
+            rows = self.db.execute(f'SELECT rowid,{columns} FROM records WHERE kind=? AND rowid<=? ORDER BY rowid',
+                                   (kind, int(cutoff))).fetchall()
+        return [(row[0], {path: json.loads(row[index + 1]) for index, path in enumerate(paths)}) for row in rows]
+
+    def record_rowid(self, kind, id):
+        with self.lock:
+            row = self.db.execute('SELECT rowid FROM records WHERE kind=? AND id=?', (kind, id)).fetchone()
+        return None if row is None else int(row['rowid'])
+
     def list_campaign_episodes(self, campaign_id):
         with self.lock:
             rows = self.db.execute("SELECT r.payload FROM records r JOIN episode_registry e ON e.id=r.id WHERE r.kind='episodes' AND e.campaign_id=? ORDER BY r.rowid",(campaign_id,)).fetchall()

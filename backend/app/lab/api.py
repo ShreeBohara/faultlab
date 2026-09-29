@@ -183,6 +183,14 @@ def create_router(get_coordinator, *, get_settings=None):
         c().get(id)
         return read_run_plan(c().store,id)
 
+    @router.get('/campaigns/{id}/plan/history-check')
+    @guarded
+    def campaign_plan_history_check(id:str):
+        # Discovery v3, on demand only (a dashboard button; never polled): is the frozen history still exactly
+        # what the store holds at the plan's cutoff? Read-only, in the worker pool on a snapshot reader.
+        from app.lab.run_plans import plan_history_check
+        return plan_history_check(c().store,c().get(id))
+
     @router.get('/config/status')
     @guarded
     def config_status(): return c().config_status()
@@ -282,8 +290,14 @@ def create_router(get_coordinator, *, get_settings=None):
     @router.get('/campaigns/{id}/experiments')
     @guarded
     def experiments(id:str):
-        c().get(id)
+        campaign=c().get(id)
         counters=records('counterexamples',id); joined=[]
+        history_summary=None
+        if counters:
+            from app.lab.run_plans import read_run_plan
+            try: plan=read_run_plan(c().store,campaign)['plan']
+            except Exception: plan=None  # The plan panel reports an unreadable plan; this projection stays available.
+            history_summary=(((plan or {}).get('discovery') or {}).get('history') or {}).get('summary')
         for counter in counters:
             key=counter['counterexample_id']; recipe=c().store.get_record('counterexample_recipes',key) or {}
             retained=c().store.get_record('retained_recipes',key) or {}
@@ -291,7 +305,12 @@ def create_router(get_coordinator, *, get_settings=None):
             interventions=[d for d in records('interventions') if d.get('counterexample_id')==key]
             campaign_challenges={d['challenge_id'] for d in records('challenge_campaigns',id)}
             challenges=[d for d in records('challenges') if d['challenge_id'] in campaign_challenges]
-            joined.append({'counterexample':counter,'source_recipe':recipe.get('source_recipe'),'retained_recipe':retained.get('retained_recipe'),'reduction':c().store.get_record('reductions',key),'diagnostics':diagnostics,'interventions':interventions,'challenges':challenges})
+            row={'counterexample':counter,'source_recipe':recipe.get('source_recipe'),'retained_recipe':retained.get('retained_recipe'),'reduction':c().store.get_record('reductions',key),'diagnostics':diagnostics,'interventions':interventions,'challenges':challenges}
+            if history_summary is not None:
+                # Discovery v3 only: whether this source re-tries a recipe row of the frozen agent history.
+                from app.lab.agent_history import history_row_match
+                row['matches_history_row']=history_row_match(history_summary,recipe['source_recipe']) if recipe.get('source_recipe') else None
+            joined.append(row)
         episodes={e['episode_id'] for e in records('episodes',id) if e['split']=='development' and e['experiment_purpose'] not in ('selection_comparison','diagnostic_profile')}
         # Evidence and ingestion records are keyed by episode_id (evidence.py), so
         # fetch this campaign's rows by key instead of parsing every campaign's.
@@ -314,7 +333,8 @@ def create_router(get_coordinator, *, get_settings=None):
                 'policy_hash':context['policy_hash'],'search_decision':row['search_decision'],
                 'selected_output':row.get('selected_output'),'output':row.get('output'),
                 'raw_response':row['raw'],'usage':row['usage'],'provenance':row['provenance'],
-                'error':row.get('error'),'transport_retries':row.get('transport_retries',[])})
+                'error':row.get('error'),'transport_retries':row.get('transport_retries',[]),
+                **({'matches_history_row':row['matches_history_row']} if 'matches_history_row' in row else {})})
         return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded

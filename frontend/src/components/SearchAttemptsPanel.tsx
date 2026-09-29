@@ -1,4 +1,5 @@
 import { getSearchAttempts, type SearchAttempt } from '../searchAttempts'
+import type { HistoryRowMatch } from '../runPlans'
 import { useResource } from '../useResource'
 import { Empty, EpisodeLinks, Hash, Json, Panel, ResourceNote } from './common'
 
@@ -7,6 +8,10 @@ const decisionLabel = {
   SKIPPED_UNREACHABLE: 'Refused by the reachability pre-check · no Actor trial', PRECHECK_FAILED: 'Pre-check could not run · no Actor trial',
 }
 const verdictLabel = { FORCED: 'Forced', NOT_FORCED: 'Not forced', IMPOSSIBLE: 'Impossible' }
+/** Discovery v3: whether a pick (or a source) re-tries a row of the frozen agent history the Explorer was shown. */
+export const historyMatchText = (match: HistoryRowMatch | null) => match
+  ? `History-informed: this recipe re-tries agent history row ${match.row}${match.development_case_id ? ` (${match.development_case_id})` : ''} that the Explorer was shown. Report a result from it as history-informed, not as independent discovery.`
+  : 'No match with any row of the frozen agent history.'
 
 function Reachability({ row, rows }: { row: SearchAttempt; rows: SearchAttempt[] }) {
   const decision = row.search_decision
@@ -35,11 +40,12 @@ export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: str
     {rows && <div className="stat-strip"><div><strong>{rows.length}</strong><span>Recorded selection responses</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SELECTED').length}</strong><span>Selected for execution</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_DUPLICATE').length}</strong><span>Duplicates declined</span></div>{v2 && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNREACHABLE').length}</strong><span>Refused by pre-check</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'INVALID_OUTPUT').length}</strong><span>Invalid selections</span></div></div>}
     {rows?.length === 0 && <Empty>No search-decision records available for this campaign. Older records may contain executed trials without a selection ledger; this does not mean no faults were tested.</Empty>}
     {!!rows?.length && <p className="muted">A different seed or hypothesis alone does not create a new fault schedule. These records cover autonomous discovery, not challenge or selector-comparison studies.</p>}
-    {v2 && <p className="muted">Discovery protocol v2: before any paid Actor trial, a free replay of the real simulator labels each fault for this agent. Only picks whose every fault is forced run; a refused pick gets one re-plan request in the same slot.</p>}
+    {v2 && <p className="muted">{rows?.some(row => row.search_decision.discovery_protocol === 'faultlab-discovery/v3-history-reachability') ? 'Discovery protocol v3 with the reachability pre-check (v2\'s dispatch, plus the frozen agent history in the saved plan)' : 'Discovery protocol v2'}: before any paid Actor trial, a free replay of the real simulator labels each fault for this agent. Only picks whose every fault is forced run; a refused pick gets one re-plan request in the same slot.</p>}
     {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {decisionLabel[row.search_decision.status]}</summary>
       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>
       {row.search_decision.reason && <p>Recorded reason: {row.search_decision.reason.replaceAll('_', ' ').toLowerCase()}.</p>}
       {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">Transport retry: the first request received no answer ({retry.code === 'HTTP_ERROR' ? `HTTP ${retry.http_status}` : retry.code.replaceAll('_', ' ').toLowerCase()}), so the identical request was sent once more. Both requests are charged ({row.usage.model_calls} model requests); this is not a new selection request. Provider failure <code>{retry.provider_failure_id}</code>.</p>)}
+      {row.matches_history_row !== undefined && <p className={row.matches_history_row ? 'notice' : 'muted'}>{historyMatchText(row.matches_history_row)}</p>}
       <p>Schedule identity: <Hash value={row.search_decision.schedule_hash} /></p>
       {(row.selected_output ?? row.output)?.fault_spec.primitives.map((primitive, index) => <p key={index}>{primitive.kind} · {primitive.target_service}.{primitive.target_tool} · occurrence {primitive.occurrence}</p>)}
       <Reachability row={row} rows={rows} />

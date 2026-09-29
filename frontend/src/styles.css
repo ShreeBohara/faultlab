@@ -247,6 +247,12 @@ h1 em { font-style: normal; color: var(--accent); }
 .import-trials { overflow-x: auto; margin: 12px 0; }
 .import-trials table { width: 100%; min-width: 0; border-collapse: collapse; text-align: left; font-size: 11px; }
 .import-trials th, .import-trials td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+/* Discovery v3: the frozen agent history in the plan panel (compact; never wider than the panel). */
+.agent-history { margin-top: 10px; }
+.agent-history h4 { margin: 6px 0; font-size: 12px; }
+.agent-history-recipes { margin: 6px 0; padding-left: 16px; font-size: 11px; }
+.agent-history-recipes li { margin: 6px 0; overflow-wrap: anywhere; }
+.agent-history code { overflow-wrap: anywhere; }
 .import-trials td code, .import-trials td button { overflow-wrap: anywhere; }
 .task-text { white-space: pre-wrap; }
 .import-review ul { margin: 6px 0; padding-left: 18px; }

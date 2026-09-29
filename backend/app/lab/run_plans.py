@@ -9,7 +9,7 @@ import json
 from importlib.metadata import PackageNotFoundError
 from typing import Annotated, Literal, Union
 
-from pydantic import Field, model_validator
+from pydantic import Field, model_serializer, model_validator
 
 from app.contracts.models import (AgentRegistration, Campaign, CampaignBudget,
     CampaignRequest, Digest, EpisodeBudget, FaultSpec, Id, PolicyVersion, SendableTaskText,
@@ -18,7 +18,8 @@ from app.agents.transport_retry import RETRIES_PER_REQUEST, declaration as trans
 from app.integrations.registry import AgentRegistry
 from app.lab.configuration import frozen_configuration
 from app.lab.dashboard import store_descriptor
-from app.lab.discovery_protocol import DISCOVERY_V1, DISCOVERY_V2, declaration as discovery_declaration
+from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK,
+    HISTORY_PROTOCOLS, declaration as discovery_declaration)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -47,7 +48,8 @@ class RunPlanRequest(StrictModel):
     order_id: Id
     development_case_id: CaseId | None = None
     # Explicit, declared discovery setting for Learn only; omitted means v1 (today's behaviour).
-    discovery_protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability'] | None = None
+    discovery_protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability',
+                                'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability'] | None = None
 
     @model_validator(mode='after')
     def supported_combination(self):
@@ -90,9 +92,30 @@ class ProtectedComparison(StrictModel):
 Selection = Annotated[Union[DevelopmentCase, DevelopmentSearch, ProtectedComparison], Field(discriminator='kind')]
 
 
+class AgentHistoryPlan(StrictModel):
+    """Discovery v3: the frozen same-agent history (app.lab.agent_history) and its cutoff."""
+    schema_version: Literal['faultlab-agent-history/v2']
+    status: Literal['AVAILABLE', 'NO_PRIOR_HISTORY']
+    rule: str = Field(min_length=1, max_length=800)
+    agent_identity: dict
+    policy_hash: Digest
+    record_cutoff: int = Field(ge=0)
+    episode_ids_hash: Digest
+    summary: dict
+    summary_hash: Digest
+
+    @model_validator(mode='after')
+    def hashed(self):
+        if (self.summary_hash != content_hash(self.summary) or self.summary.get('status') != self.status
+                or self.summary.get('schema_version') != self.schema_version):
+            raise ValueError('Inconsistent frozen agent history')
+        return self
+
+
 class DiscoveryPlan(StrictModel):
     """The declared discovery protocol and selection budget of a Learn plan."""
-    protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability']
+    protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability',
+                      'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
     schedule_identity: Literal['faultlab-schedule-identity/v1-sorted', 'faultlab-schedule-identity/v2-order-aware']
     slots: int = Field(ge=1, le=8)
     explorer_requests_max: int = Field(ge=1, le=16)
@@ -103,10 +126,21 @@ class DiscoveryPlan(StrictModel):
     replans_per_slot: int = Field(ge=0, le=1)
     dispatch_rule: str = Field(min_length=1, max_length=600)
     pre_check: dict | None
+    # Discovery v3 only. Absent (not null) in every v1/v2 block, so those records keep their exact bytes.
+    history: AgentHistoryPlan | None = None
+
+    @model_serializer(mode='wrap')
+    def _omit_absent_history(self, handler):
+        data = handler(self)
+        if data.get('history') is None:
+            data.pop('history', None)
+        return data
 
     @model_validator(mode='after')
     def coherent(self):
-        v2 = self.protocol == DISCOVERY_V2
+        if (self.history is not None) != (self.protocol in HISTORY_PROTOCOLS):
+            raise ValueError('Only a discovery v3 declaration carries a frozen agent history, and it must')
+        v2 = BASE_PROTOCOL[self.protocol] == DISCOVERY_V2
         if (self.schedule_identity.endswith('v2-order-aware') != v2 or self.replans_per_slot != (1 if v2 else 0)
                 or self.explorer_requests_max != self.slots * (2 if v2 else 1) or self.actor_episodes_max != self.slots
                 or (self.explorer_transport_retries_max is not None
@@ -304,10 +338,21 @@ def _reference_caller():
     return caller_model_for('reference', [])
 
 
+HISTORY_DESCRIPTION = ('Adds one read-only piece of Explorer context: a summary of this same agent\'s earlier verified '
+                       'development outcomes in this store (per recipe: verified episodes, outcomes and failed checks), '
+                       'frozen into the plan with its hash when you create the campaign. The Explorer still chooses freely; '
+                       'the history is prior evidence, not an instruction. Protected evaluation data is never included.')
+
+
 def discovery_options(caps):
-    """The two declarable discovery protocols for Learn, with their budgets. v1 is the default."""
+    """The declarable discovery protocols for Learn, with their budgets. v1 is the default.
+
+    The v3 declarations show history None: the history is frozen from the store when a plan is saved.
+    """
     v1 = discovery_declaration(DISCOVERY_V1, caps)
     v2 = discovery_declaration(DISCOVERY_V2, caps, caller=_reference_caller())
+    v3 = discovery_declaration(DISCOVERY_V3, caps)
+    v3_precheck = discovery_declaration(DISCOVERY_V3_PRECHECK, caps, caller=_reference_caller())
     return [
         {'protocol_id': DISCOVERY_V1, 'default': True, 'label': 'v1 · every valid new pick runs',
          'description': 'Today\'s behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.',
@@ -317,6 +362,14 @@ def discovery_options(caps):
          'supported_agents': ['reference'],
          'unsupported_reason': 'The pre-check models only the FaultLab reference Actor under policy-v0; the native agent has a different action space.',
          'declaration': v2},
+        {'protocol_id': DISCOVERY_V3, 'default': False, 'label': 'v3 · agent history',
+         'description': 'Exactly v1 (every valid new pick runs, same budget). ' + HISTORY_DESCRIPTION,
+         'supported_agents': ['reference', 'smolagents'], 'declaration': v3},
+        {'protocol_id': DISCOVERY_V3_PRECHECK, 'default': False, 'label': 'v3 · agent history + reachability pre-check',
+         'description': 'Exactly v2 (pre-check, one re-plan per refused slot, same budget). ' + HISTORY_DESCRIPTION,
+         'supported_agents': ['reference'],
+         'unsupported_reason': 'The pre-check models only the FaultLab reference Actor under policy-v0; for the native agent choose v3 · agent history, which has no pre-check.',
+         'declaration': v3_precheck},
     ]
 
 
@@ -359,13 +412,22 @@ def prepare_run_plan(store, settings, request):
         selection = {'kind': 'development_search', 'manifest_hash': options['learn']['manifest_hash'],
                      'search_space': options['learn']['search_space']}
         protocol = request.discovery_protocol or DISCOVERY_V1
-        if protocol == DISCOVERY_V2:
+        if BASE_PROTOCOL[protocol] == DISCOVERY_V2:
             if agent != 'reference':
                 raise StoreConflict('Discovery v2 cannot pre-check the native agent: its reachability model is the '
-                                    'FaultLab reference Actor. Choose discovery v1 for this agent.')
+                                    'FaultLab reference Actor. Choose discovery v1 for this agent.'
+                                    if protocol == DISCOVERY_V2 else
+                                    'The reachability pre-check models only the FaultLab reference Actor. For the native '
+                                    'agent choose faultlab-discovery/v3-history, which has no pre-check.')
             if initial.content.rules:
                 raise StoreConflict('Discovery v2 pre-checks picks only for the unchanged baseline policy (policy-v0).')
-        discovery = next(row['declaration'] for row in options['learn']['discovery_protocols'] if row['protocol_id'] == protocol)
+        discovery = deepcopy(next(row['declaration'] for row in options['learn']['discovery_protocols'] if row['protocol_id'] == protocol))
+        if protocol in HISTORY_PROTOCOLS:
+            # Frozen now, from this store, for this agent and starting policy; the plan stores the summary,
+            # its hash and the record cutoff, and execution recomputes it before any Explorer request.
+            from app.lab import agent_history
+            discovery['history'] = agent_history.snapshot(store, registration=registration, configuration=configuration,
+                                                          policy_hash=initial.policy_hash)
     else:
         selection = {'kind': 'protected_comparison', **options['compare']}
     campaign_request = CampaignRequest(task_text=request.task_text, order_id=request.order_id,
@@ -405,8 +467,11 @@ def _bindings(store, campaign, plan, *, first_start=False):
     if discovery is not None:
         if campaign.mode != 'learn' or discovery['slots'] != campaign.caps.discovery_selections:
             raise StoreConflict('Saved discovery protocol is inconsistent with its campaign')
-        if discovery['protocol'] == DISCOVERY_V2 and plan['agent'] != 'reference':
+        if BASE_PROTOCOL[discovery['protocol']] == DISCOVERY_V2 and plan['agent'] != 'reference':
             raise StoreConflict('Saved discovery v2 plan names an agent it cannot pre-check')
+        history = discovery.get('history')
+        if history is not None and history['policy_hash'] != plan['initial_policy_hash']:
+            raise StoreConflict('Saved agent history was frozen for another starting policy')
     offline = campaign.config_profile_id == 'offline-v1'
     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
@@ -435,6 +500,11 @@ def _bindings(store, campaign, plan, *, first_start=False):
                        'dependency_lock_hash': 'dependency_lock_hash'}.items():
         if getattr(checked_registration, field) != configuration.get(key):
             raise StoreConflict('Saved registration identity differs from its configuration')
+    history = (plan.get('discovery') or {}).get('history')
+    if history is not None:
+        from app.lab.agent_history import target_identity
+        if history['agent_identity'] != target_identity(registration, configuration):
+            raise StoreConflict('Saved agent history was frozen for another agent identity')
     initial = _stored_policy(store, plan['initial_policy_version'])
     if initial is None or initial.policy_hash != plan['initial_policy_hash']:
         raise StoreConflict('Saved initial policy differs from its plan')
@@ -447,6 +517,41 @@ def _bindings(store, campaign, plan, *, first_start=False):
             active = _stored_policy(store, campaign.active_policy_version)
             if campaign.mode != 'learn' or not active or active.decision != 'ACCEPTED':
                 raise StoreConflict('Campaign policy changed without an accepted learning result')
+
+
+def verify_plan_history(store, plan):
+    """Recompute a v3 plan's frozen history at its cutoff.
+
+    Raises agent_history.HistoryChanged (a StoreConflict: 409 at Start, and the campaign's recorded
+    reason AGENT_HISTORY_CHANGED if it is caught before the first Explorer request) if anything differs.
+    """
+    from app.lab import agent_history
+    registration = store.get_record('agent_registrations', plan['agent_registration_id'])
+    configuration = store.get_record('configurations', plan['configuration_hash'])
+    return agent_history.verify(store, plan['discovery']['history'], registration=registration,
+                                configuration=configuration, policy_hash=plan['initial_policy_hash'])
+
+
+def plan_history_check(store, campaign):
+    """On-demand, read-only: is a saved v3 plan's frozen history still what the store holds at its cutoff?
+
+    For the dashboard's "Check against the store now" button (never polled). Start performs the same check
+    and refuses on any difference; this only lets an operator see a stale plan before pressing Start.
+    """
+    from app.lab import agent_history
+    plan = read_run_plan(store, campaign)['plan']
+    history = ((plan or {}).get('discovery') or {}).get('history')
+    base = {'campaign_id': campaign.campaign_id, 'record_cutoff': history['record_cutoff'] if history else None,
+            'summary_hash': history['summary_hash'] if history else None}
+    if history is None:
+        return {**base, 'status': 'NOT_APPLICABLE', 'message': 'This plan does not declare discovery v3, so it has no frozen agent history.'}
+    if campaign.state != 'IDLE':
+        return {**base, 'status': 'NOT_CHECKED', 'message': 'This campaign has already started; its history was checked at Start and before its first Explorer request.'}
+    try:
+        verify_plan_history(store, plan)
+    except agent_history.HistoryChanged as error:
+        return {**base, 'status': 'CHANGED', 'message': str(error)}
+    return {**base, 'status': 'CURRENT', 'message': f'Unchanged: the store still holds exactly this history at row {history["record_cutoff"]}. Start checks it again.'}
 
 
 def read_run_plan(store, campaign_id):
@@ -490,9 +595,13 @@ def validate_run_plan(store, settings, campaign):
     discovery = plan.get('discovery')
     if discovery is not None and discovery.get('explorer_transport_retries_max') != discovery['explorer_requests_max'] * RETRIES_PER_REQUEST:
         raise StoreConflict('The saved discovery plan does not declare the installed Explorer transport retry bound')
-    if discovery is not None and discovery['protocol'] == DISCOVERY_V2:
+    if discovery is not None and BASE_PROTOCOL[discovery['protocol']] == DISCOVERY_V2:
         if discovery['pre_check']['caller_model'] != _reference_caller().descriptor():
             raise StoreConflict('The installed reachability caller model differs from the saved discovery plan')
+    if discovery is not None and discovery.get('history') is not None and campaign.state == 'IDLE':
+        # Discovery v3: before the first start (and when the plan is saved), the frozen history must
+        # still be exactly what the store holds at the plan's record cutoff.
+        verify_plan_history(store, plan)
     if plan['selection']['kind'] != 'development_case':
         development, comparison = _manifests()
         expected = development['manifest_hash'] if campaign.mode == 'learn' else comparison['manifest_hash']

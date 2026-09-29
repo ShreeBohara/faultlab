@@ -9,10 +9,27 @@ export type RunProfile = 'offline-v1' | 'live-v1'
 export type RunCaps = Required<CampaignBudget>
 export type SearchSpace = { maximum_primitives: number; kinds: string[]; occurrence: number[]; f1_milliseconds: number[]; f2_ticks: number[]; f3_versions: number[]; f4_count: number[]; preflight_required: boolean }
 export type DevelopmentCase = { case_id: string; label: string; description: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec }
-export type DiscoveryProtocolId = 'faultlab-discovery/v1' | 'faultlab-discovery/v2-reachability'
+export type DiscoveryProtocolId = 'faultlab-discovery/v1' | 'faultlab-discovery/v2-reachability' | 'faultlab-discovery/v3-history' | 'faultlab-discovery/v3-history-reachability'
+/** The two product paths a history row can come from (backend agent_history.SOURCES); single-case baseline runs never count. */
+export type HistorySource = 'baseline_study' | 'learn_discovery'
+export const HISTORY_SOURCES: Record<HistorySource, string> = { baseline_study: 'baseline study', learn_discovery: 'learn discovery' }
+/** Discovery v3: one recipe row of the frozen same-agent history (backend app/lab/agent_history.py). runtime_hashes and
+ * adapter_hashes are 12-character prefixes of the FaultLab builds its episodes ran under ('unrecorded' when not saved). */
+export type AgentHistoryRow = { development_case_id: string | null; recipe: string[]; primitives: FaultSpec['primitives']; sources: HistorySource[]; verified_episodes: number; every_fault_fired: number | null; outcomes: Record<string, number>; failed_checks: Record<string, number>; excluded: Record<string, number>; runtime_hashes: string[]; adapter_hashes: string[] }
+export type HistoryComposition = { baseline_studies: number; baseline_study_episodes: number; learn_campaigns: number; learn_discovery_episodes: number }
+export type HistoryBuild = { runtime_hash: string; adapter_hash: string; verified_episodes: number }
+export type AgentHistorySummary = { schema_version: 'faultlab-agent-history/v2'; status: 'AVAILABLE' | 'NO_PRIOR_HISTORY'; statement: string; scope: string; agent: { adapter_entrypoint_id: string | null; model: string | null }; verified_episodes: number; recipes_total: number; composition: HistoryComposition; builds: HistoryBuild[]; excluded: Record<string, number>; recipes: AgentHistoryRow[]; recipes_omitted: number; excluded_only_recipes: number }
+/** Frozen when the plan is saved: exactly what the Explorer reads (summary), its hash and the store record cutoff. */
+export type AgentHistory = { schema_version: 'faultlab-agent-history/v2'; status: 'AVAILABLE' | 'NO_PRIOR_HISTORY'; rule: string; agent_identity: Record<string, unknown>; policy_hash: string; record_cutoff: number; episode_ids_hash: string; summary: AgentHistorySummary; summary_hash: string }
+/** The on-demand check of a saved v3 plan's history against the store (GET …/plan/history-check; never polled). */
+export type HistoryCheck = { campaign_id: string; status: 'CURRENT' | 'CHANGED' | 'NOT_CHECKED' | 'NOT_APPLICABLE'; message: string; record_cutoff: number | null; summary_hash: string | null }
+/** A pick or source that re-tries a listed history row (order-aware schedule identity, seed ignored). */
+export type HistoryRowMatch = { row: number; development_case_id: string | null; basis: string }
 export type CallerModel = { caller_id: string; agent: 'reference'; max_business_calls: number; adapter_attempts: number; client_timeout_seconds: number; wait_action: boolean; ticks_per_http_attempt: number; http_attempts: number; ticks: number; polling: string; unknown_status_checks?: number; resends_failed_writes?: boolean; validated_against: string; facts: string[] }
 /** explorer_transport_retries_max: one charged retry per Explorer request that got no answer; not a request itself. Absent or null in plans saved before it existed (none declared). */
-export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; explorer_transport_retries_max?: number | null; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel } }
+export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; explorer_transport_retries_max?: number | null; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel }
+  /** Discovery v3 only: null in the run options (frozen when a plan is saved), the frozen block in a saved plan; absent for v1/v2. */
+  history?: AgentHistory | null }
 /** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py). */
 export type TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
 export type DiscoveryOption = { protocol_id: DiscoveryProtocolId; default: boolean; label: string; description: string; supported_agents: AgentKind[]; unsupported_reason?: string; declaration: DiscoveryDeclaration }
@@ -48,12 +65,51 @@ function searchSpace(value: unknown): value is SearchSpace {
 function comparison(value: unknown): boolean {
   return object(value) && value.partition === 'promotion' && digest(value.manifest_hash) && positive(value.case_count) && positive(value.trials_per_case)
 }
-const DISCOVERY_PROTOCOLS = ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability']
-/** A declared discovery block, with the same coherence rules the backend enforces. */
-export function discoveryDeclaration(value: unknown): value is DiscoveryDeclaration {
+const DISCOVERY_PROTOCOLS = ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
+/** Discovery v3 forms add only the frozen agent history to their base: v3-history is v1, v3-history-reachability is v2. */
+export const HISTORY_PROTOCOLS: string[] = ['faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
+export const preChecked = (protocol: unknown) => protocol === 'faultlab-discovery/v2-reachability' || protocol === 'faultlab-discovery/v3-history-reachability'
+const count = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0
+const counts = (value: unknown) => object(value) && Object.values(value).every(count)
+const buildHash = (value: unknown) => typeof value === 'string' && /^([a-f0-9]{12}|unrecorded)$/.test(value)
+function historyRow(value: unknown): value is AgentHistoryRow {
+  return object(value) && (value.development_case_id === null || (text(value.development_case_id) && /^dev-[1-6]$/.test(value.development_case_id)))
+    && stringList(value.recipe) && (value.recipe as string[]).length > 0 && Array.isArray(value.primitives) && stringList(value.sources) && (value.sources as string[]).length > 0
+    && (value.sources as string[]).every(source => source in HISTORY_SOURCES)
+    && positive(value.verified_episodes) && (value.every_fault_fired === null || count(value.every_fault_fired)) && counts(value.outcomes) && counts(value.failed_checks) && counts(value.excluded)
+    && [value.runtime_hashes, value.adapter_hashes].every(list => Array.isArray(list) && list.length > 0 && list.every(buildHash))
+}
+function composition(value: unknown): value is HistoryComposition {
+  return object(value) && ['baseline_studies', 'baseline_study_episodes', 'learn_campaigns', 'learn_discovery_episodes'].every(key => count(value[key]))
+}
+function builds(value: unknown): value is HistoryBuild[] {
+  return Array.isArray(value) && value.every(item => object(item) && buildHash(item.runtime_hash) && buildHash(item.adapter_hash) && positive(item.verified_episodes))
+}
+/** An optional derived flag on a v3 selection or source: null means checked with no match. */
+export function historyRowMatch(value: unknown): value is HistoryRowMatch | null {
+  return value === null || (object(value) && positive(value.row) && (value.development_case_id === null || (text(value.development_case_id) && /^dev-[1-6]$/.test(value.development_case_id))) && text(value.basis))
+}
+/** The frozen history block of a saved v3 plan. The backend recomputes and checks its hash before any Explorer request. */
+export function agentHistory(value: unknown): value is AgentHistory {
+  if (!object(value) || value.schema_version !== 'faultlab-agent-history/v2' || !['AVAILABLE', 'NO_PRIOR_HISTORY'].includes(String(value.status)) || !text(value.rule)
+    || !object(value.agent_identity) || !digest(value.policy_hash) || !count(value.record_cutoff) || !digest(value.episode_ids_hash) || !digest(value.summary_hash)) return false
+  const summary = value.summary
+  if (!object(summary) || summary.schema_version !== value.schema_version || summary.status !== value.status || !text(summary.statement) || !text(summary.scope) || !object(summary.agent)
+    || !count(summary.verified_episodes) || !count(summary.recipes_total) || !count(summary.recipes_omitted) || !count(summary.excluded_only_recipes) || !counts(summary.excluded)
+    || !composition(summary.composition) || !builds(summary.builds) || !Array.isArray(summary.recipes) || !summary.recipes.every(historyRow)) return false
+  const rows = summary.recipes as AgentHistoryRow[]
+  const made = summary.composition as HistoryComposition, verified = summary.verified_episodes as number
+  // NO_PRIOR_HISTORY says so plainly: no verified episode and no recipe row. The composition and builds account for every verified episode.
+  return (summary.status === 'AVAILABLE') === verified > 0 && rows.reduce((total, row) => total + row.verified_episodes, 0) <= verified
+    && (summary.recipes_total as number) === rows.length + (summary.recipes_omitted as number)
+    && made.baseline_study_episodes + made.learn_discovery_episodes === verified && (summary.builds as HistoryBuild[]).reduce((total, build) => total + build.verified_episodes, 0) === verified
+}
+/** A declared discovery block, with the same coherence rules the backend enforces. In a saved plan a v3 block must carry its frozen history. */
+export function discoveryDeclaration(value: unknown, saved = false): value is DiscoveryDeclaration {
   if (!object(value) || !DISCOVERY_PROTOCOLS.includes(String(value.protocol)) || !text(value.schedule_identity) || !text(value.dispatch_rule)
     || !['slots', 'explorer_requests_max', 'actor_episodes_max'].every(key => positive(value[key])) || ![0, 1].includes(value.replans_per_slot as number)) return false
-  const v2 = value.protocol === 'faultlab-discovery/v2-reachability', slots = value.slots as number
+  if (HISTORY_PROTOCOLS.includes(String(value.protocol)) ? !(saved ? agentHistory(value.history) : value.history === null) : value.history !== undefined) return false
+  const v2 = preChecked(value.protocol), slots = value.slots as number
   if (value.explorer_requests_max !== slots * (v2 ? 2 : 1) || value.actor_episodes_max !== slots || value.replans_per_slot !== (v2 ? 1 : 0)) return false
   // At most one transport retry per Explorer request; older plans declare none (absent or null).
   if (!(value.explorer_transport_retries_max === undefined || value.explorer_transport_retries_max === null || value.explorer_transport_retries_max === value.explorer_requests_max)) return false
@@ -78,7 +134,8 @@ function discoveryOptions(value: unknown): boolean {
     if (!object(option) || !DISCOVERY_PROTOCOLS.includes(String(option.protocol_id)) || ids.has(String(option.protocol_id)) || typeof option.default !== 'boolean'
       || !text(option.label) || !text(option.description) || !Array.isArray(option.supported_agents) || !option.supported_agents.every(agent => ['reference', 'smolagents'].includes(String(agent)))
       || !(option.unsupported_reason === undefined || text(option.unsupported_reason)) || !discoveryDeclaration(option.declaration) || option.declaration.protocol !== option.protocol_id) return false
-    if (option.protocol_id === 'faultlab-discovery/v2-reachability' && (option.default || option.supported_agents.includes('smolagents'))) return false
+    if (preChecked(option.protocol_id) && (option.default || option.supported_agents.includes('smolagents'))) return false
+    if (HISTORY_PROTOCOLS.includes(String(option.protocol_id)) && option.default) return false
     ids.add(String(option.protocol_id))
   }
   return value.filter(option => option.default).length === 1
@@ -141,14 +198,21 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
   } else if (selection.kind !== 'protected_comparison' || !comparison(selection)) return malformed('campaign plan comparison')
   if (!(plan.transport_retry === undefined || plan.transport_retry === null || transportRetry(plan.transport_retry, (plan.episode_budget as Required<EpisodeBudget>).actor_calls))) return malformed('campaign plan transport retry rule')
   if (plan.discovery !== undefined && plan.discovery !== null) {
-    // Only Learn declares a discovery protocol; v2 pre-checks only the reference Actor.
-    if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery) || (plan.discovery.protocol === 'faultlab-discovery/v2-reachability' && plan.agent !== 'reference')) return malformed('campaign plan discovery protocol')
+    // Only Learn declares a discovery protocol; the pre-check (v2, v3 with pre-check) models only the reference Actor.
+    if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery, true) || (preChecked(plan.discovery.protocol) && plan.agent !== 'reference')
+      || (plan.discovery.history && plan.discovery.history.policy_hash !== plan.initial_policy_hash)) return malformed('campaign plan discovery protocol')
   }
   return value as CampaignPlan
+}
+export function validateHistoryCheck(value: unknown, campaignId: string): HistoryCheck {
+  if (!object(value) || value.campaign_id !== campaignId || !['CURRENT', 'CHANGED', 'NOT_CHECKED', 'NOT_APPLICABLE'].includes(String(value.status)) || !text(value.message)
+    || !(value.record_cutoff === null || count(value.record_cutoff)) || !(value.summary_hash === null || digest(value.summary_hash))) return malformed('agent history check')
+  return value as HistoryCheck
 }
 export const runApi = {
   options: () => request('/run-options', validateRunOptions),
   plan: (campaignId: string) => request(`/campaigns/${encodeURIComponent(campaignId)}/plan`, value => validateCampaignPlan(value, campaignId)),
+  historyCheck: (campaignId: string) => request(`/campaigns/${encodeURIComponent(campaignId)}/plan/history-check`, value => validateHistoryCheck(value, campaignId)),
   register: (storeIdentity: string, agent: AgentKind) => request('/agent-registrations', value => validateContract<AgentRegistration>('AgentRegistration', value), { expected_store_identity: storeIdentity, agent }),
   create: (input: PlannedCampaignRequest) => request('/planned-campaigns', value => validateContract<Campaign>('Campaign', value), input),
 }
