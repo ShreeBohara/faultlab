@@ -1,0 +1,89 @@
+{
+ "schema": "faultlab-verify-summary/v1",
+ "round": "product-native-v2-2026-09-29 (native adapter v2: builder, two reviews, fixer)",
+ "verifier": "independent verifier subagent; $0; no provider, model, W&B, Weave or outside network call",
+ "date_utc": "2026-09-29",
+ "verdict": "READY_WITH_NOTES",
+ "report_md": "NOT WRITTEN: this subagent may not write report .md files (harness rule). The plain-English report is in the verifier's structured output (notes), for the PM to save as verify/REPORT.md.",
+ "checkpoint": {"branch": "backup/part2-2026-09-22", "commit": "fca3502bbc9f3f3ef0343f7bef62a11debbd748d", "runtime": "5583dcad5ac94be8a502f62dd5176d7804d48555fd7f012be9c9f114a5302010"},
+ "git_state": {
+  "HEAD": "cbbf957e6e1cb19e1dcc2f87f24a33101859bbbe (main)",
+  "backup_tip": "fca3502bbc9f3f3ef0343f7bef62a11debbd748d",
+  "index_sha256": "e253a478c2ec5b1e3c193bac9da8c31e71eeda231d671f5f7e68e9d95b85d32f",
+  "status_porcelain_lines": 500,
+  "unchanged_before_after_suite_and_final": true,
+  "files": ["git_state_before.txt", "git_state_after_suite.txt", "git_state_final.txt"]
+ },
+ "test_sh": {
+  "command": "./scripts/test.sh (all four stages, default ports, real working tree), once, under verifier network guards",
+  "exit_code": 0,
+  "backend": {"passed": 2824, "skipped": 180, "failed": 0, "warnings": 2, "seconds": 1116.57},
+  "frontend_unit": {"test_files_passed": 22, "tests_passed": 334, "failed": 0},
+  "build": "PASSED (vite build; only the existing chunk-size warning)",
+  "browser": {"passed": 17, "skipped": 1, "failed": 0, "skipped_test": "actual local offline smoke (opt-in, FAULTLAB_BROWSER_LOCAL=1)"},
+  "compared_with_previous_verified_round_5583dcad": "backend 2756 passed/180 skipped -> 2824/180; frontend 329 -> 334 tests (21 -> 22 files); browser 17/1 unchanged",
+  "network_guard": {"python_refused_outside": 0, "node_refused_outside": 0, "sampler_non_loopback_rows": 0, "sampler_samples": 2075, "env_opens": "3, all refused by the repo's own conftest hook (tests that assert that refusal)"},
+  "log": "suite/test-sh.log"
+ },
+ "identities": {
+  "method": "product's own functions (app.lab.configuration.runtime_fingerprints, tree_hash, registry.native_prompt_hash, ...) run in the working tree and in a git-archive copy of fca3502 (verify/checkpoint/tree)",
+  "runtime_hash": "ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090",
+  "algorithm_hash": "7afabd51a2a4f6bb74ca780996d2512be85169299a88c67b94c319a7e2121fe8",
+  "service_hash": {"value": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3", "unchanged": true},
+  "contract_hash": {"value": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727", "unchanged": true},
+  "interpreter_hash": {"value": "6da0714adef40c0268ce65c1d9b1d4a17f829ff04b8dbc6a7059f24f03e6622a", "unchanged": true},
+  "scorer_hash": {"value": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e", "unchanged": true},
+  "native_v1_prompt_hash": {"value": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989", "unchanged_vs_checkpoint": true},
+  "native_v1_adapter_hash": {"checkpoint": "61497db3ae1d487b549198dc0e35525b1cd5fc6e7bc46bba616a3a5c4603d2d4", "now": "fa7a58db41fc629294b3d379d600949ff41ceb7643c716894e06b677470dff21", "why": "registry.py changed (allowed); every v1 registration must be made again"},
+  "native_v2": {"prompt_hash": "cee3aedab1a0476e7d0d656c8a68ac4982ade315a82c70e3731a8ba5b7a2bee0", "adapter_hash": "d27c374f4836f554795207c4bcf7caa84abb75105b69328cd0848a4569338898", "adapter_protocol_hash": "8a0bcb9a672ace3f338b50824a6e07b5f1cac7223b1c1945775744aac95ef329", "native_final_answer_response_format_hash": "e5ce062b45e7e177c3761d23d7229afe5660b4c5caad8baa055ad3aeb42ce539"},
+  "unchanged_reference_values": ["reference_actor_prompt_hash 12eabe7f...", "actor_final_report_response_format_hash 0576de04...", "actor_response_protocol_hash 4e6455ac...", "json_object response format 376bde79...", "native_source_hash 2867b3fb..."],
+  "v1_model_visible_parts_unchanged": ["TASK_CONTRACT", "TRANSPORT_CONTRACT", "native prompt template", "external_agent.py byte-identical (tools, request builder)"],
+  "v1_request_bytes": "golden test (2 scripted episodes, 12 requests) passes against the CHECKPOINT's own code and against the working tree: identical request messages, provider kwargs and outcomes",
+  "all_equal_to_fixer_identity_after_fix_json": true,
+  "files": ["identity/checkpoint.json", "identity/worktree.json", "identity/compare.txt", "v1_golden/"]
+ },
+ "gate_freeze": {
+  "tool": "checkpoint copy of scripts/experiments/gate_freeze.py (unchanged in the working tree), via run_gate_freeze.py (promotion.json and final-audit.json dropped from its file list; git compared them)",
+  "checks_py_file_hash_equal": true,
+  "scorer_hash_equal": true,
+  "assess_pairs_text_equal": true,
+  "assess_pairs_ast_equal": true,
+  "assess_pairs_text_sha256_prefix": "783e8e58f91992f36066a2c6a152c4fbd242bd7e",
+  "unchanged": ["backend/app/referee/ (all files)", "backend/app/simulator/", "contracts/", "promotion.py", "challenge.py", "evaluation.py", "completion_study.py", "actor.py", "prompts/actor.md", "progress.py", "external_agent.py", "policy_interpreter.py", "policy_state.py", "budgets.py", "audit/"],
+  "changed_inside_gate_freeze_scope": {
+   "backend/app/lab/diagnosis.py": "runtime_contract gains one elif branch that runs only for a smolagents-v2 plan; v1 and reference branches unchanged; trial_outcomes and summarize_evidence unchanged (line shift only)",
+   "backend/app/lab/runner.py": "EpisodeRunner.run text and AST unchanged (line shift only); two agent-selection checks now accept both native entry points"
+  },
+  "functions_identical": "26 of 30 (the other 4: 1 changed as above, 3 moved lines only)",
+  "files": ["gate_freeze/compare.txt", "gate_freeze/protected_paths_check.txt"]
+ },
+ "fixed_findings": {
+  "source": "fixer's table not on disk; findings named by fixer/mutation_checks.py, mutation-checks.log and diffs/",
+  "INT-1/M1": "FIXED: only labels already shown to the agent are decoded",
+  "INT-2": "FIXED: final request admitted with its schema counted before the turn is charged",
+  "L4": "FIXED: Start refusal names the next step",
+  "docs": "user-guide, external-agent-setup, CURRENT_STATUS changes present exactly as the fixer's diffs",
+  "mutation_rerun_in_scratch_copy": "ALL MUTANTS BEHAVED AS EXPECTED; outcomes identical to the fixer's log test by test",
+  "files": ["fixer_check.txt", "mutation/"]
+ },
+ "new_tests_vs_ignored_files": {
+  "result": "no dependency on git-ignored files",
+  "working_tree_open_log": "8 backend test files, 101 passed; ignored paths opened: only .venv and __pycache__",
+  "clean_clone": "checkpoint clone + 29 changed files: backend 101 passed 0 skipped; frontend native-adapter-v2.test.tsx 5 passed",
+  "files": ["ignored_deps/", "clean_clone/"]
+ },
+ "commit_list": {
+  "file": "COMMIT_LIST.txt",
+  "notes": "COMMIT_LIST_NOTES.txt",
+  "product_files": {"modified": 21, "new": 8, "deleted": 0},
+  "evidence": "files under artifacts/product-native-v2-2026-09-29/ (git-ignored, need git add -f); count in COMMIT_LIST_NOTES.txt",
+  "check_command": "shasum -a 256 -c artifacts/product-native-v2-2026-09-29/verify/COMMIT_LIST.txt (from the faultlab root)"
+ },
+ "notes": [
+  "Commit onto backup/part2-2026-09-22 (fca3502), not onto the checked-out main (cbbf957, 51 commits behind); the working tree is the backup branch plus this round.",
+  "Adding v2 changed v1's adapter hash; every native v1 registration made before this runtime is refused and idle campaigns saved earlier cannot be started (documented; the refusal now says what to do).",
+  "The product's own pre-existing test suite opens real audit/promotion.json, audit/final-audit.json and artifacts/heldout2/partition/manifest_hash in-process (not new in this round; nothing displayed). The verifier never opened them.",
+  "The fixer's findings table was not on disk; the verified findings are INT-1, M1, INT-2, L4 and the doc fixes named in the fixer's evidence.",
+  "Nothing was run live; v2 has no live evidence yet."
+ ]
+}

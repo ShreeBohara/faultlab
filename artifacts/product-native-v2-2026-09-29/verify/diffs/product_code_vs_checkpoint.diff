@@ -1,0 +1,660 @@
+--- checkpoint/backend/app/cli/regressions.py
++++ worktree/backend/app/cli/regressions.py
+@@ -141,7 +141,7 @@
+     for name in ('validate','playback','execute'):
+         sub=commands.add_parser(name);sub.add_argument('--bundle',type=Path,required=True);sub.add_argument('--agent')
+         if name=='execute':sub.add_argument('--profile',required=True);sub.add_argument('--execute-live',action='store_true')
+-    reg=commands.add_parser('register');reg.add_argument('--agent',choices=['reference','smolagents'],required=True)
++    reg=commands.add_parser('register');reg.add_argument('--agent',choices=['reference','smolagents','smolagents-v2'],required=True,help='smolagents is native adapter v1; smolagents-v2 is the declared adapter v2 (short evidence labels, strict final report turn)')
+     export=commands.add_parser('export');target=export.add_mutually_exclusive_group(required=True)
+     target.add_argument('--regression');target.add_argument('--counterexample')
+     export.add_argument('--policy');export.add_argument('--challenge');export.add_argument('--output',type=Path,required=True)
+--- checkpoint/backend/app/integrations/registry.py
++++ worktree/backend/app/integrations/registry.py
+@@ -17,16 +17,41 @@
+     "prompts/toolcalling_agent.yaml": "28820f24906dd3ee3faa8160945e00529dda2a39c9fa8b3362093c0560c4b8f7",
+ }
+ HOOKS = ["after_upgrade_response", "before_confirmation", "after_notification_response", "before_final_report"]
++REFERENCE_ENTRYPOINT = "orders-prototype-v1"
++# Two declared native adapters for the same unmodified smolagents agent. v1 is the default wherever a
++# default exists; v2 (app.integrations.external_agent_v2) is chosen explicitly. They are separate agents:
++# the entry point is part of every identity, so their registrations, plans and histories never merge.
++NATIVE_V1 = "smolagents-toolcalling-v1"
++NATIVE_V2 = "smolagents-toolcalling-v2"
++NATIVE_ENTRYPOINTS = (NATIVE_V1, NATIVE_V2)
++# Saved-plan and API agent kinds, and the reviewed entry point each selects.
++AGENT_ENTRYPOINTS = {"reference": REFERENCE_ENTRYPOINT, "smolagents": NATIVE_V1, "smolagents-v2": NATIVE_V2}
++ENTRYPOINT_AGENTS = {entry: agent for agent, entry in AGENT_ENTRYPOINTS.items()}
++NATIVE_AGENTS = ("smolagents", "smolagents-v2")
++NATIVE_V2_DISPLAY_NAME = "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)"
++_ADAPTER_FILES = {NATIVE_V1: ("registry.py", "external_agent.py"),
++                  NATIVE_V2: ("registry.py", "external_agent.py", "external_agent_v2.py")}
+ 
+ 
+ def digest(path):
+     return sha256(Path(path).read_bytes()).hexdigest()
+ 
+ 
+-def adapter_hash():
+-    return content_hash({name: digest(Path(__file__).with_name(name)) for name in ("registry.py", "external_agent.py")})
++def _native_entrypoint(entrypoint):
++    if entrypoint not in NATIVE_ENTRYPOINTS:
++        raise ValueError("Unreviewed adapter entrypoint")
++    return entrypoint
+ 
+ 
++def adapter_hash(entrypoint=NATIVE_V1):
++    """v1: registry.py + external_agent.py, as before. v2 also covers its own module and the evidence-label code
++    it executes (app/agents/progress.py); v2 imports and runs v1's module, so that file is covered too."""
++    files = {name: digest(Path(__file__).with_name(name)) for name in _ADAPTER_FILES[_native_entrypoint(entrypoint)]}
++    if entrypoint == NATIVE_V2:
++        files["agents/progress.py"] = digest(Path(__file__).parents[1] / "agents" / "progress.py")
++    return content_hash(files)
++
++
+ def verify_native_source():
+     distribution = metadata.distribution("smolagents")
+     if distribution.version != "1.26.0":
+@@ -45,9 +70,15 @@
+     return content_hash({"revision": REVISION, "files": authored_files})
+ 
+ 
+-def native_prompt_hash():
++def native_prompt_hash(entrypoint=NATIVE_V1):
+     from app.integrations.external_agent import TASK_CONTRACT, TRANSPORT_CONTRACT
+-    return content_hash({"native_template": NATIVE_FILES["prompts/toolcalling_agent.yaml"], "task_contract": TASK_CONTRACT, "transport": TRANSPORT_CONTRACT})
++    identity = {"native_template": NATIVE_FILES["prompts/toolcalling_agent.yaml"], "task_contract": TASK_CONTRACT, "transport": TRANSPORT_CONTRACT}
++    if _native_entrypoint(entrypoint) == NATIVE_V2:
++        # v2 sends v1's task contract and transport text, plus its declared labels and final-turn protocol
++        # (including the final-turn tool text and the structured-output contract's hashes).
++        from app.integrations.external_agent_v2 import adapter_protocol
++        identity["adapter_protocol"] = adapter_protocol()
++    return content_hash(identity)
+ 
+ 
+ def _configuration(configuration):
+@@ -121,14 +152,15 @@
+             raise ValueError("Target shared semantics or dependency lock differ from the installed reviewed runtime")
+ 
+ 
+-def freeze_target_configuration(source_configuration, model_id):
+-    """Keep shared semantics, independently freeze the target's native identity."""
++def freeze_target_configuration(source_configuration, model_id, entrypoint=NATIVE_V1):
++    """Keep shared semantics, independently freeze the target's native identity (v1 unless v2 is chosen)."""
++    _native_entrypoint(entrypoint)
+     source = _configuration(source_configuration)
+     _installed_semantics(source)
+     if not model_id or len(model_id) > 600:
+         raise ValueError("Explicit target model required")
+     target = {**source, "model": model_id, "source_hash": verify_native_source(),
+-        "adapter_hash": adapter_hash(), "actor_prompt_hash": native_prompt_hash(),
++        "adapter_hash": adapter_hash(entrypoint), "actor_prompt_hash": native_prompt_hash(entrypoint),
+         "external_source_revision": REVISION, "external_agent_version": "smolagents/1.26.0"}
+     # These protocols belong to the reference Actor's request builder. The
+     # native adapter keeps its own reviewed prompt, memory and text transport.
+@@ -147,20 +179,23 @@
+     """Derive current configured semantics for a reviewed implementation."""
+     from app.lab.configuration import frozen_configuration
+     current = frozen_configuration(settings, caps, profile)
+-    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
++    if registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
+         if profile != "live-v1":
+             raise ValueError("Native agent execution requires the live configuration profile")
+-        return freeze_target_configuration(current, current["model"])
+-    if registration.adapter_entrypoint_id != "orders-prototype-v1":
++        return freeze_target_configuration(current, current["model"], registration.adapter_entrypoint_id)
++    if registration.adapter_entrypoint_id != REFERENCE_ENTRYPOINT:
+         raise ValueError("Unreviewed adapter entrypoint")
+     return current
+ 
+ 
+ def reviewed_actor_matches(actor, registration):
+     """Check an explicit in-process override against the reviewed factory."""
+-    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
++    if registration.adapter_entrypoint_id == NATIVE_V1:
+         from app.integrations.external_agent import SmolagentsActor
+         return type(actor) is SmolagentsActor and actor.model_id == registration.model
++    if registration.adapter_entrypoint_id == NATIVE_V2:
++        from app.integrations.external_agent_v2 import SmolagentsActorV2
++        return type(actor) is SmolagentsActorV2 and actor.model_id == registration.model
+     from app.adapters.prototype import run_prototype
+     return actor is run_prototype and registration.adapter_entrypoint_id == "orders-prototype-v1"
+ 
+@@ -178,22 +213,31 @@
+             raise ValueError("Unsupported locally reviewed registration ID")
+         return AgentRegistration.model_validate_json(canonical_json(raw))
+ 
+-    def register_smolagents(self, configuration):
++    def register_smolagents(self, configuration, entrypoint=NATIVE_V1):
++        """Register native adapter v1 (the default) or, when chosen explicitly, adapter v2."""
++        _native_entrypoint(entrypoint)
+         target = _configuration(configuration)
+         _installed_semantics(target)
+         source_hash = verify_native_source()
+-        if target["source_hash"] != source_hash or target["adapter_hash"] != adapter_hash() or target["actor_prompt_hash"] != native_prompt_hash():
++        if target["source_hash"] != source_hash or target["adapter_hash"] != adapter_hash(entrypoint) or target["actor_prompt_hash"] != native_prompt_hash(entrypoint):
+             raise ValueError("Target configuration is not the reviewed native adapter")
+         config_hash = content_hash(target)
++        limitations = ["Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."]
++        registration_id, name = "smolagents-1.26.0-" + config_hash[:16], "Hugging Face smolagents ToolCallingAgent"
++        if entrypoint == NATIVE_V2:
++            registration_id, name = "smolagents-1.26.0-adapter-v2-" + config_hash[:16], "Hugging Face " + NATIVE_V2_DISPLAY_NAME
++            limitations += ["Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
++                            "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
++                            "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled."]
+         registration = AgentRegistration(
+-            registration_id="smolagents-1.26.0-" + config_hash[:16], name="Hugging Face smolagents ToolCallingAgent", version="1.26.0",
++            registration_id=registration_id, name=name, version="1.26.0",
+             provenance_class="external", source_origin="https://github.com/huggingface/smolagents", source_owner="Hugging Face and smolagents contributors",
+             source_revision=REVISION, source_hash=source_hash, license="Apache-2.0", permission_ref="Apache-2.0 public source; reviewed pinned release",
+-            adapter_entrypoint_id="smolagents-toolcalling-v1", adapter_hash=adapter_hash(), contract_hash=target["contract_hash"], capability_hash=target["capability_hash"],
++            adapter_entrypoint_id=entrypoint, adapter_hash=adapter_hash(entrypoint), contract_hash=target["contract_hash"], capability_hash=target["capability_hash"],
+             reset_profile_id="fresh-orders-v1", oracle_hash=target["scorer_hash"], policy_hooks=HOOKS,
+             model=target["model"], prompt_hash=target["actor_prompt_hash"], configuration_hash=config_hash,
+             dependency_lock_hash=target["dependency_lock_hash"], budget_compatible=True, dry_run_status="PASSED",
+-            limitations=["Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."])
++            limitations=limitations)
+         self._save(registration, target)
+         return registration
+ 
+@@ -214,7 +258,7 @@
+         registration = AgentRegistration(registration_id=("internal-smoke-" if internal_smoke else "orders-v1-") + config_hash[:16],
+             name="FaultLab reference actor", version="1.0.0", provenance_class="internal_smoke" if internal_smoke else "reference",
+             source_origin="local:FaultLab", source_owner="FaultLab project", source_revision="faultlab-v1", source_hash=target["source_hash"],
+-            license="Local project source", permission_ref="User-authorized local implementation", adapter_entrypoint_id="orders-prototype-v1",
++            license="Local project source", permission_ref="User-authorized local implementation", adapter_entrypoint_id=REFERENCE_ENTRYPOINT,
+             adapter_hash=target["adapter_hash"], contract_hash=target["contract_hash"], capability_hash=target["capability_hash"], reset_profile_id="fresh-orders-v1",
+             oracle_hash=target["scorer_hash"], policy_hooks=HOOKS, model=target["model"], prompt_hash=target["actor_prompt_hash"], configuration_hash=config_hash,
+             dependency_lock_hash=target["dependency_lock_hash"], budget_compatible=True, dry_run_status="PASSED",
+@@ -237,10 +281,11 @@
+         pairs = {"contract_hash": "contract_hash", "capability_hash": "capability_hash", "oracle_hash": "scorer_hash", "adapter_hash": "adapter_hash", "source_hash": "source_hash", "prompt_hash": "actor_prompt_hash", "dependency_lock_hash": "dependency_lock_hash", "model": "model"}
+         if any(getattr(registration, field) != target[key] for field, key in pairs.items()):
+             raise ValueError("Registration/configuration identity mismatch")
+-        if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+-            if registration.provenance_class != "external" or registration.source_hash != verify_native_source() or registration.adapter_hash != adapter_hash() or registration.prompt_hash != native_prompt_hash():
++        if registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
++            entry = registration.adapter_entrypoint_id
++            if registration.provenance_class != "external" or registration.source_hash != verify_native_source() or registration.adapter_hash != adapter_hash(entry) or registration.prompt_hash != native_prompt_hash(entry):
+                 raise ValueError("Reviewed external source or adapter has changed")
+-        elif registration.adapter_entrypoint_id == "orders-prototype-v1":
++        elif registration.adapter_entrypoint_id == REFERENCE_ENTRYPOINT:
+             from app.lab.configuration import tree_hash
+             from app.agents.actor import ACTOR_PROMPT_HASH
+             if registration.provenance_class == "external" or target["source_hash"] != tree_hash(ROOT / "backend/app/agents") or target["adapter_hash"] != tree_hash(ROOT / "backend/app/adapters") or target["actor_prompt_hash"] != ACTOR_PROMPT_HASH:
+@@ -255,9 +300,12 @@
+         self.verify(registration_id, configuration)
+         if model_id is not None and model_id != registration.model:
+             raise ValueError("Requested model differs from registration")
+-        if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
++        if registration.adapter_entrypoint_id == NATIVE_V1:
+             from app.integrations.external_agent import SmolagentsActor
+             return SmolagentsActor(model_id=registration.model)
++        if registration.adapter_entrypoint_id == NATIVE_V2:
++            from app.integrations.external_agent_v2 import SmolagentsActorV2
++            return SmolagentsActorV2(model_id=registration.model)
+         # The registered reference executes the same tracked entrypoint as the
+         # ordinary runner. Raw Actor bypasses the episode root/report trace.
+         from app.adapters.prototype import run_prototype
+--- checkpoint/backend/app/lab/agent_history.py
++++ worktree/backend/app/lab/agent_history.py
+@@ -34,6 +34,9 @@
+ MAX_RECIPE_ROWS = 24
+ REFERENCE_ENTRYPOINT = 'orders-prototype-v1'
+ NATIVE_ENTRYPOINT = 'smolagents-toolcalling-v1'
++# Native adapter v2 (app.integrations.external_agent_v2) has the native identity shape, but its entry point
++# and prompt hash differ from v1's, so the two adapters' histories never merge.
++NATIVE_ENTRYPOINTS = (NATIVE_ENTRYPOINT, 'smolagents-toolcalling-v2')
+ EXCLUSION_KEYS = ('lab_error', 'interrupted', 'not_finished', 'not_weave_verified', 'recipe_unavailable')
+ SOURCES = {'baseline_study': 'B0 trial of a product baseline study (fixed six development cases x three trials)',
+            'learn_discovery': 'a learn campaign\'s own discovery pick (chosen by the Explorer)'}
+@@ -82,7 +85,7 @@
+         return None
+     reg = registration if isinstance(registration, dict) else registration.model_dump(mode='json')
+     entry = reg.get('adapter_entrypoint_id')
+-    if entry not in (REFERENCE_ENTRYPOINT, NATIVE_ENTRYPOINT):
++    if entry not in (REFERENCE_ENTRYPOINT, *NATIVE_ENTRYPOINTS):
+         return None
+     if (reg.get('configuration_hash') != content_hash(configuration) or reg.get('model') != configuration.get('model')
+             or reg.get('oracle_hash') != configuration.get('scorer_hash')
+@@ -97,7 +100,7 @@
+     # Review finding (September 29): the simulator contract and service, the capability set, the model request
+     # settings and the per-episode limits all shape what the agent faces, so they are part of "same agent".
+     identity.update({field: configuration[field] for field in IDENTITY_FIELDS})
+-    if entry == NATIVE_ENTRYPOINT:
++    if entry in NATIVE_ENTRYPOINTS:
+         identity['source_hash'] = reg['source_hash']
+     else:
+         from app.lab.configuration import resolve_actor_context_protocol
+--- checkpoint/backend/app/lab/bundle_imports.py
++++ worktree/backend/app/lab/bundle_imports.py
+@@ -21,7 +21,7 @@
+     Id, RegressionCase, RegressionExecution, StrictModel, Usage, canonical_json,
+     content_hash, new_id, utc_now)
+ from app.integrations.regression_runner import INVENTORY, inspect_bundle, _json
+-from app.integrations.registry import AgentRegistry, current_registration_configuration
++from app.integrations.registry import ENTRYPOINT_AGENTS, AgentRegistry, current_registration_configuration
+ from app.lab.budgets import BudgetExhausted, CampaignLedger, protected_reservations
+ from app.lab.dashboard import store_descriptor
+ from app.lab.operator_actions import MAX_MANIFEST_BYTES, MAX_UPLOAD_BYTES, require_owner
+@@ -452,8 +452,7 @@
+ def _target_description(registration):
+     return {'agent_registration_id': registration.registration_id,
+         'configuration_hash': registration.configuration_hash, 'model': registration.model,
+-        'agent': {'orders-prototype-v1': 'reference', 'smolagents-toolcalling-v1': 'smolagents'}.get(
+-            registration.adapter_entrypoint_id, 'unsupported')}
++        'agent': ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id, 'unsupported')}
+ 
+ 
+ def _saved_task(payloads):
+--- checkpoint/backend/app/lab/diagnosis.py
++++ worktree/backend/app/lab/diagnosis.py
+@@ -28,6 +28,17 @@
+                             'memory':'Fresh native agent and empty native memory for each episode; original reports cite full delivered evidence IDs.',
+                             'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
+                             'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
++        elif plan and plan['agent']=='smolagents-v2':
++            # Native adapter v2: v1's contract and transport text, plus its declared labels and final-report turn.
++            from app.integrations.registry import AgentRegistry,NATIVE_FILES
++            from app.integrations.external_agent_v2 import TASK_CONTRACT,TRANSPORT_CONTRACT,adapter_protocol
++            registration=AgentRegistry(store).get(plan['agent_registration_id'])
++            actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent, FaultLab native adapter v2',
++                            'task_contract':TASK_CONTRACT,'transport_contract':TRANSPORT_CONTRACT,
++                            'adapter_protocol':adapter_protocol(),
++                            'memory':'Fresh native agent and empty native memory for each episode; the agent sees each delivered observation\'s evidence_id as its journal label (obs-N), and its report\'s cited labels are decoded back to the full evidence IDs before validation.',
++                            'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
++                            'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+     return {'actor_contract':actor_contract,'episode_limits':EpisodeBudget().model_dump(mode='json'),
+             'hook_execution':'Rules run in array order. Each rule tests when once on entry; each visited step retests only_if and consumes a policy step, including skipped steps. Policy reads and same-identity retries consume HTTP attempts and ticks; waits consume ticks and polling cycles. Hook steps do not consume actor model turns and do not recursively invoke hooks. Newly delivered observations appear on the next original actor turn. No hook can rewrite a report or create a new authorized operation.',
+             'hook_boundaries':{
+--- checkpoint/backend/app/lab/operator_actions.py
++++ worktree/backend/app/lab/operator_actions.py
+@@ -51,7 +51,8 @@
+ 
+ class RegistrationRequest(StrictModel):
+     expected_store_identity: Digest
+-    agent: Literal['reference', 'smolagents']
++    # 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared adapter v2.
++    agent: Literal['reference', 'smolagents', 'smolagents-v2']
+ 
+ 
+ def current_configuration(settings):
+@@ -63,13 +64,15 @@
+ 
+ def register_agent(store, settings, agent):
+     """Freeze only installed reviewed entrypoints; never install or execute an agent."""
+-    from app.integrations.registry import freeze_target_configuration
++    from app.integrations.registry import AGENT_ENTRYPOINTS, NATIVE_AGENTS, freeze_target_configuration
+     registry = AgentRegistry(store)
+     current = current_configuration(settings)
+-    if agent == 'smolagents':
++    if agent in NATIVE_AGENTS:
+         if not settings.wandb_model:
+             raise ValueError('Configure the target model before native-agent registration')
+-        return registry.register_smolagents(freeze_target_configuration(current, settings.wandb_model))
++        entrypoint = AGENT_ENTRYPOINTS[agent]
++        return registry.register_smolagents(freeze_target_configuration(current, settings.wandb_model, entrypoint),
++                                            entrypoint)
+     if agent != 'reference':
+         raise ValueError('Unknown reviewed agent')
+     return registry.register_reference(current, internal_smoke=not bool(settings.wandb_model))
+--- checkpoint/backend/app/lab/run_plans.py
++++ worktree/backend/app/lab/run_plans.py
+@@ -16,7 +16,8 @@
+     StrictModel, canonical_json, content_hash)
+ from app.agents.transport_retry import RETRIES_PER_REQUEST, declaration as transport_retry_declaration
+ from app.lab.evidence_wait import declaration as evidence_retry_declaration
+-from app.integrations.registry import AgentRegistry
++from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NATIVE_AGENTS, NATIVE_V2_DISPLAY_NAME,
++                                      AgentRegistry)
+ from app.lab.configuration import frozen_configuration
+ from app.lab.dashboard import store_descriptor
+ from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK,
+@@ -27,7 +28,11 @@
+ TASK = 'orders.upgrade_then_confirm/v1'
+ TASK_TEXT = 'Upgrade the authorized order to express shipping, then record one truthful confirmation.'
+ CaseId = Literal['dev-1', 'dev-2', 'dev-3', 'dev-4', 'dev-5', 'dev-6']
+-Agent = Literal['reference', 'smolagents']
++# 'smolagents' is native adapter v1 (the default native choice, unchanged); 'smolagents-v2' is the declared
++# native adapter v2 (app.integrations.external_agent_v2). Each selects exactly one reviewed entry point.
++Agent = Literal['reference', 'smolagents', 'smolagents-v2']
++AGENT_LABELS = (('reference', 'FaultLab reference Actor'), ('smolagents', 'smolagents ToolCallingAgent 1.26.0'),
++                ('smolagents-v2', NATIVE_V2_DISPLAY_NAME))
+ CASE_LABELS = {
+     'dev-1': ('Healthy services', 'No injected service fault.'),
+     'dev-2': ('Lost upgrade response', 'The accepted upgrade response arrives after the HTTP timeout.'),
+@@ -277,9 +282,10 @@
+     configuration = frozen_configuration(settings, _caps(settings), profile)
+     sink = _PreviewRecords()
+     registry = AgentRegistry(sink)
+-    if agent == 'smolagents':
+-        configuration = freeze_target_configuration(configuration, settings.wandb_model)
+-        registration = registry.register_smolagents(configuration)
++    if agent in NATIVE_AGENTS:
++        entrypoint = AGENT_ENTRYPOINTS[agent]
++        configuration = freeze_target_configuration(configuration, settings.wandb_model, entrypoint)
++        registration = registry.register_smolagents(configuration, entrypoint)
+     else:
+         registration = registry.register_reference(configuration, internal_smoke=profile == 'offline-v1')
+     return configuration, registration
+@@ -306,7 +312,7 @@
+     caps = _caps(settings)
+     offline_configuration, _ = _preview(settings, 'offline-v1', 'reference')
+     agents, hashes = [], {}
+-    for agent, label in (('reference', 'FaultLab reference Actor'), ('smolagents', 'smolagents ToolCallingAgent 1.26.0')):
++    for agent, label in AGENT_LABELS:
+         row = {'agent': agent, 'label': label, 'status': 'UNAVAILABLE', 'reason_code': 'SOURCE_UNAVAILABLE',
+                'message': 'Reviewed local source is unavailable or differs from its pinned identity.',
+                'configuration_hash': None, 'proposed_registration_id': None, 'registered': False,
+@@ -334,7 +340,7 @@
+                     registered=registered, registration_id=registration.registration_id if registered else None,
+                     source_conformance='VERIFIED', compare_available=bool(registered and accepted),
+                     accepted_policy_version=accepted.version if accepted else None, limitations=list(registration.limitations))
+-                if agent == 'smolagents':
++                if agent in NATIVE_AGENTS:
+                     row['limitations'].append('Reference Actor context, completion and dependent heldout studies are unavailable for this selected native agent.')
+         agents.append(row)
+     setup = {'protocol': PROTOCOL, 'task_definition_id': TASK,
+@@ -392,7 +398,7 @@
+     return [
+         {'protocol_id': DISCOVERY_V1, 'default': True, 'label': 'v1 · every valid new pick runs',
+          'description': 'Today\'s behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.',
+-         'supported_agents': ['reference', 'smolagents'], 'declaration': v1},
++         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v1},
+         {'protocol_id': DISCOVERY_V2, 'default': False, 'label': 'v2 · reachability pre-check',
+          'description': 'A free replay of the real simulator labels each fault before any paid Actor episode; only picks whose every fault is FORCED run, and a refused pick gets one re-plan with the reason.',
+          'supported_agents': ['reference'],
+@@ -400,7 +406,7 @@
+          'declaration': v2},
+         {'protocol_id': DISCOVERY_V3, 'default': False, 'label': 'v3 · agent history',
+          'description': 'Exactly v1 (every valid new pick runs, same budget). ' + HISTORY_DESCRIPTION,
+-         'supported_agents': ['reference', 'smolagents'], 'declaration': v3},
++         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v3},
+         {'protocol_id': DISCOVERY_V3_PRECHECK, 'default': False, 'label': 'v3 · agent history + reachability pre-check',
+          'description': 'Exactly v2 (pre-check, one re-plan per refused slot, same budget). ' + HISTORY_DESCRIPTION,
+          'supported_agents': ['reference'],
+@@ -425,7 +431,7 @@
+         from app.integrations.registry import current_registration_configuration
+         registry = AgentRegistry(store)
+         registration = registry.get(request.agent_registration_id)
+-        agent = {'orders-prototype-v1': 'reference', 'smolagents-toolcalling-v1': 'smolagents'}.get(registration.adapter_entrypoint_id)
++        agent = ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id)
+         if agent is None: raise StoreConflict('Unreviewed agent registration')
+         configuration = current_registration_configuration(settings, _caps(settings), 'live-v1', registration)
+         if (registration.configuration_hash != content_hash(configuration)
+@@ -531,7 +537,7 @@
+     if (not registration or registration.get('configuration_hash') != campaign.configuration_hash
+             or not owner or owner.get('registration_id') != plan['agent_registration_id']):
+         raise StoreConflict('Saved campaign registration differs from its plan')
+-    adapter = {'reference': 'orders-prototype-v1', 'smolagents': 'smolagents-toolcalling-v1'}[plan['agent']]
++    adapter = AGENT_ENTRYPOINTS[plan['agent']]
+     if registration.get('adapter_entrypoint_id') != adapter: raise StoreConflict('Saved plan agent differs from its registration')
+     checked_registration = AgentRegistration.model_validate_json(canonical_json(registration))
+     for field, key in {'model': 'model', 'source_hash': 'source_hash', 'adapter_hash': 'adapter_hash',
+@@ -627,7 +633,8 @@
+     registration = registry.get(plan['agent_registration_id'])
+     current = current_registration_configuration(settings, _caps(settings), campaign.config_profile_id, registration)
+     if content_hash(current) != plan['configuration_hash']:
+-        raise StoreConflict('Current source, model or campaign limits differ from the saved plan')
++        raise StoreConflict('Current source, model or campaign limits differ from the saved plan. Register the agent '
++                            'again and create a new campaign; this saved plan stays readable')
+     registry.verify(registration.registration_id, current)
+     # Execution applies the installed retry rule, so the saved plan must declare exactly it.
+     if plan.get('transport_retry') != transport_retry_declaration(plan['episode_budget']['actor_calls']):
+--- checkpoint/backend/app/lab/runner.py
++++ worktree/backend/app/lab/runner.py
+@@ -34,8 +34,9 @@
+ 
+ 
+ def reject_native_reference_study(store,campaign):
++    from app.integrations.registry import NATIVE_AGENTS
+     plan=campaign_run_plan(store,campaign)
+-    if plan and plan['agent']=='smolagents':
++    if plan and plan['agent'] in NATIVE_AGENTS:
+         raise ValueError('This research study tests reference Actor protocols; native planned campaigns support ordinary baseline, learn and compare runs')
+ 
+ 
+@@ -72,7 +73,7 @@
+ 
+ def resolve_execution(store,campaign,frozen,*,arm,purpose,study_id,source_mode,registration_id,actor,actor_context_protocol,offline_fixture=False):
+     """Resolve all selected-agent phases before creating a world or spending."""
+-    from app.integrations.registry import AgentRegistry,reviewed_actor_matches
++    from app.integrations.registry import AgentRegistry,NATIVE_ENTRYPOINTS,reviewed_actor_matches
+     from app.lab.storage import StoreConflict
+     plan=campaign_run_plan(store,campaign)
+     if plan is None:
+@@ -108,7 +109,7 @@
+     registration=registry.verify(selected_id,frozen)
+     if actor is not None and not reviewed_actor_matches(actor,registration):
+         raise StoreConflict('Actor override differs from the reviewed selected implementation')
+-    native=registration.adapter_entrypoint_id=='smolagents-toolcalling-v1'
++    native=registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS
+     if native and actor_context_protocol is not None:
+         raise StoreConflict('Native agent does not execute reference Actor context protocols')
+     selected_context=None if native else resolve_actor_context_protocol(frozen,actor_context_protocol)
+--- checkpoint/backend/app/providers/runtime.py
++++ worktree/backend/app/providers/runtime.py
+@@ -10,7 +10,8 @@
+ from typing import Any, Callable, Literal
+ 
+ from app.config import Settings
+-from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT, ReportAction, canonical_json, content_hash
++from app.contracts.models import (MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT, ReportAction, StrictModel,
++                                  TaskReport, canonical_json, content_hash)
+ from app.contracts.tokens import validate_model_input
+ from app.providers import redact_text
+ from app.providers.wandb_inference import BASE_URL, model_request_options
+@@ -20,15 +21,36 @@
+                           "response_format": {"type": "json_object"}, "temperature": 0}
+ ACTOR_RESPONSE_PROTOCOL_VERSION = "faultlab-reference-final-report/v1"
+ ACTOR_FINAL_REPORT_SCHEMA_JSON = canonical_json(ReportAction.model_json_schema())
+-ResponseContract = Literal["actor_final_report"]
+ 
+ 
++class NativeFinalAnswerArguments(StrictModel):
++    answer: TaskReport
++
++
++class NativeFinalAnswer(StrictModel):
++    """The native smolagents final_answer action, exactly as the native transport carries it."""
++    name: Literal["final_answer"]
++    arguments: NativeFinalAnswerArguments
++
++
++# Native adapter v2's reserved final-report turn (app.integrations.external_agent_v2). A separate,
++# declared contract beside the reference Actor's: it leaves "actor_final_report" byte-identical.
++NATIVE_FINAL_ANSWER_CONTRACT = "native_final_answer"
++NATIVE_FINAL_ANSWER_PROTOCOL_VERSION = "faultlab-native-final-answer/v1"
++NATIVE_FINAL_ANSWER_SCHEMA_JSON = canonical_json(NativeFinalAnswer.model_json_schema())
++ResponseContract = Literal["actor_final_report", "native_final_answer"]
++
++
+ def response_format_for(*, role: str = "actor", response_contract: ResponseContract | None = None) -> dict:
+-    """Only reviewed code may select the fixed final-report contract."""
++    """Only reviewed code may select one of the fixed final-report contracts."""
+     if response_contract is None:
+         return {"type": "json_object"}
+-    if role != "actor" or response_contract != "actor_final_report":
++    if role != "actor" or response_contract not in ("actor_final_report", NATIVE_FINAL_ANSWER_CONTRACT):
+         raise RuntimeProviderError("Unknown or role-incompatible response contract.", code="INVALID_INPUT")
++    if response_contract == NATIVE_FINAL_ANSWER_CONTRACT:
++        return {"type": "json_schema", "json_schema": {
++            "name": "FaultLabNativeFinalAnswer", "strict": True,
++            "schema": json.loads(NATIVE_FINAL_ANSWER_SCHEMA_JSON)}}
+     return {"type": "json_schema", "json_schema": {
+         "name": "FaultLabActorFinalReport", "strict": True,
+         "schema": json.loads(ACTOR_FINAL_REPORT_SCHEMA_JSON)}}
+@@ -44,6 +66,17 @@
+             "input_admission": "messages_plus_final_report_response_format/v1"}
+ 
+ 
++def native_final_answer_protocol() -> dict:
++    """Declared structured-output contract of native adapter v2's final-report turn (not the reference Actor's)."""
++    final_format = response_format_for(response_contract=NATIVE_FINAL_ANSWER_CONTRACT)
++    return {"version": NATIVE_FINAL_ANSWER_PROTOCOL_VERSION, "scope": "smolagents_native_adapter_v2",
++            "trigger": "EpisodeMeter.final_turn: reserved last turn or business_closed",
++            "response_contract": NATIVE_FINAL_ANSWER_CONTRACT, "response_format": final_format,
++            "schema_hash": content_hash(final_format["json_schema"]["schema"]),
++            "response_format_hash": content_hash(final_format),
++            "input_admission": "messages_plus_final_report_response_format/v1"}
++
++
+ def validate_request_input(messages, model: str, *, role: str = "actor",
+                            response_contract: ResponseContract | None = None) -> int:
+     """Admit the final-report schema without changing the sent messages.
+--- checkpoint/frontend/src/components/BundleImports.tsx
++++ worktree/frontend/src/components/BundleImports.tsx
+@@ -6,6 +6,7 @@
+ import { Empty, Field, Hash, Json, Panel, ResourceNote, label } from './common'
+ import { ImportedFreshEvidence, ImportedHistoricalEvidence } from './ImportedTrialEvidence'
+ import { TaskText } from './TaskText'
++import { agentName } from '../runPlans'
+ 
+ const artifactLabel = { incident_fixture: 'Incident fixture', candidate_comparison: 'Candidate comparison', accepted_policy_bundle: 'Accepted source policy bundle' }
+ const message = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
+@@ -194,15 +195,15 @@
+     <ImportedHistoricalEvidence bundle={bundle} />
+     <section className="import-target" aria-label="Fresh imported regression setup"><h3>Separate fresh execution</h3><p className="muted">Choose a reviewed local target. This runs exactly the bundled policy and the task below in three new worlds; it does not activate the policy or rewrite original source results.</p>
+       <p className={bundle.runnable ? 'muted' : 'notice'}>{bundle.runnable ? 'This bundle is eligible for local execution after target and runtime checks.' : `Stored for inspection; not runnable. ${bundle.runnable_reason ?? 'The current runtime is incompatible.'}`}</p>
+-      <div className="setup-field"><label htmlFor={`${fieldId}-target`}>Fresh target registration</label><select id={`${fieldId}-target`} value={targetId} disabled={busy || !!ownPending} onChange={event => { setTargetId(event.target.value); setConfirming(false); setError(null) }}><option value="">Select a reviewed local target</option>{bundle.targets.map(item => <option key={item.agent_registration_id} value={item.agent_registration_id}>{item.agent} · {item.model} · {item.agent_registration_id}{item.compatible ? '' : ' · incompatible'}</option>)}</select></div>
++      <div className="setup-field"><label htmlFor={`${fieldId}-target`}>Fresh target registration</label><select id={`${fieldId}-target`} value={targetId} disabled={busy || !!ownPending} onChange={event => { setTargetId(event.target.value); setConfirming(false); setError(null) }}><option value="">Select a reviewed local target</option>{bundle.targets.map(item => <option key={item.agent_registration_id} value={item.agent_registration_id}>{agentName(item.agent)} · {item.model} · {item.agent_registration_id}{item.compatible ? '' : ' · incompatible'}</option>)}</select></div>
+       {!bundle.targets.length && <p className="muted">No reviewed live target is registered yet. The built-in offline smoke agent cannot run imported regressions.</p>}
+-      {target && <dl className="facts compact"><Field name="Actual target agent">{target.agent}</Field><Field name="Actual target model">{target.model}</Field><Field name="Target configuration"><Hash value={target.configuration_hash} /></Field><Field name="Compatibility">{target.compatible ? 'Compatible installed source and task contract; provider access not checked' : target.reason ?? 'Incompatible'}</Field></dl>}
++      {target && <dl className="facts compact"><Field name="Actual target agent">{agentName(target.agent)}</Field><Field name="Actual target model">{target.model}</Field><Field name="Target configuration"><Hash value={target.configuration_hash} /></Field><Field name="Compatibility">{target.compatible ? 'Compatible installed source and task contract; provider access not checked' : target.reason ?? 'Incompatible'}</Field></dl>}
+       <p className="muted"><a href="#new-campaign-setup">Configure or register a reviewed agent in the Run desk</a>, then refresh this review. Choose the live profile there to register configured source; registration makes no provider call and is not behavioral validation.</p>
+       <dl className="facts compact"><Field name="Fresh trials">{limits.required_trials}</Field><Field name="Execution profile">sandbox-v1</Field><Field name="Per-trial limits">{limits.episode_budget.actor_calls ?? 'Not recorded'} actor turns · {limits.episode_budget.http_attempts ?? 'Not recorded'} HTTP attempts · {limits.episode_budget.wall_seconds ?? 'Not recorded'} seconds</Field><Field name="Spending bound for one run">{bound}</Field></dl><Json value={limits} title="All immutable fresh-trial limits" />
+       <section aria-label="Task sent in fresh trials"><h4>Each fresh trial sends the agent this task</h4><ExecutionTaskFacts bundle={bundle} /></section>
+       <p className="notice">Fresh execution makes billable model and telemetry calls. {bound} Selecting the button below asks for a separate confirmation.</p>
+       {!(confirming && canRun) && <button className="primary" disabled={!canRun} onClick={() => { if (canRun) { setConfirming(true); setStatus(null) } }}>{busy ? 'Saving execution request…' : 'Run imported regression in fresh worlds'}</button>}
+-      {confirming && canRun && target && bundle.execution_task && <div className="notice" role="group" aria-label="Confirm billable fresh run"><p><strong>Confirm this billable run.</strong> Target: {target.agent} · {target.model} · <code>{target.agent_registration_id}</code>. Task: “<TaskText text={bundle.execution_task.task_text} />” on order <code>{bundle.execution_task.order_id}</code>. {bound}</p><div className="controls"><button className="primary" onClick={() => void action(async () => {
++      {confirming && canRun && target && bundle.execution_task && <div className="notice" role="group" aria-label="Confirm billable fresh run"><p><strong>Confirm this billable run.</strong> Target: {agentName(target.agent)} · {target.model} · <code>{target.agent_registration_id}</code>. Task: “<TaskText text={bundle.execution_task.task_text} />” on order <code>{bundle.execution_task.order_id}</code>. {bound}</p><div className="controls"><button className="primary" onClick={() => void action(async () => {
+         if (!canRun || !target) return
+         const body: ImportExecutionRequest = { expected_store_identity: bundle.data_store.identity, expected_manifest_hash: bundle.manifest_hash, expected_target_configuration_hash: target.configuration_hash, agent_registration_id: target.agent_registration_id, request_id: `import-run-${crypto.randomUUID()}`, execution_profile_id: 'sandbox-v1', execute_live: true }
+         persistPending({ import_id: bundle.import_id, request: body })
+@@ -213,7 +214,7 @@
+     </section>
+     {ownPending && <section className="notice" aria-label="Unresolved imported execution request"><h3>Execution request awaiting a confirmed response</h3><p>The exact request was saved before dispatch. A timeout does not mean it failed. Check its saved result or retry this same request; neither creates a second execution for this nonce.</p><code>{ownPending.request.request_id}</code><div className="controls"><button disabled={busy} onClick={() => void action(checkRequest)}>Check saved request</button><button disabled={busy || readOnly || replay || !storeMatches} onClick={() => void action(() => execute(ownPending.request))}>Retry same execution request</button><button disabled={busy || readOnly || replay || !storeMatches} onClick={() => void action(cancelRequest)}>Cancel unadmitted request</button></div>{requestAbsent && <p>No saved execution was found at the last check. The original request may still be processing. Its nonce is retained until the backend confirms cancellation or returns the execution.</p>}<p>Cancelling prevents later admission only if this request has not started. If already admitted, its existing execution is returned; it is not stopped or rerun.</p></section>}
+     {status && <p role="status" className="notice">{status}</p>}
+-    <section className="import-execution-history" aria-label="Imported regression execution history"><h3>Saved fresh executions for this import</h3><p className="muted">Opening a saved execution reads its result; it does not rerun it.</p><label htmlFor={`${fieldId}-execution`}>Saved imported executions</label><select id={`${fieldId}-execution`} value={histories.page?.items.some(item => item.execution.execution_id === latest?.execution.execution_id) ? latest!.execution.execution_id : ''} disabled={busy || !histories.page?.items.length} onChange={event => { const value = histories.page?.items.find(item => item.execution.execution_id === event.target.value); if (value) { setExecution(value); setError(null) } }}><option value="">Select a saved fresh execution</option>{histories.page?.items.map(item => <option key={item.execution.execution_id} value={item.execution.execution_id}>{item.execution.execution_id} · {label(item.execution.status)} · {item.target.agent} · {item.target.model}</option>)}</select><div className="controls"><button className="text-button" disabled={busy || histories.loading} onClick={histories.refresh}>Refresh imported executions</button>{histories.page?.has_more && <button className="text-button" disabled={busy || histories.loading} onClick={() => void histories.older()}>Load older imported executions</button>}</div>
++    <section className="import-execution-history" aria-label="Imported regression execution history"><h3>Saved fresh executions for this import</h3><p className="muted">Opening a saved execution reads its result; it does not rerun it.</p><label htmlFor={`${fieldId}-execution`}>Saved imported executions</label><select id={`${fieldId}-execution`} value={histories.page?.items.some(item => item.execution.execution_id === latest?.execution.execution_id) ? latest!.execution.execution_id : ''} disabled={busy || !histories.page?.items.length} onChange={event => { const value = histories.page?.items.find(item => item.execution.execution_id === event.target.value); if (value) { setExecution(value); setError(null) } }}><option value="">Select a saved fresh execution</option>{histories.page?.items.map(item => <option key={item.execution.execution_id} value={item.execution.execution_id}>{item.execution.execution_id} · {label(item.execution.status)} · {agentName(item.target.agent)} · {item.target.model}</option>)}</select><div className="controls"><button className="text-button" disabled={busy || histories.loading} onClick={histories.refresh}>Refresh imported executions</button>{histories.page?.has_more && <button className="text-button" disabled={busy || histories.loading} onClick={() => void histories.older()}>Load older imported executions</button>}</div>
+       {histories.loading && <p role="status" className="muted">Loading imported execution history…</p>}{histories.error && <p role="alert" className="error">{histories.error}</p>}{histories.page?.items.length === 0 && <Empty>No fresh execution has been saved for this import.</Empty>}
+     </section>
+     <ResourceNote resource={running} />
+--- checkpoint/frontend/src/components/CampaignPlan.tsx
++++ worktree/frontend/src/components/CampaignPlan.tsx
+@@ -1,5 +1,5 @@
+ import type { Campaign } from '../generated/contracts'
+-import type { CampaignPlan as SavedPlan } from '../runPlans'
++import { agentName, isNativeAgent, type CampaignPlan as SavedPlan } from '../runPlans'
+ import type { Resource } from '../useResource'
+ import { Field, Json, ResourceNote } from './common'
+ import { TaskText } from './TaskText'
+@@ -10,12 +10,12 @@
+   const plan = saved?.status === 'PLANNED' ? saved.plan : null
+   return <section className="frozen-plan" aria-label="Saved campaign plan"><h3>Frozen campaign plan</h3><ResourceNote resource={resource} />
+     {saved?.status === 'LEGACY' && <p className="notice">Legacy campaign · no explicit run plan was recorded. Its saved task, model, configuration and original evidence remain available; current setup choices do not fill in missing history.</p>}
+-    {plan && <><dl className="facts compact"><Field name="Agent">{plan.source_mode === 'offline_fixture' ? 'Handwritten reference smoke · B1' : plan.agent === 'smolagents' ? 'smolagents ToolCallingAgent' : 'FaultLab reference actor'}</Field><Field name="Frozen actor model">{campaign.model}</Field><Field name="Registration"><code>{plan.agent_registration_id}</code></Field><Field name="Task">Express upgrade, then confirmation</Field><Field name="Frozen instructions"><TaskText text={plan.task_text} /></Field><Field name="Authorized order">{plan.order_id}</Field><Field name="Mode">{plan.mode}</Field><Field name="Case / search space">{plan.selection.kind === 'development_case' ? `${plan.selection.case_id} · ${plan.selection.fixture_id}` : plan.selection.kind === 'development_search' ? 'Fixed public development search space' : 'Fixed protected policy comparison'}</Field><Field name="Initial policy">{plan.initial_policy_version}</Field><Field name="Campaign limits">{plan.caps.model_calls} model requests · {plan.caps.tokens.toLocaleString()} tokens · ${plan.caps.dollars.toFixed(2)}</Field><Field name="Per-episode limits">{plan.episode_budget.actor_calls} actor turns · {plan.episode_budget.http_attempts} HTTP attempts · {plan.episode_budget.wall_seconds} seconds</Field><Field name="Model transport retries">{plan.transport_retry ? `At most one charged retry per Actor, Explorer or Mechanic request that received no answer (connection error, timeout, HTTP 503) · at most ${plan.transport_retry.actor_retries_per_episode_max} per episode for the agent · never after an answer · never an extra turn` : 'Not declared: this plan was saved before model transport retries were declared in plans.'}</Field></dl>
++    {plan && <><dl className="facts compact"><Field name="Agent">{plan.source_mode === 'offline_fixture' ? 'Handwritten reference smoke · B1' : agentName(plan.agent)}</Field><Field name="Frozen actor model">{campaign.model}</Field><Field name="Registration"><code>{plan.agent_registration_id}</code></Field><Field name="Task">Express upgrade, then confirmation</Field><Field name="Frozen instructions"><TaskText text={plan.task_text} /></Field><Field name="Authorized order">{plan.order_id}</Field><Field name="Mode">{plan.mode}</Field><Field name="Case / search space">{plan.selection.kind === 'development_case' ? `${plan.selection.case_id} · ${plan.selection.fixture_id}` : plan.selection.kind === 'development_search' ? 'Fixed public development search space' : 'Fixed protected policy comparison'}</Field><Field name="Initial policy">{plan.initial_policy_version}</Field><Field name="Campaign limits">{plan.caps.model_calls} model requests · {plan.caps.tokens.toLocaleString()} tokens · ${plan.caps.dollars.toFixed(2)}</Field><Field name="Per-episode limits">{plan.episode_budget.actor_calls} actor turns · {plan.episode_budget.http_attempts} HTTP attempts · {plan.episode_budget.wall_seconds} seconds</Field><Field name="Model transport retries">{plan.transport_retry ? `At most one charged retry per Actor, Explorer or Mechanic request that received no answer (connection error, timeout, HTTP 503) · at most ${plan.transport_retry.actor_retries_per_episode_max} per episode for the agent · never after an answer · never an extra turn` : 'Not declared: this plan was saved before model transport retries were declared in plans.'}</Field></dl>
+       {plan.transport_retry && <p className="muted">{plan.transport_retry.rule}</p>}
+       {plan.mode === 'learn' && <dl className="facts compact"><Field name="Automatic evidence retries">{plan.evidence_retry ? `Up to ${plan.evidence_retry.automatic_retries_per_wait} per evidence wait${plan.evidence_retry.automatic_retries_per_campaign === undefined ? ' (no campaign limit: an earlier rule that Start now refuses)' : ` and ${plan.evidence_retry.automatic_retries_per_campaign} per campaign`} (after ${plan.evidence_retry.delays_seconds.map(delay => `${delay} s`).join(', ')}) · telemetry only: no episode, business action or model request is repeated, nothing is charged · then “needs operator”` : 'Not declared: this plan was saved before automatic evidence retries were declared. Only manual Retry evidence sync applies.'}</Field></dl>}
+       {plan.evidence_retry && <p className="muted">{plan.evidence_retry.rule}</p>}
+       {plan.mode === 'learn' && (plan.discovery ? <DiscoveryProtocolFacts declaration={plan.discovery} campaign={campaign} /> : <p className="muted">Discovery protocol: v1 (this plan predates declared discovery protocols).</p>)}
+-      {plan.agent === 'smolagents' && <p className="muted">Separate reference-context and completion research studies do not support this native agent.</p>}
++      {isNativeAgent(plan.agent) && <p className="muted">Separate reference-context and completion research studies do not support this native agent.</p>}
+       <Json value={plan} title="Inspect immutable plan and hashes" />
+     </>}
+   </section>
+--- checkpoint/frontend/src/components/ImportedTrialEvidence.tsx
++++ worktree/frontend/src/components/ImportedTrialEvidence.tsx
+@@ -4,6 +4,7 @@
+ import { useResource } from '../useResource'
+ import { Badge, Empty, Field, Json, ResourceNote } from './common'
+ import { RecordingDownload } from './RecordingDownload'
++import { agentName } from '../runPlans'
+ 
+ export function faultExposure(verdict: unknown, scheduled?: boolean, triggered?: boolean, expectedFaults?: number): string {
+   if (object(verdict) && Array.isArray(verdict.fault_executions)) {
+@@ -63,7 +64,7 @@
+     return loaded
+   }, execution.status === 'RUNNING' || execution.status === 'PENDING' ? 1500 : null)
+   return <section aria-label="Fresh imported execution evidence"><h3>Fresh execution · {execution.execution_id}</h3><Badge value={execution.status} />
+-    <dl className="facts compact"><Field name="Actual target agent">{value.target.agent}</Field><Field name="Actual target model">{value.target.model}</Field><Field name="Target registration"><code>{value.target.agent_registration_id}</code></Field><Field name="Target configuration"><code>{value.target.configuration_hash}</code></Field><Field name="Recorded trial usage">{execution.usage.model_calls ?? 0} model calls · {execution.usage.http_attempts ?? 0} HTTP attempts</Field>{charges && <Field name="Charged to its accounting ledger">{charges.model_calls} model requests (includes any transport retries; at most {charges.request_ceiling}) · {charges.reserved_model_calls} still reserved · {charges.actual_cost_dollars == null ? (charges.model_calls ? 'cost unknown' : 'no cost') : `$${charges.actual_cost_dollars.toFixed(4)}`}</Field>}<Field name="Fresh worlds">{execution.world_ids.join(', ') || 'Not allocated yet'}</Field></dl>
++    <dl className="facts compact"><Field name="Actual target agent">{agentName(value.target.agent)}</Field><Field name="Actual target model">{value.target.model}</Field><Field name="Target registration"><code>{value.target.agent_registration_id}</code></Field><Field name="Target configuration"><code>{value.target.configuration_hash}</code></Field><Field name="Recorded trial usage">{execution.usage.model_calls ?? 0} model calls · {execution.usage.http_attempts ?? 0} HTTP attempts</Field>{charges && <Field name="Charged to its accounting ledger">{charges.model_calls} model requests (includes any transport retries; at most {charges.request_ceiling}) · {charges.reserved_model_calls} still reserved · {charges.actual_cost_dollars == null ? (charges.model_calls ? 'cost unknown' : 'no cost') : `$${charges.actual_cost_dollars.toFixed(4)}`}</Field>}<Field name="Fresh worlds">{execution.world_ids.join(', ') || 'Not allocated yet'}</Field></dl>
+     <p className="muted">Accounting campaign: <code>{value.owner_campaign_id}</code>. The target identity above identifies these trials; the accounting campaign is not the tested agent.</p>
+     {execution.stop_reason && <p className="notice">{execution.stop_reason}</p>}
+     {value.error && <div role="alert" className="error">FaultLab could not finish this execution. This infrastructure error is separate from an agent rule violation.<Json value={value.error} title="Saved execution error" /></div>}
+--- checkpoint/frontend/src/components/RunSetup.tsx
++++ worktree/frontend/src/components/RunSetup.tsx
+@@ -1,7 +1,7 @@
+ import { useEffect, useId, useRef, useState } from 'react'
+ import type { Campaign } from '../generated/contracts'
+ import type { ConfigStatus, ReadinessStatus } from '../api'
+-import { runApi, type AgentKind, type DiscoveryProtocolId, type RunMode, type RunProfile } from '../runPlans'
++import { isNativeAgent, runApi, type AgentKind, type DiscoveryProtocolId, type RunMode, type RunProfile } from '../runPlans'
+ import { DiscoveryProtocolFacts, discoveryBudget } from './DiscoveryProtocol'
+ import { useResource, type Resource } from '../useResource'
+ import { Field, ResourceNote } from './common'
+@@ -55,7 +55,8 @@
+           {!agent.registered && <button disabled={blocked || agent.status !== 'READY'} onClick={() => void action('register', async () => { await runApi.register(value.data_store.identity, agent.agent); setMessage('Registration saved. No agent execution or provider call was made.'); options.refresh?.() })}>{busy === 'register' ? 'Registering…' : 'Register configured agent'}</button>}
+           <p className="muted">{agent.source_conformance === 'VERIFIED' ? 'Installed source and adapter conformance verified.' : 'Installed source and adapter conformance unavailable.'} This is not behavioral validation. Provider access has not been checked.</p>
+           {!!agent.limitations.length && <details><summary>Agent limitations</summary><ul className="muted">{agent.limitations.map(item => <li key={item}>{item}</li>)}</ul></details>}
+-          {agentKind === 'smolagents' && <p className="muted">Supports baseline, original Learn and compatible policy comparison. Separate reference-context and completion research studies are not supported.</p>}
++          {isNativeAgent(agentKind) && <p className="muted">Supports baseline, original Learn and compatible policy comparison. Separate reference-context and completion research studies are not supported.</p>}
++          {agentKind === 'smolagents-v2' && <p className="muted">Adapter v2 is a separate agent from v1 (the same smolagents code): it shows each delivered observation's evidence ID as a short label (obs-1, obs-2, …), decodes cited labels back to the real IDs, and on the final turn offers only final_answer with a structured final-report format. Its results are never pooled with adapter v1.</p>}
+         </>}
+       </div> : <p className="profile-note">Offline smoke uses the handwritten reference in a fresh synthetic world. It makes no model calls and does not measure learned improvement.</p>}
+       <div className="supported-task"><span className="small-label">SUPPORTED TASK</span><h3>{value.task.label}</h3><p className="muted">{value.task.description}</p></div>
+--- checkpoint/frontend/src/runPlans.ts
++++ worktree/frontend/src/runPlans.ts
+@@ -3,7 +3,16 @@
+ import { validateContract } from './generated/validate'
+ 
+ export const TASK_DEFINITION = 'orders.upgrade_then_confirm/v1' as const
+-export type AgentKind = 'reference' | 'smolagents'
++/** 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared native adapter v2. */
++export type AgentKind = 'reference' | 'smolagents' | 'smolagents-v2'
++export const AGENT_KINDS: readonly AgentKind[] = ['reference', 'smolagents', 'smolagents-v2']
++export const NATIVE_AGENT_KINDS: readonly AgentKind[] = ['smolagents', 'smolagents-v2']
++export const NATIVE_V2_LABEL = 'smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)'
++const AGENT_NAMES: Record<AgentKind, string> = { reference: 'FaultLab reference actor', smolagents: 'smolagents ToolCallingAgent', 'smolagents-v2': NATIVE_V2_LABEL }
++export const isAgentKind = (value: unknown): value is AgentKind => AGENT_KINDS.includes(value as AgentKind)
++export const isNativeAgent = (value: unknown): boolean => NATIVE_AGENT_KINDS.includes(value as AgentKind)
++/** Display name of a saved agent kind; an unknown kind (e.g. 'unsupported') is shown as recorded. */
++export const agentName = (value: string): string => isAgentKind(value) ? AGENT_NAMES[value] : value
+ export type RunMode = 'baseline' | 'learn' | 'compare'
+ export type RunProfile = 'offline-v1' | 'live-v1'
+ export type RunCaps = Required<CampaignBudget>
+@@ -147,9 +156,9 @@
+   const ids = new Set<string>()
+   for (const option of value) {
+     if (!object(option) || !DISCOVERY_PROTOCOLS.includes(String(option.protocol_id)) || ids.has(String(option.protocol_id)) || typeof option.default !== 'boolean'
+-      || !text(option.label) || !text(option.description) || !Array.isArray(option.supported_agents) || !option.supported_agents.every(agent => ['reference', 'smolagents'].includes(String(agent)))
++      || !text(option.label) || !text(option.description) || !Array.isArray(option.supported_agents) || !option.supported_agents.every(isAgentKind)
+       || !(option.unsupported_reason === undefined || text(option.unsupported_reason)) || !discoveryDeclaration(option.declaration) || option.declaration.protocol !== option.protocol_id) return false
+-    if (preChecked(option.protocol_id) && (option.default || option.supported_agents.includes('smolagents'))) return false
++    if (preChecked(option.protocol_id) && (option.default || option.supported_agents.some(isNativeAgent))) return false
+     if (HISTORY_PROTOCOLS.includes(String(option.protocol_id)) && option.default) return false
+     ids.add(String(option.protocol_id))
+   }
+@@ -183,9 +192,11 @@
+   }
+   if (!object(value.learn) || !digest(value.learn.manifest_hash) || !searchSpace(value.learn.search_space) || !positive(value.learn.selection_limit) || !comparison(value.compare)) return malformed('run search space')
+   if (value.learn.discovery_protocols !== undefined && !discoveryOptions(value.learn.discovery_protocols)) return malformed('discovery protocols')
+-  if (!Array.isArray(value.agents) || value.agents.length !== 2 || new Set(value.agents.map(a => object(a) && a.agent)).size !== 2) return malformed('reviewed agents')
++  // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
++  if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
++    || !['reference', 'smolagents'].every(kind => (value.agents as unknown[]).some(a => object(a) && a.agent === kind))) return malformed('reviewed agents')
+   for (const agent of value.agents) {
+-    if (!object(agent) || !['reference', 'smolagents'].includes(String(agent.agent)) || !text(agent.label) || !['READY', 'UNAVAILABLE'].includes(String(agent.status)) || !text(agent.reason_code) || !text(agent.message)
++    if (!object(agent) || !isAgentKind(agent.agent) || !text(agent.label) || !['READY', 'UNAVAILABLE'].includes(String(agent.status)) || !text(agent.reason_code) || !text(agent.message)
+       || !(agent.configuration_hash === null || digest(agent.configuration_hash)) || !nullableText(agent.proposed_registration_id) || !nullableText(agent.registration_id) || !nullableText(agent.accepted_policy_version)
+       || typeof agent.registered !== 'boolean' || typeof agent.compare_available !== 'boolean' || typeof agent.model !== 'string' || !['VERIFIED', 'UNAVAILABLE'].includes(String(agent.source_conformance)) || agent.provider_access !== 'not_checked' || agent.behavior_verified !== false || !stringList(agent.limitations)
+       || agent.registered !== (agent.registration_id !== null) || (agent.compare_available && agent.accepted_policy_version === null)
+@@ -200,7 +211,7 @@
+   const plan = value.plan
+   if (value.status !== 'PLANNED' || !object(plan) || plan.schema_version !== 'faultlab-run-plan/v1' || plan.campaign_id !== campaignId || plan.task_definition_id !== TASK_DEFINITION
+     || !['setup_hash', 'configuration_hash', 'initial_policy_hash', 'plan_hash'].every(key => digest(plan[key])) || !['task_text', 'order_id', 'agent_registration_id', 'initial_policy_version'].every(key => text(plan[key]))
+-    || !['baseline', 'learn', 'compare'].includes(String(plan.mode)) || !['reference', 'smolagents'].includes(String(plan.agent)) || !object(plan.selection)) return malformed('campaign plan')
++    || !['baseline', 'learn', 'compare'].includes(String(plan.mode)) || !isAgentKind(plan.agent) || !object(plan.selection)) return malformed('campaign plan')
+   if (!(plan.config_profile_id === 'live-v1' && plan.source_mode === 'live' || plan.config_profile_id === 'offline-v1' && plan.source_mode === 'offline_fixture' && plan.agent === 'reference' && plan.mode === 'baseline')) return malformed('campaign plan execution profile')
+   validateCaps(plan.caps)
+   validateEpisodeBudget(plan.episode_budget)

@@ -1,0 +1,56 @@
+backend/app/__init__.py:18:# os.environ; a third-party load_dotenv() (smolagents calls one on first import) would copy
+backend/app/__init__.py:20:# (integrations.external_agent._import_smolagents). An explicit operator value is kept.
+backend/app/providers/runtime.py:31:    """The native smolagents final_answer action, exactly as the native transport carries it."""
+backend/app/providers/runtime.py:38:NATIVE_FINAL_ANSWER_CONTRACT = "native_final_answer"
+backend/app/providers/runtime.py:39:NATIVE_FINAL_ANSWER_PROTOCOL_VERSION = "faultlab-native-final-answer/v1"
+backend/app/providers/runtime.py:40:NATIVE_FINAL_ANSWER_SCHEMA_JSON = canonical_json(NativeFinalAnswer.model_json_schema())
+backend/app/providers/runtime.py:48:    if role != "actor" or response_contract not in ("actor_final_report", NATIVE_FINAL_ANSWER_CONTRACT):
+backend/app/providers/runtime.py:50:    if response_contract == NATIVE_FINAL_ANSWER_CONTRACT:
+backend/app/providers/runtime.py:53:            "schema": json.loads(NATIVE_FINAL_ANSWER_SCHEMA_JSON)}}
+backend/app/providers/runtime.py:71:    final_format = response_format_for(response_contract=NATIVE_FINAL_ANSWER_CONTRACT)
+backend/app/providers/runtime.py:72:    return {"version": NATIVE_FINAL_ANSWER_PROTOCOL_VERSION, "scope": "smolagents_native_adapter_v2",
+backend/app/providers/runtime.py:74:            "response_contract": NATIVE_FINAL_ANSWER_CONTRACT, "response_format": final_format,
+backend/app/contracts/models.py:696:    adapter_entrypoint_id: Id
+backend/app/lab/runner.py:37:    from app.integrations.registry import NATIVE_AGENTS
+backend/app/lab/runner.py:39:    if plan and plan['agent'] in NATIVE_AGENTS:
+backend/app/lab/runner.py:76:    from app.integrations.registry import AgentRegistry,NATIVE_ENTRYPOINTS,reviewed_actor_matches
+backend/app/lab/runner.py:112:    native=registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS
+backend/app/lab/runner.py:122:                'adapter_entrypoint_id':registration.adapter_entrypoint_id,
+backend/app/lab/agent_history.py:35:REFERENCE_ENTRYPOINT = 'orders-prototype-v1'
+backend/app/lab/agent_history.py:36:NATIVE_ENTRYPOINT = 'smolagents-toolcalling-v1'
+backend/app/lab/agent_history.py:39:NATIVE_ENTRYPOINTS = (NATIVE_ENTRYPOINT, 'smolagents-toolcalling-v2')
+backend/app/lab/agent_history.py:87:    entry = reg.get('adapter_entrypoint_id')
+backend/app/lab/agent_history.py:88:    if entry not in (REFERENCE_ENTRYPOINT, *NATIVE_ENTRYPOINTS):
+backend/app/lab/agent_history.py:98:    identity = {'adapter_entrypoint_id': entry, 'model': reg['model'], 'scorer_hash': reg['oracle_hash'],
+backend/app/lab/agent_history.py:103:    if entry in NATIVE_ENTRYPOINTS:
+backend/app/lab/agent_history.py:294:               'agent': {'adapter_entrypoint_id': identity['adapter_entrypoint_id'] if identity else None,
+backend/app/lab/reachability.py:127:        raise UnsupportedTarget('NATIVE_AGENT_UNSUPPORTED',
+backend/app/lab/run_plans.py:19:from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NATIVE_AGENTS, NATIVE_V2_DISPLAY_NAME,
+backend/app/lab/run_plans.py:31:# 'smolagents' is native adapter v1 (the default native choice, unchanged); 'smolagents-v2' is the declared
+backend/app/lab/run_plans.py:33:Agent = Literal['reference', 'smolagents', 'smolagents-v2']
+backend/app/lab/run_plans.py:34:AGENT_LABELS = (('reference', 'FaultLab reference Actor'), ('smolagents', 'smolagents ToolCallingAgent 1.26.0'),
+backend/app/lab/run_plans.py:35:                ('smolagents-v2', NATIVE_V2_DISPLAY_NAME))
+backend/app/lab/run_plans.py:285:    if agent in NATIVE_AGENTS:
+backend/app/lab/run_plans.py:288:        registration = registry.register_smolagents(configuration, entrypoint)
+backend/app/lab/run_plans.py:343:                if agent in NATIVE_AGENTS:
+backend/app/lab/run_plans.py:401:         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v1},
+backend/app/lab/run_plans.py:409:         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v3},
+backend/app/lab/run_plans.py:434:        agent = ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id)
+backend/app/lab/run_plans.py:541:    if registration.get('adapter_entrypoint_id') != adapter: raise StoreConflict('Saved plan agent differs from its registration')
+backend/app/lab/diagnosis.py:22:        if plan and plan['agent']=='smolagents':
+backend/app/lab/diagnosis.py:23:            from app.integrations.registry import AgentRegistry,NATIVE_FILES
+backend/app/lab/diagnosis.py:26:            actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent',
+backend/app/lab/diagnosis.py:30:                            'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+backend/app/lab/diagnosis.py:31:        elif plan and plan['agent']=='smolagents-v2':
+backend/app/lab/diagnosis.py:33:            from app.integrations.registry import AgentRegistry,NATIVE_FILES
+backend/app/lab/diagnosis.py:36:            actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent, FaultLab native adapter v2',
+backend/app/lab/diagnosis.py:41:                            'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+backend/app/lab/bundle_imports.py:455:        'agent': ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id, 'unsupported')}
+backend/app/agents/transport_retry.py:3:The reference Actor, the Explorer, the Mechanic and the native smolagents transport all
+backend/app/lab/operator_actions.py:54:    # 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared adapter v2.
+backend/app/lab/operator_actions.py:55:    agent: Literal['reference', 'smolagents', 'smolagents-v2']
+backend/app/lab/operator_actions.py:67:    from app.integrations.registry import AGENT_ENTRYPOINTS, NATIVE_AGENTS, freeze_target_configuration
+backend/app/lab/operator_actions.py:70:    if agent in NATIVE_AGENTS:
+backend/app/lab/operator_actions.py:74:        return registry.register_smolagents(freeze_target_configuration(current, settings.wandb_model, entrypoint),
+backend/app/integrations/portability.py:12:    if (source.adapter_entrypoint_id == target.adapter_entrypoint_id
+backend/app/cli/regressions.py:144:    reg=commands.add_parser('register');reg.add_argument('--agent',choices=['reference','smolagents','smolagents-v2'],required=True,help='smolagents is native adapter v1; smolagents-v2 is the declared adapter v2 (short evidence labels, strict final report turn)')

@@ -1,0 +1,4 @@
+limit 32000
+v1-style pre-admission (what external_agent._Bridge.generate checks before meter.model_call()): 5282
+provider admission with native_final_answer schema (checked inside provider.complete, after the turn is charged): 5880 overhead 598
+reference Actor final-turn admission (actor_final_report schema, checked BEFORE charging in actor.py): 5815

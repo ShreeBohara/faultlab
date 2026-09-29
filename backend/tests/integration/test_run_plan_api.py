@@ -37,7 +37,7 @@ def test_setup_reads_do_not_create_directory_owner_or_provider(tmp_path):
                 options=response.json()
                 assert options['provider_calls'] == 0
                 assert {row['case_id'] for row in options['development']['cases']} == {f'dev-{i}' for i in range(1,7)}
-                assert {row['agent'] for row in options['agents']} == {'reference','smolagents'}
+                assert {row['agent'] for row in options['agents']} == {'reference','smolagents','smolagents-v2'}
                 assert all(row['provider_access']=='not_checked' and not row['behavior_verified'] for row in options['agents'])
     assert not directory.exists()
 

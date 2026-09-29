@@ -1,0 +1,31 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/lab/runner.py	2026-09-29 14:57:34
++++ backend/app/lab/runner.py	2026-09-29 14:22:50
+@@ -34,8 +34,9 @@
+ 
+ 
+ def reject_native_reference_study(store,campaign):
++    from app.integrations.registry import NATIVE_AGENTS
+     plan=campaign_run_plan(store,campaign)
+-    if plan and plan['agent']=='smolagents':
++    if plan and plan['agent'] in NATIVE_AGENTS:
+         raise ValueError('This research study tests reference Actor protocols; native planned campaigns support ordinary baseline, learn and compare runs')
+ 
+ 
+@@ -72,7 +73,7 @@
+ 
+ def resolve_execution(store,campaign,frozen,*,arm,purpose,study_id,source_mode,registration_id,actor,actor_context_protocol,offline_fixture=False):
+     """Resolve all selected-agent phases before creating a world or spending."""
+-    from app.integrations.registry import AgentRegistry,reviewed_actor_matches
++    from app.integrations.registry import AgentRegistry,NATIVE_ENTRYPOINTS,reviewed_actor_matches
+     from app.lab.storage import StoreConflict
+     plan=campaign_run_plan(store,campaign)
+     if plan is None:
+@@ -108,7 +109,7 @@
+     registration=registry.verify(selected_id,frozen)
+     if actor is not None and not reviewed_actor_matches(actor,registration):
+         raise StoreConflict('Actor override differs from the reviewed selected implementation')
+-    native=registration.adapter_entrypoint_id=='smolagents-toolcalling-v1'
++    native=registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS
+     if native and actor_context_protocol is not None:
+         raise StoreConflict('Native agent does not execute reference Actor context protocols')
+     selected_context=None if native else resolve_actor_context_protocol(frozen,actor_context_protocol)

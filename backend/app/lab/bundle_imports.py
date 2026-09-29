@@ -21,7 +21,7 @@ from app.contracts.models import (CampaignBudget, CampaignRequest, Digest, Episo
     Id, RegressionCase, RegressionExecution, StrictModel, Usage, canonical_json,
     content_hash, new_id, utc_now)
 from app.integrations.regression_runner import INVENTORY, inspect_bundle, _json
-from app.integrations.registry import AgentRegistry, current_registration_configuration
+from app.integrations.registry import ENTRYPOINT_AGENTS, AgentRegistry, current_registration_configuration
 from app.lab.budgets import BudgetExhausted, CampaignLedger, protected_reservations
 from app.lab.dashboard import store_descriptor
 from app.lab.operator_actions import MAX_MANIFEST_BYTES, MAX_UPLOAD_BYTES, require_owner
@@ -452,8 +452,7 @@ def _installed_semantics():
 def _target_description(registration):
     return {'agent_registration_id': registration.registration_id,
         'configuration_hash': registration.configuration_hash, 'model': registration.model,
-        'agent': {'orders-prototype-v1': 'reference', 'smolagents-toolcalling-v1': 'smolagents'}.get(
-            registration.adapter_entrypoint_id, 'unsupported')}
+        'agent': ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id, 'unsupported')}
 
 
 def _saved_task(payloads):

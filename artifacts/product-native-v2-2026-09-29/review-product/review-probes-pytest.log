@@ -1,0 +1,35 @@
+started 2026-09-29T22:18:35Z
+============================= test session starts ==============================
+platform darwin -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0 -- /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend/../.venv/bin/python
+rootdir: /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend
+configfile: pytest.ini
+plugins: langsmith-0.12.4, anyio-4.15.1
+collecting ... collected 24 items
+
+::test_1_api_register_plan_start_v2_and_v1_and_reference_still_work PASSED [  4%]
+::test_2_cli_register_v2_offline_fallback_and_through_a_running_backend PASSED [  8%]
+::test_3_v2_baseline_study_feeds_only_v2_history_and_a_v3_learn_campaign_runs PASSED [ 12%]
+::test_4_v2_learn_loop_stop_reject_accept_and_compare[accepted] PASSED   [ 16%]
+::test_4_v2_learn_loop_stop_reject_accept_and_compare[rejected] PASSED   [ 20%]
+::test_4_v2_learn_loop_stop_reject_accept_and_compare[interrupted] PASSED [ 25%]
+::test_5_evidence_retry_verifies_a_v2_episode_without_rerunning_it PASSED [ 29%]
+::test_6a_step_alignment_final_turn_and_no_ninth_request PASSED          [ 33%]
+::test_6b_malformed_or_forbidden_final_turn_output_is_refused_not_repaired[non_json] PASSED [ 37%]
+::test_6b_malformed_or_forbidden_final_turn_output_is_refused_not_repaired[schema_invalid_report] PASSED [ 41%]
+::test_6b_malformed_or_forbidden_final_turn_output_is_refused_not_repaired[extra_argument] PASSED [ 45%]
+::test_6b_malformed_or_forbidden_final_turn_output_is_refused_not_repaired[business_call_on_final_turn] PASSED [ 50%]
+::test_6b_malformed_or_forbidden_final_turn_output_is_refused_not_repaired[answer_not_object] PASSED [ 54%]
+::test_6c_valid_report_on_the_final_turn_is_decoded_and_recorded_as_final PASSED [ 58%]
+::test_6d_label_gap_when_the_broker_retries_a_failed_write PASSED        [ 62%]
+::test_6f_a_label_never_shown_to_the_agent_still_decodes PASSED          [ 66%]
+::test_6e_provider_identity_mismatch_is_a_lab_failure_in_both[v1] PASSED [ 70%]
+::test_6e_provider_identity_mismatch_is_a_lab_failure_in_both[v2] PASSED [ 75%]
+::test_7_recording_drift_check_and_portability_refusal PASSED            [ 79%]
+::test_7b_v2_bundle_import_targets_stale_refusal_and_cross_adapter_rerun PASSED [ 83%]
+::test_8a_v2_plan_opened_by_a_runtime_without_v2_simulated PASSED        [ 87%]
+::test_8b_v1_registration_made_before_this_runtime_change PASSED         [ 91%]
+::test_8c_real_saved_v1_store_opened_by_this_runtime PASSED              [ 95%]
+::test_9_frozen_identities_and_v1_pins PASSED                            [100%]
+
+======================== 24 passed in 89.32s (0:01:29) =========================
+finished 2026-09-29T22:20:05Z

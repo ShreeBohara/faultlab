@@ -1,0 +1,72 @@
+== fixed tree (no mutation)
+   pytest: 10 passed in 3.77s
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_observations_delivered_by_the_request
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[one-token-over-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[exactly-at-the-limit-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_the_final_turn_refusal_matches_v1s_refusal_of_an_over_limit_ordinary_turn
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents]
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents-v2]
+   PASSED  (expected PASS)  tests/lab/test_native_baseline_study_planned.py::test_study_refuses_when_plan_registration_differs_from_current_runtime[runtime]
+   fixed files restored byte for byte: True
+   verdict: AS EXPECTED
+== reviewed v2 module, exactly as before the fixer (external_agent_v2.before-fix.py)
+   pytest: 3 failed, 7 passed in 3.74s
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_observations_delivered_by_the_request
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[one-token-over-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[exactly-at-the-limit-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_the_final_turn_refusal_matches_v1s_refusal_of_an_over_limit_ordinary_turn
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents]
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents-v2]
+   PASSED  (expected PASS)  tests/lab/test_native_baseline_study_planned.py::test_study_refuses_when_plan_registration_differs_from_current_runtime[runtime]
+   fixed files restored byte for byte: True
+   verdict: AS EXPECTED
+== INT-1/M1 only: decode every delivered label, shown or not
+   pytest: 2 failed, 8 passed in 3.75s
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_observations_delivered_by_the_request
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[one-token-over-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[exactly-at-the-limit-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_the_final_turn_refusal_matches_v1s_refusal_of_an_over_limit_ordinary_turn
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents]
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents-v2]
+   PASSED  (expected PASS)  tests/lab/test_native_baseline_study_planned.py::test_study_refuses_when_plan_registration_differs_from_current_runtime[runtime]
+   fixed files restored byte for byte: True
+   verdict: AS EXPECTED
+== INT-2 only: no schema-inclusive admission before the final turn is charged
+   pytest: 1 failed, 9 passed in 3.74s
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_observations_delivered_by_the_request
+   FAILED  (expected FAIL)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[one-token-over-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[exactly-at-the-limit-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_the_final_turn_refusal_matches_v1s_refusal_of_an_over_limit_ordinary_turn
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents]
+   PASSED  (expected PASS)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents-v2]
+   PASSED  (expected PASS)  tests/lab/test_native_baseline_study_planned.py::test_study_refuses_when_plan_registration_differs_from_current_runtime[runtime]
+   fixed files restored byte for byte: True
+   verdict: AS EXPECTED
+== L4 only: Start refusal without the next step
+   pytest: 3 failed, 7 passed in 3.75s
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_observations_delivered_by_the_request
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[one-token-over-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_a_final_request_over_the_limit_only_with_its_schema_is_refused_before_it_is_charged[exactly-at-the-limit-with-schema]
+   PASSED  (expected PASS)  tests/integrations/test_native_adapter_v2.py::test_the_final_turn_refusal_matches_v1s_refusal_of_an_over_limit_ordinary_turn
+   FAILED  (expected FAIL)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents]
+   FAILED  (expected FAIL)  tests/lab/test_native_adapter_v2_product.py::test_start_after_a_runtime_change_names_the_next_step_and_keeps_the_plan_readable[smolagents-v2]
+   FAILED  (expected FAIL)  tests/lab/test_native_baseline_study_planned.py::test_study_refuses_when_plan_registration_differs_from_current_runtime[runtime]
+   fixed files restored byte for byte: True
+   verdict: AS EXPECTED
+OVERALL: ALL MUTANTS BEHAVED AS EXPECTED
+fixed file SHA-256: app/integrations/external_agent_v2.py=00aff4a1d1148fbe2d65d430d435ad9265f8ff5ae24f9456db92855b73d79a76, app/lab/run_plans.py=216798cf02a6e2c0494408248a1c56d0121160b0240ec4f25c9510fd3340040c

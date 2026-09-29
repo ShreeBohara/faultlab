@@ -1,0 +1,20 @@
+gate_freeze differences, checkpoint backup/part2-2026-09-22 -> working tree: 11
+  files/backend/app/lab/diagnosis.py 3e8f5d93c461c199 -> d1d7bee025664dae
+  files/backend/app/lab/runner.py 31c10352ba5ab56e -> c36212c545e1672c
+  fingerprints/algorithm_hash 5c95f2a9c4cbeb4e -> 934c9c642ef6ade9
+  fingerprints/runtime_hash 5583dcad5ac94be8 -> 7968b622443520f3
+  fingerprints/tree_lab 87ccb240e1e63a05 -> 6ee3709806e8818f
+  functions/backend/app/lab/diagnosis.py::runtime_contract/ast_sha256 1d42b23bdd1e5b12 -> 15ee64ec846de8b9
+  functions/backend/app/lab/diagnosis.py::runtime_contract/lines 17-66 -> 17-77
+  functions/backend/app/lab/diagnosis.py::runtime_contract/text_sha256 45eb7b87d0b1645e -> 9b2564c7234e2514
+  functions/backend/app/lab/diagnosis.py::summarize_evidence/lines 132-173 -> 143-184
+  functions/backend/app/lab/diagnosis.py::trial_outcomes/lines 68-79 -> 79-90
+  functions/backend/app/lab/runner.py::EpisodeRunner.run/lines 157-253 -> 158-254
+scorer_hash equal: True 19de811c96473eb4
+checks.py file hash equal: True
+checks.py::score, ::scorer_hash equal: True
+assess_pairs text equal: True ast equal: True text sha 783e8e58f91992f36066a2c6a152c4fbd242bd7e
+functions identical (text, ast, lines): 26 of 30
+files identical: 18 of 20 (audit/promotion.json, audit/final-audit.json dropped, never read)
+current: service 3ce5bcd2 contract 6f9d7783 interpreter 6da0714a runtime 7968b622 algorithm 934c9c64
+checkpoint: service 3ce5bcd2 contract 6f9d7783 interpreter 6da0714a runtime 5583dcad algorithm 5c95f2a9

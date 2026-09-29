@@ -1,0 +1,6 @@
+2026-09-27/product-loop/lab.sqlite3 policies 1, with a before_confirmation read step 0
+2026-09-28/discovery-v2/lab.sqlite3 policies 1, with a before_confirmation read step 0
+2026-09-28/native-probe/lab.sqlite3 policies 1, with a before_confirmation read step 0
+2026-09-29/discovery-v2b/lab.sqlite3 policies 1, with a before_confirmation read step 0
+2026-09-29/native-learn-v3/lab.sqlite3 policies 3, with a before_confirmation read step 2
+2026-09-29/native-learn/lab.sqlite3 policies 1, with a before_confirmation read step 0

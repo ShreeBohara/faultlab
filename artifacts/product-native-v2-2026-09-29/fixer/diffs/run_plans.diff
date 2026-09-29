@@ -1,0 +1,14 @@
+diff --git a/artifacts/product-native-v2-2026-09-29/fixer/run_plans.before-fix.py b/backend/app/lab/run_plans.py
+index 1446880..5f39e77 100644
+--- a/artifacts/product-native-v2-2026-09-29/fixer/run_plans.before-fix.py
++++ b/backend/app/lab/run_plans.py
+@@ -633,7 +633,8 @@ def validate_run_plan(store, settings, campaign):
+     registration = registry.get(plan['agent_registration_id'])
+     current = current_registration_configuration(settings, _caps(settings), campaign.config_profile_id, registration)
+     if content_hash(current) != plan['configuration_hash']:
+-        raise StoreConflict('Current source, model or campaign limits differ from the saved plan')
++        raise StoreConflict('Current source, model or campaign limits differ from the saved plan. Register the agent '
++                            'again and create a new campaign; this saved plan stays readable')
+     registry.verify(registration.registration_id, current)
+     # Execution applies the installed retry rule, so the saved plan must declare exactly it.
+     if plan.get('transport_retry') != transport_retry_declaration(plan['episode_budget']['actor_calls']):

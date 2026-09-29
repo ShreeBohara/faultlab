@@ -1,0 +1,30 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/lab/agent_history.py	2026-09-29 14:57:33
++++ backend/app/lab/agent_history.py	2026-09-29 14:35:54
+@@ -34,6 +34,9 @@
+ MAX_RECIPE_ROWS = 24
+ REFERENCE_ENTRYPOINT = 'orders-prototype-v1'
+ NATIVE_ENTRYPOINT = 'smolagents-toolcalling-v1'
++# Native adapter v2 (app.integrations.external_agent_v2) has the native identity shape, but its entry point
++# and prompt hash differ from v1's, so the two adapters' histories never merge.
++NATIVE_ENTRYPOINTS = (NATIVE_ENTRYPOINT, 'smolagents-toolcalling-v2')
+ EXCLUSION_KEYS = ('lab_error', 'interrupted', 'not_finished', 'not_weave_verified', 'recipe_unavailable')
+ SOURCES = {'baseline_study': 'B0 trial of a product baseline study (fixed six development cases x three trials)',
+            'learn_discovery': 'a learn campaign\'s own discovery pick (chosen by the Explorer)'}
+@@ -82,7 +85,7 @@
+         return None
+     reg = registration if isinstance(registration, dict) else registration.model_dump(mode='json')
+     entry = reg.get('adapter_entrypoint_id')
+-    if entry not in (REFERENCE_ENTRYPOINT, NATIVE_ENTRYPOINT):
++    if entry not in (REFERENCE_ENTRYPOINT, *NATIVE_ENTRYPOINTS):
+         return None
+     if (reg.get('configuration_hash') != content_hash(configuration) or reg.get('model') != configuration.get('model')
+             or reg.get('oracle_hash') != configuration.get('scorer_hash')
+@@ -97,7 +100,7 @@
+     # Review finding (September 29): the simulator contract and service, the capability set, the model request
+     # settings and the per-episode limits all shape what the agent faces, so they are part of "same agent".
+     identity.update({field: configuration[field] for field in IDENTITY_FIELDS})
+-    if entry == NATIVE_ENTRYPOINT:
++    if entry in NATIVE_ENTRYPOINTS:
+         identity['source_hash'] = reg['source_hash']
+     else:
+         from app.lab.configuration import resolve_actor_context_protocol

@@ -1,0 +1,93 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/lab/run_plans.py	2026-09-29 14:57:34
++++ backend/app/lab/run_plans.py	2026-09-29 14:23:30
+@@ -16,7 +16,8 @@
+     StrictModel, canonical_json, content_hash)
+ from app.agents.transport_retry import RETRIES_PER_REQUEST, declaration as transport_retry_declaration
+ from app.lab.evidence_wait import declaration as evidence_retry_declaration
+-from app.integrations.registry import AgentRegistry
++from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NATIVE_AGENTS, NATIVE_V2_DISPLAY_NAME,
++                                      AgentRegistry)
+ from app.lab.configuration import frozen_configuration
+ from app.lab.dashboard import store_descriptor
+ from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK,
+@@ -27,7 +28,11 @@
+ TASK = 'orders.upgrade_then_confirm/v1'
+ TASK_TEXT = 'Upgrade the authorized order to express shipping, then record one truthful confirmation.'
+ CaseId = Literal['dev-1', 'dev-2', 'dev-3', 'dev-4', 'dev-5', 'dev-6']
+-Agent = Literal['reference', 'smolagents']
++# 'smolagents' is native adapter v1 (the default native choice, unchanged); 'smolagents-v2' is the declared
++# native adapter v2 (app.integrations.external_agent_v2). Each selects exactly one reviewed entry point.
++Agent = Literal['reference', 'smolagents', 'smolagents-v2']
++AGENT_LABELS = (('reference', 'FaultLab reference Actor'), ('smolagents', 'smolagents ToolCallingAgent 1.26.0'),
++                ('smolagents-v2', NATIVE_V2_DISPLAY_NAME))
+ CASE_LABELS = {
+     'dev-1': ('Healthy services', 'No injected service fault.'),
+     'dev-2': ('Lost upgrade response', 'The accepted upgrade response arrives after the HTTP timeout.'),
+@@ -277,9 +282,10 @@
+     configuration = frozen_configuration(settings, _caps(settings), profile)
+     sink = _PreviewRecords()
+     registry = AgentRegistry(sink)
+-    if agent == 'smolagents':
+-        configuration = freeze_target_configuration(configuration, settings.wandb_model)
+-        registration = registry.register_smolagents(configuration)
++    if agent in NATIVE_AGENTS:
++        entrypoint = AGENT_ENTRYPOINTS[agent]
++        configuration = freeze_target_configuration(configuration, settings.wandb_model, entrypoint)
++        registration = registry.register_smolagents(configuration, entrypoint)
+     else:
+         registration = registry.register_reference(configuration, internal_smoke=profile == 'offline-v1')
+     return configuration, registration
+@@ -306,7 +312,7 @@
+     caps = _caps(settings)
+     offline_configuration, _ = _preview(settings, 'offline-v1', 'reference')
+     agents, hashes = [], {}
+-    for agent, label in (('reference', 'FaultLab reference Actor'), ('smolagents', 'smolagents ToolCallingAgent 1.26.0')):
++    for agent, label in AGENT_LABELS:
+         row = {'agent': agent, 'label': label, 'status': 'UNAVAILABLE', 'reason_code': 'SOURCE_UNAVAILABLE',
+                'message': 'Reviewed local source is unavailable or differs from its pinned identity.',
+                'configuration_hash': None, 'proposed_registration_id': None, 'registered': False,
+@@ -334,7 +340,7 @@
+                     registered=registered, registration_id=registration.registration_id if registered else None,
+                     source_conformance='VERIFIED', compare_available=bool(registered and accepted),
+                     accepted_policy_version=accepted.version if accepted else None, limitations=list(registration.limitations))
+-                if agent == 'smolagents':
++                if agent in NATIVE_AGENTS:
+                     row['limitations'].append('Reference Actor context, completion and dependent heldout studies are unavailable for this selected native agent.')
+         agents.append(row)
+     setup = {'protocol': PROTOCOL, 'task_definition_id': TASK,
+@@ -392,7 +398,7 @@
+     return [
+         {'protocol_id': DISCOVERY_V1, 'default': True, 'label': 'v1 · every valid new pick runs',
+          'description': 'Today\'s behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.',
+-         'supported_agents': ['reference', 'smolagents'], 'declaration': v1},
++         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v1},
+         {'protocol_id': DISCOVERY_V2, 'default': False, 'label': 'v2 · reachability pre-check',
+          'description': 'A free replay of the real simulator labels each fault before any paid Actor episode; only picks whose every fault is FORCED run, and a refused pick gets one re-plan with the reason.',
+          'supported_agents': ['reference'],
+@@ -400,7 +406,7 @@
+          'declaration': v2},
+         {'protocol_id': DISCOVERY_V3, 'default': False, 'label': 'v3 · agent history',
+          'description': 'Exactly v1 (every valid new pick runs, same budget). ' + HISTORY_DESCRIPTION,
+-         'supported_agents': ['reference', 'smolagents'], 'declaration': v3},
++         'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v3},
+         {'protocol_id': DISCOVERY_V3_PRECHECK, 'default': False, 'label': 'v3 · agent history + reachability pre-check',
+          'description': 'Exactly v2 (pre-check, one re-plan per refused slot, same budget). ' + HISTORY_DESCRIPTION,
+          'supported_agents': ['reference'],
+@@ -425,7 +431,7 @@
+         from app.integrations.registry import current_registration_configuration
+         registry = AgentRegistry(store)
+         registration = registry.get(request.agent_registration_id)
+-        agent = {'orders-prototype-v1': 'reference', 'smolagents-toolcalling-v1': 'smolagents'}.get(registration.adapter_entrypoint_id)
++        agent = ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id)
+         if agent is None: raise StoreConflict('Unreviewed agent registration')
+         configuration = current_registration_configuration(settings, _caps(settings), 'live-v1', registration)
+         if (registration.configuration_hash != content_hash(configuration)
+@@ -531,7 +537,7 @@
+     if (not registration or registration.get('configuration_hash') != campaign.configuration_hash
+             or not owner or owner.get('registration_id') != plan['agent_registration_id']):
+         raise StoreConflict('Saved campaign registration differs from its plan')
+-    adapter = {'reference': 'orders-prototype-v1', 'smolagents': 'smolagents-toolcalling-v1'}[plan['agent']]
++    adapter = AGENT_ENTRYPOINTS[plan['agent']]
+     if registration.get('adapter_entrypoint_id') != adapter: raise StoreConflict('Saved plan agent differs from its registration')
+     checked_registration = AgentRegistration.model_validate_json(canonical_json(registration))
+     for field, key in {'model': 'model', 'source_hash': 'source_hash', 'adapter_hash': 'adapter_hash',

@@ -226,11 +226,13 @@ async def test_study_refuses_when_plan_registration_differs_from_current_runtime
         elif change == 'native_source':
             monkeypatch.setattr('app.integrations.registry.verify_native_source', lambda: 'f' * 64)
         else:
-            monkeypatch.setattr('app.integrations.registry.native_prompt_hash', lambda: 'e' * 64)
+            # Takes the adapter entry point since native adapter v2 was added (v1 is its default).
+            monkeypatch.setattr('app.integrations.registry.native_prompt_hash', lambda *entrypoint: 'e' * 64)
         response = await api.post(f'/api/campaigns/{campaign.campaign_id}/baseline-study', json={'execute_live': True})
         assert response.status_code == 409, response.text
         assert response.json()['error']['code'] == 'CONFLICT'
-        assert response.json()['error']['message'] == 'Current source, model or campaign limits differ from the saved plan'
+        assert response.json()['error']['message'] == ('Current source, model or campaign limits differ from the saved plan. '
+                                                       'Register the agent again and create a new campaign; this saved plan stays readable')
         # Refused before admission: no study, reservation, episode, world or model call.
         assert not c.store.list_records('baseline_studies') and not c.tasks
         assert not c.store.list_records('episodes') and provider.calls['actor'] == 0

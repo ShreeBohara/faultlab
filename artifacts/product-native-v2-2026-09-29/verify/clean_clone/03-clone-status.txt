@@ -1,0 +1,29 @@
+ M CURRENT_STATUS.md
+ M backend/app/cli/regressions.py
+ M backend/app/integrations/registry.py
+ M backend/app/lab/agent_history.py
+ M backend/app/lab/bundle_imports.py
+ M backend/app/lab/diagnosis.py
+ M backend/app/lab/operator_actions.py
+ M backend/app/lab/run_plans.py
+ M backend/app/lab/runner.py
+ M backend/app/providers/runtime.py
+ M backend/tests/integration/test_run_plan_api.py
+ M backend/tests/lab/test_agent_history.py
+ M backend/tests/lab/test_native_baseline_study_planned.py
+ M docs/external-agent-setup.md
+ M docs/regression-runner.md
+ M docs/user-guide.md
+ M frontend/src/components/BundleImports.tsx
+ M frontend/src/components/CampaignPlan.tsx
+ M frontend/src/components/ImportedTrialEvidence.tsx
+ M frontend/src/components/RunSetup.tsx
+ M frontend/src/runPlans.ts
+?? backend/app/integrations/external_agent_v2.py
+?? backend/tests/fixtures/native_v1_golden_requests.json
+?? backend/tests/integration/test_native_adapter_v2_api.py
+?? backend/tests/integrations/test_native_adapter_v1_golden.py
+?? backend/tests/integrations/test_native_adapter_v2.py
+?? backend/tests/lab/test_native_adapter_v2_product.py
+?? backend/tests/providers/test_native_final_answer_contract.py
+?? frontend/tests/native-adapter-v2.test.tsx

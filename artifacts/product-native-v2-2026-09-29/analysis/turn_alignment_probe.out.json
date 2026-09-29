@@ -1,0 +1,263 @@
+{
+ "C_business_call_on_turn_8": {
+  "provider_calls": 8,
+  "what_the_model_was_told": [
+   {
+    "call": 1,
+    "final_report_required": false,
+    "remaining_actor_calls": 8
+   },
+   {
+    "call": 2,
+    "final_report_required": false,
+    "remaining_actor_calls": 7
+   },
+   {
+    "call": 3,
+    "final_report_required": false,
+    "remaining_actor_calls": 6
+   },
+   {
+    "call": 4,
+    "final_report_required": false,
+    "remaining_actor_calls": 5
+   },
+   {
+    "call": 5,
+    "final_report_required": false,
+    "remaining_actor_calls": 4
+   },
+   {
+    "call": 6,
+    "final_report_required": false,
+    "remaining_actor_calls": 3
+   },
+   {
+    "call": 7,
+    "final_report_required": false,
+    "remaining_actor_calls": 2
+   },
+   {
+    "call": 8,
+    "final_report_required": true,
+    "remaining_actor_calls": 1
+   }
+  ],
+  "meter_actor_calls": 8,
+  "meter_model_calls": 8,
+  "dispatched_business_calls": 7,
+  "smolagents_provide_final_answer": [
+   {
+    "called": true,
+    "returned_text_prefix": "Error in generating final LLM output: Actor budget exhausted"
+   }
+  ],
+  "result": "ActorReportError",
+  "message": "External agent produced no valid original final report"
+ },
+ "A_corrupted_id_on_turn_8": {
+  "provider_calls": 8,
+  "what_the_model_was_told": [
+   {
+    "call": 1,
+    "final_report_required": false,
+    "remaining_actor_calls": 8
+   },
+   {
+    "call": 2,
+    "final_report_required": false,
+    "remaining_actor_calls": 7
+   },
+   {
+    "call": 3,
+    "final_report_required": false,
+    "remaining_actor_calls": 6
+   },
+   {
+    "call": 4,
+    "final_report_required": false,
+    "remaining_actor_calls": 5
+   },
+   {
+    "call": 5,
+    "final_report_required": false,
+    "remaining_actor_calls": 4
+   },
+   {
+    "call": 6,
+    "final_report_required": false,
+    "remaining_actor_calls": 3
+   },
+   {
+    "call": 7,
+    "final_report_required": false,
+    "remaining_actor_calls": 2
+   },
+   {
+    "call": 8,
+    "final_report_required": true,
+    "remaining_actor_calls": 1
+   }
+  ],
+  "meter_actor_calls": 8,
+  "meter_model_calls": 8,
+  "dispatched_business_calls": 7,
+  "smolagents_provide_final_answer": [
+   {
+    "called": true,
+    "returned_text_prefix": "Error in generating final LLM output: Actor budget exhausted"
+   }
+  ],
+  "result": "ActorReportError",
+  "message": "External agent produced no valid original final report"
+ },
+ "A_on_turn_7_then_clean_report_on_turn_8": {
+  "provider_calls": 8,
+  "what_the_model_was_told": [
+   {
+    "call": 1,
+    "final_report_required": false,
+    "remaining_actor_calls": 8
+   },
+   {
+    "call": 2,
+    "final_report_required": false,
+    "remaining_actor_calls": 7
+   },
+   {
+    "call": 3,
+    "final_report_required": false,
+    "remaining_actor_calls": 6
+   },
+   {
+    "call": 4,
+    "final_report_required": false,
+    "remaining_actor_calls": 5
+   },
+   {
+    "call": 5,
+    "final_report_required": false,
+    "remaining_actor_calls": 4
+   },
+   {
+    "call": 6,
+    "final_report_required": false,
+    "remaining_actor_calls": 3
+   },
+   {
+    "call": 7,
+    "final_report_required": false,
+    "remaining_actor_calls": 2
+   },
+   {
+    "call": 8,
+    "final_report_required": true,
+    "remaining_actor_calls": 1
+   }
+  ],
+  "meter_actor_calls": 8,
+  "meter_model_calls": 8,
+  "dispatched_business_calls": 6,
+  "smolagents_provide_final_answer": [
+   {
+    "called": false
+   }
+  ],
+  "result": "REPORT",
+  "overall": "COMPLETED"
+ },
+ "D_invalid_action_on_turn_8": {
+  "provider_calls": 8,
+  "what_the_model_was_told": [
+   {
+    "call": 1,
+    "final_report_required": false,
+    "remaining_actor_calls": 8
+   },
+   {
+    "call": 2,
+    "final_report_required": false,
+    "remaining_actor_calls": 7
+   },
+   {
+    "call": 3,
+    "final_report_required": false,
+    "remaining_actor_calls": 6
+   },
+   {
+    "call": 4,
+    "final_report_required": false,
+    "remaining_actor_calls": 5
+   },
+   {
+    "call": 5,
+    "final_report_required": false,
+    "remaining_actor_calls": 4
+   },
+   {
+    "call": 6,
+    "final_report_required": false,
+    "remaining_actor_calls": 3
+   },
+   {
+    "call": 7,
+    "final_report_required": false,
+    "remaining_actor_calls": 2
+   },
+   {
+    "call": 8,
+    "final_report_required": true,
+    "remaining_actor_calls": 1
+   }
+  ],
+  "meter_actor_calls": 8,
+  "meter_model_calls": 8,
+  "dispatched_business_calls": 7,
+  "smolagents_provide_final_answer": [
+   {
+    "called": true,
+    "returned_text_prefix": "Error in generating final LLM output: Actor budget exhausted"
+   }
+  ],
+  "result": "ActorReportError",
+  "message": "External agent produced no valid original final report"
+ },
+ "clean_report_on_turn_4": {
+  "provider_calls": 4,
+  "what_the_model_was_told": [
+   {
+    "call": 1,
+    "final_report_required": false,
+    "remaining_actor_calls": 8
+   },
+   {
+    "call": 2,
+    "final_report_required": false,
+    "remaining_actor_calls": 7
+   },
+   {
+    "call": 3,
+    "final_report_required": false,
+    "remaining_actor_calls": 6
+   },
+   {
+    "call": 4,
+    "final_report_required": false,
+    "remaining_actor_calls": 5
+   }
+  ],
+  "meter_actor_calls": 4,
+  "meter_model_calls": 4,
+  "dispatched_business_calls": 3,
+  "smolagents_provide_final_answer": [
+   {
+    "called": false
+   }
+  ],
+  "result": "REPORT",
+  "overall": "COMPLETED"
+ },
+ "fallback_string_validation": {
+  "valid_report_text_as_string_result": "rejected by TaskReport"
+ }
+}

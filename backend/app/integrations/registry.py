@@ -17,14 +17,39 @@ NATIVE_FILES = {
     "prompts/toolcalling_agent.yaml": "28820f24906dd3ee3faa8160945e00529dda2a39c9fa8b3362093c0560c4b8f7",
 }
 HOOKS = ["after_upgrade_response", "before_confirmation", "after_notification_response", "before_final_report"]
+REFERENCE_ENTRYPOINT = "orders-prototype-v1"
+# Two declared native adapters for the same unmodified smolagents agent. v1 is the default wherever a
+# default exists; v2 (app.integrations.external_agent_v2) is chosen explicitly. They are separate agents:
+# the entry point is part of every identity, so their registrations, plans and histories never merge.
+NATIVE_V1 = "smolagents-toolcalling-v1"
+NATIVE_V2 = "smolagents-toolcalling-v2"
+NATIVE_ENTRYPOINTS = (NATIVE_V1, NATIVE_V2)
+# Saved-plan and API agent kinds, and the reviewed entry point each selects.
+AGENT_ENTRYPOINTS = {"reference": REFERENCE_ENTRYPOINT, "smolagents": NATIVE_V1, "smolagents-v2": NATIVE_V2}
+ENTRYPOINT_AGENTS = {entry: agent for agent, entry in AGENT_ENTRYPOINTS.items()}
+NATIVE_AGENTS = ("smolagents", "smolagents-v2")
+NATIVE_V2_DISPLAY_NAME = "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)"
+_ADAPTER_FILES = {NATIVE_V1: ("registry.py", "external_agent.py"),
+                  NATIVE_V2: ("registry.py", "external_agent.py", "external_agent_v2.py")}
 
 
 def digest(path):
     return sha256(Path(path).read_bytes()).hexdigest()
 
 
-def adapter_hash():
-    return content_hash({name: digest(Path(__file__).with_name(name)) for name in ("registry.py", "external_agent.py")})
+def _native_entrypoint(entrypoint):
+    if entrypoint not in NATIVE_ENTRYPOINTS:
+        raise ValueError("Unreviewed adapter entrypoint")
+    return entrypoint
+
+
+def adapter_hash(entrypoint=NATIVE_V1):
+    """v1: registry.py + external_agent.py, as before. v2 also covers its own module and the evidence-label code
+    it executes (app/agents/progress.py); v2 imports and runs v1's module, so that file is covered too."""
+    files = {name: digest(Path(__file__).with_name(name)) for name in _ADAPTER_FILES[_native_entrypoint(entrypoint)]}
+    if entrypoint == NATIVE_V2:
+        files["agents/progress.py"] = digest(Path(__file__).parents[1] / "agents" / "progress.py")
+    return content_hash(files)
 
 
 def verify_native_source():
@@ -45,9 +70,15 @@ def verify_native_source():
     return content_hash({"revision": REVISION, "files": authored_files})
 
 
-def native_prompt_hash():
+def native_prompt_hash(entrypoint=NATIVE_V1):
     from app.integrations.external_agent import TASK_CONTRACT, TRANSPORT_CONTRACT
-    return content_hash({"native_template": NATIVE_FILES["prompts/toolcalling_agent.yaml"], "task_contract": TASK_CONTRACT, "transport": TRANSPORT_CONTRACT})
+    identity = {"native_template": NATIVE_FILES["prompts/toolcalling_agent.yaml"], "task_contract": TASK_CONTRACT, "transport": TRANSPORT_CONTRACT}
+    if _native_entrypoint(entrypoint) == NATIVE_V2:
+        # v2 sends v1's task contract and transport text, plus its declared labels and final-turn protocol
+        # (including the final-turn tool text and the structured-output contract's hashes).
+        from app.integrations.external_agent_v2 import adapter_protocol
+        identity["adapter_protocol"] = adapter_protocol()
+    return content_hash(identity)
 
 
 def _configuration(configuration):
@@ -121,14 +152,15 @@ def _installed_semantics(configuration):
             raise ValueError("Target shared semantics or dependency lock differ from the installed reviewed runtime")
 
 
-def freeze_target_configuration(source_configuration, model_id):
-    """Keep shared semantics, independently freeze the target's native identity."""
+def freeze_target_configuration(source_configuration, model_id, entrypoint=NATIVE_V1):
+    """Keep shared semantics, independently freeze the target's native identity (v1 unless v2 is chosen)."""
+    _native_entrypoint(entrypoint)
     source = _configuration(source_configuration)
     _installed_semantics(source)
     if not model_id or len(model_id) > 600:
         raise ValueError("Explicit target model required")
     target = {**source, "model": model_id, "source_hash": verify_native_source(),
-        "adapter_hash": adapter_hash(), "actor_prompt_hash": native_prompt_hash(),
+        "adapter_hash": adapter_hash(entrypoint), "actor_prompt_hash": native_prompt_hash(entrypoint),
         "external_source_revision": REVISION, "external_agent_version": "smolagents/1.26.0"}
     # These protocols belong to the reference Actor's request builder. The
     # native adapter keeps its own reviewed prompt, memory and text transport.
@@ -147,20 +179,23 @@ def current_registration_configuration(settings, caps, profile, registration):
     """Derive current configured semantics for a reviewed implementation."""
     from app.lab.configuration import frozen_configuration
     current = frozen_configuration(settings, caps, profile)
-    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+    if registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
         if profile != "live-v1":
             raise ValueError("Native agent execution requires the live configuration profile")
-        return freeze_target_configuration(current, current["model"])
-    if registration.adapter_entrypoint_id != "orders-prototype-v1":
+        return freeze_target_configuration(current, current["model"], registration.adapter_entrypoint_id)
+    if registration.adapter_entrypoint_id != REFERENCE_ENTRYPOINT:
         raise ValueError("Unreviewed adapter entrypoint")
     return current
 
 
 def reviewed_actor_matches(actor, registration):
     """Check an explicit in-process override against the reviewed factory."""
-    if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+    if registration.adapter_entrypoint_id == NATIVE_V1:
         from app.integrations.external_agent import SmolagentsActor
         return type(actor) is SmolagentsActor and actor.model_id == registration.model
+    if registration.adapter_entrypoint_id == NATIVE_V2:
+        from app.integrations.external_agent_v2 import SmolagentsActorV2
+        return type(actor) is SmolagentsActorV2 and actor.model_id == registration.model
     from app.adapters.prototype import run_prototype
     return actor is run_prototype and registration.adapter_entrypoint_id == "orders-prototype-v1"
 
@@ -178,22 +213,31 @@ class AgentRegistry:
             raise ValueError("Unsupported locally reviewed registration ID")
         return AgentRegistration.model_validate_json(canonical_json(raw))
 
-    def register_smolagents(self, configuration):
+    def register_smolagents(self, configuration, entrypoint=NATIVE_V1):
+        """Register native adapter v1 (the default) or, when chosen explicitly, adapter v2."""
+        _native_entrypoint(entrypoint)
         target = _configuration(configuration)
         _installed_semantics(target)
         source_hash = verify_native_source()
-        if target["source_hash"] != source_hash or target["adapter_hash"] != adapter_hash() or target["actor_prompt_hash"] != native_prompt_hash():
+        if target["source_hash"] != source_hash or target["adapter_hash"] != adapter_hash(entrypoint) or target["actor_prompt_hash"] != native_prompt_hash(entrypoint):
             raise ValueError("Target configuration is not the reviewed native adapter")
         config_hash = content_hash(target)
+        limitations = ["Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."]
+        registration_id, name = "smolagents-1.26.0-" + config_hash[:16], "Hugging Face smolagents ToolCallingAgent"
+        if entrypoint == NATIVE_V2:
+            registration_id, name = "smolagents-1.26.0-adapter-v2-" + config_hash[:16], "Hugging Face " + NATIVE_V2_DISPLAY_NAME
+            limitations += ["Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
+                            "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
+                            "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled."]
         registration = AgentRegistration(
-            registration_id="smolagents-1.26.0-" + config_hash[:16], name="Hugging Face smolagents ToolCallingAgent", version="1.26.0",
+            registration_id=registration_id, name=name, version="1.26.0",
             provenance_class="external", source_origin="https://github.com/huggingface/smolagents", source_owner="Hugging Face and smolagents contributors",
             source_revision=REVISION, source_hash=source_hash, license="Apache-2.0", permission_ref="Apache-2.0 public source; reviewed pinned release",
-            adapter_entrypoint_id="smolagents-toolcalling-v1", adapter_hash=adapter_hash(), contract_hash=target["contract_hash"], capability_hash=target["capability_hash"],
+            adapter_entrypoint_id=entrypoint, adapter_hash=adapter_hash(entrypoint), contract_hash=target["contract_hash"], capability_hash=target["capability_hash"],
             reset_profile_id="fresh-orders-v1", oracle_hash=target["scorer_hash"], policy_hooks=HOOKS,
             model=target["model"], prompt_hash=target["actor_prompt_hash"], configuration_hash=config_hash,
             dependency_lock_hash=target["dependency_lock_hash"], budget_compatible=True, dry_run_status="PASSED",
-            limitations=["Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.", "Only ToolCallingAgent and four synthetic order tools are supported.", "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn."])
+            limitations=limitations)
         self._save(registration, target)
         return registration
 
@@ -214,7 +258,7 @@ class AgentRegistry:
         registration = AgentRegistration(registration_id=("internal-smoke-" if internal_smoke else "orders-v1-") + config_hash[:16],
             name="FaultLab reference actor", version="1.0.0", provenance_class="internal_smoke" if internal_smoke else "reference",
             source_origin="local:FaultLab", source_owner="FaultLab project", source_revision="faultlab-v1", source_hash=target["source_hash"],
-            license="Local project source", permission_ref="User-authorized local implementation", adapter_entrypoint_id="orders-prototype-v1",
+            license="Local project source", permission_ref="User-authorized local implementation", adapter_entrypoint_id=REFERENCE_ENTRYPOINT,
             adapter_hash=target["adapter_hash"], contract_hash=target["contract_hash"], capability_hash=target["capability_hash"], reset_profile_id="fresh-orders-v1",
             oracle_hash=target["scorer_hash"], policy_hooks=HOOKS, model=target["model"], prompt_hash=target["actor_prompt_hash"], configuration_hash=config_hash,
             dependency_lock_hash=target["dependency_lock_hash"], budget_compatible=True, dry_run_status="PASSED",
@@ -237,10 +281,11 @@ class AgentRegistry:
         pairs = {"contract_hash": "contract_hash", "capability_hash": "capability_hash", "oracle_hash": "scorer_hash", "adapter_hash": "adapter_hash", "source_hash": "source_hash", "prompt_hash": "actor_prompt_hash", "dependency_lock_hash": "dependency_lock_hash", "model": "model"}
         if any(getattr(registration, field) != target[key] for field, key in pairs.items()):
             raise ValueError("Registration/configuration identity mismatch")
-        if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
-            if registration.provenance_class != "external" or registration.source_hash != verify_native_source() or registration.adapter_hash != adapter_hash() or registration.prompt_hash != native_prompt_hash():
+        if registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
+            entry = registration.adapter_entrypoint_id
+            if registration.provenance_class != "external" or registration.source_hash != verify_native_source() or registration.adapter_hash != adapter_hash(entry) or registration.prompt_hash != native_prompt_hash(entry):
                 raise ValueError("Reviewed external source or adapter has changed")
-        elif registration.adapter_entrypoint_id == "orders-prototype-v1":
+        elif registration.adapter_entrypoint_id == REFERENCE_ENTRYPOINT:
             from app.lab.configuration import tree_hash
             from app.agents.actor import ACTOR_PROMPT_HASH
             if registration.provenance_class == "external" or target["source_hash"] != tree_hash(ROOT / "backend/app/agents") or target["adapter_hash"] != tree_hash(ROOT / "backend/app/adapters") or target["actor_prompt_hash"] != ACTOR_PROMPT_HASH:
@@ -255,9 +300,12 @@ class AgentRegistry:
         self.verify(registration_id, configuration)
         if model_id is not None and model_id != registration.model:
             raise ValueError("Requested model differs from registration")
-        if registration.adapter_entrypoint_id == "smolagents-toolcalling-v1":
+        if registration.adapter_entrypoint_id == NATIVE_V1:
             from app.integrations.external_agent import SmolagentsActor
             return SmolagentsActor(model_id=registration.model)
+        if registration.adapter_entrypoint_id == NATIVE_V2:
+            from app.integrations.external_agent_v2 import SmolagentsActorV2
+            return SmolagentsActorV2(model_id=registration.model)
         # The registered reference executes the same tracked entrypoint as the
         # ordinary runner. Raw Actor bypasses the episode root/report trace.
         from app.adapters.prototype import run_prototype

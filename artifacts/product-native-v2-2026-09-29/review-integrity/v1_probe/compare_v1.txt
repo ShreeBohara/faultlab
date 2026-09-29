@@ -1,0 +1,25 @@
+checkpoint modules: /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-tree/backend/app/integrations/external_agent.py
+worktree modules:   /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend/app/integrations/external_agent.py
+agent_settings: identical=True 
+blocked_network_or_env: identical=True 
+native_prompt_templates_hash: identical=True ec69142def8894bc277e3fdda2a5eb7920a0f248a5c3c7ad3f24c8b86d8b126a
+task_contract_hash: identical=True b2ce0057db249c2dd9fbb728a18ea18ea2d757235bd6c0b4d407b94fa5186bfe
+tools: identical=True 
+tools_hash: identical=True 4fb6aba56884b204343a8a8862d07de16828e918f3962461141b56a7255a68ca
+transport_contract: identical=True 
+v1_native_prompt_hash: identical=True 2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989
+episode bad_then_good: requests 3/3, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'report': {'evidence_ids': ['obs-1'], 'next_action': {'kind
+episode budget_close: requests 3/3, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'report': {'evidence_ids': ['evidence-000000000000000000000
+episode confirm_policy: requests 4/4, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'report': {'evidence_ids': ['evidence-000000000000000000000
+episode no_report: requests 8/8, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'error': 'ActorReportError', 'message': 'External agent pro
+episode retry_once: requests 5/5, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'report': {'evidence_ids': ['evidence-000000000000000000000
+episode success: requests 4/4, messages byte-identical True, kwargs identical True, whole episode record identical False, any response_contract kwarg False, outcome {'report': {'evidence_ids': ['evidence-000000000000000000000
+v1 adapter_hash (informational; expected to differ because registry.py changed): 61497db3ae1d487b -> fa7a58db41fc6292
+builder golden fixture success: messages equal to reviewer checkpoint capture: False kwargs equal: True
+builder golden fixture no_report: messages equal to reviewer checkpoint capture: False kwargs equal: True
+
+# Note: the 'builder golden fixture ... False' lines above are only because this probe's default episode ids are
+# 'probe-<name>' while the fixture used 'golden-<name>'. Re-run on the CHECKPOINT copy with EPISODE_PREFIX=golden-:
+success  builder golden fixture == reviewer capture on checkpoint code (same episode ids): True | kwargs True | outcome True
+no_report builder golden fixture == reviewer capture on checkpoint code (same episode ids): True | kwargs True | outcome True
+# Differences between v1_checkpoint.json and v1_worktree.json episode records: only usage.wall_seconds (timing).

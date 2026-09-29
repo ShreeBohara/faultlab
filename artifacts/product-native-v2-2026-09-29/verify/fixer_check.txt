@@ -1,0 +1,29 @@
+Independent verifier, step 4: are the fixer's FIXED findings actually fixed?
+
+The fixer's findings table (its 'handled' field) was not written to disk, so the findings checked here are the ones its
+evidence names: fixer/mutation_checks.py, fixer/mutation-checks.log and fixer/diffs/.
+
+1. The working tree holds exactly the fixer's changes:
+   - backend/app/integrations/external_agent_v2.py SHA-256 00aff4a1d1148fbe... and backend/app/lab/run_plans.py
+     216798cf02a6e2c0... equal the 'fixed file SHA-256' line of fixer/mutation-checks.log.
+   - For all 7 files the fixer saved a *.before-fix copy of, the lines changed between that copy and the current file
+     equal the fixer's recorded diff exactly (git diff line sets compared by hash): CURRENT_STATUS.md, docs/user-guide.md,
+     docs/external-agent-setup.md, external_agent_v2.py, run_plans.py, tests/integrations/test_native_adapter_v2.py,
+     tests/lab/test_native_baseline_study_planned.py. The appended L4 test is present in
+     backend/tests/lab/test_native_adapter_v2_product.py.
+2. Code read by the verifier:
+   - INT-1 / M1 (a hidden journal label could be guessed and decoded): _final_answer decodes a token only if
+     `token in shown`, where shown = the labels v2 had handed to the agent when the request was made
+     (request_shown_labels, frozen in generate()); any other token passes through as written and fails C6 as under v1.
+     report_submitted records labels_shown_to_agent and cited_unshown_labels.
+   - INT-2 (final-turn schema not counted before the charge): on the final turn generate() rebuilds v1's request
+     (_request_messages, same code as external_agent._Bridge.generate lines 103-117) and calls
+     validate_request_input(..., response_contract=native_final_answer) before super().generate() charges the turn;
+     _FinalTurnProvider refuses to send a final request different from the admitted one.
+   - L4 (Start refusal gave no next step): run_plans.validate_run_plan now says 'Register the agent again and create a
+     new campaign; this saved plan stays readable'.
+   - Docs: user-guide (v2 choice, both native adapters allow one charged transport retry, worst case 48), external-agent-
+     setup (shown-labels rule, schema-counted admission, v1 must be re-registered, older checkouts), CURRENT_STATUS.
+3. Mutation checks re-run by the verifier in a scratch copy (mutation/): all 5 runs behave as the fixer reported, test
+   by test (see mutation/NOTE.txt). Each mutant that puts one fix back makes exactly the tests that pin it fail.
+Verdict: INT-1, M1, INT-2 and L4 are fixed in code, pinned by tests that fail without the fix, and documented.

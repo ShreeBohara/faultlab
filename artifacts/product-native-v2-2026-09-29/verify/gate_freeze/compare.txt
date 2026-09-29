@@ -1,0 +1,34 @@
+gate_freeze differences, checkpoint fca3502 (runtime 5583dcad) -> current working tree:
+  files/backend/app/lab/diagnosis.py 3e8f5d93c461c199 -> d1d7bee025664dae
+  files/backend/app/lab/runner.py 31c10352ba5ab56e -> c36212c545e1672c
+  fingerprints/algorithm_hash 5c95f2a9c4cbeb4e -> 7afabd51a2a4f6bb
+  fingerprints/runtime_hash 5583dcad5ac94be8 -> ac7a12d2c1fc3baf
+  fingerprints/tree_lab 87ccb240e1e63a05 -> 21bb95305f32817d
+  functions/backend/app/lab/diagnosis.py::runtime_contract/ast_sha256 1d42b23bdd1e5b12 -> 15ee64ec846de8b9
+  functions/backend/app/lab/diagnosis.py::runtime_contract/lines 17-66 -> 17-77
+  functions/backend/app/lab/diagnosis.py::runtime_contract/text_sha256 45eb7b87d0b1645e -> 9b2564c7234e2514
+  functions/backend/app/lab/diagnosis.py::summarize_evidence/lines 132-173 -> 143-184
+  functions/backend/app/lab/diagnosis.py::trial_outcomes/lines 68-79 -> 79-90
+  functions/backend/app/lab/runner.py::EpisodeRunner.run/lines 157-253 -> 158-254
+scorer_hash (sha256 of checks.py) equal to checkpoint: True 19de811c96473eb4
+checks.py file hash equal to checkpoint: True
+checks.py::score and ::scorer_hash functions equal: True
+assess_pairs text equal: True  ast equal: True  lines 106-147
+backend/app/lab/promotion.py file equal to checkpoint: True
+backend/app/lab/evaluation.py file equal to checkpoint: True
+backend/app/agents/actor.py file equal to checkpoint: True
+backend/app/agents/prompts/actor.md file equal to checkpoint: True
+backend/app/referee/manifests.py file equal to checkpoint: True
+vs phase28 gate-freeze-after.json: scorer True | assess_pairs text True | ast True | checks.py file True
+checkpoint copy vs dependability verifier record of 5583dcad tree (same commit): fingerprints equal: True | functions equal: True | files equal: True
+assess_pairs text sha first 40 = 783e8e58f91992f36066a2c6a152c4fbd242bd7e (Phase 15 recorded 783e8e58...)
+functions identical (text, ast, lines) to checkpoint: 26 of 30
+   changed function: backend/app/lab/diagnosis.py::runtime_contract | text False | ast False | lines 17-66 -> 17-77
+   changed function: backend/app/lab/diagnosis.py::summarize_evidence | text True | ast True | lines 132-173 -> 143-184
+   changed function: backend/app/lab/diagnosis.py::trial_outcomes | text True | ast True | lines 68-79 -> 79-90
+   changed function: backend/app/lab/runner.py::EpisodeRunner.run | text True | ast True | lines 157-253 -> 158-254
+files identical to checkpoint: 18 of 20 (audit/promotion.json and audit/final-audit.json not read; git compares them)
+   changed file: backend/app/lab/diagnosis.py
+   changed file: backend/app/lab/runner.py
+current fingerprints: runtime ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090 algorithm 7afabd51a2a4f6bb74ca780996d2512be85169299a88c67b94c319a7e2121fe8
+                      service 3ce5bcd25af4b37e contract 6f9d778323a4efc2 interpreter 6da0714adef40c02

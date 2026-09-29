@@ -1,0 +1,20 @@
+Protected paths vs checkpoint fca3502 (byte comparison of every tracked file; new non-ignored files included):
+  backend/app/referee/                             UNCHANGED
+  backend/app/simulator/                           UNCHANGED
+  contracts/                                       UNCHANGED
+  backend/app/lab/promotion.py                     UNCHANGED
+  backend/app/lab/challenge.py                     UNCHANGED
+  backend/app/lab/evaluation.py                    UNCHANGED
+  backend/app/lab/completion_study.py              UNCHANGED
+  backend/app/agents/actor.py                      UNCHANGED
+  backend/app/agents/prompts/actor.md              UNCHANGED
+  backend/app/agents/progress.py                   UNCHANGED
+  backend/app/integrations/external_agent.py       UNCHANGED
+  backend/app/lab/policy_interpreter.py            UNCHANGED
+  backend/app/lab/policy_state.py                  UNCHANGED
+  backend/app/lab/budgets.py                       UNCHANGED
+  audit/                                           UNCHANGED
+  scripts/experiments/gate_freeze.py               UNCHANGED
+  backend/app/lab/thresholds*                      no such path changed or added
+  .env                                             not compared: git-ignored, never opened, never listed
+(checks.py, audit/promotion.json and audit/final-audit.json were compared by git hash-object only, never opened by the verifier)

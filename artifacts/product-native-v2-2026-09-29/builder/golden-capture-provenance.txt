@@ -1,0 +1,5 @@
+captured 2026-09-29T21:20:34Z from unchanged v1
+6c0909bfff3753b470570baef5c96b39904a922ea7a8f9d548fb30f5be9380f7  backend/app/integrations/external_agent.py
+da34547df90e8eb51f39a2b3328059615361a449b0e844afd744f8639eeb550e  backend/app/integrations/registry.py
+098443f041396d1f6405ce8be4b9d658c53a078b23a97367a63c2acf6e07f9f7  backend/app/providers/runtime.py
+8a83d4dd42a06da2877eb4844e20d88adcaf6334d0ae7d9508afb9b628df8fe9  backend/tests/fixtures/native_v1_golden_requests.json

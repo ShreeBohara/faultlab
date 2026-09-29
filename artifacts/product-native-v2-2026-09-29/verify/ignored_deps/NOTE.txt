@@ -1,0 +1,22 @@
+Independent verifier, step 5: do the new or changed tests depend on git-ignored files (which a clean clone lacks)?
+
+New/changed test files: backend/tests/integration/test_native_adapter_v2_api.py, backend/tests/integrations/
+test_native_adapter_v1_golden.py, backend/tests/integrations/test_native_adapter_v2.py, backend/tests/lab/
+test_native_adapter_v2_product.py, backend/tests/providers/test_native_final_answer_contract.py (all new),
+backend/tests/integration/test_run_plan_api.py, backend/tests/lab/test_agent_history.py,
+backend/tests/lab/test_native_baseline_study_planned.py (changed), backend/tests/fixtures/native_v1_golden_requests.json
+(new fixture), frontend/tests/native-adapter-v2.test.tsx (new).
+
+(a) Static: grep of those files for file reads; the only files they read by path are the golden fixture (new, not
+    ignored) and backend/app/integrations/external_agent.py (tracked). Frontend imports are all tracked (git check-ignore).
+(b) Dynamic, working tree: the 8 backend test files ran (101 passed) under an audit hook recording every repository path
+    opened or listed (py-opens.jsonl), classified with git check-ignore (classify.py -> backend-classified.json).
+    Ignored paths opened: only the installed environment (.venv) and __pycache__ caches, plus the verifier's own log
+    files (written by the hook itself). Everything else is tracked at the checkpoint or is a new non-ignored file.
+    Helper test modules imported by the new tests are all tracked at the checkpoint (helper-modules.txt).
+(c) Clean clone (../clean_clone): git clone --no-local of branch backup/part2-2026-09-22 (fca3502) into the session
+    scratchpad, plus the 29 changed/new non-evidence files copied byte for byte (02-clone-copied.sha256 verified against
+    the working tree). No .env, no artifacts/, no caches. The same 8 backend test files: 101 passed, 0 skipped
+    (10-backend-new-tests.log). frontend/tests/native-adapter-v2.test.tsx with node_modules symlinked: 5 passed
+    (11-frontend-new-test.log); the Node hook shows it read nothing from the real working tree except node_modules.
+Verdict for step 5: no new or changed test depends on a git-ignored file.

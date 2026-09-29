@@ -1,0 +1,21 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/lab/bundle_imports.py	2026-09-29 14:57:34
++++ backend/app/lab/bundle_imports.py	2026-09-29 14:35:56
+@@ -21,7 +21,7 @@
+     Id, RegressionCase, RegressionExecution, StrictModel, Usage, canonical_json,
+     content_hash, new_id, utc_now)
+ from app.integrations.regression_runner import INVENTORY, inspect_bundle, _json
+-from app.integrations.registry import AgentRegistry, current_registration_configuration
++from app.integrations.registry import ENTRYPOINT_AGENTS, AgentRegistry, current_registration_configuration
+ from app.lab.budgets import BudgetExhausted, CampaignLedger, protected_reservations
+ from app.lab.dashboard import store_descriptor
+ from app.lab.operator_actions import MAX_MANIFEST_BYTES, MAX_UPLOAD_BYTES, require_owner
+@@ -452,8 +452,7 @@
+ def _target_description(registration):
+     return {'agent_registration_id': registration.registration_id,
+         'configuration_hash': registration.configuration_hash, 'model': registration.model,
+-        'agent': {'orders-prototype-v1': 'reference', 'smolagents-toolcalling-v1': 'smolagents'}.get(
+-            registration.adapter_entrypoint_id, 'unsupported')}
++        'agent': ENTRYPOINT_AGENTS.get(registration.adapter_entrypoint_id, 'unsupported')}
+ 
+ 
+ def _saved_task(payloads):

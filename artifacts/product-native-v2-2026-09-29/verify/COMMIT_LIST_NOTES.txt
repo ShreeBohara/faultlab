@@ -1,0 +1,67 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-29, native adapter v2: builder, two reviews, fixer).
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, paths relative to
+the faultlab root. Check from the faultlab root with:
+  shasum -a 256 -c artifacts/product-native-v2-2026-09-29/verify/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its checkpoint sha256 when modified, and whether
+it is git-ignored (then it needs git add -f).
+Compared with the tip of local branch backup/part2-2026-09-22 = fca3502bbc9f3f3ef0343f7bef62a11debbd748d (runtime 5583dcad).
+NOTE: the checked-out branch is main at cbbf957 (51 commits behind the backup branch); the working tree is the backup
+branch plus this round, so 'git status' against HEAD shows ~500 entries. Commit on top of fca3502, not on cbbf957.
+Method: commit_list/commit_list.py. No checkout, no commit; the real .git/index never written (a throwaway index in the
+session scratchpad; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and executable bit) with the
+working file; every non-ignored working file not in the tip is NEW. Protected paths (backend/app/referee/checks.py,
+audit/promotion.json, audit/final-audit.json) were compared by git hash-object only, never opened: all unchanged.
+The list was computed before the test suite (commit_list/commit_list_pass1.txt), after the suite and all checks
+(commit_list/commit_list_pass2_after_checks.txt) and finally; the 29 product lines are byte-identical in all three.
+Credential-pattern scan of every listed file: no credential (commit_list/secret_scan_explained.txt).
+
+PRODUCT FILES: 29  (modified 21, new 8, deleted 0, mode changes 0)
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md
+  backend/app/cli/regressions.py
+  backend/app/integrations/registry.py
+  backend/app/lab/agent_history.py
+  backend/app/lab/bundle_imports.py
+  backend/app/lab/diagnosis.py
+  backend/app/lab/operator_actions.py
+  backend/app/lab/run_plans.py
+  backend/app/lab/runner.py
+  backend/app/providers/runtime.py
+  backend/tests/integration/test_run_plan_api.py
+  backend/tests/lab/test_agent_history.py
+  backend/tests/lab/test_native_baseline_study_planned.py
+  docs/external-agent-setup.md
+  docs/regression-runner.md
+  docs/user-guide.md
+  frontend/src/components/BundleImports.tsx
+  frontend/src/components/CampaignPlan.tsx
+  frontend/src/components/ImportedTrialEvidence.tsx
+  frontend/src/components/RunSetup.tsx
+  frontend/src/runPlans.ts
+
+NEW (not in the tip, not ignored):
+  backend/app/integrations/external_agent_v2.py   mode 0o644
+  backend/tests/fixtures/native_v1_golden_requests.json   mode 0o644
+  backend/tests/integration/test_native_adapter_v2_api.py   mode 0o644
+  backend/tests/integrations/test_native_adapter_v1_golden.py   mode 0o644
+  backend/tests/integrations/test_native_adapter_v2.py   mode 0o644
+  backend/tests/lab/test_native_adapter_v2_product.py   mode 0o644
+  backend/tests/providers/test_native_final_answer_contract.py   mode 0o644
+  frontend/tests/native-adapter-v2.test.tsx   mode 0o644
+
+EVIDENCE FILES: 258 under artifacts/product-native-v2-2026-09-29/ (about 18.4 MB), all git-ignored by the
+'artifacts/' rule, so they need 'git add -f'. By folder: analysis 4, builder 10, fixer 28, review-integrity 110, review-product 33, verify 73
+
+NOT IN THE LIST (deliberate exclusions):
+  * review-integrity/checkpoint-tree/ and verify/checkpoint/tree/: 'git archive' copies of the checkpoint fca3502 made by the
+    integrity reviewer and by this verifier (already in git history; they contain a copy of the protected checks.py, and
+    checkpoint-tree has two tokenizer.json files over 5 MB).
+  * 42 scratch SQLite world files (*.sqlite3) written by the integrity reviewer's probes under review-integrity/v1_probe/
+    and v2_probe/scratch-*/ (generated test output).
+  * __pycache__ folders (review-integrity/netmon/__pycache__, verify/guard/__pycache__).
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.json themselves (a file cannot list its own hash).
+  * Outside the evidence folder, only what git ignores: .env and other secrets, .venv, node_modules, caches, dist/,
+    frontend/tests/.results/, logs and databases. No file over 5 MB is in the list.
+  * Scratch copies in the session scratchpad (mutation copy, clean clone, throwaway index) are not evidence and not listed.
+

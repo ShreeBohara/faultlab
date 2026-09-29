@@ -1,0 +1,91 @@
+Error while parsing tool call from model output: External model returned an 
+invalid single-tool action
+Error executing tool 'get_operation_status' with arguments {'service': 
+'orders'}: ValueError: Final report required; business call was not dispatched
+Please try again or use another tool
+Reached max steps.
+Error while parsing tool call from model output: External model returned an 
+invalid single-tool action
+Error executing tool 'get_operation_status' with arguments {'service': 
+'orders'}: ValueError: Final report required; business call was not dispatched
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': {'evidence_ids': 
+['evidence-0000000000000000000000000000000b']}}: ValidationError: 4 validation 
+errors for TaskReport
+upgrade_outcome
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+notification_outcome
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+overall
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+next_action
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': {'evidence_ids': 
+['obs-1']}}: ValidationError: 4 validation errors for TaskReport
+upgrade_outcome
+  Field required [type=missing, input_value={'evidence_ids': ['obs-1']}, 
+input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+notification_outcome
+  Field required [type=missing, input_value={'evidence_ids': ['obs-1']}, 
+input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+overall
+  Field required [type=missing, input_value={'evidence_ids': ['obs-1']}, 
+input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+next_action
+  Field required [type=missing, input_value={'evidence_ids': ['obs-1']}, 
+input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+Please try again or use another tool
+success: v1 4 req, v2 4 req | ordinary turns v2==v1 relabelled: True (4) | final turns: [] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif | v2 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif
+no_report: v1 8 req, v2 8 req | ordinary turns v2==v1 relabelled: True (7) | final turns: [(False, True, ['tools'], 'native_final_answer')] | real ID in any v2 request: False | v1 {'error': 'ActorReportError', 'message': 'External | v2 {'error': 'ActorReportError', 'message': 'External
+bad_then_good: v1 3 req, v2 3 req | ordinary turns v2==v1 relabelled: False (3) | final turns: [] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif | v2 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif
+confirm_policy: v1 4 req, v2 4 req | ordinary turns v2==v1 relabelled: True (4) | final turns: [] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif | v2 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif
+budget_close: v1 3 req, v2 3 req | ordinary turns v2==v1 relabelled: True (2) | final turns: [(False, True, ['tools'], 'native_final_answer')] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'NOT_STARTED', 'not | v2 {'report': {'upgrade_outcome': 'NOT_STARTED', 'not
+retry_once: v1 5 req, v2 5 req | ordinary turns v2==v1 relabelled: True (5) | final turns: [] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif | v2 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif
+hidden_hook_read: v1 3 req, v2 3 req | ordinary turns v2==v1 relabelled: True (3) | final turns: [] | real ID in any v2 request: False | v1 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif | v2 {'report': {'upgrade_outcome': 'SUCCEEDED', 'notif
+hidden_hook_read analysis: {
+ "journal_size_at_report": 3,
+ "labels_shown_to_v2_agent": [
+  "obs-1",
+  "obs-3"
+ ],
+ "real_ids_shown_to_v1_agent": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-00000000000000000000000000000014"
+ ],
+ "journal_observations_never_shown_to_either_agent": [
+  "evidence-0000000000000000000000000000000f"
+ ],
+ "their_labels": [
+  "obs-2"
+ ],
+ "v2_cited_tokens": [
+  "obs-1",
+  "obs-3",
+  "obs-2"
+ ],
+ "v2_decoded_ids": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-00000000000000000000000000000014",
+  "evidence-0000000000000000000000000000000f"
+ ],
+ "unseen_observation_label_was_decoded_to_its_real_id": true,
+ "labels_shown_to_agent_recorded": [
+  "obs-1",
+  "obs-3"
+ ]
+}
+blocked []

@@ -1,0 +1,27 @@
+Error while parsing tool call from model output: External model returned an 
+invalid single-tool action
+Error executing tool 'get_operation_status' with arguments {'service': 
+'orders'}: ValueError: Final report required; business call was not dispatched
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': {'evidence_ids': 
+['evidence-0000000000000000000000000000000b']}}: ValidationError: 4 validation 
+errors for TaskReport
+upgrade_outcome
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+notification_outcome
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+overall
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+next_action
+  Field required [type=missing, input_value={'evidence_ids': 
+['eviden...00000000000000000000b']}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.13/v/missing
+Please try again or use another tool
+worktree native_prompt_hash 2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989 episodes {'success': 4, 'no_report': 8, 'bad_then_good': 3, 'confirm_policy': 4, 'budget_close': 3, 'retry_once': 5} blocked []

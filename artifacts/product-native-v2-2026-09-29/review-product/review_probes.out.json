@@ -1,0 +1,925 @@
+{
+ "1_api_operator_flow": {
+  "baseline_v2_start": {
+   "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+   "campaign_state": "COMPLETED",
+   "cited_evidence_tokens": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "decoded_equals_episode_report": true,
+   "episodes": 1,
+   "events_api_shows_raw_and_decoded": true,
+   "lifecycle": "COMPLETED",
+   "outcome": "COMPLETED",
+   "recording_contains_cited_tokens": true,
+   "recording_status": 200,
+   "report_submitted_payload_keys": [
+    "adapter_entrypoint_id",
+    "citation_protocol",
+    "cited_evidence_tokens",
+    "decoded_evidence_ids",
+    "evidence_labels",
+    "final_report_required",
+    "labels_shown_to_agent",
+    "report",
+    "response_contract"
+   ]
+  },
+  "learn_v2": {
+   "default_protocol_plan_status": 201,
+   "history_check": "CURRENT",
+   "readiness_provider_calls": 0,
+   "readiness_ready": true,
+   "refused_compare_without_accepted_policy": [
+    409,
+    {
+     "error": {
+      "code": "CONFLICT",
+      "message": "Comparison requires an accepted policy for this exact registered configuration",
+      "request_id": "request-16044d97b0aa44c2893d2fd80e88e4ae"
+     }
+    }
+   ],
+   "refused_v2_reachability": [
+    409,
+    {
+     "error": {
+      "code": "CONFLICT",
+      "message": "Discovery v2 cannot pre-check the native agent: its reachability model is the FaultLab reference Actor. Choose discovery v1 for this agent.",
+      "request_id": "request-b7f8b626b79b46849ac017a4dbf3a95e"
+     }
+    }
+   ],
+   "refused_v3_history_reachability": [
+    409,
+    {
+     "error": {
+      "code": "CONFLICT",
+      "message": "The reachability pre-check models only the FaultLab reference Actor. For the native agent choose faultlab-discovery/v3-history, which has no pre-check.",
+      "request_id": "request-992ccaf7beb7463bb248a46ea9b13f5c"
+     }
+    }
+   ],
+   "v3_history_agent_identity_entrypoint": "smolagents-toolcalling-v2",
+   "v3_history_note": "the single-case baseline run above is never history (operator-chosen case), so NO_PRIOR_HISTORY is expected",
+   "v3_history_status": "NO_PRIOR_HISTORY",
+   "v3_history_summary_agent": {
+    "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+    "model": "deepseek-ai/DeepSeek-V4-Pro-0813"
+   },
+   "v3_plan_evidence_retry": "faultlab-evidence-retry/v2",
+   "v3_plan_status": 201,
+   "v3_plan_transport_retry": {
+    "actor_retries_per_episode_max": 8,
+    "protocol": "faultlab-transport-retry/v1",
+    "retries_per_request": 1,
+    "retryable": [
+     "CONNECTION_ERROR",
+     "REQUEST_TIMEOUT",
+     "HTTP_503"
+    ],
+    "roles": [
+     "actor",
+     "explorer",
+     "mechanic"
+    ],
+    "rule": "At most one blind retry of the identical request, only when no answer arrived: a connection error, a timeout, or HTTP 503 after a one-second wait. Never after any answer, even an empty or malformed one, and never for other HTTP statuses, authentication, configuration or model-identity failures. The retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only; if the budget cannot cover it the original failure stands. It never uses an actor turn or a discovery request. A second failure ends the work as before.",
+    "service_unavailable_delay_seconds": 1
+   }
+  },
+  "register_v2": {
+   "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+   "name": "Hugging Face smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)",
+   "registration_id": "smolagents-1.26.0-adapter-v2-adaceab31711ff00",
+   "second_identical_register_body": "same registration returned",
+   "second_identical_register_status": 201,
+   "status": 201
+  },
+  "registrations_listed": [
+   [
+    "smolagents-1.26.0-adapter-v2-adaceab31711ff00",
+    "smolagents-toolcalling-v2"
+   ]
+  ],
+  "run_options_agents_before": {
+   "reference": {
+    "label": "FaultLab reference Actor",
+    "reason_code": "READY",
+    "registered": false,
+    "status": "READY"
+   },
+   "smolagents": {
+    "label": "smolagents ToolCallingAgent 1.26.0",
+    "reason_code": "READY",
+    "registered": false,
+    "status": "READY"
+   },
+   "smolagents-v2": {
+    "label": "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)",
+    "reason_code": "READY",
+    "registered": false,
+    "status": "READY"
+   }
+  },
+  "v1_and_reference": {
+   "offline_reference_smoke_state": "COMPLETED",
+   "reference_learn_v2_reachability_plan": 201,
+   "reference_register": 201,
+   "v1_adapter": "smolagents-toolcalling-v1",
+   "v1_campaign_state": "COMPLETED",
+   "v1_register": 201,
+   "v1_report_submitted_payload_keys": [
+    "report"
+   ],
+   "v1_v3_history_entrypoint": "smolagents-toolcalling-v1",
+   "v1_v3_history_status": "NO_PRIOR_HISTORY"
+  },
+  "v2_limitations": [
+   "Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.",
+   "Only ToolCallingAgent and four synthetic order tools are supported.",
+   "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn.",
+   "Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
+   "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
+   "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled.",
+   "Reference Actor context, completion and dependent heldout studies are unavailable for this selected native agent."
+  ]
+ },
+ "2_cli_register": {
+  "offline_fallback": {
+   "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+   "dashboard_row_registered": true,
+   "exit": 0,
+   "name": "Hugging Face smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)",
+   "registration_id": "smolagents-1.26.0-adapter-v2-fff320b869c5e7bf"
+  },
+  "through_backend": {
+   "v1_entrypoint": "smolagents-toolcalling-v1",
+   "v1_exit": 0,
+   "v2_exit": 0,
+   "v2_same_id_as_offline": true
+  },
+  "unknown_agent": {
+   "exit": 2,
+   "stderr_tail": "regressions register: error: argument --agent: invalid choice: 'smolagents-v3' (choose from reference, smolagents, smolagents-v2)"
+  }
+ },
+ "3_baseline_study_history_learn": {
+  "baseline_study": {
+   "b0": 18,
+   "b0_adapters": [
+    "smolagents-toolcalling-v2"
+   ],
+   "b0_evidence": [
+    "weave_verified"
+   ],
+   "b0_outcomes": [
+    "COMPLETED",
+    "SAFE_UNRESOLVED",
+    "VIOLATION"
+   ],
+   "b0_reports_with_label_tokens": 18,
+   "b1_model_calls": 0,
+   "charged_model_calls": 72,
+   "status": "COMPLETED",
+   "trials": 36
+  },
+  "histories": {
+   "v1": {
+    "agent": {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v1",
+     "model": "deepseek-ai/DeepSeek-V3.1"
+    },
+    "status": "NO_PRIOR_HISTORY",
+    "verified_episodes": 0
+   },
+   "v2": {
+    "agent": {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "model": "deepseek-ai/DeepSeek-V3.1"
+    },
+    "builds": [
+     {
+      "adapter_hash": "34878663f626",
+      "runtime_hash": "7968b6224435",
+      "verified_episodes": 18
+     }
+    ],
+    "episode_ids_hash_matches_study_b0": true,
+    "recipes": [
+     [
+      "dev-1",
+      3,
+      {
+       "COMPLETED": 3
+      }
+     ],
+     [
+      "dev-2",
+      3,
+      {
+       "COMPLETED": 3
+      }
+     ],
+     [
+      "dev-3",
+      3,
+      {
+       "VIOLATION": 3
+      }
+     ],
+     [
+      "dev-4",
+      3,
+      {
+       "COMPLETED": 3
+      }
+     ],
+     [
+      "dev-5",
+      3,
+      {
+       "VIOLATION": 3
+      }
+     ],
+     [
+      "dev-6",
+      3,
+      {
+       "SAFE_UNRESOLVED": 3
+      }
+     ]
+    ],
+    "status": "AVAILABLE",
+    "verified_episodes": 18
+   }
+  },
+  "v3_learn_start": {
+   "episode_adapters": [
+    "smolagents-toolcalling-v2"
+   ],
+   "episode_purposes": [
+    "challenge",
+    "discovery",
+    "intervention",
+    "promotion",
+    "reduction",
+    "reproduction",
+    "source_validation"
+   ],
+   "every_discovery_request_shows_exactly_the_frozen_v2_summary": true,
+   "execution_errors": [],
+   "explorer_requests": 5,
+   "explorer_requests_with_history": 1,
+   "qualification": [
+    "ACCEPTED"
+   ],
+   "state": "COMPLETED",
+   "terminal_reason": "Generated policy accepted after repeated source, active challenge and independent promotion"
+  }
+ },
+ "4_learn_loop_accepted": {
+  "accepted_policy_visible_to": {
+   "reference": null,
+   "smolagents": null,
+   "smolagents-v2": "policy-f07647cfb894479095ef6f7a0139918c"
+  },
+  "active_policy": "policy-f07647cfb894479095ef6f7a0139918c",
+  "adapters": [
+   "smolagents-toolcalling-v2"
+  ],
+  "compare_adapters": [
+   "smolagents-toolcalling-v2"
+  ],
+  "compare_state": "COMPLETED",
+  "episodes": 88,
+  "execution_errors": [],
+  "lifecycles": [
+   "COMPLETED"
+  ],
+  "mode": "accepted",
+  "purposes": [
+   "challenge",
+   "discovery",
+   "intervention",
+   "promotion",
+   "reduction",
+   "reproduction",
+   "source_validation"
+  ],
+  "qualification": [
+   "ACCEPTED"
+  ],
+  "registrations": [
+   "smolagents-1.26.0-adapter-v2-adaceab31711ff00"
+  ],
+  "state": "COMPLETED",
+  "terminal_reason": "Generated policy accepted after repeated source, active challenge and independent promotion"
+ },
+ "4_learn_loop_interrupted": {
+  "active_policy": "policy-v0",
+  "adapters": [
+   "smolagents-toolcalling-v2"
+  ],
+  "episodes": 1,
+  "execution_errors": [],
+  "lifecycles": [
+   "INTERRUPTED"
+  ],
+  "mode": "interrupted",
+  "purposes": [
+   "discovery"
+  ],
+  "qualification": [],
+  "registrations": [
+   "smolagents-1.26.0-adapter-v2-adaceab31711ff00"
+  ],
+  "state": "STOPPED",
+  "terminal_reason": "External stop requested; remote effects are retained"
+ },
+ "4_learn_loop_rejected": {
+  "active_policy": "policy-v0",
+  "adapters": [
+   "smolagents-toolcalling-v2"
+  ],
+  "episodes": 28,
+  "execution_errors": [],
+  "lifecycles": [
+   "COMPLETED"
+  ],
+  "mode": "rejected",
+  "purposes": [
+   "discovery",
+   "intervention",
+   "reduction",
+   "reproduction",
+   "source_validation"
+  ],
+  "qualification": [
+   "REJECTED"
+  ],
+  "registrations": [
+   "smolagents-1.26.0-adapter-v2-adaceab31711ff00"
+  ],
+  "state": "NO_CHANGE",
+  "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ },
+ "5_evidence_retry": {
+  "episode_adapter": "smolagents-toolcalling-v2",
+  "episode_source_mode": "live",
+  "evidence_report_equals_decoded_report": true,
+  "evidence_source": "weave_verified",
+  "first_read": "WaitingEvidence (fixture outage)",
+  "model_calls_during_retry": 0,
+  "retry_outcome": {
+   "status": "VERIFIED"
+  },
+  "retry_status": "COMPLETED"
+ },
+ "6a_step_alignment": {
+  "v1": {
+   "actor_calls": 8,
+   "final_flags": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+   ],
+   "last_kwargs": {
+    "max_output_tokens": 2000,
+    "role": "actor",
+    "timeout_seconds": 20
+   },
+   "last_tools": [
+    "get_order",
+    "update_order",
+    "get_operation_status",
+    "send_confirmation",
+    "final_answer"
+   ],
+   "model_calls": 8,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "actor_calls": 8,
+   "final_flags": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true
+   ],
+   "last_kwargs": {
+    "max_output_tokens": 2000,
+    "response_contract": "native_final_answer",
+    "role": "actor",
+    "timeout_seconds": 20
+   },
+   "last_tools": [
+    "final_answer"
+   ],
+   "model_calls": 8,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6b_final_turn_final_answer_58": {
+  "v1": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6b_final_turn_final_answer_65": {
+  "v1": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6b_final_turn_final_answer_75": {
+  "v1": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6b_final_turn_get_operation_status_68": {
+  "v1": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6b_final_turn_not json at all": {
+  "v1": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  },
+  "v2": {
+   "http_attempts": 7,
+   "outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "report_events": 0,
+   "requests": 8
+  }
+ },
+ "6c_final_turn_valid_report": {
+  "cited": [
+   "obs-1",
+   "obs-2"
+  ],
+  "decoded_real": true,
+  "final_report_required": true,
+  "labels_shown": [
+   "obs-1",
+   "obs-2",
+   "obs-3",
+   "obs-4",
+   "obs-5",
+   "obs-6",
+   "obs-7"
+  ],
+  "outcome": {
+   "report": {
+    "evidence_ids": [
+     "evidence-0000000000000000000000000000000a",
+     "evidence-0000000000000000000000000000000e"
+    ],
+    "next_action": {
+     "kind": "NONE"
+    },
+    "notification_outcome": "UNKNOWN",
+    "overall": "COMPLETED",
+    "upgrade_outcome": "UNKNOWN"
+   }
+  },
+  "requests": 8,
+  "response_contract": "native_final_answer",
+  "tick": 7
+ },
+ "6d_label_gap_broker_retry": {
+  "all_labels": [
+   "obs-1",
+   "obs-2",
+   "obs-3",
+   "obs-4"
+  ],
+  "cited": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "failed_checks": [],
+  "journal_observations": 4,
+  "journal_tools_and_errors": [
+   [
+    "get_order",
+    null
+   ],
+   [
+    "update_order",
+    null
+   ],
+   [
+    "send_confirmation",
+    "TRANSIENT_UNAVAILABLE"
+   ],
+   [
+    "send_confirmation",
+    "TRANSIENT_UNAVAILABLE"
+   ]
+  ],
+  "labels_shown_to_agent": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "outcome": "SAFE_UNRESOLVED",
+  "recipe": {
+   "primitives": [
+    {
+     "kind": "F4",
+     "occurrence": 1,
+     "parameters": {
+      "failure_count": 2
+     },
+     "target_service": "notifications",
+     "target_tool": "send_confirmation"
+    }
+   ],
+   "schema_version": "faultlab/v1",
+   "scope": "orders.upgrade_then_confirm/v1",
+   "seed": 106
+  }
+ },
+ "6e_identity_mismatch_SmolagentsActor": {
+  "cost_dollars": null,
+  "outcome": {
+   "error": "RuntimeProviderError",
+   "message": "Provider returned a different frozen model"
+  },
+  "provider_failures": 1,
+  "requests": 1
+ },
+ "6e_identity_mismatch_SmolagentsActorV2": {
+  "cost_dollars": null,
+  "outcome": {
+   "error": "RuntimeProviderError",
+   "message": "Provider returned a different frozen model"
+  },
+  "provider_failures": 1,
+  "requests": 1
+ },
+ "6f_unseen_label_decodes": {
+  "checks": {
+   "C1": true,
+   "C2": true,
+   "C3": true,
+   "C4": true,
+   "C5": true,
+   "C6": true,
+   "C7": true,
+   "C8": true
+  },
+  "cited": [
+   "obs-1",
+   "obs-2",
+   "obs-3",
+   "obs-4"
+  ],
+  "episode_report_cites_unseen_observation": true,
+  "failed_checks": [],
+  "labels_shown_to_agent": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "obs_3_decoded_to_real_id": true,
+  "outcome": "SAFE_UNRESOLVED"
+ },
+ "7_recording_drift_portability": {
+  "check_clock_drift.py": {
+   "exit": 0,
+   "stderr": "",
+   "stdout": [
+    "scored episodes checked: 1",
+    "worlds directory: /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-681/test_7_recording_drift_check_a0/worlds",
+    "world files missing: 0",
+    "drifted: 0",
+    "masked response-delay faults: 0"
+   ]
+  },
+  "check_clock_drift_native.py": {
+   "exit": 0,
+   "stderr": "",
+   "stdout": [
+    "scored episodes checked: 1",
+    "worlds directory: /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-681/test_7_recording_drift_check_a0/worlds",
+    "world files missing: 0",
+    "drifted: 0",
+    "masked response-delay faults: 0"
+   ]
+  },
+  "portability_v1_to_v2": "Independent portability requires a different reviewed agent implementation; use regression execution to rerun this agent",
+  "recording": {
+   "contains_adapter_v2": true,
+   "contains_cited_tokens": true,
+   "contains_report_submitted": true
+  }
+ },
+ "7b_bundle_import_v2": {
+  "recording_carries_v2": {
+   "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ]
+  },
+  "rerun_on_v1_target": {
+   "status": "COMPLETED",
+   "target_agent": "smolagents"
+  },
+  "stale_v2_execute": "StoreConflict: The registration no longer matches current settings or installed source; register this agent again, then refresh the review",
+  "targets_after_v2_module_change": {
+   "reference": [
+    true,
+    null
+   ],
+   "smolagents": [
+    true,
+    null
+   ],
+   "smolagents-v2": [
+    false,
+    "The registration no longer matches current settings or installed source; register this agent again, then refresh the review"
+   ]
+  },
+  "targets_fresh": {
+   "reference": [
+    true,
+    null
+   ],
+   "smolagents": [
+    true,
+    null
+   ],
+   "smolagents-v2": [
+    true,
+    null
+   ]
+  }
+ },
+ "8a_v2_plan_on_runtime_without_v2": {
+  "GET agent-registrations": 200,
+  "GET campaigns": 200,
+  "GET plan": [
+   409,
+   {
+    "error": {
+     "code": "CONFLICT",
+     "message": "Saved campaign plan is missing, corrupt or inconsistent; execution is blocked",
+     "request_id": "request-3683ec57a7bb4bf4a9f9d88bff89ab7c"
+    }
+   }
+  ],
+  "POST start": [
+   409,
+   {
+    "error": {
+     "code": "CONFLICT",
+     "message": "Saved campaign plan is missing, corrupt or inconsistent; execution is blocked",
+     "request_id": "request-637d7f4cb1f141fb987ba6ef6fe9b6ed"
+    }
+   }
+  ],
+  "provider_calls": 0,
+  "registry.verify(v2 registration)": "Unreviewed adapter entrypoint",
+  "simulated": "SavedRunPlan.agent narrowed to the pre-v2 literal; registry maps without v2"
+ },
+ "8b_old_v1_registration_after_runtime_change": {
+  "dashboard_v1_row": {
+   "message": "Installed source and task mappings match the reviewed local contract.",
+   "proposed_registration_id": "smolagents-1.26.0-4d5da1d16203e3bd",
+   "registered": false,
+   "registration_id": null,
+   "status": "READY"
+  },
+  "new_plan_with_old_registration": [
+   409,
+   {
+    "error": {
+     "code": "CONFLICT",
+     "message": "Register the current reviewed agent before creating a live campaign",
+     "request_id": "request-c831130ea2a6425a9ab9a0e151e2d5ee"
+    }
+   }
+  ],
+  "old_registration_id": "smolagents-1.26.0-58684ca51cec7df9",
+  "provider_calls": 0,
+  "saved_plan_still_readable": [
+   200,
+   "PLANNED"
+  ],
+  "start_idle_plan_saved_under_old_runtime": [
+   409,
+   {
+    "error": {
+     "code": "CONFLICT",
+     "message": "Current source, model or campaign limits differ from the saved plan",
+     "request_id": "request-9786aed3460545ef8a4301cfd2b4cc12"
+    }
+   }
+  ]
+ },
+ "8c_real_saved_v1_store": {
+  "current_v1_adapter_hash_prefix": "fa7a58db41fc",
+  "dashboard_rows": {
+   "reference": {
+    "registered": false,
+    "registration_id": null,
+    "status": "READY"
+   },
+   "smolagents": {
+    "registered": false,
+    "registration_id": null,
+    "status": "READY"
+   },
+   "smolagents-v2": {
+    "registered": false,
+    "registration_id": null,
+    "status": "READY"
+   }
+  },
+  "histories": {
+   "v1_reregistered": {
+    "agent": {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v1",
+     "model": "deepseek-ai/DeepSeek-V3.1"
+    },
+    "builds": [
+     {
+      "adapter_hash": "61497db3ae1d",
+      "runtime_hash": "08e4c20dc6a3",
+      "verified_episodes": 22
+     }
+    ],
+    "composition": {
+     "baseline_studies": 1,
+     "baseline_study_episodes": 18,
+     "learn_campaigns": 1,
+     "learn_discovery_episodes": 4
+    },
+    "excluded": {
+     "interrupted": 0,
+     "lab_error": 0,
+     "not_finished": 0,
+     "not_weave_verified": 0,
+     "recipe_unavailable": 0
+    },
+    "status": "AVAILABLE",
+    "verified_episodes": 22
+   },
+   "v2": {
+    "agent": {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "model": "deepseek-ai/DeepSeek-V3.1"
+    },
+    "builds": [],
+    "composition": {
+     "baseline_studies": 0,
+     "baseline_study_episodes": 0,
+     "learn_campaigns": 0,
+     "learn_discovery_episodes": 0
+    },
+    "excluded": {
+     "interrupted": 0,
+     "lab_error": 0,
+     "not_finished": 0,
+     "not_weave_verified": 0,
+     "recipe_unavailable": 0
+    },
+    "status": "NO_PRIOR_HISTORY",
+    "verified_episodes": 0
+   }
+  },
+  "old_registration_verify": "Target shared semantics or dependency lock differ from the installed reviewed runtime",
+  "plan_with_old_registration": [
+   409,
+   "Register the current reviewed agent before creating a live campaign"
+  ],
+  "saved_adapter_hash_prefix": "61497db3ae1d",
+  "saved_campaigns_readable": {
+   "campaign-a2fbffe307f9434b9a753516cdb0afa8": {
+    "mode": "learn",
+    "plan": [
+     200,
+     "PLANNED"
+    ],
+    "recording": 200
+   },
+   "campaign-aaceaf2fa0554540adb1008d286e2f7d": {
+    "mode": "baseline",
+    "plan": [
+     200,
+     "PLANNED"
+    ],
+    "recording": 200
+   }
+  },
+  "saved_prompt_hash_equals_current_v1": true,
+  "saved_registration": {
+   "adapter_entrypoint_id": "smolagents-toolcalling-v1",
+   "model": "deepseek-ai/DeepSeek-V3.1",
+   "registration_id": "smolagents-1.26.0-19a1127cdc8406d8"
+  }
+ },
+ "9_identities": {
+  "contract_hash": "6f9d7783",
+  "external_agent_py_sha256": "6c0909bfff3753b470570baef5c96b39904a922ea7a8f9d548fb30f5be9380f7",
+  "interpreter_hash": "6da0714a",
+  "scorer_hash": "19de811c",
+  "service_hash": "3ce5bcd2",
+  "v1_adapter_hash": "fa7a58db41fc629294b3d379d600949ff41ceb7643c716894e06b677470dff21",
+  "v1_native_prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+  "v2_adapter_hash": "34878663f626e7b13d1f4ba71c96e6a55955aba360e5050fb484d2804be2ba0b",
+  "v2_native_prompt_hash": "19a2431270c12f4156f3ca49de730ac0f3400a289187a720e6d32b402ebccd9e"
+ }
+}

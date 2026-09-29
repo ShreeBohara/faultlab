@@ -1,0 +1,24 @@
+monitor events recorded during the full backend suite: 166 from 2 processes
+by kind: {'connect': 121, 'getaddrinfo': 22, 'env_open_attempt': 23}
+non-loopback connect/getaddrinfo events: 0
+attempts to open a file named .env: 23
+   3 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_explicit_role_and_histori0/.env
+   3 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_old_empty_env_model_place0/.env
+   3 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_other_env_files_are_unaff0/.env
+   2 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_importing_app_disables_im0/.env
+   2 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_environment_overrides_fil0/.env
+   2 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_dotenv_values_are_not_int0/.env
+   2 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_legacy_explicit_lab_model0/.env
+   2 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env
+   1 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_building_the_native_agent0/.env
+   1 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_control_unguarded_smolage0/.env
+   1 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_test_process_disables_imp0/.env
+   1 /private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_git_provenance_is_safe_an0/.env
+
+Explanation of the 2 events naming the project's real faultlab/.env: they are the synthetic audit events that
+backend/tests/test_env_guard.py:20-23 raises on purpose with sys.audit('open', target, 'r', 0) (target = the str
+and bytes forms of the path; the Path form is not logged by my monitor) to prove the conftest hook refuses them.
+sys.audit opens no file. Every other '.env' is a temporary fixture file under pytest's tmp directory.
+All 121 connects and 22 getaddrinfo calls were loopback (127.0.0.1 / ::1 / localhost). Full suite result:
+2816 passed, 180 skipped, 0 failed (tests/backend-full.log). Working tree byte-identical before/after
+(tests/worktree_snapshot_before_tests.tsv vs tests/worktree_snapshot_after_tests.tsv).

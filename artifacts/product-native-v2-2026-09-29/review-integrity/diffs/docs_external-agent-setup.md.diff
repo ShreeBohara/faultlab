@@ -1,0 +1,41 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/docs/external-agent-setup.md	2026-09-29 14:57:34
++++ docs/external-agent-setup.md	2026-09-29 14:39:10
+@@ -43,3 +43,38 @@
+ fixture preservation and repeated-study orchestration. These tests do not pass SC-012:
+ six cases × three fresh external B0/L pairs and fresh regression-bundle execution remain
+ unmeasured. An internal smoke registration is reported separately and cannot clear that gate.
++
++## Native adapter v2 (September 29, 2026; built offline, not yet run live)
++
++FaultLab now has two declared adapters for the same unmodified smolagents 1.26.0 `ToolCallingAgent`.
++They are separate agents: each has its own entry point, prompt hash, adapter hash, registration,
++plans and history, and their results must never be pooled.
++
++* **Adapter v1** (`smolagents-toolcalling-v1`, agent kind `smolagents`): unchanged and still the default
++  native choice. `backend/app/integrations/external_agent.py` is byte-identical to before v2, and a golden
++  test (`backend/tests/integrations/test_native_adapter_v1_golden.py`) pins every byte v1 sends to the model.
++* **Adapter v2** (`smolagents-toolcalling-v2`, agent kind `smolagents-v2`, shown as "smolagents
++  ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)"). It runs the same agent,
++  built by v1's own code, and adds only the two report fixes the reference Actor already received:
++  1. **Short evidence labels.** Every observation v2 hands to the agent shows its `evidence_id` as its
++     position in the episode journal (`obs-1`, `obs-2`, ...). When the agent calls `final_answer`, the cited
++     labels are decoded back to the real IDs before the report is validated. The decoding is exact: a token
++     that is not a label of an observation delivered by then (for example `obs-99`, `OBS-1` or a label with
++     a stray character) is kept as written and fails exactly as before. Nothing else in the report is changed.
++  2. **A strict final-report turn.** On the turn where FaultLab requires the report (the eighth turn, or
++     sooner if business calls closed), v2 offers only `final_answer`, says it is the only allowed tool, and
++     asks the provider for structured output of exactly `{"name": "final_answer", "arguments": {"answer":
++     <TaskReport>}}` (new response contract `native_final_answer`). An output that is still invalid is not
++     repaired, and a business call on that turn is refused before it is sent, as in v1.
++
++  The step count stays at v1's 8: the analysis found the meter's final turn already lines up with the eighth
++  smolagents step, and v2 refuses to start if an episode's actor-call cap ever differs from 8.
++
++Choose v2 explicitly: in the dashboard pick it under **Reviewed agent**, or register it with
++`POST /api/agent-registrations {"agent": "smolagents-v2", ...}` or
++`./scripts/run-regression.sh register --agent smolagents-v2`. Register again after every runtime change,
++as for v1. Each `report_submitted` event of v2 records the cited tokens as written, the decoded IDs, the
++label map and whether the report came from the strict final turn.
++
++Nothing in the gates changed: no referee, simulator, C1-C8 contract, promotion, challenge or evaluation code,
++and no threshold. Evidence (identity values, golden capture, mutation checks, test log): `artifacts/product-native-v2-2026-09-29/builder/`.

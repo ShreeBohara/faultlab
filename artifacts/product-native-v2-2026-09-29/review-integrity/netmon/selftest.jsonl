@@ -1,0 +1,2 @@
+{"pid": 69384, "kind": "getaddrinfo", "detail": {"host": "'example.invalid'", "port": "80"}}
+{"pid": 69384, "kind": "env_open_attempt", "detail": {"path": "/nonexistent-dir/.env"}}

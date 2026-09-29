@@ -1,0 +1,27 @@
+identity comparison: checkpoint fca3502 (git archive copy) -> working tree
+SAME    actor_final_report_response_format_hash 0576de04398fe472089a77ba -> 
+SAME    actor_response_protocol_hash 4e6455acf31e4b45fa3e95c2 -> 
+DIFF    algorithm_hash 5c95f2a9c4cbeb4ec0ca419b -> 7afabd51a2a4f6bb74ca7809
+SAME    contract_hash 6f9d778323a4efc227c721a1 -> 
+DIFF    explicit_v1/adapter_hash None -> fa7a58db41fc629294b3d379
+DIFF    explicit_v1/native_prompt_hash None -> 2251542869cf3e0fb841e536
+SAME    interpreter_hash 6da0714adef40c0268ce65c1 -> 
+DIFF    native_final_answer_response_format_hash None -> e5ce062b45e7e177c3761d23
+SAME    native_source_hash 2867b3fbb466903dc96de1e1 -> 
+DIFF    native_v1_adapter_hash 61497db3ae1d487b549198dc -> fa7a58db41fc629294b3d379
+SAME    native_v1_prompt_hash 2251542869cf3e0fb841e536 -> 
+DIFF    native_v2_adapter_hash None -> d27c374f4836f554795207c4
+DIFF    native_v2_adapter_protocol_hash None -> 8a0bcb9a672ace3f338b5082
+DIFF    native_v2_prompt_hash None -> cee3aedab1a0476e7d0d656c
+DIFF    native_v2_protocol_version None -> faultlab-native-adapter/
+SAME    reference_actor_prompt_hash 12eabe7f41028c05e37d4143 -> 
+SAME    response_format_default_hash 376bde7986cc2f8fd182f04e -> 
+DIFF    root /Users/shree/Desktop/Cor -> /Users/shree/Desktop/Cor
+DIFF    runtime_hash 5583dcad5ac94be8a502f62d -> ac7a12d2c1fc3baf4c680719
+SAME    scorer_hash 19de811c96473eb47d41974c -> 
+SAME    service_hash 3ce5bcd25af4b37ec908f869 -> 
+SAME    trace_contract_version 2 -> 
+SAME    v1_parts/TASK_CONTRACT_sha b2ce0057db249c2dd9fbb728 -> 
+SAME    v1_parts/TRANSPORT_CONTRACT_sha 87c9595a11294a92773e4ebc -> 
+SAME    v1_parts/external_agent.py_file_sha 6c0909bfff3753b470570bae -> 
+SAME    v1_parts/native_template_sha a00b417a9e1fa5c6bcf46366 -> 

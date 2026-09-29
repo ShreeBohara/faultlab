@@ -1,0 +1,23 @@
+{
+ "actor_final_report_response_format_hash": "0576de04398fe472089a77baa1620f9050094e0c5e4c350d38ba4950cdb7dd32",
+ "actor_response_protocol_hash": "4e6455acf31e4b45fa3e95c2eb225123b2211f8c74a4b7d805f2073d80a43ae5",
+ "algorithm_hash": "5c95f2a9c4cbeb4ec0ca419bb6fbee45090bffa2c6375833543301a53242c9ce",
+ "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+ "interpreter_hash": "6da0714adef40c0268ce65c1d9b1d4a17f829ff04b8dbc6a7059f24f03e6622a",
+ "native_source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+ "native_v1_adapter_hash": "61497db3ae1d487b549198dc0e35525b1cd5fc6e7bc46bba616a3a5c4603d2d4",
+ "native_v1_prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+ "reference_actor_prompt_hash": "12eabe7f41028c05e37d4143f5208843a9414bd14bcb0deea600e3a5e7d9f7b2",
+ "response_format_default_hash": "376bde7986cc2f8fd182f04e745c607933760bea7c306ea6e8e992b7f70be25a",
+ "root": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2-2026-09-29/verify/checkpoint/tree",
+ "runtime_hash": "5583dcad5ac94be8a502f62dd5176d7804d48555fd7f012be9c9f114a5302010",
+ "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+ "service_hash": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3",
+ "trace_contract_version": 2,
+ "v1_parts": {
+  "TASK_CONTRACT_sha": "b2ce0057db249c2dd9fbb728a18ea18ea2d757235bd6c0b4d407b94fa5186bfe",
+  "TRANSPORT_CONTRACT_sha": "87c9595a11294a92773e4ebcc44df2adc4a156a3e15380cda28f240fba5fa0d9",
+  "external_agent.py_file_sha": "6c0909bfff3753b470570baef5c96b39904a922ea7a8f9d548fb30f5be9380f7",
+  "native_template_sha": "a00b417a9e1fa5c6bcf463660908b8a47ddc5b6281a095da56d59344ef58aacf"
+ }
+}

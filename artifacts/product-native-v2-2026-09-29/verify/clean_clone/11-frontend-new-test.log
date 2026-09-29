@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /private/tmp/claude-501/-Users-shree-Desktop-Coreweave-AGI-Hackthon/31c46f2c-a976-45ff-91d4-1214cbd5c473/scratchpad/clone/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  16:25:38
+   Duration  1.00s (transform 197ms, setup 0ms, import 329ms, tests 171ms, environment 432ms)
+

@@ -1,0 +1,21 @@
+Independent verifier: re-run of the fixer's mutation checks (fixer/mutation_checks.py, unchanged) in a SCRATCH COPY,
+never in the working tree (the script edits and restores product files; this verifier may not touch product files).
+
+Scratch copy (session scratchpad, not evidence): the working tree's backend/ and contracts/ (rsync, no caches, no .env;
+diff -rq against the working tree: identical), audit/development.json, and the fixer's mutation_checks.py and
+external_agent_v2.before-fix.py. The fixed files in the copy had SHA-256 00aff4a1... (external_agent_v2.py) and
+216798cf... (run_plans.py), the same as the working tree and as the fixer's log.
+
+attempt 1 (attempt1-without-audit-files.log): the copy had no audit/promotion.json (left out on purpose); the three
+L4/plan tests fail with FileNotFoundError on audit/promotion.json in the fixed tree too, so this attempt says nothing
+about the fixes (environment gap, not a product fault).
+attempt 2 (attempt2-mutation-checks.log): the checkpoint's tracked audit/ files were added to the copy with
+`git archive fca3502 -- audit` (every audit blob equals the working-tree blob by git hash-object; none was opened or
+displayed by the verifier; the product's own code reads promotion.json in-process, as it does in the real suite).
+Result: OVERALL: ALL MUTANTS BEHAVED AS EXPECTED; the per-test PASS/FAIL outcomes for all 5 runs x 10 tests are
+identical to fixer/mutation-checks.log.
+  fixed tree: 10/10 pass. Reviewed (pre-fix) v2 module: INT-1, M1 and INT-2(one-token-over) tests fail.
+  INT-1/M1 mutant (decode every delivered label): exactly the two hidden-label tests fail.
+  INT-2 mutant (no schema-counted admission before the charge): exactly the one-token-over test fails.
+  L4 mutant (old Start refusal text): exactly the three message tests fail.
+Guard: guard.jsonl (no outside connection, no .env open).

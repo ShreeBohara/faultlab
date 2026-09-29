@@ -1,0 +1,5 @@
+--- v1 request 3 (IDs relabelled)
++++ v2 request 3
+@@ -28 +28 @@
+-  "content": "{\"content\":[{\"text\":\"Error:\\nError executing tool 'final_answer' with arguments {'answer': {'evidence_ids': ['obs-1']}}: ValidationError: 4 validation errors for TaskReport\\nupgrade_outcome\\n  Field required [type=missing, input_value={'evidence_ids': ['eviden...00000000000000000000b']}, input_type=dict]\\n    For further information visit https://errors.pydantic.dev/2.13/v/
++  "content": "{\"content\":[{\"text\":\"Error:\\nError executing tool 'final_answer' with arguments {'answer': {'evidence_ids': ['obs-1']}}: ValidationError: 4 validation errors for TaskReport\\nupgrade_outcome\\n  Field required [type=missing, input_value={'evidence_ids': ['obs-1']}, input_type=dict]\\n    For further information visit https://errors.pydantic.dev/2.13/v/missing\\nnotification_ou

@@ -1,0 +1,86 @@
+{
+ "6d_label_gap_broker_retry": {
+  "all_labels": [
+   "obs-1",
+   "obs-2",
+   "obs-3",
+   "obs-4"
+  ],
+  "cited": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "failed_checks": [],
+  "journal_observations": 4,
+  "journal_tools_and_errors": [
+   [
+    "get_order",
+    null
+   ],
+   [
+    "update_order",
+    null
+   ],
+   [
+    "send_confirmation",
+    "TRANSIENT_UNAVAILABLE"
+   ],
+   [
+    "send_confirmation",
+    "TRANSIENT_UNAVAILABLE"
+   ]
+  ],
+  "labels_shown_to_agent": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "outcome": "SAFE_UNRESOLVED",
+  "recipe": {
+   "primitives": [
+    {
+     "kind": "F4",
+     "occurrence": 1,
+     "parameters": {
+      "failure_count": 2
+     },
+     "target_service": "notifications",
+     "target_tool": "send_confirmation"
+    }
+   ],
+   "schema_version": "faultlab/v1",
+   "scope": "orders.upgrade_then_confirm/v1",
+   "seed": 106
+  }
+ },
+ "6f_unseen_label_decodes": {
+  "checks": {
+   "C1": true,
+   "C2": true,
+   "C3": true,
+   "C4": true,
+   "C5": true,
+   "C6": false,
+   "C7": true,
+   "C8": true
+  },
+  "cited": [
+   "obs-1",
+   "obs-2",
+   "obs-3",
+   "obs-4"
+  ],
+  "episode_report_cites_unseen_observation": false,
+  "failed_checks": [
+   "C6"
+  ],
+  "labels_shown_to_agent": [
+   "obs-1",
+   "obs-2",
+   "obs-4"
+  ],
+  "obs_3_decoded_to_real_id": false,
+  "outcome": "VIOLATION"
+ }
+}

@@ -1,0 +1,25 @@
+
+Running 18 tests using 1 worker
+
+  ✓   1 tests/discovery-v3.browser.ts:12:1 › native v3 plan shows the frozen agent history before Start and the recording carries it (1.1s)
+  ✓   2 tests/evidence-screen.browser.ts:4:1 › saved evidence reload, exact trial drilldown and playback produce only reads (2.0s)
+  ✓   3 tests/evidence-screen.browser.ts:23:1 › creation is separate from Start and duplicate clicks cannot enqueue extra starts (738ms)
+  ✓   4 tests/evidence-screen.browser.ts:44:1 › malformed response stays visible and keyboard access works at narrow width (502ms)
+  ✓   5 tests/evidence-screen.browser.ts:53:1 › history is read-only and Stop follows only the selected active campaign (1.7s)
+  ✓   6 tests/evidence-screen.browser.ts:83:1 › readiness distinguishes backend health from simulator access and rechecks without writes (770ms)
+  ✓   7 tests/evidence-screen.browser.ts:107:1 › saved regression execution history opens interrupted evidence without typing IDs or dispatching work (886ms)
+  -   8 tests/evidence-screen.browser.ts:135:1 › actual local offline smoke creates fresh world and survives reload
+  ✓   9 tests/evidence-screen.browser.ts:159:1 › an absent remembered campaign pauses once and recovers through explicit retry or saved history (816ms)
+  ✓  10 tests/evidence-screen.browser.ts:192:1 › archive browsing shows its location, verified source evidence and disabled mutations while downloads and playback work (1.1s)
+  ✓  11 tests/evidence-wait.browser.ts:9:1 › a waiting campaign shows automatic retries, then needs operator, and retries only on request (3.7s)
+  ✓  12 tests/imports.browser.ts:10:1 › a downloaded ZIP is saved only on explicit Save, reviewed as unverified history and reopened after reload without execution (1.1s)
+  ✓  13 tests/imports.browser.ts:52:1 › archive mode keeps saved imports readable while upload and fresh execution stay disabled (515ms)
+  ✓  14 tests/imports.browser.ts:74:1 › review shows the bundled task beside a confirmed billable run, a refused upload stays in view with a review open, and phone width keeps outcomes visible (825ms)
+  ✓  15 tests/imports.browser.ts:124:1 › cancelling an unadmitted request keeps "nothing ran" on screen after the review rereads its detail (2.6s)
+  ✓  16 tests/network-isolation.browser.ts:20:1 › the test browser resolves no outside host name and opens no outside connection (6.1s)
+  ✓  17 tests/onboarding.browser.ts:7:1 › offline public-case preview saves an idle frozen plan before an explicit Start (3.0s)
+  ✓  18 tests/onboarding.browser.ts:58:1 › native source registration is explicit and NO_CHANGE recording retains its frozen identity after reload (1.3s)
+
+  1 skipped
+  17 passed (30.3s)
+exit=0

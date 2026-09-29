@@ -1,0 +1,14 @@
+ACTOR_FINAL_REPORT_SCHEMA_JSON_sha256: IDENTICAL 
+ACTOR_RESPONSE_PROTOCOL_VERSION: IDENTICAL 
+MODEL_REQUEST_SETTINGS: IDENTICAL 
+ReportAction_schema_hash: IDENTICAL 
+ResponseContract_args: DIFFERENT checkpoint=['actor_final_report'] | worktree=['actor_final_report', 'native_final_answer']
+TaskReport_schema_hash: IDENTICAL 
+actor_response_protocol: IDENTICAL 
+actor_response_protocol_hash: IDENTICAL 
+native_final_answer_protocol: DIFFERENT checkpoint=None | worktree={'input_admission': 'messages_plus_final_report_response_format/v1', 'response_contract': 'native_final_answer', 'response_format': {'json_schema': {'name': 'Fa
+native_final_answer_schema: DIFFERENT checkpoint=None | worktree={'$defs': {'CheckNextAction': {'additionalProperties': False, 'properties': {'kind': {'enum': ['CHECK_EXISTING_UPGRADE', 'CHECK_EXISTING_NOTIFICATION'], 'title'
+refusals: IDENTICAL 
+response_format_for_actor_final_report: IDENTICAL 
+response_format_for_default_actor: IDENTICAL 
+actor_final_report response_format canonical JSON byte-identical: True

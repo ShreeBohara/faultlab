@@ -1,0 +1,69 @@
+SmolagentsActor {
+ "report_evidence_ids": [
+  "obs-1",
+  "obs-3",
+  "obs-2"
+ ],
+ "journal": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-0000000000000000000000000000000f",
+  "evidence-00000000000000000000000000000014"
+ ],
+ "shown_in_last_request": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-00000000000000000000000000000014"
+ ],
+ "validate_report_references": "FAILS: Report references undelivered evidence",
+ "logical_calls": [
+  [
+   "update_order",
+   "actor",
+   null
+  ],
+  [
+   "get_operation_status",
+   "policy",
+   "before_confirmation"
+  ],
+  [
+   "send_confirmation",
+   "actor",
+   null
+  ]
+ ]
+}
+SmolagentsActorV2 {
+ "report_evidence_ids": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-00000000000000000000000000000014",
+  "evidence-0000000000000000000000000000000f"
+ ],
+ "journal": [
+  "evidence-0000000000000000000000000000000b",
+  "evidence-0000000000000000000000000000000f",
+  "evidence-00000000000000000000000000000014"
+ ],
+ "shown_in_last_request": [
+  "obs-1",
+  "obs-3"
+ ],
+ "validate_report_references": "PASSES",
+ "logical_calls": [
+  [
+   "update_order",
+   "actor",
+   null
+  ],
+  [
+   "get_operation_status",
+   "policy",
+   "before_confirmation"
+  ],
+  [
+   "send_confirmation",
+   "actor",
+   null
+  ]
+ ]
+}
+blocked []

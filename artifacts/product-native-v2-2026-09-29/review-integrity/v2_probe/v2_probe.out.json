@@ -1,0 +1,1173 @@
+{
+ "blocked_network_or_env": [],
+ "episodes": {
+  "bad_then_good": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000b"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": false
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "obs-1"
+     ],
+     "next_action": {
+      "kind": "ESCALATE"
+     },
+     "notification_outcome": "NOT_STARTED",
+     "overall": "SAFE_UNRESOLVED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v1_requests": 3,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000b"
+     ],
+     "next_action": {
+      "kind": "ESCALATE"
+     },
+     "notification_outcome": "NOT_STARTED",
+     "overall": "SAFE_UNRESOLVED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000b"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000b": "obs-1"
+     },
+     "final_report_required": false,
+     "labels_shown_to_agent": [
+      "obs-1"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000b"
+      ],
+      "next_action": {
+       "kind": "ESCALATE"
+      },
+      "notification_outcome": "NOT_STARTED",
+      "overall": "SAFE_UNRESOLVED",
+      "upgrade_outcome": "SUCCEEDED"
+     },
+     "response_contract": null
+    }
+   ],
+   "v2_requests": 3
+  },
+  "budget_close": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000a"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_prefix_identical": true,
+     "final_turn_tools_v2": [
+      {
+       "description": "final_answer is the only allowed tool on this final turn. Finish with the original exact five-field TaskReport in the task contract.",
+       "inputs": {
+        "answer": {
+         "description": "Exact TaskReport object.",
+         "type": "object"
+        }
+       },
+       "name": "final_answer"
+      }
+     ],
+     "final_turn_transport_diff_keys": [
+      "tools"
+     ],
+     "final_turn_v2": true,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "response_contract": "native_final_answer",
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": false
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a"
+     ],
+     "next_action": {
+      "kind": "ESCALATE"
+     },
+     "notification_outcome": "NOT_STARTED",
+     "overall": "SAFE_UNRESOLVED",
+     "upgrade_outcome": "NOT_STARTED"
+    }
+   },
+   "v1_requests": 3,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a"
+     ],
+     "next_action": {
+      "kind": "ESCALATE"
+     },
+     "notification_outcome": "NOT_STARTED",
+     "overall": "SAFE_UNRESOLVED",
+     "upgrade_outcome": "NOT_STARTED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000a"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000a": "obs-1"
+     },
+     "final_report_required": true,
+     "labels_shown_to_agent": [
+      "obs-1"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000a"
+      ],
+      "next_action": {
+       "kind": "ESCALATE"
+      },
+      "notification_outcome": "NOT_STARTED",
+      "overall": "SAFE_UNRESOLVED",
+      "upgrade_outcome": "NOT_STARTED"
+     },
+     "response_contract": "native_final_answer"
+    }
+   ],
+   "v2_requests": 3
+  },
+  "confirm_policy": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000a",
+    "evidence-0000000000000000000000000000000f",
+    "evidence-00000000000000000000000000000013",
+    "evidence-00000000000000000000000000000018"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 4,
+     "v2_equals_v1_relabelled": true
+    }
+   ],
+   "v1_event_types": [
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000018"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v1_requests": 4,
+   "v2_event_types": [
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000018"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-4"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000018"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000a": "obs-1",
+      "evidence-0000000000000000000000000000000f": "obs-2",
+      "evidence-00000000000000000000000000000013": "obs-3",
+      "evidence-00000000000000000000000000000018": "obs-4"
+     },
+     "final_report_required": false,
+     "labels_shown_to_agent": [
+      "obs-1",
+      "obs-2",
+      "obs-4"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000a",
+       "evidence-0000000000000000000000000000000f",
+       "evidence-00000000000000000000000000000018"
+      ],
+      "next_action": {
+       "kind": "NONE"
+      },
+      "notification_outcome": "SUCCEEDED",
+      "overall": "COMPLETED",
+      "upgrade_outcome": "SUCCEEDED"
+     },
+     "response_contract": null
+    }
+   ],
+   "v2_requests": 4
+  },
+  "hidden_hook_read": {
+   "analysis": {
+    "journal_observations_never_shown_to_either_agent": [
+     "evidence-0000000000000000000000000000000f"
+    ],
+    "journal_size_at_report": 3,
+    "labels_shown_to_agent_recorded": [
+     "obs-1",
+     "obs-3"
+    ],
+    "labels_shown_to_v2_agent": [
+     "obs-1",
+     "obs-3"
+    ],
+    "real_ids_shown_to_v1_agent": [
+     "evidence-0000000000000000000000000000000b",
+     "evidence-00000000000000000000000000000014"
+    ],
+    "their_labels": [
+     "obs-2"
+    ],
+    "unseen_observation_label_was_decoded_to_its_real_id": true,
+    "v2_cited_tokens": [
+     "obs-1",
+     "obs-3",
+     "obs-2"
+    ],
+    "v2_decoded_ids": [
+     "evidence-0000000000000000000000000000000b",
+     "evidence-00000000000000000000000000000014",
+     "evidence-0000000000000000000000000000000f"
+    ]
+   },
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000b",
+    "evidence-0000000000000000000000000000000f",
+    "evidence-00000000000000000000000000000014"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": true
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000b",
+      "evidence-00000000000000000000000000000014"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v1_requests": 3,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "policy_step",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000b",
+      "evidence-00000000000000000000000000000014",
+      "evidence-0000000000000000000000000000000f"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1",
+      "obs-3",
+      "obs-2"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000b",
+      "evidence-00000000000000000000000000000014",
+      "evidence-0000000000000000000000000000000f"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000b": "obs-1",
+      "evidence-0000000000000000000000000000000f": "obs-2",
+      "evidence-00000000000000000000000000000014": "obs-3"
+     },
+     "final_report_required": false,
+     "labels_shown_to_agent": [
+      "obs-1",
+      "obs-3"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000b",
+       "evidence-00000000000000000000000000000014",
+       "evidence-0000000000000000000000000000000f"
+      ],
+      "next_action": {
+       "kind": "NONE"
+      },
+      "notification_outcome": "SUCCEEDED",
+      "overall": "COMPLETED",
+      "upgrade_outcome": "SUCCEEDED"
+     },
+     "response_contract": null
+    }
+   ],
+   "v2_requests": 3
+  },
+  "no_report": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000a",
+    "evidence-0000000000000000000000000000000e",
+    "evidence-00000000000000000000000000000012",
+    "evidence-00000000000000000000000000000016",
+    "evidence-0000000000000000000000000000001a",
+    "evidence-0000000000000000000000000000001e"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 4,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 5,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 6,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 7,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_prefix_identical": true,
+     "final_turn_tools_v2": [
+      {
+       "description": "final_answer is the only allowed tool on this final turn. Finish with the original exact five-field TaskReport in the task contract.",
+       "inputs": {
+        "answer": {
+         "description": "Exact TaskReport object.",
+         "type": "object"
+        }
+       },
+       "name": "final_answer"
+      }
+     ],
+     "final_turn_transport_diff_keys": [
+      "tools"
+     ],
+     "final_turn_v2": true,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "response_contract": "native_final_answer",
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 8,
+     "v2_equals_v1_relabelled": false
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered"
+   ],
+   "v1_outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "v1_requests": 8,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered"
+   ],
+   "v2_outcome": {
+    "error": "ActorReportError",
+    "message": "External agent produced no valid original final report"
+   },
+   "v2_report_submitted": [],
+   "v2_requests": 8
+  },
+  "retry_once": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000a",
+    "evidence-00000000000000000000000000000010",
+    "evidence-00000000000000000000000000000016"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 4,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 5,
+     "v2_equals_v1_relabelled": true
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "actor_transport_retry",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-00000000000000000000000000000010",
+      "evidence-00000000000000000000000000000016"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v1_requests": 5,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "actor_transport_retry",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-00000000000000000000000000000010",
+      "evidence-00000000000000000000000000000016"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-00000000000000000000000000000010",
+      "evidence-00000000000000000000000000000016"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000a": "obs-1",
+      "evidence-00000000000000000000000000000010": "obs-2",
+      "evidence-00000000000000000000000000000016": "obs-3"
+     },
+     "final_report_required": false,
+     "labels_shown_to_agent": [
+      "obs-1",
+      "obs-2",
+      "obs-3"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000a",
+       "evidence-00000000000000000000000000000010",
+       "evidence-00000000000000000000000000000016"
+      ],
+      "next_action": {
+       "kind": "NONE"
+      },
+      "notification_outcome": "SUCCEEDED",
+      "overall": "COMPLETED",
+      "upgrade_outcome": "SUCCEEDED"
+     },
+     "response_contract": null
+    }
+   ],
+   "v2_requests": 5
+  },
+  "success": {
+   "journal_ids": [
+    "evidence-0000000000000000000000000000000a",
+    "evidence-0000000000000000000000000000000f",
+    "evidence-00000000000000000000000000000015"
+   ],
+   "rows": [
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 1,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 2,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 3,
+     "v2_equals_v1_relabelled": true
+    },
+    {
+     "final_turn_v2": false,
+     "kwargs_v1": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "kwargs_v2": {
+      "max_output_tokens": 2000,
+      "role": "actor",
+      "timeout_seconds": 20
+     },
+     "real_id_in_v2_request": false,
+     "request": 4,
+     "v2_equals_v1_relabelled": true
+    }
+   ],
+   "v1_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v1_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000015"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v1_requests": 4,
+   "v2_event_types": [
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "tool_dispatched",
+    "observation_delivered",
+    "report_submitted"
+   ],
+   "v2_outcome": {
+    "report": {
+     "evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000015"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    }
+   },
+   "v2_report_submitted": [
+    {
+     "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+     "citation_protocol": "faultlab-native-adapter/v2-labels-final-turn",
+     "cited_evidence_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3"
+     ],
+     "decoded_evidence_ids": [
+      "evidence-0000000000000000000000000000000a",
+      "evidence-0000000000000000000000000000000f",
+      "evidence-00000000000000000000000000000015"
+     ],
+     "evidence_labels": {
+      "evidence-0000000000000000000000000000000a": "obs-1",
+      "evidence-0000000000000000000000000000000f": "obs-2",
+      "evidence-00000000000000000000000000000015": "obs-3"
+     },
+     "final_report_required": false,
+     "labels_shown_to_agent": [
+      "obs-1",
+      "obs-2",
+      "obs-3"
+     ],
+     "report": {
+      "evidence_ids": [
+       "evidence-0000000000000000000000000000000a",
+       "evidence-0000000000000000000000000000000f",
+       "evidence-00000000000000000000000000000015"
+      ],
+      "next_action": {
+       "kind": "NONE"
+      },
+      "notification_outcome": "SUCCEEDED",
+      "overall": "COMPLETED",
+      "upgrade_outcome": "SUCCEEDED"
+     },
+     "response_contract": null
+    }
+   ],
+   "v2_requests": 4
+  }
+ },
+ "label": "worktree"
+}

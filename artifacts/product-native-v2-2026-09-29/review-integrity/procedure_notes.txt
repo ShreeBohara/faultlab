@@ -1,0 +1,19 @@
+Integrity reviewer procedure notes (honest disclosure of my own slips; none changed any repo file):
+
+1. checks.py: I never opened or displayed backend/app/referee/checks.py. However, one command,
+   `grep -rln "report_submitted" backend/app/referee/ contracts/ frontend/src`, scanned every file under
+   backend/app/referee/ (checks.py included) for that string. It printed nothing (no file matched), so no
+   content was shown. checks.py identity was otherwise established only by git blob hashes and by
+   scripts/experiments/gate_freeze.py (hash + AST, never displayed).
+2. Network: while self-testing my own monitor (netmon/sitecustomize.py) I called
+   socket.getaddrinfo('example.invalid', 80) once. That may have sent one DNS query for the reserved,
+   non-existent name example.invalid; it failed (gaierror) and no connection was opened. No provider,
+   model, W&B or Weave endpoint was contacted at any point; cost $0.
+3. audit/promotion.json and audit/final-audit.json: never opened or displayed. My whole-tree comparison
+   (`git hash-object --stdin-paths`, no -w) computed their blob hashes along with every other file, the
+   same thing `git status` does; both equal the checkpoint blobs. artifacts/heldout2/ was never touched.
+4. git: only read-only commands (status, diff, show, ls-tree, ls-files, rev-parse, archive to a scratch
+   folder, hash-object without -w). No commit/reset/checkout/stash/push; the index and HEAD were not modified.
+5. Saved run stores under /Users/shree/FaultLab_Runs/ were opened only with file:PATH?mode=ro&immutable=1
+   (and PRAGMA query_only=ON). immutable=1 ignores un-checkpointed -wal content, so counts may miss the
+   newest rows.

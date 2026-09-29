@@ -1,0 +1,33 @@
+{
+ "python:guard-python.jsonl": {
+  "processes_with_guard": 21,
+  "process_summaries": 15,
+  "totals": {
+   "loopback_connect": 121,
+   "local_lookup": 22,
+   "unix_connect": 0,
+   "refused_outside": 0,
+   "env_open": 3
+  },
+  "refused_outside_events": [],
+  "env_open_by_outcome": {
+   "conftest hook refuses": 3
+  },
+  "protected_opens": {
+   "temp/scratch copy": 73,
+   "real backend/app/referee/checks.py": 39556,
+   "real audit/promotion.json": 574,
+   "real audit/final-audit.json": 19,
+   "real artifacts/heldout2/partition/manifest_hash": 1
+  }
+ },
+ "node:guard-node.jsonl": {
+  "node_processes_with_guard": 34,
+  "refused": []
+ },
+ "sampler:sampler.txt": {
+  "non_loopback_rows": 0,
+  "rows": [],
+  "sampler": "samples=2075 loopback_rows_seen=1138 process_observations=4933"
+ }
+}

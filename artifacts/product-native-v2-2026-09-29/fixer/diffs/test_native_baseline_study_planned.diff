@@ -1,0 +1,14 @@
+diff --git a/artifacts/product-native-v2-2026-09-29/fixer/test_native_baseline_study_planned.before-fix.py b/backend/tests/lab/test_native_baseline_study_planned.py
+index b4f45b9..9633d7f 100644
+--- a/artifacts/product-native-v2-2026-09-29/fixer/test_native_baseline_study_planned.before-fix.py
++++ b/backend/tests/lab/test_native_baseline_study_planned.py
+@@ -231,7 +231,8 @@ async def test_study_refuses_when_plan_registration_differs_from_current_runtime
+         response = await api.post(f'/api/campaigns/{campaign.campaign_id}/baseline-study', json={'execute_live': True})
+         assert response.status_code == 409, response.text
+         assert response.json()['error']['code'] == 'CONFLICT'
+-        assert response.json()['error']['message'] == 'Current source, model or campaign limits differ from the saved plan'
++        assert response.json()['error']['message'] == ('Current source, model or campaign limits differ from the saved plan. '
++                                                       'Register the agent again and create a new campaign; this saved plan stays readable')
+         # Refused before admission: no study, reservation, episode, world or model call.
+         assert not c.store.list_records('baseline_studies') and not c.tasks
+         assert not c.store.list_records('episodes') and provider.calls['actor'] == 0

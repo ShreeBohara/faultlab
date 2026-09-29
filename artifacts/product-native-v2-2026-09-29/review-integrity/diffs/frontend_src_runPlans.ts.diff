@@ -1,0 +1,55 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/frontend/src/runPlans.ts	2026-09-29 14:57:34
++++ frontend/src/runPlans.ts	2026-09-29 14:33:12
+@@ -3,7 +3,16 @@
+ import { validateContract } from './generated/validate'
+ 
+ export const TASK_DEFINITION = 'orders.upgrade_then_confirm/v1' as const
+-export type AgentKind = 'reference' | 'smolagents'
++/** 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared native adapter v2. */
++export type AgentKind = 'reference' | 'smolagents' | 'smolagents-v2'
++export const AGENT_KINDS: readonly AgentKind[] = ['reference', 'smolagents', 'smolagents-v2']
++export const NATIVE_AGENT_KINDS: readonly AgentKind[] = ['smolagents', 'smolagents-v2']
++export const NATIVE_V2_LABEL = 'smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)'
++const AGENT_NAMES: Record<AgentKind, string> = { reference: 'FaultLab reference actor', smolagents: 'smolagents ToolCallingAgent', 'smolagents-v2': NATIVE_V2_LABEL }
++export const isAgentKind = (value: unknown): value is AgentKind => AGENT_KINDS.includes(value as AgentKind)
++export const isNativeAgent = (value: unknown): boolean => NATIVE_AGENT_KINDS.includes(value as AgentKind)
++/** Display name of a saved agent kind; an unknown kind (e.g. 'unsupported') is shown as recorded. */
++export const agentName = (value: string): string => isAgentKind(value) ? AGENT_NAMES[value] : value
+ export type RunMode = 'baseline' | 'learn' | 'compare'
+ export type RunProfile = 'offline-v1' | 'live-v1'
+ export type RunCaps = Required<CampaignBudget>
+@@ -147,9 +156,9 @@
+   const ids = new Set<string>()
+   for (const option of value) {
+     if (!object(option) || !DISCOVERY_PROTOCOLS.includes(String(option.protocol_id)) || ids.has(String(option.protocol_id)) || typeof option.default !== 'boolean'
+-      || !text(option.label) || !text(option.description) || !Array.isArray(option.supported_agents) || !option.supported_agents.every(agent => ['reference', 'smolagents'].includes(String(agent)))
++      || !text(option.label) || !text(option.description) || !Array.isArray(option.supported_agents) || !option.supported_agents.every(isAgentKind)
+       || !(option.unsupported_reason === undefined || text(option.unsupported_reason)) || !discoveryDeclaration(option.declaration) || option.declaration.protocol !== option.protocol_id) return false
+-    if (preChecked(option.protocol_id) && (option.default || option.supported_agents.includes('smolagents'))) return false
++    if (preChecked(option.protocol_id) && (option.default || option.supported_agents.some(isNativeAgent))) return false
+     if (HISTORY_PROTOCOLS.includes(String(option.protocol_id)) && option.default) return false
+     ids.add(String(option.protocol_id))
+   }
+@@ -183,9 +192,11 @@
+   }
+   if (!object(value.learn) || !digest(value.learn.manifest_hash) || !searchSpace(value.learn.search_space) || !positive(value.learn.selection_limit) || !comparison(value.compare)) return malformed('run search space')
+   if (value.learn.discovery_protocols !== undefined && !discoveryOptions(value.learn.discovery_protocols)) return malformed('discovery protocols')
+-  if (!Array.isArray(value.agents) || value.agents.length !== 2 || new Set(value.agents.map(a => object(a) && a.agent)).size !== 2) return malformed('reviewed agents')
++  // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
++  if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
++    || !['reference', 'smolagents'].every(kind => (value.agents as unknown[]).some(a => object(a) && a.agent === kind))) return malformed('reviewed agents')
+   for (const agent of value.agents) {
+-    if (!object(agent) || !['reference', 'smolagents'].includes(String(agent.agent)) || !text(agent.label) || !['READY', 'UNAVAILABLE'].includes(String(agent.status)) || !text(agent.reason_code) || !text(agent.message)
++    if (!object(agent) || !isAgentKind(agent.agent) || !text(agent.label) || !['READY', 'UNAVAILABLE'].includes(String(agent.status)) || !text(agent.reason_code) || !text(agent.message)
+       || !(agent.configuration_hash === null || digest(agent.configuration_hash)) || !nullableText(agent.proposed_registration_id) || !nullableText(agent.registration_id) || !nullableText(agent.accepted_policy_version)
+       || typeof agent.registered !== 'boolean' || typeof agent.compare_available !== 'boolean' || typeof agent.model !== 'string' || !['VERIFIED', 'UNAVAILABLE'].includes(String(agent.source_conformance)) || agent.provider_access !== 'not_checked' || agent.behavior_verified !== false || !stringList(agent.limitations)
+       || agent.registered !== (agent.registration_id !== null) || (agent.compare_available && agent.accepted_policy_version === null)
+@@ -200,7 +211,7 @@
+   const plan = value.plan
+   if (value.status !== 'PLANNED' || !object(plan) || plan.schema_version !== 'faultlab-run-plan/v1' || plan.campaign_id !== campaignId || plan.task_definition_id !== TASK_DEFINITION
+     || !['setup_hash', 'configuration_hash', 'initial_policy_hash', 'plan_hash'].every(key => digest(plan[key])) || !['task_text', 'order_id', 'agent_registration_id', 'initial_policy_version'].every(key => text(plan[key]))
+-    || !['baseline', 'learn', 'compare'].includes(String(plan.mode)) || !['reference', 'smolagents'].includes(String(plan.agent)) || !object(plan.selection)) return malformed('campaign plan')
++    || !['baseline', 'learn', 'compare'].includes(String(plan.mode)) || !isAgentKind(plan.agent) || !object(plan.selection)) return malformed('campaign plan')
+   if (!(plan.config_profile_id === 'live-v1' && plan.source_mode === 'live' || plan.config_profile_id === 'offline-v1' && plan.source_mode === 'offline_fixture' && plan.agent === 'reference' && plan.mode === 'baseline')) return malformed('campaign plan execution profile')
+   validateCaps(plan.caps)
+   validateEpisodeBudget(plan.episode_budget)

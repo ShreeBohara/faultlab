@@ -4,6 +4,7 @@ import type { ImportedBundle, ImportedExecution } from '../bundleImports'
 import { useResource } from '../useResource'
 import { Badge, Empty, Field, Json, ResourceNote } from './common'
 import { RecordingDownload } from './RecordingDownload'
+import { agentName } from '../runPlans'
 
 export function faultExposure(verdict: unknown, scheduled?: boolean, triggered?: boolean, expectedFaults?: number): string {
   if (object(verdict) && Array.isArray(verdict.fault_executions)) {
@@ -63,7 +64,7 @@ export function ImportedFreshEvidence({ value, artifactKind, faultCount, onEpiso
     return loaded
   }, execution.status === 'RUNNING' || execution.status === 'PENDING' ? 1500 : null)
   return <section aria-label="Fresh imported execution evidence"><h3>Fresh execution · {execution.execution_id}</h3><Badge value={execution.status} />
-    <dl className="facts compact"><Field name="Actual target agent">{value.target.agent}</Field><Field name="Actual target model">{value.target.model}</Field><Field name="Target registration"><code>{value.target.agent_registration_id}</code></Field><Field name="Target configuration"><code>{value.target.configuration_hash}</code></Field><Field name="Recorded trial usage">{execution.usage.model_calls ?? 0} model calls · {execution.usage.http_attempts ?? 0} HTTP attempts</Field>{charges && <Field name="Charged to its accounting ledger">{charges.model_calls} model requests (includes any transport retries; at most {charges.request_ceiling}) · {charges.reserved_model_calls} still reserved · {charges.actual_cost_dollars == null ? (charges.model_calls ? 'cost unknown' : 'no cost') : `$${charges.actual_cost_dollars.toFixed(4)}`}</Field>}<Field name="Fresh worlds">{execution.world_ids.join(', ') || 'Not allocated yet'}</Field></dl>
+    <dl className="facts compact"><Field name="Actual target agent">{agentName(value.target.agent)}</Field><Field name="Actual target model">{value.target.model}</Field><Field name="Target registration"><code>{value.target.agent_registration_id}</code></Field><Field name="Target configuration"><code>{value.target.configuration_hash}</code></Field><Field name="Recorded trial usage">{execution.usage.model_calls ?? 0} model calls · {execution.usage.http_attempts ?? 0} HTTP attempts</Field>{charges && <Field name="Charged to its accounting ledger">{charges.model_calls} model requests (includes any transport retries; at most {charges.request_ceiling}) · {charges.reserved_model_calls} still reserved · {charges.actual_cost_dollars == null ? (charges.model_calls ? 'cost unknown' : 'no cost') : `$${charges.actual_cost_dollars.toFixed(4)}`}</Field>}<Field name="Fresh worlds">{execution.world_ids.join(', ') || 'Not allocated yet'}</Field></dl>
     <p className="muted">Accounting campaign: <code>{value.owner_campaign_id}</code>. The target identity above identifies these trials; the accounting campaign is not the tested agent.</p>
     {execution.stop_reason && <p className="notice">{execution.stop_reason}</p>}
     {value.error && <div role="alert" className="error">FaultLab could not finish this execution. This infrastructure error is separate from an agent rule violation.<Json value={value.error} title="Saved execution error" /></div>}

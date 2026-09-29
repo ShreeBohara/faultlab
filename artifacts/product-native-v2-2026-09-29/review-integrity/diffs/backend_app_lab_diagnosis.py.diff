@@ -1,0 +1,20 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/lab/diagnosis.py	2026-09-29 14:57:34
++++ backend/app/lab/diagnosis.py	2026-09-29 14:23:45
+@@ -28,6 +28,17 @@
+                             'memory':'Fresh native agent and empty native memory for each episode; original reports cite full delivered evidence IDs.',
+                             'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
+                             'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
++        elif plan and plan['agent']=='smolagents-v2':
++            # Native adapter v2: v1's contract and transport text, plus its declared labels and final-report turn.
++            from app.integrations.registry import AgentRegistry,NATIVE_FILES
++            from app.integrations.external_agent_v2 import TASK_CONTRACT,TRANSPORT_CONTRACT,adapter_protocol
++            registration=AgentRegistry(store).get(plan['agent_registration_id'])
++            actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent, FaultLab native adapter v2',
++                            'task_contract':TASK_CONTRACT,'transport_contract':TRANSPORT_CONTRACT,
++                            'adapter_protocol':adapter_protocol(),
++                            'memory':'Fresh native agent and empty native memory for each episode; the agent sees each delivered observation\'s evidence_id as its journal label (obs-N), and its report\'s cited labels are decoded back to the full evidence IDs before validation.',
++                            'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
++                            'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+     return {'actor_contract':actor_contract,'episode_limits':EpisodeBudget().model_dump(mode='json'),
+             'hook_execution':'Rules run in array order. Each rule tests when once on entry; each visited step retests only_if and consumes a policy step, including skipped steps. Policy reads and same-identity retries consume HTTP attempts and ticks; waits consume ticks and polling cycles. Hook steps do not consume actor model turns and do not recursively invoke hooks. Newly delivered observations appear on the next original actor turn. No hook can rewrite a report or create a new authorized operation.',
+             'hook_boundaries':{

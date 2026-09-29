@@ -1,0 +1,166 @@
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53028)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53028)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53042)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53124)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53124)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "30", "address": "('::1', 53235)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53235)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "30", "address": "('::1', 53235)"}}
+{"pid": 70232, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53454"}}
+{"pid": 70232, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53454)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53469)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53471)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53471)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53482"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53482)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53482"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53482)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53482"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53482)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53482"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53482)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53502"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53502)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53501)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53501)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53506)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53506)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53506)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53506)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "53521"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53521)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53532)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53532)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53537)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53537)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53545)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53545)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53548)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53548)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53555)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53557)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53557)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53564)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53568)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53570)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53572)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53574)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53576)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53578)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53584)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53588)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53590)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53590)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53597)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53634)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 53634)"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_building_the_native_agent0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_control_unguarded_smolage0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_importing_app_disables_im0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_importing_app_disables_im0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_test_process_disables_imp0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_git_provenance_is_safe_an0/.env"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55586)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55610)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55612)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55614)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55620)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55654)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55703)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55713)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55798"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55798)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55798"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55798)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55801"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55801)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55803"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55803)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55809"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55809)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55811"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55811)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55813"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55813)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55813"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55813"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55813"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55813)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55813)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55813)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55818"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55818)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55818"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55818)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55818"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55818)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55818"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55818)"}}
+{"pid": 69450, "kind": "getaddrinfo", "detail": {"host": "'127.0.0.1'", "port": "55818"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55818)"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_environment_overrides_fil0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_environment_overrides_fil0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_dotenv_values_are_not_int0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_dotenv_values_are_not_int0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_explicit_role_and_histori0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_explicit_role_and_histori0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_explicit_role_and_histori0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_legacy_explicit_lab_model0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_legacy_explicit_lab_model0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_old_empty_env_model_place0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_old_empty_env_model_place0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_old_empty_env_model_place0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_other_env_files_are_unaff0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_other_env_files_are_unaff0/.env"}}
+{"pid": 69450, "kind": "env_open_attempt", "detail": {"path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-671/test_other_env_files_are_unaff0/.env"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55850)"}}
+{"pid": 69450, "kind": "connect", "detail": {"family": "2", "address": "('127.0.0.1', 55850)"}}

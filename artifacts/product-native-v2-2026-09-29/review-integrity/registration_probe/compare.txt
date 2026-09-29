@@ -1,0 +1,11 @@
+v1 registration fields that differ checkpoint -> working tree: {'adapter_hash': ('61497db3ae1d487b5491', 'fa7a58db41fc629294b3'), 'configuration_hash': ('0dd1c9241f61c2da28ab', '82e769d3618d93066e1b'), 'registration_id': ('smolagents-1.26.0-0d', 'smolagents-1.26.0-82')}
+v1 frozen target (excluding runtime/algorithm/adapter/tree_lab fingerprints) identical: True []
+v1 prompt_hash 2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989 | v2 prompt_hash 19a2431270c12f4156f3ca49de730ac0f3400a289187a720e6d32b402ebccd9e
+v2 registration_id smolagents-1.26.0-adapter-v2-fcf0e68aca687a30 | v1 smolagents-1.26.0-82e769d3618d9306
+v2 target keys differing from v1 target: ['actor_prompt_hash', 'adapter_hash']
+history identity keys differing v1 vs v2: ['adapter_entrypoint_id', 'prompt_hash']
+cross verification: {
+ "v1_reg_vs_v2_cfg": "refused: ValueError: Target differs from its independently frozen registration",
+ "v2_reg_vs_v1_cfg": "refused: ValueError: Target differs from its independently frozen registration"
+}
+portability v1->v2: refused: Independent portability requires a different reviewed agent implementation; use regression execution to rerun this agent

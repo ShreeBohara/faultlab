@@ -1,0 +1,70 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/app/providers/runtime.py	2026-09-29 14:57:34
++++ backend/app/providers/runtime.py	2026-09-29 14:35:57
+@@ -10,7 +10,8 @@
+ from typing import Any, Callable, Literal
+ 
+ from app.config import Settings
+-from app.contracts.models import MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT, ReportAction, canonical_json, content_hash
++from app.contracts.models import (MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LIMIT, ReportAction, StrictModel,
++                                  TaskReport, canonical_json, content_hash)
+ from app.contracts.tokens import validate_model_input
+ from app.providers import redact_text
+ from app.providers.wandb_inference import BASE_URL, model_request_options
+@@ -20,15 +21,36 @@
+                           "response_format": {"type": "json_object"}, "temperature": 0}
+ ACTOR_RESPONSE_PROTOCOL_VERSION = "faultlab-reference-final-report/v1"
+ ACTOR_FINAL_REPORT_SCHEMA_JSON = canonical_json(ReportAction.model_json_schema())
+-ResponseContract = Literal["actor_final_report"]
+ 
+ 
++class NativeFinalAnswerArguments(StrictModel):
++    answer: TaskReport
++
++
++class NativeFinalAnswer(StrictModel):
++    """The native smolagents final_answer action, exactly as the native transport carries it."""
++    name: Literal["final_answer"]
++    arguments: NativeFinalAnswerArguments
++
++
++# Native adapter v2's reserved final-report turn (app.integrations.external_agent_v2). A separate,
++# declared contract beside the reference Actor's: it leaves "actor_final_report" byte-identical.
++NATIVE_FINAL_ANSWER_CONTRACT = "native_final_answer"
++NATIVE_FINAL_ANSWER_PROTOCOL_VERSION = "faultlab-native-final-answer/v1"
++NATIVE_FINAL_ANSWER_SCHEMA_JSON = canonical_json(NativeFinalAnswer.model_json_schema())
++ResponseContract = Literal["actor_final_report", "native_final_answer"]
++
++
+ def response_format_for(*, role: str = "actor", response_contract: ResponseContract | None = None) -> dict:
+-    """Only reviewed code may select the fixed final-report contract."""
++    """Only reviewed code may select one of the fixed final-report contracts."""
+     if response_contract is None:
+         return {"type": "json_object"}
+-    if role != "actor" or response_contract != "actor_final_report":
++    if role != "actor" or response_contract not in ("actor_final_report", NATIVE_FINAL_ANSWER_CONTRACT):
+         raise RuntimeProviderError("Unknown or role-incompatible response contract.", code="INVALID_INPUT")
++    if response_contract == NATIVE_FINAL_ANSWER_CONTRACT:
++        return {"type": "json_schema", "json_schema": {
++            "name": "FaultLabNativeFinalAnswer", "strict": True,
++            "schema": json.loads(NATIVE_FINAL_ANSWER_SCHEMA_JSON)}}
+     return {"type": "json_schema", "json_schema": {
+         "name": "FaultLabActorFinalReport", "strict": True,
+         "schema": json.loads(ACTOR_FINAL_REPORT_SCHEMA_JSON)}}
+@@ -44,6 +66,17 @@
+             "input_admission": "messages_plus_final_report_response_format/v1"}
+ 
+ 
++def native_final_answer_protocol() -> dict:
++    """Declared structured-output contract of native adapter v2's final-report turn (not the reference Actor's)."""
++    final_format = response_format_for(response_contract=NATIVE_FINAL_ANSWER_CONTRACT)
++    return {"version": NATIVE_FINAL_ANSWER_PROTOCOL_VERSION, "scope": "smolagents_native_adapter_v2",
++            "trigger": "EpisodeMeter.final_turn: reserved last turn or business_closed",
++            "response_contract": NATIVE_FINAL_ANSWER_CONTRACT, "response_format": final_format,
++            "schema_hash": content_hash(final_format["json_schema"]["schema"]),
++            "response_format_hash": content_hash(final_format),
++            "input_admission": "messages_plus_final_report_response_format/v1"}
++
++
+ def validate_request_input(messages, model: str, *, role: str = "actor",
+                            response_contract: ResponseContract | None = None) -> int:
+     """Admit the final-report schema without changing the sent messages.

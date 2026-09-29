@@ -141,7 +141,7 @@ def main():
     for name in ('validate','playback','execute'):
         sub=commands.add_parser(name);sub.add_argument('--bundle',type=Path,required=True);sub.add_argument('--agent')
         if name=='execute':sub.add_argument('--profile',required=True);sub.add_argument('--execute-live',action='store_true')
-    reg=commands.add_parser('register');reg.add_argument('--agent',choices=['reference','smolagents'],required=True)
+    reg=commands.add_parser('register');reg.add_argument('--agent',choices=['reference','smolagents','smolagents-v2'],required=True,help='smolagents is native adapter v1; smolagents-v2 is the declared adapter v2 (short evidence labels, strict final report turn)')
     export=commands.add_parser('export');target=export.add_mutually_exclusive_group(required=True)
     target.add_argument('--regression');target.add_argument('--counterexample')
     export.add_argument('--policy');export.add_argument('--challenge');export.add_argument('--output',type=Path,required=True)

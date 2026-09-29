@@ -1,0 +1,12 @@
+--- artifacts/product-native-v2-2026-09-29/review-integrity/checkpoint-copy/backend/tests/lab/test_native_baseline_study_planned.py	2026-09-29 14:57:34
++++ backend/tests/lab/test_native_baseline_study_planned.py	2026-09-29 14:26:20
+@@ -226,7 +226,8 @@
+         elif change == 'native_source':
+             monkeypatch.setattr('app.integrations.registry.verify_native_source', lambda: 'f' * 64)
+         else:
+-            monkeypatch.setattr('app.integrations.registry.native_prompt_hash', lambda: 'e' * 64)
++            # Takes the adapter entry point since native adapter v2 was added (v1 is its default).
++            monkeypatch.setattr('app.integrations.registry.native_prompt_hash', lambda *entrypoint: 'e' * 64)
+         response = await api.post(f'/api/campaigns/{campaign.campaign_id}/baseline-study', json={'execute_live': True})
+         assert response.status_code == 409, response.text
+         assert response.json()['error']['code'] == 'CONFLICT'

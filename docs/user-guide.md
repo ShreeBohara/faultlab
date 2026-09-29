@@ -18,8 +18,11 @@ does not change that saved plan. A changed runtime or model requires a new plan;
 readable. The supported task is express shipping upgrade followed by a truthful confirmation.
 The instructions field does not define new tools, arbitrary tasks or a new scoring contract.
 
-For configured paid work, choose **Live reviewed agent**, select **FaultLab reference Actor** or
-**smolagents ToolCallingAgent 1.26.0**, then **Register configured agent**. Registration checks installed
+For configured paid work, choose **Live reviewed agent**, select **FaultLab reference Actor**,
+**smolagents ToolCallingAgent 1.26.0** (native adapter v1) or **smolagents ToolCallingAgent - adapter v2
+(short evidence labels, strict final report turn)**, then **Register configured agent**. The two smolagents
+choices run the same unmodified agent through different declared adapters; they are separate agents whose
+results are never pooled ([adapter v2](external-agent-setup.md#native-adapter-v2-september-29-2026-built-offline-not-yet-run-live)). Registration checks installed
 source and the adapter contract; it makes no provider call and does not establish agent quality or
 provider access. Baseline runs use the chosen public case. **Learn** uses the bounded development
 search; **Compare** requires an accepted policy for the exact selected configuration. Every original
@@ -96,8 +99,9 @@ repeats the target, the task and the spending bound; only **Confirm billable fre
 
 **Spending bound.** One run reserves 24 actor turns (3 trials × 8 turns). The reference agent may
 resend a request once when its transport fails before any answer arrives; such retries are charged, so
-one run can make at most 48 billable model requests, and FaultLab enforces that ceiling. The native
-smolagents adapter makes no retries (at most 24). The configured campaign call and dollar caps also
+one run can make at most 48 billable model requests, and FaultLab enforces that ceiling. Both native
+smolagents adapters (v1 and v2) follow the same rule: at most one charged transport retry per turn, so the
+worst case is also 48. The configured campaign call and dollar caps also
 still apply. The backend rechecks the store, the bundle manifest and the target registration against
 current settings, then runs the exact bundled policy and task for three trials in new synthetic worlds.
 It stops early (INCOMPLETE) if a trial is invalid, interrupted or its scheduled fault never fires.

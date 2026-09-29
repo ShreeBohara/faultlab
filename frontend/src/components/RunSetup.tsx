@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { Campaign } from '../generated/contracts'
 import type { ConfigStatus, ReadinessStatus } from '../api'
-import { runApi, type AgentKind, type DiscoveryProtocolId, type RunMode, type RunProfile } from '../runPlans'
+import { isNativeAgent, runApi, type AgentKind, type DiscoveryProtocolId, type RunMode, type RunProfile } from '../runPlans'
 import { DiscoveryProtocolFacts, discoveryBudget } from './DiscoveryProtocol'
 import { useResource, type Resource } from '../useResource'
 import { Field, ResourceNote } from './common'
@@ -55,7 +55,8 @@ export function RunSetup({ config, replay, readiness, onCampaign }: { config?: C
           {!agent.registered && <button disabled={blocked || agent.status !== 'READY'} onClick={() => void action('register', async () => { await runApi.register(value.data_store.identity, agent.agent); setMessage('Registration saved. No agent execution or provider call was made.'); options.refresh?.() })}>{busy === 'register' ? 'Registering…' : 'Register configured agent'}</button>}
           <p className="muted">{agent.source_conformance === 'VERIFIED' ? 'Installed source and adapter conformance verified.' : 'Installed source and adapter conformance unavailable.'} This is not behavioral validation. Provider access has not been checked.</p>
           {!!agent.limitations.length && <details><summary>Agent limitations</summary><ul className="muted">{agent.limitations.map(item => <li key={item}>{item}</li>)}</ul></details>}
-          {agentKind === 'smolagents' && <p className="muted">Supports baseline, original Learn and compatible policy comparison. Separate reference-context and completion research studies are not supported.</p>}
+          {isNativeAgent(agentKind) && <p className="muted">Supports baseline, original Learn and compatible policy comparison. Separate reference-context and completion research studies are not supported.</p>}
+          {agentKind === 'smolagents-v2' && <p className="muted">Adapter v2 is a separate agent from v1 (the same smolagents code): it shows each delivered observation's evidence ID as a short label (obs-1, obs-2, …), decodes cited labels back to the real IDs, and on the final turn offers only final_answer with a structured final-report format. Its results are never pooled with adapter v1.</p>}
         </>}
       </div> : <p className="profile-note">Offline smoke uses the handwritten reference in a fresh synthetic world. It makes no model calls and does not measure learned improvement.</p>}
       <div className="supported-task"><span className="small-label">SUPPORTED TASK</span><h3>{value.task.label}</h3><p className="muted">{value.task.description}</p></div>

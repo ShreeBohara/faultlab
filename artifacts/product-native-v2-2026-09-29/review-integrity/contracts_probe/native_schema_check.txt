@@ -1,0 +1,8 @@
+top-level schema: {"additionalProperties": false, "description": "The native smolagents final_answer action, exactly as the native transport carries it.", "properties": {"arguments": {"$ref": "#/$defs/NativeFinalAnswerArguments"}, "name": {"const": "final_answer", "title": "Name", "type": "string"}}, "required": ["name", "arguments"], "title": "NativeFinalAnswer", "type": "object"}
+$defs keys: ['CheckNextAction', 'NativeFinalAnswerArguments', 'NoNextAction', 'TaskReport']
+arguments def: {"additionalProperties": false, "properties": {"answer": {"$ref": "#/$defs/TaskReport"}}, "required": ["answer"], "title": "NativeFinalAnswerArguments", "type": "object"}
+TaskReport def in native schema == TaskReport.model_json_schema() (without $defs): True
+TaskReport nested $defs all present and identical: True ['CheckNextAction', 'NoNextAction']
+any other $defs: []
+response_format name/strict/type: json_schema FaultLabNativeFinalAnswer True
+required top-level: ['name', 'arguments'] additionalProperties: False

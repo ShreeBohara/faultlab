@@ -1,0 +1,13 @@
+Independent verifier, v1 request-bytes check (native adapter v1 = smolagents-toolcalling-v1).
+
+The working tree's golden test (backend/tests/integrations/test_native_adapter_v1_golden.py) and its fixture
+(backend/tests/fixtures/native_v1_golden_requests.json) were copied byte for byte into the git-archive copy of the
+checkpoint fca3502 (verify/checkpoint/tree) and run there, against the CHECKPOINT's own code (confirmed: the imported
+app.integrations.registry and external_agent modules are the checkpoint copy's files; the checkpoint registry has no
+NATIVE_V2). Result: checkpoint-golden-pytest.log, 4 passed: both scripted v1 episodes (success, no_report: 4 and 8 model
+requests) produce exactly the fixture's request messages, provider kwargs, request hashes and outcome, and the
+checkpoint's native_prompt_hash() equals 2251542869cf3e0f... The same test file passes in the working tree inside
+scripts/test.sh (suite/test-sh.log). Both trees equal the fixture, so v1's model-visible request bytes for these two
+episodes are identical between the checkpoint and the working tree.
+The fixture is byte-identical to builder/native_v1_golden_requests.captured-before-v2.json (cmp).
+Guard log: guard-checkpoint.jsonl (no outside connection, no .env open).

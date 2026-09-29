@@ -1,0 +1,4 @@
+git archive fca3502bbc9f3f3ef0343f7bef62a11debbd748d -- backend contracts scripts/experiments/gate_freeze.py audit/development.json | tar -x (no audit/promotion.json, no audit/final-audit.json, no artifacts/, no .env)
+Tue Sep 29 23:02:51 UTC 2026
+     367
+Tue Sep 29 23:06:40 UTC 2026 added to the checkpoint copy (only for the golden check): backend/tests/integrations/test_native_adapter_v1_golden.py and backend/tests/fixtures/native_v1_golden_requests.json, copied byte for byte from the working tree

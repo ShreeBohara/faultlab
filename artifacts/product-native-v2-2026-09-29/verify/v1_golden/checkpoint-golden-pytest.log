@@ -1,0 +1,16 @@
+....                                                                     [100%]
+==================================== PASSES ====================================
+_________________ test_v1_request_bytes_are_pinned[no_report] __________________
+----------------------------- Captured stdout call -----------------------------
+Error while parsing tool call from model output: External model returned an 
+invalid single-tool action
+Error executing tool 'get_operation_status' with arguments {'service': 
+'orders'}: ValueError: Final report required; business call was not dispatched
+Please try again or use another tool
+Reached max steps.
+=========================== short test summary info ============================
+PASSED tests/integrations/test_native_adapter_v1_golden.py::test_v1_request_bytes_are_pinned[no_report]
+PASSED tests/integrations/test_native_adapter_v1_golden.py::test_v1_request_bytes_are_pinned[success]
+PASSED tests/integrations/test_native_adapter_v1_golden.py::test_v1_native_prompt_hash_is_pinned
+PASSED tests/integrations/test_native_adapter_v1_golden.py::test_golden_episodes_cover_the_final_turn_and_the_refused_fallback
+4 passed in 0.52s

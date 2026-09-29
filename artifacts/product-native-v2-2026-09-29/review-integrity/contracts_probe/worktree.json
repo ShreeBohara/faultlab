@@ -1,0 +1,667 @@
+{
+ "ACTOR_FINAL_REPORT_SCHEMA_JSON_sha256": "4b1919edb48d5979d66cf0a02c2295afb23937abd8afd7b257c46b8b6fcdd04e",
+ "ACTOR_RESPONSE_PROTOCOL_VERSION": "faultlab-reference-final-report/v1",
+ "MODEL_REQUEST_SETTINGS": {
+  "max_input_tokens": 32000,
+  "max_output_tokens": 2000,
+  "response_format": {
+   "type": "json_object"
+  },
+  "retries": 0,
+  "temperature": 0,
+  "timeout_seconds": 20
+ },
+ "ReportAction_schema_hash": "8033400b2631d0ae3bb864453a4f82b9b217aeed29ac245f6212afea2d840c77",
+ "ResponseContract_args": [
+  "actor_final_report",
+  "native_final_answer"
+ ],
+ "TaskReport_schema_hash": "72c3b44b462f99642ce9bf5dd6243fee10b345c6b27334e6040bdafe3db837bf",
+ "actor_response_protocol": {
+  "input_admission": "messages_plus_final_report_response_format/v1",
+  "response_contract": "actor_final_report",
+  "response_format": {
+   "json_schema": {
+    "name": "FaultLabActorFinalReport",
+    "schema": {
+     "$defs": {
+      "CheckNextAction": {
+       "additionalProperties": false,
+       "properties": {
+        "kind": {
+         "enum": [
+          "CHECK_EXISTING_UPGRADE",
+          "CHECK_EXISTING_NOTIFICATION"
+         ],
+         "title": "Kind",
+         "type": "string"
+        },
+        "operation_id": {
+         "maxLength": 128,
+         "minLength": 1,
+         "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+         "title": "Operation Id",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind",
+        "operation_id"
+       ],
+       "title": "CheckNextAction",
+       "type": "object"
+      },
+      "NoNextAction": {
+       "additionalProperties": false,
+       "properties": {
+        "kind": {
+         "enum": [
+          "NONE",
+          "ESCALATE"
+         ],
+         "title": "Kind",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind"
+       ],
+       "title": "NoNextAction",
+       "type": "object"
+      },
+      "TaskReport": {
+       "additionalProperties": false,
+       "properties": {
+        "evidence_ids": {
+         "items": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+         },
+         "maxItems": 18,
+         "title": "Evidence Ids",
+         "type": "array"
+        },
+        "next_action": {
+         "discriminator": {
+          "mapping": {
+           "CHECK_EXISTING_NOTIFICATION": "#/$defs/CheckNextAction",
+           "CHECK_EXISTING_UPGRADE": "#/$defs/CheckNextAction",
+           "ESCALATE": "#/$defs/NoNextAction",
+           "NONE": "#/$defs/NoNextAction"
+          },
+          "propertyName": "kind"
+         },
+         "oneOf": [
+          {
+           "$ref": "#/$defs/NoNextAction"
+          },
+          {
+           "$ref": "#/$defs/CheckNextAction"
+          }
+         ],
+         "title": "Next Action"
+        },
+        "notification_outcome": {
+         "enum": [
+          "NOT_STARTED",
+          "PENDING",
+          "SUCCEEDED",
+          "FAILED",
+          "UNKNOWN",
+          "NOT_REQUIRED"
+         ],
+         "title": "Notification Outcome",
+         "type": "string"
+        },
+        "overall": {
+         "enum": [
+          "COMPLETED",
+          "SAFE_UNRESOLVED",
+          "CORRECTLY_REJECTED"
+         ],
+         "title": "Overall",
+         "type": "string"
+        },
+        "upgrade_outcome": {
+         "enum": [
+          "NOT_STARTED",
+          "PENDING",
+          "SUCCEEDED",
+          "FAILED",
+          "UNKNOWN"
+         ],
+         "title": "Upgrade Outcome",
+         "type": "string"
+        }
+       },
+       "required": [
+        "upgrade_outcome",
+        "notification_outcome",
+        "overall",
+        "evidence_ids",
+        "next_action"
+       ],
+       "title": "TaskReport",
+       "type": "object"
+      }
+     },
+     "additionalProperties": false,
+     "properties": {
+      "kind": {
+       "const": "report",
+       "title": "Kind",
+       "type": "string"
+      },
+      "report": {
+       "$ref": "#/$defs/TaskReport"
+      }
+     },
+     "required": [
+      "kind",
+      "report"
+     ],
+     "title": "ReportAction",
+     "type": "object"
+    },
+    "strict": true
+   },
+   "type": "json_schema"
+  },
+  "response_format_hash": "0576de04398fe472089a77baa1620f9050094e0c5e4c350d38ba4950cdb7dd32",
+  "schema_hash": "8033400b2631d0ae3bb864453a4f82b9b217aeed29ac245f6212afea2d840c77",
+  "scope": "faultlab_reference_actor",
+  "trigger": "EpisodeMeter.final_turn: reserved last turn or business_closed",
+  "version": "faultlab-reference-final-report/v1"
+ },
+ "actor_response_protocol_hash": "4e6455acf31e4b45fa3e95c2eb225123b2211f8c74a4b7d805f2073d80a43ae5",
+ "native_final_answer_protocol": {
+  "input_admission": "messages_plus_final_report_response_format/v1",
+  "response_contract": "native_final_answer",
+  "response_format": {
+   "json_schema": {
+    "name": "FaultLabNativeFinalAnswer",
+    "schema": {
+     "$defs": {
+      "CheckNextAction": {
+       "additionalProperties": false,
+       "properties": {
+        "kind": {
+         "enum": [
+          "CHECK_EXISTING_UPGRADE",
+          "CHECK_EXISTING_NOTIFICATION"
+         ],
+         "title": "Kind",
+         "type": "string"
+        },
+        "operation_id": {
+         "maxLength": 128,
+         "minLength": 1,
+         "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+         "title": "Operation Id",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind",
+        "operation_id"
+       ],
+       "title": "CheckNextAction",
+       "type": "object"
+      },
+      "NativeFinalAnswerArguments": {
+       "additionalProperties": false,
+       "properties": {
+        "answer": {
+         "$ref": "#/$defs/TaskReport"
+        }
+       },
+       "required": [
+        "answer"
+       ],
+       "title": "NativeFinalAnswerArguments",
+       "type": "object"
+      },
+      "NoNextAction": {
+       "additionalProperties": false,
+       "properties": {
+        "kind": {
+         "enum": [
+          "NONE",
+          "ESCALATE"
+         ],
+         "title": "Kind",
+         "type": "string"
+        }
+       },
+       "required": [
+        "kind"
+       ],
+       "title": "NoNextAction",
+       "type": "object"
+      },
+      "TaskReport": {
+       "additionalProperties": false,
+       "properties": {
+        "evidence_ids": {
+         "items": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "type": "string"
+         },
+         "maxItems": 18,
+         "title": "Evidence Ids",
+         "type": "array"
+        },
+        "next_action": {
+         "discriminator": {
+          "mapping": {
+           "CHECK_EXISTING_NOTIFICATION": "#/$defs/CheckNextAction",
+           "CHECK_EXISTING_UPGRADE": "#/$defs/CheckNextAction",
+           "ESCALATE": "#/$defs/NoNextAction",
+           "NONE": "#/$defs/NoNextAction"
+          },
+          "propertyName": "kind"
+         },
+         "oneOf": [
+          {
+           "$ref": "#/$defs/NoNextAction"
+          },
+          {
+           "$ref": "#/$defs/CheckNextAction"
+          }
+         ],
+         "title": "Next Action"
+        },
+        "notification_outcome": {
+         "enum": [
+          "NOT_STARTED",
+          "PENDING",
+          "SUCCEEDED",
+          "FAILED",
+          "UNKNOWN",
+          "NOT_REQUIRED"
+         ],
+         "title": "Notification Outcome",
+         "type": "string"
+        },
+        "overall": {
+         "enum": [
+          "COMPLETED",
+          "SAFE_UNRESOLVED",
+          "CORRECTLY_REJECTED"
+         ],
+         "title": "Overall",
+         "type": "string"
+        },
+        "upgrade_outcome": {
+         "enum": [
+          "NOT_STARTED",
+          "PENDING",
+          "SUCCEEDED",
+          "FAILED",
+          "UNKNOWN"
+         ],
+         "title": "Upgrade Outcome",
+         "type": "string"
+        }
+       },
+       "required": [
+        "upgrade_outcome",
+        "notification_outcome",
+        "overall",
+        "evidence_ids",
+        "next_action"
+       ],
+       "title": "TaskReport",
+       "type": "object"
+      }
+     },
+     "additionalProperties": false,
+     "description": "The native smolagents final_answer action, exactly as the native transport carries it.",
+     "properties": {
+      "arguments": {
+       "$ref": "#/$defs/NativeFinalAnswerArguments"
+      },
+      "name": {
+       "const": "final_answer",
+       "title": "Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name",
+      "arguments"
+     ],
+     "title": "NativeFinalAnswer",
+     "type": "object"
+    },
+    "strict": true
+   },
+   "type": "json_schema"
+  },
+  "response_format_hash": "e5ce062b45e7e177c3761d23d7229afe5660b4c5caad8baa055ad3aeb42ce539",
+  "schema_hash": "9ef37b9fb0cb67d9d07e7812973eeb8c2aa31a145c5d08fedd8a5eabbee41d98",
+  "scope": "smolagents_native_adapter_v2",
+  "trigger": "EpisodeMeter.final_turn: reserved last turn or business_closed",
+  "version": "faultlab-native-final-answer/v1"
+ },
+ "native_final_answer_schema": {
+  "$defs": {
+   "CheckNextAction": {
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "CHECK_EXISTING_UPGRADE",
+       "CHECK_EXISTING_NOTIFICATION"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "operation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Operation Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "operation_id"
+    ],
+    "title": "CheckNextAction",
+    "type": "object"
+   },
+   "NativeFinalAnswerArguments": {
+    "additionalProperties": false,
+    "properties": {
+     "answer": {
+      "$ref": "#/$defs/TaskReport"
+     }
+    },
+    "required": [
+     "answer"
+    ],
+    "title": "NativeFinalAnswerArguments",
+    "type": "object"
+   },
+   "NoNextAction": {
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "enum": [
+       "NONE",
+       "ESCALATE"
+      ],
+      "title": "Kind",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "title": "NoNextAction",
+    "type": "object"
+   },
+   "TaskReport": {
+    "additionalProperties": false,
+    "properties": {
+     "evidence_ids": {
+      "items": {
+       "maxLength": 128,
+       "minLength": 1,
+       "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+       "type": "string"
+      },
+      "maxItems": 18,
+      "title": "Evidence Ids",
+      "type": "array"
+     },
+     "next_action": {
+      "discriminator": {
+       "mapping": {
+        "CHECK_EXISTING_NOTIFICATION": "#/$defs/CheckNextAction",
+        "CHECK_EXISTING_UPGRADE": "#/$defs/CheckNextAction",
+        "ESCALATE": "#/$defs/NoNextAction",
+        "NONE": "#/$defs/NoNextAction"
+       },
+       "propertyName": "kind"
+      },
+      "oneOf": [
+       {
+        "$ref": "#/$defs/NoNextAction"
+       },
+       {
+        "$ref": "#/$defs/CheckNextAction"
+       }
+      ],
+      "title": "Next Action"
+     },
+     "notification_outcome": {
+      "enum": [
+       "NOT_STARTED",
+       "PENDING",
+       "SUCCEEDED",
+       "FAILED",
+       "UNKNOWN",
+       "NOT_REQUIRED"
+      ],
+      "title": "Notification Outcome",
+      "type": "string"
+     },
+     "overall": {
+      "enum": [
+       "COMPLETED",
+       "SAFE_UNRESOLVED",
+       "CORRECTLY_REJECTED"
+      ],
+      "title": "Overall",
+      "type": "string"
+     },
+     "upgrade_outcome": {
+      "enum": [
+       "NOT_STARTED",
+       "PENDING",
+       "SUCCEEDED",
+       "FAILED",
+       "UNKNOWN"
+      ],
+      "title": "Upgrade Outcome",
+      "type": "string"
+     }
+    },
+    "required": [
+     "upgrade_outcome",
+     "notification_outcome",
+     "overall",
+     "evidence_ids",
+     "next_action"
+    ],
+    "title": "TaskReport",
+    "type": "object"
+   }
+  },
+  "additionalProperties": false,
+  "description": "The native smolagents final_answer action, exactly as the native transport carries it.",
+  "properties": {
+   "arguments": {
+    "$ref": "#/$defs/NativeFinalAnswerArguments"
+   },
+   "name": {
+    "const": "final_answer",
+    "title": "Name",
+    "type": "string"
+   }
+  },
+  "required": [
+   "name",
+   "arguments"
+  ],
+  "title": "NativeFinalAnswer",
+  "type": "object"
+ },
+ "refusals": {
+  "actor/other": "INVALID_INPUT",
+  "explorer/actor_final_report": "INVALID_INPUT",
+  "explorer/native_final_answer": "INVALID_INPUT",
+  "mechanic/actor_final_report": "INVALID_INPUT",
+  "mechanic/native_final_answer": "INVALID_INPUT"
+ },
+ "response_format_for_actor_final_report": {
+  "json_schema": {
+   "name": "FaultLabActorFinalReport",
+   "schema": {
+    "$defs": {
+     "CheckNextAction": {
+      "additionalProperties": false,
+      "properties": {
+       "kind": {
+        "enum": [
+         "CHECK_EXISTING_UPGRADE",
+         "CHECK_EXISTING_NOTIFICATION"
+        ],
+        "title": "Kind",
+        "type": "string"
+       },
+       "operation_id": {
+        "maxLength": 128,
+        "minLength": 1,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+        "title": "Operation Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "kind",
+       "operation_id"
+      ],
+      "title": "CheckNextAction",
+      "type": "object"
+     },
+     "NoNextAction": {
+      "additionalProperties": false,
+      "properties": {
+       "kind": {
+        "enum": [
+         "NONE",
+         "ESCALATE"
+        ],
+        "title": "Kind",
+        "type": "string"
+       }
+      },
+      "required": [
+       "kind"
+      ],
+      "title": "NoNextAction",
+      "type": "object"
+     },
+     "TaskReport": {
+      "additionalProperties": false,
+      "properties": {
+       "evidence_ids": {
+        "items": {
+         "maxLength": 128,
+         "minLength": 1,
+         "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+         "type": "string"
+        },
+        "maxItems": 18,
+        "title": "Evidence Ids",
+        "type": "array"
+       },
+       "next_action": {
+        "discriminator": {
+         "mapping": {
+          "CHECK_EXISTING_NOTIFICATION": "#/$defs/CheckNextAction",
+          "CHECK_EXISTING_UPGRADE": "#/$defs/CheckNextAction",
+          "ESCALATE": "#/$defs/NoNextAction",
+          "NONE": "#/$defs/NoNextAction"
+         },
+         "propertyName": "kind"
+        },
+        "oneOf": [
+         {
+          "$ref": "#/$defs/NoNextAction"
+         },
+         {
+          "$ref": "#/$defs/CheckNextAction"
+         }
+        ],
+        "title": "Next Action"
+       },
+       "notification_outcome": {
+        "enum": [
+         "NOT_STARTED",
+         "PENDING",
+         "SUCCEEDED",
+         "FAILED",
+         "UNKNOWN",
+         "NOT_REQUIRED"
+        ],
+        "title": "Notification Outcome",
+        "type": "string"
+       },
+       "overall": {
+        "enum": [
+         "COMPLETED",
+         "SAFE_UNRESOLVED",
+         "CORRECTLY_REJECTED"
+        ],
+        "title": "Overall",
+        "type": "string"
+       },
+       "upgrade_outcome": {
+        "enum": [
+         "NOT_STARTED",
+         "PENDING",
+         "SUCCEEDED",
+         "FAILED",
+         "UNKNOWN"
+        ],
+        "title": "Upgrade Outcome",
+        "type": "string"
+       }
+      },
+      "required": [
+       "upgrade_outcome",
+       "notification_outcome",
+       "overall",
+       "evidence_ids",
+       "next_action"
+      ],
+      "title": "TaskReport",
+      "type": "object"
+     }
+    },
+    "additionalProperties": false,
+    "properties": {
+     "kind": {
+      "const": "report",
+      "title": "Kind",
+      "type": "string"
+     },
+     "report": {
+      "$ref": "#/$defs/TaskReport"
+     }
+    },
+    "required": [
+     "kind",
+     "report"
+    ],
+    "title": "ReportAction",
+    "type": "object"
+   },
+   "strict": true
+  },
+  "type": "json_schema"
+ },
+ "response_format_for_default_actor": {
+  "type": "json_object"
+ },
+ "runtime_file": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend/app/providers/runtime.py"
+}

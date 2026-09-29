@@ -1,0 +1,77 @@
+{
+ "steps": [
+  {
+   "name": "choose v2",
+   "agentOptions": [
+    "FaultLab reference Actor",
+    "smolagents ToolCallingAgent 1.26.0",
+    "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)"
+   ],
+   "v2Note": true,
+   "registrationBefore": true
+  },
+  {
+   "name": "registered v2",
+   "registrationId": "smolagents-1.26.0-adapter-v2-adaceab31711ff00"
+  },
+  {
+   "name": "baseline preview",
+   "previewNamesV2": true
+  },
+  {
+   "name": "baseline plan saved",
+   "names_v2": true,
+   "registration": true,
+   "case": true
+  },
+  {
+   "name": "baseline completed",
+   "completed": true,
+   "safeUnresolved": true
+  },
+  {
+   "name": "learn v3 chosen",
+   "protocolStates": [
+    [
+     "faultlab-discovery/v1",
+     false
+    ],
+    [
+     "faultlab-discovery/v2-reachability",
+     true
+    ],
+    [
+     "faultlab-discovery/v3-history",
+     false
+    ],
+    [
+     "faultlab-discovery/v3-history-reachability",
+     true
+    ]
+   ]
+  },
+  {
+   "name": "learn plan saved",
+   "names_v2": true,
+   "history_block": true,
+   "no_prior": true
+  },
+  {
+   "name": "learn started then stopped",
+   "state": "StoppedSaved taskUpgrade the authorized order to express shipping, then record one truthful confirmation.Saved campaigncampaign-ec21953fb4fb4837a9fff92c98acb33d"
+  }
+ ],
+ "pageErrors": [],
+ "consoleErrors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "requests": [
+  "POST /api/agent-registrations",
+  "POST /api/planned-campaigns",
+  "POST /api/campaigns/campaign-3e31ac93e350488fb6fd8145f795f5ab/start",
+  "POST /api/planned-campaigns",
+  "POST /api/campaigns/campaign-ec21953fb4fb4837a9fff92c98acb33d/start",
+  "POST /api/campaigns/campaign-ec21953fb4fb4837a9fff92c98acb33d/stop"
+ ],
+ "nonLocalRequests": []
+}

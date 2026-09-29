@@ -12,6 +12,7 @@ From the repository root, these commands make no provider or business calls:
 ./scripts/run-regression.sh playback --bundle artifacts/my-bundle
 ./scripts/run-regression.sh register --agent reference
 ./scripts/run-regression.sh register --agent smolagents
+./scripts/run-regression.sh register --agent smolagents-v2   # native adapter v2, chosen explicitly (see external-agent-setup.md)
 ```
 
 To export an existing reproduced source that has no regression ID yet:

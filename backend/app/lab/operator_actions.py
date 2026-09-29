@@ -51,7 +51,8 @@ class FreezePortabilityRequest(StrictModel):
 
 class RegistrationRequest(StrictModel):
     expected_store_identity: Digest
-    agent: Literal['reference', 'smolagents']
+    # 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared adapter v2.
+    agent: Literal['reference', 'smolagents', 'smolagents-v2']
 
 
 def current_configuration(settings):
@@ -63,13 +64,15 @@ def current_configuration(settings):
 
 def register_agent(store, settings, agent):
     """Freeze only installed reviewed entrypoints; never install or execute an agent."""
-    from app.integrations.registry import freeze_target_configuration
+    from app.integrations.registry import AGENT_ENTRYPOINTS, NATIVE_AGENTS, freeze_target_configuration
     registry = AgentRegistry(store)
     current = current_configuration(settings)
-    if agent == 'smolagents':
+    if agent in NATIVE_AGENTS:
         if not settings.wandb_model:
             raise ValueError('Configure the target model before native-agent registration')
-        return registry.register_smolagents(freeze_target_configuration(current, settings.wandb_model))
+        entrypoint = AGENT_ENTRYPOINTS[agent]
+        return registry.register_smolagents(freeze_target_configuration(current, settings.wandb_model, entrypoint),
+                                            entrypoint)
     if agent != 'reference':
         raise ValueError('Unknown reviewed agent')
     return registry.register_reference(current, internal_smoke=not bool(settings.wandb_model))

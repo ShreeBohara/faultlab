@@ -1,0 +1,12 @@
+backend/tests/conftest.py tracked-at-checkpoint not-ignored
+backend/tests/integration/conftest.py tracked-at-checkpoint not-ignored
+backend/tests/integrations/conftest.py tracked-at-checkpoint not-ignored
+backend/tests/integration/test_cli_store_ownership.py tracked-at-checkpoint not-ignored
+backend/tests/integration/test_regression_execution.py tracked-at-checkpoint not-ignored
+backend/tests/integrations/test_agent_contract.py tracked-at-checkpoint not-ignored
+backend/tests/lab/original_loop_fixture.py tracked-at-checkpoint not-ignored
+backend/tests/lab/test_baseline_study.py tracked-at-checkpoint not-ignored
+backend/tests/lab/test_evidence.py tracked-at-checkpoint not-ignored
+backend/tests/lab/test_native_transport_retry.py tracked-at-checkpoint not-ignored
+backend/tests/lab/test_planned_agent_execution.py tracked-at-checkpoint not-ignored
+backend/tests/lab/test_runner.py tracked-at-checkpoint not-ignored

@@ -1,0 +1,3 @@
+native-probe: registrations {'smolagents-toolcalling-v1': 1}; episodes 36; episodes with a before_confirmation hook read: 0; episodes with a hook read the agent never saw (confirmation went ahead): 0 (0 observations); by purpose {}
+native-learn: registrations {'smolagents-toolcalling-v1': 1}; episodes 50; episodes with a before_confirmation hook read: 0; episodes with a hook read the agent never saw (confirmation went ahead): 0 (0 observations); by purpose {}
+native-learn-v3: registrations {'smolagents-toolcalling-v1': 1}; episodes 142; episodes with a before_confirmation hook read: 0; episodes with a hook read the agent never saw (confirmation went ahead): 0 (0 observations); by purpose {}

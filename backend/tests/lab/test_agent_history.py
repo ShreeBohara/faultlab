@@ -378,7 +378,8 @@ def test_declarations_budgets_and_agent_support(owner):
     options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
     assert list(options) == [DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK]
     assert [row['protocol_id'] for row in options.values() if row['default']] == [DISCOVERY_V1]
-    assert options[DISCOVERY_V3]['supported_agents'] == ['reference', 'smolagents']
+    # Both native adapters (v1 and the declared v2) are separate agents; both support v3 (no pre-check).
+    assert options[DISCOVERY_V3]['supported_agents'] == ['reference', 'smolagents', 'smolagents-v2']
     assert options[DISCOVERY_V3_PRECHECK]['supported_agents'] == ['reference']
     for v3, base in ((DISCOVERY_V3, DISCOVERY_V1), (DISCOVERY_V3_PRECHECK, DISCOVERY_V2)):
         declared = options[v3]['declaration']

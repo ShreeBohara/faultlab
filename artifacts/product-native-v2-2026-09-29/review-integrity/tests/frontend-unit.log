@@ -1,0 +1,10 @@
+
+ RUN  v4.1.11 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/frontend
+
+
+ Test Files  22 passed (22)
+      Tests  334 passed (334)
+   Start at  15:10:55
+   Duration  5.49s (transform 4.62s, setup 0ms, import 10.28s, tests 19.51s, environment 18.16s)
+
+exit=0
