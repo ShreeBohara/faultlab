@@ -4,6 +4,23 @@ Updated **September 29, 2026 (UTC)**. This is the single current status and cont
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
+## Latest live results (2026-09-28/29, Claude as PM) — read first
+
+Runtime `c9af0a47…` (local backup commit `9970718`+). Nothing pushed. Carried conservative total **$869.13**
+(ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
+
+| run | result | doc |
+|---|---|---|
+| Native smolagents baseline probe (18 native + 18 control episodes) | 8/18 violated, same as Phase 1; rejected upgrade → false confirmation (C3) 3/3 (6/6 over two days); delayed upgrade → no report 3/3 | `docs/PRODUCT_NATIVE_PROBE_2026-09-28.md` |
+| Discovery v2 first run | INCOMPLETE 5/8 (Explorer connection error; no retry then) — led to the transport-retry fix | `docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md` |
+| Discovery v2 complete run (reference V3.1) | **8/8 slots fully fired vs v1 4/8** (p=0.038, not a concurrent control); 1 pick refused + re-planned; NO_CHANGE (no source) | `docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md` |
+| Original loop vs native agent | **First live reproduce → reduce → diagnose of real sources**: 2 C5 sources, each 3/3, both diagnosed INCONCLUSIVE → no candidate → NO_CHANGE. The repairable C3 failure was never exposed (Explorer never picked a rejected upgrade) | `docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md` |
+
+Still unproven live: a generated candidate, source validation, challenge, promotion, ACCEPTED.
+Built and verified this session: bundle import → review → fresh rerun; discovery protocol v2 (reachability
+pre-check); order-aware schedule identity; bounded transport retry (Explorer, Mechanic, native agent);
+native report tick; dotenv credential guard; offline-test network silence.
+
 ## Current work
 
 **Current priority: complete and improve a dependable product.** The owner clarified that they meant
