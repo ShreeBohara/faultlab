@@ -29,7 +29,14 @@ from app.main import create_app
 from test_bundle_imports import archive_bytes, bundle_fixture, request, save, saved_rows, setup
 from test_planned_agent_execution import runtime
 
+# A real dashboard download made at checkpoint 8e497da (simulator contract 6f9d7783…), which is
+# the installed simulator identity again (the September 28 PM decision reverted the lazy
+# simulator entry point to keep earlier exports and registrations compatible).
 REAL_ZIP = Path(__file__).resolve().parents[3] / 'frontend/tests/fixtures/exported-regression.zip'
+# The same kind of real download, made by an uncommitted simulator build (runtimes bb87c764…
+# to c9b1b7e6…, contract 1099eda7…) that was then reverted. Kept to show how an export from a
+# different simulator build is treated.
+OTHER_SIMULATOR_ZIP = REAL_ZIP.with_name('exported-regression-other-simulator.zip')
 
 
 @pytest.fixture
@@ -451,3 +458,51 @@ async def test_cli_import_marks_only_foreign_policy_versions_so_local_gates_refu
         assert c.store.get_record('policy_imports', 'policy-v0') is None
     finally:
         await c.close()
+
+
+@pytest.mark.anyio
+async def test_a_download_from_a_different_simulator_identity_stays_reviewable_but_never_reruns(tmp_path):
+    """Its task, tool and oracle semantics cannot be shown to match the current simulator, so
+    the review lists every target as incompatible with that reason and a fresh run is refused
+    before any record is written or any model is called."""
+    if not OTHER_SIMULATOR_ZIP.is_file():
+        pytest.skip('Other-simulator download fixture is not in this checkout')
+    data = OTHER_SIMULATOR_ZIP.read_bytes()
+    c = await runtime(tmp_path / 'target')
+    try:
+        detail = await imports.save_import(c, store_descriptor(c.store)['identity'], data)
+        assert detail['artifact_kind'] == 'incident_fixture' and len(detail['historical']['trials']) == 16
+        manifest = json.loads(zipfile.ZipFile(io.BytesIO(data)).read('manifest.json'))
+        current = imports._installed_semantics()
+        assert manifest['contract_hash'] != current['contract_hash']
+        # Only the simulator/contract identity differs; tools, scorer and interpreter are the same.
+        assert all(manifest[field] == current[field] for field in ('capability_hash', 'scorer_hash', 'interpreter_hash'))
+        registration = register_agent(c.store, c.settings, 'smolagents')
+        reviewed = imports.import_detail(c.store, c.settings, detail['import_id'])
+        target = next(t for t in reviewed['targets'] if t['agent_registration_id'] == registration.registration_id)
+        assert target['compatible'] is False and 'semantics are incompatible' in target['reason']
+        # Review finding: the refusal names the cause (an earlier or different simulator build) and both identities,
+        # and the review says so for the bundle itself, before any target is selected.
+        assert reviewed['runnable'] is False and 'earlier or different simulator build' in reviewed['runnable_reason']
+        assert 'earlier or different simulator build' in target['reason']
+        assert f"bundle {manifest['contract_hash'][:8]}…, installed {current['contract_hash'][:8]}…" in target['reason']
+        before = saved_rows(c)
+        with pytest.raises(StoreConflict, match='semantics are incompatible'):
+            await imports.execute_import(c, detail['import_id'], request(c, reviewed, registration))
+        assert saved_rows(c) == before and not c.runner.provider.calls
+        assert c.store.list_records('campaigns') == []
+    finally:
+        await c.close()
+
+
+def test_semantics_refusal_names_each_differing_identity_and_the_simulator_cause():
+    from types import SimpleNamespace
+    current = {'contract_hash': '1' * 64, 'capability_hash': '2' * 64, 'scorer_hash': '3' * 64, 'interpreter_hash': '4' * 64}
+    same = SimpleNamespace(**current)
+    assert imports.semantics_mismatch(current, same) is None
+    older = SimpleNamespace(**{**current, 'contract_hash': 'a' * 64})
+    message = imports.semantics_mismatch(current, older)
+    assert 'task contract and simulator: bundle aaaaaaaa…, installed 11111111…' in message
+    assert 'earlier or different simulator build' in message and 'saved evidence stays reviewable' in message
+    scorer = imports.semantics_mismatch(current, SimpleNamespace(**{**current, 'scorer_hash': 'b' * 64}))
+    assert 'fixed scorer: bundle bbbbbbbb…' in scorer and 'simulator build' not in scorer

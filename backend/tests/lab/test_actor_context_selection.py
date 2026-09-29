@@ -84,7 +84,7 @@ async def test_runner_passes_the_frozen_or_explicit_choice_into_real_actor_reque
                     'next_action': {'kind': 'ESCALATE'}}})
             return RuntimeGeneration(canonical_json(action), 'openai/gpt-oss-120b')
 
-    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='test')
+    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='test', settings=Settings())
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=simulator),
                                base_url='http://127.0.0.1:8001')
     try:

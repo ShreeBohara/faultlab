@@ -9,7 +9,9 @@ from __future__ import annotations
 import asyncio
 import concurrent.futures
 from copy import copy
+import importlib
 import json
+import sys
 import threading
 from pydantic import TypeAdapter
 
@@ -167,9 +169,47 @@ class _Bridge:
             return canonical_json({"error": "Business budget exhausted; return a report from delivered observations", "observations": context.broker.journal.observations})
 
 
+_SMOLAGENTS_IMPORT = threading.Lock()
+
+
+def _no_implicit_dotenv(*args, **kwargs):
+    """Stands in for python-dotenv's load_dotenv while smolagents is first imported."""
+    return False
+
+
+def _import_smolagents():
+    """Import smolagents without letting it copy a .env file into os.environ.
+
+    smolagents 1.26.0 calls python-dotenv's ``load_dotenv()`` when
+    ``smolagents.remote_executors`` is first imported (``import smolagents`` does so).
+    Its default search starts beside the installed package, so from this project's
+    .venv it reaches faultlab/.env and exports every value in it -- provider
+    credentials included -- to os.environ, where all later code and every child
+    process can read them. FaultLab reads its own settings explicitly
+    (``Settings.from_env`` uses ``dotenv_values`` and never writes os.environ), so the
+    native agent never needs that side effect. For the duration of the first import
+    only, both public names of ``load_dotenv`` are replaced by a no-op; they are
+    restored afterwards, and nothing else in the process environment is changed.
+    """
+    with _SMOLAGENTS_IMPORT:
+        if 'smolagents.remote_executors' in sys.modules:
+            return
+        import dotenv
+        import dotenv.main
+        originals = {module: module.load_dotenv for module in (dotenv, dotenv.main)}
+        for module in originals:
+            module.load_dotenv = _no_implicit_dotenv
+        try:
+            importlib.import_module('smolagents')
+        finally:
+            for module, original in originals.items():
+                module.load_dotenv = original
+
+
 def _native_agent(bridge, model_id):
     # Lazy import: registry listing, pytest collection and bundle validation do not
     # initialize model transports or import executable content from a bundle.
+    _import_smolagents()
     from smolagents import Model, Tool, ToolCallingAgent
     from smolagents.models import ChatMessage, MessageRole
     from smolagents.monitoring import TokenUsage

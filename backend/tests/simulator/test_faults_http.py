@@ -6,6 +6,7 @@ import time
 import httpx
 import pytest
 import uvicorn
+from app.config import Settings
 from app.simulator.main import create_app
 from app.simulator.storage import WorldStore
 
@@ -14,7 +15,7 @@ pytestmark=pytest.mark.localhost_http
 @pytest.fixture
 def live_server(tmp_path):
     listener=socket.socket();listener.bind(('127.0.0.1',0));port=listener.getsockname()[1]
-    app=create_app(database_dir=tmp_path,control_token='test-control')
+    app=create_app(database_dir=tmp_path,control_token='test-control',settings=Settings())
     server=uvicorn.Server(uvicorn.Config(app,log_level='error',lifespan='off'))
     thread=threading.Thread(target=server.run,kwargs={'sockets':[listener]},daemon=True);thread.start()
     until=time.monotonic()+5

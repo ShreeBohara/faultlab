@@ -1,7 +1,7 @@
 """Actual find/reproduce/reduce/intervene/propose/challenge/promote orchestration."""
 import asyncio
 from app.contracts.models import new_id,FaultSpec,MechanicNoChange,canonical_json,content_hash
-from app.agents.explorer import Explorer,development_coverage
+from app.agents.explorer import Explorer,development_coverage,development_coverage_v2
 from app.agents.mechanic import Mechanic
 from app.lab.reproduction import Reproducer,valid_trial
 from app.lab.diagnosis import Diagnostician,summarize_evidence,runtime_contract,reduction_context,trial_outcomes
@@ -29,11 +29,31 @@ def source_validation_assessment(batch,target_invariant):
             'qualification_candidate_violation_episode_ids':paired_candidate_violations,
             'decision':'PROPOSED' if classification=='PASSED' else 'REJECTED' if classification=='CANDIDATE_FAILED' else 'INCOMPLETE'}
 
-def repair_context_id(campaign,incumbent,recipe,fixture_id,target_invariant):
+def repair_context_id(campaign,incumbent,recipe,fixture_id,target_invariant,identity=schedule_identity):
     # A new source episode or bookkeeping seed alone is not a new qualification.
     return content_hash({'campaign_id':campaign.campaign_id,'configuration_hash':campaign.configuration_hash,
                          'parent_version':incumbent.version,'parent_hash':incumbent.policy_hash,
-                         'schedule_hash':schedule_identity(recipe),'fixture_id':fixture_id,'target_invariant':target_invariant})
+                         'schedule_hash':identity(recipe),'fixture_id':fixture_id,'target_invariant':target_invariant})
+
+def discovery_session(store,campaign,incumbent):
+    """The declared discovery protocol for this campaign: (identity, v2 session or None).
+
+    v1 (the default, and every unplanned or older plan) returns today's exact behaviour.
+    v2 refuses to start for a target it cannot pre-check faithfully (a native agent or a
+    policy with rules) rather than mislabel its picks; the reviewed plan already refuses them.
+    """
+    from app.lab.discovery_protocol import campaign_discovery,DISCOVERY_V2,DiscoveryV2
+    from app.lab.challenge import identity_for
+    from app.lab.runner import campaign_run_plan
+    block=campaign_discovery(store,campaign)
+    if block['protocol']!=DISCOVERY_V2: return identity_for(block['schedule_identity']),None
+    plan=campaign_run_plan(store,campaign)
+    session=DiscoveryV2(block,agent=plan['agent'],incumbent=incumbent)
+    return session.identity,session
+
+def replan_allowed(record):
+    decision=(record or {}).get('search_decision') or {}
+    return decision.get('status') in ('SKIPPED_DUPLICATE','SKIPPED_UNREACHABLE') and decision.get('slot_request',1)==1
 
 async def export_incident(coordinator,campaign,counter,policy,source_recipe,retained_recipe,trials,**kwargs):
     from app.lab.regressions import RegressionCompiler
@@ -74,6 +94,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 raise StopRequested()
         return bundles
     try:
+        identity,v2=discovery_session(store,campaign,coordinator.policies.get(coordinator.get(id).active_policy_version))
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -88,14 +109,28 @@ async def run_learning_cycle(coordinator,campaign,runner):
             configuration=store.get_record('configurations',current.configuration_hash)
             explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer',agent_registration_id=planned_registration_id(store,current))
             mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic',agent_registration_id=planned_registration_id(store,current))
-            selection_ref,output=await explorer.select({'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract(store,current)},fallback=fallback)
+            slot_context={'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract(store,current)}
+            if v2 is None:
+                selection_ref,output=await explorer.select(slot_context,fallback=fallback)
+            else:
+                selection_ref,output=await explorer.select({**slot_context,'slot_request':1},fallback=fallback,discovery_v2=v2)
+                refused=store.get_record('selections',selection_ref)
+                if output is None and replan_allowed(refused) and not stop():
+                    # One re-plan in the same slot, told exactly why the pick was refused.
+                    from app.lab.discovery_protocol import slot_feedback
+                    selection_ref,output=await explorer.select({**slot_context,'slot_request':2,'replan_of':selection_ref,
+                                                                'slot_feedback':slot_feedback(refused)},fallback=fallback,discovery_v2=v2)
             if output is None: continue  # A rejected proposal consumes its slot, not an Actor episode.
+            if v2 is not None: v2.admit_episode()
             recipe=output.fault_spec; fixture='history-v1' if any(p.kind=='F3' for p in recipe.primitives) else 'standard-v1'
             current=coordinator.get(id); incumbent=coordinator.policies.get(current.active_policy_version)
             coordinator.transition(id,'RUNNING')
             source=await runner.run(current,recipe,incumbent,episode_id=planned_episode_id,purpose='discovery',arm='B0' if incumbent.version=='policy-v0' else 'L',fixture_id=fixture,ledger=ledger,stop=stop)
             current=coordinator.get(id); current.latest_episode_id=source.episode_id; coordinator.save(current)
-            coverage=development_coverage(store,id,source,recipe)
+            if v2 is None: coverage=development_coverage(store,id,source,recipe)
+            else:
+                label=(store.get_record('selections',selection_ref)['search_decision'].get('reachability') or {})
+                coverage=development_coverage_v2(store,id,source,recipe,[fault['verdict'] for fault in label.get('faults',[])])
             if source.lifecycle!='COMPLETED' or source.outcome in (None,'LAB_ERROR'):
                 history.append(coverage)
                 continue
@@ -121,7 +156,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
             diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
             intervention_evidence=await evidence_for([t for t in interventions.trials if t.lifecycle=='COMPLETED'])
             if diagnostic.kind!='POLICY_GAP': continue
-            source_context=repair_context_id(current,incumbent,retained,fixture,counter.target_invariant)
+            source_context=repair_context_id(current,incumbent,retained,fixture,counter.target_invariant,identity)
             repair_history=repair_histories.setdefault(source_context,{'candidates':[],'challenge':[],'source':[],'evidence':[]})
             candidate_history=repair_history['candidates']; feedback=repair_history['challenge']
             source_feedback=repair_history['source']; source_feedback_evidence=repair_history['evidence']
@@ -173,7 +208,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
                         continue
                     coordinator.transition(id,'CHALLENGING')
                     prior_evaluation_ids={b['batch_id'] for b in store.list_records('evaluations')}
-                    challenge=await execute_phase(getattr(runner,'trace',None),'challenge_policy',explorer.metadata,{'source_episode_id':source.episode_id},lambda: Challenger(store,explorer,evaluator).run(current,incumbent,candidate,source_batch,reservation=name,prior_hashes=[schedule_identity(retained)],prior_recipes=[retained],evidence_summary=summarize_evidence(source_retest_evidence),stop=stop))
+                    challenge=await execute_phase(getattr(runner,'trace',None),'challenge_policy',explorer.metadata,{'source_episode_id':source.episode_id},lambda: (Challenger(store,explorer,evaluator) if identity is schedule_identity else Challenger(store,explorer,evaluator,identity=identity)).run(current,incumbent,candidate,source_batch,reservation=name,prior_hashes=[identity(retained)],prior_recipes=[retained],evidence_summary=summarize_evidence(source_retest_evidence),stop=stop))
                     from app.contracts.models import TrialResult
                     # Keep failed infrastructure attempts too, not only pairs that
                     # qualified after the evaluator's allowed infrastructure retry.
@@ -196,7 +231,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
                         for selection_ref in challenge.selection_refs:
                             selection=store.get_record('selections',selection_ref) or {}
                             fault=(selection.get('output') or {}).get('fault_spec')
-                            if fault is not None and schedule_identity(FaultSpec.model_validate_json(canonical_json(fault))) in challenge.schedule_hashes: schedules.append(fault)
+                            if fault is not None and identity(FaultSpec.model_validate_json(canonical_json(fault))) in challenge.schedule_hashes: schedules.append(fault)
                         feedback.append({'challenge_id':challenge.challenge_id,**candidate_record,'decision':candidate.decision,'status':challenge.status,'reason':challenge.stopping_reason,'failed_checks':challenge.failed_checks,'fault_spec':counterexample_record.get('recipe'),'fixture_id':counterexample_record.get('fixture_id'),'tested_fault_specs':schedules,'trial_outcomes':trial_outcomes(challenge_trials),'evidence':summarize_evidence(challenge_evidence)})
                         candidate_history.append({**candidate_record,'decision':candidate.decision,'source_validation_ref':source_batch.batch_id,'challenge_ref':challenge.challenge_id,'classification':challenge.status})
                         if challenge.status=='COUNTEREXAMPLE_FOUND':

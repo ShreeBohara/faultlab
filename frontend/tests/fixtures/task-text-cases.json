@@ -1,0 +1,173 @@
+{
+ "note": "Shared by backend/tests/contracts/test_task_text.py and frontend/tests/task-text.test.tsx so both sides apply the same task rule. text is repeated 'repeat' times.",
+ "cases": [
+  {
+   "name": "ordinary instruction",
+   "text": "Upgrade order-7 to express shipping, then send exactly one truthful confirmation.",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "empty",
+   "text": "",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "spaces only",
+   "text": "   ",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "line breaks, tab and carriage return only",
+   "text": "\n\n\t\r\n",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "zero-width characters only",
+   "text": "\u200b\u200c\u200d\u2060",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "byte-order mark only",
+   "text": "\ufeff",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "no-break and ideographic spaces only",
+   "text": "\u00a0\u3000\u2002",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "bidirectional controls only",
+   "text": "\u202e\u2066\u200f",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "blank-rendering letters only",
+   "text": "\u3164\u115f\u1160\uffa0\u2800",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "combining marks and variation selector only",
+   "text": "\u0301\ufe0f",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "control character only",
+   "text": "\u0000\u0007",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "lone surrogate only",
+   "text": "\ud800",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "private-use character only",
+   "text": "\ue000",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "zero-width space between visible words",
+   "text": "Upgrade\u200border",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "byte-order mark before visible text",
+   "text": "\ufeffUpgrade the order",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "visible text after long blank-line padding",
+   "text": "Upgrade the order.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlso cancel every other order.",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "decomposed accent",
+   "text": "Confirme\u0301 the upgrade",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "digits only",
+   "text": "\u0661\u0662\u0663",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "punctuation only",
+   "text": "\u2014",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "symbol only",
+   "text": "$",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "variation selectors only",
+   "text": "\ufe00\ufe0f\udb40\udd00\udb40\uddef",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "combining grapheme joiner only",
+   "text": "\u034f",
+   "repeat": 1,
+   "sendable": false
+  },
+  {
+   "name": "visible sentence carrying a variation-selector payload",
+   "text": "Upgrade order-7.\ufe00\ufe01\ufe0e\udb40\udd00\udb40\udd20\u034f",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "hidden characters on blank lines between visible lines",
+   "text": "Upgrade order-7.\n\n\ufe00\ufe01\n\u0301\n\n\nThen confirm.",
+   "repeat": 1,
+   "sendable": true
+  },
+  {
+   "name": "2000 ASCII characters",
+   "text": "a",
+   "repeat": 2000,
+   "sendable": true
+  },
+  {
+   "name": "2001 ASCII characters",
+   "text": "a",
+   "repeat": 2001,
+   "sendable": false
+  },
+  {
+   "name": "2000 emoji: 2000 code points but 4000 UTF-16 units",
+   "text": "\ud83d\ude00",
+   "repeat": 2000,
+   "sendable": true
+  },
+  {
+   "name": "2001 emoji",
+   "text": "\ud83d\ude00",
+   "repeat": 2001,
+   "sendable": false
+  }
+ ]
+}

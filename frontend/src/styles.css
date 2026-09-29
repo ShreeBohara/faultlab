@@ -519,3 +519,8 @@ footer > span:first-child { color: var(--ink); font-weight: 600; }
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; }
 }
+/* Task instructions: invisible characters and long blank padding are shown, never hidden. */
+.task-mark { display: inline-block; font: 10px/1.5 var(--mono); color: var(--amber); background: var(--amber-surface); border: 1px dashed var(--amber-line); border-radius: 3px; padding: 0 3px; margin: 0 1px; white-space: nowrap; }
+.task-meta { display: block; color: var(--muted); font-size: 10px; margin-top: 4px; }
+.task-warning { display: block; color: var(--amber); font-size: 11px; line-height: 1.6; margin-top: 4px; }
+.task-escaped pre { font: 11px/1.6 var(--mono); max-height: 240px; overflow: auto; }

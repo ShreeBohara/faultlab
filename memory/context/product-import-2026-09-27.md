@@ -1,5 +1,18 @@
 # Product import continuation — September 27, 2026
 
+## Later on September 28 (read this before the status below)
+
+The runtime and test counts below are **historical**. Later work changed the runtime four times
+(`cfe5ac07` → `bb87c764` hardening, which changed the simulator identity → `9f53eb8c` discovery v2 →
+`c9b1b7e6` review fixes → `c0a8aad7`, the PM decision that restored `simulator/main.py` to its `8e497da`
+bytes, so the simulator identity is the checkpoint's again: service `3ce5bcd2…`, contract `6f9d7783…`).
+Before the paid validation: register the targets again under the current runtime (registrations record
+the whole-backend runtime hash) and use the restored fixture `frontend/tests/fixtures/exported-regression.zip`
+(sha256 `14e53310…`, its checkpoint bytes). The regenerated `f2ac6a60…` copy is now
+`exported-regression-other-simulator.zip`, kept only to test the refusal of a different simulator build.
+Current runtime, counts and consequences: `CURRENT_STATUS.md`, *Current runtime* and *Verification and
+known issues*.
+
 ## Status on September 28, 2026 (read this first)
 
 The feature is complete in the main folder (`faultlab/`), not only in the product worktree. Backend

@@ -16,6 +16,7 @@ import zipfile
 
 from pydantic import TypeAdapter, ValidationError
 
+from app.contracts.task_text import task_text_problem
 from app.contracts.models import (CampaignBudget, CampaignRequest, Digest, EpisodeBudget,
     Id, RegressionCase, RegressionExecution, StrictModel, Usage, canonical_json,
     content_hash, new_id, utc_now)
@@ -33,6 +34,8 @@ IMPORT_KIND = 'reviewed_bundle_imports'
 REQUEST_KIND = 'bundle_import_executions'
 CANCEL_KIND = 'bundle_import_cancellations'
 SHARED_SEMANTICS = ('contract_hash', 'capability_hash', 'scorer_hash', 'interpreter_hash')
+SEMANTIC_NAMES = {'contract_hash': 'task contract and simulator', 'capability_hash': 'tool capabilities',
+                  'scorer_hash': 'fixed scorer', 'interpreter_hash': 'policy interpreter'}
 # Used only when a bundle records no execution task (older exports). Review shows
 # whichever task will actually be sent, and whether it came from the bundle.
 DEFAULT_TASK_TEXT = 'Upgrade the authorized order to express shipping, then record one truthful confirmation.'
@@ -95,7 +98,9 @@ def recorded_execution_task(recording):
     text, order = task.get('task_text'), task.get('order_id')
     if text is None and order is None:
         return default
-    if not (isinstance(text, str) and 1 <= len(text) <= 2000 and text.strip()) or not _valid_id(order):
+    # The same rule as every task request (app.contracts.task_text): at most 2000 code
+    # points and at least one visible character, so an invisible task is refused here.
+    if task_text_problem(text) is not None or not _valid_id(order):
         raise ValueError('Recorded execution task is malformed')
     return {'task_text': text, 'order_id': order, 'origin': 'bundled'}
 
@@ -216,6 +221,10 @@ _VERSION = ('Unsupported version: an older or different FaultLab schema, runner 
     'Keep the file and open it with the FaultLab version that created it.')
 _INTEGRITY = ('Contents do not match: the files differ from the checksums and identities recorded inside the '
     'bundle, so it may have been edited or be incomplete.')
+# A correctly hashed bundle can still record a task that cannot be sent exactly; say so
+# instead of blaming the checksums.
+_TASK = ('Recorded task is malformed (such as empty, over 2000 characters, no visible character or '
+    'an invalid order ID), so it cannot be shown or sent exactly.')
 # Only our own fixed validator messages select a category. Any other error text may
 # contain uploaded names or values, so it is never echoed and gets no category.
 _CATEGORIES = {
@@ -236,8 +245,8 @@ _CATEGORIES = {
         'Accepted-policy label contradicts recorded decision', 'Incident reset fixture mismatch',
         'Protected or mismatched incident episode', 'Unrelated incident event timeline',
         'Private or unordered incident event', 'Duplicate JSON key rejected', 'Nonfinite JSON rejected',
-        'Recorded evidence field is malformed', 'Recorded execution task is malformed',
-        'Recorded source registration is malformed'), _INTEGRITY),
+        'Recorded evidence field is malformed', 'Recorded source registration is malformed'), _INTEGRITY),
+    'Recorded execution task is malformed': _TASK,
 }
 
 
@@ -376,9 +385,30 @@ def _target(store, settings, registration_id, bundle):
         raise StoreConflict('The registration no longer matches current settings or installed source; '
                             'register this agent again, then refresh the review')
     registry.verify(registration_id, current)
-    if any(current[field] != getattr(bundle, field) for field in SHARED_SEMANTICS):
-        raise StoreConflict('Target task, oracle or policy semantics are incompatible with this bundle')
+    problem = semantics_mismatch(current, bundle)
+    if problem:
+        raise StoreConflict(problem)
     return registration, current
+
+
+def semantics_mismatch(current, bundle):
+    """Why a bundle cannot be rerun on the installed runtime, naming each differing identity, or None."""
+    differing = [field for field in SHARED_SEMANTICS if current[field] != getattr(bundle, field)]
+    if not differing:
+        return None
+    parts = '; '.join(f'{SEMANTIC_NAMES[field]}: bundle {getattr(bundle, field)[:8]}…, installed {current[field][:8]}…'
+                      for field in differing)
+    cause = (' The bundle was made by an earlier or different simulator build.' if 'contract_hash' in differing else '')
+    return (f'Target task, oracle or policy semantics are incompatible with this bundle ({parts}).{cause} '
+            'A fresh rerun needs a bundle exported under the installed runtime; the saved evidence stays reviewable')
+
+
+def _installed_semantics():
+    """The installed runtime's shared task, tool, oracle and interpreter identities (no settings are read)."""
+    from app.config import Settings
+    from app.lab.configuration import frozen_configuration
+    installed = frozen_configuration(Settings(), CampaignBudget(), 'offline-v1')
+    return {field: installed[field] for field in SHARED_SEMANTICS}
 
 
 def _target_description(registration):
@@ -426,6 +456,12 @@ def import_detail(store, settings, import_id):
         # Summaries saved before task checks existed stay readable but cannot run.
         record = {**record, 'runnable': False,
                   'runnable_reason': 'The recorded execution task is malformed; stored for inspection only'}
+    if record['runnable']:
+        # A bundle from an earlier simulator/contract build cannot run on any target here; say so
+        # at the bundle level too, instead of only when a target is selected.
+        problem = semantics_mismatch(_installed_semantics(), bundle)
+        if problem:
+            record = {**record, 'runnable': False, 'runnable_reason': problem}
     return {**record,
         'historical': {'trials': bundle.model_dump(mode='json')['trial_results'],
             'recording': _json(payloads['evidence.json']) if 'evidence.json' in payloads else None,

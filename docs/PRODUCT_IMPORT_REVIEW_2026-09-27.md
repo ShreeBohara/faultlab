@@ -85,6 +85,43 @@ unit tests and one new browser test; frontend 254 unit tests, production build a
 passed. A manual scratch-store check repeated import → review → confirmed fresh rerun (scripted native
 target), the refusals, the owner refusals over the API, archive reopening and the local-host guard.
 
+## Later runtime changes and a second review — September 28, 2026 (addendum)
+
+The verification above is for runtime `cfe5ac07…` and is **historical**. Later the same day the hardening
+work (runtime `bb87c764…`) changed the simulator identity — service `3ce5bcd2…` → `f70c8fb1…`, contract
+`6f9d7783…` → `1099eda7…` — then discovery v2 (`9f53eb8c…`) and the review fixes (`c9b1b7e6…`;
+simulator and contract unchanged) followed.
+
+**PM decision, later on September 28: that simulator identity change is reverted.** Compatibility of
+previously exported bundles and existing registrations matters more than a control-capability file
+created at import time, so `backend/app/simulator/main.py` was restored to its checkpoint (`8e497da`)
+bytes. Current runtime **`c0a8aad7…`**; simulator service `3ce5bcd2…` and contract `6f9d7783…`, the
+checkpoint values again. Therefore:
+
+* bundles exported under the checkpoint simulator (contract `6f9d7783…`) can be rerun again. Checked in the
+  real dashboard at $0 (scratch store, scripted native target): the restored download was reviewed as
+  eligible, its target as compatible, and a confirmed fresh rerun COMPLETED with 3 of 3 valid trials;
+* a bundle made by the reverted build (contract `1099eda7…`; the only known one is the test fixture
+  `exported-regression-other-simulator.zip`, sha256 `f2ac6a60…`) stays reviewable and is refused for
+  rerun, at bundle level and per target, naming both contract identities (the message says "an earlier or
+  different simulator build");
+* the paid validation below uses the restored `frontend/tests/fixtures/exported-regression.zip`
+  (sha256 `14e53310cde9a3f6f985eb6bc4ac9fa0393a2155effd518953f39699a4ecb6df`, its `8e497da` bytes, contract
+  `6f9d7783…`). The earlier `exported-regression-earlier-simulator.zip` was byte-identical to it and was
+  moved out of the fixtures (to the git-ignored evidence folder `artifacts/product-discovery-2026-09-28/fixer3-0928/moved/`);
+* both targets must still be **registered again** under the current runtime: a registration records the
+  whole-backend `runtime_hash`, and that changed after every earlier registration (discovery v2 and the
+  review fixes changed `backend/app`), even though the simulator and contract part matches again.
+
+A second $0 security review found one FaultLab display bug here: variation selectors (U+FE00–FE0F,
+U+E0100–E01EF), U+034F and other invisible combining characters in a task were shown as ordinary text with
+no marker, warning or escaped copy, and hidden characters on collapsed blank lines vanished from the
+display and the count. The dashboard now marks every default-ignorable character (one emoji presentation
+selector directly after a visible character excepted), counts every hidden character on collapsed blank
+lines, and shows the warning and escaped copy whenever any are present, in the review, the paid-run
+confirmation and the saved plan. The builders' claim that "every character is shown" was overstated
+before this fix. See `CURRENT_STATUS.md` for the current verification counts.
+
 ## Prospective live verification
 
 After source freeze and offline checks, use the saved compatible scripted C3 incident fixture on each

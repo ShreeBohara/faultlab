@@ -97,7 +97,7 @@ async def test_final_original_citation_failure_is_preserved_and_scored(tmp_path,
         async def complete(self,messages,**kwargs):
             requests.append(kwargs)
             return RuntimeGeneration(raw if len(requests)==8 else canonical_json(TOOL),'openai/gpt-oss-120b')
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade and confirm',order_id='order-1',mode='baseline',config_profile_id='live-v1'))

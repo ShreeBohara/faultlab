@@ -12,11 +12,12 @@ from typing import Annotated, Literal, Union
 from pydantic import Field, model_validator
 
 from app.contracts.models import (AgentRegistration, Campaign, CampaignBudget,
-    CampaignRequest, Digest, EpisodeBudget, FaultSpec, Id, PolicyVersion, StrictModel,
-    canonical_json, content_hash)
+    CampaignRequest, Digest, EpisodeBudget, FaultSpec, Id, PolicyVersion, SendableTaskText,
+    StrictModel, canonical_json, content_hash)
 from app.integrations.registry import AgentRegistry
 from app.lab.configuration import frozen_configuration
 from app.lab.dashboard import store_descriptor
+from app.lab.discovery_protocol import DISCOVERY_V1, DISCOVERY_V2, declaration as discovery_declaration
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -41,14 +42,18 @@ class RunPlanRequest(StrictModel):
     agent_registration_id: Id | None = None
     mode: Literal['baseline', 'learn', 'compare']
     config_profile_id: Literal['offline-v1', 'live-v1']
-    task_text: str = Field(min_length=1, max_length=2000)
+    task_text: SendableTaskText
     order_id: Id
     development_case_id: CaseId | None = None
+    # Explicit, declared discovery setting for Learn only; omitted means v1 (today's behaviour).
+    discovery_protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability'] | None = None
 
     @model_validator(mode='after')
     def supported_combination(self):
         if (self.mode == 'baseline') != (self.development_case_id is not None):
             raise ValueError('Choose a development case only for a baseline run')
+        if self.discovery_protocol is not None and self.mode != 'learn':
+            raise ValueError('A discovery protocol applies only to a Learn campaign')
         if self.config_profile_id == 'offline-v1':
             if self.mode != 'baseline' or self.agent_registration_id is not None:
                 raise ValueError('Offline runs use the built-in reference baseline without a selected registration')
@@ -84,6 +89,29 @@ class ProtectedComparison(StrictModel):
 Selection = Annotated[Union[DevelopmentCase, DevelopmentSearch, ProtectedComparison], Field(discriminator='kind')]
 
 
+class DiscoveryPlan(StrictModel):
+    """The declared discovery protocol and selection budget of a Learn plan."""
+    protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability']
+    schedule_identity: Literal['faultlab-schedule-identity/v1-sorted', 'faultlab-schedule-identity/v2-order-aware']
+    slots: int = Field(ge=1, le=8)
+    explorer_requests_max: int = Field(ge=1, le=16)
+    actor_episodes_max: int = Field(ge=1, le=8)
+    replans_per_slot: int = Field(ge=0, le=1)
+    dispatch_rule: str = Field(min_length=1, max_length=600)
+    pre_check: dict | None
+
+    @model_validator(mode='after')
+    def coherent(self):
+        v2 = self.protocol == DISCOVERY_V2
+        if (self.schedule_identity.endswith('v2-order-aware') != v2 or self.replans_per_slot != (1 if v2 else 0)
+                or self.explorer_requests_max != self.slots * (2 if v2 else 1) or self.actor_episodes_max != self.slots
+                or (self.pre_check is not None) != v2):
+            raise ValueError('Inconsistent discovery protocol declaration')
+        if v2 and (not isinstance(self.pre_check.get('caller_model'), dict) or self.pre_check['caller_model'].get('agent') != 'reference'):
+            raise ValueError('Discovery v2 declares the reference Actor caller model only')
+        return self
+
+
 class SavedRunPlan(StrictModel):
     schema_version: Literal['faultlab-run-plan/v1']
     campaign_id: Id
@@ -102,6 +130,7 @@ class SavedRunPlan(StrictModel):
     initial_policy_version: Id
     initial_policy_hash: Digest
     selection: Selection
+    discovery: DiscoveryPlan | None = None
     plan_hash: Digest
 
 
@@ -237,11 +266,33 @@ def build_run_options(settings, store=None):
              'expected_version': case['expected_version'], 'fault_spec': deepcopy(case['fault_spec'])}
             for case in development['cases']]},
         'learn': {'manifest_hash': development['manifest_hash'],
-                  'search_space': deepcopy(development['development_grammar']), 'selection_limit': caps.discovery_selections},
+                  'search_space': deepcopy(development['development_grammar']), 'selection_limit': caps.discovery_selections,
+                  'discovery_protocols': discovery_options(caps)},
         'compare': comparison, 'agents': agents,
         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
         'models': settings.role_models, 'provider_calls': 0}
+
+
+def _reference_caller():
+    from app.lab.reachability import caller_model_for
+    return caller_model_for('reference', [])
+
+
+def discovery_options(caps):
+    """The two declarable discovery protocols for Learn, with their budgets. v1 is the default."""
+    v1 = discovery_declaration(DISCOVERY_V1, caps)
+    v2 = discovery_declaration(DISCOVERY_V2, caps, caller=_reference_caller())
+    return [
+        {'protocol_id': DISCOVERY_V1, 'default': True, 'label': 'v1 · every valid new pick runs',
+         'description': 'Today\'s behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.',
+         'supported_agents': ['reference', 'smolagents'], 'declaration': v1},
+        {'protocol_id': DISCOVERY_V2, 'default': False, 'label': 'v2 · reachability pre-check',
+         'description': 'A free replay of the real simulator labels each fault before any paid Actor episode; only picks whose every fault is FORCED run, and a refused pick gets one re-plan with the reason.',
+         'supported_agents': ['reference'],
+         'unsupported_reason': 'The pre-check models only the FaultLab reference Actor under policy-v0; the native agent has a different action space.',
+         'declaration': v2},
+    ]
 
 
 def prepare_run_plan(store, settings, request):
@@ -282,6 +333,14 @@ def prepare_run_plan(store, settings, request):
     elif request.mode == 'learn':
         selection = {'kind': 'development_search', 'manifest_hash': options['learn']['manifest_hash'],
                      'search_space': options['learn']['search_space']}
+        protocol = request.discovery_protocol or DISCOVERY_V1
+        if protocol == DISCOVERY_V2:
+            if agent != 'reference':
+                raise StoreConflict('Discovery v2 cannot pre-check the native agent: its reachability model is the '
+                                    'FaultLab reference Actor. Choose discovery v1 for this agent.')
+            if initial.content.rules:
+                raise StoreConflict('Discovery v2 pre-checks picks only for the unchanged baseline policy (policy-v0).')
+        discovery = next(row['declaration'] for row in options['learn']['discovery_protocols'] if row['protocol_id'] == protocol)
     else:
         selection = {'kind': 'protected_comparison', **options['compare']}
     campaign_request = CampaignRequest(task_text=request.task_text, order_id=request.order_id,
@@ -294,6 +353,7 @@ def prepare_run_plan(store, settings, request):
             'caps': options['caps'], 'episode_budget': deepcopy(configuration['episode_budget']),
             'initial_policy_version': initial.version,
             'initial_policy_hash': initial.policy_hash, 'selection': selection}
+    if request.mode == 'learn': plan['discovery'] = deepcopy(discovery)
     return PreparedRunPlan(campaign_request, deepcopy(configuration), registration, deepcopy(plan))
 
 
@@ -315,6 +375,12 @@ def _bindings(store, campaign, plan, *, first_start=False):
     expected_kind = {'baseline': 'development_case', 'learn': 'development_search', 'compare': 'protected_comparison'}[campaign.mode]
     selection = plan['selection']
     if selection['kind'] != expected_kind: raise StoreConflict('Saved run plan selection is inconsistent')
+    discovery = plan.get('discovery')
+    if discovery is not None:
+        if campaign.mode != 'learn' or discovery['slots'] != campaign.caps.discovery_selections:
+            raise StoreConflict('Saved discovery protocol is inconsistent with its campaign')
+        if discovery['protocol'] == DISCOVERY_V2 and plan['agent'] != 'reference':
+            raise StoreConflict('Saved discovery v2 plan names an agent it cannot pre-check')
     offline = campaign.config_profile_id == 'offline-v1'
     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
@@ -392,6 +458,10 @@ def validate_run_plan(store, settings, campaign):
     if content_hash(current) != plan['configuration_hash']:
         raise StoreConflict('Current source, model or campaign limits differ from the saved plan')
     registry.verify(registration.registration_id, current)
+    discovery = plan.get('discovery')
+    if discovery is not None and discovery['protocol'] == DISCOVERY_V2:
+        if discovery['pre_check']['caller_model'] != _reference_caller().descriptor():
+            raise StoreConflict('The installed reachability caller model differs from the saved discovery plan')
     if plan['selection']['kind'] != 'development_case':
         development, comparison = _manifests()
         expected = development['manifest_hash'] if campaign.mode == 'learn' else comparison['manifest_hash']

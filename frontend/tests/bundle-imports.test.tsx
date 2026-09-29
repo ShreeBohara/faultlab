@@ -208,6 +208,38 @@ it.each([true, false])('discards a nonce only after durable cancellation or reso
   expect((await screen.findByText(cancelled ? 'Request cancelled before it started; nothing ran.' : /had already started, so it was not cancelled/)).getAttribute('role')).toBe('status')
 })
 
+it.each(['cancel', 'check'] as const)('keeps the "nothing ran" outcome on screen while the review rereads its detail (%s)', async path => {
+  const { detail } = mockReads(); localStorage.setItem(`faultlab:import:${imported.data_store.identity}`, imported.import_id); localStorage.setItem(pendingKey, JSON.stringify({ import_id: imported.import_id, request: importRequest }))
+  const cancelled = { cancelled: true as const, import_id: imported.import_id, request_id: importRequest.request_id }
+  if (path === 'cancel') vi.spyOn(importApi, 'cancel').mockResolvedValue(cancelled); else vi.spyOn(importApi, 'lookup').mockResolvedValue(cancelled)
+  render(h(BundleImports, { config: importConfig, readiness: importReadiness, replay: false, onEpisode: vi.fn() }))
+  const button = await screen.findByRole('button', { name: path === 'cancel' ? 'Cancel unadmitted request' : 'Check saved request' })
+  // Hold the reread open so the moment the old code unmounted the review is observable.
+  let release!: () => void
+  detail.mockImplementation(() => new Promise(resolve => { release = () => resolve(imported) }))
+  fireEvent.click(button)
+  const outcome = path === 'cancel' ? 'Request cancelled before it started; nothing ran.' : 'That request was cancelled before it started; nothing ran.'
+  expect((await screen.findByText(outcome)).getAttribute('role')).toBe('status')
+  await waitFor(() => expect(detail).toHaveBeenCalledTimes(2))
+  expect(screen.getByText(outcome)).toBeTruthy()
+  expect(screen.getByLabelText('Why fresh execution is unavailable').textContent).toContain('This review is refreshing or out of date')
+  await act(async () => release())
+  await waitFor(() => expect(screen.getByLabelText('Why fresh execution is unavailable').textContent).not.toContain('refreshing'))
+  expect(screen.getByText(outcome).getAttribute('role')).toBe('status')
+  expect(localStorage.getItem(pendingKey)).toBeNull()
+})
+
+it('never shows the previous import while a different selection is still loading', async () => {
+  const other = { ...imported, import_id: 'import-other-fixture' }
+  vi.spyOn(importApi, 'list').mockResolvedValue({ items: [imported, other], has_more: false, next_before: null })
+  vi.spyOn(importApi, 'detail').mockImplementation(async id => id === imported.import_id ? imported : new Promise<typeof imported>(() => {}))
+  vi.spyOn(importApi, 'executions').mockResolvedValue({ items: [], has_more: false, next_before: null })
+  await review()
+  expect(screen.getByRole('heading', { name: `Review imported bundle · ${imported.import_id}` })).toBeTruthy()
+  fireEvent.change(screen.getByLabelText('Saved imported bundles'), { target: { value: other.import_id } })
+  await waitFor(() => expect(screen.queryByRole('heading', { name: /Review imported bundle/ })).toBeNull())
+})
+
 it('locks duplicate execute clicks while retaining a durable in-flight request', async () => {
   mockReads(); let finish!: (value: typeof freshExecution) => void
   const execute = vi.spyOn(importApi, 'execute').mockImplementation(() => new Promise(resolve => { finish = resolve }))

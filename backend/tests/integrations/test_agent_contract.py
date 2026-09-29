@@ -14,6 +14,7 @@ from app.lab.budgets import EpisodeMeter
 from app.lab.policy_interpreter import PolicyInterpreter
 from app.providers.runtime import RuntimeGeneration
 from app.simulator.main import create_app
+from app.config import Settings
 
 
 def test_real_independent_source_and_frozen_native_configuration(registry, external, source_configuration):
@@ -53,7 +54,7 @@ def test_unknown_id_and_changed_target_model_are_rejected(registry, external):
 
 
 async def native_context(tmp_path, store, baseline, provider, episode_id):
-    app = create_app(database_dir=tmp_path / episode_id, control_token="offline-control")
+    app = create_app(database_dir=tmp_path / episode_id, control_token="offline-control", settings=Settings())
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://127.0.0.1:8001")
     world_client = WorldClient("http://127.0.0.1:8001", "offline-control", client=client)
     intent = allocate_intent("order-1", "Upgrade this order to express and send its confirmation.")

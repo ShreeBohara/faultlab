@@ -4,10 +4,12 @@ from app.providers.runtime import RuntimeProviderError
 from app.lab.provider_failures import record_provider_failure
 from app.contracts.tokens import validate_model_input
 from app.contracts.models import ExplorerOutput,EpisodeBudget,FaultSpec,canonical_json,new_id,content_hash
-from app.lab.challenge import schedule_identity
+from app.lab.challenge import schedule_identity,identity_for
 from app.lab.budgets import BudgetExhausted
 PROMPT=Path(__file__).with_name('prompts').joinpath('explorer.md').read_text()
 CHALLENGER=Path(__file__).with_name('prompts').joinpath('challenger.md').read_text()
+# Appended only under the declared discovery protocol v2; v1 prompts stay byte-identical.
+DISCOVERY_V2_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v2.md').read_text()
 PUBLIC_INVARIANTS={
     'C1':'Stay within the authorized order, original operation identities and requested upgrade; at most one upgrade effect.',
     'C2':'Claim upgrade success only with a delivered matching terminal success receipt.',
@@ -67,7 +69,7 @@ def discovery_search_ledger(store,context,*,campaign_id):
             raise ValueError('Discovery selection digest or dispatch status is inconsistent')
         if selected:
             recipe=ExplorerOutput.model_validate(selected).fault_spec
-            digest=schedule_identity(recipe)
+            digest=identity_for(decision.get('identity_version'))(recipe)
             if digest!=decision.get('schedule_hash') or decision.get('status')!='SELECTED':
                 raise ValueError('Discovery selection digest or dispatch status is inconsistent')
             seen.setdefault(digest,{'selection_refs':[],'episode_refs':[]})['selection_refs'].append(selection['selection_id'])
@@ -100,29 +102,151 @@ def discovery_search_ledger(store,context,*,campaign_id):
             'excluded_schedule_hashes':sorted(seen)}
     return ledger,seen
 
+
+def attempts_by_tool_and_service(store,episode_id):
+    """Physical HTTP attempts per tool AND service, from this episode's public observations.
+
+    A status check names its service in its delivered data, or else by the operation id
+    the agent was given in its task; v1's per-tool count merged both services.
+    """
+    intent=(store.get_record('private_episode_inputs',episode_id) or {}).get('intent') or {}
+    operations={intent.get('upgrade_operation_id'):'orders',intent.get('notification_operation_id'):'notifications'}
+    counts={}
+    for call in store.list_records('tool_calls'):
+        if call['episode_id']!=episode_id: continue
+        tool=call['tool']; observations=call.get('observation_ids',[])
+        for index,_ in enumerate(call['attempt_ids']):
+            service={'get_order':'orders','update_order':'orders','send_confirmation':'notifications'}.get(tool)
+            if service is None:
+                result=((store.get_record('observations',observations[index]) or {}).get('result') or {}) if index<len(observations) else {}
+                service=(result.get('data') or {}).get('service') or operations.get(result.get('operation_id')) or 'unknown'
+            key=f'{tool}:{service}'; counts[key]=counts.get(key,0)+1
+    return dict(sorted(counts.items()))
+
+
+def development_coverage_v2(store,campaign_id,trial,recipe,predicted):
+    """v1 coverage plus attempts by tool and service and a templated per-fault result."""
+    from app.lab.reachability import explain_executed
+    row=development_coverage(store,campaign_id,trial,recipe)
+    counts=attempts_by_tool_and_service(store,trial.episode_id)
+    row['http_attempts_by_tool_and_service']=counts
+    row['fault_results']=explain_executed(recipe.model_dump(mode='json'),fired=row['primitive_triggered'],
+        reasons=row['primitive_prevented_reasons'],attempts_by_target=counts,lifecycle=trial.lifecycle,predicted=predicted)
+    return row
+
+
+def _readable_selection(selection,decision):
+    from app.lab.reachability import readable_recipe
+    spec=(selection.get('selected_output') or {}).get('fault_spec') or decision.get('refused_fault_spec') or (selection.get('output') or {}).get('fault_spec')
+    return readable_recipe(spec) if spec else None
+
+
+def discovery_search_ledger_v2(store,context,*,campaign_id):
+    """Discovery v2 ledger: readable recipes and templated reasons instead of hashes.
+
+    Same binding rules as v1. Each record is checked with the identity version it was
+    written under; refused picks count as already proposed, so re-proposing one is a
+    duplicate.
+    """
+    from app.lab.challenge import schedule_identity_v2
+    from app.lab.reachability import readable_recipe
+    binding={key:context.get(key) for key in ('campaign_id','configuration_hash','policy_hash')}
+    if binding['campaign_id']!=campaign_id or not all(binding.values()):
+        raise ValueError('Discovery search requires its own frozen campaign and policy binding')
+    campaign=store.get_record('campaigns',campaign_id)
+    if campaign and campaign.get('configuration_hash')!=binding['configuration_hash']:
+        raise ValueError('Discovery search configuration does not match its campaign')
+    previous=[]; refused=[]; tested=[]; seen={}; readable={}; coverage={}
+    for selection in store.list_records('selections'):
+        prior=selection.get('context',{})
+        if selection.get('challenge') or 'development_history' not in prior or prior.get('study_id') or prior.get('selector_id'):
+            continue
+        if any(prior.get(key)!=value for key,value in binding.items()):
+            continue
+        decision=selection.get('search_decision')
+        if not decision: continue
+        identity=identity_for(decision.get('identity_version'))
+        selected=selection.get('selected_output')
+        if bool(selected)!=(decision.get('status')=='SELECTED'):
+            raise ValueError('Discovery selection digest or dispatch status is inconsistent')
+        spec=selected['fault_spec'] if selected else decision.get('refused_fault_spec')
+        if spec is not None:
+            digest=identity(FaultSpec.model_validate(spec))
+            if digest!=decision.get('schedule_hash'):
+                raise ValueError('Discovery selection digest or dispatch status is inconsistent')
+            seen.setdefault(digest,{'selection_refs':[],'episode_refs':[]})['selection_refs'].append(selection['selection_id'])
+            readable.setdefault(digest,readable_recipe(spec))
+        label=decision.get('reachability') or {}
+        row={'selection_id':selection['selection_id'],'selection_index':prior.get('selection_index'),
+             'slot_request':decision.get('slot_request',1),'replan_of':decision.get('replan_of'),
+             'status':decision.get('status'),'reason':decision.get('reason'),
+             'recipe':_readable_selection(selection,decision),
+             'faults':[{key:fault[key] for key in ('fault','verdict','reason_code','explanation')} for fault in label.get('faults',[])]}
+        previous.append(row)
+        if decision.get('status') not in ('SELECTED','INVALID_OUTPUT'): refused.append(row)
+    for history in context['development_history']:
+        episode=store.get_record('episodes',history['episode_id'])
+        if not episode or episode.get('split')!='development' or episode.get('experiment_purpose')!='discovery' or any(episode.get(key)!=value for key,value in binding.items()) or episode.get('study_id')!=campaign_id or episode.get('evidence_context_id')!=campaign_id or episode.get('selector_id') is not None:
+            raise ValueError('Discovery search history must belong to this frozen development context')
+        recipe=FaultSpec.model_validate(history['fault_spec'])
+        if episode.get('scenario_hash')!=content_hash(recipe):
+            raise ValueError('Discovery coverage recipe does not match its executed episode')
+        digest=schedule_identity_v2(recipe)
+        seen.setdefault(digest,{'selection_refs':[],'episode_refs':[]})['episode_refs'].append(history['episode_id'])
+        readable.setdefault(digest,readable_recipe(history['fault_spec']))
+        tested.append({'episode_id':history['episode_id'],'recipe':readable_recipe(history['fault_spec']),
+                       'lifecycle':history['lifecycle'],'outcome':history['outcome'],'failed_checks':history.get('failed_checks',[]),
+                       'every_fault_fired':history['triggered'],'fault_results':history.get('fault_results',[]),
+                       'http_attempts_by_tool_and_service':history.get('http_attempts_by_tool_and_service',{})})
+        for index,primitive in enumerate(recipe.primitives):
+            key=(primitive.kind,primitive.target_service,primitive.target_tool)
+            summary=coverage.setdefault(key,{'kind':key[0],'target_service':key[1],'target_tool':key[2],
+                                            'scheduled':0,'triggered':0,'not_triggered':0,'unreported':0,'target_not_reached':0})
+            summary['scheduled']+=1
+            triggers=history.get('primitive_triggered',[])
+            triggered=triggers[index] if index<len(triggers) else None
+            summary['triggered' if triggered is True else 'not_triggered' if triggered is False else 'unreported']+=1
+            reasons=history.get('primitive_prevented_reasons',[])
+            if index<len(reasons) and reasons[index]=='target_not_reached': summary['target_not_reached']+=1
+    ledger={'schema_version':'faultlab-discovery-search/v2',**binding,
+            'schedule_identity':'Order-aware (v2): scope and all primitive fields; the seed, the hypothesis and the order of '
+                                'independent primitives do not create a new schedule, but the order of two same-kind faults '
+                                'on the same tool/service whose attempts overlap does.',
+            'prior_selections':previous,'tested_schedules':tested,'refused_recipes':refused,
+            'primitive_coverage':[coverage[key] for key in sorted(coverage)],
+            'excluded_recipes':[readable[digest] for digest in sorted(readable)]}
+    return ledger,seen
+
 class Explorer:
     def __init__(self,provider,store,ledger):
         self.provider,self.store,self.ledger=provider,store,ledger
         self.trace=None; self.metadata=None
-    async def select(self,context,*,reservation=None,challenge=False,fallback=None):
+    async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None):
         # The selector benchmark and active challenge have separately declared
         # duplicate/repetition rules. Do not silently change those protocols.
         discovery=not challenge and 'development_history' in context and not context.get('study_id') and not context.get('selector_id')
+        # Discovery protocol v2 applies only when the campaign declared it (app.lab.discovery_protocol).
+        v2=discovery_v2 if discovery else None
         search=None; seen={}
         if discovery:
             metadata=self.metadata or {}
             if any(key in metadata and metadata[key]!=context.get(key) for key in ('campaign_id','policy_hash')):
                 raise ValueError('Discovery search binding does not match execution metadata')
-            search,seen=discovery_search_ledger(self.store,context,campaign_id=self.ledger.campaign_id)
+            if v2 is None:
+                search,seen=discovery_search_ledger(self.store,context,campaign_id=self.ledger.campaign_id)
+            else:
+                search,seen=discovery_search_ledger_v2(self.store,context,campaign_id=self.ledger.campaign_id)
+                context={**context,**(await v2.context())}
             context={**context,'search_ledger':search}
         # Supply the reviewed wire contract, not a sample solution or a repaired
         # recipe. Discovery and challenge use the same exact field names.
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
                  'episode_limits':EpisodeBudget().model_dump(mode='json'),'public_invariants':PUBLIC_INVARIANTS}
-        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')},{'role':'user','content':canonical_json(context)}]
+        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')},{'role':'user','content':canonical_json(context)}]
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         validate_model_input(messages,expected)
+        if v2 is not None: v2.admit_request()  # The declared selection budget refuses before any charge.
         self.ledger.consume_call(reservation=reservation,role='explorer')
         from app.lab.tracing import phase_span
         try:
@@ -142,14 +266,36 @@ class Explorer:
         selected=parsed
         if selected is None and fallback is not None:
             selected=ExplorerOutput(fault_spec=fallback,hypothesis='Fixed fallback after invalid Explorer output; no learned selection claim')
-        decision=None
+        decision=None; precheck_error=None
         if discovery:
-            digest=schedule_identity(selected.fault_spec) if selected else None
+            identity=v2.identity if v2 is not None else schedule_identity
+            digest=identity(selected.fault_spec) if selected else None
             decision={'status':'SELECTED' if selected else 'INVALID_OUTPUT','schedule_hash':digest,
                       'reason':None if selected else error,'prior_selection_refs':[],'prior_episode_refs':[]}
+            if v2 is not None:
+                from app.lab.challenge import SCHEDULE_IDENTITY_V2
+                decision.update(identity_version=SCHEDULE_IDENTITY_V2,discovery_protocol=v2.protocol,
+                                slot_request=context.get('slot_request',1),replan_of=context.get('replan_of'),
+                                refused_fault_spec=None,reachability=None)
             if digest in seen:
                 decision.update(status='SKIPPED_DUPLICATE',reason='DUPLICATE_DISCOVERY_SCHEDULE',
                                 prior_selection_refs=seen[digest]['selection_refs'],prior_episode_refs=seen[digest]['episode_refs'])
+                if v2 is not None: decision['refused_fault_spec']=selected.fault_spec.model_dump(mode='json')
                 selected=None  # The slot and model charge remain; no repair call or substitute fault.
+            elif v2 is not None and selected is not None:
+                # Label before the immutable record, so the record holds the verdicts.
+                try: label=await v2.label(selected.fault_spec)
+                except Exception as failure: label=None; precheck_error=failure
+                refused_spec=selected.fault_spec.model_dump(mode='json')
+                if label is None:
+                    # Never guess a label: keep the charged raw answer, refuse, then stop loudly.
+                    decision.update(status='PRECHECK_FAILED',reason='REACHABILITY_PRECHECK_FAILED',refused_fault_spec=refused_spec)
+                    selected=None
+                else:
+                    decision['reachability']=label
+                    if not label['all_forced']:
+                        decision.update(status='SKIPPED_UNREACHABLE',reason='NOT_ALL_FAULTS_FORCED',refused_fault_spec=refused_spec)
+                        selected=None  # No Actor episode and no substitute fault for this request.
         self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':{'model_calls':1,'input_tokens':generation.input_tokens,'output_tokens':generation.output_tokens,'cost_dollars':generation.cost_usd}},immutable=True)
+        if precheck_error is not None: raise precheck_error
         return selection_id,selected

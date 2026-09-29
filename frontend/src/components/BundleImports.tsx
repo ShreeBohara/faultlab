@@ -5,6 +5,7 @@ import { useImportHistory } from '../useImportHistory'
 import { useResource, type Resource } from '../useResource'
 import { Empty, Field, Hash, Json, Panel, ResourceNote, label } from './common'
 import { ImportedFreshEvidence, ImportedHistoricalEvidence } from './ImportedTrialEvidence'
+import { TaskText } from './TaskText'
 
 const artifactLabel = { incident_fixture: 'Incident fixture', candidate_comparison: 'Candidate comparison', accepted_policy_bundle: 'Accepted source policy bundle' }
 const message = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
@@ -39,6 +40,13 @@ export function BundleImports({ config, readiness, replay, onEpisode }: { config
   const history = useImportHistory(store ? `imports:${store.identity}` : null, importApi.list, item => item.import_id)
   const detail = useResource(store && selected ? `import:${store.identity}:${selected}` : null, () => importApi.detail(selected), null)
   const fileProblem = file ? importFileError(file) : null
+  // Keep the open review mounted while its own detail is reread (Refresh, or after a
+  // cancellation), so the outcome it just reported, such as "cancelled, nothing ran",
+  // stays on screen. It is marked stale until the reread lands, which blocks any run.
+  // A different selection, another store or a missing import still clears it.
+  const [lastReview, setLastReview] = useState<ImportedBundle | null>(null)
+  useEffect(() => { if (detail.data) setLastReview(detail.data) }, [detail.data])
+  const review = detail.data ?? (detail.loading && store && lastReview?.import_id === selected && lastReview.data_store.identity === store.identity ? lastReview : null)
   const canSave = !!store && !store.read_only && !replay && !busy && !!file && !fileProblem
   function select(id: string) { setSelected(id); setUploadError(null); try { localStorage.setItem(selectedKey, id) } catch { /* Navigation is still available without local persistence. */ } }
   function persistPending(value: PendingImportRequest | null) {
@@ -79,7 +87,7 @@ export function BundleImports({ config, readiness, replay, onEpisode }: { config
     {!!history.page?.items.length && <p className="muted">{history.page.items.length} saved imports loaded · newest first. Older pages load only on request.</p>}
     {pending && pending.import_id !== selected && <div className="notice"><p>A previous execution request is unresolved. Resolve it before starting another imported regression.</p><button onClick={() => select(pending.import_id)}>Open unresolved request</button></div>}
     <ResourceNote resource={detail} />
-    {detail.data && <ImportedBundleReview key={`${store?.identity}:${detail.data.import_id}`} bundle={detail.data} stale={!!detail.error || detail.loading} refresh={detail.refresh!} config={config} readiness={readiness} replay={replay} pending={pending} persistPending={persistPending} onEpisode={onEpisode} />}
+    {review && <ImportedBundleReview key={`${store?.identity}:${review.import_id}`} bundle={review} stale={!!detail.error || detail.loading || !detail.data} refresh={detail.refresh!} config={config} readiness={readiness} replay={replay} pending={pending} persistPending={persistPending} onEpisode={onEpisode} />}
   </Panel>
 }
 
@@ -113,7 +121,7 @@ export function freshRunBlockers({ bundle, config, readiness, replay, stale, sto
 function ExecutionTaskFacts({ bundle }: { bundle: ImportedBundle }) {
   const task = bundle.execution_task
   if (!task) return <p className="notice">The task recorded in this bundle is malformed, so it cannot be sent to an agent. This import is stored for inspection only.</p>
-  return <dl className="facts compact"><Field name="Exact task sent to the agent"><span className="task-text">{task.task_text}</span></Field><Field name="Authorized order">{task.order_id}</Field><Field name="Task origin">{task.origin === 'bundled' ? 'Recorded in this bundle by its source campaign; FaultLab did not write it' : 'FaultLab default task; this bundle records none'}</Field></dl>
+  return <dl className="facts compact"><Field name="Exact task sent to the agent"><TaskText text={task.task_text} detailed /></Field><Field name="Authorized order">{task.order_id}</Field><Field name="Task origin">{task.origin === 'bundled' ? 'Recorded in this bundle by its source campaign; FaultLab did not write it' : 'FaultLab default task; this bundle records none'}</Field></dl>
 }
 
 function ImportedBundleReview({ bundle, stale, refresh, config, readiness, replay, pending, persistPending, onEpisode }: { bundle: ImportedBundle; stale: boolean; refresh: () => void; config?: ConfigStatus; readiness?: Resource<ReadinessStatus>; replay: boolean; pending: PendingImportRequest | null; persistPending: (value: PendingImportRequest | null) => void; onEpisode: (owner: string, episode: string) => void }) {
@@ -194,7 +202,7 @@ function ImportedBundleReview({ bundle, stale, refresh, config, readiness, repla
       <section aria-label="Task sent in fresh trials"><h4>Each fresh trial sends the agent this task</h4><ExecutionTaskFacts bundle={bundle} /></section>
       <p className="notice">Fresh execution makes billable model and telemetry calls. {bound} Selecting the button below asks for a separate confirmation.</p>
       {!(confirming && canRun) && <button className="primary" disabled={!canRun} onClick={() => { if (canRun) { setConfirming(true); setStatus(null) } }}>{busy ? 'Saving execution request…' : 'Run imported regression in fresh worlds'}</button>}
-      {confirming && canRun && target && bundle.execution_task && <div className="notice" role="group" aria-label="Confirm billable fresh run"><p><strong>Confirm this billable run.</strong> Target: {target.agent} · {target.model} · <code>{target.agent_registration_id}</code>. Task: “{bundle.execution_task.task_text}” on order <code>{bundle.execution_task.order_id}</code>. {bound}</p><div className="controls"><button className="primary" onClick={() => void action(async () => {
+      {confirming && canRun && target && bundle.execution_task && <div className="notice" role="group" aria-label="Confirm billable fresh run"><p><strong>Confirm this billable run.</strong> Target: {target.agent} · {target.model} · <code>{target.agent_registration_id}</code>. Task: “<TaskText text={bundle.execution_task.task_text} />” on order <code>{bundle.execution_task.order_id}</code>. {bound}</p><div className="controls"><button className="primary" onClick={() => void action(async () => {
         if (!canRun || !target) return
         const body: ImportExecutionRequest = { expected_store_identity: bundle.data_store.identity, expected_manifest_hash: bundle.manifest_hash, expected_target_configuration_hash: target.configuration_hash, agent_registration_id: target.agent_registration_id, request_id: `import-run-${crypto.randomUUID()}`, execution_profile_id: 'sandbox-v1', execute_live: true }
         persistPending({ import_id: bundle.import_id, request: body })

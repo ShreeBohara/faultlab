@@ -23,7 +23,7 @@ def anyio_backend():
 
 
 def setup(tmp_path, client=None):
-    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='clock-test')
+    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='clock-test', settings=Settings())
     client = client or httpx.AsyncClient(transport=httpx.ASGITransport(app=simulator),
                                        base_url='http://127.0.0.1:8001')
     world = WorldClient('http://127.0.0.1:8001', 'clock-test', client=client)
@@ -171,7 +171,7 @@ def test_real_response_timeout_after_commit_remains_valid(tmp_path):
     listener = socket.socket()
     listener.bind(('127.0.0.1', 0))
     port = listener.getsockname()[1]
-    simulator = create_app(database_dir=tmp_path / 'http-worlds', control_token='clock-test')
+    simulator = create_app(database_dir=tmp_path / 'http-worlds', control_token='clock-test', settings=Settings())
     server = uvicorn.Server(uvicorn.Config(simulator, log_level='error', lifespan='off'))
     thread = threading.Thread(target=server.run, kwargs={'sockets': [listener]}, daemon=True)
     thread.start()

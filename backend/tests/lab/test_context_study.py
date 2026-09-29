@@ -23,6 +23,7 @@ from app.lab.runner import EpisodeRunner
 from app.lab.storage import StoreConflict
 from app.providers.runtime import RuntimeGeneration
 from app.simulator.main import create_app
+from app.config import Settings
 from app.telemetry.evaluations import EvaluationPublisher
 from app.telemetry.outbox import TelemetryOutbox
 from app.telemetry.tracing import TraceRecorder
@@ -113,7 +114,7 @@ async def harness(tmp_path, provider=None):
     coordinator = LabCoordinator(settings(tmp_path))
     campaign = coordinator.create(CampaignRequest(task_text='Upgrade and confirm',
         order_id='order-context', mode='baseline', config_profile_id='live-v1'))
-    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='offline-test')
+    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='offline-test', settings=Settings())
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=simulator),
                                base_url='http://127.0.0.1:8001')
     provider = provider or ContextFixtureProvider()

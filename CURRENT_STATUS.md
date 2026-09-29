@@ -10,6 +10,98 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
+**Current runtime: `c0a8aad71dfebe4407e159f7459edcef37a7d14ac6bb3c736990128e180ccaac`** (algorithm
+`e5dce72c…`), local and uncommitted; simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`**, the same
+simulator identity as the last checkpoint (`8e497da`, runtime `cfe5ac07…`). Runtime chain since that
+checkpoint: `cfe5ac07` → `bb87c764` (hardening: task-text display, dotenv guard, lazy simulator entry point;
+the lazy entry point changed the simulator identity to service `f70c8fb1…` / contract `1099eda7…`) →
+`9f53eb8c` (discovery v2) → `c9b1b7e6` (fixes from the two September 28 reviews) → **`c0a8aad7`**.
+
+**PM decision (September 28): the simulator identity change is reverted.** Compatibility of previously
+exported bundles and existing registrations matters more than a control-capability file created at import
+time, so `backend/app/simulator/main.py` is back to its `8e497da` bytes (it builds the server app when
+imported, as before). Nothing else changed in that step. Consequences:
+1. Bundles exported under the checkpoint simulator (contract `6f9d7783…`) can be **rerun again** (checked in
+   the real dashboard at $0: reviewed as eligible, target compatible, confirmed fresh rerun COMPLETED,
+   3 of 3 valid trials). A bundle made by the reverted build (contract `1099eda7…`; the only known one is
+   the test fixture `exported-regression-other-simulator.zip`, sha256 `f2ac6a60…`) stays reviewable and is
+   refused for rerun, naming both identities and "an earlier or different simulator build".
+2. Every agent must still be **registered again** before any live run: a registration records the
+   whole-backend `runtime_hash`, which differs from every earlier registration's (discovery v2 and the
+   review fixes changed `backend/app`), even though its simulator and contract part matches again.
+3. The planned paid import validation uses the **restored** fixture `frontend/tests/fixtures/exported-regression.zip`,
+   sha256 `14e53310cde9a3f6f985eb6bc4ac9fa0393a2155effd518953f39699a4ecb6df` (its `8e497da` bytes, contract
+   `6f9d7783…`). The old `exported-regression-earlier-simulator.zip` was byte-identical to it and was moved
+   to `artifacts/product-discovery-2026-09-28/fixer3-0928/moved/`, with the lazy `main.py` and its test.
+4. Accepted trade-off: outside tests, importing `app.simulator.main` reads settings (from `.env`) and
+   creates or reuses `artifacts/control-capability` (0600), exactly as at the checkpoint. The test suite
+   imports it once with an empty scratch settings file and a scratch artifact directory (root
+   `backend/tests/conftest.py`), so tests still never read `.env`; `tests/simulator/test_entry_point.py` pins
+   the simulator identity to the checkpoint values and checks the entry point's capability and authorization.
+
+Verification of `c0a8aad7` is recorded under *Verification and known issues*.
+
+**Independent verification of `c0a8aad7` (September 28, verifier4; $0, no provider/model/W&B call; evidence
+`artifacts/product-discovery-2026-09-28/verifier4-0928/`, git-ignored).** Nothing was taken from earlier reports.
+- **Identities** (the app's own functions): runtime `c0a8aad7…`, algorithm `e5dce72c…`; simulator service
+  `3ce5bcd2…` and contract `6f9d7783…` equal `8e497da` (`simulator/` and `contracts/` byte-identical; the
+  checkpoint tree recomputes to `cfe5ac07…`). `gate_freeze.py`: `checks.py` hash and `assess_pairs` text/AST
+  unchanged against `8e497da` and the Phase 28 record (`783e8e58…`).
+- **Suites, one clean run each:** backend **2,562 passed, 180 skipped, 0 failed**, 2 known warnings, 929.09 s;
+  frontend **303 unit tests** (17 files), build (size advisory), **15 browser tests passed, 1 opt-in skipped**.
+  **0 outside connections or lookups**: audit hooks in every Python and Node process refused and logged none, and
+  a process-tree socket sampler saw none. The only real-`.env` events were the 3 synthetic ones in `test_env_guard.py`.
+- **A bundle exported before today reruns:** `native-offline-incident-bundle-96f072.zip` (exported September 27,
+  contract `6f9d7783…`, the same bytes as the restored fixture), through the real backend API and a real simulator
+  on 127.0.0.1, a scratch data folder and the tests' scripted provider-free agent: reviewed as runnable, fresh rerun
+  **COMPLETED, 3 of 3 valid trials**, incident reproduced (C3), not provider-backed, $0. The other-simulator bundle is
+  refused (409, both identities named). A September 20 bundle (contract `6265eadc…`) is refused at upload.
+- **Every review finding re-tried and holds.** The six re-send picks the review named are now NOT_FORCED (N3). Caller
+  gate PASS (3,337 episodes, 124 points, lowest 83.3%); it fails both controls (caller v1: 20 of 134; no 3-check cap: 3).
+  Back-test re-derived: IMPOSSIBLE fired **0 of 6**; the 58 FORCED misses are 47 skipped calls + 11 early ends, 0
+  reached-but-not-fired (3,402 episodes; the lost script's 3,447 / FORCED-fired 3,370 differ only in that cell).
+  New adversarial sweep: **1,540 rule-IMPOSSIBLE faults, 1,500 recipes, 29,620 runs, 0 fired** (raw attempts, adapter
+  calls, control-plane waits; other faults fired in 19,913 of 27,680 runs). Task display: all 4,174 default-ignorable
+  and 58,390 other non-visible code points are marked; 2,000 random mixes hide nothing. The dotenv guard makes 0 `.env`
+  opens (also with `PYTHON_DOTENV_DISABLED=0`). Capability files with mode 0644/0640/0604, symlinks or FIFOs are refused.
+- **v1 unchanged by default:** checkpoint and current code, fed the 8 saved c701e850 Explorer outputs through the real
+  loop, send byte-identical Explorer messages (8 of 8) and store identical selection records. 115 real plans saved on
+  September 27, before the `discovery` field existed, still verify and read as v1.
+- **Historical data unchanged:** the 31 result documents and all other tracked files not in the commit list match
+  `8e497da`. All 8,863 `.sqlite3` and `-wal` files keep their hashes, sizes and mtimes. Only the 3 known `-shm` timestamps
+  moved, because older tests open those stores `mode=ro`. HEAD and index are unchanged.
+- **New LOW FaultLab issues, not fixed:**
+  1. The caller gate also counts 30 handwritten B1 control episodes (`source_mode` offline_fixture) as the real Actor.
+     Without them it still passes. Fix: filter `source_mode == 'live'` in `load_rows`, before Run A.
+  2. One U+FE0E/U+FE0F after every visible character stays unmarked, following the review's rule. That leaves a
+     1-bit-per-letter hidden channel that raises no warning; only the character count shows it.
+  3. `RunControls` "Recorded task" and `CampaignHistory` "Saved task" show a task raw. For an import, that is the
+     bundle's task.
+  4. The imports list still says `runnable: true` for an other-simulator bundle. Its detail view and execution refuse it.
+  5. A capability path that is a directory fails with a raw `IsADirectoryError`.
+- **For the PM commit:** 43 changed and 27 new files versus `8e497da`, none removed. The exact list with sha256 is in
+  `verifier4-0928/COMMIT_LIST_vs_8e497da.txt`.
+
+**Implemented offline, not yet committed or run live: discovery protocol v2 (reachability pre-check).**
+A Learn plan can now explicitly declare `faultlab-discovery/v2-reachability` (default stays v1, today's
+exact behaviour). Before a paid Actor episode, a free in-process replay labels each fault FORCED /
+NOT_FORCED / IMPOSSIBLE for the reference Actor's real action space; only all-FORCED picks run, a refused
+pick gets one re-plan, and the declared budget is 8 slots / 16 Explorer requests / 8 episodes. Native
+agents cannot declare v2. The order-sensitive schedule-identity bug is fixed for new campaigns only.
+Read-only back-test on 3,447 stored episodes: 0 of 6 stored IMPOSSIBLE faults fired (the wider evidence
+is a 35,976-run adversarial sweep with 0 fired); all 58 unfired FORCED faults were the Actor skipping a
+call or an episode ending early; that FORCED-miss rate (1.5% for V3.1) covers attempt-1 faults only.
+**Review fix (FaultLab modelling bug):** the first caller model assumed the Actor re-sends a write after
+UNKNOWN; stored DeepSeek-V3.1 almost never does, so re-send-dependent faults were wrongly FORCED. Caller v2
+never re-sends and makes at most 3 status checks after a write failed on both attempts; a new $0 gate
+(`scripts/experiments/check_reachability_caller.py`) checks every modelled attempt against 3,337 stored
+episodes and passes (124 points, lowest 83%); the old model fails it. **Corrected Run A bound:** discovery
+at most **144 requests / about $3.47** (the earlier 80 / $2.14 left out the charged Actor transport retry);
+campaign worst case about $56 by the plan's phase table, $200 cap. Runtimes `9f53eb8c…`, `c9b1b7e6…`, now
+`c0a8aad7…` (the simulator revert; no discovery code changed); $0. The gate was re-run under `c0a8aad7`: PASS.
+See [the discovery v2 note](docs/DISCOVERY_V2_2026-09-28.md), which also lists the completion-gap families
+a wait/retry policy could recover but policy-v0 cannot.
+
 **Implemented and reviewed, not yet committed: dashboard bundle import, review and a separate fresh
 rerun.** The whole feature is now in this main folder (the product worktree copies are stale). A saved
 regression ZIP is checked and stored as data with no provider calls; the review shows the source trials,
@@ -19,10 +111,23 @@ confirmed, bounded action whose accounting campaign refuses all other work. Thre
 paid studies, malformed bundle fields could break the imports list, and the backend accepted any Host
 header — and every finding was fixed with tests; see *Review fixes* in the
 [import review](docs/PRODUCT_IMPORT_REVIEW_2026-09-27.md).
-Import runtime: `cfe5ac07c6ef571f7be5f57cc8f56cbce4084496c3d157d3b222c0e9bb0f6738`. Full backend **2,363 passed, 180 existing skips, zero failures** (two known warnings); frontend **254 unit tests, production build and 13 browser fixtures passed** (one opt-in actual-backend check skipped). Provider calls 0, cost $0; main HEAD/index unchanged; no push.
+*Historical:* the import increment was verified under runtime `cfe5ac07c6ef571f7be5f57cc8f56cbce4084496c3d157d3b222c0e9bb0f6738` (full backend 2,363 passed, 180 skips; frontend 254 unit tests, build and 13 browser fixtures). Those counts and that runtime are **not current**; see *Current runtime* above. Provider calls 0, cost $0; main HEAD/index unchanged; no push.
+A second $0 review (September 28) found that the task display let variation selectors, U+034F and other
+invisible combining characters through unmarked, and that hidden characters on collapsed blank lines
+vanished; fixed in the dashboard (every default-ignorable character is marked except one emoji
+presentation selector after a visible character; collapsed lines count every hidden character; the warning
+and escaped copy appear whenever any are present). It also found tests that read the real `.env` through
+the simulator's `create_app`; they now pass explicit settings and the test process refuses any open of it.
+Smaller hardening from the same review: an existing control-capability file readable by group/others, owned
+by another user, or not a regular file is now refused; importing the backend sets `PYTHON_DOTENV_DISABLED=1`
+by default (an explicit operator value is kept); a static test fails if any module imports smolagents outside
+the adapter's dotenv guard; a bundle from an earlier or different simulator build is marked not runnable at bundle level.
 **Next:** the PM commits, then the owner declares the bounded real-model validation (worst case 72
-requests across the two targets, or cap each execution at 24; see the review doc). Original historical
+requests across the two targets, or cap each execution at 24; see the review doc) **under the current
+runtime, after registering the targets again and using the restored fixture above**. Original historical
 stores remain untouched. See [current increment memory](memory/context/product-import-2026-09-27.md).
+The five LOW issues from the independent verification (above) are open. Fix issue 1 (gate scope) before discovery-v2
+Run A, and issues 2–3 (task display) before a paid rerun of an outside bundle. None of them blocks the commit.
 
 **Reviewed campaign setup and native-agent execution are implemented, verified and saved locally.**
 The dashboard now offers reference/native selection, explicit registration, six public cases, an immutable
@@ -379,7 +484,56 @@ Its manifests record copied file hashes; credentials and SQLite transient sideca
 
 ## Verification and known issues
 
-**Import increment runtime `cfe5ac07…` (September 28, after review fixes):** Full backend **2,363 passed, 180 existing skips, zero failures** (two known warnings); frontend **254 unit tests, production build and 13 browser fixtures passed** (one opt-in actual-backend check skipped).
+*Independently re-verified by verifier4 (September 28): every count below was reproduced exactly (backend 2,562 /
+180 skipped / 0 failed; frontend 303, build, 15 + 1 opt-in skip); see* Independent verification *under* Current work.
+
+**Current runtime `c0a8aad7…` (September 28, after the PM's simulator revert):** one clean invocation of
+each suite after the last source/test edit. Full backend **2,562 passed, 180 existing skips, zero failures**,
+two known warnings (Starlette alias, explicit fork test), 928.94 s; a log-only audit plugin recorded **0
+non-loopback connects or name lookups** and no `.env` open attempt other than the three intentional
+synthetic audit events in `tests/test_env_guard.py`. Frontend **303 unit tests** (17 files), production
+build (bundle-size advisory only) and **15 browser fixtures passed**; one opt-in actual-backend check
+skipped. New tests: `tests/simulator/test_entry_point.py` (simulator identity pinned to the checkpoint and
+matching the restored download; import builds the entry point with a 0600 capability, 403 without or with a
+wrong token, 200 with it; a restart reuses the capability; the test process's import-time app lives in
+scratch, not `artifacts/`) and a plan-record test in `tests/lab/test_discovery_v2_flow.py` (new records carry
+`discovery`, `null` for baseline; a record saved before the field still verifies and reads as v1).
+Caller gate re-run: **PASS** (3,337 stored V3.1 episodes, 124 checked points, lowest 83.3%); its control with
+caller v1's re-send patched in a scratch process **FAILS** on 20 of 134 points, the review's figure.
+**Manual real-dashboard check** ($0; real backend API and simulator on 127.0.0.1 over a scratch store; the
+tests' scripted, provider-free native agent; `.env` and outside network refused by an audit hook, neither
+attempted): the restored checkpoint download was reviewed as eligible and its target compatible, and a
+confirmed fresh rerun COMPLETED (3 of 3 valid trials, incident reproduced, not provider-backed, $0); the
+other-simulator download was refused, naming `bundle 1099eda7…, installed 6f9d7783…`, with Run disabled; a
+correctly hashed bundle whose task hides a sentence in 38 variation selectors plus 4 on a blank line showed
+"42 invisible characters", 38 markers and `⟨5 blank lines, 4 invisible characters⟩` in the review and 38
+markers in the confirmation box, and its escaped copy decodes to the exact task. Historical `.sqlite3` and
+`-wal` files unchanged (only the three known `-shm` timestamps moved); the real control-capability file is
+unchanged (0600, September 12); provider calls 0, cost $0; HEAD and index unchanged. Evidence (durable,
+git-ignored): `artifacts/product-discovery-2026-09-28/fixer3-0928/` (`suites/`, `gate/`, `manual/`, `moved/`).
+*Scratch evidence lost:* a macOS update restart wiped `/private/tmp`; the scratchpad folders cited for
+earlier runtimes (`fixer-0928/`, `fixer2-0928/`, `discovery-v2/`, `review-disc-v2/`, `secops-review-0928/`) no
+longer exist. Their figures remain as recorded.
+
+*Superseded:* **runtime `c9b1b7e6…` (September 28, after the discovery-v2 and security/import reviews):**
+Full backend **2,558 passed, 180 existing skips, zero failures**, two known warnings (Starlette alias,
+explicit fork test), 864.82 s, in one clean invocation after the last source/test edit. A log-only audit
+plugin recorded **0 non-loopback connects or name lookups** and no attempt to open the real `.env` other than
+the three intentional synthetic audit events in `tests/test_env_guard.py`, which the conftest guard refused.
+Frontend **303 unit tests** (17 files), production build (bundle-size advisory only) and **15 browser
+fixtures passed**; one opt-in actual-backend check skipped. Caller gate
+`scripts/experiments/check_reachability_caller.py`: **PASS** on 3,337 stored DeepSeek-V3.1 episodes, 124
+checked points, none below 80% (lowest 83.3%). A new invariant test runs every shared task-text case and 400
+seeded random mixes: no hidden character appears as plain text, the count covers every default-ignorable
+character, the warning and escaped copy appear, and the escaped copy decodes back to the exact text. The
+pre-fix display fails it on 364 of 428 texts. Historical `.sqlite3` and `-wal` files kept their sizes and
+modification times; provider calls 0, cost $0; HEAD and index unchanged. Evidence: scratchpad `fixer-0928/`
+(the fixes) and `fixer2-0928/` (that verification), both lost.
+Intermediate runtimes, superseded: `bb87c764…` (hardening; backend 2,402 passed / 180 skips, frontend 286,
+build, 15 browser + 1 opt-in skip) and `9f53eb8c…` (discovery v2; backend 2,490 passed / 180 skips, frontend
+295, build, 15 browser + 1 opt-in skip, as re-run by the reviewer).
+
+*Historical —* **Import increment runtime `cfe5ac07…` (September 28, after review fixes):** Full backend **2,363 passed, 180 existing skips, zero failures** (two known warnings); frontend **254 unit tests, production build and 13 browser fixtures passed** (one opt-in actual-backend check skipped).
 Manual $0 check: import → review → confirmed fresh rerun with the scripted native target, archive reopen,
 refusals and the local-host guard, on a scratch store and non-default ports.
 
@@ -468,7 +622,8 @@ milestone is complete; the broader product goal is not. No paid run is active.
 
 The core path, local durability and reviewed two-agent setup have now been implemented and checked.
 Dashboard bundle import with a review before a separate, confirmed fresh execution is now implemented
-and reviewed (September 28); it awaits the PM commit and the owner's bounded real-model validation. Repair effectiveness, a separately versioned second
+and reviewed (September 28); it awaits the PM commit and the owner's bounded real-model validation, which
+must use the current runtime, fresh registrations and the restored fixture (see *Current runtime*). Repair effectiveness, a separately versioned second
 task and clean-machine/hosted deployment acceptance remain separate open milestones. A new live native
 check should be prospectively declared, bounded and interpreted honestly; do not reuse a closed partition.
 

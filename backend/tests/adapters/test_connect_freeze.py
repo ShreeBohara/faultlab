@@ -22,6 +22,7 @@ from app.contracts.models import FaultSpec
 from app.lab.budgets import EpisodeMeter
 from app.lab.storage import LabStore
 from app.simulator.main import create_app
+from app.config import Settings
 
 pytestmark = pytest.mark.localhost_http
 
@@ -34,7 +35,7 @@ def store(tmp_path):
 @pytest.fixture
 def live_url(tmp_path):
     listener = socket.socket(); listener.bind(('127.0.0.1', 0)); port = listener.getsockname()[1]
-    app = create_app(database_dir=tmp_path / 'worlds', control_token='test-control')
+    app = create_app(database_dir=tmp_path / 'worlds', control_token='test-control', settings=Settings())
     server = uvicorn.Server(uvicorn.Config(app, log_level='error', lifespan='off'))
     thread = threading.Thread(target=server.run, kwargs={'sockets': [listener]}, daemon=True); thread.start()
     until = time.monotonic() + 5

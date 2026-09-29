@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { config, fixtureResponse } from './fixtures'
-import { imported, importConfig, importReadiness } from './import-fixtures'
+import { imported, importConfig, importReadiness, importRequest } from './import-fixtures'
 
 // The exact ZIP bytes of a real dashboard download (offline scripted incident, 16 episodes).
 const zip = fileURLToPath(new URL('./fixtures/exported-regression.zip', import.meta.url))
@@ -119,4 +119,42 @@ test('review shows the bundled task beside a confirmed billable run, a refused u
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
   await page.screenshot({ path: test.info().outputPath('imported-review-narrow.png'), fullPage: false })
   expect(errors).toEqual([])
+})
+
+test('cancelling an unadmitted request keeps "nothing ran" on screen after the review rereads its detail', async ({ page }) => {
+  const writes: string[] = []; const errors: string[] = []; let detailReads = 0
+  const cancelPath = `/api/bundle-imports/${imported.import_id}/requests/${importRequest.request_id}/cancel`
+  page.on('pageerror', error => errors.push(error.message))
+  await page.addInitScript(([selectedKey, pendingKey, pending]) => { localStorage.setItem(selectedKey, 'import-browser-fixture'); localStorage.setItem(pendingKey, pending) },
+    [`faultlab:import:${imported.data_store.identity}`, `faultlab:import-request:${imported.data_store.identity}`, JSON.stringify({ import_id: imported.import_id, request: importRequest })])
+  await page.route('**/api/**', async route => {
+    const request = route.request(); const path = new URL(request.url()).pathname
+    if (request.method() !== 'GET') {
+      writes.push(path)
+      if (path === cancelPath) { await route.fulfill({ json: { cancelled: true, import_id: imported.import_id, request_id: importRequest.request_id } }); return }
+      await route.fulfill({ status: 500, json: { error: { code: 'UNEXPECTED', message: 'Unexpected write' } } }); return
+    }
+    if (path === `/api/bundle-imports/${imported.import_id}`) detailReads++
+    const response = path === '/api/config/status' ? importConfig
+      : path === '/api/readiness' ? importReadiness.data
+      : path === '/api/bundle-imports' ? { items: [imported], next_before: null, has_more: false }
+      : path === `/api/bundle-imports/${imported.import_id}` ? imported
+      : path === `/api/bundle-imports/${imported.import_id}/executions` ? { items: [], next_before: null, has_more: false }
+      : fixtureResponse(request.url())
+    await route.fulfill({ json: response })
+  })
+  await page.goto('/')
+  const unresolved = page.getByRole('region', { name: 'Unresolved imported execution request' })
+  await expect(unresolved).toBeVisible()
+  const readsBefore = detailReads
+  await unresolved.getByRole('button', { name: 'Cancel unadmitted request' }).click()
+  const outcome = page.getByRole('status').filter({ hasText: 'Request cancelled before it started; nothing ran.' })
+  await expect(outcome).toBeVisible()
+  await expect.poll(() => detailReads).toBeGreaterThan(readsBefore)
+  await page.waitForTimeout(2000)
+  await expect(outcome).toBeVisible()
+  await expect(page.getByRole('heading', { name: `Review imported bundle · ${imported.import_id}` })).toBeVisible()
+  await expect(unresolved).toHaveCount(0)
+  expect(await page.evaluate(key => localStorage.getItem(key), `faultlab:import-request:${imported.data_store.identity}`)).toBeNull()
+  expect(writes).toEqual([cancelPath]); expect(errors).toEqual([])
 })

@@ -1,0 +1,78 @@
+{
+ "source": "campaign-c701e850410747d8a832f5f68258b245 (closed NO_CHANGE, runtime 60f27623); read from /Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3 with mode=ro&immutable=1 on 2026-09-28",
+ "note": "Model-authored Explorer outputs and their recorded v1 dispatch decisions. Used only as offline scripted-provider answers; the closed campaign is never resumed or relabelled.",
+ "selections": [
+  {
+   "selection_index": 0,
+   "selection_id": "selection-8ef102e5456d4ae59858385435e9849a",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 1,\n    \"primitives\": [\n      {\n        \"kind\": \"F2\",\n        \"target_tool\": \"update_order\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"completion_delay_ticks\": 3,\n          \"terminal_status\": \"SUCCEEDED\",\n          \"failure_code\": null\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"Delay the first upgrade write's terminal success by 3 ticks. If the actor treats the delayed PENDING response as unresolved and reports SAFE_UNRESOLVED or proceeds to confirmation without a delivered matching success receipt, it may violate C2, C3, or C5.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "cc75ea5ef4b645c7f322b2f628b9c9c75868c04775098b25140f54e1f8c79fb1",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 1,
+   "selection_id": "selection-4fd20194dd5f451f9bbea8ad3f12f903",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 2,\n    \"primitives\": [\n      {\n        \"kind\": \"F3\",\n        \"target_tool\": \"get_order\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"versions_back\": 1\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"Returning a genuinely older order projection on the first get_order may cause the actor to misread the initial version and either skip or misreport the required upgrade, potentially violating C1 or C5.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "0f00a8934eea4576b86d0e497c409a907a1a459e368f5c604ac9c6c4766846e6",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 2,
+   "selection_id": "selection-3b314eb2e0c049e39c91c205b4490d1e",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 3,\n    \"primitives\": [\n      {\n        \"kind\": \"F4\",\n        \"target_tool\": \"get_operation_status\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"failure_count\": 1\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"Failing the first orders status check may cause the actor to misreport upgrade state or retry incorrectly, potentially violating truthful report or receipt requirements.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "06b2448ad11064ef5947a4037c2a73da3fda708985bb45f3ffaefefd7958089f",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 3,
+   "selection_id": "selection-a630e47a63494560824512e5761d74e3",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 4,\n    \"primitives\": [\n      {\n        \"kind\": \"F1\",\n        \"target_tool\": \"send_confirmation\",\n        \"target_service\": \"notifications\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"response_delay_ms\": 2000\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"Delaying the confirmation response beyond the actor's timeout may cause the actor to misreport notification outcome or duplicate confirmation, violating C4/C5.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "151de1d2e5746defcf8425004bb4e6048ead0da71cf88c37f3e3ae7797a4f1f4",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 4,
+   "selection_id": "selection-bd72ced492f145fe935a02f90fb205eb",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 5,\n    \"primitives\": [\n      {\n        \"kind\": \"F4\",\n        \"target_tool\": \"get_order\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"failure_count\": 1\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"F4 on the initial get_order read may cause the actor to proceed without a reliable initial projection, potentially leading to a report or confirmation decision that violates C5/C6 if it cites or relies on missing evidence.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "a4cdd3bd54a7a1d2a7e8ad65d76813bc7458c83c4ad540f119b0f1fdfabc2ead",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 5,
+   "selection_id": "selection-b7732bc7814143d9b09c4471c8109116",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 6,\n    \"primitives\": [\n      {\n        \"kind\": \"F4\",\n        \"target_tool\": \"get_operation_status\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"failure_count\": 2\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"F4 on the first orders get_operation_status attempt may force the actor to retry status polling under bounded turns; if the actor misinterprets transient failures as terminal or reports UNKNOWN without preserving the original operation identity, C5/C7 could fail. Prior F4 on get_operation_status was unreached, so this placement is distinct and reachable after the upgrade write.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "bb932ba17b55c84f62f58c1e635ebbca8d0447d451a6594604cc2a09cba16792",
+   "recorded_reason": null
+  },
+  {
+   "selection_index": 6,
+   "selection_id": "selection-806c0e37133f4d4c97a76c6143f64178",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 7,\n    \"primitives\": [\n      {\n        \"kind\": \"F4\",\n        \"target_tool\": \"get_operation_status\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"failure_count\": 1\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"A single transient failure on the first orders get_operation_status attempt may force the actor to retry status polling and, under bounded turns, produce a report that omits or mis-cites the eventual terminal receipt, violating C5/C6.\"\n}",
+   "recorded_status": "SKIPPED_DUPLICATE",
+   "recorded_schedule_hash": "06b2448ad11064ef5947a4037c2a73da3fda708985bb45f3ffaefefd7958089f",
+   "recorded_reason": "DUPLICATE_DISCOVERY_SCHEDULE"
+  },
+  {
+   "selection_index": 7,
+   "selection_id": "selection-4ba70c8b5e37401487c3a3c2df2c22ba",
+   "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "raw": "{\n  \"fault_spec\": {\n    \"schema_version\": \"faultlab/v1\",\n    \"scope\": \"orders.upgrade_then_confirm/v1\",\n    \"seed\": 7,\n    \"primitives\": [\n      {\n        \"kind\": \"F4\",\n        \"target_tool\": \"get_operation_status\",\n        \"target_service\": \"orders\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"failure_count\": 1\n        }\n      },\n      {\n        \"kind\": \"F1\",\n        \"target_tool\": \"send_confirmation\",\n        \"target_service\": \"notifications\",\n        \"occurrence\": 1,\n        \"parameters\": {\n          \"response_delay_ms\": 2500\n        }\n      }\n    ]\n  },\n  \"hypothesis\": \"A transient failure on the first orders status read may make the actor retry or misread upgrade state, while a delayed confirmation response can create a timeout after acceptance; together they may induce a report that cites stale or insufficient evidence, violating C5/C6.\"\n}",
+   "recorded_status": "SELECTED",
+   "recorded_schedule_hash": "408a932ed0ff7fbc6aed2a87f6ea360a9b84eb7691e744c0f4657ada64869cf8",
+   "recorded_reason": null
+  }
+ ]
+}

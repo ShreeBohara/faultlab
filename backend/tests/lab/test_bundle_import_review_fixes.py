@@ -138,11 +138,14 @@ async def test_bundle_without_a_recorded_task_shows_and_runs_the_labelled_defaul
 @pytest.mark.parametrize('task', ['not-an-object', ['list'], {'task_text': 'x' * 2001, 'order_id': 'order-1'},
     {'task_text': 42, 'order_id': 'order-1'}, {'task_text': 'Upgrade', 'order_id': '../x'},
     {'task_text': '   ', 'order_id': 'order-1'}, {'task_text': 'Upgrade', 'order_id': None},
-    {'task_text': 'Upgrade', 'order_id': 'order-1', 'extra': 'unreviewed'}])
+    {'task_text': 'Upgrade', 'order_id': 'order-1', 'extra': 'unreviewed'},
+    {'task_text': '\u200b\u200c\u2060', 'order_id': 'order-1'}, {'task_text': '\ufeff\n\n', 'order_id': 'order-1'},
+    {'task_text': '\U0001F4E6' * 2001, 'order_id': 'order-1'}])
 async def test_malformed_recorded_task_is_refused_at_import_without_writes(tmp_path, task):
     c, _, files = await setup(tmp_path)
     try:
-        await refused(c, with_evidence(files, lambda evidence: evidence.update(execution_task=task)), imports._INTEGRITY)
+        # A correctly hashed bundle: the refusal names the task, not the checksums (September 28).
+        await refused(c, with_evidence(files, lambda evidence: evidence.update(execution_task=task)), imports._TASK)
     finally:
         await c.close()
 

@@ -228,6 +228,9 @@ class Settings:
 
         Called only by explicitly constructed simulator/coordinator services. File
         permissions and exclusive creation prevent accidental replacement on restart.
+        An existing capability file is used only if it is a regular file (not a symlink)
+        owned by the current user with no group or other permission bits (for example
+        0600); anything else is refused, naming FAULTLAB_CONTROL_TOKEN.
         """
         if self.faultlab_control_token:
             return self.faultlab_control_token
@@ -247,9 +250,24 @@ class Settings:
             except FileExistsError:
                 if path.is_symlink():
                     raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
-                token = path.read_text().strip()
+                token = _read_private_capability(path)
                 if len(token) < 32:
                     raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
             return token
         finally:
             candidate.unlink(missing_ok=True)
+
+
+def _read_private_capability(path: Path) -> str:
+    """Read an existing control capability only if no other local user could have planted or read it."""
+    import stat
+    try:
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0) | getattr(os, 'O_NONBLOCK', 0))
+    except OSError:
+        raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',)) from None
+    with os.fdopen(descriptor, 'r') as file:
+        info = os.fstat(file.fileno())
+        foreign_owner = hasattr(os, 'getuid') and info.st_uid != os.getuid()
+        if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) & 0o077 or foreign_owner:
+            raise ConfigurationError(('FAULTLAB_CONTROL_TOKEN',))
+        return file.read().strip()

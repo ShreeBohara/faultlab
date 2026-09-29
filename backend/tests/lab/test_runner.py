@@ -21,7 +21,7 @@ class HonestFixtureProvider:
 
 @pytest.mark.anyio
 async def test_fresh_actor_report_scored_unchanged_and_worlds_isolated(tmp_path):
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade and confirm',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
@@ -37,7 +37,7 @@ async def test_fresh_actor_report_scored_unchanged_and_worlds_isolated(tmp_path)
 async def test_provider_outage_is_lab_error_not_learning_failure(tmp_path):
     class Outage:
         async def complete(self,*args,**kwargs): raise RuntimeProviderError('outage')
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade and confirm',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
@@ -50,7 +50,7 @@ async def test_provider_model_mismatch_is_lab_error_before_tool_dispatch(tmp_pat
     class WrongModel:
         async def complete(self,*args,**kwargs):
             return RuntimeGeneration(canonical_json({'kind':'tool','tool':'update_order','arguments':{'desired_shipping':'express'}}),'different-model',input_tokens=10,output_tokens=5,cost_usd=.01)
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
@@ -65,7 +65,7 @@ async def test_empty_provider_response_retains_usage_and_machine_safe_failure(tm
     class EmptyResponse:
         async def complete(self,*args,**kwargs):
             raise RuntimeProviderError('PRIVATE RESPONSE MUST NOT BE STORED',code='EMPTY_FINAL_RESPONSE',error_class='ValueError',finish_reason='length',generation=RuntimeGeneration('','openai/gpt-oss-120b',input_tokens=123,output_tokens=2000))
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))

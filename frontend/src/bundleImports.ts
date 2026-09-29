@@ -1,6 +1,7 @@
 import { ApiError, object, request, type ConfigStatus } from './api'
 import type { EpisodeBudget, FaultSpec, RegressionExecution, TrialResult } from './generated/contracts'
 import { validateContract, validateList } from './generated/validate'
+import { taskTextProblem } from './taskText'
 
 export const MAX_IMPORT_BYTES = 24 * 1024 * 1024
 export type ImportTarget = { agent_registration_id: string; configuration_hash: string; model: string; agent: string }
@@ -68,7 +69,8 @@ export function validateImport(value: unknown, expectedId?: string): ImportedBun
   return value as ImportedBundle
 }
 function validTask(value: unknown): value is ExecutionTask {
-  return object(value) && typeof value.task_text === 'string' && value.task_text.trim().length > 0 && value.task_text.length <= 2000
+  // The backend's rule, counted in the same unit (code points) with the same visibility test.
+  return object(value) && taskTextProblem(value.task_text) === null
     && typeof value.order_id === 'string' && value.order_id.length <= 128 && ID.test(value.order_id) && ['bundled', 'default'].includes(String(value.origin))
 }
 function validCharges(value: unknown): value is OwnerCharges {

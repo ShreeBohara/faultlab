@@ -10,7 +10,9 @@ from hashlib import sha256
 import json
 from typing import Annotated, Literal, Union
 from uuid import uuid4
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, StringConstraints, field_validator, model_validator
+
+from .task_text import TASK_TEXT_MAX_CHARACTERS, require_sendable_task_text
 
 VERSION = 'faultlab/v1'
 SCOPE = 'orders.upgrade_then_confirm/v1'
@@ -20,6 +22,11 @@ CAMPAIGN_TOKEN_LIMIT = 6000 * (MODEL_INPUT_TOKEN_LIMIT + MODEL_OUTPUT_TOKEN_LIMI
 Id = Annotated[str, StringConstraints(min_length=1, max_length=128, pattern=r'^[A-Za-z0-9][A-Za-z0-9_.:-]*$')]
 Digest = Annotated[str, StringConstraints(pattern=r'^[a-f0-9]{64}$')]
 Text = Annotated[str, StringConstraints(max_length=600)]
+# A task instruction an entry point will send to an agent: at most 2000 Unicode code
+# points and at least one visible character (see task_text.py). Stored records keep
+# their original, looser field types so earlier saved data stays readable.
+SendableTaskText = Annotated[str, Field(min_length=1, max_length=TASK_TEXT_MAX_CHARACTERS),
+                             AfterValidator(require_sendable_task_text)]
 Service = Literal['orders', 'notifications']
 Tool = Literal['get_order', 'update_order', 'get_operation_status', 'send_confirmation']
 Status = Literal['PENDING', 'SUCCEEDED', 'FAILED', 'UNKNOWN']
@@ -736,7 +743,7 @@ class SearchComparison(Record):
 
 
 class CampaignRequest(StrictModel):
-    task_text: str = Field(min_length=1,max_length=2000)
+    task_text: SendableTaskText
     order_id: Id
     mode: Literal['baseline','learn','compare']
     config_profile_id: Id = 'offline-v1'

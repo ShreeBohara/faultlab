@@ -65,7 +65,7 @@ class StudyRemoteDouble(RemoteTraceDouble):
 @pytest.mark.anyio
 async def test_fixed_36_fresh_trials_real_runner_and_isolated_evidence(tmp_path):
     c=LabCoordinator(settings(tmp_path)); campaign=c.create(CampaignRequest(task_text='Upgrade and confirm',order_id='order-baseline',mode='baseline',config_profile_id='live-v1'))
-    simulator=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    simulator=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=simulator),base_url='http://127.0.0.1:8001')
     provider=BaselineFixtureProvider(); remote=StudyRemoteDouble(); outbox=TelemetryOutbox(c.store); trace=TraceRecorder(remote,outbox)
     c.runner=EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),provider,trace=trace)

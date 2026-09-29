@@ -61,7 +61,7 @@ class RemoteTraceDouble:
 async def test_connected_trace_double_exact_readback_and_no_reexecution(tmp_path):
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     remote=RemoteTraceDouble(); trace=TraceRecorder(remote,TelemetryOutbox(c.store))
     runner=EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),HonestFixtureProvider(),trace=trace)
@@ -95,7 +95,7 @@ async def test_registered_regression_actor_has_one_root_and_verified_missing_rep
     campaign=campaign.model_copy(update={'configuration_hash':registration.configuration_hash})
     provider=PollingProvider(); actor=registry.reviewed_actor(registration.registration_id,provider,campaign.model)
     remote=RemoteTraceDouble(); trace=TraceRecorder(remote,TelemetryOutbox(c.store))
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001') as client:
         runner=EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),provider,trace=trace)
         trial=await runner.run(campaign,FaultSpec(seed=1,primitives=[]),c.policies.baseline(),purpose='reproduction',study_id='execution-test',evidence_context_id='execution-test',agent_registration_id=registration.registration_id,actor=actor)
@@ -128,7 +128,7 @@ async def test_missing_actor_report_trace_and_verified_lifecycle(tmp_path, remot
             return RuntimeGeneration('{}', 'openai/gpt-oss-120b', input_tokens=10, output_tokens=1)
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001') as client:
         remote=RemoteTraceDouble(); trace=TraceRecorder(remote,TelemetryOutbox(c.store))
         runner=EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),MissingReport(),trace=trace)
@@ -178,7 +178,7 @@ async def test_episode_deadline_is_not_external_interruption(tmp_path, monkeypat
             await asyncio.Event().wait()
     c=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab'),wandb_model='openai/gpt-oss-120b'))
     campaign=c.create(CampaignRequest(task_text='Upgrade',order_id='order-1',mode='baseline',config_profile_id='live-v1'))
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001') as client:
         remote=RemoteTraceDouble(); trace=TraceRecorder(remote,TelemetryOutbox(c.store))
         runner=EpisodeRunner(c.store,WorldClient('http://127.0.0.1:8001','test',client=client),PendingProvider(),trace=trace)

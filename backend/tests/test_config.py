@@ -1,6 +1,7 @@
 """Exercise configuration with temporary files, never the real root .env."""
 
 from dataclasses import fields
+import os
 from pathlib import Path
 
 import pytest
@@ -98,6 +99,46 @@ def test_local_capability_survives_restart_without_env_edits(tmp_path):
     assert settings.local_control_token() == token
     assert (tmp_path / 'control-capability').stat().st_mode & 0o077 == 0
     assert not (tmp_path / '.env').exists()
+
+
+@pytest.mark.parametrize('mode', [0o644, 0o640, 0o604, 0o660, 0o666])
+def test_existing_capability_readable_by_others_is_refused(tmp_path, mode):
+    # Review finding (INFO): a planted capability with group/other access was accepted.
+    path = tmp_path / 'control-capability'
+    path.write_text('p' * 43)
+    path.chmod(mode)
+    with pytest.raises(ConfigurationError) as error:
+        Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
+    assert error.value.missing_fields == ('FAULTLAB_CONTROL_TOKEN',)
+
+
+@pytest.mark.parametrize('mode', [0o600, 0o400])
+def test_existing_private_capability_is_reused(tmp_path, mode):
+    path = tmp_path / 'control-capability'
+    path.write_text('q' * 43)
+    path.chmod(mode)
+    assert Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token() == 'q' * 43
+
+
+def test_existing_capability_owned_by_another_user_is_refused(tmp_path, monkeypatch):
+    path = tmp_path / 'control-capability'
+    path.write_text('r' * 43)
+    path.chmod(0o600)
+    monkeypatch.setattr('os.getuid', lambda: path.stat().st_uid + 1)
+    with pytest.raises(ConfigurationError):
+        Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
+
+
+def test_existing_capability_that_is_not_a_regular_file_is_refused(tmp_path):
+    os.mkfifo(tmp_path / 'control-capability', 0o600)  # would block a plain read
+    with pytest.raises(ConfigurationError):
+        Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
+    (tmp_path / 'control-capability').unlink()
+    (tmp_path / 'target').write_text('s' * 43)
+    (tmp_path / 'target').chmod(0o600)
+    (tmp_path / 'control-capability').symlink_to(tmp_path / 'target')
+    with pytest.raises(ConfigurationError):
+        Settings(faultlab_artifact_dir=str(tmp_path)).local_control_token()
 
 
 def test_live_defaults_deny_dispatch():

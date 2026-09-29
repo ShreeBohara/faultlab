@@ -44,7 +44,7 @@ async def setup(tmp_path, monkeypatch, mode, behavior='timely', arm='B0', decora
             super().__init__(**kwargs)
             self.caps=self.caps.model_copy(update={'wall_seconds':.1})
     monkeypatch.setattr('app.lab.runner.EpisodeMeter',ShortMeter)
-    sim=create_app(database_dir=tmp_path/'worlds',control_token='test')
+    sim=create_app(database_dir=tmp_path/'worlds',control_token='test',settings=Settings())
     client=httpx.AsyncClient(transport=httpx.ASGITransport(app=sim),base_url='http://127.0.0.1:8001')
     coordinator=LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path/'lab')))
     campaign=coordinator.create(CampaignRequest(task_text='Upgrade and confirm',order_id='order-1',mode='baseline'))

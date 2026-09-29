@@ -55,7 +55,7 @@ async def test_citations_are_bound_to_the_model_request_before_a_real_report_hoo
                 emitted.append(output['report'])
             return RuntimeGeneration(canonical_json(output), 'openai/gpt-oss-120b')
 
-    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='test')
+    simulator = create_app(database_dir=tmp_path / 'worlds', control_token='test', settings=Settings())
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=simulator),
                                base_url='http://127.0.0.1:8001')
     coordinator = LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / 'lab'),

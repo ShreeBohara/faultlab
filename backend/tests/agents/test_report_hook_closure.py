@@ -200,7 +200,7 @@ async def test_report_finalization_never_swallows_stop_or_cancellation(tmp_path,
 async def test_saved_development_failure_finishes_original_report_in_a_fresh_world(tmp_path):
     """Captured policy/answers, real broker/referee/world, no provider generation."""
     fixture = json.loads((Path(__file__).parents[1] / 'fixtures/report_hook_closed_business.json').read_text())
-    sim = create_app(database_dir=tmp_path / 'worlds', control_token='test')
+    sim = create_app(database_dir=tmp_path / 'worlds', control_token='test', settings=Settings())
     client = httpx.AsyncClient(transport=httpx.ASGITransport(app=sim), base_url='http://127.0.0.1:8001')
     coordinator = LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / 'lab'), wandb_model='openai/gpt-oss-120b'))
     campaign = coordinator.create(CampaignRequest(task_text='Upgrade and confirm', order_id='order-1', mode='baseline', config_profile_id='live-v1'))

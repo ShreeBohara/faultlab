@@ -10,3 +10,12 @@ import os as _os
 # helper) would otherwise enable reporting. Every backend process imports this package
 # before any Weave/W&B module, and child processes inherit the value.
 _os.environ['WANDB_ERROR_REPORTING'] = 'false'
+
+# Defence in depth for credentials (September 28 review): python-dotenv's documented switch
+# makes every implicit load_dotenv() in this process, and in child processes that inherit
+# the environment, a no-op. FaultLab reads its settings explicitly with dotenv_values()
+# (Settings.from_env), which this switch does not affect, and never writes .env values into
+# os.environ; a third-party load_dotenv() (smolagents calls one on first import) would copy
+# the project's .env credentials there. The native adapter also guards its own import
+# (integrations.external_agent._import_smolagents). An explicit operator value is kept.
+_os.environ.setdefault('PYTHON_DOTENV_DISABLED', '1')

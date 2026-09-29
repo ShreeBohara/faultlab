@@ -8,8 +8,9 @@ def intent():
 
 @pytest.fixture
 def make_world(tmp_path,intent):
+    from app.config import Settings
     from app.simulator.main import create_app
-    client=TestClient(create_app(database_dir=tmp_path,control_token='test-control'))
+    client=TestClient(create_app(database_dir=tmp_path,control_token='test-control',settings=Settings()))
     def create(primitives=(), fixture_id='standard-v1'):
         response=client.post('/control/worlds',headers={'X-FaultLab-Control':'test-control'},json={'episode_id':'episode-1','intent':intent.model_dump(mode='json'),'fault_spec':{'seed':1,'primitives':list(primitives)},'fixture_id':fixture_id})
         assert response.status_code==201,response.text
