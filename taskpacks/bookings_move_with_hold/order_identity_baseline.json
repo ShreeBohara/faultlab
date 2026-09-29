@@ -1,0 +1,25 @@
+{
+ "schema_version": "faultlab-pack-order-guard-baseline/v1",
+ "recorded_at": "2026-09-29T08:05:53Z",
+ "how": "scripts/experiments/gate_freeze.py run read-only (the two sealed audit files left out, as the September 29 verifier did) before any taskpacks/ file existed. The five order identities equal the latest working-tree freeze in artifacts at that time.",
+ "before_run_file": "artifacts/product-taskpack-2026-09-29/phase1/gate-freeze-before.json",
+ "latest_freeze_at_start": "artifacts/product-retry-2026-09-29/verify/gate_freeze/current.json",
+ "order_identities": {
+  "service_hash": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3",
+  "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+  "interpreter_hash": "6da0714adef40c0268ce65c1d9b1d4a17f829ff04b8dbc6a7059f24f03e6622a",
+  "dependency_lock_hash": "dc19e8608e601200380593bcfef7d5bd1cca2546b2252370403734deb5a902fb"
+ },
+ "informational_at_start": {
+  "actor_prompt_hash": "12eabe7f41028c05e37d4143f5208843a9414bd14bcb0deea600e3a5e7d9f7b2",
+  "adapter_hash": "0cd810b7ffc7e92205587d3d96c3a8c189eba4a6974e39175e54e611296e7d4b",
+  "algorithm_hash": "eea45d1d92ecd07cdaa79d5f95f6ff3cb463a1ed90dd9a598e510b265de15c97",
+  "runtime_hash": "a8a32234a45a9a1f047c605df84c73f1722369c038dfab8b98377e7e88cf6a20",
+  "source_hash": "e040c4cf4705a646e450a5479687934f306f97ecb157041442ee0183268c0e1b",
+  "tree_lab": "76f6702b51978fa2fa6a7da7685492a608aa2e5382cf100695c36bdc8b06df63",
+  "tree_referee": "e3f3f9a3fd346b444dd78ae724485a54d13f078f39e5162bf38bae9d39b06bba",
+  "tree_telemetry": "f58806b7da3b3302edc0b1cbaf9cbc6dabd4b63ab3935263c711f22c5400a26b"
+ },
+ "note": "algorithm_hash, runtime_hash, source_hash and tree_lab already differed from the latest freeze at phase start: the discovery v3 workflow is editing backend/ now. They are informational here, not order identities."
+}

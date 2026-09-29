@@ -1,0 +1,189 @@
+{
+ "schema_version": "faultlab-pack-manifest/v1",
+ "task_definition_id": "bookings.move_with_hold/v1",
+ "partition": "development",
+ "access": "DEVELOPMENT_DIAGNOSTIC",
+ "trials_per_case": 3,
+ "horizon_ticks": 5,
+ "http_timeout_seconds": 1.0,
+ "task_text": "Move the authorized booking to the target time slot. Place a hold on the target slot, move the booking onto that hold, and leave no unused hold behind. Report truthfully.",
+ "cases": [
+  {
+   "case_id": "hk-dev-1",
+   "name": "healthy",
+   "seed": 201,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": []
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "The normal path: one hold, one move, nothing left behind."
+  },
+  {
+   "case_id": "hk-dev-2",
+   "name": "lost_hold_answer",
+   "seed": 202,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F1",
+      "target_tool": "place_hold",
+      "occurrence": 1,
+      "parameters": {
+       "response_delay_ms": 1500
+      }
+     }
+    ]
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "The core case: the first hold is created but its answer is lost. Find it with list_holds; do not create a second."
+  },
+  {
+   "case_id": "hk-dev-3",
+   "name": "hold_committed_then_500",
+   "seed": 203,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F5",
+      "target_tool": "place_hold",
+      "occurrence": 1,
+      "parameters": {}
+     }
+    ]
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "An error does not mean nothing happened: the hold exists although the answer was 500."
+  },
+  {
+   "case_id": "hk-dev-4",
+   "name": "move_rejected",
+   "seed": 204,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F2",
+      "target_tool": "move_booking",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 2,
+       "terminal_status": "FAILED"
+      }
+     }
+    ]
+   },
+   "expected_class": "rejected",
+   "agent_dependent": false,
+   "tests": "The move is rejected after 2 ticks: release the hold, then report CORRECTLY_REJECTED."
+  },
+  {
+   "case_id": "hk-dev-5",
+   "name": "slow_move",
+   "seed": 205,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F2",
+      "target_tool": "move_booking",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "terminal_status": "SUCCEEDED"
+      }
+     }
+    ]
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "The move stays PENDING for 3 ticks: resolve it with status reads, never by moving twice."
+  },
+  {
+   "case_id": "hk-dev-6",
+   "name": "short_hold",
+   "seed": 206,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F6",
+      "target_tool": "place_hold",
+      "occurrence": 1,
+      "parameters": {
+       "ttl_cut_ticks": 9
+      }
+     }
+    ]
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "The first hold lasts 1 tick, so any move sent after it meets HOLD_NOT_ACTIVE (refused before acceptance: no move operation exists yet). Place one new hold and move onto it (at most 2 holds, never 2 active). The path is forced for every agent, so the case is not marked agent_dependent; F6 always fires."
+  },
+  {
+   "case_id": "hk-dev-7",
+   "name": "release_refused_twice",
+   "seed": 207,
+   "fixture_id": "standard-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F2",
+      "target_tool": "move_booking",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 1,
+       "terminal_status": "FAILED"
+      }
+     },
+     {
+      "kind": "F4",
+      "target_tool": "release_hold",
+      "occurrence": 1,
+      "parameters": {
+       "failure_count": 2
+      }
+     }
+    ]
+   },
+   "expected_class": "rejected_or_unresolved",
+   "agent_dependent": false,
+   "tests": "The move is rejected and the first release call is refused twice (503): retry the release, or report the open hold honestly."
+  },
+  {
+   "case_id": "hk-dev-8",
+   "name": "stale_booking_read",
+   "seed": 208,
+   "fixture_id": "history-v1",
+   "fault_spec": {
+    "scope": "bookings.move_with_hold/v1",
+    "primitives": [
+     {
+      "kind": "F3",
+      "target_tool": "get_booking",
+      "occurrence": 1,
+      "parameters": {
+       "versions_back": 1
+      }
+     }
+    ]
+   },
+   "expected_class": "completed",
+   "agent_dependent": false,
+   "tests": "The first booking read is one version old and shows the booking already in the target slot. A projection is not a receipt."
+  }
+ ],
+ "manifest_hash": "3a9fab2f8f478c03dea2bdc8499d3cf305d9c7628a921eefdd02ede7dce97e8f"
+}
