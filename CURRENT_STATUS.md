@@ -10,7 +10,7 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run;
-current code is **`ac7a12d2…`** (native adapter v2 and its review fixes, below; $0, offline only, not yet committed). Nothing pushed. Carried conservative total **$887.39**
+current code is **`ac7a12d2…`** (native adapter v2 and its review fixes, below; $0, offline only; committed locally as `c9db705`). Nothing pushed. Carried conservative total **$887.39**
 (ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
 
 | run | result | doc |
@@ -39,7 +39,7 @@ native report tick; dotenv credential guard; offline-test network silence.
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
 **Current runtime: `ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090`** (algorithm
-`7afabd51…`): native adapter v2 and its review fixes, not yet committed (next paragraph). The runtime before it,
+`7afabd51…`): native adapter v2 and its review fixes, committed locally as `c9db705` on `backup/part2-2026-09-22` (next paragraph); independent verification READY_WITH_NOTES (`artifacts/product-native-v2-2026-09-29/verify/REPORT.md`): backend 2,824 passed / 180 skipped / 0 failed, frontend 334, build passed, browser 17 + 1 opt-in skip. The runtime before it,
 `5583dcad…` (algorithm `5c95f2a9…`), is committed locally as `94b130e` on backup branch `backup/part2-2026-09-22` (previous checkpoint
 `af5a3fb`, runtime `08e4c20d…`); simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…`
 unchanged, so checkpoint bundles stay rerunnable. **Every agent must be registered again under `ac7a12d2`
