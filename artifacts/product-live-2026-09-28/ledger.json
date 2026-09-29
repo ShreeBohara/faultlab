@@ -33,8 +33,17 @@
       "charged_rounded_up": 1.46,
       "token_priced_estimate": 0.24,
       "carried_after": 861.6
+    },
+    {
+      "stage": "native original-loop live learn (2 C5 sources reproduced/reduced/diagnosed INCONCLUSIVE; NO_CHANGE)",
+      "campaign": "campaign-7ee35abedd204d2895b180bbd75e66dc",
+      "calls": 346,
+      "charged_exact": 7.5208,
+      "charged_rounded_up": 7.53,
+      "token_priced_estimate": 0.95,
+      "carried_after": 869.13
     }
   ],
-  "carried_total": 861.6,
-  "updated_at_utc": "2026-09-29T07:07:52+00:00"
+  "carried_total": 869.13,
+  "updated_at_utc": "2026-09-29T07:19:07+00:00"
 }

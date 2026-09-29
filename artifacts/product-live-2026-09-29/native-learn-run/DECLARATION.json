@@ -1,0 +1,55 @@
+{
+  "title": "Original-loop live Learn campaign against the native smolagents agent (first live full traversal attempt)",
+  "declared_at_utc": "2026-09-29T07:08:49+00:00",
+  "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner (owner: 'go ahead', funds added 2026-09-28)",
+  "campaign_id": "campaign-7ee35abedd204d2895b180bbd75e66dc",
+  "agent_registration_id": "smolagents-1.26.0-819f4d1fa0add89b",
+  "agent_inputs": {
+    "prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+    "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+  },
+  "identities": {
+    "algorithm_hash": "6d6433df6e0b86c6d65f33c09bf481d83783fde9f0882b4252db2d196d01fd84",
+    "runtime_hash": "c9af0a47013a1140ed9ccce80a26e6912de1f86e89cfd73ae9c1881cf8f49775",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+    "plan_hash": "fd776ddf75b519675f9c62ffaac547eebed78ed706eb8d0ca1194fd98d676b14",
+    "configuration_hash": "819f4d1fa0add89b6d04c5902f4235a5984f816aa767d3fa37fee7572cd49211"
+  },
+  "source_commit": "291324d / 9970718 (backup/part2-2026-09-22); runtime c9af0a47 includes the bounded transport retry",
+  "plan_md_sha256": "e22d58ea8cc909deede58f041121a5006340da80743b72feaa7ad6e4640e83fa",
+  "review_md_sha256": "e0dd74ce476e303cefcbb82e4806ca055ccf729969700f511782196f006fb4ba",
+  "discovery_protocol": "faultlab-discovery/v1",
+  "transport_retry": "faultlab-transport-retry/v1",
+  "review_blockers_resolution": {
+    "B1": "retry work finished, reviewed, committed; runtime c9af0a47; no agent editing",
+    "B2": "numbers re-derived for the retry runtime (below)",
+    "B3": "watcher sets past_discovery from /experiments counterexamples, not polled states; selections guard applies at all times",
+    "B4": "P0 uses pgrep -fl 'uvicorn|vite|pytest|app\\.local'",
+    "B5": "ERROR path acknowledged; Explorer/Mechanic/native now have one bounded retry"
+  },
+  "bounds": {
+    "calls_per_native_episode_max": 16,
+    "v4_requests_max": 128,
+    "discovery_requests_max": 144,
+    "discovery_conservative_max_dollars": 3.47,
+    "campaign_requests_max": 4936,
+    "campaign_conservative_ceiling_dollars": 106.87,
+    "expected_conservative_dollars": 8,
+    "expected_token_priced_dollars": 1.1
+  },
+  "expected_outcome": "NO_CHANGE most likely (C5 no-report sources are not repairable by hooks; a C3 source is blockable but the candidate must then pass ~33 native runs with zero failures). ACCEPTED estimated well below 1%.",
+  "meanings": "PLAN.md section 12 as reviewed: ACCEPTED would be the project's first and is conditional on the post-run integrity checks (drift, world integrity, Weave); it would not show transfer, held-out safety or generality. NO_CHANGE/REJECTED are honest outcomes, not failures of the product.",
+  "stop_rules": "Product ends itself on NO_CHANGE/COMPLETED/ERROR/STOPPED. Watcher stops on: more than 8 discovery selection records at any time; before any counterexample exists, used_calls > 144 or charged > 3.47 dollars; disk < 2 GiB; 6 hours. Operator stops on world-integrity failure, two consecutive LAB_ERROR, auth/config/frozen-model failure, source drift. Never restart, replace or reroll; if a source appears the loop continues within the ledger ceiling.",
+  "drift_rule": "New native episodes record the real report tick (runtime c9af0a47); check_clock_drift.py must exit 0; check_clock_drift_native.py applies the declared tick-0 rule to any old-format rows.",
+  "pre_checks": {
+    "P0": "no other FaultLab processes (correct pgrep pattern) and no agent editing",
+    "prices": "checked 2026-09-29T03:24Z (same UTC day)",
+    "tests": "full backend 2,651 passed / 180 skipped / 0 failed on c9af0a47",
+    "data_dir": "new",
+    "power": "AC",
+    "disk": "21 GiB free",
+    "readiness": "ready, provider_calls 0",
+    "ledger_before_dollars": 861.6
+  }
+}
