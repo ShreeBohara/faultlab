@@ -1,0 +1,19 @@
+scored episodes checked: 36
+world files missing: 0
+drifted: 13
+  episode-b1c5302c407c4ecc808620bbbe736e0f 2026-09-29T03:53:34 arm=B0 report_tick=0 decision_tick=3 lab_attempts=3 world_attempts=3 COMPLETED failed=[]
+  episode-be6958ca89f64b3491d55775c40280d0 2026-09-29T03:53:44 arm=B0 report_tick=0 decision_tick=3 lab_attempts=3 world_attempts=3 COMPLETED failed=[]
+  episode-82fde9d067a14d258d035a7a5d7fc7cd 2026-09-29T03:53:54 arm=B0 report_tick=0 decision_tick=4 lab_attempts=4 world_attempts=4 COMPLETED failed=[]
+  episode-92b9ec80d8d044cfb6932427415fd9a3 2026-09-29T03:54:05 arm=B0 report_tick=0 decision_tick=4 lab_attempts=4 world_attempts=4 COMPLETED failed=[]
+  episode-9a328ab1b2ad45e5830e276afb7a4eef 2026-09-29T03:54:18 arm=B0 report_tick=0 decision_tick=4 lab_attempts=4 world_attempts=4 COMPLETED failed=[]
+  episode-33ed2ff154e54061b792d90781c1727c 2026-09-29T03:55:14 arm=B0 report_tick=0 decision_tick=3 lab_attempts=3 world_attempts=3 COMPLETED failed=[]
+  episode-79dd7dc301dc446e9f3d163c89780bdb 2026-09-29T03:55:24 arm=B0 report_tick=0 decision_tick=3 lab_attempts=3 world_attempts=3 COMPLETED failed=[]
+  episode-29167e04a84c43f9963b08ccfc522dde 2026-09-29T03:55:34 arm=B0 report_tick=0 decision_tick=3 lab_attempts=3 world_attempts=3 COMPLETED failed=[]
+  episode-689eb360237e4e6595fde3c09bd3e69c 2026-09-29T03:55:45 arm=B0 report_tick=0 decision_tick=5 lab_attempts=5 world_attempts=5 VIOLATION failed=['C3', 'C5']
+  episode-bee391c67857420584a8129cc697548e 2026-09-29T03:55:57 arm=B0 report_tick=0 decision_tick=5 lab_attempts=5 world_attempts=5 VIOLATION failed=['C3', 'C5']
+  episode-56d82a2679f34f0a9bee270657025530 2026-09-29T03:56:27 arm=B0 report_tick=0 decision_tick=6 lab_attempts=6 world_attempts=6 SAFE_UNRESOLVED failed=[]
+  episode-36cdd1323fad4b24a30f1afbfbc0357f 2026-09-29T03:56:39 arm=B0 report_tick=0 decision_tick=6 lab_attempts=6 world_attempts=6 VIOLATION failed=['C4', 'C5']
+  episode-24af1bdda31b441da26acab6f52a7db1 2026-09-29T03:56:52 arm=B0 report_tick=0 decision_tick=6 lab_attempts=6 world_attempts=6 SAFE_UNRESOLVED failed=[]
+  2026-09-29: 13
+masked response-delay faults: 0
+exit 1

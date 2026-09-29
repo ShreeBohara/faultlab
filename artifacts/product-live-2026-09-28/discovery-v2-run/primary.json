@@ -1,0 +1,179 @@
+{
+  "campaign_id": "campaign-a301846e8722418eaafc71923c6e1819",
+  "valid": true,
+  "problems": [],
+  "primary_fully_fired_slots": 5,
+  "slots_declared": 8,
+  "baseline_c701e850": 4,
+  "slots": [
+    {
+      "slot": 0,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-2c9a16d9fa494d9189bafa774e30048a",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 7
+    },
+    {
+      "slot": 1,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-f930297a6f2444949b883458c13bebb7",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    },
+    {
+      "slot": 2,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-1f389b4899694d3eae25cf54a2a9a445",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    },
+    {
+      "slot": 3,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-97e4a7c6d78b4be88deea1a51ba983a4",
+      "lifecycle": "COMPLETED",
+      "outcome": "COMPLETED",
+      "recipe": [
+        "F4 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 4
+    },
+    {
+      "slot": 4,
+      "requests": 1,
+      "decisions": [
+        "SELECTED"
+      ],
+      "fallback_used": false,
+      "result": "FULLY_FIRED",
+      "fully_fired": true,
+      "episode_id": "episode-5a0433daac444c28ac7763e6823c238a",
+      "lifecycle": "COMPLETED",
+      "outcome": "SAFE_UNRESOLVED",
+      "recipe": [
+        "F2 orders.update_order #1"
+      ],
+      "fired": [
+        true
+      ],
+      "not_fired_reasons": [],
+      "predicted": [
+        "FORCED"
+      ],
+      "actor_requests": 8
+    },
+    {
+      "slot": 5,
+      "requests": 0,
+      "decisions": [],
+      "fallback_used": false,
+      "result": "NOT_REACHED",
+      "fully_fired": false
+    },
+    {
+      "slot": 6,
+      "requests": 0,
+      "decisions": [],
+      "fallback_used": false,
+      "result": "NOT_REACHED",
+      "fully_fired": false
+    },
+    {
+      "slot": 7,
+      "requests": 0,
+      "decisions": [],
+      "fallback_used": false,
+      "result": "NOT_REACHED",
+      "fully_fired": false
+    }
+  ],
+  "secondary": {
+    "explorer_requests": 5,
+    "discovery_episodes": 5,
+    "decisions": {
+      "SELECTED": 5
+    },
+    "refused_picks": 0,
+    "refused_not_forced_or_impossible": 0,
+    "refused_duplicate": 0,
+    "refusal_reason_codes": {},
+    "replans": 0,
+    "replans_that_ran": 0,
+    "slots_without_episode": 3,
+    "fallback_slots": 0,
+    "forced_faults_fired": "5 of 5",
+    "outcomes": {
+      "COMPLETED": 2,
+      "SAFE_UNRESOLVED": 3
+    },
+    "distinct_fault_targets_fully_fired": [
+      "F2 orders.update_order",
+      "F4 orders.update_order"
+    ],
+    "multi_fault_or_deeper_fully_fired": 0
+  }
+}

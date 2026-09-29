@@ -1,0 +1,58 @@
+{
+  "title": "Native smolagents baseline probe (product baseline study, planned native campaign)",
+  "declared_at_utc": "2026-09-29T03:52:55+00:00",
+  "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner (owner: 'go ahead', budget topped up, 2026-09-28)",
+  "plan_file": "artifacts/product-live-2026-09-28/plans/native/PLAN.md",
+  "plan_file_sha256": "6521d45e417f7bf058399e7d759aa2d491679c6aa8ed2bf0be14071d020064c2",
+  "identity": {
+    "campaign_id": "campaign-e5b0165883ee4dcfab262e1c8f3d595b",
+    "agent_registration_id": "smolagents-1.26.0-d72de2e095c6ce4f",
+    "configuration_hash": "d72de2e095c6ce4ff9a08953f7764967465b11c4624c72e196709bce81f3358d",
+    "runtime_hash": "c0a8aad71dfebe4407e159f7459edcef37a7d14ac6bb3c736990128e180ccaac",
+    "algorithm_hash": "e5dce72cfc7e58699265fd52a3ebd8053e73438b984483bd76a6f938e1753aee",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+    "scorer_same_as_phase1": true,
+    "prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+    "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+    "plan_hash": "2d8506926b08061c6c019e4d23e9eb099a25b85b5c22ed4f4c2d64677840aba8",
+    "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+    "source_commit": "e7340c9 (backup/part2-2026-09-22; runtime code identical to b0a4b8a)",
+    "data_store": "/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3"
+  },
+  "money": {
+    "max_model_requests": 144,
+    "per_request_conservative": 0.0209,
+    "conservative_bound": 3.0096,
+    "expected_token_priced": 0.25,
+    "prices_checked": "artifacts/product-live-2026-09-28/price-check-2026-09-28.json (V3.1 0.55/1.65, V4-Pro-0813 1.31/3.96 per million)",
+    "caps": {
+      "model_calls": 6000,
+      "tokens": 204000000,
+      "dollars": 100
+    },
+    "ledger_before": 856.96,
+    "ledger_after_at_most": 859.97
+  },
+  "rules": {
+    "nominal_case": "dev-1 in the plan is nominal only (gap G1): Start is never pressed; the baseline study runs all six development cases x 3 x 2 arms.",
+    "stop_rules": "PLAN.md section 7: stop at once on any LAB_ERROR/INTERRUPTED, any B1 deviation, INCOMPLETE, >144 calls, 45 min, disk <2 GiB or sleep/network loss; never re-run, never queue a second study, never change settings/source, never open the dashboard.",
+    "reading_rules": "PLAN.md section 9 (valid trial definition; main readouts dev-5 C3 of 3 and dev-3 no-report of 3; 3 trials is a screen, not a rate)",
+    "drift_rule": "PLAN.md section 10 / B3: a native B0 episode counts as not drifted only if report tick is 0, lab/world attempt counts match and private_world_integrity is VALID; any B1 drift is a FaultLab error.",
+    "what_results_mean": "PLAN.md section 9-10 and the 'what each outcome means' notes: 3/3 on dev-5 C3 makes a native learn campaign worth declaring (hooks can block C3 but cannot write reports); both behaviours gone means the native agent is now as safe as the reference agent."
+  },
+  "pre_checks": {
+    "P0": "no FaultLab services or other paid runs (an unrelated vite on :3064 from another project)",
+    "P1": "test_native_baseline_study_planned.py 4 passed (runtime c0a8aad7)",
+    "P2": "full backend 2567 passed / 180 skipped / 0 failed on c0a8aad7",
+    "P3": "AC power, low power mode 0, caffeinate -dims wraps the services",
+    "P4": "Time Machine not running; owner confirmed updates done",
+    "P5": "20 GiB free",
+    "P6": "data dir did not exist before start",
+    "P7": "prices re-checked 2026-09-29T03:24Z",
+    "P8": "store path = native-probe/lab.sqlite3; live_enabled true; models as exported",
+    "P9": "ready true, provider_calls 0",
+    "P10": "native registration smolagents-1.26.0-d72de2e095c6ce4f registered; prompt 2251542869cf..., source 2867b3fb...",
+    "P11": "nothing on :5173",
+    "P12": "loop latency p99 6.1 ms (660 requests, 0 stalls)"
+  }
+}

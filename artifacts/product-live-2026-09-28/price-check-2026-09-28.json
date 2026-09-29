@@ -1,0 +1,4 @@
+{"checked_at_utc": "2026-09-29T03:24:55Z", "source": "https://wandb.ai/site/pricing/inference/", "checked_by": "Claude (PM) via WebFetch",
+ "deepseek-ai/DeepSeek-V3.1": {"input_per_million": 0.55, "output_per_million": 1.65},
+ "deepseek-ai/DeepSeek-V4-Pro-0813": {"input_per_million": 1.31, "output_per_million": 3.96},
+ "note": "Unchanged from the 2026-09-27 check. The page also lists a separate 'DeepSeek V4-Pro' at 1.15/2.55; FaultLab uses V4-Pro-0813."}

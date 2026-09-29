@@ -1,0 +1,59 @@
+{
+  "title": "Discovery protocol v2 live Learn run (reference V3.1 Actor, V4-Pro Explorer/Mechanic)",
+  "declared_at_utc": "2026-09-29T04:00:11+00:00",
+  "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+  "campaign_id": "campaign-a301846e8722418eaafc71923c6e1819",
+  "agent_registration_id": "orders-v1-2933cfa94ec09858",
+  "identities": {
+    "algorithm_hash": "e5dce72cfc7e58699265fd52a3ebd8053e73438b984483bd76a6f938e1753aee",
+    "runtime_hash": "c0a8aad71dfebe4407e159f7459edcef37a7d14ac6bb3c736990128e180ccaac",
+    "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+    "plan.plan_hash": "c5c2ab44b5351ea91c50f964996267d453c66520f5e6b13f89762d3fc717d94c"
+  },
+  "plan_discovery_block_equals_run_options": true,
+  "caller": {
+    "adapter_attempts": 2,
+    "agent": "reference",
+    "caller_id": "reference-actor/policy-v0/v2",
+    "client_timeout_seconds": 1.0,
+    "facts": [
+      "This agent has no wait action; the clock advances only when it makes a business call.",
+      "Every HTTP attempt advances the clock 1 tick, including the automatic retry attempt.",
+      "It has at most 7 business calls: turn 8 is reserved for the final report.",
+      "The adapter makes at most 2 attempts per call, retrying after 429/5xx or a 1 s timeout, so a failure_count of 1 is absorbed before the agent sees it.",
+      "While an operation is pending it checks that operation's status once per turn until it finishes.",
+      "On its normal path it does not send a failed write again. If both attempts of a write fail, the status check says UNKNOWN; it then checks status at most 3 times (a failed check counts too) and stops, leaving the task unfinished."
+    ],
+    "http_attempts": 18,
+    "max_business_calls": 7,
+    "polling": "one status check per turn while the operation is pending; at most 3 checks that return UNKNOWN or fail, and no re-send",
+    "resends_failed_writes": false,
+    "ticks": 20,
+    "ticks_per_http_attempt": 1,
+    "unknown_status_checks": 3,
+    "validated_against": "the typical path of deepseek-ai/DeepSeek-V3.1 under policy-v0, not other models: in a read-only back-test of stored completed development episodes, every modelled attempt seen in at least 10 of them was reached in at least 80% (scripts/experiments/check_reachability_caller.py)",
+    "wait_action": false
+  },
+  "plan_md_sha256": "921be1d83abce72357b45fe94ce5e980e7ff16726a760aa985d91573fededd6d",
+  "compute_primary_sha256": "9b5b7ba9df62ebfa65fda8a326fa4760ab7d93fbdd19ece88a4111179febd146",
+  "compute_primary_expected_sha256": "9b5b7ba9df62ebfa65fda8a326fa4760ab7d93fbdd19ece88a4111179febd146",
+  "bounds": {
+    "discovery_requests_max": 144,
+    "discovery_conservative": 3.47,
+    "campaign_requests_max": 4936,
+    "campaign_conservative_max": 105.25,
+    "expected_conservative": 1.64,
+    "expected_token_priced": "0.2-0.6"
+  },
+  "primary": "fully-fired discovery slots out of 8 (c701e850 baseline 4 of 8), computed by compute_primary.py; readings per PLAN.md section 9",
+  "stop_rules": "PLAN.md section 7 (world-integrity failure, two consecutive LAB_ERROR, auth/config/frozen-model failure, discovery accounting anomaly: >144 requests / >.48 / >16 selections / >8 discovery episodes before REPRODUCING, source drift, <2 GiB disk, 6 hours; never restart, never replace, never reroll; if a source appears let the loop continue within 5c)",
+  "pre_checks": {
+    "source": "runtime c0a8aad7, commit e7340c9 (backup branch); no other agent editing",
+    "caller_gate": "PASS, failing_points [] (discovery-v2-run/caller-gate.json)",
+    "prices": "re-checked 2026-09-29T03:24Z",
+    "ports": "free before start",
+    "data_dir": "new",
+    "readiness": "ready, provider_calls 0",
+    "ledger_before": 859.1
+  }
+}
