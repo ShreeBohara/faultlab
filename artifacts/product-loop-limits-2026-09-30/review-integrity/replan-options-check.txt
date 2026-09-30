@@ -1,0 +1,27 @@
+Source validation, per arm (agent calls):
+  B0 episode-b1380110 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 1, 'actor:send_confirmation:notifications': 1, 'actor:get_operation_status:notifications': 1}
+  L episode-370e68d0 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 1}
+  L episode-18db8ac6 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 1}
+  B0 episode-20a02fd2 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 1, 'actor:get_operation_status:notifications': 1, 'actor:send_confirmation:notifications': 1}
+  B0 episode-c0799a83 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 1, 'actor:get_operation_status:notifications': 1, 'actor:send_confirmation:notifications': 1}
+  L episode-3509a815 {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 1}
+Challenge episodes in pair order (pick = pair//3 + 1):
+  pick 1 B0 episode-8ab25718 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1}
+  pick 1 L episode-ac798836 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1, 'actor:get_operation_status:orders': 1, 'actor:get_operation_status:notifications': 1}
+  pick 1 B0 episode-668eb0b7 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1, 'actor:get_operation_status:orders': 1, 'actor:get_operation_status:notifications': 1}
+  pick 1 L episode-db899faf triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1}
+  pick 1 B0 episode-f49b04a7 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1}
+  pick 1 L episode-32b25b33 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 2, 'actor:send_confirmation:notifications': 1}
+  pick 2 B0 episode-92157dce triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 5}
+  pick 2 L episode-f711bc80 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 2, 'actor:get_operation_status:orders': 4}
+  pick 2 B0 episode-833aca4d triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 5}
+  pick 2 L episode-8a806beb triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 2, 'actor:get_operation_status:orders': 4}
+  pick 2 B0 episode-3c4f417d triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:get_operation_status:orders': 5}
+  pick 2 L episode-9552b9c1 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'policy:get_operation_status:orders': 2, 'actor:get_operation_status:orders': 3}
+  pick 3 B0 episode-3945fcc9 NOT-triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1}
+  pick 3 L episode-1517b6c1 NOT-triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1}
+  pick 3 B0 episode-141d0058 NOT-triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1}
+  pick 3 L episode-86968f43 NOT-triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1}
+  pick 3 B0 episode-be13be17 triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1, 'actor:get_operation_status:orders': 2, 'actor:get_operation_status:notifications': 1}
+  pick 3 L episode-d90cc153 NOT-triggered {'actor:get_order:orders': 1, 'actor:update_order:orders': 1, 'actor:send_confirmation:notifications': 1}
+[fixer guard] refused outbound connections: 0; loopback connects: 0

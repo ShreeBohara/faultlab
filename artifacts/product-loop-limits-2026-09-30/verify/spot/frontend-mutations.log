@@ -1,0 +1,11 @@
+TYPECHECK (full, no build-info cache) exit 0 :: no errors
+UNMUTATED PASS :: Test Files  1 passed (1) | Tests  5 passed (5)
+CAUGHT  FORMAT_REPAIR record text back to "not sent" :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  FORMAT_REPAIR badge back to "Search ended, not sent" :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  Badge not capitalised :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  "in full" line shown for an unsent request too :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  A refusal stated twice :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  Setup form speaks about the rule not offered :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  Undeclared challenge rule claims the plan was saved before it :: Tests  1 failed | 4 passed (5) | ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+TOTAL caught 7 of 7; files restored (sha256 checked)
+scratch frontend removed: True

@@ -24,6 +24,8 @@ from app.lab.configuration import frozen_configuration
 from app.lab.dashboard import store_descriptor
 from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK,
     DISCOVERY_V4, HISTORY_PROTOCOLS, REPLAY_PROTOCOLS, declaration as discovery_declaration)
+from app.lab.loop_limits import (CHALLENGE_SELECTION_WITHDRAWN, COMPACTION_TARGET_TOKENS, FORMAT_REPAIR_RESERVE_TOKENS,
+    STAGES as COMPACTION_STAGES, mechanic_context_declaration)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -295,6 +297,44 @@ class EvidenceRetryPlan(EvidenceRetryPlanV1):
 EvidenceRetry = Annotated[Union[EvidenceRetryPlanV1, EvidenceRetryPlan], Field(discriminator='protocol')]
 
 
+class MechanicContextPlan(StrictModel):
+    """The frozen Mechanic request-size rule (app.lab.loop_limits, faultlab-mechanic-context/v2-bounded) of a Learn plan."""
+    protocol: Literal['faultlab-mechanic-context/v2-bounded']
+    applies_to: list[Literal['mechanic_diagnosis', 'mechanic_proposal']] = Field(min_length=2, max_length=2)
+    input_token_limit: Literal[32000]
+    format_repair_reserve_tokens: Literal[4000]
+    compaction_target_tokens: Literal[28000]
+    stages: list[str] = Field(min_length=3, max_length=3)
+    always_kept: list[str] = Field(min_length=1, max_length=6)
+    when_unfit: Literal['END_SOURCE_CANDIDATE_SEARCH']
+    unsent_request_uses_candidate_request: Literal[False]
+    requests_over_limit_sent: Literal[0]
+    rule: str = Field(min_length=1, max_length=1600)
+
+    @model_validator(mode='after')
+    def exact_lists(self):
+        if (self.applies_to != ['mechanic_diagnosis', 'mechanic_proposal'] or self.stages != list(COMPACTION_STAGES)
+                or self.compaction_target_tokens != COMPACTION_TARGET_TOKENS
+                or self.format_repair_reserve_tokens != FORMAT_REPAIR_RESERVE_TOKENS):
+            raise ValueError('Inconsistent Mechanic request-size declaration')
+        return self
+
+
+class ChallengeSelectionPlan(StrictModel):
+    """The challenge-pick rule (app.lab.loop_limits, faultlab-challenge-selection/v2-candidate-reach). WITHDRAWN before any
+    live run: no new plan declares it and a plan that does cannot be created or started (withdrawn_rule_problem); the
+    model stays so such a saved plan still reads and displays."""
+    protocol: Literal['faultlab-challenge-selection/v2-candidate-reach']
+    basis: Literal['candidate_arm_source_validation_agent_calls']
+    caller_counted: Literal['actor']
+    target: Literal['tool_and_service']
+    replans_per_refused_pick: Literal[1]
+    explorer_requests_per_challenge: Literal[8]
+    refused_pick_runs_episodes: Literal[False]
+    challenge_rules_changed: Literal[False]
+    rule: str = Field(min_length=1, max_length=1600)
+
+
 class SavedRunPlan(StrictModel):
     schema_version: Literal['faultlab-run-plan/v1']
     campaign_id: Id
@@ -320,7 +360,20 @@ class SavedRunPlan(StrictModel):
     # Learn only. None: not a Learn plan, or saved before automatic evidence retries were declared
     # (such a campaign keeps manual Retry evidence sync only).
     evidence_retry: EvidenceRetry | None = None
+    # Learn only, every new Learn plan (September 30, after live run v2d). Absent (not null) in every plan saved before
+    # it and in every baseline/compare plan, so those plans keep their exact bytes and today's behaviour.
+    mechanic_context: MechanicContextPlan | None = None
+    # Withdrawn before any live run: no new plan declares it; a plan that does still reads, but cannot start.
+    challenge_selection: ChallengeSelectionPlan | None = None
     plan_hash: Digest
+
+    @model_serializer(mode='wrap')
+    def _omit_absent_loop_limits(self, handler):
+        data = handler(self)
+        for key in ('mechanic_context', 'challenge_selection'):
+            if data.get(key) is None:
+                data.pop(key, None)
+        return data
 
 
 @dataclass(frozen=True)
@@ -459,7 +512,10 @@ def build_run_options(settings, store=None):
                   'search_space': deepcopy(development['development_grammar']), 'selection_limit': caps.discovery_selections,
                   'discovery_protocols': discovery_options(caps),
                   # The model transport retry rule every new Learn plan freezes (rule v2: lab-role backoff).
-                  'transport_retry': transport_retry_declaration_v2(offline_configuration['episode_budget']['actor_calls'])},
+                  'transport_retry': transport_retry_declaration_v2(offline_configuration['episode_budget']['actor_calls']),
+                  # The loop-limit rule every new Learn plan freezes (app.lab.loop_limits). The challenge-pick rule
+                  # (v2-candidate-reach) is withdrawn and not offered.
+                  'mechanic_context': mechanic_context_declaration()},
         'compare': comparison, 'agents': agents,
         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
@@ -596,6 +652,9 @@ def prepare_run_plan(store, settings, request):
     if request.mode == 'learn':
         plan['discovery'] = deepcopy(discovery)
         plan['evidence_retry'] = evidence_retry_declaration()
+        # Only Learn sends Mechanic requests, so only a Learn plan freezes this rule. The challenge-pick rule
+        # (v2-candidate-reach) is withdrawn before any live run (both reviews, HIGH-1) and is not frozen.
+        plan['mechanic_context'] = mechanic_context_declaration()
     # Rule v2 (lab-role backoff) for every new Learn plan: only Learn runs Explorer and Mechanic requests.
     # Baseline and compare plans make agent requests only, so they keep rule v1 exactly as before.
     actor_calls = configuration['episode_budget']['actor_calls']
@@ -638,6 +697,8 @@ def _bindings(store, campaign, plan, *, first_start=False):
         raise StoreConflict('Only a Learn plan declares an automatic evidence retry')
     if (plan.get('transport_retry') or {}).get('protocol') == TRANSPORT_RETRY_PROTOCOL_V2 and campaign.mode != 'learn':
         raise StoreConflict('Only a Learn plan declares lab-role transport retries with backoff')
+    if (plan.get('mechanic_context') is not None or plan.get('challenge_selection') is not None) and campaign.mode != 'learn':
+        raise StoreConflict('Only a Learn plan declares the Mechanic request-size and challenge-pick rules')
     offline = campaign.config_profile_id == 'offline-v1'
     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
@@ -746,6 +807,17 @@ def read_run_plan(store, campaign_id):
     return {'campaign_id': ident, 'status': 'PLANNED', 'plan': checked}
 
 
+def withdrawn_rule_problem(plan):
+    """Why a plan cannot be created or started because it declares a withdrawn rule, or None.
+
+    Checked in validate_run_plan (which creation also runs), never in _bindings: a saved plan that declares the
+    rule must still read and display.
+    """
+    if plan.get('challenge_selection') is not None:
+        return CHALLENGE_SELECTION_WITHDRAWN
+    return None
+
+
 def validate_run_plan(store, settings, campaign):
     """Recheck immutable selection and current target before admitting execution."""
     plan = read_run_plan(store, campaign)['plan']
@@ -772,6 +844,13 @@ def validate_run_plan(store, settings, campaign):
     # (saved before it existed) keeps manual Retry evidence sync only, which is what it declared.
     if plan.get('evidence_retry') is not None and plan['evidence_retry'] != evidence_retry_declaration():
         raise StoreConflict('The installed automatic evidence retry rule differs from the saved plan')
+    # The loop-limit rules: a Learn plan saved before them declares neither and keeps today's behaviour; a declared
+    # Mechanic rule must be exactly the installed one; the withdrawn challenge-pick rule never runs.
+    if plan.get('mechanic_context') is not None and plan['mechanic_context'] != mechanic_context_declaration():
+        raise StoreConflict('The installed Mechanic request-size rule differs from the saved plan')
+    problem = withdrawn_rule_problem(plan)
+    if problem is not None:
+        raise StoreConflict(problem)
     discovery = plan.get('discovery')
     if discovery is not None and discovery.get('explorer_transport_retries_max') != discovery['explorer_requests_max'] * RETRIES_PER_REQUEST:
         raise StoreConflict('The saved discovery plan does not declare the installed Explorer transport retry bound')

@@ -1,0 +1,113 @@
+[
+{
+"selection": "339179d0",
+"reach": null,
+"pick": [
+[
+"F2",
+"update_order",
+"orders"
+],
+[
+"F4",
+"get_operation_status",
+"orders"
+]
+]
+},
+{
+"episode": "930be531",
+"arm": "B0",
+"outcome": "VIOLATION",
+"failed": [
+"C3"
+],
+"scheduled": true,
+"triggered": false,
+"calls": [
+"actor:send_confirmationx1",
+"actor:get_orderx1",
+"actor:update_orderx1"
+]
+},
+{
+"episode": "ab50ec65",
+"arm": "L",
+"outcome": "COMPLETED",
+"failed": [],
+"scheduled": true,
+"triggered": true,
+"calls": [
+"policy:update_orderx1",
+"actor:send_confirmationx1",
+"actor:update_orderx1",
+"policy:get_operation_statusx2",
+"actor:get_orderx1"
+]
+},
+{
+"episode": "73661afe",
+"arm": "B0",
+"outcome": "VIOLATION",
+"failed": [
+"C3"
+],
+"scheduled": true,
+"triggered": false,
+"calls": [
+"actor:send_confirmationx1",
+"actor:get_orderx1",
+"actor:update_orderx1"
+]
+},
+{
+"episode": "7cced2eb",
+"arm": "L",
+"outcome": "COMPLETED",
+"failed": [],
+"scheduled": true,
+"triggered": true,
+"calls": [
+"policy:update_orderx1",
+"actor:update_orderx1",
+"actor:send_confirmationx1",
+"actor:get_orderx1",
+"policy:get_operation_statusx2"
+]
+},
+{
+"episode": "3a6ac443",
+"arm": "B0",
+"outcome": "VIOLATION",
+"failed": [
+"C3"
+],
+"scheduled": true,
+"triggered": false,
+"calls": [
+"actor:send_confirmationx1",
+"actor:update_orderx1",
+"actor:get_orderx1"
+]
+},
+{
+"episode": "ea57e991",
+"arm": "L",
+"outcome": "COMPLETED",
+"failed": [],
+"scheduled": true,
+"triggered": true,
+"calls": [
+"actor:get_orderx1",
+"actor:send_confirmationx1",
+"policy:get_operation_statusx2",
+"policy:update_orderx1",
+"actor:update_orderx1"
+]
+},
+{
+"challenge": "challenge-663e7a2aeb754c68b8238ca7219a093c",
+"status": "INCONCLUSIVE",
+"reason": "Incomplete or untriggered challenge pair"
+}
+]

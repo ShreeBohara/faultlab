@@ -1,0 +1,69 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-30, loop-limits round: builder, two reviews, fixer, verifier).
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, relative to the
+faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-loop-limits-2026-09-30/verify/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and whether
+it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = 3b31b583cc4b8ee379ce13346a941632c2f23bae (as the task said).
+The checked-out branch is main at cbbf957, so `git status` against HEAD shows hundreds of entries, and plain
+`git diff 3b31b58 -- <file>` also misleads (files absent from main's index show as deleted). Commit on top of 3b31b58
+(branch backup/part2-2026-09-22), NOT on cbbf957. Compare with `git show 3b31b58:<file>` or use this list.
+
+COUNTS
+PRODUCT FILES: 26 (modified 16, new 10, deleted 0, mode changes 0). The 10 new files are not git-ignored.
+EVIDENCE FILES: every other line, all under artifacts/product-loop-limits-2026-09-30/ (git-ignored, the whole artifacts/
+folder is: needs `git add -f`): builder/, review-integrity/, review-product/, fixer/ and verify/.
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md,
+  backend/app/agents/explorer.py, backend/app/lab/api.py, backend/app/lab/exports.py, backend/app/lab/learning.py,
+  backend/app/lab/run_plans.py,
+  docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md (a correction note appended; original text unchanged), docs/user-guide.md,
+  frontend/src/components/CampaignPlan.tsx, frontend/src/components/ChallengePanel.tsx,
+  frontend/src/components/DiagnosticPanel.tsx, frontend/src/components/EvidenceScreen.tsx,
+  frontend/src/components/RunSetup.tsx, frontend/src/components/common.tsx, frontend/src/experiments.ts,
+  frontend/src/runPlans.ts
+NEW (not in the tip, not ignored):
+  backend/app/agents/prompts/challenger_candidate_reach_v2.md, backend/app/lab/loop_limits.py,
+  backend/tests/lab/test_loop_limits_challenge_reach.py, backend/tests/lab/test_loop_limits_mechanic_context.py,
+  backend/tests/lab/test_loop_limits_plans.py, docs/PRODUCT_LOOP_LIMITS_2026-09-30.md,
+  frontend/src/components/LoopLimits.tsx, frontend/src/loopLimits.ts, frontend/tests/loop-limits.browser.ts,
+  frontend/tests/loop-limits.test.tsx
+The 26 product sha256 values equal the fixer's recorded end state (fixer/source-sha256-at-suite-start.txt) and did not
+change during this verification (verify/tree-vs-backup-start.txt, -after-suite.txt, -end.txt are identical).
+
+METHOD (commit_list/commit_list.py; copied from the native v2b verifier's revision 2, with TIP, EVID and the tree-copy
+exclusion changed)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index outside the Desktop, deleted by
+the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and executable bit) with the working
+file; every non-ignored working file not in the tip is NEW; the git-ignored evidence folder is walked directly.
+Protected paths (backend/app/referee/checks.py, audit/promotion.json, audit/final-audit*, artifacts/heldout2/) are never
+read or hashed by the script (only size and mtime, 'protected_not_read' in the .json); checks.py equality with the tip is
+established by gate_freeze (verify/gate_freeze/compare.txt: scorer_hash and tree_referee equal).
+Passes: pass 1 during the test suite (commit_list/commit_list_pass1_during_suite.txt) and the final pass that wrote
+COMMIT_LIST.txt. The 26 product lines are byte-identical in both.
+
+EXCLUDED
+  * Nothing inside the evidence folder needed excluding: no caches (__pycache__, .pytest_cache, .DS_Store), no SQLite
+    file, no file over 5 MB, no symlink, no copy of checks.py, promotion.json, final-audit*, heldout2 or any .env name
+    (surveyed before the final pass).
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.json themselves (a file cannot contain its own hash).
+  * Files written after the final pass are not in the list: verify/commit_list/secret_scan_final.txt and
+    verify/commit_list/shasum-check.txt.
+  * Outside the repo and never listed: the verifier's scratch folder /Users/shree/FaultLab_Scratch/verify-loop-limits
+    (a git-archive checkpoint of 3b31b58, a scratch test tree, store copies); deleted before the final pass.
+  * Not in the list and not to be committed: caches, node_modules, .venv, .env, frontend/dist, sqlite files.
+
+CONFLICT COPIES
+commit_list/conflict_scan.py over the whole faultlab tree (names only; skips .git, node_modules, .venv, caches):
+0 conflict-like names outside artifacts/. Inside this round's folder the only hits are the scan's own two files
+(conflict_scan.py, conflict-scan.txt: their names contain "conflict"). Other hits are older, deliberate folders under
+artifacts/ from earlier rounds (product-import-2026-09-27/preserved-duplicate-sources, etc.), not part of this list.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py (copied unchanged from the native v2b verifier) is run over every file in the final list after
+it is written; result in commit_list/secret_scan_final.txt (see the verifier report for the count).

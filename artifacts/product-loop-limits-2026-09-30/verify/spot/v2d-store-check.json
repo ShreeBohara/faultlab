@@ -1,0 +1,144 @@
+{
+ "challenge": {
+  "failed_checks": [],
+  "status": "INCONCLUSIVE",
+  "stopping_reason": "Incomplete or untriggered challenge pair"
+ },
+ "challenge_batches": [
+  {
+   "arms": {
+    "B0": {
+     "agent_notifications_status": 1,
+     "agent_orders_status_reads": [
+      0,
+      1,
+      0
+     ],
+     "agent_send_confirmation": 3,
+     "episodes": 3,
+     "fault_triggered": 3,
+     "policy_targets": []
+    },
+    "L": {
+     "agent_notifications_status": 1,
+     "agent_orders_status_reads": [
+      1,
+      0,
+      0
+     ],
+     "agent_send_confirmation": 3,
+     "episodes": 3,
+     "fault_triggered": 3,
+     "policy_targets": []
+    }
+   },
+   "batch_id": "batch-233350f973c54057a193788b060fe023",
+   "scenario_hashes": [
+    "f0b4a3da9e91"
+   ]
+  },
+  {
+   "arms": {
+    "B0": {
+     "agent_notifications_status": 0,
+     "agent_orders_status_reads": [
+      5,
+      5,
+      5
+     ],
+     "agent_send_confirmation": 0,
+     "episodes": 3,
+     "fault_triggered": 3,
+     "policy_targets": []
+    },
+    "L": {
+     "agent_notifications_status": 0,
+     "agent_orders_status_reads": [
+      4,
+      4,
+      3
+     ],
+     "agent_send_confirmation": 0,
+     "episodes": 3,
+     "fault_triggered": 3,
+     "policy_targets": [
+      "get_operation_status:orders"
+     ]
+    }
+   },
+   "batch_id": "batch-3d2e47f2aecb4f168df5988ad9797c91",
+   "scenario_hashes": [
+    "58b842c46a1c"
+   ]
+  },
+  {
+   "arms": {
+    "B0": {
+     "agent_notifications_status": 1,
+     "agent_orders_status_reads": [
+      0,
+      0,
+      2
+     ],
+     "agent_send_confirmation": 3,
+     "episodes": 3,
+     "fault_triggered": 1,
+     "policy_targets": []
+    },
+    "L": {
+     "agent_notifications_status": 0,
+     "agent_orders_status_reads": [
+      0,
+      0,
+      0
+     ],
+     "agent_send_confirmation": 3,
+     "episodes": 3,
+     "fault_triggered": 0,
+     "policy_targets": []
+    }
+   },
+   "batch_id": "batch-d8e1c9ac57c04b18bb1de78edf740d07",
+   "scenario_hashes": [
+    "ebcf285b8a71"
+   ]
+  }
+ ],
+ "picks_in_order": [
+  [
+   "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2500 ms (past the client timeout)"
+  ],
+  [
+   "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 8 ticks, then SUCCEEDED"
+  ],
+  [
+   "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+  ]
+ ],
+ "scratch_copy_removed": true,
+ "source_validation_basis": {
+  "agent": [
+   "get_order:orders",
+   "update_order:orders"
+  ],
+  "episode_ids": [
+   "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+   "episode-18db8ac658a8457a82640330a8322065",
+   "episode-3509a8159cd349a8b3425b1b645f9c81"
+  ],
+  "policy_only": [
+   "get_operation_status:orders"
+  ]
+ },
+ "targets_the_withdrawn_rule_would_refuse": [
+  "get_operation_status:orders",
+  "send_confirmation:notifications",
+  "get_operation_status:notifications"
+ ],
+ "tokens": {
+  "challenge_counterexamples": 14129,
+  "challenge_evidence_table": 12047,
+  "development_evidence": 11030,
+  "full": 33223
+ }
+}

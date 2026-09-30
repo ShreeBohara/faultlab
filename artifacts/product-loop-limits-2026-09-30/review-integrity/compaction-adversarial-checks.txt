@@ -1,0 +1,17 @@
+1. determinism: 3 runs identical = True 073a648c0f355153 tokens 27990
+2. dev: total 16 kept 12 named 4 partition_ok=True
+   kept rows render identically to originals: True
+   same_as rows truly identical: True (0); represented_by rows that differ from their representative: 4 of 4
+   represented_by facts (arm,outcome,triggered,scenario,policy) equal representative: True
+2. challenge: total 18 kept 7 named 11 partition_ok=True
+   kept rows render identically to originals: True
+   same_as rows truly identical: False (2); represented_by rows that differ from their representative: 9 of 9
+   represented_by facts (arm,outcome,triggered,scenario,policy) equal representative: True
+3. all stages, target 0: fits = False (returns None, nothing to send) attempts [33604, 27989, 21095]
+4. episode failing only by trial record is kept at stage 3: True
+5. episode with outcome VIOLATION but empty failed_checks kept at stage 3: False
+[fixer guard] refused outbound connections: 0; loopback connects: 0
+2b. same_as rows identical apart from per-episode evidence_ids: True 2
+context_compaction statement:
+ This request was compacted under faultlab-mechanic-context/v2-bounded: in full it was 33,223 input tokens, over the 32,000-token model input limit. Stages applied, in order: (1) a clean episode whose rows and outcome repeat an earlier clean episode is listed by episode_id (same_as); (2) one clean episode is kept in full per recipe, arm and outcome; the others are listed by episode_id (represented_by). The observation, report and check rows of 15 clean episode(s) were omitted (development_evidence: 4 of 16 episodes omitted; challenge_counterexamples[0].evidence: 11 of 18 episodes omitted); each omitted episode is still listed by episode_id with its own outcome in its block's compaction.omitted, and every trial_outcomes group is unchanged. The source episode, its reproductions and every episode with a failed check are kept in full. Nothing else in this request was changed.
+[fixer guard] refused outbound connections: 0; loopback connects: 0

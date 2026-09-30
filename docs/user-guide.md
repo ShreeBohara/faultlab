@@ -56,6 +56,27 @@ campaign STOPPED within about half a second. If every allowed retry fails, the c
 retries were tried (or, if none could be sent, why not). The agent itself keeps one retry per request. Plans saved earlier, and
 baseline or compare plans, keep one retry per request ([details](PRODUCT_TRANSPORT_RETRY_2026-09-29.md#12-rule-v2-faultlabs-own-lab-roles-back-off-september-30-0-not-yet-run-live)).
 
+**Large Mechanic requests (September 30, built and reviewed offline, not yet run live).** A new Learn plan also
+freezes one more rule; the Learn setup form and the saved plan show it.
+
+- **Mechanic request size** (`faultlab-mechanic-context/v2-bounded`). If a Mechanic diagnosis or candidate request
+  would exceed the 32,000-token input limit, FaultLab omits the rows of *clean* episodes (no failed check, no VIOLATION
+  outcome, not the source or a reproduction) in three fixed stages until the request is at most 28,000 tokens. Every
+  omitted episode is still named in the request with its own outcome, and the request says what was omitted. A kept
+  example stands only for episodes of the same recipe, arm, policy, purpose and outcome, and the request says their
+  own rows can differ from it. The source, its reproductions and every failing episode always stay in full. If the
+  request still does not fit, nothing is sent: that source's search ends with a recorded reason, and the campaign
+  continues or ends NO_CHANGE (the reason then says a search ended early). It never ends ERROR on this path. The
+  **Tested diagnosis** panel lists every such request under "Mechanic request size". A refused format-repair turn is
+  shown as "first turn sent; its format-repair turn was not sent", and its first answer is kept as a rejected candidate.
+- **Challenge picks** (`faultlab-challenge-selection/v2-candidate-reach`) was built too, but it is **withdrawn**:
+  reviews found it could hide a counterexample, because it refused picks by what the candidate itself did in source
+  validation. New plans do not include it, and a plan that does cannot start. Every valid challenge pick runs, as
+  before; the saved plan says "Challenge picks: Not declared".
+
+Plans saved before these rules keep the old behaviour, and their saved plan says so
+([details](PRODUCT_LOOP_LIMITS_2026-09-30.md)).
+
 Use **Download campaign recording** to save the plan, configuration, registration and public
 development evidence, including failed attempts and `NO_CHANGE` runs. The JSON download makes no
 provider call. Protected trials and private simulator state are excluded. This recording is an

@@ -1,0 +1,290 @@
+{
+ "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+ "mechanic_model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+ "limit": 32000,
+ "shape": {
+  "intervention_trials": [
+   "episode-3984b43c9c8c402cadbca83ddb00de0a",
+   "episode-acbc2b09430347f79e77ea890e2ec5cb",
+   "episode-68360b627fb644f18b987fd309b74828",
+   "episode-1febc70bbc854aa3a86ca432453f24f3",
+   "episode-555bde45b77444f9abbc81f00dcc2824",
+   "episode-51e5829e4ed1442d81a70e69ae7f0110"
+  ],
+  "reduction_trials": 9,
+  "sv_trials": 6,
+  "challenge_trials": 18
+ },
+ "real_mechanic_admission_count_full": 33223,
+ "matches_live_refusal_33223": true,
+ "recorded_live_refusal": 33223,
+ "fit_request": {
+  "record_outcome": "COMPACTED",
+  "stages_applied": [
+   "IDENTICAL_CLEAN_ROWS",
+   "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+  ],
+  "attempts": [
+   {
+    "episode_rows_omitted": 2,
+    "request_tokens": 33605,
+    "stages_applied": [
+     "IDENTICAL_CLEAN_ROWS"
+    ]
+   },
+   {
+    "episode_rows_omitted": 15,
+    "request_tokens": 27990,
+    "stages_applied": [
+     "IDENTICAL_CLEAN_ROWS",
+     "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+    ]
+   }
+  ],
+  "compacted_request_tokens": 27990,
+  "provider_dispatch": true,
+  "blocks": [
+   {
+    "episodes_in_full": 12,
+    "episodes_omitted": 4,
+    "episodes_total": 16,
+    "field": "development_evidence",
+    "omitted_by_stage": {
+     "IDENTICAL_CLEAN_ROWS": 0,
+     "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 4
+    }
+   },
+   {
+    "episodes_in_full": 7,
+    "episodes_omitted": 11,
+    "episodes_total": 18,
+    "field": "challenge_counterexamples[0].evidence",
+    "omitted_by_stage": {
+     "IDENTICAL_CLEAN_ROWS": 2,
+     "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 9
+    }
+   }
+  ]
+ },
+ "real_mechanic_admission_count_compacted": 27990,
+ "compacted_under_target_28000": true,
+ "dispatched_first_turn_tokens": [
+  27990
+ ],
+ "dispatched_count": 1,
+ "mechanic_answer_parsed": true,
+ "statement_in_request": "This request was compacted under faultlab-mechanic-context/v2-bounded: in full it was 33,223 input tokens, over the 32,000-token model input limit. Stages applied, in order: (1) a clean episode whose rows and outcome repeat an earlier clean episode is listed by episode_id (same_as); (2) one clean episode is kept in full per recipe, arm and outcome; the others are listed by episode_id (represented_by). The observation, report and check rows of 15 clean episode(s) were omitted (development_evidence: 4 of 16 episodes omitted; challenge_counterexamples[0].evidence: 11 of 18 episodes omitted); each omitted episode is still listed by episode_id with its own outcome in its block's compaction.omitted, and every trial_outcomes group is unchanged. The source episode, its reproductions and every episode with a failed check are kept in full. Nothing else in this request was changed.",
+ "development_evidence_interpretation_tail": "s, including contradictions, are retained. Original complete records are referenced by exact episode/evidence IDs. COMPACTED under faultlab-mechanic-context/v2-bounded: this block keeps 12 of 16 episodes in full; the observation, report and check rows of the episodes listed in compaction.omitted are not repeated here (each is named with its own outcome), so \"all trials are retained\" applies to the kept episodes only.",
+ "failing_episodes_total": 10,
+ "failing_all_kept": true,
+ "source_and_reproductions_kept": true,
+ "kept_in_full": {
+  "development_evidence": 12,
+  "challenge": 7
+ },
+ "other_top_level_fields_unchanged": {
+  "campaign_id": true,
+  "source_context_id": true,
+  "parent_version": true,
+  "target_invariant": true,
+  "diagnostic": true,
+  "candidate_history": true,
+  "source_validation_feedback": true,
+  "runtime_contract": true,
+  "retained_fault_spec": true,
+  "reduction": true
+ },
+ "challenge_feedback_non_evidence_fields_unchanged": true,
+ "omitted_episodes": [
+  {
+   "block": "development_evidence",
+   "episode_id": "episode-68360b627fb644f18b987fd309b74828",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-acbc2b09430347f79e77ea890e2ec5cb",
+   "arm": "B0",
+   "outcome": "COMPLETED",
+   "fault_triggered": false,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "development_evidence",
+   "episode_id": "episode-51e5829e4ed1442d81a70e69ae7f0110",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-acbc2b09430347f79e77ea890e2ec5cb",
+   "arm": "B0",
+   "outcome": "COMPLETED",
+   "fault_triggered": false,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "development_evidence",
+   "episode_id": "episode-18db8ac658a8457a82640330a8322065",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+   "arm": "L",
+   "outcome": "CORRECTLY_REJECTED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "development_evidence",
+   "episode_id": "episode-3509a8159cd349a8b3425b1b645f9c81",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+   "arm": "L",
+   "outcome": "CORRECTLY_REJECTED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-db899faf20cf41bfac6a790c7f00d1a4",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-ac798836d43443079ddc9d318a41fb5c",
+   "arm": "L",
+   "outcome": "COMPLETED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks",
+    "report",
+    "results",
+    "ticks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-668eb0b7ab37437ab9517b20a8746452",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-8ab25718d8eb4e6cb3dffd337b21ca0c",
+   "arm": "B0",
+   "outcome": "COMPLETED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks",
+    "report",
+    "results",
+    "ticks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-f49b04a7be8449a5984b4d1d2c4e19bd",
+   "omitted_as": "IDENTICAL_CLEAN_ROWS",
+   "representative": "episode-8ab25718d8eb4e6cb3dffd337b21ca0c",
+   "arm": "B0",
+   "outcome": "COMPLETED",
+   "fault_triggered": true,
+   "differs_from_representative_in": []
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-32b25b33a8f745ea8e6f95c783ddb3d8",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-ac798836d43443079ddc9d318a41fb5c",
+   "arm": "L",
+   "outcome": "COMPLETED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks",
+    "report",
+    "results",
+    "ticks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-8a806beb143d4f97958cd4b5b2222224",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-f711bc80445c4c179f721ab60f75ad32",
+   "arm": "L",
+   "outcome": "SAFE_UNRESOLVED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks",
+    "report"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-833aca4d48ce42b9b3c0c4737d730a0b",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-92157dceaff3480898e9ac7fc19621c1",
+   "arm": "B0",
+   "outcome": "SAFE_UNRESOLVED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-3c4f417debd94f339086fe384cf04199",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-92157dceaff3480898e9ac7fc19621c1",
+   "arm": "B0",
+   "outcome": "SAFE_UNRESOLVED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-9552b9c12d914f2cb07af4fb83eb14ac",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-f711bc80445c4c179f721ab60f75ad32",
+   "arm": "L",
+   "outcome": "SAFE_UNRESOLVED",
+   "fault_triggered": true,
+   "differs_from_representative_in": [
+    "checks",
+    "report",
+    "results",
+    "ticks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-86968f43730f4424b8cd489fd1611a16",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-1517b6c1473842838a98efe97958517d",
+   "arm": "L",
+   "outcome": "COMPLETED",
+   "fault_triggered": false,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-141d00582c7b46e282f06a61a294f3f5",
+   "omitted_as": "IDENTICAL_CLEAN_ROWS",
+   "representative": "episode-3945fcc9950948a3a5e68a46fd043fe6",
+   "arm": "B0",
+   "outcome": "COMPLETED",
+   "fault_triggered": false,
+   "differs_from_representative_in": []
+  },
+  {
+   "block": "challenge_counterexamples[0].evidence",
+   "episode_id": "episode-d90cc1531c684617b424d46bf9010d80",
+   "omitted_as": "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "representative": "episode-1517b6c1473842838a98efe97958517d",
+   "arm": "L",
+   "outcome": "COMPLETED",
+   "fault_triggered": false,
+   "differs_from_representative_in": [
+    "checks"
+   ]
+  }
+ ],
+ "omitted_that_differ_from_their_representative": 13
+}

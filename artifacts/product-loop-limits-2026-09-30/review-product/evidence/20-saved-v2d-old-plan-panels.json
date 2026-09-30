@@ -1,0 +1,25 @@
+{
+  "tag": "20-saved-v2d-old-plan",
+  "cid": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "plan": {
+    "mechanic": "MECHANIC REQUEST SIZE | Not declared: this plan was saved before the Mechanic request-size rule. A Mechanic request over the 32,000-token input limit is refused before sending and ends the campaign in ERROR, as before.",
+    "picks": "CHALLENGE PICKS | Not declared: this plan was saved before the challenge-pick rule. Every valid challenge pick runs its pairs, as before."
+  },
+  "challenge": "07\nAdversarial challenge\nchallenge-559c5dd710564bac8530eb6c982c6f41\nInconclusive\nCANDIDATE HASH\n799c95740302d1a44b560a12774300e3dc22d91e3013d38d7202f09775874947\nINCUMBENT HASH\nbafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb\nSOURCE VALIDATION\nbatch-b700a3e0a5a34944b22367a8f9428a60\nSCHEDULES\n3 recorded / 4 required · 3 novel recorded\nFAILED CHECKS\nNone recorded\n\nIncomplete or untriggered challenge pair\n\nEvery paired trial · 9 pairs\nPair 1\nepisode-8ab25718d8eb4e6cb3dffd337b21ca0c\nepisode-ac798836d43443079ddc9d318a41fb5c\nPair 2\nepisode-668eb0b7ab37437ab9517b20a8746452\nepisode-db899faf20cf41bfac6a790c7f00d1a4\nPair 3\nepisode-f49b04a7be8449a5984b4d1d2c4e19bd\nepisode-32b25b33a8f745ea8e6f95c783ddb3d8\nPair 4\nepisode-92157dceaff3480898e9ac7fc19621c1\nepisode-f711bc80445c4c179f721ab60f75ad32\nPair 5\nepisode-833aca4d48ce42b9b3c0c4737d730a0b\nepisode-8a806beb143d4f97958cd4b5b2222224\nPair 6\nepisode-3c4f417debd94f339086fe384cf04199\nepisode-9552b9c12d914f2cb07af4fb83eb14ac\nPair 7\nepisode-3945fcc9950948a3a5e68a46fd043fe6\nepisode-1517b6c1473842838a98efe97958517d\nPair 8\nepisode-141d00582c7b46e282f06a61a294f3f5\nepisode-86968f43730f4424b8cd489fd1611a16\nPair 9\nepisode-be13be170b58499d9010309ba4e4c7d7\nepisode-d90cc1531c684617b424d46bf9010d80\nSchedule novelty and feedback lineage",
+  "reachListPresent": false,
+  "mechanicListPresent": false,
+  "recording": {
+    "mechanic_context_records": "ABSENT",
+    "challenge_selection_rule": "ABSENT",
+    "selection_reach": [
+      "ABSENT",
+      "ABSENT",
+      "ABSENT"
+    ]
+  },
+  "phoneHorizontalOverflow": false,
+  "errors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "offsite": []
+}

@@ -1,0 +1,225 @@
+{
+ "campaign": {
+  "campaign_id": "campaign-d968da833c6e40da911a60adc0fa9712",
+  "state": "NO_CHANGE",
+  "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ },
+ "plan_rules": {
+  "mechanic_context": "faultlab-mechanic-context/v2-bounded",
+  "challenge_selection": "faultlab-challenge-selection/v2-candidate-reach"
+ },
+ "experiments_keys": [
+  "challenge_reach",
+  "counterexamples",
+  "evidence",
+  "ingestions",
+  "mechanic_context",
+  "portability_ids"
+ ],
+ "challenge_reach": [],
+ "mechanic_context": [
+  {
+   "attempts": [
+    {
+     "episode_rows_omitted": 0,
+     "request_tokens": 79000,
+     "stages_applied": [
+      "IDENTICAL_CLEAN_ROWS"
+     ]
+    },
+    {
+     "episode_rows_omitted": 2,
+     "request_tokens": 57084,
+     "stages_applied": [
+      "IDENTICAL_CLEAN_ROWS",
+      "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+     ]
+    },
+    {
+     "episode_rows_omitted": 3,
+     "request_tokens": 43517,
+     "stages_applied": [
+      "IDENTICAL_CLEAN_ROWS",
+      "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+      "NO_CLEAN_EPISODE_ROWS"
+     ]
+    }
+   ],
+   "blocks": [
+    {
+     "episodes_in_full": 7,
+     "episodes_omitted": 3,
+     "episodes_total": 10,
+     "field": "development_evidence",
+     "omitted_by_stage": {
+      "IDENTICAL_CLEAN_ROWS": 0,
+      "NO_CLEAN_EPISODE_ROWS": 3,
+      "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 0
+     }
+    }
+   ],
+   "campaign_id": "campaign-d968da833c6e40da911a60adc0fa9712",
+   "candidate_index": 0,
+   "compacted_request_tokens": null,
+   "compaction_target_tokens": 28000,
+   "counterexample_id": "counterexample-494a88dae3b64ac1a69dbba875df3cfc",
+   "full_request_tokens": 79000,
+   "input_token_limit": 32000,
+   "outcome": "SEARCH_ENDED",
+   "protocol": "faultlab-mechanic-context/v2-bounded",
+   "provider_dispatch": false,
+   "reason": "The Mechanic candidate request is 79,000 input tokens (limit 32,000). With every declared compaction stage applied it is still 43,517 tokens, above the 28,000-token target (4,000 tokens are kept for its one format-repair turn): the source episode, its reproductions, every episode with a failed check, the runtime contract and the feedback fields are never omitted. Nothing was sent; the candidate search for this source ended here.",
+   "record_id": "mechanic-context-cbeccfd24f78428eb8b0661cfdfa70e1",
+   "request_kind": "mechanic_proposal",
+   "source_context_id": "2bc0445d4d53803c6762a28c354280a3394a31fbda0dfaabf7aa56158471c990",
+   "source_episode_id": "episode-e303fdf7cc0d43f391b0ac74dbb9716c",
+   "stage": "BEFORE_SEND",
+   "stages_applied": [
+    "IDENTICAL_CLEAN_ROWS",
+    "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+    "NO_CLEAN_EPISODE_ROWS"
+   ],
+   "statement": null
+  }
+ ],
+ "challenges": [],
+ "challenge_trials": [],
+ "candidate_qualifications": [],
+ "campaign_proposals": [],
+ "recording_keys_new": {
+  "mechanic_context_records": true,
+  "challenge_selection_rule": true
+ },
+ "recording_challenge_selection_rule": {
+  "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+  "refused_selection_ids": [],
+  "rule": "Before a challenge pick runs any pair, FaultLab checks every fault target (tool and service) against the calls the agent under test itself made in the candidate arm's source-validation episodes of this campaign. A pick with a target the agent never called there is refused: no episode runs, and the refusal is recorded with its reason. The candidate policy's own hook reads are not agent calls. The Explorer's next request in the same challenge is a re-plan told why (one re-plan per refused pick; a refused re-plan gets none). Every request, re-plans included, is one of the challenge's existing 8 Explorer requests, charged and bounded exactly as before. The challenge itself is unchanged: 4 schedules, 3 fresh pairs each, every pair must fire its faults, and any candidate violation is a counterexample. If the candidate arm has no source-validation episode, no pick is refused."
+ },
+ "recording_mechanic_context_records": [
+  {
+   "outcome": "SEARCH_ENDED",
+   "stage": "BEFORE_SEND",
+   "request_kind": "mechanic_proposal",
+   "full_request_tokens": 79000,
+   "compacted_request_tokens": null,
+   "provider_dispatch": false,
+   "candidate_index": 0,
+   "stages_applied": [
+    "IDENTICAL_CLEAN_ROWS",
+    "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+    "NO_CLEAN_EPISODE_ROWS"
+   ],
+   "reason": "The Mechanic candidate request is 79,000 input tokens (limit 32,000). With every declared compaction stage applied it is still 43,517 tokens, above the 28,000-token target (4,000 tokens are kept for its one format-repair turn): the source episode, its reproductions, every episode with a failed check, the runtime contract and the feedback fields are never omitted. Nothing was sent; the candidate search for this source ended here."
+  }
+ ],
+ "recording_selection_challenge_reach": [],
+ "lab_requests": [
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7940
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7978
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7946
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8321
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 6631
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7584
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7949
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8107
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8266
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8426
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8583
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8743
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8899
+  }
+ ],
+ "max_mechanic_dispatched_tokens": 8321,
+ "max_explorer_dispatched_tokens": 8899,
+ "execution_errors": []
+}

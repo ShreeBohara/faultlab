@@ -1,0 +1,420 @@
+{
+ "build_rule_basis": {
+  "agent": [
+   "get_order:orders",
+   "update_order:orders"
+  ],
+  "episode_ids": [
+   "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+   "episode-18db8ac658a8457a82640330a8322065",
+   "episode-3509a8159cd349a8b3425b1b645f9c81"
+  ],
+  "policy_only": [
+   "get_operation_status:orders"
+  ]
+ },
+ "candidate_rules": [
+  {
+   "hook": "after_upgrade_response",
+   "steps": [
+    {
+     "only_if": "always",
+     "op": "wait_ticks",
+     "ticks": 1
+    },
+    {
+     "only_if": "always",
+     "op": "read_current_operation"
+    },
+    {
+     "only_if": "always",
+     "op": "require_receipt",
+     "service": "orders",
+     "status": "SUCCEEDED"
+    }
+   ],
+   "when": "upgrade_outcome_uncertain"
+  },
+  {
+   "hook": "after_upgrade_response",
+   "steps": [
+    {
+     "only_if": "always",
+     "op": "report_terminal_failure",
+     "service": "orders"
+    }
+   ],
+   "when": "upgrade_terminal_failure"
+  },
+  {
+   "hook": "before_confirmation",
+   "steps": [
+    {
+     "only_if": "always",
+     "op": "read_current_operation"
+    },
+    {
+     "only_if": "always",
+     "op": "require_receipt",
+     "service": "orders",
+     "status": "SUCCEEDED"
+    }
+   ],
+   "when": "upgrade_receipt_missing"
+  },
+  {
+   "hook": "before_final_report",
+   "steps": [
+    {
+     "only_if": "always",
+     "op": "read_current_operation"
+    },
+    {
+     "only_if": "always",
+     "op": "require_receipt",
+     "service": "orders",
+     "status": "SUCCEEDED"
+    }
+   ],
+   "when": "upgrade_receipt_missing"
+  }
+ ],
+ "challenge": {
+  "failed_checks": [],
+  "status": "INCONCLUSIVE",
+  "stopping_reason": "Incomplete or untriggered challenge pair"
+ },
+ "episodes_by_scenario": [
+  {
+   "arms": {
+    "B0": [
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-8ab25718d8eb4e6cb3dffd337b21ca0c",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 1,
+      "agent_targets": [
+       "get_operation_status:notifications",
+       "get_operation_status:orders",
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-668eb0b7ab37437ab9517b20a8746452",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-f49b04a7be8449a5984b4d1d2c4e19bd",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     }
+    ],
+    "L": [
+     {
+      "agent_orders_status_attempts": 1,
+      "agent_targets": [
+       "get_operation_status:notifications",
+       "get_operation_status:orders",
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-ac798836d43443079ddc9d318a41fb5c",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-db899faf20cf41bfac6a790c7f00d1a4",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-32b25b33a8f745ea8e6f95c783ddb3d8",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     }
+    ]
+   },
+   "scenario_hash": "f0b4a3da9e917242dcef588d5d225f794762190a9efc1dde72340d868339afa9"
+  },
+  {
+   "arms": {
+    "B0": [
+     {
+      "agent_orders_status_attempts": 5,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-92157dceaff3480898e9ac7fc19621c1",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 5,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-833aca4d48ce42b9b3c0c4737d730a0b",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 5,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-3c4f417debd94f339086fe384cf04199",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     }
+    ],
+    "L": [
+     {
+      "agent_orders_status_attempts": 4,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-f711bc80445c4c179f721ab60f75ad32",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": [
+       "get_operation_status:orders"
+      ]
+     },
+     {
+      "agent_orders_status_attempts": 4,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-8a806beb143d4f97958cd4b5b2222224",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": [
+       "get_operation_status:orders"
+      ]
+     },
+     {
+      "agent_orders_status_attempts": 3,
+      "agent_targets": [
+       "get_operation_status:orders",
+       "get_order:orders",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-9552b9c12d914f2cb07af4fb83eb14ac",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": [
+       "get_operation_status:orders"
+      ]
+     }
+    ]
+   },
+   "scenario_hash": "58b842c46a1c1e9c373ef6a48f005d8e83477ef0492a488934384c68658f554b"
+  },
+  {
+   "arms": {
+    "B0": [
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-3945fcc9950948a3a5e68a46fd043fe6",
+      "failed_checks": [],
+      "fault_triggered": false,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-141d00582c7b46e282f06a61a294f3f5",
+      "failed_checks": [],
+      "fault_triggered": false,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 2,
+      "agent_targets": [
+       "get_operation_status:notifications",
+       "get_operation_status:orders",
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-be13be170b58499d9010309ba4e4c7d7",
+      "failed_checks": [],
+      "fault_triggered": true,
+      "policy_targets": []
+     }
+    ],
+    "L": [
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-1517b6c1473842838a98efe97958517d",
+      "failed_checks": [],
+      "fault_triggered": false,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-86968f43730f4424b8cd489fd1611a16",
+      "failed_checks": [],
+      "fault_triggered": false,
+      "policy_targets": []
+     },
+     {
+      "agent_orders_status_attempts": 0,
+      "agent_targets": [
+       "get_order:orders",
+       "send_confirmation:notifications",
+       "update_order:orders"
+      ],
+      "episode_id": "episode-d90cc1531c684617b424d46bf9010d80",
+      "failed_checks": [],
+      "fault_triggered": false,
+      "policy_targets": []
+     }
+    ]
+   },
+   "scenario_hash": "ebcf285b8a71943782c47643356b6edbeb17d2c0cf88c98bf71e4a1351125544"
+  }
+ ],
+ "picks": [
+  {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F1",
+      "occurrence": 1,
+      "parameters": {
+       "response_delay_ms": 2500
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 202
+   },
+   "recipe": [
+    "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2500 ms (past the client timeout)"
+   ],
+   "selection_id": "selection-8903196f45104e089a49895723c82baa"
+  },
+  {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 8,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 317
+   },
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 8 ticks, then SUCCEEDED"
+   ],
+   "selection_id": "selection-d45382a71853432a8467d4b6dedc6844"
+  },
+  {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F4",
+      "occurrence": 1,
+      "parameters": {
+       "failure_count": 1
+      },
+      "target_service": "orders",
+      "target_tool": "get_operation_status"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 411
+   },
+   "recipe": [
+    "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+   ],
+   "selection_id": "selection-49a45d29ee514a8784e484863a3ed804"
+  }
+ ],
+ "scratch_removed": true,
+ "targets_refused_by_build_rule": [
+  "get_operation_status:orders",
+  "send_confirmation:notifications",
+  "get_operation_status:notifications"
+ ]
+}

@@ -1,0 +1,4 @@
+{'declared': False, 'status': 'COUNTEREXAMPLE_FOUND', 'reason': 'Candidate violation returned as development feedback', 'failed_checks': ['C4'], 'schedules_run': 1, 'episodes_run': 6, 'pick_statuses': ['no rule']}
+{'declared': True, 'status': 'PASSED_OBSERVED', 'reason': 'No candidate violation observed in four schedules × three pairs', 'failed_checks': [], 'schedules_run': 4, 'episodes_run': 24, 'pick_statuses': ['REFUSED_UNREACHED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED']}
+scratch removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

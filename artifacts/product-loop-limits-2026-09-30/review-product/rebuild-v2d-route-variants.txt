@@ -1,0 +1,4 @@
+ "real_mechanic_admission_count_full": 32877,   "compacted_request_tokens": 27644,  <= reduction=attempts intervention=pairs
+ "real_mechanic_admission_count_full": 32877,   "compacted_request_tokens": 27644,  <= reduction=attempts intervention=creation
+ "real_mechanic_admission_count_full": 33223,   "compacted_request_tokens": 27990,  <= reduction=episodes intervention=pairs
+ "real_mechanic_admission_count_full": 33223,   "compacted_request_tokens": 27990,  <= reduction=episodes intervention=creation

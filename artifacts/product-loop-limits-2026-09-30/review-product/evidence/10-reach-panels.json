@@ -1,0 +1,31 @@
+{
+  "tag": "10-reach",
+  "cid": "campaign-ae38138527154eb7bb0343fe86cd1de4",
+  "plan": {
+    "mechanic": "MECHANIC REQUEST SIZE | A Mechanic diagnosis or candidate request over 32,000 input tokens is compacted in 3 fixed stages to at most 28,000 (4,000 kept for one format-repair turn) · only clean episodes' rows are omitted, each still named with its outcome · the source, its reproductions and every episode with a failed check stay in full · if it still does not fit, nothing is sent and that source's search ends with a rec",
+    "picks": "CHALLENGE PICKS | A challenge pick with a fault on a tool and service the agent never called in the candidate arm's source-validation episodes is refused before any pair runs · 1 re-plan per refused pick, inside the challenge's 8 Explorer requests (charged as before) · the challenge itself is unchanged: 4 schedules, 3 pairs each, every fault must fire"
+  },
+  "challenge": "07\nAdversarial challenge\nchallenge-3d294d6244724849b2a54814403c3448\nPassed observed trials\nCANDIDATE HASH\n03a4efa6ad223e3dcd9ae20952b18500a621d17e4a861fd8d879275eadd4af87\nINCUMBENT HASH\nbafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb\nSOURCE VALIDATION\nbatch-6aa2ff99ddd543f49b65d9d7cde19ffd\nSCHEDULES\n4 recorded / 4 required · 4 novel recorded\nFAILED CHECKS\nNone recorded\n\nNo candidate violation observed in four schedules × three pairs\n\nEvery paired trial · 12 pairs\nPair 1\nepisode-6384c8d19896430c87287fe03c0a573c\nepisode-c7f3a19b134a4c45abaf3a7ed6b83dbb\nPair 2\nepisode-99cfbc3631ce49d3941f875dfa01c936\nepisode-7030351edae64ad5ad530d52fdec2258\nPair 3\nepisode-89600e265e9a467990a88c0dd7f3650d\nepisode-06f9601af53c4d0794b6968f063a50eb\nPair 4\nepisode-4d3e957a21f94afa9861c92e43ff6478\nepisode-b69e666a15cc4276aded66f0858fa2e9\nPair 5\nepisode-aebfce98ce3c4e68ad6352249e4b1eeb\nepisode-631ccab59aa748bd8cc6fcc7af93efb0\nPair 6\nepisode-bdea2178f9ca459bb9d88078dfff66e2\nepisode-f31520969e2b46979b2d3710a915bd1b\nPair 7\nepisode-9e5a05873a6240a7a5efcb9dedb2ab85\nepisode-99a6808f2b5e496492f02263dcea6a25\nPair 8\nepisode-54b09bfab37a4a76a61e145d80d86883\nepisode-b31423bd2bfe4c9b8129d99e6b49a8d2\nPair 9\nepisode-2ae0ff6464534da4bd87299f7b884968\nepisode-63c910cc75174870814659ba034ad7b6\nPair 10\nepisode-23f560fffd2d41ef8daee1846689e6b4\nepisode-4c941967ceb74887a69124a3d8cbedba\nPair 11\nepisode-88aa0a4c853e4344b4aa5f66cfbf3d80\nepisode-e384baea61024169877ad811c558cfd8\nPair 12\nepisode-97e36f29d147437881f775794e1d5265\nepisode-0dae83daa1db40a3b2f8a6d82e168192\nSchedule novelty and feedback lineage\nChallenge picks · candidate reach check\n\n5 picks checked, 1 refused before any pair ran. Rule faultlab-challenge-selection/v2-candidate-reach: a fault on a tool and service the agent never called in the candidate arm's source validation is refused; one re-plan follows, inside the challenge's 8 Explorer requests.\n\nExplorer request 1: refused, no pair ran. Refused before any pair ran: this pick puts a fault on get_operation_status (notifications), which the agent never called in the candidate arm's 3 source-validation episode(s) of this campaign. The next request in this challenge is its one re-plan.\nRefused: tool not reached\n\nPick: F4 on get_operation_status:notifications attempt 1: transient 503 before the request is accepted\n\nThe agent called: get_order:orders, send_confirmation:notifications, update_order:orders · read only by the candidate policy: get_operation_status:orders · 3 source-validation episode(s)\n\nExplorer request 2 (re-plan): every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED\n\nExplorer request 3: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED\n\nExplorer request 4: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED\n\nExplorer request 5: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 6 ticks, then SUCCEEDED\n\nInspect every checked pick",
+  "reachListPresent": true,
+  "mechanicListPresent": true,
+  "mechanicList": "Mechanic request size\n\nNo Mechanic request has crossed the input limit. Rule faultlab-mechanic-context/v2-bounded: nothing over the limit is ever sent, and a request that cannot fit ends that source's search, never the campaign.",
+  "recording": {
+    "mechanic_context_records": [],
+    "challenge_selection_rule": {
+      "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+      "refused": 1
+    },
+    "selection_reach": [
+      "REFUSED_UNREACHED",
+      "SELECTED",
+      "SELECTED",
+      "SELECTED",
+      "SELECTED"
+    ]
+  },
+  "phoneHorizontalOverflow": false,
+  "errors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "offsite": []
+}

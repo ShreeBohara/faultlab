@@ -1,0 +1,23 @@
+CAUGHT  a request over the limit is never compacted (backend/app/lab/loop_limits.py) :: 1 failed, 9 passed in 0.83s
+CAUGHT  the source and failing episodes are omitted like clean ones (backend/app/lab/loop_limits.py) :: 1 failed, 1 passed in 0.10s
+CAUGHT  the format-repair reserve is ignored (target = the limit) (backend/app/lab/loop_limits.py) :: 1 failed, 2 passed in 2.17s
+CAUGHT  an outcome that differs inside a recipe is grouped away (backend/app/lab/loop_limits.py) :: 1 failed, 5 passed in 0.08s
+CAUGHT  the omission statement is left out of the request (backend/app/lab/loop_limits.py) :: 1 failed, 1 passed in 0.06s
+CAUGHT  an unsent request still uses a candidate request (backend/app/lab/learning.py) :: 1 failed, 14 passed in 1.10s
+CAUGHT  a refused format-repair turn ends the campaign in ERROR (backend/app/lab/learning.py) :: 1 failed, 11 passed in 0.90s
+CAUGHT  the diagnosis request is sent unfitted (backend/app/lab/learning.py) :: 1 failed, 13 passed in 1.03s
+CAUGHT  the challenge rule is never handed to the Explorer (backend/app/lab/learning.py) :: 1 failed, 7 passed in 0.95s
+CAUGHT  the Explorer never checks challenge picks (backend/app/agents/explorer.py) :: 1 failed in 0.31s
+CAUGHT  the candidate policy's reads count as agent calls (backend/app/lab/loop_limits.py) :: 1 failed in 0.30s
+CAUGHT  a refused pick gets no re-plan (backend/app/lab/loop_limits.py) :: 1 failed in 0.31s
+CAUGHT  a refused re-plan gets another re-plan (backend/app/lab/loop_limits.py) :: 1 failed, 1 passed in 0.40s
+CAUGHT  a pick is refused without evidence (backend/app/lab/loop_limits.py) :: 1 failed, 3 passed in 0.72s
+CAUGHT  new Learn plans do not freeze the Mechanic rule (backend/app/lab/run_plans.py) :: 1 failed in 0.85s
+CAUGHT  Start accepts a declared rule that differs from the installed one (backend/app/lab/run_plans.py) :: 1 failed, 2 passed in 3.65s
+CAUGHT  an older plan gains null keys when read back (backend/app/lab/run_plans.py) :: 1 failed in 2.54s
+CAUGHT  the experiments API shows the lists for every campaign (backend/app/lab/api.py) :: 1 failed, 5 passed in 5.54s
+CAUGHT  the dashboard accepts a Mechanic rule with a different target (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+CAUGHT  the dashboard accepts a refusal without a reason (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+CAUGHT  the saved plan hides the challenge-pick rule (frontend/src/components/LoopLimits.tsx) :: ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+unmutated: backend exit 0, frontend exit 0
+21/21 mutations caught; every file restored (sha256 checked)

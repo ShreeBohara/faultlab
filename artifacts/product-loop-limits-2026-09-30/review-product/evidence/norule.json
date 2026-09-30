@@ -1,0 +1,235 @@
+{
+ "campaign": {
+  "campaign_id": "campaign-09dfeb6618c846d496b9f6f3b3ee1ace",
+  "state": "NO_CHANGE",
+  "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ },
+ "plan_rules": {
+  "mechanic_context": "faultlab-mechanic-context/v2-bounded",
+  "challenge_selection": "faultlab-challenge-selection/v2-candidate-reach"
+ },
+ "experiments_keys": [
+  "challenge_reach",
+  "counterexamples",
+  "evidence",
+  "ingestions",
+  "mechanic_context",
+  "portability_ids"
+ ],
+ "challenge_reach": [],
+ "mechanic_context": [],
+ "challenges": [
+  {
+   "challenge_id": "challenge-663e7a2aeb754c68b8238ca7219a093c",
+   "status": "INCONCLUSIVE",
+   "stopping_reason": "Incomplete or untriggered challenge pair",
+   "failed_checks": [],
+   "schedules": 1,
+   "pairs": 3,
+   "selection_refs": 1
+  }
+ ],
+ "challenge_trials": [
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ]
+ ],
+ "candidate_qualifications": [
+  [
+   "policy-9b989a726a1d4ac5b787d585d41585ef",
+   "CHALLENGE",
+   "INCOMPLETE",
+   "INCONCLUSIVE"
+  ]
+ ],
+ "campaign_proposals": [
+  [
+   "PROPOSED",
+   null,
+   null
+  ],
+  [
+   "NO_CHANGE",
+   "Review fixture has no further handwritten candidate.",
+   null
+  ]
+ ],
+ "recording_keys_new": {
+  "mechanic_context_records": true,
+  "challenge_selection_rule": true
+ },
+ "recording_challenge_selection_rule": {
+  "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+  "refused_selection_ids": [],
+  "rule": "Before a challenge pick runs any pair, FaultLab checks every fault target (tool and service) against the calls the agent under test itself made in the candidate arm's source-validation episodes of this campaign. A pick with a target the agent never called there is refused: no episode runs, and the refusal is recorded with its reason. The candidate policy's own hook reads are not agent calls. The Explorer's next request in the same challenge is a re-plan told why (one re-plan per refused pick; a refused re-plan gets none). Every request, re-plans included, is one of the challenge's existing 8 Explorer requests, charged and bounded exactly as before. The challenge itself is unchanged: 4 schedules, 3 fresh pairs each, every pair must fire its faults, and any candidate violation is a counterexample. If the candidate arm has no source-validation episode, no pick is refused."
+ },
+ "recording_mechanic_context_records": [],
+ "recording_selection_challenge_reach": [
+  [
+   true,
+   null
+  ]
+ ],
+ "lab_requests": [
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7940
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7978
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 6637
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7946
+  },
+  {
+   "role": "mechanic",
+   "kind": "candidate",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 11785
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 0,
+   "slot_request": null,
+   "dispatched_tokens": 7812
+  },
+  {
+   "role": "mechanic",
+   "kind": "candidate",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 21818
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7972
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8137
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8298
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8456
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8619
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8782
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 8943
+  }
+ ],
+ "max_mechanic_dispatched_tokens": 21818,
+ "max_explorer_dispatched_tokens": 8943,
+ "execution_errors": []
+}

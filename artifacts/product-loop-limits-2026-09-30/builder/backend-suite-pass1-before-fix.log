@@ -1,0 +1,135 @@
+........................................................................ [  2%]
+........................................................................ [  4%]
+........................................................................ [  6%]
+........................................................................ [  9%]
+......................................................................ss [ 11%]
+sssss.....................................................sssssss.sss... [ 13%]
+..ss.s..............................................................ssss [ 16%]
+sss............................................................s........ [ 18%]
+...............ssssssss................................................. [ 20%]
+...........................s....ss.......s....s..s...............s...... [ 23%]
+....s.s..............................sssssssssssssssssssssssssss........ [ 25%]
+........................................................................ [ 27%]
+........................................................................ [ 30%]
+.............s........ss................ssssssssssssssssssssssssssssssss [ 32%]
+sssssss................s................................................ [ 34%]
+........................................................................ [ 36%]
+........................................................................ [ 39%]
+........................................................................ [ 41%]
+.................sssss...s.............................................. [ 43%]
+..................................................................ssssss [ 46%]
+ssss...ssssssss.s....................................................... [ 48%]
+s...........s....sssssss......ssssssssssssssssss........................ [ 50%]
+..s........ssssssss.ssss................................................ [ 53%]
+........................................................................ [ 55%]
+........................................................................ [ 57%]
+........................................................................ [ 60%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 66%]
+........................................................................ [ 69%]
+........................................................................ [ 71%]
+......................................................F
+=================================== FAILURES ===================================
+_ test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x11a01db80>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1100c6120>
+
+    def test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests(owner, monkeypatch):
+        """What the sentence describes, through the real loop: two replays are listed, the first replay's source reaches the
+        candidate stage and its Mechanic uses all 4 candidate requests, so replay 2 and every Explorer slot never run."""
+        import app.lab.learning as learning
+        seeder = dev5_owner(owner)
+        for _ in range(3):
+            seeder.episode(case('dev-3'), failed=('C5',))           # a second 3/3 row: the list holds dev-3, then dev-5
+        mechanic_requests = []
+    
+        class Reproducer:
+            def __init__(self, *args): pass
+            async def source(self, current, source, recipe, incumbent, **kwargs):
+                counter = Counterexample(counterexample_id='counter-replay', campaign_id=current.campaign_id, agent_registration_id='fixture',
+                                         source_episode_id=source.episode_id, target_invariant='C3', scenario_hash=content_hash(recipe),
+                                         configuration_hash=current.configuration_hash, report_ref=source.episode_id,
+                                         verdict_ref='verdict-fixture', reproduced=True, target_violation_count=3, valid_count=3, attempted_count=3)
+                return counter, [source]
+            async def reduce(self, current, counter, recipe, incumbent, **kwargs):
+                return SimpleNamespace(result=SimpleNamespace(status='NO_REDUCTION', model_dump=lambda **_: {'status': 'NO_REDUCTION'}),
+                                       retained_recipe=recipe, trials=[])
+    
+        class Diagnostician:
+            def __init__(self, *args): pass
+            async def run(self, *args, **kwargs):
+                return SimpleNamespace(kind='POLICY_GAP', model_dump=lambda **_: {'kind': 'POLICY_GAP', 'provenance': 'offline_double'}), SimpleNamespace(trials=[])
+    
+        class Mechanic:
+            def __init__(self, *args): pass
+            async def propose(self, context, **kwargs):
+                mechanic_requests.append(context['source_context_id'])
+                if len(mechanic_requests) < 4:
+                    return f'mechanic-{len(mechanic_requests)}', None, ['not a policy']       # an invalid proposal: rejected
+                return 'mechanic-4', MechanicNoChange(no_change_reason='fixture'), ['{"no_change_reason":"fixture"}']
+    
+        async def export(*args, **kwargs): return None
+        for name, value in (('Reproducer', Reproducer), ('Diagnostician', Diagnostician), ('Mechanic', Mechanic), ('export_incident', export)):
+            monkeypatch.setattr(learning, name, value)
+>       campaign, _, runner, selections = run_v4(owner, c701, mode='gain', monkeypatch=monkeypatch)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:262: in run_v4
+    ledger, runner, selections = flow.run(owner, campaign, answer, mode=mode)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:101: in run
+    asyncio.run(run_learning_cycle(owner, campaign, runner))
+../../../../.pyenv/versions/3.12.8/lib/python3.12/asyncio/runners.py:194: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/asyncio/base_events.py:686: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+app/lab/learning.py:241: in run_learning_cycle
+    proposal_context,compaction_ref=loop_limits.fit_request(store,mechanic,proposal_context,request_kind='mechanic_proposal',campaign_id=id,counterexample=counter,extra=size)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/loop_limits.py:291: in fit_request
+    full = bound(context)
+           ^^^^^^^^^^^^^^
+app/lab/loop_limits.py:290: in <lambda>
+    bound = lambda value: mechanic_request_bound(mechanic, prompt, adapter, value)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mechanic = <test_discovery_v4_review_fixes.test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests.<locals>.Mechanic object at 0x1106d72f0>
+prompt = 'mechanic.md'
+adapter = TypeAdapter(Union[MechanicCandidate, MechanicNoChange])
+context = {'campaign_id': 'campaign-ff84e0cdb7eb43d8b7506f5317157c7b', 'source_context_id': '1d54b0af65748d106bf98136d2ccb5d3df197160f26027946fd1d8ba7b65f506', 'parent_version': 'policy-v0', 'target_invariant': 'C3', ...}
+
+    def mechanic_request_bound(mechanic, prompt, adapter, context):
+        """The Mechanic's own first-turn admission count for this context (app/agents/mechanic.py _generate, attempt 0).
+    
+        Same system prompt, same user message (context plus output_schema, canonical JSON), same model resolution and
+        the same frozen tokenizer (app.contracts.tokens.input_token_bound).
+        """
+        from app.agents.mechanic import PROMPTS
+        from app.contracts.tokens import input_token_bound
+        full = {**context, 'output_schema': adapter.json_schema()}
+        messages = [{'role': 'system', 'content': (PROMPTS / prompt).read_text()}, {'role': 'user', 'content': canonical_json(full)}]
+>       role_model = getattr(mechanic.provider, 'role_model', None)
+                             ^^^^^^^^^^^^^^^^^
+E       AttributeError: 'Mechanic' object has no attribute 'provider'
+
+app/lab/loop_limits.py:106: AttributeError
+=============================== warnings summary ===============================
+../.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 2106 passed, 180 skipped, 1 warning in 662.42s (0:11:02)

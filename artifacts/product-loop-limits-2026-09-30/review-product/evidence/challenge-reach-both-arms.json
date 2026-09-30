@@ -1,0 +1,364 @@
+{
+ "v2d": {
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "challenge_status": "INCONCLUSIVE",
+  "stopping_reason": "Incomplete or untriggered challenge pair",
+  "rule_basis": {
+   "episode_ids": [
+    "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+    "episode-18db8ac658a8457a82640330a8322065",
+    "episode-3509a8159cd349a8b3425b1b645f9c81"
+   ],
+   "agent": [
+    "get_order:orders",
+    "update_order:orders"
+   ],
+   "policy_only": [
+    "get_operation_status:orders"
+   ]
+  },
+  "source_validation_calls_B0_incumbent": {
+   "episode-b1380110912641cb9e6cff6a1df52e98": [
+    "actor:get_operation_status:notifications",
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ],
+   "episode-20a02fd2b3f3474d98e2f575016b48eb": [
+    "actor:get_operation_status:notifications",
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ],
+   "episode-c0799a83ef81474d93ca00dc5de0d954": [
+    "actor:get_operation_status:notifications",
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ]
+  },
+  "source_validation_calls_L_candidate": {
+   "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd": [
+    "actor:get_order:orders",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ],
+   "episode-18db8ac658a8457a82640330a8322065": [
+    "actor:get_order:orders",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ],
+   "episode-3509a8159cd349a8b3425b1b645f9c81": [
+    "actor:get_order:orders",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ]
+  },
+  "picks": [
+   {
+    "selection": "selection-8903196f45104e089a49895723c82baa",
+    "targets": [
+     "update_order:orders"
+    ],
+    "rule_decision": "SELECTED",
+    "unreached": [],
+    "fault_fired_in_challenge_by_arm": {
+     "B0": [
+      true,
+      true,
+      true
+     ],
+     "L": [
+      true,
+      true,
+      true
+     ]
+    },
+    "challenge_calls": {
+     "B0:21ca0c": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:41fb5c": [
+      "actor:get_operation_status:notifications",
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:00d1a4": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "B0:746452": [
+      "actor:get_operation_status:notifications",
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "B0:4e19bd": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:ddb3d8": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ]
+    }
+   },
+   {
+    "selection": "selection-d45382a71853432a8467d4b6dedc6844",
+    "targets": [
+     "update_order:orders"
+    ],
+    "rule_decision": "SELECTED",
+    "unreached": [],
+    "fault_fired_in_challenge_by_arm": {
+     "B0": [
+      true,
+      true,
+      true
+     ],
+     "L": [
+      true,
+      true,
+      true
+     ]
+    },
+    "challenge_calls": {
+     "B0:9621c1": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "L:75ad32": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ],
+     "L:222224": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ],
+     "B0:730a0b": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "B0:f04199": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "L:eb14ac": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ]
+    }
+   },
+   {
+    "selection": "selection-49a45d29ee514a8784e484863a3ed804",
+    "targets": [
+     "get_operation_status:orders"
+    ],
+    "rule_decision": "REFUSED_UNREACHED",
+    "unreached": [
+     "get_operation_status:orders"
+    ],
+    "fault_fired_in_challenge_by_arm": {
+     "B0": [
+      false,
+      false,
+      true
+     ],
+     "L": [
+      false,
+      false,
+      false
+     ]
+    },
+    "challenge_calls": {
+     "B0:043fe6": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:58517d": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:611a16": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "B0:94f3f5": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "B0:e4c7d7": [
+      "actor:get_operation_status:notifications",
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ],
+     "L:010d80": [
+      "actor:get_order:orders",
+      "actor:send_confirmation:notifications",
+      "actor:update_order:orders"
+     ]
+    }
+   }
+  ]
+ },
+ "v3": {
+  "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+  "challenge_status": "COUNTEREXAMPLE_FOUND",
+  "stopping_reason": "Candidate violation returned as development feedback",
+  "rule_basis": {
+   "episode_ids": [
+    "episode-b9506a27e84a40faa213ab60fe352a9e",
+    "episode-d336a79a2a45457485cba81fef769a80",
+    "episode-7bcc569056414c299df8515a6405655c"
+   ],
+   "agent": [
+    "get_operation_status:orders",
+    "get_order:orders",
+    "send_confirmation:notifications",
+    "update_order:orders"
+   ],
+   "policy_only": []
+  },
+  "source_validation_calls_B0_incumbent": {
+   "episode-a95cf210a05c483793ceb72a6112b892": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ],
+   "episode-b182751b1a3c402bb4f1992b83499136": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:update_order:orders"
+   ],
+   "episode-9d516baff553416d9bd30340f719a64d": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ],
+   "episode-5bc703258d454fe69cecc1af875d19d5": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders"
+   ],
+   "episode-66a5fa02ab1c40bcbc33462e90499525": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:update_order:orders"
+   ],
+   "episode-3d265ff7b8354e6d9b2f92b355698164": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:update_order:orders"
+   ]
+  },
+  "source_validation_calls_L_candidate": {
+   "episode-b9506a27e84a40faa213ab60fe352a9e": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ],
+   "episode-d336a79a2a45457485cba81fef769a80": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ],
+   "episode-7bcc569056414c299df8515a6405655c": [
+    "actor:get_operation_status:orders",
+    "actor:get_order:orders",
+    "actor:send_confirmation:notifications",
+    "actor:update_order:orders",
+    "policy:get_operation_status:orders"
+   ]
+  },
+  "picks": [
+   {
+    "selection": "selection-ba239aa8af4d4b4daed13f139121b23f",
+    "targets": [
+     "update_order:orders"
+    ],
+    "rule_decision": "SELECTED",
+    "unreached": [],
+    "fault_fired_in_challenge_by_arm": {
+     "B0": [
+      true,
+      true,
+      true
+     ],
+     "L": [
+      true,
+      true,
+      true
+     ]
+    },
+    "challenge_calls": {
+     "B0:5e555e": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "L:06fc6c": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ],
+     "L:480386": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ],
+     "B0:e205dd": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "B0:0db12b": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders"
+     ],
+     "L:ecd622": [
+      "actor:get_operation_status:orders",
+      "actor:get_order:orders",
+      "actor:update_order:orders",
+      "policy:get_operation_status:orders"
+     ]
+    }
+   }
+  ]
+ }
+}

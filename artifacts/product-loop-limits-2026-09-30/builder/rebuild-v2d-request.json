@@ -1,0 +1,162 @@
+{
+  "store_copy": "/Users/shree/FaultLab_Scratch/loop-limits-builder/lab.sqlite3",
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "mechanic_model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "input_token_limit": 32000,
+  "episode_counts": {
+    "source": 1,
+    "reproduction": 3,
+    "reduction_trials": 9,
+    "intervention": 6,
+    "source_validation": 6,
+    "challenge_trials": 18,
+    "challenge_evidence": 18
+  },
+  "first_request_bound": 14304,
+  "first_request_provider_input_tokens": 14168,
+  "second_request_bound": 33223,
+  "second_request_bound_matches_refused_33223": true,
+  "second_request_tokens_by_field": {
+    "challenge_counterexamples": 14136,
+    "challenge_counterexamples[0].evidence": 12047,
+    "development_evidence": 11030,
+    "development_evidence.checks": 5819,
+    "runtime_contract": 2784,
+    "development_evidence.episodes": 2726,
+    "development_evidence.results": 2050,
+    "challenge_counterexamples[0].trial_outcomes": 1432,
+    "reduction": 1184,
+    "source_validation_feedback": 1070,
+    "candidate_history": 436,
+    "diagnostic": 404,
+    "source_validation_feedback[0].trial_outcomes": 346,
+    "development_evidence.reports": 281,
+    "challenge_counterexamples[0].candidate": 257,
+    "source_validation_feedback[0].candidate": 257,
+    "challenge_counterexamples[0].tested_fault_specs": 217,
+    "source_validation_feedback[0].verified_episode_ids": 144,
+    "development_evidence.interpretation": 136,
+    "retained_fault_spec": 90,
+    "source_context_id": 41,
+    "source_validation_feedback[0].source_context_id": 41,
+    "challenge_counterexamples[0].qualification_ref": 40,
+    "source_validation_feedback[0].qualification_ref": 40,
+    "challenge_counterexamples[0].candidate_hash": 39,
+    "source_validation_feedback[0].candidate_hash": 39,
+    "source_validation_feedback[0].reason": 39,
+    "challenge_counterexamples[0].candidate_version": 28,
+    "source_validation_feedback[0].candidate_version": 28,
+    "source_validation_feedback[0].batch_id": 26,
+    "campaign_id": 25,
+    "challenge_counterexamples[0].challenge_id": 25,
+    "source_validation_feedback[0].campaign_id": 25,
+    "source_validation_feedback[0].qualification_candidate_violation_episode_ids": 14,
+    "challenge_counterexamples[0].reason": 12,
+    "source_validation_feedback[0].candidate_violation_episode_ids": 12,
+    "source_validation_feedback[0].incumbent_target_failures": 9,
+    "source_validation_feedback[0].source_reproduction": 9,
+    "source_validation_feedback[0].valid_complete_pairs": 8,
+    "parent_version": 7,
+    "target_invariant": 7,
+    "challenge_counterexamples[0].decision": 7,
+    "challenge_counterexamples[0].fault_spec": 7,
+    "source_validation_feedback[0].target_invariant": 7,
+    "challenge_counterexamples[0].status": 6,
+    "challenge_counterexamples[0].failed_checks": 6,
+    "challenge_counterexamples[0].fixture_id": 6,
+    "source_validation_feedback[0].classification": 6,
+    "source_validation_feedback[0].decision": 6,
+    "source_validation_feedback[0].required_pairs": 6
+  },
+  "second_request_evidence_shape": {
+    "development_evidence_episodes": 16,
+    "development_evidence_result_rows": 16,
+    "challenge_evidence_episodes": 18,
+    "challenge_evidence_result_rows": 16,
+    "challenge_trial_outcome_groups": 10
+  },
+  "compaction": {
+    "mechanic_request_bound_before": 33223,
+    "fits": true,
+    "bound_after": 27990,
+    "target": 28000,
+    "stages_applied": [
+      "IDENTICAL_CLEAN_ROWS",
+      "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+    ],
+    "attempts": [
+      {
+        "stages_applied": [
+          "IDENTICAL_CLEAN_ROWS"
+        ],
+        "episode_rows_omitted": 2,
+        "request_tokens": 33605
+      },
+      {
+        "stages_applied": [
+          "IDENTICAL_CLEAN_ROWS",
+          "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+        ],
+        "episode_rows_omitted": 15,
+        "request_tokens": 27990
+      }
+    ],
+    "blocks": [
+      {
+        "field": "development_evidence",
+        "episodes_total": 16,
+        "episodes_in_full": 12,
+        "episodes_omitted": 4,
+        "omitted_by_stage": {
+          "IDENTICAL_CLEAN_ROWS": 0,
+          "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 4
+        }
+      },
+      {
+        "field": "challenge_counterexamples[0].evidence",
+        "episodes_total": 18,
+        "episodes_in_full": 7,
+        "episodes_omitted": 11,
+        "omitted_by_stage": {
+          "IDENTICAL_CLEAN_ROWS": 2,
+          "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 9
+        }
+      }
+    ],
+    "statement": "This request was compacted under faultlab-mechanic-context/v2-bounded: in full it was 33,223 input tokens, over the 32,000-token model input limit. Stages applied, in order: (1) a clean episode whose rows and outcome repeat an earlier clean episode is listed by episode_id (same_as); (2) one clean episode is kept in full per recipe, arm and outcome; the others are listed by episode_id (represented_by). The observation, report and check rows of 15 clean episode(s) were omitted (development_evidence: 4 of 16 episodes omitted; challenge_counterexamples[0].evidence: 11 of 18 episodes omitted); each omitted episode is still listed by episode_id with its own outcome in its block's compaction.omitted, and every trial_outcomes group is unchanged. The source episode, its reproductions and every episode with a failed check are kept in full. Nothing else in this request was changed.",
+    "every_stage_forced": [
+      {
+        "stages_applied": [
+          "IDENTICAL_CLEAN_ROWS"
+        ],
+        "episode_rows_omitted": 2,
+        "request_tokens": 33604
+      },
+      {
+        "stages_applied": [
+          "IDENTICAL_CLEAN_ROWS",
+          "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP"
+        ],
+        "episode_rows_omitted": 15,
+        "request_tokens": 27989
+      },
+      {
+        "stages_applied": [
+          "IDENTICAL_CLEAN_ROWS",
+          "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+          "NO_CLEAN_EPISODE_ROWS"
+        ],
+        "episode_rows_omitted": 24,
+        "request_tokens": 21095
+      }
+    ],
+    "statement_in_request": true,
+    "bound_after_recount": 27990,
+    "other_fields_unchanged": true,
+    "challenge_feedback_fields_unchanged": true,
+    "source_and_failed_kept": true,
+    "kept_in_full": 19,
+    "failed_check_episodes": 10,
+    "every_episode_kept_or_named": true
+  }
+}

@@ -1,0 +1,18 @@
+functions: 30/30 identical backup-vs-now; changed: []
+files: 20/20 identical backup-vs-now; changed: []
+fingerprints: 9/13 identical backup-vs-now; changed: ['algorithm_hash', 'runtime_hash', 'source_hash', 'tree_lab']
+backup export == builder before.json: True
+now == builder after.json: True
+service_hash 3ce5bcd2 same
+contract_hash 6f9d7783 same
+interpreter_hash 6da0714a same
+scorer_hash 19de811c same
+adapter_hash 0cd810b7 same
+actor_prompt_hash 12eabe7f same
+tree_referee e3f3f9a3 same
+tree_telemetry f58806b7 same
+dependency_lock_hash dc19e860 same
+runtime_hash ee2d1df9 -> 4d0d7914
+algorithm_hash ab296a32 -> 3bc86d57
+source_hash 2597bffb -> abf010c4
+tree_lab cefc3b90 -> 10569399

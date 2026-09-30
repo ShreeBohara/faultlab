@@ -1,0 +1,330 @@
+[
+ {
+  "store_copy": "/Users/shree/FaultLab_Scratch/loop-limits-builder/lab.sqlite3",
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "challenge_id": "challenge-559c5dd710564bac8530eb6c982c6f41",
+  "status": "INCONCLUSIVE",
+  "stopping_reason": "Incomplete or untriggered challenge pair",
+  "candidate_arm_source_validation_episodes": 3,
+  "called_by_agent": [
+   "get_order:orders",
+   "update_order:orders"
+  ],
+  "called_by_anyone": [
+   "get_operation_status:orders",
+   "get_order:orders",
+   "update_order:orders"
+  ],
+  "per_episode_calls": [
+   {
+    "episode_id": "episode-370e68d0dc0d4364bbfdb6e03fc9b1cd",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders"
+    ]
+   },
+   {
+    "episode_id": "episode-18db8ac658a8457a82640330a8322065",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders"
+    ]
+   },
+   {
+    "episode_id": "episode-3509a8159cd349a8b3425b1b645f9c81",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders"
+    ]
+   }
+  ],
+  "picks": [
+   {
+    "selection_ref": "selection-8903196f45104e089a49895723c82baa",
+    "targets": [
+     "update_order:orders"
+    ],
+    "kinds": [
+     "F1"
+    ],
+    "refused_under_agent_calls": [],
+    "refused_under_any_call": [],
+    "found_counterexample": false,
+    "trials": [
+     {
+      "episode_id": "episode-8ab25718d8eb4e6cb3dffd337b21ca0c",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-ac798836d43443079ddc9d318a41fb5c",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-db899faf20cf41bfac6a790c7f00d1a4",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-668eb0b7ab37437ab9517b20a8746452",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-f49b04a7be8449a5984b4d1d2c4e19bd",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-32b25b33a8f745ea8e6f95c783ddb3d8",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     }
+    ]
+   },
+   {
+    "selection_ref": "selection-d45382a71853432a8467d4b6dedc6844",
+    "targets": [
+     "update_order:orders"
+    ],
+    "kinds": [
+     "F2"
+    ],
+    "refused_under_agent_calls": [],
+    "refused_under_any_call": [],
+    "found_counterexample": false,
+    "trials": [
+     {
+      "episode_id": "episode-92157dceaff3480898e9ac7fc19621c1",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-f711bc80445c4c179f721ab60f75ad32",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-8a806beb143d4f97958cd4b5b2222224",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-833aca4d48ce42b9b3c0c4737d730a0b",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-3c4f417debd94f339086fe384cf04199",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-9552b9c12d914f2cb07af4fb83eb14ac",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": []
+     }
+    ]
+   },
+   {
+    "selection_ref": "selection-49a45d29ee514a8784e484863a3ed804",
+    "targets": [
+     "get_operation_status:orders"
+    ],
+    "kinds": [
+     "F4"
+    ],
+    "refused_under_agent_calls": [
+     "get_operation_status:orders"
+    ],
+    "refused_under_any_call": [],
+    "found_counterexample": false,
+    "trials": [
+     {
+      "episode_id": "episode-3945fcc9950948a3a5e68a46fd043fe6",
+      "arm": "B0",
+      "fault_triggered": false,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-1517b6c1473842838a98efe97958517d",
+      "arm": "L",
+      "fault_triggered": false,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-86968f43730f4424b8cd489fd1611a16",
+      "arm": "L",
+      "fault_triggered": false,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-141d00582c7b46e282f06a61a294f3f5",
+      "arm": "B0",
+      "fault_triggered": false,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-be13be170b58499d9010309ba4e4c7d7",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": []
+     },
+     {
+      "episode_id": "episode-d90cc1531c684617b424d46bf9010d80",
+      "arm": "L",
+      "fault_triggered": false,
+      "failed_checks": []
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "store_copy": "/Users/shree/FaultLab_Scratch/loop-limits-builder/native-learn-v3.sqlite3",
+  "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+  "challenge_id": "challenge-2e7d5b9698b3471a9dfdafaa940bc7a0",
+  "status": "COUNTEREXAMPLE_FOUND",
+  "stopping_reason": "Candidate violation returned as development feedback",
+  "candidate_arm_source_validation_episodes": 3,
+  "called_by_agent": [
+   "get_operation_status:orders",
+   "get_order:orders",
+   "send_confirmation:notifications",
+   "update_order:orders"
+  ],
+  "called_by_anyone": [
+   "get_operation_status:orders",
+   "get_order:orders",
+   "send_confirmation:notifications",
+   "update_order:orders"
+  ],
+  "per_episode_calls": [
+   {
+    "episode_id": "episode-b9506a27e84a40faa213ab60fe352a9e",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders",
+     "policy:get_operation_status:orders",
+     "actor:get_operation_status:orders",
+     "actor:send_confirmation:notifications"
+    ]
+   },
+   {
+    "episode_id": "episode-d336a79a2a45457485cba81fef769a80",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders",
+     "policy:get_operation_status:orders",
+     "actor:get_operation_status:orders",
+     "actor:send_confirmation:notifications"
+    ]
+   },
+   {
+    "episode_id": "episode-7bcc569056414c299df8515a6405655c",
+    "calls": [
+     "actor:get_order:orders",
+     "actor:update_order:orders",
+     "policy:get_operation_status:orders",
+     "policy:get_operation_status:orders",
+     "actor:get_operation_status:orders",
+     "actor:send_confirmation:notifications"
+    ]
+   }
+  ],
+  "picks": [
+   {
+    "selection_ref": "selection-ba239aa8af4d4b4daed13f139121b23f",
+    "targets": [
+     "update_order:orders"
+    ],
+    "kinds": [
+     "F2"
+    ],
+    "refused_under_agent_calls": [],
+    "refused_under_any_call": [],
+    "found_counterexample": true,
+    "trials": [
+     {
+      "episode_id": "episode-fcbc376103b4451eb47ed2b1245e555e",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     },
+     {
+      "episode_id": "episode-fc5da838a33743f295f086442506fc6c",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     },
+     {
+      "episode_id": "episode-9d77fa5c5e8342a4b3510bfd13480386",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     },
+     {
+      "episode_id": "episode-ccc0dfe77c3c4fe696a3f90c0ce205dd",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     },
+     {
+      "episode_id": "episode-64463f9796224dcc92961f49610db12b",
+      "arm": "B0",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     },
+     {
+      "episode_id": "episode-61dec8dfc6434db08cc2836df9ecd622",
+      "arm": "L",
+      "fault_triggered": true,
+      "failed_checks": [
+       "C5",
+       "C6",
+       "C7"
+      ]
+     }
+    ]
+   }
+  ]
+ }
+]

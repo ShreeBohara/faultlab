@@ -1,0 +1,14 @@
+Start refuses the withdrawn rule: The challenge-pick rule faultlab-challenge-selection/v2-candidate-reach was withdrawn before any live run: it refuses ch
+challenge PASSED_OBSERVED 12 pairs | pick statuses []
+compacted record 53228 -> 13784 stages ['IDENTICAL_CLEAN_ROWS', 'ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP']
+recording keys present (new plan): []
+scratch removed: True
+Traceback (most recent call last):
+  File "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-loop-limits-2026-09-30/verify/spot/api_contract_check_verifier.py", line 221, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-loop-limits-2026-09-30/verify/spot/api_contract_check_verifier.py", line 200, in main
+    print('mechanic records (new plan):', [(r['outcome'], r.get('stage')) for r in recording['mechanic_context_records']])
+                                                                                   ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'mechanic_context_records'
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

@@ -1,0 +1,4 @@
+functions: 30/30 identical; changed: []
+files: 20/20 identical; changed: []
+fingerprints: 9/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'source_hash', 'tree_lab']
+(before.json = the builder's snapshot of the backup tree ee2d1df9; after.json = this fixer tree)

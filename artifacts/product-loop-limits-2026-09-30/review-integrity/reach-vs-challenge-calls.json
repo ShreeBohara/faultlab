@@ -1,0 +1,164 @@
+[
+ {
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "candidate_agent_targets_in_challenge_episode_counts": {
+   "get_operation_status:notifications": 1,
+   "get_operation_status:orders": 4,
+   "get_order:orders": 9,
+   "send_confirmation:notifications": 6,
+   "update_order:orders": 9
+  },
+  "candidate_arm_challenge_episodes": 9,
+  "challenge_id": "challenge-559c5dd710564bac8530eb6c982c6f41",
+  "picks": [
+   {
+    "kinds": [
+     "F1"
+    ],
+    "per_arm": {
+     "B0": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     },
+     "L": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     }
+    },
+    "rule_decision": "SELECTED",
+    "selection_ref": "selection-8903196f45104e089a49895723c82baa",
+    "targets": [
+     "update_order:orders"
+    ],
+    "unreached": []
+   },
+   {
+    "kinds": [
+     "F2"
+    ],
+    "per_arm": {
+     "B0": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     },
+     "L": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     }
+    },
+    "rule_decision": "SELECTED",
+    "selection_ref": "selection-d45382a71853432a8467d4b6dedc6844",
+    "targets": [
+     "update_order:orders"
+    ],
+    "unreached": []
+   },
+   {
+    "kinds": [
+     "F4"
+    ],
+    "per_arm": {
+     "B0": {
+      "agent_called_each_target_in_episodes": {
+       "get_operation_status:orders": 1
+      },
+      "episodes": 3,
+      "fault_triggered": 1
+     },
+     "L": {
+      "agent_called_each_target_in_episodes": {},
+      "episodes": 3,
+      "fault_triggered": 0
+     }
+    },
+    "rule_decision": "REFUSED_UNREACHED",
+    "selection_ref": "selection-49a45d29ee514a8784e484863a3ed804",
+    "targets": [
+     "get_operation_status:orders"
+    ],
+    "unreached": [
+     "get_operation_status:orders"
+    ]
+   }
+  ],
+  "rule_basis_agent_targets": [
+   "get_order:orders",
+   "update_order:orders"
+  ],
+  "rule_basis_episode_count": 3,
+  "rule_basis_policy_only": [
+   "get_operation_status:orders"
+  ],
+  "status": "INCONCLUSIVE",
+  "stopping_reason": "Incomplete or untriggered challenge pair",
+  "store_copy": "/Users/shree/FaultLab_Scratch/review-integrity/v2b.sqlite3",
+  "targets_rule_would_refuse_but_candidate_agent_called_in_this_challenge": [
+   "get_operation_status:notifications",
+   "get_operation_status:orders",
+   "send_confirmation:notifications"
+  ]
+ },
+ {
+  "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+  "candidate_agent_targets_in_challenge_episode_counts": {
+   "get_operation_status:orders": 3,
+   "get_order:orders": 3,
+   "update_order:orders": 3
+  },
+  "candidate_arm_challenge_episodes": 3,
+  "challenge_id": "challenge-2e7d5b9698b3471a9dfdafaa940bc7a0",
+  "picks": [
+   {
+    "kinds": [
+     "F2"
+    ],
+    "per_arm": {
+     "B0": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     },
+     "L": {
+      "agent_called_each_target_in_episodes": {
+       "update_order:orders": 3
+      },
+      "episodes": 3,
+      "fault_triggered": 3
+     }
+    },
+    "rule_decision": "SELECTED",
+    "selection_ref": "selection-ba239aa8af4d4b4daed13f139121b23f",
+    "targets": [
+     "update_order:orders"
+    ],
+    "unreached": []
+   }
+  ],
+  "rule_basis_agent_targets": [
+   "get_operation_status:orders",
+   "get_order:orders",
+   "send_confirmation:notifications",
+   "update_order:orders"
+  ],
+  "rule_basis_episode_count": 3,
+  "rule_basis_policy_only": [],
+  "status": "COUNTEREXAMPLE_FOUND",
+  "stopping_reason": "Candidate violation returned as development feedback",
+  "store_copy": "/Users/shree/FaultLab_Scratch/review-integrity/v3.sqlite3",
+  "targets_rule_would_refuse_but_candidate_agent_called_in_this_challenge": []
+ }
+]

@@ -1,0 +1,22 @@
+{
+ "reach:bd28d2a9": {
+  "artifact_kind": "incident_fixture",
+  "has_mechanic_context_records": true,
+  "n_mechanic_context_records": 0,
+  "has_challenge_selection_rule": true,
+  "run_plan_rules": [
+   "mechanic_context",
+   "challenge_selection"
+  ]
+ },
+ "compact:4fb3f2e7": {
+  "artifact_kind": "incident_fixture",
+  "has_mechanic_context_records": true,
+  "n_mechanic_context_records": 0,
+  "has_challenge_selection_rule": true,
+  "run_plan_rules": [
+   "mechanic_context",
+   "challenge_selection"
+  ]
+ }
+}

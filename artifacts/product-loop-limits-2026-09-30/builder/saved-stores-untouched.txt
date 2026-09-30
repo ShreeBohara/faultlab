@@ -1,0 +1,8 @@
+saved stores (read-only; sha256 now):
+118b04a405b0b599816785051ada01f0abf1fbd2e50052e1406329d2144c1795  /Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3
+e1b43edcf29b98bdf6981d4359ca259c678c9cc76d8536982471f8ba369ef753  /Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3
+native-v2b sha256 at start of this stage: 118b04a405b0b599816785051ada01f0abf1fbd2e50052e1406329d2144c1795
+-rw-r--r--@  1 shree  staff  11390976 Sep 29 23:41 lab.sqlite3
+-rw-r--r--@  1 shree  staff     32768 Sep 29 23:41 lab.sqlite3-shm
+-rw-r--r--@  1 shree  staff         0 Sep 29 23:41 lab.sqlite3-wal
+-rw-------@  1 shree  staff         0 Sep 29 20:13 lab.sqlite3.coordinator.lock

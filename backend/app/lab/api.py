@@ -299,7 +299,7 @@ def create_router(get_coordinator, *, get_settings=None):
     def experiments(id:str):
         campaign=c().get(id)
         counters=records('counterexamples',id); joined=[]
-        history_summary=None; replay_sources=None
+        history_summary=None; replay_sources=None; plan=None
         if counters:
             from app.lab.run_plans import read_run_plan
             try: plan=read_run_plan(c().store,campaign)['plan']
@@ -329,7 +329,16 @@ def create_router(get_coordinator, *, get_settings=None):
         # Evidence and ingestion records are keyed by episode_id (evidence.py), so
         # fetch this campaign's rows by key instead of parsing every campaign's.
         evidence=[{**{k:d[k] for k in ('episode_id','source','root_call_id','child_call_ids','source_project')},'root_call_url':'https://wandb.ai/'+d['source_project']+'/weave/calls/'+d['root_call_id'] if d['source']=='weave_verified' and d['root_call_id'] and d['source_project'] else None} for d in c().store.get_records('evidence',episodes) if d['episode_id'] in episodes]
-        return {'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in c().store.get_records('ingestions',episodes) if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
+        result={'counterexamples':joined,'evidence':evidence,'ingestions':[d for d in c().store.get_records('ingestions',episodes) if d['episode_id'] in episodes],'portability_ids':[d['portability_id'] for d in records('portability_campaigns',id)]}
+        # The two loop-limit rules (app.lab.loop_limits): only a campaign whose plan declares one gets its list, so every
+        # older campaign's response keeps its exact fields. Every source needs a counterexample first, so no counterexample
+        # means neither rule has run.
+        from app.lab import loop_limits
+        if plan is not None and plan.get('challenge_selection') is not None:
+            result['challenge_reach']=loop_limits.campaign_challenge_reach(c().store,id)
+        if plan is not None and plan.get('mechanic_context') is not None:
+            result['mechanic_context']=loop_limits.campaign_mechanic_context(c().store,id)
+        return result
     @router.get('/campaigns/{id}/search-attempts')
     @guarded
     def search_attempts(id:str):

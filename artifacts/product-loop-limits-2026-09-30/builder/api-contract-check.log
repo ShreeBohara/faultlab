@@ -1,0 +1,18 @@
+challenge PASSED_OBSERVED 12 pairs | pick statuses ['REFUSED_UNREACHED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED']
+compacted record 53225 -> 13734 stages ['IDENTICAL_CLEAN_ROWS', 'ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP']
+recording keys present: ['challenge_selection_rule', 'mechanic_context_records'] | refused selections ['selection-2a356dc897e64777992aa2cf1d332d9e']
+experiments-old keys: ['counterexamples', 'evidence', 'ingestions', 'portability_ids']
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/loop-limits-builder/contract/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:21:49
+   Duration  220ms (transform 121ms, setup 0ms, import 154ms, tests 3ms, environment 0ms)
+
+
+
+vitest exit 0
+scratch removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

@@ -1,0 +1,135 @@
+FaultLab fixer, loop limits (2026-09-30): failing-then-passing tests and negative controls. $0, offline.
+
+=== PART 1 - RED: new and changed backend tests run against the UNFIXED code (builder build; sha256 as at review end) ===
+2026-09-30T08:52:28Z
+E   AssertionError: assert {'episode_id'...m': 'B0', ...} == {'episode_id'...m': 'B0', ...}
+tests/lab/test_loop_limits_mechanic_context.py:169: AssertionError: assert {'episode_id'...m': 'B0', ...} == {'episode_id'...m': 'B0', ...}
+E   KeyError: 'group_example'
+tests/lab/test_loop_limits_mechanic_context.py:186: KeyError: 'group_example'
+E   AssertionError: assert ([] == ['v']
+tests/lab/test_loop_limits_mechanic_context.py:206: AssertionError: assert ([] == ['v']
+E   AssertionError: assert ['e0'] == ['e0', 'e2', 'e3']
+tests/lab/test_loop_limits_mechanic_context.py:224: AssertionError: assert ['e0'] == ['e0', 'e2', 'e3']
+E   ValueError: not enough values to unpack (expected 1, got 0)
+tests/lab/test_loop_limits_mechanic_context.py:467: ValueError: not enough values to unpack (expected 1, got 0)
+E   AssertionError: assert [('mechanic_p...PAIR', False)] == [('mechanic_p...SEND', False)]
+tests/lab/test_loop_limits_mechanic_context.py:494: AssertionError: assert [('mechanic_p...PAIR', False)] == [('mechanic_p...SEND', False)]
+E   AssertionError: assert [('mechanic_d...PAIR', False)] == [('mechanic_d...SEND', False)]
+tests/lab/test_loop_limits_mechanic_context.py:494: AssertionError: assert [('mechanic_d...PAIR', False)] == [('mechanic_d...SEND', False)]
+E   AssertionError: assert ('1 candidate or diagnosis search ended before it finished under ' + 'faultlab-mechanic-context/v2-bounded') in 'No verified strict improvement within declared development bounds; all outcomes retained'
+tests/lab/test_loop_limits_mechanic_context.py:508: AssertionError: assert ('1 candidate or diagnosis search ended before it finished under ' + 'faultlab-mechanic-context/v2-bounded') in 'No verified strict improvement within declared development bounds; all outcomes retained'
+E   AssertionError: assert 'challenge_selection' not in {'schema_version': 'faultlab-run-plan/v1', 'campaign_id': 'campaign-67551560e21d43e883d3bac56486a704', 'setup_hash': '...a92cf169d88b9b58025fb69a9f342b973549a467068c8fd8a58088c0', 'task_definition_id': 'orders.upgrade_then_confirm/v1', ...}
+tests/lab/test_loop_limits_challenge_reach.py:223: AssertionError: assert 'challenge_selection' not in {'schema_version': 'faultlab-run-plan/v1', 'campaign_id': 'campaign-67551560e21d43e883d3bac56486a704', 'setup_hash': '...a92cf169d88b9b58025fb69a9f342b973549a467068c8fd8a58088c0', 'task_definition_id': 'orders.upgrade_then_conf
+E   assert 'challenge_selection' not in {'manifest_hash': 'c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1', 'search_space': {'maximum_primit... uses up the campaign's candidate requests, discovery ends before any later replay or Explorer slot runs.", ...}], ...}
+tests/lab/test_loop_limits_plans.py:26: assert 'challenge_selection' not in {'manifest_hash': 'c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1', 'search_space': {'maximum_primit... uses up the campaign's candidate requests, discovery ends before any later replay or Explorer slot runs.", ...}], ...}
+E   Failed: DID NOT RAISE StoreConflict
+tests/lab/test_loop_limits_plans.py:66: Failed: DID NOT RAISE StoreConflict
+E   AssertionError: Regex pattern did not match.
+tests/lab/test_loop_limits_plans.py:101: AssertionError: Regex pattern did not match.
+E   AssertionError: assert ('mechanic_context' in {'counterexamples': [{'counterexample': {'campaign_id': 'campaign-ee9bc1770f644fdf98f10f4133bb9b28', 'counterexample_i... None, 'retained_recipe': None, 'reduction': None, ...}], 'evidence': [], 'ingestions': [], 'portability_ids': [], ...} and 'challenge_reach' not in {'countere
+tests/lab/test_loop_limits_plans.py:165: AssertionError: assert ('mechanic_context' in {'counterexamples': [{'counterexample': {'campaign_id': 'campaign-ee9bc1770f644fdf98f10f4133bb9b28', 'counterexample_i... None, 'retained_recipe': None, 'reduction': None, ...}], 'evidence': [], 'ingestions': [], 'portability_ids': [], ...} an
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_an_outcome_that_differs_inside_a_recipe_keeps_its_own_full_example
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_stage_two_names_a_group_example_and_says_the_omitted_rows_can_differ_from_it
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_an_episode_whose_trial_outcome_is_violation_is_always_kept
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_stage_two_never_lets_one_policy_or_purpose_stand_for_another
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_a_refused_format_repair_turn_leaves_a_rejected_proposal_in_the_candidate_history
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_proposal]
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_diagnosis]
+FAILED tests/lab/test_loop_limits_mechanic_context.py::test_a_search_cut_short_by_the_size_rule_is_named_in_the_campaigns_final_reason
+FAILED tests/lab/test_loop_limits_challenge_reach.py::test_under_a_new_learn_plan_a_pick_refusal_cannot_turn_a_counterexample_into_a_pass
+FAILED tests/lab/test_loop_limits_plans.py::test_run_options_and_every_new_learn_plan_declare_the_mechanic_rule_only_and_baseline_plans_neither
+FAILED tests/lab/test_loop_limits_plans.py::test_a_plan_declaring_the_withdrawn_challenge_rule_cannot_be_created_or_started
+FAILED tests/lab/test_loop_limits_plans.py::test_start_refuses_a_plan_whose_declared_rule_is_not_the_installed_one[challenge_selection-change1-withdrawn before any live run]
+FAILED tests/lab/test_loop_limits_plans.py::test_the_dashboard_projection_and_the_recording_show_both_rules_only_where_declared
+13 failed, 26 passed in 8.36s
+
+RED detail for HIGH-1 (assertions reordered so the challenge outcome is checked first):
+E   AssertionError: assert ('PASSED_OBSERVED', []) == ('COUNTEREXAM...OUND', ['C4'])
+tests/lab/test_loop_limits_challenge_reach.py:225: AssertionError: assert ('PASSED_OBSERVED', []) == ('COUNTEREXAM...OUND', ['C4'])
+FAILED tests/lab/test_loop_limits_challenge_reach.py::test_under_a_new_learn_plan_a_pick_refusal_cannot_turn_a_counterexample_into_a_pass
+1 failed in 0.82s
+
+RED: frontend unit tests (tests/loop-limits.test.tsx) against the UNFIXED dashboard code:
+   × shows both rules in a saved Learn plan, and says plainly when an older plan has neither 88ms
+   × tells the operator in the Learn setup form which rule every new Learn plan freezes (the Mechanic rule only) 25ms
+   × shows each checked challenge pick and each request-size record in the evidence panels 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/loop-limits.test.tsx > shows both rules in a saved Learn plan, and says plainly when an older plan has neither
+TestingLibraryElementError: Unable to find an element with the text: Not declared: every valid challenge pick runs its pairs, as before.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text m
+ FAIL  tests/loop-limits.test.tsx > tells the operator in the Learn setup form which rule every new Learn plan freezes (the Mechanic rule only)
+TestingLibraryElementError: Unable to find an element with the text: Every new Learn plan also freezes this rule:. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your mat
+ FAIL  tests/loop-limits.test.tsx > shows each checked challenge pick and each request-size record in the evidence panels
+TestingLibraryElementError: Unable to find an element with the text: /^Explorer request 3: Refused before any pair ran: this pick puts a fault on get_operation_status \(orders\)/. This could be because the text is broken up by multiple elements. In this case, 
+      Tests  3 failed | 2 passed (5)
+
+=== PART 2 - GREEN: the same tests after the fixes ===
+2026-09-30T08:58:29Z
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_filtered_summary_is_exactly_the_summary_of_the_kept_episodes_alone
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_stages_run_in_order_keep_the_source_and_every_failure_and_name_every_omitted_episode[17100-stages0-dev_kept0-challenge_kept0]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_stages_run_in_order_keep_the_source_and_every_failure_and_name_every_omitted_episode[10100-stages1-dev_kept1-challenge_kept1]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_stages_run_in_order_keep_the_source_and_every_failure_and_name_every_omitted_episode[6100-stages2-dev_kept2-challenge_kept2]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_request_that_cannot_fit_is_not_returned
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_an_outcome_that_differs_inside_a_recipe_keeps_its_own_full_example
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_stage_two_names_a_group_example_and_says_the_omitted_rows_can_differ_from_it
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_an_episode_whose_trial_outcome_is_violation_is_always_kept
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_stage_two_never_lets_one_policy_or_purpose_stand_for_another
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_the_bound_is_exactly_what_the_mechanic_admits[mechanic.md-adapter0-propose]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_the_bound_is_exactly_what_the_mechanic_admits[diagnosis.md-adapter1-diagnose]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_the_refused_v2d_request_rebuilds_exactly_and_fits_after_compaction_with_its_omission_statement
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_an_over_limit_candidate_request_is_compacted_and_sent_and_the_campaign_goes_on
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_candidate_request_that_cannot_fit_ends_that_search_without_error_and_is_never_sent
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_refused_format_repair_turn_ends_the_search_without_error
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_refused_format_repair_turn_leaves_a_rejected_proposal_in_the_candidate_history
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_proposal]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_diagnosis]
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_search_cut_short_by_the_size_rule_is_named_in_the_campaigns_final_reason
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_a_plan_saved_before_the_rule_keeps_todays_behaviour
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_an_over_limit_diagnosis_request_skips_that_source_without_error_and_is_never_sent
+PASSED tests/lab/test_loop_limits_mechanic_context.py::test_an_unsent_candidate_request_does_not_use_one_of_the_campaigns_candidate_requests
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_a_pick_on_a_tool_the_agent_never_called_is_refused_and_replanned_once_inside_the_budget
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_the_replan_is_inside_the_existing_eight_requests_and_a_refused_replan_gets_no_second_one
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_reachable_picks_run_exactly_as_today
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_a_fault_on_a_service_the_agent_never_reached_is_refused_and_without_evidence_nothing_is
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_an_invalid_answer_is_recorded_and_clears_a_pending_replan
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_the_v2d_third_pick_is_refused_under_the_rule_and_the_other_two_are_not
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_under_a_new_learn_plan_a_pick_refusal_cannot_turn_a_counterexample_into_a_pass
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_the_declaration_is_what_the_plan_freezes
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_the_learning_loop_hands_the_plans_rule_to_its_explorer[True]
+PASSED tests/lab/test_loop_limits_challenge_reach.py::test_the_learning_loop_hands_the_plans_rule_to_its_explorer[False]
+PASSED tests/lab/test_loop_limits_plans.py::test_run_options_and_every_new_learn_plan_declare_the_mechanic_rule_only_and_baseline_plans_neither
+PASSED tests/lab/test_loop_limits_plans.py::test_a_plan_declaring_the_withdrawn_challenge_rule_cannot_be_created_or_started
+PASSED tests/lab/test_loop_limits_plans.py::test_a_learn_plan_saved_before_the_rules_keeps_its_bytes_starts_and_keeps_todays_behaviour
+PASSED tests/lab/test_loop_limits_plans.py::test_start_refuses_a_plan_whose_declared_rule_is_not_the_installed_one[mechanic_context-change0-Mechanic request-size rule differs]
+PASSED tests/lab/test_loop_limits_plans.py::test_start_refuses_a_plan_whose_declared_rule_is_not_the_installed_one[challenge_selection-change1-withdrawn before any live run]
+PASSED tests/lab/test_loop_limits_plans.py::test_only_a_learn_plan_may_declare_them_and_the_declarations_are_exact
+PASSED tests/lab/test_loop_limits_plans.py::test_the_dashboard_projection_and_the_recording_show_both_rules_only_where_declared
+39 passed in 9.60s
+frontend tests/loop-limits.test.tsx:
+      Tests  5 passed (5)
+ ✓ tests/loop-limits.test.tsx > accepts the run options and a Learn plan with both rules exactly as frozen, and refuses anything else 4ms
+ ✓ tests/loop-limits.test.tsx > shows both rules in a saved Learn plan, and says plainly when an older plan has neither 79ms
+ ✓ tests/loop-limits.test.tsx > tells the operator in the Learn setup form which rule every new Learn plan freezes (the Mechanic rule only) 27ms
+ ✓ tests/loop-limits.test.tsx > validates the checked challenge picks and request-size records, refusing incoherent ones 1ms
+ ✓ tests/loop-limits.test.tsx > shows each checked challenge pick and each request-size record in the evidence panels 10ms
+
+=== PART 3 - negative controls: each mutation undoes one fix in the FIXED code; the named tests must fail ===
+2026-09-30T08:59:42Z
+CAUGHT  HIGH-1: new Learn plans freeze the challenge-pick rule again (and Start would accept it) (backend/app/lab/run_plans.py) :: 2 failed in 1.42s :: test_under_a_new_learn_plan_a_pick_refusal_cannot_turn_a_counterexample_into_a_pass, test_run_options_and_every_new_learn_plan_declare_the_mechanic_rule_only_and_baseline_plans_neither
+CAUGHT  HIGH-1: Start accepts a plan that declares the withdrawn rule (backend/app/lab/run_plans.py) :: 1 failed in 0.63s :: test_a_plan_declaring_the_withdrawn_challenge_rule_cannot_be_created_or_started
+CAUGHT  HIGH-1: run options offer the withdrawn rule again (backend/app/lab/run_plans.py) :: 1 failed in 0.32s :: test_run_options_and_every_new_learn_plan_declare_the_mechanic_rule_only_and_baseline_plans_neither
+CAUGHT  I-LOW-1: a VIOLATION outcome without failed checks may be omitted (backend/app/lab/loop_limits.py) :: 1 failed in 0.06s :: test_an_episode_whose_trial_outcome_is_violation_is_always_kept
+CAUGHT  I-LOW-2: the stage-2 group ignores policy and purpose (backend/app/lab/loop_limits.py) :: 1 failed in 0.06s :: test_stage_two_never_lets_one_policy_or_purpose_stand_for_another
+CAUGHT  P-LOW-1: the legend no longer says omitted rows can differ from the example (backend/app/lab/loop_limits.py) :: 1 failed in 0.06s :: test_stage_two_names_a_group_example_and_says_the_omitted_rows_can_differ_from_it
+CAUGHT  P-LOW-1: the stage-2 field is called represented_by again (backend/app/lab/loop_limits.py) :: 2 failed in 0.07s :: test_an_outcome_that_differs_inside_a_recipe_keeps_its_own_full_example, test_stage_two_names_a_group_example_and_says_the_omitted_rows_can_differ_from_it
+CAUGHT  I-LOW-3: NO_CHANGE does not name a search the size rule ended (backend/app/lab/learning.py) :: 1 failed in 0.29s :: test_a_search_cut_short_by_the_size_rule_is_named_in_the_campaigns_final_reason
+CAUGHT  I-LOW-3: every refused turn is recorded as FORMAT_REPAIR ("first turn was sent") (backend/app/lab/loop_limits.py) :: 2 failed in 0.38s :: test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_diagnosis], test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_proposal]
+CAUGHT  I-LOW-3: a first turn that was never sent still uses a candidate request (backend/app/lab/learning.py) :: 1 failed, 1 passed in 0.36s :: test_a_first_turn_the_mechanic_itself_refuses_is_recorded_as_never_sent[mechanic_proposal]
+CAUGHT  P-LOW-3: a refused format-repair turn leaves no proposal record (backend/app/lab/learning.py) :: 1 failed in 0.29s :: test_a_refused_format_repair_turn_leaves_a_rejected_proposal_in_the_candidate_history
+CAUGHT  P-LOW-2: a refused format-repair turn is shown as "not sent" (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  P-LOW-2: an unsent request shows an "in full" line (frontend/src/components/LoopLimits.tsx) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  P-LOW-2: a refusal says "refused" twice (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  P-LOW-2: the pick badge is lower case (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  HIGH-1 (dashboard): the setup form claims two rules when one is offered (frontend/src/components/LoopLimits.tsx) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+CAUGHT  HIGH-1 (dashboard): an undeclared challenge rule is described as "saved before" it (frontend/src/loopLimits.ts) :: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+unmutated: backend exit 0 (11 passed in 4.50s), frontend exit 0 (Tests  5 passed (5))
+17/17 mutations caught; every file restored (sha256 checked)

@@ -239,3 +239,21 @@ The replay protocol worked as designed: it exposed the agent's reliable failure 
 2. **A challenge schedule can target a tool the candidate makes unnecessary.** Its fault then never fires, and the
    challenge is INCONCLUSIVE. The challenge's completeness rule is a gate and stays unchanged. The fix belongs in how
    challenge schedules are chosen, for example preferring faults that fire under the candidate.
+
+**Follow-up (September 30, $0, built offline, reviewed twice and fixed; not yet committed, not run live):**
+
+- `faultlab-mechanic-context/v2-bounded` is frozen into every new Learn plan. The refused 33,223-token request, rebuilt
+  exactly from a read-only store copy, would now go out at 21,101 tokens (stage 3; every failing episode kept, the
+  24 clean ones named but not repeated), and it says inside what was omitted. The builder's first wording fitted at
+  stage 2 (27,990) by 10 tokens; the clearer wording the reviews asked for adds 66.
+- `faultlab-challenge-selection/v2-candidate-reach` was built and then **withdrawn** before any live run: it refused
+  picks by what the candidate's own agent did in source validation, and an offline replay showed it can turn a
+  counterexample into a pass.
+
+**Correction to "The challenge" above (fixer, from the saved store, read-only).** The status-read fault did not fire
+because of the schedule, not because of the candidate. Pick 3 was one failed orders-status read with no other fault,
+so the upgrade was healthy and neither arm needed to read the status: it fired in 1 of 3 incumbent episodes and 0 of 3
+candidate episodes, and the candidate policy read nothing in that pick (it reads the status only after an uncertain
+upgrade or a missing receipt). Under the slow-upgrade pick, the candidate's agent itself read the status 3–4 times
+per episode. The text above is kept as first written. See [the loop-limits note](PRODUCT_LOOP_LIMITS_2026-09-30.md),
+section 3.

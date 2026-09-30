@@ -61,7 +61,7 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     known={p.get('request_id') for p in mechanic}
     mechanic.extend(m for m in store.list_records('mechanic_outputs') if m.get('campaign_id')==campaign_id and (not m.get('request_id') or m['request_id'] not in known))
     selections=[]
-    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row','history_replay')
+    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row','history_replay','challenge_reach')
     for selection in store.list_records('selections'):
         if selection.get('context',{}).get('campaign_id')==campaign_id:
             selections.append({k:selection[k] for k in fields if k in selection})
@@ -92,6 +92,16 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
             and {row['trial']['episode_id'] for row in e['trial_rows']}<=selected],
         'completeness_notes':['Only public development evidence is included; protected evaluation records and private world state are excluded.',
             'Legacy raw outputs without campaign, policy or intervention ownership cannot be attributed and are excluded.']}
+    declared=(saved_plan or {}).get('plan') or {}
+    if declared.get('mechanic_context') is not None:
+        # faultlab-mechanic-context/v2-bounded: every compaction and every search it ended (older recordings keep their exact keys).
+        from app.lab.loop_limits import campaign_mechanic_context
+        result['mechanic_context_records']=campaign_mechanic_context(store,campaign_id)
+    if declared.get('challenge_selection') is not None:
+        # faultlab-challenge-selection/v2-candidate-reach: each challenge pick's decision is on its selection (challenge_reach).
+        from app.lab.loop_limits import CHALLENGE_REACH_RULE
+        result['challenge_selection_rule']={'protocol':declared['challenge_selection']['protocol'],'rule':CHALLENGE_REACH_RULE,
+            'refused_selection_ids':[s['selection_id'] for s in selections if (s.get('challenge_reach') or {}).get('status')=='REFUSED_UNREACHED']}
     history=(((saved_plan or {}).get('plan') or {}).get('discovery') or {}).get('history')
     if history is not None:
         # Discovery v3: which reproduced sources re-try a recipe row the Explorer was shown (derived from the

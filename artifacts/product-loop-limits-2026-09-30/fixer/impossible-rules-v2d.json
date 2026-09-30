@@ -1,0 +1,46 @@
+{
+ "picks": [
+  {
+   "recipe": [
+    "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2500 ms (past the client timeout)"
+   ],
+   "impossible_rule_per_fault": [
+    null
+   ]
+  },
+  {
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 8 ticks, then SUCCEEDED"
+   ],
+   "impossible_rule_per_fault": [
+    null
+   ]
+  },
+  {
+   "recipe": [
+    "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+   ],
+   "impossible_rule_per_fault": [
+    null
+   ]
+  }
+ ],
+ "forced_caller_model": [
+  {
+   "agent": "reference",
+   "policy": "policy-v0",
+   "result": "MODELLED"
+  },
+  {
+   "agent": "reference",
+   "policy": "candidate policy-c65cc08e rules",
+   "result": "POLICY_RULES_UNSUPPORTED"
+  },
+  {
+   "agent": "smolagents-v2",
+   "policy": "policy-v0",
+   "result": "NATIVE_AGENT_UNSUPPORTED"
+  }
+ ]
+}
+[fixer guard] refused outbound connections: 0; loopback connects: 0

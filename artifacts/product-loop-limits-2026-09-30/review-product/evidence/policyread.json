@@ -1,0 +1,556 @@
+{
+ "campaign": {
+  "campaign_id": "campaign-481ef0768d41464198bfa9df7f312468",
+  "state": "NO_CHANGE",
+  "terminal_reason": "Review stop point: the protected promotion comparison is not run in this offline review"
+ },
+ "plan_rules": {
+  "mechanic_context": "faultlab-mechanic-context/v2-bounded",
+  "challenge_selection": "faultlab-challenge-selection/v2-candidate-reach"
+ },
+ "experiments_keys": [
+  "challenge_reach",
+  "counterexamples",
+  "evidence",
+  "ingestions",
+  "mechanic_context",
+  "portability_ids"
+ ],
+ "challenge_reach": [
+  {
+   "proposal_index": 0,
+   "slot_request": 1,
+   "replan_of": null,
+   "status": "REFUSED_UNREACHED",
+   "targets": [
+    "update_order:orders",
+    "get_operation_status:orders"
+   ],
+   "unreached": [
+    "get_operation_status:orders"
+   ],
+   "reason": "Refused before any pair ran: this pick puts a fault on get_operation_status (orders), which the agent never called in the candidate arm's 3 source-validation episode(s) of this campaign (only the candidate policy's own hook steps read it there; those are not agent calls). The next request in this challenge is its one re-plan.",
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED",
+    "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  },
+  {
+   "proposal_index": 1,
+   "slot_request": 2,
+   "replan_of": "selection-5ca9e292f0f84dbdb9fbe1df2b7df456",
+   "status": "REFUSED_UNREACHED",
+   "targets": [
+    "update_order:orders",
+    "get_operation_status:orders"
+   ],
+   "unreached": [
+    "get_operation_status:orders"
+   ],
+   "reason": "Refused before any pair ran: this pick puts a fault on get_operation_status (orders), which the agent never called in the candidate arm's 3 source-validation episode(s) of this campaign (only the candidate policy's own hook steps read it there; those are not agent calls). This was already the re-plan, so there is no further re-plan for it; the challenge continues with its remaining requests.",
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED",
+    "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  },
+  {
+   "proposal_index": 2,
+   "slot_request": 1,
+   "replan_of": null,
+   "status": "SELECTED",
+   "targets": [
+    "update_order:orders"
+   ],
+   "unreached": [],
+   "reason": null,
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  },
+  {
+   "proposal_index": 3,
+   "slot_request": 1,
+   "replan_of": null,
+   "status": "SELECTED",
+   "targets": [
+    "update_order:orders"
+   ],
+   "unreached": [],
+   "reason": null,
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  },
+  {
+   "proposal_index": 4,
+   "slot_request": 1,
+   "replan_of": null,
+   "status": "SELECTED",
+   "targets": [
+    "update_order:orders"
+   ],
+   "unreached": [],
+   "reason": null,
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 6 ticks, then SUCCEEDED"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  },
+  {
+   "proposal_index": 5,
+   "slot_request": 1,
+   "replan_of": null,
+   "status": "SELECTED",
+   "targets": [
+    "update_order:orders"
+   ],
+   "unreached": [],
+   "reason": null,
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 7 ticks, then SUCCEEDED"
+   ],
+   "basis": {
+    "called_only_by_candidate_policy": [
+     "get_operation_status:orders"
+    ],
+    "source_validation_episode_ids": [
+     "episode-e519c6132a284dc081389431b1c20d85",
+     "episode-5655413c464847c28dfb57db27736c24",
+     "episode-3f8d7da2392c460bb11953f36dbf5f7c"
+    ],
+    "tool_services_called_by_agent": [
+     "get_order:orders",
+     "send_confirmation:notifications",
+     "update_order:orders"
+    ]
+   }
+  }
+ ],
+ "mechanic_context": [],
+ "challenges": [
+  {
+   "challenge_id": "challenge-494abf6b2ef24e4192bdca7da0ded0d9",
+   "status": "PASSED_OBSERVED",
+   "stopping_reason": "No candidate violation observed in four schedules \u00d7 three pairs",
+   "failed_checks": [],
+   "schedules": 4,
+   "pairs": 12,
+   "selection_refs": 6
+  }
+ ],
+ "challenge_trials": [
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ],
+  [
+   {
+    "arm": "B0",
+    "purpose": "challenge",
+    "outcome": "VIOLATION",
+    "failed": null,
+    "fault_triggered": null
+   },
+   {
+    "arm": "L",
+    "purpose": "challenge",
+    "outcome": "COMPLETED",
+    "failed": null,
+    "fault_triggered": null
+   }
+  ]
+ ],
+ "candidate_qualifications": [
+  [
+   "policy-4651e28c74254fc5aa3663e67c753594",
+   "CHALLENGE",
+   "INCOMPLETE",
+   "PASSED_OBSERVED"
+  ]
+ ],
+ "campaign_proposals": [
+  [
+   "PROPOSED",
+   null,
+   null
+  ]
+ ],
+ "recording_keys_new": {
+  "mechanic_context_records": true,
+  "challenge_selection_rule": true
+ },
+ "recording_challenge_selection_rule": {
+  "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+  "refused_selection_ids": [
+   "selection-5ca9e292f0f84dbdb9fbe1df2b7df456",
+   "selection-6738a0d0cd5d4ba08b097e521763604e"
+  ],
+  "rule": "Before a challenge pick runs any pair, FaultLab checks every fault target (tool and service) against the calls the agent under test itself made in the candidate arm's source-validation episodes of this campaign. A pick with a target the agent never called there is refused: no episode runs, and the refusal is recorded with its reason. The candidate policy's own hook reads are not agent calls. The Explorer's next request in the same challenge is a re-plan told why (one re-plan per refused pick; a refused re-plan gets none). Every request, re-plans included, is one of the challenge's existing 8 Explorer requests, charged and bounded exactly as before. The challenge itself is unchanged: 4 schedules, 3 fresh pairs each, every pair must fire its faults, and any candidate violation is a counterexample. If the candidate arm has no source-validation episode, no pick is refused."
+ },
+ "recording_mechanic_context_records": [],
+ "recording_selection_challenge_reach": [
+  [
+   true,
+   "REFUSED_UNREACHED"
+  ],
+  [
+   true,
+   "REFUSED_UNREACHED"
+  ],
+  [
+   true,
+   "SELECTED"
+  ],
+  [
+   true,
+   "SELECTED"
+  ],
+  [
+   true,
+   "SELECTED"
+  ],
+  [
+   true,
+   "SELECTED"
+  ]
+ ],
+ "lab_requests": [
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7940
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 6629
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7978
+  },
+  {
+   "role": "mechanic",
+   "kind": "candidate",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 11452
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 0,
+   "slot_request": 1,
+   "dispatched_tokens": 8024
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 1,
+   "slot_request": 2,
+   "dispatched_tokens": 8474
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 2,
+   "slot_request": 1,
+   "dispatched_tokens": 8393
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 3,
+   "slot_request": 1,
+   "dispatched_tokens": 8510
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 4,
+   "slot_request": 1,
+   "dispatched_tokens": 8628
+  },
+  {
+   "role": "explorer",
+   "kind": "explorer",
+   "purpose": "challenge",
+   "proposal_index": 5,
+   "slot_request": 1,
+   "dispatched_tokens": 8746
+  },
+  {
+   "role": "mechanic",
+   "kind": "diagnosis",
+   "purpose": null,
+   "proposal_index": null,
+   "slot_request": null,
+   "dispatched_tokens": 7946
+  }
+ ],
+ "max_mechanic_dispatched_tokens": 11452,
+ "max_explorer_dispatched_tokens": 8746,
+ "execution_errors": []
+}

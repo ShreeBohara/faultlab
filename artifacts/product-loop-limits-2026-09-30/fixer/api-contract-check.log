@@ -1,0 +1,20 @@
+Start refuses the withdrawn rule: The challenge-pick rule faultlab-challenge-selection/v2-candidate-reach was withdrawn before any live run: it refuses ch
+challenge PASSED_OBSERVED 12 pairs | pick statuses ['REFUSED_UNREACHED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED']
+compacted record 53230 -> 13786 stages ['IDENTICAL_CLEAN_ROWS', 'ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP']
+recording keys present (new plan): ['mechanic_context_records']
+mechanic records (new plan): [('COMPACTED', None), ('SEARCH_ENDED', 'BEFORE_SEND'), ('SEARCH_ENDED', 'FORMAT_REPAIR'), ('SEARCH_ENDED', 'BEFORE_SEND')]
+experiments-old keys: ['counterexamples', 'evidence', 'ingestions', 'portability_ids']
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/fixer-loop-limits/contract/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  02:04:44
+   Duration  218ms (transform 119ms, setup 0ms, import 151ms, tests 4ms, environment 0ms)
+
+
+
+vitest exit 0
+scratch removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

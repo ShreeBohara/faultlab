@@ -1,0 +1,6 @@
+v2d 7ff6f9c2 baseline COMPLETED plan status PLANNED rules in plan: [] rule fns: None None recording new keys: [] selections with challenge_reach: 0
+v2d 23694e63 learn NO_CHANGE plan status PLANNED rules in plan: [] rule fns: None None recording new keys: [] selections with challenge_reach: 0
+v2d 2790c963 learn ERROR plan status PLANNED rules in plan: [] rule fns: None None recording new keys: [] selections with challenge_reach: 0
+v3 286e2f7d baseline COMPLETED plan status PLANNED rules in plan: [] rule fns: None None recording new keys: [] selections with challenge_reach: 0
+v3 cdb0afa8 learn STOPPED plan status PLANNED rules in plan: [] rule fns: None None recording new keys: [] selections with challenge_reach: 0
+[review guard] refused outbound connections/lookups: 0

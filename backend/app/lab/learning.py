@@ -12,6 +12,8 @@ from app.lab.promotion import promotion_decision,commit_promotion
 from app.lab.budgets import CANDIDATE_CALLS,BudgetExhausted,StopRequested
 from app.lab.tracing import execute_phase,execute_sync_phase
 from app.lab import evidence_wait
+from app.lab import loop_limits
+from app.contracts.tokens import ModelInputLimit
 
 def source_validation_assessment(batch,target_invariant):
     """Keep failure to reproduce separate from the candidate's observed mistakes."""
@@ -147,6 +149,13 @@ async def run_learning_cycle(coordinator,campaign,runner):
         # selections) and the Mechanic (diagnosis, candidates) one shared LabBackoff; a plan saved before it keeps v1.
         from app.agents.transport_retry import lab_backoff_for_campaign
         explorer.lab_retry=mechanic.lab_retry=lab_backoff_for_campaign(store,campaign,stopped=lambda:ledger.stopped or stop())
+        # The plan's declared loop-limit rules (app.lab.loop_limits); None for a plan saved before them (today's behaviour).
+        # Mechanic request size (faultlab-mechanic-context/v2-bounded): an over-limit diagnosis or candidate request is
+        # compacted by fixed stages, or that source's search ends with a recorded reason; nothing over the limit is sent.
+        context_rule=loop_limits.mechanic_context_rule(store,campaign)
+        # Challenge picks (faultlab-challenge-selection/v2-candidate-reach): WITHDRAWN before any live run. No new plan
+        # declares it and Start refuses a plan that does (run_plans.withdrawn_rule_problem), so this is always None here.
+        explorer.challenge_reach=loop_limits.challenge_selection_rule(store,campaign)
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -210,7 +219,11 @@ async def run_learning_cycle(coordinator,campaign,runner):
             await export_incident(coordinator,current,counter,incumbent,recipe,retained,incident_trials,reduction=reduced.result,stage='reduced_source',artifact_kind='incident_fixture')
             if reduced.result.status in ('FLAKY','INCOMPLETE'): continue
             coordinator.transition(id,'DIAGNOSING')
-            diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
+            diagnosis_mechanic=mechanic if context_rule is None else loop_limits.BoundedMechanic(mechanic,store,campaign_id=id,counterexample=counter)
+            try:
+                diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,diagnosis_mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
+            except loop_limits.MechanicContextUnfit:
+                continue  # Recorded (mechanic_context_records); nothing was sent. This source gets no diagnosis or candidate.
             intervention_evidence=await evidence_for([t for t in interventions.trials if t.lifecycle=='COMPLETED'])
             if diagnostic.kind!='POLICY_GAP': continue
             source_context=repair_context_id(current,incumbent,retained,fixture,counter.target_invariant,identity)
@@ -222,8 +235,31 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 candidate_count+=1
                 try:
                     proposal_context={'campaign_id':id,'source_context_id':source_context,'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'candidate_history':list(candidate_history),'challenge_counterexamples':list(feedback),'source_validation_feedback':list(source_feedback),'runtime_contract':runtime_contract(store,current),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
-                    proposal_ref,proposal,raws=await mechanic.propose(proposal_context,reservation=name)
-                    proposal_record={'campaign_id':id,'proposal_ref':proposal_ref,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,'raw_outputs':raws}
+                    compaction_ref=None
+                    if context_rule is not None:
+                        size={'source_context_id':source_context,'candidate_index':candidate_count-1}
+                        try:
+                            proposal_context,compaction_ref=loop_limits.fit_request(store,mechanic,proposal_context,request_kind='mechanic_proposal',campaign_id=id,counterexample=counter,extra=size)
+                        except loop_limits.MechanicContextUnfit:
+                            candidate_count-=1  # Never sent: it does not use one of the campaign's candidate requests.
+                            break  # Recorded; this source's candidate search ends and discovery continues.
+                    cutoff=loop_limits.request_cutoff(store) if context_rule is not None else None
+                    try:
+                        proposal_ref,proposal,raws=await mechanic.propose(proposal_context,reservation=name)
+                    except ModelInputLimit as error:
+                        if context_rule is None: raise  # A plan saved before the rule: ERROR (INPUT_LIMIT), as before.
+                        # The Mechanic's own check refused a turn before dispatch: its format-repair turn if this request's
+                        # first-turn answer is saved, otherwise the first turn itself (then nothing was sent).
+                        refusal,_,first=loop_limits.record_refusal(store,error,request_kind='mechanic_proposal',campaign_id=id,counterexample=counter,cutoff=cutoff,compaction_ref=compaction_ref,extra=size)
+                        if first is None:
+                            candidate_count-=1  # Never sent: it does not use one of the campaign's candidate requests.
+                            break
+                        # The first turn was sent and charged: keep it in the candidate history like an invalid answer.
+                        first_ref,first_output=first
+                        invalid=coordinator.policies.rejected_raw(first_output['raw'],incumbent.version,'FORMAT_REPAIR_OVER_LIMIT')
+                        store.put_record('campaign_proposals',first_ref,{'campaign_id':id,'proposal_ref':first_ref,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,'raw_outputs':[first_output['raw']],**({'context_compaction_ref':compaction_ref} if compaction_ref else {}),'candidate_version':invalid.version,'decision':'REJECTED','reason':'FORMAT_REPAIR_OVER_LIMIT','mechanic_context_ref':refusal},immutable=True)
+                        break
+                    proposal_record={'campaign_id':id,'proposal_ref':proposal_ref,'source_context_id':source_context,'counterexample_id':counter.counterexample_id,'raw_outputs':raws,**({'context_compaction_ref':compaction_ref} if compaction_ref else {})}
                     def save_proposal(**fields):
                         store.put_record('campaign_proposals',proposal_ref,{**proposal_record,**fields},immutable=True)
                     if proposal is None:
@@ -309,7 +345,10 @@ async def run_learning_cycle(coordinator,campaign,runner):
                         return
                 finally: ledger.release(name)
             if candidate_count>=campaign.caps.candidates: break
-        coordinator.transition(id,'NO_CHANGE','No verified strict improvement within declared development bounds; all outcomes retained')
+        # Under the Mechanic request-size rule, a search it ended early is named in the reason (a finished search keeps
+        # today's exact reason, and so does every plan saved before the rule).
+        ended=loop_limits.search_ended_note(store,id) if context_rule is not None else None
+        coordinator.transition(id,'NO_CHANGE','No verified strict improvement within declared development bounds; all outcomes retained'+('; '+ended if ended else ''))
     except WaitingEvidence as error:
         store.put_record('continuations',id,{'campaign_id':id,'execution_epoch':campaign.execution_epoch,'status':'WAITING_EVIDENCE','reason':str(error),'candidate_count':candidate_count,'history':history})
         coordinator.transition(id,'WAITING_EVIDENCE',str(error))

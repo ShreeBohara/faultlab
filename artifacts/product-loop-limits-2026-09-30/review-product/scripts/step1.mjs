@@ -1,0 +1,40 @@
+// Register native adapter v2 in the dashboard, choose Learn + discovery v4, and create one plan (screenshots of both rules).
+import { open, OUT, PW } from './common.mjs'
+import { writeFileSync } from 'node:fs'
+const { browser, page, errors, offsite } = await open()
+const log = []
+await page.goto('http://127.0.0.1:18532/')
+await page.waitForTimeout(1500)
+await page.getByLabel('Execution profile', { exact: true }).selectOption('live-v1')
+await page.waitForTimeout(800)
+await page.getByLabel('Reviewed agent', { exact: true }).selectOption('smolagents-v2')
+await page.waitForTimeout(500)
+const setup = page.getByRole('region', { name: 'New campaign setup' })
+const register = page.getByRole('button', { name: 'Register configured agent' })
+if (await register.count()) { await register.click(); await page.waitForTimeout(1500) }
+log.push({ step: 'after register', status: await page.locator('[role=status]').allInnerTexts() })
+await page.getByLabel('Campaign mode', { exact: true }).selectOption('learn')
+await page.waitForTimeout(500)
+await page.getByLabel('Discovery protocol', { exact: true }).selectOption('faultlab-discovery/v4-history-replay')
+await page.waitForTimeout(500)
+log.push({ step: 'learn v4 setup form', text: await setup.innerText() })
+await setup.screenshot({ path: OUT + '/01-learn-setup-both-rules.png' })
+// Baseline mode: the rules must not be shown as part of a baseline plan
+await page.getByLabel('Campaign mode', { exact: true }).selectOption('baseline')
+await page.waitForTimeout(400)
+log.push({ step: 'baseline setup form mentions rules?', mentionsMechanic: (await setup.innerText()).includes('Mechanic request size'), mentionsPicks: (await setup.innerText()).includes('Challenge picks') })
+await page.getByLabel('Campaign mode', { exact: true }).selectOption('learn')
+await page.waitForTimeout(400)
+await page.getByLabel('Discovery protocol', { exact: true }).selectOption('faultlab-discovery/v4-history-replay')
+await page.waitForTimeout(400)
+await page.getByRole('button', { name: 'Create campaign' }).click()
+await page.waitForTimeout(2500)
+const saved = page.getByRole('region', { name: 'Saved campaign plan' })
+log.push({ step: 'plan created', plan: await saved.innerText() })
+await saved.screenshot({ path: OUT + '/02-saved-plan-both-rules.png' })
+const details = saved.locator('details', { hasText: 'Exact rule text' }).first()
+if (await details.count()) { await details.locator(':scope > summary').click(); await page.waitForTimeout(300); log.push({ step: 'exact rule text', text: await details.innerText() }); await details.screenshot({ path: OUT + '/03-saved-plan-exact-rule-text.png' }) }
+log.push({ errors, offsite })
+writeFileSync(PW + '/step1.json', JSON.stringify(log, null, 2))
+console.log(JSON.stringify(log, null, 2).slice(0, 14000))
+await browser.close()

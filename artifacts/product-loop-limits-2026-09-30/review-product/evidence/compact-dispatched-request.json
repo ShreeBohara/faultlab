@@ -1,0 +1,246 @@
+{
+ "dispatched_tokens": 19271,
+ "context_compaction": {
+  "blocks": [
+   {
+    "episodes_in_full": 10,
+    "episodes_omitted": 6,
+    "episodes_total": 16,
+    "field": "development_evidence",
+    "omitted_by_stage": {
+     "IDENTICAL_CLEAN_ROWS": 0,
+     "NO_CLEAN_EPISODE_ROWS": 6,
+     "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 0
+    }
+   },
+   {
+    "episodes_in_full": 9,
+    "episodes_omitted": 9,
+    "episodes_total": 18,
+    "field": "challenge_counterexamples[0].evidence",
+    "omitted_by_stage": {
+     "IDENTICAL_CLEAN_ROWS": 0,
+     "NO_CLEAN_EPISODE_ROWS": 9,
+     "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP": 0
+    }
+   }
+  ],
+  "compaction_target_tokens": 28000,
+  "episode_rows_omitted": 15,
+  "full_request_tokens": 61595,
+  "input_token_limit": 32000,
+  "protocol": "faultlab-mechanic-context/v2-bounded",
+  "stages_applied": [
+   "IDENTICAL_CLEAN_ROWS",
+   "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "NO_CLEAN_EPISODE_ROWS"
+  ],
+  "statement": "This request was compacted under faultlab-mechanic-context/v2-bounded: in full it was 61,595 input tokens, over the 32,000-token model input limit. Stages applied, in order: (1) a clean episode whose rows and outcome repeat an earlier clean episode is listed by episode_id (same_as); (2) one clean episode is kept in full per recipe, arm and outcome; the others are listed by episode_id (represented_by); (3) no clean episode is kept in full; each is listed by episode_id with its own outcome. The observation, report and check rows of 15 clean episode(s) were omitted (development_evidence: 6 of 16 episodes omitted; challenge_counterexamples[0].evidence: 9 of 18 episodes omitted); each omitted episode is still listed by episode_id with its own outcome in its block's compaction.omitted, and every trial_outcomes group is unchanged. The source episode, its reproductions and every episode with a failed check are kept in full. Nothing else in this request was changed."
+ },
+ "development_evidence_compaction": {
+  "episodes_in_full": 10,
+  "episodes_omitted": 6,
+  "episodes_total": 16,
+  "omitted": [
+   {
+    "arm": "B0",
+    "episode_id": "episode-cc867c01b473409c991cac5dd8d509c1",
+    "failed_checks": [],
+    "fault_triggered": false,
+    "lifecycle": "COMPLETED",
+    "observations": 3,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "B0",
+    "episode_id": "episode-d6882944cd5045dd9f7ef55ff82dc380",
+    "failed_checks": [],
+    "fault_triggered": false,
+    "lifecycle": "COMPLETED",
+    "observations": 3,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "B0",
+    "episode_id": "episode-28cedbdaf86b44eb9a58dee17601d8c6",
+    "failed_checks": [],
+    "fault_triggered": false,
+    "lifecycle": "COMPLETED",
+    "observations": 3,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-bada1d0a039a41c891f2ccf0d437d638",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 5,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-f28c6cbe98e94ad48386966ed770aacd",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 5,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-7e0640bb850e4bc9b80cc860c748e771",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 5,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   }
+  ],
+  "protocol": "faultlab-mechanic-context/v2-bounded"
+ },
+ "challenge_evidence_compaction": {
+  "episodes_in_full": 9,
+  "episodes_omitted": 9,
+  "episodes_total": 18,
+  "omitted": [
+   {
+    "arm": "L",
+    "episode_id": "episode-057469b0b9f9477788d7519f2981ba3d",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-a73456948d87434ab59caf8e4528952d",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-8fd0b3acb2fc48d3ba1271fa3640b6d4",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-5db914380d0743e3b3a3028bc40212ff",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-96aa18bea0ad492290e4916b7b7f4c1b",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-e46b6c17b7cf4c8e8fbfda65dc65589d",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-d381fe0ae6344d7182911d46f016a11f",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-15cea6d6c5f7426991ea59b78d7235fa",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   },
+   {
+    "arm": "L",
+    "episode_id": "episode-f0f46ceaeb6842f08af89f807202c28b",
+    "failed_checks": [],
+    "fault_triggered": true,
+    "lifecycle": "COMPLETED",
+    "observations": 6,
+    "omitted_as": "NO_CLEAN_EPISODE_ROWS",
+    "original_report_present": true,
+    "outcome": "COMPLETED"
+   }
+  ],
+  "protocol": "faultlab-mechanic-context/v2-bounded"
+ },
+ "dev_interpretation_tail": "ictions, are retained. Original complete records are referenced by exact episode/evidence IDs. COMPACTED under faultlab-mechanic-context/v2-bounded: this block keeps 10 of 16 episodes in full; the observation, report and check rows of the episodes listed in compaction.omitted are not repeated here (each is named with its own outcome), so \"all trials are retained\" applies to the kept episodes only.",
+ "kept_dev": [
+  "episode-e10dae9e66d748ca90d84140f79758c4",
+  "episode-38d19d9996ac4163938ddb48d3318249",
+  "episode-b845814781b0476091b28b5571a3e7d2",
+  "episode-f80afe6273d04ac3818de04f760b6888",
+  "episode-de40777eaff14df0a21814538f8c42ac",
+  "episode-8d5acd9820cb4ebbb9bff04bcb1d8581",
+  "episode-f354548503194848ace5e72d8b547a7d",
+  "episode-9c09db2757164906a8cdb48d311cfe1e",
+  "episode-d1e996bdd5ce4373ae05fe310a46dea7",
+  "episode-d6ec4c79de1e4b0ba06231aeea2ef595"
+ ],
+ "kept_challenge": [
+  "episode-a5562611026b464db52e67edf6f8571c",
+  "episode-6503b0bd660d4aa5b27f30cfa9c6a91f",
+  "episode-3f17e18a86c3470ea504027fd778d197",
+  "episode-7692568d975b4106a4146a6aa14ee2aa",
+  "episode-7438d557482a43d7bde23b5748a917f6",
+  "episode-748864eb776d450da50011b602c1a33a",
+  "episode-43141b128acd42ec84d118b9060779d7",
+  "episode-f5b47d815c5d48f5a6e8e097279677a7",
+  "episode-e74de7ea7ea64e56ad3d63e431a992cf"
+ ],
+ "challenge_trial_outcomes_groups": 6
+}

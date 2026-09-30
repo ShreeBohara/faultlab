@@ -1,0 +1,32 @@
+{
+  "tag": "11-policyread",
+  "cid": "campaign-481ef0768d41464198bfa9df7f312468",
+  "plan": {
+    "mechanic": "MECHANIC REQUEST SIZE | A Mechanic diagnosis or candidate request over 32,000 input tokens is compacted in 3 fixed stages to at most 28,000 (4,000 kept for one format-repair turn) · only clean episodes' rows are omitted, each still named with its outcome · the source, its reproductions and every episode with a failed check stay in full · if it still does not fit, nothing is sent and that source's search ends with a rec",
+    "picks": "CHALLENGE PICKS | A challenge pick with a fault on a tool and service the agent never called in the candidate arm's source-validation episodes is refused before any pair runs · 1 re-plan per refused pick, inside the challenge's 8 Explorer requests (charged as before) · the challenge itself is unchanged: 4 schedules, 3 pairs each, every fault must fire"
+  },
+  "challenge": "07\nAdversarial challenge\nchallenge-494abf6b2ef24e4192bdca7da0ded0d9\nPassed observed trials\nCANDIDATE HASH\n03a4efa6ad223e3dcd9ae20952b18500a621d17e4a861fd8d879275eadd4af87\nINCUMBENT HASH\nbafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb\nSOURCE VALIDATION\nbatch-18f460a02d0b4477ad48434a14ea1c44\nSCHEDULES\n4 recorded / 4 required · 4 novel recorded\nFAILED CHECKS\nNone recorded\n\nNo candidate violation observed in four schedules × three pairs\n\nEvery paired trial · 12 pairs\nPair 1\nepisode-a1b5618f5d954f939afc3cd9fa95f0f2\nepisode-64f8b7e16bf74e19a3e262d649ddfaed\nPair 2\nepisode-a27d98027f0247ce994098c0ad364fba\nepisode-441f6b4b68ac489ca773fb632f158dbe\nPair 3\nepisode-130a5834281b4d4fac403b4bc6493b86\nepisode-c2462b677a064beca68ba0303592a631\nPair 4\nepisode-69ce4b53cd334e3880ffdf5709267c9e\nepisode-568f25dc860c4f63a7014dea8d1d06d3\nPair 5\nepisode-f35a96ac01d04288ac5648ca162d677f\nepisode-756d194fd7ff487da25c9d0cda739a96\nPair 6\nepisode-33837b1bb37e417c8429f9ac882dd908\nepisode-ad4afa06777540af890d3c83df3b4485\nPair 7\nepisode-6a059cbd9d8c4419919fbab9a190cb7c\nepisode-2ad747ca6508490999bc6ea06e57b3a3\nPair 8\nepisode-3a8ebfee8d4d46378de367d5e8f5c337\nepisode-23691641872f48c692f7def4dbe13a3a\nPair 9\nepisode-84a330fa611d4e13a82a5a8e759736f2\nepisode-9ee0b818f1514870baf71b018a85b6a5\nPair 10\nepisode-e3acafd1905d4fcf8ff64daf47f9cc97\nepisode-8ff388ab94e34732a645644fbdfcfe96\nPair 11\nepisode-8686154967bd48ff99290983d6d5a6d2\nepisode-9abb28e74f014926a4db7f931f0a5d6a\nPair 12\nepisode-6c1a435e58884a7a93ff69ac07d07b96\nepisode-40d6ed78e22e4a9a860c2525f9b1e78c\nSchedule novelty and feedback lineage\nChallenge picks · candidate reach check\n\n6 picks checked, 2 refused before any pair ran. Rule faultlab-challenge-selection/v2-candidate-reach: a fault on a tool and service the agent never called in the candidate arm's source validation is refused; one re-plan follows, inside the challenge's 8 Explorer requests.\n\nExplorer request 1: refused, no pair ran. Refused before any pair ran: this pick puts a fault on get_operation_status (orders), which the agent never called in the candidate arm's 3 source-validation episode(s) of this campaign (only the candidate policy's own hook steps read it there; those are not agent calls). The next request in this challenge is its one re-plan.\nRefused: tool not reached\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED + F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted\n\nThe agent called: get_order:orders, send_confirmation:notifications, update_order:orders · read only by the candidate policy: get_operation_status:orders · 3 source-validation episode(s)\n\nExplorer request 2 (re-plan): refused, no pair ran. Refused before any pair ran: this pick puts a fault on get_operation_status (orders), which the agent never called in the candidate arm's 3 source-validation episode(s) of this campaign (only the candidate policy's own hook steps read it there; those are not agent calls). This was already the re-plan, so there is no further re-plan for it; the challenge continues with its remaining requests.\nRefused: tool not reached\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED + F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted\n\nThe agent called: get_order:orders, send_confirmation:notifications, update_order:orders · read only by the candidate policy: get_operation_status:orders · 3 source-validation episode(s)\n\nExplorer request 3: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED\n\nExplorer request 4: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED\n\nExplorer request 5: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 6 ticks, then SUCCEEDED\n\nExplorer request 6: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 7 ticks, then SUCCEEDED\n\nInspect every checked pick",
+  "reachListPresent": true,
+  "mechanicListPresent": true,
+  "mechanicList": "Mechanic request size\n\nNo Mechanic request has crossed the input limit. Rule faultlab-mechanic-context/v2-bounded: nothing over the limit is ever sent, and a request that cannot fit ends that source's search, never the campaign.",
+  "recording": {
+    "mechanic_context_records": [],
+    "challenge_selection_rule": {
+      "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+      "refused": 2
+    },
+    "selection_reach": [
+      "REFUSED_UNREACHED",
+      "REFUSED_UNREACHED",
+      "SELECTED",
+      "SELECTED",
+      "SELECTED",
+      "SELECTED"
+    ]
+  },
+  "phoneHorizontalOverflow": false,
+  "errors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "offsite": []
+}

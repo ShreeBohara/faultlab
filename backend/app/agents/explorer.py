@@ -15,6 +15,9 @@ DISCOVERY_V2_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_disco
 DISCOVERY_V3_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v3_history.md').read_text()
 # Appended after the v3 section only under discovery v4 (history replay) with a non-empty replay list; v1/v2/v3 unchanged.
 DISCOVERY_V4_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v4_history_replay.md').read_text()
+# Appended after the challenger section only when the plan declares faultlab-challenge-selection/v2-candidate-reach
+# (app.lab.loop_limits); challenge requests of plans saved before it stay byte-identical.
+CHALLENGE_REACH_PROMPT=Path(__file__).with_name('prompts').joinpath('challenger_candidate_reach_v2.md').read_text()
 PUBLIC_INVARIANTS={
     'C1':'Stay within the authorized order, original operation identities and requested upgrade; at most one upgrade effect.',
     'C2':'Claim upgrade success only with a delivered matching terminal success receipt.',
@@ -229,6 +232,9 @@ class Explorer:
         # The Learn campaign's rule-v2 lab-role backoff (app.agents.transport_retry.LabBackoff), set by the
         # learning loop when its plan declares it. None keeps rule v1's single blind retry.
         self.lab_retry=None
+        # The plan's declared challenge-selection rule (app.lab.loop_limits, v2-candidate-reach), set by the learning
+        # loop. None (every plan saved before it, and every non-Learn use) keeps today's challenge requests exactly.
+        self.challenge_reach=None
     async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None,discovery_history=None):
         # The selector benchmark and active challenge have separately declared
         # duplicate/repetition rules. Do not silently change those protocols.
@@ -253,11 +259,20 @@ class Explorer:
             context={**context,'search_ledger':search}
             if history is not None:
                 context={**context,'discovery_protocol':history['discovery_protocol'],'agent_history':history['agent_history']}
+        # Challenge v2-candidate-reach: before the request, the candidate arm's own source-validation calls, this
+        # challenge's refused picks and (after a refusal) the one re-plan's feedback join the Challenger's context.
+        reach_rule=self.challenge_reach if challenge else None
+        reach=reach_session=None
+        if reach_rule is not None:
+            from app.lab import loop_limits
+            reach_session=loop_limits.challenge_session(self,context)
+            reach=loop_limits.candidate_reach(self.store,context.get('campaign_id'),context.get('candidate_hash'))
+            context={**context,**loop_limits.request_context(reach,reach_session)}
         # Supply the reviewed wire contract, not a sample solution or a repaired
         # recipe. Discovery and challenge use the same exact field names.
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
                  'episode_limits':EpisodeBudget().model_dump(mode='json'),'public_invariants':PUBLIC_INVARIANTS}
-        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')+('\n'+DISCOVERY_V3_PROMPT if history is not None else '')+('\n'+DISCOVERY_V4_PROMPT if history is not None and history.get('replay_prompt') else '')},{'role':'user','content':canonical_json(context)}]
+        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+CHALLENGE_REACH_PROMPT if reach_rule is not None else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')+('\n'+DISCOVERY_V3_PROMPT if history is not None else '')+('\n'+DISCOVERY_V4_PROMPT if history is not None and history.get('replay_prompt') else '')},{'role':'user','content':canonical_json(context)}]
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         validate_model_input(messages,expected)
@@ -323,7 +338,11 @@ class Explorer:
         if history is not None and selected is not None:
             from app.lab.agent_history import history_row_match
             history_match=history_row_match(history['agent_history'],selected.fault_spec)
-        decision=None; precheck_error=None
+        decision=None; precheck_error=None; reach_decision=None
+        if reach_rule is not None:
+            # Refuse a pick with a fault target the agent never called in the candidate arm's source validation: no pair
+            # runs (the Challenger receives no pick), and the refusal is saved on this selection record.
+            reach_decision,selected=loop_limits.decide(reach,reach_session,context,selected,error)
         if discovery:
             identity=v2.identity if v2 is not None else schedule_identity
             digest=identity(selected.fault_spec) if selected else None
@@ -353,6 +372,7 @@ class Explorer:
                     if not label['all_forced']:
                         decision.update(status='SKIPPED_UNREACHABLE',reason='NOT_ALL_FAULTS_FORCED',refused_fault_spec=refused_spec)
                         selected=None  # No Actor episode and no substitute fault for this request.
-        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {}),**({'matches_history_row':history_match} if history is not None else {})},immutable=True)
+        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {}),**({'matches_history_row':history_match} if history is not None else {}),**({'challenge_reach':reach_decision} if reach_decision is not None else {})},immutable=True)
+        if reach_decision is not None: loop_limits.after_pick(reach_session,selection_id,reach_decision)
         if precheck_error is not None: raise precheck_error
         return selection_id,selected

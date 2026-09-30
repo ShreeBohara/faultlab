@@ -1,0 +1,33 @@
+{
+  "tag": "13-unfit",
+  "cid": "campaign-d968da833c6e40da911a60adc0fa9712",
+  "plan": {
+    "mechanic": "MECHANIC REQUEST SIZE | A Mechanic diagnosis or candidate request over 32,000 input tokens is compacted in 3 fixed stages to at most 28,000 (4,000 kept for one format-repair turn) · only clean episodes' rows are omitted, each still named with its outcome · the source, its reproductions and every episode with a failed check stay in full · if it still does not fit, nothing is sent and that source's search ends with a rec",
+    "picks": "CHALLENGE PICKS | A challenge pick with a fault on a tool and service the agent never called in the candidate arm's source-validation episodes is refused before any pair runs · 1 re-plan per refused pick, inside the challenge's 8 Explorer requests (charged as before) · the challenge itself is unchanged: 4 schedules, 3 pairs each, every fault must fire"
+  },
+  "challenge": "07\nAdversarial challenge\n\nNo candidate challenge recorded. Four required schedules and every paired trial must finish before a promotion can qualify.\n\nChallenge picks · candidate reach check\n\nNo challenge pick has been checked yet. Rule faultlab-challenge-selection/v2-candidate-reach: a fault on a tool and service the agent never called in the candidate arm's source validation is refused; one re-plan follows, inside the challenge's 8 Explorer requests.",
+  "reachListPresent": true,
+  "mechanicListPresent": true,
+  "mechanicList": "Mechanic request size\n\n1 Mechanic request crossed the input limit. Rule faultlab-mechanic-context/v2-bounded: nothing over the limit is ever sent, and a request that cannot fit ends that source's search, never the campaign.\n\nCandidate request 1: not sent. The Mechanic candidate request is 79,000 input tokens (limit 32,000). With every declared compaction stage applied it is still 43,517 tokens, above the 28,000-token target (4,000 tokens are kept for its one format-repair turn): the source episode, its reproductions, every episode with a failed check, the runtime contract and the feedback fields are never omitted. Nothing was sent; the candidate search for this source ended here.\nSearch ended, not sent\n\ndevelopment_evidence: 7 of 10 episodes in full\n\nInspect every request-size record",
+  "recording": {
+    "mechanic_context_records": [
+      [
+        "SEARCH_ENDED",
+        "BEFORE_SEND",
+        "mechanic_proposal",
+        79000,
+        null
+      ]
+    ],
+    "challenge_selection_rule": {
+      "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+      "refused": 0
+    },
+    "selection_reach": []
+  },
+  "phoneHorizontalOverflow": false,
+  "errors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "offsite": []
+}

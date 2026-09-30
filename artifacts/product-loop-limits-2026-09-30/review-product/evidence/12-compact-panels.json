@@ -1,0 +1,42 @@
+{
+  "tag": "12-compact",
+  "cid": "campaign-a2e91e1956c845cda9a1ed874e680724",
+  "plan": {
+    "mechanic": "MECHANIC REQUEST SIZE | A Mechanic diagnosis or candidate request over 32,000 input tokens is compacted in 3 fixed stages to at most 28,000 (4,000 kept for one format-repair turn) · only clean episodes' rows are omitted, each still named with its outcome · the source, its reproductions and every episode with a failed check stay in full · if it still does not fit, nothing is sent and that source's search ends with a rec",
+    "picks": "CHALLENGE PICKS | A challenge pick with a fault on a tool and service the agent never called in the candidate arm's source-validation episodes is refused before any pair runs · 1 re-plan per refused pick, inside the challenge's 8 Explorer requests (charged as before) · the challenge itself is unchanged: 4 schedules, 3 pairs each, every fault must fire"
+  },
+  "challenge": "07\nAdversarial challenge\nchallenge-865d28ec305d4aacb8286e40a375fda5\nInconclusive\nCANDIDATE HASH\n03a4efa6ad223e3dcd9ae20952b18500a621d17e4a861fd8d879275eadd4af87\nINCUMBENT HASH\nbafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb\nSOURCE VALIDATION\nbatch-f783248dca4d4987a54cd1a0d0283233\nSCHEDULES\n3 recorded / 4 required · 3 novel recorded\nFAILED CHECKS\nNone recorded\n\nFewer than four feasible schedules\n\nEvery paired trial · 9 pairs\nPair 1\nepisode-a5562611026b464db52e67edf6f8571c\nepisode-057469b0b9f9477788d7519f2981ba3d\nPair 2\nepisode-6503b0bd660d4aa5b27f30cfa9c6a91f\nepisode-a73456948d87434ab59caf8e4528952d\nPair 3\nepisode-3f17e18a86c3470ea504027fd778d197\nepisode-8fd0b3acb2fc48d3ba1271fa3640b6d4\nPair 4\nepisode-7692568d975b4106a4146a6aa14ee2aa\nepisode-5db914380d0743e3b3a3028bc40212ff\nPair 5\nepisode-7438d557482a43d7bde23b5748a917f6\nepisode-96aa18bea0ad492290e4916b7b7f4c1b\nPair 6\nepisode-748864eb776d450da50011b602c1a33a\nepisode-e46b6c17b7cf4c8e8fbfda65dc65589d\nPair 7\nepisode-43141b128acd42ec84d118b9060779d7\nepisode-d381fe0ae6344d7182911d46f016a11f\nPair 8\nepisode-f5b47d815c5d48f5a6e8e097279677a7\nepisode-15cea6d6c5f7426991ea59b78d7235fa\nPair 9\nepisode-e74de7ea7ea64e56ad3d63e431a992cf\nepisode-f0f46ceaeb6842f08af89f807202c28b\nSchedule novelty and feedback lineage\nChallenge picks · candidate reach check\n\n8 picks checked, 0 refused before any pair ran. Rule faultlab-challenge-selection/v2-candidate-reach: a fault on a tool and service the agent never called in the candidate arm's source validation is refused; one re-plan follows, inside the challenge's 8 Explorer requests.\n\nExplorer request 1: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED\n\nExplorer request 2: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED\n\nExplorer request 3: every fault targets a tool and service the agent called; it ran.\nselected\n\nPick: F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED\n\nExplorer request 4: invalid answer, nothing ran.\ninvalid output\nExplorer request 5: invalid answer, nothing ran.\ninvalid output\nExplorer request 6: invalid answer, nothing ran.\ninvalid output\nExplorer request 7: invalid answer, nothing ran.\ninvalid output\nExplorer request 8: invalid answer, nothing ran.\ninvalid output\nInspect every checked pick",
+  "reachListPresent": true,
+  "mechanicListPresent": true,
+  "mechanicList": "Mechanic request size\n\n1 Mechanic request crossed the input limit. Rule faultlab-mechanic-context/v2-bounded: nothing over the limit is ever sent, and a request that cannot fit ends that source's search, never the campaign.\n\nCandidate request 2: 61,595 tokens in full, over the 32,000-token limit; compacted to 19,271 and sent.\nCompacted and sent\n\nThis request was compacted under faultlab-mechanic-context/v2-bounded: in full it was 61,595 input tokens, over the 32,000-token model input limit. Stages applied, in order: (1) a clean episode whose rows and outcome repeat an earlier clean episode is listed by episode_id (same_as); (2) one clean episode is kept in full per recipe, arm and outcome; the others are listed by episode_id (represented_by); (3) no clean episode is kept in full; each is listed by episode_id with its own outcome. The observation, report and check rows of 15 clean episode(s) were omitted (development_evidence: 6 of 16 episodes omitted; challenge_counterexamples[0].evidence: 9 of 18 episodes omitted); each omitted episode is still listed by episode_id with its own outcome in its block's compaction.omitted, and every trial_outcomes group is unchanged. The source episode, its reproductions and every episode with a failed check are kept in full. Nothing else in this request was changed.\n\ndevelopment_evidence: 10 of 16 episodes in full · challenge_counterexamples[0].evidence: 9 of 18 episodes in full\n\nInspect every request-size record",
+  "recording": {
+    "mechanic_context_records": [
+      [
+        "COMPACTED",
+        null,
+        "mechanic_proposal",
+        61595,
+        19271
+      ]
+    ],
+    "challenge_selection_rule": {
+      "protocol": "faultlab-challenge-selection/v2-candidate-reach",
+      "refused": 0
+    },
+    "selection_reach": [
+      "SELECTED",
+      "SELECTED",
+      "SELECTED",
+      "INVALID_OUTPUT",
+      "INVALID_OUTPUT",
+      "INVALID_OUTPUT",
+      "INVALID_OUTPUT",
+      "INVALID_OUTPUT"
+    ]
+  },
+  "phoneHorizontalOverflow": false,
+  "errors": [
+    "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+  ],
+  "offsite": []
+}

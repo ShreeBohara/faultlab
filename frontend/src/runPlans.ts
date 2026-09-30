@@ -1,6 +1,7 @@
 import { object, request } from './api'
 import type { AgentRegistration, Campaign, CampaignBudget, EpisodeBudget, FaultSpec } from './generated/contracts'
 import { validateContract } from './generated/validate'
+import { challengeSelectionDeclaration, mechanicContextDeclaration, type ChallengeSelectionDeclaration, type MechanicContextDeclaration } from './loopLimits'
 
 export const TASK_DEFINITION = 'orders.upgrade_then_confirm/v1' as const
 /** 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared native adapter v2. */
@@ -67,8 +68,9 @@ export type RunOptions = {
   task: { task_definition_id: typeof TASK_DEFINITION; label: string; description: string; task_text_default: string }
   profiles: { profile_id: RunProfile; label: string; source_mode: 'offline_fixture' | 'live'; arm: 'B1' | 'B0'; registration_required: boolean }[]
   development: { manifest_hash: string; cases: DevelopmentCase[] }
-  /** transport_retry: the rule every new Learn plan freezes (rule v2); absent from backends that predate it. */
-  learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[]; transport_retry?: TransportRetryDeclarationV2 }
+  /** transport_retry: the rule every new Learn plan freezes (rule v2); absent from backends that predate it.
+   * mechanic_context and challenge_selection: the two loop-limit rules every new Learn plan freezes; absent from older backends. */
+  learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[]; transport_retry?: TransportRetryDeclarationV2; mechanic_context?: MechanicContextDeclaration; challenge_selection?: ChallengeSelectionDeclaration }
   compare: { partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
   agents: RunAgent[]; offline: { agent: 'reference'; configuration_hash: string; registration_required: false }
   caps: RunCaps; episode_budget: Required<EpisodeBudget>; models: { actor: string; explorer: string; mechanic: string }; provider_calls: 0
@@ -77,7 +79,9 @@ export type PlanSelection =
   | { kind: 'development_case'; case_id: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec; scenario_hash: string; manifest_hash: string }
   | { kind: 'development_search'; manifest_hash: string; search_space: SearchSpace }
   | { kind: 'protected_comparison'; partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
-export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; transport_retry?: TransportRetryDeclaration | null; evidence_retry?: EvidenceRetryDeclaration | null; plan_hash: string }
+export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: string; setup_hash: string; task_definition_id: typeof TASK_DEFINITION; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; configuration_hash: string; agent_registration_id: string; agent: AgentKind; source_mode: 'live' | 'offline_fixture'; caps: RunCaps; episode_budget: Required<EpisodeBudget>; initial_policy_version: string; initial_policy_hash: string; selection: PlanSelection; discovery?: DiscoveryDeclaration | null; transport_retry?: TransportRetryDeclaration | null; evidence_retry?: EvidenceRetryDeclaration | null
+  /** Learn only; absent from every plan saved before these rules and from every baseline or compare plan. */
+  mechanic_context?: MechanicContextDeclaration | null; challenge_selection?: ChallengeSelectionDeclaration | null; plan_hash: string }
 export type CampaignPlan = { campaign_id: string; status: 'PLANNED'; plan: RunPlan } | { campaign_id: string; status: 'LEGACY'; plan: null }
 export type PlannedCampaignRequest = { expected_store_identity: string; expected_setup_hash: string; task_definition_id: typeof TASK_DEFINITION; agent_registration_id?: string; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; development_case_id?: string; discovery_protocol?: DiscoveryProtocolId }
 
@@ -247,6 +251,8 @@ export function validateRunOptions(value: unknown): RunOptions {
   if (!object(value.learn) || !digest(value.learn.manifest_hash) || !searchSpace(value.learn.search_space) || !positive(value.learn.selection_limit) || !comparison(value.compare)) return malformed('run search space')
   if (value.learn.discovery_protocols !== undefined && !discoveryOptions(value.learn.discovery_protocols)) return malformed('discovery protocols')
   if (value.learn.transport_retry !== undefined && !(object(value.episode_budget) && transportRetryV2(value.learn.transport_retry, value.episode_budget.actor_calls as number))) return malformed('Learn transport retry rule')
+  if (value.learn.mechanic_context !== undefined && !mechanicContextDeclaration(value.learn.mechanic_context)) return malformed('Learn Mechanic request-size rule')
+  if (value.learn.challenge_selection !== undefined && !challengeSelectionDeclaration(value.learn.challenge_selection)) return malformed('Learn challenge-pick rule')
   // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
   if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
     || !['reference', 'smolagents'].every(kind => (value.agents as unknown[]).some(a => object(a) && a.agent === kind))) return malformed('reviewed agents')
@@ -283,6 +289,9 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
     || (plan.mode === 'learn' && transportRetryV2(plan.transport_retry, actorCalls)))) return malformed('campaign plan transport retry rule')
   // Only a Learn plan waits for evidence, so only a Learn plan may declare automatic evidence retries.
   if (!(plan.evidence_retry === undefined || plan.evidence_retry === null || (plan.mode === 'learn' && evidenceRetry(plan.evidence_retry)))) return malformed('campaign plan evidence retry rule')
+  // The two loop-limit rules: only a Learn plan declares them, exactly as frozen; older plans have neither.
+  if (!(plan.mechanic_context === undefined || plan.mechanic_context === null || (plan.mode === 'learn' && mechanicContextDeclaration(plan.mechanic_context)))) return malformed('campaign plan Mechanic request-size rule')
+  if (!(plan.challenge_selection === undefined || plan.challenge_selection === null || (plan.mode === 'learn' && challengeSelectionDeclaration(plan.challenge_selection)))) return malformed('campaign plan challenge-pick rule')
   if (plan.discovery !== undefined && plan.discovery !== null) {
     // Only Learn declares a discovery protocol; the pre-check (v2, v3 with pre-check) models only the reference Actor.
     if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery, true) || (preChecked(plan.discovery.protocol) && plan.agent !== 'reference')
