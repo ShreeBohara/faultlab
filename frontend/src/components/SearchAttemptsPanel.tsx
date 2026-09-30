@@ -1,5 +1,5 @@
 import { getSearchAttempts, type SearchAttempt, type TransportRetry } from '../searchAttempts'
-import type { HistoryRowMatch } from '../runPlans'
+import type { HistoryReplaySlot, HistoryRowMatch } from '../runPlans'
 import { useResource } from '../useResource'
 import { Empty, EpisodeLinks, Hash, Json, Panel, ResourceNote } from './common'
 
@@ -13,6 +13,22 @@ const failureText = (retry: TransportRetry) => retry.code === 'HTTP_ERROR' ? `HT
 export const historyMatchText = (match: HistoryRowMatch | null) => match
   ? `History-informed: this recipe re-tries agent history row ${match.row}${match.development_case_id ? ` (${match.development_case_id})` : ''} that the Explorer was shown. Report a result from it as history-informed, not as independent discovery.`
   : 'No match with any row of the frozen agent history.'
+
+/** Discovery v4: a replay slot re-ran a frozen history row by the plan's fixed rule; it is never independent discovery. */
+export const historyReplayTitle = (block: HistoryReplaySlot) => `History replay ${block.replay} of ${block.of} · agent history row ${block.history_row}${block.development_case_id ? ` (${block.development_case_id})` : ''}`
+export const historyReplayText = (block: HistoryReplaySlot) =>
+  `${historyReplayTitle(block)}: FaultLab re-ran this recorded recipe, which violated in ${block.violation_share} verified episodes with every fault fired, because the plan's fixed replay rule listed it. No Explorer request was sent. A source from this slot is a history replay of that row, never independent discovery.`
+/** Discovery v4: what the recorded rows show about the slots after the replays. It never claims an Explorer slot that has no
+ * record: discovery can end after the replays, for example when their sources use up the campaign's candidate requests
+ * (review finding F1, September 30). */
+export const replaySummaryText = (rows: SearchAttempt[]) => {
+  const replays = rows.filter(row => row.history_replay).length
+  const explorerSlots = new Set(rows.filter(row => !row.history_replay).map(row => row.selection_index)).size
+  const first = `Discovery protocol v4: the first ${replays === 1 ? 'slot was a history replay' : `${replays} slots were history replays`} of the frozen agent history (see the saved plan), with no Explorer request`
+  return explorerSlots
+    ? `${first}; the Explorer chose the next ${explorerSlots === 1 ? 'slot' : `${explorerSlots} slots`} recorded here.`
+    : `${first}. No Explorer slot is recorded: either discovery has not reached one yet, or it ended after the replays (for example because their sources used up the campaign's candidate requests); the campaign's recorded outcome says which.`
+}
 
 function Reachability({ row, rows }: { row: SearchAttempt; rows: SearchAttempt[] }) {
   const decision = row.search_decision
@@ -35,20 +51,23 @@ export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: str
   if (!campaignId) return null
   const rows = resource.data
   const v2 = !!rows?.some(row => row.search_decision.discovery_protocol)
+  const replays = rows?.filter(row => row.history_replay) ?? []
   return <Panel title="Fault search · selection attempts">
     <p className="muted">Explorer responses and executed Actor trials are different counts. A declined duplicate still uses a model request. Only the trial ledger records whether a selected fault actually ran and triggered.</p>
     <ResourceNote resource={resource} />
-    {rows && <div className="stat-strip"><div><strong>{rows.length}</strong><span>Recorded selection responses</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SELECTED').length}</strong><span>Selected for execution</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_DUPLICATE').length}</strong><span>Duplicates declined</span></div>{v2 && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNREACHABLE').length}</strong><span>Refused by pre-check</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'INVALID_OUTPUT').length}</strong><span>Invalid selections</span></div></div>}
+    {rows && <div className="stat-strip"><div><strong>{rows.length - replays.length}</strong><span>Recorded selection responses</span></div>{!!replays.length && <div><strong>{replays.length}</strong><span>History replays · no Explorer request</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'SELECTED').length}</strong><span>Selected for execution</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_DUPLICATE').length}</strong><span>Duplicates declined</span></div>{v2 && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNREACHABLE').length}</strong><span>Refused by pre-check</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'INVALID_OUTPUT').length}</strong><span>Invalid selections</span></div></div>}
     {rows?.length === 0 && <Empty>No search-decision records available for this campaign. Older records may contain executed trials without a selection ledger; this does not mean no faults were tested.</Empty>}
     {!!rows?.length && <p className="muted">A different seed or hypothesis alone does not create a new fault schedule. These records cover autonomous discovery, not challenge or selector-comparison studies.</p>}
     {v2 && <p className="muted">{rows?.some(row => row.search_decision.discovery_protocol === 'faultlab-discovery/v3-history-reachability') ? 'Discovery protocol v3 with the reachability pre-check (v2\'s dispatch, plus the frozen agent history in the saved plan)' : 'Discovery protocol v2'}: before any paid Actor trial, a free replay of the real simulator labels each fault for this agent. Only picks whose every fault is forced run; a refused pick gets one re-plan request in the same slot.</p>}
-    {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {decisionLabel[row.search_decision.status]}</summary>
+    {!!replays.length && <p className="muted">{replaySummaryText(rows ?? [])}</p>}
+    {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {row.history_replay ? `${historyReplayTitle(row.history_replay)} · no Explorer request` : decisionLabel[row.search_decision.status]}</summary>
       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>
       {row.search_decision.reason && <p>Recorded reason: {row.search_decision.reason.replaceAll('_', ' ').toLowerCase()}.</p>}
       {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">{retry.protocol === undefined
         ? <>Transport retry: the first request received no answer ({failureText(retry)}), so the identical request was sent once more. Both requests are charged ({row.usage.model_calls} model requests); this is not a new selection request.</>
         : <>Transport retry {retry.attempt} of at most 3: the previous request received no answer ({failureText(retry)}), so after waiting {retry.retry_delay_seconds} s the identical request was sent again. Every request is charged ({row.usage.model_calls} model requests in all); this is not a new selection request.</>} Provider failure <code>{retry.provider_failure_id}</code>.</p>)}
-      {row.matches_history_row !== undefined && <p className={row.matches_history_row ? 'notice' : 'muted'}>{historyMatchText(row.matches_history_row)}</p>}
+      {row.history_replay && <><p className="notice">{historyReplayText(row.history_replay)}</p><p>Replay episode</p><EpisodeLinks ids={[row.history_replay.episode_id]} onSelect={onEpisode} /></>}
+      {row.matches_history_row !== undefined && !row.history_replay && <p className={row.matches_history_row ? 'notice' : 'muted'}>{historyMatchText(row.matches_history_row)}</p>}
       <p>Schedule identity: <Hash value={row.search_decision.schedule_hash} /></p>
       {(row.selected_output ?? row.output)?.fault_spec.primitives.map((primitive, index) => <p key={index}>{primitive.kind} · {primitive.target_service}.{primitive.target_tool} · occurrence {primitive.occurrence}</p>)}
       <Reachability row={row} rows={rows} />

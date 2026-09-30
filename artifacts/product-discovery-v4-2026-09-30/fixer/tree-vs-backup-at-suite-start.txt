@@ -1,0 +1,30 @@
+REF backup/part2-2026-09-22 = 4d1c21ba83fea229c23ee086e6b566000fb8640a   HEAD = cbbf957e6e1cb19e1dcc2f87f24a33101859bbbe
+SKIPPED audit/final-audit.json
+SKIPPED audit/promotion.json
+SKIPPED backend/app/referee/checks.py
+CHANGED CURRENT_STATUS.md
+CHANGED backend/app/agents/explorer.py
+CHANGED backend/app/lab/agent_history.py
+CHANGED backend/app/lab/api.py
+CHANGED backend/app/lab/discovery_protocol.py
+CHANGED backend/app/lab/exports.py
+CHANGED backend/app/lab/learning.py
+CHANGED backend/app/lab/run_plans.py
+CHANGED backend/tests/lab/test_agent_history.py
+CHANGED docs/user-guide.md
+CHANGED frontend/src/components/CounterexamplePanel.tsx
+CHANGED frontend/src/components/DiscoveryProtocol.tsx
+CHANGED frontend/src/components/RunSummary.tsx
+CHANGED frontend/src/components/SearchAttemptsPanel.tsx
+CHANGED frontend/src/experiments.ts
+CHANGED frontend/src/runPlans.ts
+CHANGED frontend/src/searchAttempts.ts
+CHANGED frontend/tests/run-fixtures.ts
+ADDED backend/app/agents/prompts/explorer_discovery_v4_history_replay.md
+ADDED backend/app/lab/history_replay.py
+ADDED backend/tests/lab/test_discovery_v4_replay.py
+ADDED backend/tests/lab/test_discovery_v4_review_fixes.py
+ADDED docs/DISCOVERY_V4_HISTORY_REPLAY_2026-09-30.md
+ADDED frontend/tests/discovery-v4.browser.ts
+ADDED frontend/tests/discovery-v4.test.tsx
+TOTAL changed 18 missing 0 added 7 skipped 3

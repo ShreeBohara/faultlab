@@ -54,11 +54,14 @@ def discovery_session(store,campaign,incumbent):
     return session.identity,session
 
 def discovery_history(store,campaign):
-    """Discovery v3: the frozen agent history the Explorer reads, or None for v1/v2 and older plans.
+    """Discovery v3/v4: the frozen agent history the Explorer reads, or None for v1/v2 and older plans.
 
-    Re-verified against the store at the plan's record cutoff before the first Explorer request;
-    a difference raises agent_history.HistoryChanged (a StoreConflict), so no request is sent, and the
-    campaign ends ERROR with the plain reason AGENT_HISTORY_CHANGED (app.lab.readiness.execution_failure).
+    Re-verified against the store at the plan's record cutoff before the first Explorer request (and, under v4,
+    before the first replay slot, with the replay list recomputed from it); a difference raises
+    agent_history.HistoryChanged (a StoreConflict), so no request or replay is sent, and the campaign ends ERROR
+    with the plain reason AGENT_HISTORY_CHANGED (app.lab.readiness.execution_failure). Under v4 with a non-empty
+    replay list the result also asks the Explorer for its appended v4 prompt section (replay_prompt); that key never
+    enters the Explorer's context. v3 results are unchanged.
     """
     from app.lab.discovery_protocol import campaign_discovery
     if campaign_discovery(store,campaign).get('history') is None: return None
@@ -66,7 +69,18 @@ def discovery_history(store,campaign):
     from app.lab.run_plans import verify_plan_history
     plan=campaign_run_plan(store,campaign)
     verify_plan_history(store,plan)
-    return {'discovery_protocol':plan['discovery']['protocol'],'agent_history':plan['discovery']['history']['summary']}
+    result={'discovery_protocol':plan['discovery']['protocol'],'agent_history':plan['discovery']['history']['summary']}
+    if (plan['discovery'].get('replay') or {}).get('rows'): result['replay_prompt']=True
+    return result
+
+def discovery_replays(store,campaign):
+    """Discovery v4: the plan's frozen history replay rows, in replay order; [] for every other protocol.
+
+    Read after discovery_history(), which has verified the history and recomputed this list from it.
+    """
+    from app.lab.discovery_protocol import campaign_discovery
+    replay=campaign_discovery(store,campaign).get('replay')
+    return list(replay['rows']) if replay else []
 
 def replan_allowed(record):
     decision=(record or {}).get('search_decision') or {}
@@ -124,7 +138,9 @@ async def run_learning_cycle(coordinator,campaign,runner):
         return bundles
     try:
         identity,v2=discovery_session(store,campaign,coordinator.policies.get(coordinator.get(id).active_policy_version))
-        frozen_history=discovery_history(store,campaign)  # None unless the plan declared discovery v3
+        frozen_history=discovery_history(store,campaign)  # None unless the plan declared discovery v3 or v4
+        # Discovery v4 only: the frozen replay rows; they run first, one slot and one Actor episode each, no Explorer request.
+        replays=discovery_replays(store,campaign)
         # The plan's declared automatic evidence retry (app.lab.evidence_wait), or None: manual retry only.
         evidence_rule=evidence_wait.campaign_rule(store,campaign)
         # The plan's declared lab-role transport retry rule: v2 (backoff) gives the Explorer (discovery and challenge
@@ -146,7 +162,12 @@ async def run_learning_cycle(coordinator,campaign,runner):
             explorer.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='explorer',agent_registration_id=planned_registration_id(store,current))
             mechanic.metadata=trace_metadata(current,planned_episode_id,incumbent,configuration,role='mechanic',agent_registration_id=planned_registration_id(store,current))
             slot_context={'campaign_id':id,'configuration_hash':current.configuration_hash,'policy_hash':incumbent.policy_hash,'selection_index':selection_index,'development_history':history,'development_evidence':summarize_evidence(discovery_evidence),'runtime_contract':runtime_contract(store,current)}
-            if v2 is None:
+            if selection_index<len(replays):
+                from app.lab.history_replay import record_replay
+                selection_ref,output=record_replay(store,slot_context,replays[selection_index],protocol=frozen_history['discovery_protocol'],
+                                                   identity=identity,summary=frozen_history['agent_history'],
+                                                   episode_id=planned_episode_id,replays_total=len(replays))
+            elif v2 is None:
                 selection_ref,output=await explorer.select(slot_context,fallback=fallback,discovery_history=frozen_history)
             else:
                 selection_ref,output=await explorer.select({**slot_context,'slot_request':1},fallback=fallback,discovery_v2=v2,discovery_history=frozen_history)

@@ -1,0 +1,39 @@
+clean copy built: 25 product files copied; unexpected paths present: []
+CLEAN backend new/changed test files (6 files): exit 0: 72 passed in 100.77s (0:01:40)
+CLEAN frontend tests/discovery-v4.test.tsx: exit 0: Test Files  1 passed (1) | Tests  9 passed (9)
+CLEAN frontend whole unit suite: exit 0: Test Files  24 passed (24) | Tests  348 passed (348)
+CAUGHT M1 MEDIUM-1: replay skip applied only to baseline-study episodes (a replay is learn_discovery, so it is counted again): exit 1: 1 failed in 2.39s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT M2 MEDIUM-1: over-broad skip (every learn_discovery episode dropped once any replay exists: the Explorer pick is lost too): exit 1: 1 failed in 2.35s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT M3 MEDIUM-1: wrong field read from the replay selection (history_replay.selection_id, absent: nothing collected): exit 1: 1 failed in 2.31s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT M4 MEDIUM-1: replay episodes counted as excluded instead of silently skipped: exit 1: 1 failed in 2.36s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT M5 F2: saved-plan statement says "at most 3" candidate requests: exit 1: 1 failed in 1.75s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT M6 F2: saved-plan statement drops "later replays and Explorer slots do not run": exit 1: 1 failed in 1.74s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT M7 F4: v4 claim rule mentions v3 again: exit 1: 1 failed in 2.11s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+CAUGHT M8 F1: every row counted as an Explorer slot (replays included): exit 1: Test Files  1 failed (1) | Tests  1 failed | 8 passed (9)
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT M9 F1: with no Explorer record the panel still says the Explorer chose the next slots: exit 1: Test Files  1 failed (1) | Tests  1 failed | 8 passed (9)
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT M10 LOW-3: an Explorer pick (history_replay null) treated like a non-v4 campaign (no Found-by line): exit 1: Test Files  1 failed (1) | Tests  1 failed | 8 passed (9)
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+CAUGHT M11 LOW-3: the two Found-by texts swapped: exit 1: Test Files  1 failed (1) | Tests  1 failed | 8 passed (9)
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+CAUGHT M12 LOW-2: the no-case label reads as an Explorer pick: exit 1: Test Files  1 failed (1) | Tests  1 failed | 8 passed (9)
+      FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+CONTROL after all mutants restored: backend exit 0: 3 passed in 6.10s; frontend exit 0: Test Files  1 passed (1) | Tests  9 passed (9)
+mutants caught: 12 of 12
+REAL M4 responses (fixer/manual-check.json) through the dashboard code: exit 0
+      {
+      "rows": 2,
+      "sentence": "Discovery protocol v4: the first 2 slots were history replays of the frozen agent history (see the saved plan), with no Explorer request. No Explorer slot is recorded: either discovery has not reached one yet, or it ended after the replays (for example because their sources used up the campaign's candidate requests); the campaign's recorded outcome says which.",
+      "found": [
+      "Found by History replay 1 of 2 · agent history row 3 (dev-3): a history replay of that row, never independent discovery.",
+      "Found by History replay 2 of 2 · agent history row 5 (dev-5): a history replay of that row, never independent discovery."
+      ]
+      }

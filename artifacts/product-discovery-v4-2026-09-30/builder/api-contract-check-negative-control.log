@@ -1,0 +1,9 @@
+campaign state NO_CHANGE | replay row keys: ['campaign_id', 'configuration_hash', 'error', 'history_replay', 'matches_history_row', 'output', 'policy_hash', 'provenance', 'raw_response', 'search_decision', 'selected_output', 'selection_index', 'selection_ref', 'transport_retries', 'usage']
+NEGATIVE CONTROL: first-build replay validator restored in the scratch copy; the check must fail
+   × the dashboard accepts the real v4 API responses 4ms
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Malformed search attempts or campaign identity. The last verified data is retained.
+     46| const malformed = (): never => { throw new Error('Malformed search att…
+vitest exit 1 | network connections refused []

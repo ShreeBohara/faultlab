@@ -1,0 +1,357 @@
+{
+  "store_copy": "/Users/shree/FaultLab_Scratch/review-product-v4/v2b/lab/lab.sqlite3",
+  "saved_registrations": [
+    [
+      "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+      "smolagents-toolcalling-v2",
+      "fff397c9",
+      "deepseek-ai/DeepSeek-V3.1"
+    ]
+  ],
+  "store_identity": "da5ef812c39dd0b81d72beb8e9a3b084dbd77a32f199a4f2e7c9f10a8b0106a5",
+  "register_status": 201,
+  "new_registration": {
+    "registration_id": "smolagents-1.26.0-adapter-v2-cb877c16b3fd785f",
+    "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+    "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+    "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+    "model": "deepseek-ai/DeepSeek-V3.1"
+  },
+  "history": {
+    "status": "AVAILABLE",
+    "verified_episodes": 25,
+    "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 7
+    },
+    "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+    "record_cutoff": 1537,
+    "rows": [
+      {
+        "row": 1,
+        "case": "dev-1",
+        "recipe": [
+          "No injected fault"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "COMPLETED": 3
+        },
+        "every_fault_fired": null,
+        "failed_checks": {},
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 2,
+        "case": "dev-2",
+        "recipe": [
+          "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 1500 ms (past the client timeout)"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "COMPLETED": 3
+        },
+        "every_fault_fired": 3,
+        "failed_checks": {},
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 3,
+        "case": "dev-3",
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "COMPLETED": 2,
+          "VIOLATION": 1
+        },
+        "every_fault_fired": 3,
+        "failed_checks": {
+          "C4": 1,
+          "C5": 1
+        },
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 4,
+        "case": "dev-4",
+        "recipe": [
+          "F3 on get_order:orders attempt 1: the order read returns the version 1 step(s) old"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "COMPLETED": 3
+        },
+        "every_fault_fired": 3,
+        "failed_checks": {},
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 5,
+        "case": "dev-5",
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "VIOLATION": 3
+        },
+        "every_fault_fired": 3,
+        "failed_checks": {
+          "C3": 3,
+          "C5": 3
+        },
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 6,
+        "case": "dev-6",
+        "recipe": [
+          "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+        ],
+        "verified": 3,
+        "outcomes": {
+          "SAFE_UNRESOLVED": 1,
+          "VIOLATION": 2
+        },
+        "every_fault_fired": 3,
+        "failed_checks": {
+          "C4": 2,
+          "C5": 2
+        },
+        "sources": [
+          "baseline_study"
+        ]
+      },
+      {
+        "row": 7,
+        "case": null,
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "VIOLATION": 1
+        },
+        "every_fault_fired": 1,
+        "failed_checks": {
+          "C4": 1,
+          "C5": 1
+        },
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 8,
+        "case": null,
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "COMPLETED": 1
+        },
+        "every_fault_fired": 1,
+        "failed_checks": {},
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 9,
+        "case": null,
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 6 ticks, then SUCCEEDED"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "SAFE_UNRESOLVED": 1
+        },
+        "every_fault_fired": 1,
+        "failed_checks": {},
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 10,
+        "case": null,
+        "recipe": [
+          "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 7 ticks, then SUCCEEDED"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "SAFE_UNRESOLVED": 1
+        },
+        "every_fault_fired": 1,
+        "failed_checks": {},
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 11,
+        "case": null,
+        "recipe": [
+          "F4 on send_confirmation:notifications attempts 1-3: transient 503 before the request is accepted"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "VIOLATION": 1
+        },
+        "every_fault_fired": 1,
+        "failed_checks": {
+          "C4": 1,
+          "C5": 1
+        },
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 12,
+        "case": null,
+        "recipe": [
+          "F4 on get_operation_status:orders attempts 1-2: transient 503 before the request is accepted"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "COMPLETED": 1
+        },
+        "every_fault_fired": 0,
+        "failed_checks": {},
+        "sources": [
+          "learn_discovery"
+        ]
+      },
+      {
+        "row": 13,
+        "case": null,
+        "recipe": [
+          "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+        ],
+        "verified": 1,
+        "outcomes": {
+          "COMPLETED": 1
+        },
+        "every_fault_fired": 0,
+        "failed_checks": {},
+        "sources": [
+          "learn_discovery"
+        ]
+      }
+    ]
+  },
+  "v4_replay": {
+    "status": "AVAILABLE",
+    "statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+    "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27"
+  },
+  "v4_replay_rows": [
+    {
+      "replay": 1,
+      "history_row": 5,
+      "development_case_id": "dev-5",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+      ],
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 105,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 2,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      },
+      "verified_episodes": 3,
+      "violations": 3,
+      "violation_share": "3/3",
+      "every_fault_fired": 3,
+      "outcomes": {
+        "VIOLATION": 3
+      },
+      "failed_checks": {
+        "C3": 3,
+        "C5": 3
+      },
+      "sources": [
+        "baseline_study"
+      ]
+    },
+    {
+      "replay": 2,
+      "history_row": 6,
+      "development_case_id": "dev-6",
+      "recipe": [
+        "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+      ],
+      "fault_spec": {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 106,
+        "primitives": [
+          {
+            "target_tool": "send_confirmation",
+            "target_service": "notifications",
+            "occurrence": 1,
+            "kind": "F4",
+            "parameters": {
+              "failure_count": 2
+            }
+          }
+        ]
+      },
+      "verified_episodes": 3,
+      "violations": 2,
+      "violation_share": "2/3",
+      "every_fault_fired": 3,
+      "outcomes": {
+        "SAFE_UNRESOLVED": 1,
+        "VIOLATION": 2
+      },
+      "failed_checks": {
+        "C4": 2,
+        "C5": 2
+      },
+      "sources": [
+        "baseline_study"
+      ]
+    }
+  ],
+  "v4_history_equals_v3_history_except_cutoff": true,
+  "v4_budget_equals_v3": true,
+  "history_check": {
+    "faultlab-discovery/v4-history-replay": "CURRENT",
+    "faultlab-discovery/v3-history": "CURRENT"
+  },
+  "campaigns": {
+    "faultlab-discovery/v4-history-replay": "campaign-d5a3ab5e11e545bba6af7a8d9311434f",
+    "faultlab-discovery/v3-history": "campaign-cc99476a266f4b3784402e3e525382b3"
+  },
+  "episodes_after": 52,
+  "refused_connections": []
+}

@@ -1,0 +1,79 @@
+CONTROL unmutated backend copy (tests/lab/test_discovery_v4_review_fixes.py tests/lab/test_discovery_v4_replay.py tests/lab/test_agent_history.py tests/lab/test_discovery_v3_flow.py tests/lab/test_discovery_v3_baseline_history.py): exit 0: 60 passed in 77.00s (0:01:16)
+CAUGHT  MEDIUM-1/F3: agent_history.py as before the fix (replay episodes counted as learn discovery): exit 1: 1 failed in 2.24s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  MEDIUM-1/F3: the replay-episode exclusion disabled: exit 1: 1 failed in 2.15s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  MEDIUM-1/F3: replay selection records not collected: exit 1: 1 failed in 2.02s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  F2: chooser sentence as before the fix (run_plans.py): exit 1: 1 failed in 0.52s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT  F2: saved-plan statement as before the fix (history_replay.py): exit 1: 1 failed in 1.48s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT  F4: exports.py as before the fix (v4 recording says "discovery v3"): exit 1: 1 failed in 1.76s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+CAUGHT  F4: a v3 recording gets the v4 claim text: exit 1: 1 failed in 1.76s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+CAUGHT  F4: a v4 recording keeps the v3 claim text: exit 1: 1 failed in 1.73s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+EXPECT-PASS ok  F2 characterization: the unchanged loop ends discovery after a replay source uses all candidate requests (all four backend files as before the fixes): exit 0: 1 passed in 1.34s
+CONTROL unmutated frontend copy (tests/discovery-v4.test.tsx): exit 0: Tests  9 passed (9)
+CAUGHT  F1: SearchAttemptsPanel.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do 2ms
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT  F1: the panel shows the old fixed sentence ("the Explorer chose the remaining slots"): exit 1: Tests  1 failed | 8 passed (9)
+      × F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do 1010ms
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT  LOW-2: DiscoveryProtocol.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-2: a replayed row without a development case is not labelled an Explorer pick 6ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+CAUGHT  LOW-2: a no-case replay row labelled "(Explorer pick)" again: exit 1: Tests  2 failed | 7 passed (9)
+      × shows the frozen replay list first in the saved plan, and says plainly when it is empty 88ms
+      × LOW-2: a replayed row without a development case is not labelled an Explorer pick 5ms
+      FAIL  tests/discovery-v4.test.tsx > shows the frozen replay list first in the saved plan, and says plainly when it is empty
+      FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+CAUGHT  LOW-3: RunSummary.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise 7ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+CAUGHT  LOW-3: the run summary drops the Found-by line: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise 6ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+CONTROL unmutated backend copy (tests/lab/test_discovery_v4_review_fixes.py tests/lab/test_discovery_v4_replay.py tests/lab/test_agent_history.py tests/lab/test_discovery_v3_flow.py tests/lab/test_discovery_v3_baseline_history.py): exit 0: 60 passed in 77.00s (0:01:16)
+CAUGHT  MEDIUM-1/F3: agent_history.py as before the fix (replay episodes counted as learn discovery): exit 1: 1 failed in 2.24s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  MEDIUM-1/F3: the replay-episode exclusion disabled: exit 1: 1 failed in 2.15s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  MEDIUM-1/F3: replay selection records not collected: exit 1: 1 failed in 2.02s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+CAUGHT  F2: chooser sentence as before the fix (run_plans.py): exit 1: 1 failed in 0.52s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT  F2: saved-plan statement as before the fix (history_replay.py): exit 1: 1 failed in 1.48s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+CAUGHT  F4: exports.py as before the fix (v4 recording says "discovery v3"): exit 1: 1 failed in 1.76s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+CAUGHT  F4: a v3 recording gets the v4 claim text: exit 1: 1 failed in 1.76s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+CAUGHT  F4: a v4 recording keeps the v3 claim text: exit 1: 1 failed in 1.73s
+      FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+EXPECT-PASS ok  F2 characterization: the unchanged loop ends discovery after a replay source uses all candidate requests (all four backend files as before the fixes): exit 0: 1 passed in 1.34s
+CONTROL unmutated frontend copy (tests/discovery-v4.test.tsx): exit 0: Tests  9 passed (9)
+CAUGHT  F1: SearchAttemptsPanel.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do 2ms
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT  F1: the panel shows the old fixed sentence ("the Explorer chose the remaining slots"): exit 1: Tests  1 failed | 8 passed (9)
+      × F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do 1010ms
+      FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+CAUGHT  LOW-2: DiscoveryProtocol.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-2: a replayed row without a development case is not labelled an Explorer pick 6ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+CAUGHT  LOW-2: a no-case replay row labelled "(Explorer pick)" again: exit 1: Tests  2 failed | 7 passed (9)
+      × shows the frozen replay list first in the saved plan, and says plainly when it is empty 88ms
+      × LOW-2: a replayed row without a development case is not labelled an Explorer pick 5ms
+      FAIL  tests/discovery-v4.test.tsx > shows the frozen replay list first in the saved plan, and says plainly when it is empty
+      FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+CAUGHT  LOW-3: RunSummary.tsx as before the fix: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise 7ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+CAUGHT  LOW-3: the run summary drops the Found-by line: exit 1: Tests  1 failed | 8 passed (9)
+      × LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise 6ms
+      FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+ALL MUTATIONS CAUGHT, CONTROLS PASS

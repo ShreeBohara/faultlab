@@ -1,0 +1,32 @@
+[
+  {
+    "step": "stale plan created",
+    "campaignId": "campaign-76834793596549a88d7527ff3099b75e"
+  },
+  {
+    "step": "mutate",
+    "out": "{\"episode_id\": \"episode-80a0b8526661441c98912a426cfcb713\", \"evidence_source_before\": \"weave_verified\", \"after\": \"local_only\"}\n"
+  },
+  {
+    "step": "history check",
+    "status": [
+      "Changed: Start will be refused. The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 18713d5089cd…, now 19ef7b332dca…); create a new plan"
+    ]
+  },
+  {
+    "step": "after start",
+    "alerts": [
+      "The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 18713d5089cd…, now 19ef7b332dca…); create a new plan"
+    ],
+    "status": [
+      "Backend connected",
+      "Campaign created. Review its frozen plan, then press Start campaign.",
+      "Changed: Start will be refused. The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 18713d5089cd…, now 19ef7b332dca…); create a new plan",
+      ""
+    ]
+  },
+  {
+    "errors": [],
+    "offsite": []
+  }
+]

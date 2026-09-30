@@ -1,7 +1,7 @@
 import { object, request } from './api'
 import { validateContract } from './generated/validate'
 import type { ExplorerOutput, FaultSpec, Usage } from './generated/contracts'
-import { historyRowMatch, type HistoryRowMatch } from './runPlans'
+import { historyReplaySlot, historyRowMatch, type HistoryReplaySlot, type HistoryRowMatch } from './runPlans'
 
 export type FaultLabel = { index: number; fault: string; kind: string; target: string; attempt: number; agent_attempts_seen: number; rule: string | null; verdict: 'FORCED' | 'NOT_FORCED' | 'IMPOSSIBLE'; reason_code: string; explanation: string }
 export type Reachability = { labeller: string; all_forced: boolean; recipe: string[]; faults: FaultLabel[]; agent_path: string[]; agent_business_calls: number; fixture_id: string; caller_model: Record<string, unknown> }
@@ -13,6 +13,8 @@ export type SearchAttempt = {
     // Present only under a declared pre-checked protocol: v2, or v3 with the pre-check (v2's dispatch plus the frozen agent history).
     discovery_protocol?: 'faultlab-discovery/v2-reachability' | 'faultlab-discovery/v3-history-reachability'; identity_version?: string; slot_request?: 1 | 2; replan_of?: string | null
     refused_fault_spec?: FaultSpec | null; reachability?: Reachability | null
+    /** Discovery v4 replay slots only: the replayed history row, as the Explorer later sees it in its search ledger. */
+    history_replay?: { replay: number; history_row: number; development_case_id: string | null }
   }
   selected_output: ExplorerOutput | null; output: ExplorerOutput | null; raw_response: string; usage: Usage; provenance: string; error: string | null
   /** Charged blind retries of this request after it received no answer: at most one under rule v1; under rule v2
@@ -20,6 +22,8 @@ export type SearchAttempt = {
   transport_retries?: TransportRetry[]
   /** Discovery v3 only: the frozen history row this pick re-tries, or null (checked, no match). Absent for v1/v2. */
   matches_history_row?: HistoryRowMatch | null
+  /** Discovery v4 only: this slot was a history replay (no Explorer request, no model call). Absent on every Explorer record. */
+  history_replay?: HistoryReplaySlot
 }
 export type TransportRetryV1 = { retry_id: string; protocol?: undefined; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1; http_status?: 503; retry_delay_seconds?: 1; provider_failure_id: string }
 export type TransportRetryV2 = { retry_id: string; protocol: 'faultlab-transport-retry/v2-lab-backoff'; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1 | 2 | 3; http_status?: 503; retry_delay_seconds: 5 | 20 | 60; provider_failure_id: string }
@@ -65,6 +69,15 @@ function validateV2(decision: Record<string, unknown>) {
   if (decision.status === 'SKIPPED_UNREACHABLE' && (!label || label.all_forced)) return malformed()
 }
 
+/** Discovery v4: a replay slot is a SELECTED record with no Explorer request, no answer text, no retry, and the same row on the record and its decision. */
+function validateReplay(row: Record<string, unknown>, decision: Record<string, unknown>) {
+  const block = row.history_replay
+  // The API lists transport_retries on every row ([] when none); a replay sent no request, so it can have none.
+  if (!historyReplaySlot(block) || row.provenance !== 'history_replay' || row.raw_response !== '' || !(row.transport_retries === undefined || (Array.isArray(row.transport_retries) && !row.transport_retries.length)) || decision.status !== 'SELECTED'
+    || decision.discovery_protocol !== undefined || !object(decision.history_replay) || decision.history_replay.replay !== block.replay
+    || decision.history_replay.history_row !== block.history_row || decision.history_replay.development_case_id !== block.development_case_id) return malformed()
+}
+
 export function validateSearchAttempts(value: unknown, campaignId: string): SearchAttempt[] {
   if (!Array.isArray(value)) return malformed()
   const refs = new Set<string>()
@@ -87,8 +100,11 @@ export function validateSearchAttempts(value: unknown, campaignId: string): Sear
     if ((decision.status === 'SELECTED') !== !!selected_output || (decision.status !== 'INVALID_OUTPUT' && !decision.schedule_hash)) return malformed()
     refs.add(row.selection_ref)
     const usage = validateContract<Usage>('Usage', row.usage)
-    // Both requests of a retried selection are charged, and the saved usage says so.
-    if ((usage.model_calls ?? 1) !== 1 + ((row.transport_retries as TransportRetry[] | undefined)?.length ?? 0)) return malformed()
+    const replay = row.history_replay !== undefined
+    if (replay) validateReplay(row, decision)
+    else if (row.provenance === 'history_replay' || decision.history_replay !== undefined) return malformed()
+    // Both requests of a retried selection are charged, and the saved usage says so. A history replay sent no request at all.
+    if ((usage.model_calls ?? 1) !== (replay ? 0 : 1 + ((row.transport_retries as TransportRetry[] | undefined)?.length ?? 0))) return malformed()
     return { ...row, selected_output, output, usage } as SearchAttempt
   })
 }

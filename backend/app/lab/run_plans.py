@@ -23,7 +23,7 @@ from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NAT
 from app.lab.configuration import frozen_configuration
 from app.lab.dashboard import store_descriptor
 from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK,
-    HISTORY_PROTOCOLS, declaration as discovery_declaration)
+    DISCOVERY_V4, HISTORY_PROTOCOLS, REPLAY_PROTOCOLS, declaration as discovery_declaration)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -57,7 +57,8 @@ class RunPlanRequest(StrictModel):
     development_case_id: CaseId | None = None
     # Explicit, declared discovery setting for Learn only; omitted means v1 (today's behaviour).
     discovery_protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability',
-                                'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability'] | None = None
+                                'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability',
+                                'faultlab-discovery/v4-history-replay'] | None = None
 
     @model_validator(mode='after')
     def supported_combination(self):
@@ -120,10 +121,59 @@ class AgentHistoryPlan(StrictModel):
         return self
 
 
+class HistoryReplayRow(StrictModel):
+    """Discovery v4: one frozen replay row (app.lab.history_replay): the history row it replays and its counts."""
+    replay: int = Field(ge=1, le=3)
+    history_row: int = Field(ge=1)
+    development_case_id: CaseId | None
+    recipe: list[str] = Field(min_length=1, max_length=2)
+    fault_spec: FaultSpec
+    schedule_identity_v2: Digest
+    verified_episodes: int = Field(ge=2)
+    violations: int = Field(ge=0)
+    violation_share: str = Field(pattern=r'^[0-9]+/[0-9]+$')
+    every_fault_fired: int = Field(ge=0)
+    outcomes: dict[str, int]
+    failed_checks: dict[str, int]
+    sources: list[Literal['baseline_study', 'learn_discovery']] = Field(min_length=1)
+
+    @model_validator(mode='after')
+    def counted(self):
+        from app.lab.challenge import schedule_identity_v2
+        if (not self.fault_spec.primitives or self.every_fault_fired != self.verified_episodes
+                or self.violations != self.outcomes.get('VIOLATION', 0) or 3 * self.violations < 2 * self.verified_episodes
+                or self.violation_share != f'{self.violations}/{self.verified_episodes}'
+                or self.schedule_identity_v2 != schedule_identity_v2(self.fault_spec)):
+            raise ValueError('Inconsistent history replay row')
+        return self
+
+
+class HistoryReplayPlan(StrictModel):
+    """Discovery v4: the replay list frozen from the plan's frozen history when the plan is saved."""
+    schema_version: Literal['faultlab-history-replay/v1']
+    status: Literal['AVAILABLE', 'EMPTY']
+    statement: str = Field(min_length=1, max_length=600)
+    rule: str = Field(min_length=1, max_length=1200)
+    basis: Literal['faultlab-schedule-identity/v2-order-aware']
+    max_rows: Literal[3]
+    min_verified_episodes: Literal[2]
+    min_violation_share: Literal['2/3']
+    history_summary_hash: Digest
+    rows: list[HistoryReplayRow] = Field(max_length=3)
+
+    @model_validator(mode='after')
+    def ordered(self):
+        if ((self.status == 'AVAILABLE') != bool(self.rows) or [row.replay for row in self.rows] != list(range(1, len(self.rows) + 1))
+                or len({row.history_row for row in self.rows}) != len(self.rows)):
+            raise ValueError('Inconsistent history replay list')
+        return self
+
+
 class DiscoveryPlan(StrictModel):
     """The declared discovery protocol and selection budget of a Learn plan."""
     protocol: Literal['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability',
-                      'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
+                      'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability',
+                      'faultlab-discovery/v4-history-replay']
     schedule_identity: Literal['faultlab-schedule-identity/v1-sorted', 'faultlab-schedule-identity/v2-order-aware']
     slots: int = Field(ge=1, le=8)
     explorer_requests_max: int = Field(ge=1, le=16)
@@ -134,20 +184,27 @@ class DiscoveryPlan(StrictModel):
     replans_per_slot: int = Field(ge=0, le=1)
     dispatch_rule: str = Field(min_length=1, max_length=600)
     pre_check: dict | None
-    # Discovery v3 only. Absent (not null) in every v1/v2 block, so those records keep their exact bytes.
+    # Discovery v3 and v4 only. Absent (not null) in every v1/v2 block, so those records keep their exact bytes.
     history: AgentHistoryPlan | None = None
+    # Discovery v4 only. Absent (not null) in every v1/v2/v3 block, so those records keep their exact bytes.
+    replay: HistoryReplayPlan | None = None
 
     @model_serializer(mode='wrap')
     def _omit_absent_history(self, handler):
         data = handler(self)
-        if data.get('history') is None:
-            data.pop('history', None)
+        for key in ('history', 'replay'):
+            if data.get(key) is None:
+                data.pop(key, None)
         return data
 
     @model_validator(mode='after')
     def coherent(self):
         if (self.history is not None) != (self.protocol in HISTORY_PROTOCOLS):
-            raise ValueError('Only a discovery v3 declaration carries a frozen agent history, and it must')
+            raise ValueError('Only a discovery v3 or v4 declaration carries a frozen agent history, and it must')
+        if (self.replay is not None) != (self.protocol in REPLAY_PROTOCOLS):
+            raise ValueError('Only a discovery v4 declaration carries a frozen history replay list, and it must')
+        if self.replay is not None and self.replay.history_summary_hash != self.history.summary_hash:
+            raise ValueError('The history replay list was frozen from another agent history')
         v2 = BASE_PROTOCOL[self.protocol] == DISCOVERY_V2
         if (self.schedule_identity.endswith('v2-order-aware') != v2 or self.replans_per_slot != (1 if v2 else 0)
                 or self.explorer_requests_max != self.slots * (2 if v2 else 1) or self.actor_episodes_max != self.slots
@@ -414,6 +471,17 @@ def _reference_caller():
     return caller_model_for('reference', [])
 
 
+# Review finding F2 (September 30): a replay source goes through the unchanged loop before the next slot, so the
+# campaign's candidate requests can run out there and end discovery; the one sentence says so.
+REPLAY_DESCRIPTION = ('Before the Explorer picks anything, re-runs up to 3 recipes from this agent\'s frozen history that '
+                      'fired every fault and failed in at least 2 of every 3 verified episodes (one agent episode each, '
+                      'no Explorer request); the remaining slots are exactly v3 \u00b7 agent history, but a replay source '
+                      'goes through the normal loop first, and if that uses up the campaign\'s candidate requests, '
+                      'discovery ends before any later replay or Explorer slot runs.')
+REPLAY_AT_PLAN_TIME = ('The replay list is computed from the frozen history and frozen into the plan when you create the '
+                       'campaign; a result from a replay slot is a history replay, never independent discovery.')
+
+
 HISTORY_DESCRIPTION = ('Adds one read-only piece of Explorer context: a summary of this same agent\'s earlier verified '
                        'development outcomes in this store (per recipe: verified episodes, outcomes and failed checks), '
                        'frozen into the plan with its hash when you create the campaign. The Explorer still chooses freely; '
@@ -429,6 +497,7 @@ def discovery_options(caps):
     v2 = discovery_declaration(DISCOVERY_V2, caps, caller=_reference_caller())
     v3 = discovery_declaration(DISCOVERY_V3, caps)
     v3_precheck = discovery_declaration(DISCOVERY_V3_PRECHECK, caps, caller=_reference_caller())
+    v4 = discovery_declaration(DISCOVERY_V4, caps)
     return [
         {'protocol_id': DISCOVERY_V1, 'default': True, 'label': 'v1 · every valid new pick runs',
          'description': 'Today\'s behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.',
@@ -446,6 +515,10 @@ def discovery_options(caps):
          'supported_agents': ['reference'],
          'unsupported_reason': 'The pre-check models only the FaultLab reference Actor under policy-v0; for the native agent choose v3 · agent history, which has no pre-check.',
          'declaration': v3_precheck},
+        # Regression-first discovery (app.lab.history_replay). One plain sentence for the chooser; the saved plan
+        # shows the frozen replay list. Not combined with the reachability pre-check.
+        {'protocol_id': DISCOVERY_V4, 'default': False, 'label': 'v4 · history replay first',
+         'description': REPLAY_DESCRIPTION, 'supported_agents': ['reference', *NATIVE_AGENTS], 'declaration': v4},
     ]
 
 
@@ -504,6 +577,10 @@ def prepare_run_plan(store, settings, request):
             from app.lab import agent_history
             discovery['history'] = agent_history.snapshot(store, registration=registration, configuration=configuration,
                                                           policy_hash=initial.policy_hash)
+        if protocol in REPLAY_PROTOCOLS:
+            # Discovery v4: the replay list is a function of the history just frozen, and is frozen with it.
+            from app.lab import history_replay
+            discovery['replay'] = history_replay.plan_block(discovery['history'])
     else:
         selection = {'kind': 'protected_comparison', **options['compare']}
     campaign_request = CampaignRequest(task_text=request.task_text, order_id=request.order_id,
@@ -554,6 +631,9 @@ def _bindings(store, campaign, plan, *, first_start=False):
         history = discovery.get('history')
         if history is not None and history['policy_hash'] != plan['initial_policy_hash']:
             raise StoreConflict('Saved agent history was frozen for another starting policy')
+        replay = discovery.get('replay')
+        if replay is not None and (history is None or replay['history_summary_hash'] != history['summary_hash']):
+            raise StoreConflict('Saved history replay list was frozen from another agent history')
     if plan.get('evidence_retry') is not None and campaign.mode != 'learn':
         raise StoreConflict('Only a Learn plan declares an automatic evidence retry')
     if (plan.get('transport_retry') or {}).get('protocol') == TRANSPORT_RETRY_PROTOCOL_V2 and campaign.mode != 'learn':
@@ -606,16 +686,20 @@ def _bindings(store, campaign, plan, *, first_start=False):
 
 
 def verify_plan_history(store, plan):
-    """Recompute a v3 plan's frozen history at its cutoff.
+    """Recompute a v3 or v4 plan's frozen history at its cutoff (and a v4 plan's replay list from it).
 
     Raises agent_history.HistoryChanged (a StoreConflict: 409 at Start, and the campaign's recorded
-    reason AGENT_HISTORY_CHANGED if it is caught before the first Explorer request) if anything differs.
+    reason AGENT_HISTORY_CHANGED if it is caught before the first Explorer request or replay) if anything differs.
     """
     from app.lab import agent_history
     registration = store.get_record('agent_registrations', plan['agent_registration_id'])
     configuration = store.get_record('configurations', plan['configuration_hash'])
-    return agent_history.verify(store, plan['discovery']['history'], registration=registration,
-                                configuration=configuration, policy_hash=plan['initial_policy_hash'])
+    history = agent_history.verify(store, plan['discovery']['history'], registration=registration,
+                                   configuration=configuration, policy_hash=plan['initial_policy_hash'])
+    if plan['discovery']['protocol'] in REPLAY_PROTOCOLS:
+        from app.lab import history_replay
+        history_replay.verify(plan['discovery'].get('replay'), history)
+    return history
 
 
 def plan_history_check(store, campaign):

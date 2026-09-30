@@ -1,0 +1,40 @@
+{
+ "python:guard-python.jsonl": {
+  "processes_with_guard": 10,
+  "process_summaries": 10,
+  "totals": {
+   "loopback_connect": 0,
+   "local_lookup": 0,
+   "unix_connect": 0,
+   "refused_outside": 0,
+   "env_open": 0
+  },
+  "refused_outside_events": [],
+  "env_open_by_outcome": {},
+  "protected_opens": {
+   "real /Users/shree/FaultLab_Scratch/verify-v4/clean/backend/app/referee/checks.py": 15291,
+   "real audit/promotion.json": 436
+  }
+ },
+ "node:guard-node.jsonl": {
+  "node_processes_with_guard": 50,
+  "refused": []
+ },
+ "python:guard.jsonl": {
+  "processes_with_guard": 2,
+  "process_summaries": 2,
+  "totals": {
+   "loopback_connect": 0,
+   "local_lookup": 0,
+   "unix_connect": 0,
+   "refused_outside": 0,
+   "env_open": 0
+  },
+  "refused_outside_events": [],
+  "env_open_by_outcome": {},
+  "protected_opens": {
+   "real /Users/shree/FaultLab_Scratch/verify-v4/checkpoint/backend/app/referee/checks.py": 6,
+   "real backend/app/referee/checks.py": 6
+  }
+ }
+}

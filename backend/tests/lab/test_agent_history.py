@@ -376,7 +376,9 @@ def test_declarations_budgets_and_agent_support(owner):
     native = register_agent(owner.store, owner.settings, 'smolagents')
     reference = register_agent(owner.store, owner.settings, 'reference')
     options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
-    assert list(options) == [DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK]
+    # Widened on September 30 when discovery v4 (history replay) was added last; the first four are unchanged.
+    assert list(options)[:4] == [DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK]
+    assert list(options)[4:] == ['faultlab-discovery/v4-history-replay']
     assert [row['protocol_id'] for row in options.values() if row['default']] == [DISCOVERY_V1]
     # Both native adapters (v1 and the declared v2) are separate agents; both support v3 (no pre-check).
     assert options[DISCOVERY_V3]['supported_agents'] == ['reference', 'smolagents', 'smolagents-v2']

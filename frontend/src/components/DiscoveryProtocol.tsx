@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { HISTORY_SOURCES, isLabBackoff, runApi, type AgentHistory, type DiscoveryDeclaration, type HistoryCheck, type HistorySource, type TransportRetryDeclaration } from '../runPlans'
+import { HISTORY_SOURCES, isLabBackoff, runApi, type AgentHistory, type DiscoveryDeclaration, type HistoryCheck, type HistoryReplay, type HistorySource, type TransportRetryDeclaration } from '../runPlans'
 import { Field } from './common'
 
 const NAMES: Record<DiscoveryDeclaration['protocol'], string> = {
@@ -7,6 +7,7 @@ const NAMES: Record<DiscoveryDeclaration['protocol'], string> = {
   'faultlab-discovery/v2-reachability': 'v2 · reachability pre-check',
   'faultlab-discovery/v3-history': 'v3 · agent history (dispatch exactly as v1)',
   'faultlab-discovery/v3-history-reachability': 'v3 · agent history + reachability pre-check (dispatch exactly as v2)',
+  'faultlab-discovery/v4-history-replay': 'v4 · history replay first, then v3 · agent history',
 }
 export const discoveryName = (declaration: DiscoveryDeclaration) => NAMES[declaration.protocol] ?? declaration.protocol
 
@@ -53,6 +54,12 @@ export const compositionText = (summary: AgentHistory['summary']) => {
 }
 /** Under NO_PRIOR_HISTORY the Explorer still reads the v3 prompt section and an empty history block. */
 export const NO_HISTORY_IS_STILL_V3 = 'This is still a discovery v3 run: the Explorer is sent the v3 prompt section and this empty history. Slot dispatch, budget and schedule identity equal the base protocol, but do not pool this run with v1 or v2 runs.'
+/** Discovery v4 under NO_PRIOR_HISTORY: nothing to replay, so it runs as v3 · agent history with its own protocol id. */
+export const NO_HISTORY_IS_STILL_V4 = 'This is still a discovery v4 run with nothing to replay: the Explorer is sent the v3 prompt section, this empty history and the v4 protocol id. Slot dispatch, budget and schedule identity equal v3 · agent history, but do not pool this run with v1 or v2 runs.'
+/** Discovery v4 before a plan exists: the replay list is computed from the history when the campaign is created. */
+export const REPLAY_AT_PLAN_TIME = 'The replay list is computed from this agent history and frozen into the plan when you create the campaign. Review it in the saved plan before pressing Start.'
+/** How every result of a replay slot must be reported (backend history_replay.CLAIM_RULE, shortened). */
+export const REPLAY_CLAIM = 'A source found in a replay slot is a history replay of that row, chosen by this fixed rule and not by the Explorer: report it as a history replay, never as independent discovery.'
 const buildsText = (runtimes: string[], adapters: string[]) => `runtime ${runtimes.join(', ')} · adapter ${adapters.join(', ')}`
 
 /** On demand only (never polled): recompute the history at its cutoff and say whether Start would accept it. */
@@ -71,15 +78,36 @@ function HistoryCheckButton({ campaignId }: { campaignId: string }) {
   </div>
 }
 
-/** The frozen same-agent history of a saved v3 plan: exactly what the Explorer reads, its hash and the record cutoff. */
-export function AgentHistoryFacts({ history, campaign }: { history: AgentHistory; campaign?: { campaign_id: string; state?: string | null } }) {
+/** A replayed row with no development case: its recipe came from an Explorer pick in an earlier learn campaign. The replay
+ * itself is not an Explorer pick, so the label must not read as one (review finding LOW-2, September 30). */
+export const NO_CASE_REPLAY_ROW = 'no development case: a recipe first picked by the Explorer in an earlier learn campaign'
+/** Discovery v4: the replay list frozen into a saved plan. These history rows run first, one agent episode each, no Explorer request. */
+export function HistoryReplayFacts({ replay }: { replay: HistoryReplay }) {
+  return <section className="agent-history history-replay" aria-label="Frozen history replay list">
+    <h4>History replay list · runs first</h4>
+    <p className={replay.status === 'AVAILABLE' ? 'muted' : 'notice'}>{replay.statement}</p>
+    {!!replay.rows.length && <ul className="agent-history-recipes" aria-label="Recipes replayed first">{replay.rows.map(row => <li key={row.replay}>
+      <strong>Replay {row.replay} · agent history row {row.history_row} ({row.development_case_id ?? NO_CASE_REPLAY_ROW})</strong> · {row.recipe.join('; ')}
+      <div className="muted">violated in {row.violation_share} verified episodes · every fault fired {row.every_fault_fired} of {row.verified_episodes} · failed checks {namedChecks(row.failed_checks)} <span>({row.sources.map(source => HISTORY_SOURCES[source as HistorySource] ?? source).join(', ')})</span></div>
+    </li>)}</ul>}
+    <dl className="facts compact">
+      <Field name="Replay slots">{replay.rows.length ? `${plural(replay.rows.length, 'slot', 'slots')} of this campaign's discovery slots · ${plural(replay.rows.length, 'agent episode', 'agent episodes')} · no Explorer request` : 'none'}</Field>
+      <Field name="Frozen from">agent history summary <code>{replay.history_summary_hash}</code></Field>
+    </dl>
+    {!!replay.rows.length && <p className="muted">{REPLAY_CLAIM}</p>}
+    <details><summary>Replay rule</summary><p className="muted">{replay.rule}</p><p className="muted">Start checks the history against the store again and recomputes this list from it; any difference refuses the run.</p></details>
+  </section>
+}
+
+/** The frozen same-agent history of a saved v3 or v4 plan: exactly what the Explorer reads, its hash and the record cutoff. */
+export function AgentHistoryFacts({ history, campaign, replayed = false }: { history: AgentHistory; campaign?: { campaign_id: string; state?: string | null }; replayed?: boolean }) {
   const summary = history.summary
   const excluded = Object.entries(summary.excluded).filter(([, value]) => value > 0)
   const idle = !!campaign && (campaign.state ?? 'IDLE') === 'IDLE'
   return <section className="agent-history" aria-label="Frozen agent history">
     <h4>Agent history shown to the Explorer</h4>
     <p className={summary.status === 'AVAILABLE' ? 'muted' : 'notice'}>{summary.statement}</p>
-    {summary.status === 'NO_PRIOR_HISTORY' && <p className="muted">{NO_HISTORY_IS_STILL_V3}</p>}
+    {summary.status === 'NO_PRIOR_HISTORY' && <p className="muted">{replayed ? NO_HISTORY_IS_STILL_V4 : NO_HISTORY_IS_STILL_V3}</p>}
     <dl className="facts compact">
       <Field name="Status">{summary.status === 'AVAILABLE' ? `${summary.verified_episodes} verified episodes · ${summary.recipes_total} recipes` : 'No prior history for this agent in this store'}</Field>
       <Field name="Built from">{compositionText(summary)}</Field>
@@ -104,6 +132,7 @@ export function AgentHistoryFacts({ history, campaign }: { history: AgentHistory
 export function DiscoveryProtocolFacts({ declaration, campaign, transportRetry }: { declaration: DiscoveryDeclaration; campaign?: { campaign_id: string; state?: string | null }; transportRetry?: TransportRetryDeclaration | null }) {
   const caller = declaration.pre_check?.caller_model
   const v3 = declaration.history !== undefined
+  const replayed = declaration.replay !== undefined
   return <div className="discovery-protocol">
     <dl className="facts compact">
       <Field name="Discovery protocol">{discoveryName(declaration)}</Field>
@@ -113,6 +142,7 @@ export function DiscoveryProtocolFacts({ declaration, campaign, transportRetry }
     <p className="muted">{declaration.dispatch_rule}</p>
     {typeof declaration.explorer_transport_retries_max === 'number' && <p className="muted">{isLabBackoff(transportRetry) ? LATER_PHASE_RETRIES_V2 : LATER_PHASE_RETRIES}</p>}
     {caller && <details><summary>Pre-check caller model · this agent's limits and typical path</summary><ul className="muted">{caller.facts.map(fact => <li key={fact}>{fact}</li>)}</ul><p className="muted">Caller model <code>{caller.caller_id}</code> describes {caller.validated_against}. The pre-check changes only which picks run; it never changes what the Actor sees or how a trial is scored.</p></details>}
-    {v3 && (declaration.history ? <AgentHistoryFacts history={declaration.history} campaign={campaign} /> : <p className="muted">{HISTORY_AT_PLAN_TIME}</p>)}
+    {replayed && (declaration.replay ? <HistoryReplayFacts replay={declaration.replay} /> : <p className="muted">{REPLAY_AT_PLAN_TIME}</p>)}
+    {v3 && (declaration.history ? <AgentHistoryFacts history={declaration.history} campaign={campaign} replayed={replayed} /> : <p className="muted">{HISTORY_AT_PLAN_TIME}</p>)}
   </div>
 }

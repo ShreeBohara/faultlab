@@ -1,0 +1,23 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d1d8320>
+
+    def test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text(owner):
+        seeder = dev5_owner(owner)
+        v4_campaign, _ = v4_plan(owner, seeder.registration)
+        from test_agent_history import planned
+        v3_campaign = planned(owner, seeder.registration, discovery_protocol=DISCOVERY_V3)
+        v4_rule = development_recording(owner.store, v4_campaign.campaign_id)['discovery_history_matches']['claim_rule']
+        v3_rule = development_recording(owner.store, v3_campaign.campaign_id)['discovery_history_matches']['claim_rule']
+        assert v3_rule == V3_CLAIM_RULE
+>       assert v4_rule.startswith('Results of a discovery v4 campaign are history-informed.') and 'v3' not in v4_rule
+E       AssertionError: assert (False)
+E        +  where False = <built-in method startswith of str object at 0x10d3ec850>('Results of a discovery v4 campaign are history-informed.')
+E        +    where <built-in method startswith of str object at 0x10d3ec850> = 'Results of a discovery v4 campaign (like v3) are history-informed. A source found in a history replay slot is a histo...plorer was shown. Report each as such, never as independent discovery, and name the store and the frozen summary hash.'.startswith
+
+tests/lab/test_discovery_v4_review_fixes.py:181: AssertionError
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+1 failed in 2.11s

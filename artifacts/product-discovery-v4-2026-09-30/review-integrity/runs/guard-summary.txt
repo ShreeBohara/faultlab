@@ -1,0 +1,21 @@
+Integrity reviewer network/.env guard (sitecustomize audit hook reused unchanged from artifacts/product-native-v2b-2026-09-30/verify/guard;
+node-guard.cjs for vitest). Per process: refused outside connects/lookups, .env opens, loopback connects, protected-path opens (counted, never displayed).
+guard-isolated-replay.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {}
+guard-probe-checkpoint.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/checkpoint/backend/app/referee/checks.py': 940, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 28}
+guard-probe-current.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/app/referee/checks.py': 940, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 28, 'FaultLab_Scratch/review-integrity-v4/current/backend/heldout2': 12}
+guard-probe-v4.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/app/referee/checks.py': 1870, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 48}
+guard-rmtree-demo.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/heldout2': 1}
+guard-store.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {}
+guard-targeted.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'Desktop/Coreweave_AGI_Hackthon/faultlab/backend/app/referee/checks.py': 13644, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 385}
+guard-trace.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/app/referee/checks.py': 940, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 28}
+guard-trace1.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/app/referee/checks.py': 940, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 28}
+guard-trace2.jsonl | refused_outside 0 | env_open 0 | loopback 0 | protected {'FaultLab_Scratch/review-integrity-v4/current/backend/app/referee/checks.py': 940, 'Desktop/Coreweave_AGI_Hackthon/faultlab/audit/promotion.json': 28}
+node-guard.jsonl (vitest, 345 tests) | processes 26 | REFUSED events 0
+
+Note: guard-probe-current.jsonl counts 12 opens of "<scratch>/current/backend/heldout2". Not a read of held-out data: no file or
+directory of that name exists in the scratch tree, it did not recur in 3 reruns, and shutil.rmtree of a directory holding a
+"heldout2" subfolder reproduces exactly that log line (rmtree opens subfolders with dir_fd, and the audit event carries only the
+relative name, which the guard resolves against the cwd). pytest deletes old basetemp folders from earlier suite runs (held-out
+tests create tmp_path/heldout2) at session start. The real artifacts/heldout2/ path never appears in any guard log.
+audit/promotion.json and checks.py opens are the product manifest loader and scorer hashing inside tests (pre-existing; the
+replay rule alone opens only audit/development.json - checked in isolation).

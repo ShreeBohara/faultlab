@@ -1,0 +1,34 @@
+Protected paths check (independent verifier, 2026-09-30T06:10:07Z). Blob equality via git rev-parse <tip>:path vs git hash-object path; checks.py is never hashed here (gate_freeze: file hash, score, scorer_hash identical).
+same  a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49  backend/app/integrations/external_agent.py
+same  e2980809692372fc34f5a3e0f5b77bf7345ea03f  backend/tests/integrations/test_native_adapter_v1_golden.py
+same  210871284f1ee1704de4faad4e6bc0c851fd6528  backend/tests/fixtures/native_v1_golden_requests.json
+same  3aab9348ff36e3058db36b090db82d556dd72165  backend/app/integrations/external_agent_v2.py
+same  521c9ab82982e20d970505eb7aa922636ea43596  backend/app/integrations/registry.py
+same  997b691d5a6df625941346c96b7560754120fbbe  backend/app/agents/actor.py
+same  606dd9dbb2f6097958e4e01914745bd7b27f9b34  backend/app/agents/prompts/actor.md
+same  dd4ce44eb6450d43d5426da40917594b4da0fd94  backend/app/agents/mechanic.py
+same  e636aeb4ccbce0ad3c388250ebd6679884fcb629  backend/app/lab/promotion.py
+same  7326c0ea39496d68493bee75326ae5cfa62101f9  backend/app/lab/challenge.py
+same  9349b106d6caaf715b4c2573eeb2a0f57a420193  backend/app/lab/evaluation.py
+same  b74dcd5474bd834d5b5cd1254f831d8d221f1e93  backend/app/lab/reproduction.py
+same  6a9779b8f3263bdfdf8acc0e65c73460369a4ea1  backend/app/lab/diagnosis.py
+same  f596d9060471e7b850b07952fa0cbfeabd5a8816  backend/app/lab/completion_study.py
+same  167e1f292d824d43012a215b7351ba64420f1d70  backend/app/lab/coordinator.py
+same  718943ed358121de220a0e05de988884c908ddcd  backend/app/lab/runner.py
+same  3f1823ee168386067d0e9f905286b80ee5355b45  backend/app/lab/budgets.py
+same  c2287655fec7c1c9cbd729e8fed716436330e3f7  backend/app/lab/policy_interpreter.py
+same  a30341b3fc9efd59f1045cad7a3a71f83b995b4d  backend/app/lab/policy_state.py
+same  d14babdf684837d2324c16f5b2e1abeab2e6b3f5  backend/app/lab/evidence.py
+same  decf253238576cc999fd4b8568015106f9fc5c66  backend/app/lab/evidence_wait.py
+same  2edac78210c19b0bc6919dd9378d1930e6ce45c8  backend/app/lab/reachability.py
+same  3e8b4c531fa733a79860363e808dea546958453a  backend/app/agents/transport_retry.py
+
+From commit_list/pass1_before_suite.txt.json (every tracked file compared by bytes, protected ones skipped):
+  changed under backend/app/referee/: []
+  changed under backend/app/simulator/: []
+  changed under contracts/: []
+  changed under backend/app/integrations/: []
+  changed under backend/app/agents/prompts/actor: []
+  changed under backend/app/telemetry/: []
+  changed under audit/: []
+  protected paths (metadata only, never read): [('audit/final-audit.json', 5771, '2026-09-12T23:20:01Z'), ('audit/promotion.json', 3996, '2026-09-12T23:20:01Z'), ('backend/app/referee/checks.py', 7809, '2026-09-12T23:20:30Z')]

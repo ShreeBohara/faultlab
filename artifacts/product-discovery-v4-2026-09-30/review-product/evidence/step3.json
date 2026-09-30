@@ -1,0 +1,36 @@
+[
+  {
+    "step": "M4 created",
+    "replay": "History replay list · runs first\n\nReplayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.\n\nReplay 1 · agent history row 3 (dev-3) · F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED\nviolated in 4/4 verified episodes · every fault fired 4 of 4 · failed checks C3 (upgrade before confirmation) 4 (baseline study, learn discovery)\nReplay 2 · agent history row 5 (dev-5) · F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)\nviolated in 4/4 verified episodes · every fault fired 4 of 4 · failed checks C3 (upgrade before confirmation) 4 (baseline study, learn discovery)\nREPLAY SLOTS\n2 slots of this campaign's discovery slots · 2 agent episodes · no Explorer request\nFROZEN FROM\nagent history summary c50385ff779caa6692b889351403ff4c7521bf1f4ed1767cefabca1afc2cacc1\n\nA source found in a replay slot is a history replay of that row, chosen by this fixed rule and not by the Explorer: report it as a history replay, never as independent discovery.\n\nReplay rule"
+  },
+  {
+    "step": "M4 replay with rule",
+    "replay": "History replay list · runs first\n\nReplayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.\n\nReplay 1 · agent history row 3 (dev-3) · F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED\nviolated in 4/4 verified episodes · every fault fired 4 of 4 · failed checks C3 (upgrade before confirmation) 4 (baseline study, learn discovery)\nReplay 2 · agent history row 5 (dev-5) · F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)\nviolated in 4/4 verified episodes · every fault fired 4 of 4 · failed checks C3 (upgrade before confirmation) 4 (baseline study, learn discovery)\nREPLAY SLOTS\n2 slots of this campaign's discovery slots · 2 agent episodes · no Explorer request\nFROZEN FROM\nagent history summary c50385ff779caa6692b889351403ff4c7521bf1f4ed1767cefabca1afc2cacc1\n\nA source found in a replay slot is a history replay of that row, chosen by this fixed rule and not by the Explorer: report it as a history replay, never as independent discovery.\n\nReplay rule\n\nHistory replay rule (faultlab-history-replay/v1). From the plan's frozen agent history, a recipe row is replayed only if it has at least one scheduled fault, at least 2 verified episodes, every verified episode fired every scheduled fault, and at least 2 of every 3 verified episodes ended in VIOLATION. Eligible rows are ordered by violation share (highest first), then verified episodes (most first), then their order in the history; at most 3 are replayed. Each replay runs that row's recipe (the same order-aware schedule; a development case's public recipe, otherwise the listed faults with seed 0) as one discovery slot and one agent episode, with no Explorer request, before any Explorer slot. A replay becomes a source exactly as any discovery pick does (completed, every fault fired, VIOLATION). A result from it is a history replay of that row, never independent discovery.\n\nStart checks the history against the store again and recomputes this list from it; any difference refuses the run."
+  },
+  {
+    "step": "replay list shown before frozen history",
+    "value": true
+  },
+  {
+    "step": "history check",
+    "status": [
+      "Current. Unchanged: the store still holds exactly this history at row 2326. Start checks it again."
+    ]
+  },
+  {
+    "step": "campaign",
+    "campaignId": "campaign-3255a398f8f4427b92701598a11200c4"
+  },
+  {
+    "step": "after start",
+    "status": [
+      "Backend connected",
+      "Campaign created. Review its frozen plan, then press Start campaign.",
+      "Start accepted. Following persisted execution state."
+    ]
+  },
+  {
+    "errors": [],
+    "offsite": []
+  }
+]

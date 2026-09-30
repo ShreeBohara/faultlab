@@ -1,0 +1,329 @@
+{
+ "E4_requests": 8,
+ "E3_requests": 8,
+ "per_request": [
+  {
+   "slot": [
+    0,
+    0
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": true,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    1,
+    1
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    2,
+    2
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    3,
+    3
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    4,
+    4
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    5,
+    5
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    6,
+    6
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  },
+  {
+   "slot": [
+    7,
+    7
+   ],
+   "system_prompt_identical": true,
+   "v4_section_in_E4": false,
+   "protocol_ids": [
+    "faultlab-discovery/v4-history-replay",
+    "faultlab-discovery/v3-history"
+   ],
+   "user_context_keys_equal": true,
+   "user_equal_after_normalising_ids_and_protocol": false,
+   "differing_top_level_keys_raw": [
+    "campaign_id",
+    "development_evidence",
+    "development_history",
+    "discovery_protocol",
+    "search_ledger"
+   ]
+  }
+ ],
+ "E4_attempts": [
+  [
+   0,
+   "model",
+   "SELECTED",
+   false
+  ],
+  [
+   1,
+   "model",
+   "SELECTED",
+   false
+  ],
+  [
+   2,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   3,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   4,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   5,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   6,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   7,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ]
+ ],
+ "E4_sources": [
+  [
+   "C3",
+   null,
+   null
+  ],
+  [
+   "C3",
+   null,
+   null
+  ]
+ ],
+ "E4_recording_replays": [
+  "EMPTY",
+  "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history."
+ ],
+ "E4_plan_keys": [
+  "actor_episodes_max",
+  "dispatch_rule",
+  "explorer_requests_max",
+  "explorer_transport_retries_max",
+  "history",
+  "pre_check",
+  "protocol",
+  "replans_per_slot",
+  "replay",
+  "schedule_identity",
+  "slots"
+ ],
+ "E3_attempts": [
+  [
+   0,
+   "model",
+   "SELECTED",
+   false
+  ],
+  [
+   1,
+   "model",
+   "SELECTED",
+   false
+  ],
+  [
+   2,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   3,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   4,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   5,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   6,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ],
+  [
+   7,
+   "model",
+   "SKIPPED_DUPLICATE",
+   false
+  ]
+ ],
+ "E3_sources": [
+  [
+   "C3",
+   "ABSENT",
+   null
+  ],
+  [
+   "C3",
+   "ABSENT",
+   null
+  ]
+ ],
+ "E3_recording_replays": [
+  "ABSENT",
+  null
+ ],
+ "E3_plan_keys": [
+  "actor_episodes_max",
+  "dispatch_rule",
+  "explorer_requests_max",
+  "explorer_transport_retries_max",
+  "history",
+  "pre_check",
+  "protocol",
+  "replans_per_slot",
+  "schedule_identity",
+  "slots"
+ ]
+}

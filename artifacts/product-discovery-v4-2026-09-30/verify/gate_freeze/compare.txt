@@ -1,0 +1,10 @@
+gate_freeze (script loaded from the checkpoint copy; audit/promotion.json and final-audit.json dropped from FILES)
+checkpoint 4d1c21b -> working tree:
+CHANGED fingerprints/algorithm_hash : b2575eb257ebe9a1a519 -> ab296a32c118294f5f36
+CHANGED fingerprints/runtime_hash : 4553ebe7db2f9e3efda6 -> ee2d1df914bd54c766ea
+CHANGED fingerprints/source_hash : 142a9ebcf03b9fde3afe -> 2597bffb7b0d74fc6fdd
+CHANGED fingerprints/tree_lab : ba9a78c2302ecefeded1 -> cefc3b904505f6d408d5
+functions identical: 30 of 30 (keys equal: True); files identical: 20 of 20 (keys equal: True)
+protected entries: checks.py file same | checks.py::score same | checks.py::scorer_hash same | completion_study.py::assess_pairs same
+assess_pairs text sha256 prefix: {'ast_sha256': '466614df87db208dbf06dad9e547584d39d1ec8a1cad6f1273330a7026a111d7
+my working-tree record equals the fixer after.json: True (differences: [] )

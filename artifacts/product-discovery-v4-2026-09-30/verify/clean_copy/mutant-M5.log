@@ -1,0 +1,23 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x1090cb620>
+
+    def test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests(owner):
+        options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
+        sentence = options[DISCOVERY_V4]['description']
+        assert sentence == REPLAY_DESCRIPTION and sentence.count('. ') == 0 and sentence.endswith('.')   # still one sentence
+        assert 'a replay source goes through the normal loop first' in sentence
+        assert 'uses up the campaign\'s candidate requests, discovery ends before any later replay or Explorer slot runs' in sentence
+        seeder = dev5_owner(owner)
+        _, plan = v4_plan(owner, seeder.registration)
+        statement = plan['discovery']['replay']['statement']
+        assert statement == history_replay.AVAILABLE_STATEMENT and len(statement) <= 600
+>       assert "if the campaign's candidate requests (at most 4) are used up there, discovery ends" in statement
+E       assert "if the campaign's candidate requests (at most 4) are used up there, discovery ends" in "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed repl...gn's candidate requests (at most 3) are used up there, discovery ends and later replays and Explorer slots do not run."
+
+tests/lab/test_discovery_v4_review_fixes.py:117: AssertionError
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+1 failed in 1.75s

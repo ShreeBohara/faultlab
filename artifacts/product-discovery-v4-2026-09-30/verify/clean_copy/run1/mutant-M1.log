@@ -1,0 +1,58 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b9174a0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b917e30>
+
+    def test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does(owner, monkeypatch):
+>       seeder = dev5_owner(owner)                                  # baseline study: dev-5 violated 3/3, dev-1 completed 3/3
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+1 failed in 2.69s

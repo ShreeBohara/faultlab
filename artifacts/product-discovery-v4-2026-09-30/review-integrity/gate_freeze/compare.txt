@@ -1,0 +1,26 @@
+Integrity reviewer gate_freeze: checkpoint = git archive of backup/part2-2026-09-22 (4d1c21b; audit/promotion.json, audit/final-audit*,
+artifacts/ and .env excluded from the archive) vs the working tree. scripts/experiments/gate_freeze.py loaded from the checkpoint copy
+(blob 9e647eb6, identical in both trees); audit/promotion.json and audit/final-audit.json dropped from FILES (never read); checks.py
+hashed and AST-parsed by gate_freeze only, never displayed.
+differences: 4
+   fingerprints/algorithm_hash b2575eb257ebe9a1 -> f66ae8bb570dffb9
+   fingerprints/runtime_hash 4553ebe7db2f9e3e -> 2a1815399697a774
+   fingerprints/source_hash 142a9ebcf03b9fde -> 2597bffb7b0d74fc
+   fingerprints/tree_lab ba9a78c2302ecefe -> 5c71cc245ccdec2e
+functions identical (text, ast, lines): 30 of 30
+files identical: 20 of 20
+  service_hash 3ce5bcd25af4b37e SAME
+  contract_hash 6f9d778323a4efc2 SAME
+  interpreter_hash 6da0714adef40c02 SAME
+  scorer_hash 19de811c96473eb4 SAME
+  actor_prompt_hash 12eabe7f41028c05 SAME
+  adapter_hash 0cd810b7ffc7e922 SAME
+  tree_referee e3f3f9a3fd346b44 SAME
+  tree_telemetry f58806b7da3b3302 SAME
+  dependency_lock_hash dc19e8608e601200 SAME
+  runtime_hash now 2a1815399697a774597c1d485f605dccc9e4e57cddee9899a5b577c35ad1514d
+  algorithm_hash now f66ae8bb570dffb9e5c7b3e26792c4bd9e9433e82994781cdd6ffc6b53b03bb3
+  assess_pairs text sha[:40] 783e8e58f91992f36066a2c6a152c4fbd242bd7e (Phase 15 recorded 783e8e58...)
+  summarize_evidence unchanged: True
+  promotion_decision unchanged: True
+scratch current tree (checkpoint + 22 changed/added files) gate_freeze == working tree gate_freeze: True

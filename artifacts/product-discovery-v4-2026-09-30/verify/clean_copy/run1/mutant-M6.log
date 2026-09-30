@@ -1,0 +1,45 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b9676b0>
+
+    def test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests(owner):
+>       options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+1 failed in 0.36s

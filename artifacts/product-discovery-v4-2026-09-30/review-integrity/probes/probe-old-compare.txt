@@ -1,0 +1,15 @@
+Integrity reviewer: old-protocol probe, checkpoint (git archive of backup/part2-2026-09-22 = 4d1c21b, no v4) vs current
+(checkpoint + the 22 changed/added working-tree files; gate_freeze identical to the working tree). Ids and 64/12-hex digests
+normalized by first appearance; then created_at timestamps and 16-hex registration-id suffixes (they embed the runtime) masked.
+Only run_options_ids is expected to differ (v4 appended last).
+run_options_default EQUAL 
+run_options_first_four EQUAL 
+run_options_ids DIFF ('checkpoint', ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability'], 'current', ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability', 'faultlab-discovery/v4-history-replay'])
+v1-native | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v1-reference | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v2-reference | messages 24 selections 12 actor runs 4 ledger calls 12 state NO_CHANGE | differing fields: none
+v3-native-empty | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3-native-seeded | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3-reference-seeded | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3pre-reference-seeded | messages 24 selections 12 actor runs 4 ledger calls 12 state NO_CHANGE | differing fields: none
+ALL SCENARIOS IDENTICAL (messages, selections, actor recipes, ledger, plan discovery block, search-attempts, experiments, recording): True

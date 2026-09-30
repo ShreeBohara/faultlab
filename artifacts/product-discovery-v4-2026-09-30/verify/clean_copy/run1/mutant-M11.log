@@ -1,0 +1,340 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-v4/clean/frontend
+
+ ❯ tests/discovery-v4.test.tsx (9 tests | 1 failed) 188ms
+   × LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise 6ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  23:22:34
+   Duration  782ms (transform 173ms, setup 0ms, import 261ms, tests 188ms, environment 261ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/discovery-v4.test.tsx > LOW-3: the run summary says which slot found the incident it shows in a v4 campaign, and adds nothing otherwise
+TestingLibraryElementError: Unable to find an element with the text: Found by History replay 1 of 1 · agent history row 2 (dev-5): a history replay of that row, never independent discovery.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<section[39m
+      [33mclass[39m=[32m"panel summary-panel"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"panel-heading"[39m
+      [36m>[39m
+        [36m<h2>[39m
+          [0mRun summary[0m
+        [36m</h2>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"summary-heading-meta"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"small-label"[39m
+          [36m>[39m
+            [0mRead from persisted records[0m
+          [36m</span>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"badge badge-no_change"[39m
+          [36m>[39m
+            [0mNo change[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"summary-context"[39m
+      [36m>[39m
+        [36m<span>[39m
+          [0mActor [0m
+          [36m<strong>[39m
+            [0mdeterministic-reference/internal-smoke[0m
+          [36m</strong>[39m
+        [36m</span>[39m
+        [36m<span>[39m
+          [0mLatest incident shown · 1 recorded[0m
+        [36m</span>[39m
+      [36m</div>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"muted summary-found-by"[39m
+      [36m>[39m
+        [0mFound by an Explorer pick in this discovery v4 campaign, not a history replay slot.[0m
+      [36m</p>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"stat-strip"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<strong>[39m
+            [0m—[0m
+          [36m</strong>[39m
+          [36m<span>[39m
+            [0mMain-loop trials[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"stat-alert"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m—[0m
+          [36m</strong>[39m
+          [36m<span>[39m
+            [0mMain-loop violations[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"stat-good"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m—[0m
+          [36m</strong>[39m
+          [36m<span>[39m
+            [0mMain-loop completed[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div>[39m
+          [36m<strong>[39m
+            [0m0[0m
+          [36m</strong>[39m
+          [36m<span>[39m
+            [0mCampaign model calls[0m
+          [36m</span>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"stat-good"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0m0[0m
+            [36m<span>[39m
+              [0m / [0m
+              [0m0[0m
+            [36m</span>[39m
+          [36m</strong>[39m
+          [36m<span>[39m
+            [0mWeave verified · campaign evidence[0m
+          [36m</span>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"muted"[39m
+      [36m>[39m
+        [0mMain-loop counts mix discovery, diagnosis and repair tests. Separate studies are excluded from these counts; their saved evidence may still appear below. These totals are not a before-and-after comparison.[0m
+      [36m</p>[39m
+      [36m<ol[39m
+        [33maria-label[39m=[32m"Learning cycle evidence"[39m
+        [33mclass[39m=[32m"summary-stages"[39m
+      [36m>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-supported"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m01[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mRepeat the failure[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-supported"[39m
+              [36m>[39m
+                [0mSupported[0m
+              [36m</span>[39m
+              [36m<p>[39m
+                [0m3[0m
+                [0m of [0m
+                [0m3[0m
+                [0m fresh trials violated [0m
+                [0mC3[0m
+                [0m.[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-pending"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m02[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mSimplify the fault[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-not_run"[39m
+              [36m>[39m
+                [0mNot run[0m
+              [36m</span>[39m
+              [0m No reduction recorded.[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-pending"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m03[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mTest the diagnosis[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-not_run"[39m
+              [36m>[39m
+                [0mNot run[0m
+              [36m</span>[39m
+              [0m No controlled intervention finished.[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-pending"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m04[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mPropose a repair[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-not_run"[39m
+              [36m>[39m
+                [0mNot run[0m
+              [36m</span>[39m
+              [0m No main-loop candidate is recorded. Completion-study candidates appear in their separate panel.[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-pending"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m05[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mChallenge the repair[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-not_run"[39m
+              [36m>[39m
+                [0mNot run[0m
+              [36m</span>[39m
+              [0m Not reached. A candidate must repair every source-validation pair first.[0m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+        [36m<li[39m
+          [33mclass[39m=[32m"summary-stage stage-pending"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"stage-index"[39m
+          [36m>[39m
+            [0m06[0m
+          [36m</span>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"stage-content"[39m
+          [36m>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"stage-label"[39m
+            [36m>[39m
+              [0mPromote if qualified[0m
+            [36m</h3>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"stage-detail"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"badge badge-not_run"[39m
+              [36m>[39m
+                [0mNot run[0m
+              [36m</span>[39m
+              [36m<p>[39m
+                [0mNo promotion batch qualified.[0m
+              [36m</p>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</li>[39m
+      [36m</ol>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"summary-outcome"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"outcome-marker"[39m
+        [36m>[39m
+          [0m↺[0m
+        [36m</span>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"outcome-copy"[39m
+        [36m>[39m
+          [36m<strong>[39m
+            [0mBaseline retained[0m
+          [36m</strong>[39m
+          [36m<p>[39m
+            [0mNo recovery policy has been accepted in this campaign. The active policy is still policy-v0.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</section>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError ../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ ../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ ../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ ../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/discovery-v4.test.tsx:214:17
+    212|   const learn = { ...campaign, mode: 'learn' as const, state: 'NO_CHAN…
+    213|   render(h(RunSummary, { campaign: learn, experiments: experiments({ m…
+    214|   expect(screen.getByText('Found by History replay 1 of 1 · agent hist…
+       |                 ^
+    215|   cleanup()
+    216|   render(h(RunSummary, { campaign: learn, experiments: experiments({ m…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

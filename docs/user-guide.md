@@ -31,6 +31,19 @@ Reference-only context, completion and dependent heldout research studies are un
 campaigns. Independent portability requires a different reviewed implementation; rerunning the same
 native agent is a regression measurement, not independent validation.
 
+**How a Learn campaign picks faults (Discovery protocol).** The default, **v1**, lets the Explorer choose every
+slot. **v3 · agent history** also shows the Explorer this agent's earlier verified development results in this store,
+frozen into the plan ([discovery v3](DISCOVERY_V3_HISTORY_2026-09-29.md)). **v4 · history replay first** (September 30,
+not yet run live) first re-runs up to 3 recipes from that frozen history which fired every fault and failed in at least
+2 of every 3 verified episodes. Each takes one slot and one agent episode, with no Explorer request. The Explorer then
+uses the remaining slots exactly as under v3. The saved plan lists the frozen replay list before you press Start; an
+empty list says so and the run behaves as v3. The fault-search and source panels, the recording and exports label every
+replay "history replay" with its row: report a source from one as a history replay, never as independent discovery.
+A replay source goes through the normal loop before the next slot, so if it uses up the campaign's candidate requests,
+discovery ends before any later replay or Explorer slot runs. Replay episodes never count in a later agent history.
+v4 works for the reference Actor and both smolagents adapters, without the reachability pre-check
+([discovery v4](DISCOVERY_V4_HISTORY_REPLAY_2026-09-30.md)).
+
 **Lost model requests in a Learn campaign.** A new Learn plan freezes the model transport retry rule v2
 (`faultlab-transport-retry/v2-lab-backoff`). When an Explorer or Mechanic request gets no answer (connection error,
 timeout, HTTP 503), FaultLab waits 5 s, 20 s and then 60 s and sends the identical request again, at most 3 times per

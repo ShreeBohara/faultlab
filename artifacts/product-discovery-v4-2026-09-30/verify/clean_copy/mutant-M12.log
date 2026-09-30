@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-v4/clean/frontend
+
+ ❯ tests/discovery-v4.test.tsx (9 tests | 1 failed) 189ms
+   × LOW-2: a replayed row without a development case is not labelled an Explorer pick 6ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  23:25:28
+   Duration  769ms (transform 171ms, setup 0ms, import 254ms, tests 189ms, environment 257ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/discovery-v4.test.tsx > LOW-2: a replayed row without a development case is not labelled an Explorer pick
+AssertionError: expected 'Replay 1 · agent history row 7 (Explo…' not to contain '(Explorer pick)'
+
+Expected: "(Explorer pick)"
+Received: "Replay 1 · agent history row 7 (Explorer pick) · F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)violated in 3/3 verified episodes · every fault fired 3 of 3 · failed checks C3 (upgrade before confirmation) 3 · C5 (truthful report) 3 (baseline study)"
+
+ ❯ tests/discovery-v4.test.tsx:203:32
+    201|   const item = screen.getByRole('list', { name: 'Recipes replayed firs…
+    202|   expect(item.textContent).toContain(`Replay 1 · agent history row 7 (…
+    203|   expect(item.textContent).not.toContain('(Explorer pick)')
+       |                                ^
+    204|   cleanup()
+    205|   render(h(HistoryReplayFacts, { replay: replayList() }))
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

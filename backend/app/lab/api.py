@@ -299,12 +299,16 @@ def create_router(get_coordinator, *, get_settings=None):
     def experiments(id:str):
         campaign=c().get(id)
         counters=records('counterexamples',id); joined=[]
-        history_summary=None
+        history_summary=None; replay_sources=None
         if counters:
             from app.lab.run_plans import read_run_plan
             try: plan=read_run_plan(c().store,campaign)['plan']
             except Exception: plan=None  # The plan panel reports an unreadable plan; this projection stays available.
             history_summary=(((plan or {}).get('discovery') or {}).get('history') or {}).get('summary')
+            if ((plan or {}).get('discovery') or {}).get('replay') is not None:
+                # Discovery v4 only: which sources were found in a history replay slot (keyed by source episode).
+                from app.lab.history_replay import campaign_replays
+                replay_sources=campaign_replays(c().store,id)
         for counter in counters:
             key=counter['counterexample_id']; recipe=c().store.get_record('counterexample_recipes',key) or {}
             retained=c().store.get_record('retained_recipes',key) or {}
@@ -317,6 +321,9 @@ def create_router(get_coordinator, *, get_settings=None):
                 # Discovery v3 only: whether this source re-tries a recipe row of the frozen agent history.
                 from app.lab.agent_history import history_row_match
                 row['matches_history_row']=history_row_match(history_summary,recipe['source_recipe']) if recipe.get('source_recipe') else None
+            if replay_sources is not None:
+                # Discovery v4 only: the history replay that found this source, or null (an Explorer pick).
+                row['history_replay']=replay_sources.get(counter['source_episode_id'])
             joined.append(row)
         episodes={e['episode_id'] for e in records('episodes',id) if e['split']=='development' and e['experiment_purpose'] not in ('selection_comparison','diagnostic_profile')}
         # Evidence and ingestion records are keyed by episode_id (evidence.py), so
@@ -341,7 +348,9 @@ def create_router(get_coordinator, *, get_settings=None):
                 'selected_output':row.get('selected_output'),'output':row.get('output'),
                 'raw_response':row['raw'],'usage':row['usage'],'provenance':row['provenance'],
                 'error':row.get('error'),'transport_retries':row.get('transport_retries',[]),
-                **({'matches_history_row':row['matches_history_row']} if 'matches_history_row' in row else {})})
+                **({'matches_history_row':row['matches_history_row']} if 'matches_history_row' in row else {}),
+                # Discovery v4 only: a replay slot's record (no Explorer request) names the history row it replayed.
+                **({'history_replay':row['history_replay']} if 'history_replay' in row else {})})
         return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded

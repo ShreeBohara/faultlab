@@ -1,0 +1,2 @@
+copied product files: 25 (all sha256 equal to COMMIT_LIST product lines)
+present that should be absent: []

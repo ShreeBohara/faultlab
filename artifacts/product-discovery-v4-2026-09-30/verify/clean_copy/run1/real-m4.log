@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-v4/clean/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:22:39
+   Duration  244ms (transform 131ms, setup 0ms, import 172ms, tests 3ms, environment 0ms)
+

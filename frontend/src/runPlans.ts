@@ -18,7 +18,7 @@ export type RunProfile = 'offline-v1' | 'live-v1'
 export type RunCaps = Required<CampaignBudget>
 export type SearchSpace = { maximum_primitives: number; kinds: string[]; occurrence: number[]; f1_milliseconds: number[]; f2_ticks: number[]; f3_versions: number[]; f4_count: number[]; preflight_required: boolean }
 export type DevelopmentCase = { case_id: string; label: string; description: string; fixture_id: string; expected_version: number; fault_spec: FaultSpec }
-export type DiscoveryProtocolId = 'faultlab-discovery/v1' | 'faultlab-discovery/v2-reachability' | 'faultlab-discovery/v3-history' | 'faultlab-discovery/v3-history-reachability'
+export type DiscoveryProtocolId = 'faultlab-discovery/v1' | 'faultlab-discovery/v2-reachability' | 'faultlab-discovery/v3-history' | 'faultlab-discovery/v3-history-reachability' | 'faultlab-discovery/v4-history-replay'
 /** The two product paths a history row can come from (backend agent_history.SOURCES); single-case baseline runs never count. */
 export type HistorySource = 'baseline_study' | 'learn_discovery'
 export const HISTORY_SOURCES: Record<HistorySource, string> = { baseline_study: 'baseline study', learn_discovery: 'learn discovery' }
@@ -34,11 +34,19 @@ export type AgentHistory = { schema_version: 'faultlab-agent-history/v2'; status
 export type HistoryCheck = { campaign_id: string; status: 'CURRENT' | 'CHANGED' | 'NOT_CHECKED' | 'NOT_APPLICABLE'; message: string; record_cutoff: number | null; summary_hash: string | null }
 /** A pick or source that re-tries a listed history row (order-aware schedule identity, seed ignored). */
 export type HistoryRowMatch = { row: number; development_case_id: string | null; basis: string }
+/** Discovery v4: one frozen replay row (backend app/lab/history_replay.py): the history row it re-runs first, and its counts. */
+export type HistoryReplayRow = { replay: number; history_row: number; development_case_id: string | null; recipe: string[]; fault_spec: FaultSpec; schedule_identity_v2: string; verified_episodes: number; violations: number; violation_share: string; every_fault_fired: number; outcomes: Record<string, number>; failed_checks: Record<string, number>; sources: HistorySource[] }
+/** Discovery v4: the replay list frozen from the plan's frozen history when the plan is saved (EMPTY says so plainly). */
+export type HistoryReplay = { schema_version: 'faultlab-history-replay/v1'; status: 'AVAILABLE' | 'EMPTY'; statement: string; rule: string; basis: 'faultlab-schedule-identity/v2-order-aware'; max_rows: 3; min_verified_episodes: 2; min_violation_share: '2/3'; history_summary_hash: string; rows: HistoryReplayRow[] }
+/** Discovery v4: a replay slot as its selection record, the fault-search panel, the source panel and the recording name it. No Explorer request was sent. */
+export type HistoryReplaySlot = { label: 'history replay'; protocol: 'faultlab-discovery/v4-history-replay'; replay: number; of: number; history_row: number; development_case_id: string | null; recipe: string[]; verified_episodes: number; violations: number; violation_share: string; every_fault_fired: number; failed_checks: Record<string, number>; schedule_identity_v2: string; basis: string; episode_id: string; explorer_request: false; selection_id?: string }
 export type CallerModel = { caller_id: string; agent: 'reference'; max_business_calls: number; adapter_attempts: number; client_timeout_seconds: number; wait_action: boolean; ticks_per_http_attempt: number; http_attempts: number; ticks: number; polling: string; unknown_status_checks?: number; resends_failed_writes?: boolean; validated_against: string; facts: string[] }
 /** explorer_transport_retries_max: one charged retry per Explorer request that got no answer; not a request itself. Absent or null in plans saved before it existed (none declared). */
 export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; explorer_transport_retries_max?: number | null; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel }
-  /** Discovery v3 only: null in the run options (frozen when a plan is saved), the frozen block in a saved plan; absent for v1/v2. */
-  history?: AgentHistory | null }
+  /** Discovery v3 and v4: null in the run options (frozen when a plan is saved), the frozen block in a saved plan; absent for v1/v2. */
+  history?: AgentHistory | null
+  /** Discovery v4 only: null in the run options, the frozen replay list in a saved plan; absent for every other protocol. */
+  replay?: HistoryReplay | null }
 /** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py): rule v1, one blind retry for every role. */
 export type TransportRetryDeclarationV1 = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
 /** Rule v2, frozen into every new Learn plan: the agent roles keep rule v1; the Explorer and Mechanic back off (5 s, 20 s, 60 s) and retry up to 3 times, at most 12 per campaign. */
@@ -86,9 +94,12 @@ function searchSpace(value: unknown): value is SearchSpace {
 function comparison(value: unknown): boolean {
   return object(value) && value.partition === 'promotion' && digest(value.manifest_hash) && positive(value.case_count) && positive(value.trials_per_case)
 }
-const DISCOVERY_PROTOCOLS = ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
-/** Discovery v3 forms add only the frozen agent history to their base: v3-history is v1, v3-history-reachability is v2. */
-export const HISTORY_PROTOCOLS: string[] = ['faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability']
+const DISCOVERY_PROTOCOLS = ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability', 'faultlab-discovery/v4-history-replay']
+/** Protocols whose plan freezes the agent history: the v3 forms add only it to their base (v3-history is v1, v3-history-reachability
+ * is v2); v4 is v3-history plus a frozen replay list. */
+export const HISTORY_PROTOCOLS: string[] = ['faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability', 'faultlab-discovery/v4-history-replay']
+/** Discovery v4 (regression-first): replays up to three frozen history rows before the Explorer's slots. */
+export const REPLAY_PROTOCOL = 'faultlab-discovery/v4-history-replay'
 export const preChecked = (protocol: unknown) => protocol === 'faultlab-discovery/v2-reachability' || protocol === 'faultlab-discovery/v3-history-reachability'
 const count = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0
 const counts = (value: unknown) => object(value) && Object.values(value).every(count)
@@ -110,6 +121,33 @@ function builds(value: unknown): value is HistoryBuild[] {
 export function historyRowMatch(value: unknown): value is HistoryRowMatch | null {
   return value === null || (object(value) && positive(value.row) && (value.development_case_id === null || (text(value.development_case_id) && /^dev-[1-6]$/.test(value.development_case_id))) && text(value.basis))
 }
+const caseId = (value: unknown) => value === null || (text(value) && /^dev-[1-6]$/.test(value))
+const share = (violations: number, verified: number) => Number.isSafeInteger(verified) && verified >= 2 && count(violations) && 3 * violations >= 2 * verified
+/** One frozen replay row, with the same consistency rules the backend model enforces (share at least 2/3, every fault fired). */
+function historyReplayRow(value: unknown, index: number): value is HistoryReplayRow {
+  if (!object(value) || value.replay !== index + 1 || !positive(value.history_row) || !caseId(value.development_case_id) || !stringList(value.recipe) || !(value.recipe as string[]).length
+    || !object(value.fault_spec) || !Array.isArray(value.fault_spec.primitives) || !value.fault_spec.primitives.length || !digest(value.schedule_identity_v2)
+    || !counts(value.outcomes) || !counts(value.failed_checks) || !stringList(value.sources) || !(value.sources as string[]).length || !(value.sources as string[]).every(source => source in HISTORY_SOURCES)) return false
+  const verified = value.verified_episodes as number, violations = value.violations as number
+  return share(violations, verified) && value.violation_share === `${violations}/${verified}` && value.every_fault_fired === verified && (value.outcomes as Record<string, number>).VIOLATION === violations
+}
+/** The frozen replay list of a saved v4 plan: computed from, and bound to, the plan's frozen history (the backend recomputes it before any replay). */
+export function historyReplay(value: unknown, history: unknown): value is HistoryReplay {
+  if (!object(value) || value.schema_version !== 'faultlab-history-replay/v1' || !['AVAILABLE', 'EMPTY'].includes(String(value.status)) || !text(value.statement) || !text(value.rule)
+    || value.basis !== 'faultlab-schedule-identity/v2-order-aware' || value.max_rows !== 3 || value.min_verified_episodes !== 2 || value.min_violation_share !== '2/3'
+    || !agentHistory(history) || value.history_summary_hash !== history.summary_hash || !Array.isArray(value.rows) || value.rows.length > 3 || !value.rows.every(historyReplayRow)) return false
+  const rows = value.rows as HistoryReplayRow[], listed = history.summary.recipes
+  // Each replayed row is a listed history row, once, with the same development case.
+  return (value.status === 'AVAILABLE') === rows.length > 0 && new Set(rows.map(row => row.history_row)).size === rows.length
+    && rows.every(row => row.history_row <= listed.length && listed[row.history_row - 1].development_case_id === row.development_case_id)
+}
+/** A replay slot's label block (selection record, source projection): never an Explorer request. */
+export function historyReplaySlot(value: unknown): value is HistoryReplaySlot {
+  return object(value) && value.label === 'history replay' && value.protocol === REPLAY_PROTOCOL && positive(value.replay) && positive(value.of) && (value.replay as number) <= (value.of as number) && (value.of as number) <= 3
+    && positive(value.history_row) && caseId(value.development_case_id) && stringList(value.recipe) && share(value.violations as number, value.verified_episodes as number)
+    && value.violation_share === `${value.violations}/${value.verified_episodes}` && value.every_fault_fired === value.verified_episodes && counts(value.failed_checks)
+    && digest(value.schedule_identity_v2) && text(value.basis) && text(value.episode_id) && value.explorer_request === false && (value.selection_id === undefined || text(value.selection_id))
+}
 /** The frozen history block of a saved v3 plan. The backend recomputes and checks its hash before any Explorer request. */
 export function agentHistory(value: unknown): value is AgentHistory {
   if (!object(value) || value.schema_version !== 'faultlab-agent-history/v2' || !['AVAILABLE', 'NO_PRIOR_HISTORY'].includes(String(value.status)) || !text(value.rule)
@@ -130,6 +168,7 @@ export function discoveryDeclaration(value: unknown, saved = false): value is Di
   if (!object(value) || !DISCOVERY_PROTOCOLS.includes(String(value.protocol)) || !text(value.schedule_identity) || !text(value.dispatch_rule)
     || !['slots', 'explorer_requests_max', 'actor_episodes_max'].every(key => positive(value[key])) || ![0, 1].includes(value.replans_per_slot as number)) return false
   if (HISTORY_PROTOCOLS.includes(String(value.protocol)) ? !(saved ? agentHistory(value.history) : value.history === null) : value.history !== undefined) return false
+  if (value.protocol === REPLAY_PROTOCOL ? !(saved ? historyReplay(value.replay, value.history) : value.replay === null) : value.replay !== undefined) return false
   const v2 = preChecked(value.protocol), slots = value.slots as number
   if (value.explorer_requests_max !== slots * (v2 ? 2 : 1) || value.actor_episodes_max !== slots || value.replans_per_slot !== (v2 ? 1 : 0)) return false
   // At most one transport retry per Explorer request; older plans declare none (absent or null).

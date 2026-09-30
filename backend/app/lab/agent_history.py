@@ -19,7 +19,11 @@ that came from one of two product paths, under the plan's starting policy:
   trials; the operator cannot choose the cases);
 * ``learn_discovery``: a learn campaign's own discovery pick (the Explorer chose it).
 A single-case baseline run (the operator chooses its case) is never used: a few of them could hand the
-Explorer an operator-curated history (review finding, September 29). Completed, non-lab-error,
+Explorer an operator-curated history (review finding, September 29). A discovery v4 **history replay** slot
+(its selection record has provenance ``history_replay``; app.lab.history_replay) is not an Explorer pick either:
+FaultLab ran it by the plan's fixed replay rule. It is never used and not counted, so no later history calls it
+"chosen by the Explorer" and the replay rule never counts a row's own replays (review finding MEDIUM-1, September
+30). A store without a v4 campaign holds no replay record, so its history is byte-identical. Completed, non-lab-error,
 Weave-verified episodes are used; lab errors, interrupted, unfinished and unverified ones are excluded
 and counted. Promotion, held-out and final-audit records never pass the split filter, so they are
 neither read into the summary nor counted. Recipes come only from public development sources: the
@@ -113,7 +117,12 @@ def target_identity(registration, configuration):
 
 
 def _public_recipes(store, cutoff):
-    """content_hash(recipe) -> (recipe, development case id) from public development sources only."""
+    """(content_hash(recipe) -> (recipe, development case id), history replay episode ids), public sources only.
+
+    Recipes come from the development manifest and the Explorer's own recorded selections. A discovery v4 history
+    replay selection (provenance ``history_replay``) is FaultLab's, not the Explorer's: its recipe is not read, and
+    its episode id is returned so the episode is never used (it precedes its episode, so the cutoff covers both).
+    """
     from app.referee.manifests import load_manifest
     known = {}
     for case in load_manifest('development')['cases']:
@@ -121,8 +130,14 @@ def _public_recipes(store, cutoff):
         known[content_hash(recipe)] = (recipe, case['case_id'])
     healthy = FaultSpec(seed=0, primitives=[])  # an unplanned baseline run's fixed no-fault recipe
     known.setdefault(content_hash(healthy), (healthy, None))
-    # Only two fields of each selection are read; the large Explorer contexts are never loaded.
-    for _, selection in store.record_fields_upto('selections', cutoff, ('challenge', 'selected_output.fault_spec')):
+    replayed = set()
+    # Only four small fields of each selection are read; the large Explorer contexts are never loaded.
+    for _, selection in store.record_fields_upto('selections', cutoff, ('challenge', 'selected_output.fault_spec',
+                                                                        'provenance', 'history_replay.episode_id')):
+        if selection['provenance'] == 'history_replay':
+            if isinstance(selection['history_replay.episode_id'], str):
+                replayed.add(selection['history_replay.episode_id'])
+            continue
         spec = selection['selected_output.fault_spec']
         if selection['challenge'] or not isinstance(spec, dict):
             continue
@@ -131,7 +146,7 @@ def _public_recipes(store, cutoff):
         except Exception:
             continue
         known.setdefault(content_hash(recipe), (recipe, None))
-    return known
+    return known, replayed
 
 
 def _at_or_before(store, kind, ident, cutoff):
@@ -226,7 +241,7 @@ def compute_history(store, *, identity, policy_hash, cutoff):
     from app.lab.challenge import schedule_identity_v2
     if not isinstance(cutoff, int) or cutoff < 0:
         raise ValueError('A history record cutoff is a non-negative row number')
-    known = _public_recipes(store, cutoff)
+    known, replayed = _public_recipes(store, cutoff)
     # A row is named after a development case when its schedule matches the case's, whatever the seed.
     case_of = {schedule_identity_v2(recipe): case_id for recipe, case_id in known.values() if case_id}
     cache = {}; rows = {}; order = []; used_ids = []; builds = {}
@@ -241,6 +256,8 @@ def compute_history(store, *, identity, policy_hash, cutoff):
         source = _provenance(store, episode, cutoff, cache)
         if source is None or identity is None or _episode_identity(store, episode, cache) != identity:
             continue
+        if episode.get('episode_id') in replayed:
+            continue  # a discovery v4 history replay: FaultLab's pick, not the Explorer's; never used, not counted
         if episode.get('model') != identity['model']:
             continue
         verdict = episode.get('verdict') or {}

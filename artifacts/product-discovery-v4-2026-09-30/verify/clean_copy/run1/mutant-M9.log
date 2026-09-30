@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-v4/clean/frontend
+
+ ❯ tests/discovery-v4.test.tsx (9 tests | 1 failed) 189ms
+   × F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do 4ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 passed (9)
+   Start at  23:22:32
+   Duration  781ms (transform 175ms, setup 0ms, import 261ms, tests 189ms, environment 262ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/discovery-v4.test.tsx > F1: never says the Explorer chose slots that have no record, and counts the Explorer slots that do
+AssertionError: expected 'Discovery protocol v4: the first 2 sl…' to be 'Discovery protocol v4: the first 2 sl…' // Object.is equality
+
+Expected: "Discovery protocol v4: the first 2 slots were history replays of the frozen agent history (see the saved plan), with no Explorer request. No Explorer slot is recorded: either discovery has not reached one yet, or it ended after the replays (for example because their sources used up the campaign's candidate requests); the campaign's recorded outcome says which."
+Received: "Discovery protocol v4: the first 2 slots were history replays of the frozen agent history (see the saved plan), with no Explorer request; the Explorer chose the next 0 slots recorded here."
+
+ ❯ tests/discovery-v4.test.tsx:184:42
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

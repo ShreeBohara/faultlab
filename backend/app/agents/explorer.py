@@ -13,6 +13,8 @@ CHALLENGER=Path(__file__).with_name('prompts').joinpath('challenger.md').read_te
 DISCOVERY_V2_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v2.md').read_text()
 # Appended only under the declared discovery protocol v3 (agent history); v1/v2 stay byte-identical.
 DISCOVERY_V3_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v3_history.md').read_text()
+# Appended after the v3 section only under discovery v4 (history replay) with a non-empty replay list; v1/v2/v3 unchanged.
+DISCOVERY_V4_PROMPT=Path(__file__).with_name('prompts').joinpath('explorer_discovery_v4_history_replay.md').read_text()
 PUBLIC_INVARIANTS={
     'C1':'Stay within the authorized order, original operation identities and requested upgrade; at most one upgrade effect.',
     'C2':'Claim upgrade success only with a delivered matching terminal success receipt.',
@@ -235,6 +237,8 @@ class Explorer:
         v2=discovery_v2 if discovery else None
         # Discovery protocol v3: the plan's frozen agent history ({'discovery_protocol','agent_history'}),
         # read-only context for ordinary discovery requests only. None leaves v1/v2 requests unchanged.
+        # Discovery v4 passes the same two fields (its own protocol id) plus replay_prompt, which only appends
+        # the v4 prompt section and never enters the context.
         history=discovery_history if discovery else None
         search=None; seen={}
         if discovery:
@@ -253,7 +257,7 @@ class Explorer:
         # recipe. Discovery and challenge use the same exact field names.
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
                  'episode_limits':EpisodeBudget().model_dump(mode='json'),'public_invariants':PUBLIC_INVARIANTS}
-        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')+('\n'+DISCOVERY_V3_PROMPT if history is not None else '')},{'role':'user','content':canonical_json(context)}]
+        messages=[{'role':'system','content':PROMPT+('\n'+CHALLENGER if challenge else '')+('\n'+DISCOVERY_V2_PROMPT if v2 is not None else '')+('\n'+DISCOVERY_V3_PROMPT if history is not None else '')+('\n'+DISCOVERY_V4_PROMPT if history is not None and history.get('replay_prompt') else '')},{'role':'user','content':canonical_json(context)}]
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('explorer') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         validate_model_input(messages,expected)

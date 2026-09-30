@@ -1,0 +1,1286 @@
+{
+ "caveat": "a live v4 plan freezes the history of the store it is created in, at that moment, for\nthe registration it names; registering again under this runtime keeps the same agent identity (app.lab.agent_history\nSAME_AGENT_RULE), so these lists are what a v4 plan in each store would show today, under the current code.",
+ "stores": {
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-durability/offline-01/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deterministic-reference/internal-smoke",
+     "registration_id": "orders-v1-0ab09da652004dc5",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+     "verified_episodes": 0
+    },
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "orders-v1-6d2adc4630a02501",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "e047a4e17597d6c13120df66e6d5133f6c4acaa63b4c0a066567e08c17058d50",
+     "verified_episodes": 0
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 7
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 1,
+       "verified": 1
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 2,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 3,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 4,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 5,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 6,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 7,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "orders-v1-18e5efb1d72ccef5",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: no row of the frozen agent history meets the replay rule, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "fb36e1d229b2e103fa0246186a6769bf4f07350ec828a538ecb5e0d421070dd6",
+     "verified_episodes": 7
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deterministic-reference/internal-smoke",
+     "registration_id": "internal-smoke-19e35da5b2cbdecb",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+     "verified_episodes": 0
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/offline-01/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "orders-v1-f3f15a0c9360e73c",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "e047a4e17597d6c13120df66e6d5133f6c4acaa63b4c0a066567e08c17058d50",
+     "verified_episodes": 0
+    },
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "smolagents-toolcalling-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-6bd9b6c0e28f70d0",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "b38bb032da630e38f1ab35537baa71966bfd1a6ae9e17c37b2348b25576f3a1f",
+     "verified_episodes": 0
+    },
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [],
+     "history_status": "NO_PRIOR_HISTORY",
+     "model": "deterministic-reference/internal-smoke",
+     "registration_id": "internal-smoke-f6293858b511d0ac",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+     "verified_episodes": 0
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-28/discovery-v2/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 5
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 1,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 2,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 3,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 4,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 5,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "orders-v1-2933cfa94ec09858",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: no row of the frozen agent history meets the replay rule, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "8b54046309380db35294522c6a28d3085a3792290a6286ff359e58e68fe3c8ec",
+     "verified_episodes": 5
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 0,
+      "learn_discovery_episodes": 0
+     },
+     "entrypoint": "smolagents-toolcalling-v1",
+     "history_rows": [
+      {
+       "case": "dev-1",
+       "eligible": false,
+       "every_fault_fired": null,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "COMPLETED": 2,
+        "VIOLATION": 1
+       },
+       "row": 1,
+       "verified": 3
+      },
+      {
+       "case": "dev-2",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 2,
+       "verified": 3
+      },
+      {
+       "case": "dev-3",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C5": 3,
+        "C6": 3,
+        "C7": 3
+       },
+       "outcomes": {
+        "VIOLATION": 3
+       },
+       "row": 3,
+       "verified": 3
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 4,
+       "verified": 3
+      },
+      {
+       "case": "dev-5",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 3
+       },
+       "row": 5,
+       "verified": 3
+      },
+      {
+       "case": "dev-6",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "SAFE_UNRESOLVED": 2,
+        "VIOLATION": 1
+       },
+       "row": 6,
+       "verified": 3
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-d72de2e095c6ce4f",
+     "replay_rows": [
+      {
+       "development_case_id": "dev-3",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C5": 3,
+        "C6": 3,
+        "C7": 3
+       },
+       "history_row": 3,
+       "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+       ],
+       "replay": 1,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "3/3"
+      },
+      {
+       "development_case_id": "dev-5",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3,
+        "C6": 1,
+        "C7": 1
+       },
+       "history_row": 5,
+       "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+       ],
+       "replay": 2,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "3/3"
+      }
+     ],
+     "replay_statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+     "replay_status": "AVAILABLE",
+     "summary_hash": "d67f43e565a436d9304a2e67b27e9dafa5e26978a5d9103fae53f14d16fa52a4",
+     "verified_episodes": 18
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/discovery-v2b/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 8
+     },
+     "entrypoint": "orders-prototype-v1",
+     "history_rows": [
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 1,
+       "verified": 1
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 2,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 3,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 4,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 5,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 6,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 7,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 8,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "orders-v1-4c46925cb3fec22c",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: no row of the frozen agent history meets the replay rule, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "4a61561d3034972aa5fe54d63f2235d117e0152529357c23264218038860320c",
+     "verified_episodes": 8
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 4
+     },
+     "entrypoint": "smolagents-toolcalling-v1",
+     "history_rows": [
+      {
+       "case": "dev-1",
+       "eligible": false,
+       "every_fault_fired": null,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 1,
+       "verified": 3
+      },
+      {
+       "case": "dev-2",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "COMPLETED": 2,
+        "VIOLATION": 1
+       },
+       "row": 2,
+       "verified": 3
+      },
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "COMPLETED": 2,
+        "VIOLATION": 1
+       },
+       "row": 3,
+       "verified": 3
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "COMPLETED": 2,
+        "VIOLATION": 1
+       },
+       "row": 4,
+       "verified": 3
+      },
+      {
+       "case": "dev-5",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3,
+        "C6": 2,
+        "C7": 2
+       },
+       "outcomes": {
+        "VIOLATION": 3
+       },
+       "row": 5,
+       "verified": 3
+      },
+      {
+       "case": "dev-6",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "SAFE_UNRESOLVED": 2,
+        "VIOLATION": 1
+       },
+       "row": 6,
+       "verified": 3
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 7,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 8,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 9,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 10,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-19a1127cdc8406d8",
+     "replay_rows": [
+      {
+       "development_case_id": "dev-5",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3,
+        "C6": 2,
+        "C7": 2
+       },
+       "history_row": 5,
+       "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+       ],
+       "replay": 1,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "3/3"
+      }
+     ],
+     "replay_statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+     "replay_status": "AVAILABLE",
+     "summary_hash": "ffc609cacbb5ff19e8f494481d6314ff70cb356670b49c0c0ca614be85e59114",
+     "verified_episodes": 22
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 0,
+      "baseline_study_episodes": 0,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 8
+     },
+     "entrypoint": "smolagents-toolcalling-v1",
+     "history_rows": [
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 1,
+       "verified": 1
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 2,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 3,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 4,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 5,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 6,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 7,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C5": 1,
+        "C6": 1,
+        "C7": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 8,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-819f4d1fa0add89b",
+     "replay_rows": [],
+     "replay_statement": "Replay list empty: no row of the frozen agent history meets the replay rule, so nothing is replayed. Discovery runs exactly as v3 \u00b7 agent history.",
+     "replay_status": "EMPTY",
+     "summary_hash": "3947b992ff656c7120a4e7b8b5693eb4955e3f090d3d085d43e4b7c70f1871a3",
+     "verified_episodes": 8
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 5
+     },
+     "entrypoint": "smolagents-toolcalling-v2",
+     "history_rows": [
+      {
+       "case": "dev-1",
+       "eligible": false,
+       "every_fault_fired": null,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 1,
+       "verified": 3
+      },
+      {
+       "case": "dev-2",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 2,
+       "verified": 3
+      },
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 3,
+       "verified": 3
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 4,
+       "verified": 3
+      },
+      {
+       "case": "dev-5",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3
+       },
+       "outcomes": {
+        "VIOLATION": 3
+       },
+       "row": 5,
+       "verified": 3
+      },
+      {
+       "case": "dev-6",
+       "eligible": true,
+       "every_fault_fired": 4,
+       "failed_checks": {
+        "C4": 3,
+        "C5": 3
+       },
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1,
+        "VIOLATION": 3
+       },
+       "row": 6,
+       "verified": 4
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 7,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 8,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 9,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 10,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4",
+     "replay_rows": [
+      {
+       "development_case_id": "dev-5",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3
+       },
+       "history_row": 5,
+       "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+       ],
+       "replay": 1,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "3/3"
+      },
+      {
+       "development_case_id": "dev-6",
+       "every_fault_fired": 4,
+       "failed_checks": {
+        "C4": 3,
+        "C5": 3
+       },
+       "history_row": 6,
+       "recipe": [
+        "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+       ],
+       "replay": 2,
+       "sources": [
+        "baseline_study",
+        "learn_discovery"
+       ],
+       "violation_share": "3/4"
+      }
+     ],
+     "replay_statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+     "replay_status": "AVAILABLE",
+     "summary_hash": "9954933da5417acfaf589487eb3c215ba015d83269163215336941fea4a587c0",
+     "verified_episodes": 23
+    }
+   ],
+   "store_files_unchanged": true
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3": {
+   "registrations": [
+    {
+     "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 1,
+      "learn_discovery_episodes": 7
+     },
+     "entrypoint": "smolagents-toolcalling-v2",
+     "history_rows": [
+      {
+       "case": "dev-1",
+       "eligible": false,
+       "every_fault_fired": null,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 1,
+       "verified": 3
+      },
+      {
+       "case": "dev-2",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 2,
+       "verified": 3
+      },
+      {
+       "case": "dev-3",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "COMPLETED": 2,
+        "VIOLATION": 1
+       },
+       "row": 3,
+       "verified": 3
+      },
+      {
+       "case": "dev-4",
+       "eligible": false,
+       "every_fault_fired": 3,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 3
+       },
+       "row": 4,
+       "verified": 3
+      },
+      {
+       "case": "dev-5",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3
+       },
+       "outcomes": {
+        "VIOLATION": 3
+       },
+       "row": 5,
+       "verified": 3
+      },
+      {
+       "case": "dev-6",
+       "eligible": true,
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C4": 2,
+        "C5": 2
+       },
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1,
+        "VIOLATION": 2
+       },
+       "row": 6,
+       "verified": 3
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 7,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 8,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 9,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {},
+       "outcomes": {
+        "SAFE_UNRESOLVED": 1
+       },
+       "row": 10,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 1,
+       "failed_checks": {
+        "C4": 1,
+        "C5": 1
+       },
+       "outcomes": {
+        "VIOLATION": 1
+       },
+       "row": 11,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 12,
+       "verified": 1
+      },
+      {
+       "case": null,
+       "eligible": false,
+       "every_fault_fired": 0,
+       "failed_checks": {},
+       "outcomes": {
+        "COMPLETED": 1
+       },
+       "row": 13,
+       "verified": 1
+      }
+     ],
+     "history_status": "AVAILABLE",
+     "model": "deepseek-ai/DeepSeek-V3.1",
+     "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+     "replay_rows": [
+      {
+       "development_case_id": "dev-5",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C3": 3,
+        "C5": 3
+       },
+       "history_row": 5,
+       "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+       ],
+       "replay": 1,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "3/3"
+      },
+      {
+       "development_case_id": "dev-6",
+       "every_fault_fired": 3,
+       "failed_checks": {
+        "C4": 2,
+        "C5": 2
+       },
+       "history_row": 6,
+       "recipe": [
+        "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+       ],
+       "replay": 2,
+       "sources": [
+        "baseline_study"
+       ],
+       "violation_share": "2/3"
+      }
+     ],
+     "replay_statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+     "replay_status": "AVAILABLE",
+     "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+     "verified_episodes": 25
+    }
+   ],
+   "store_files_unchanged": true
+  }
+ }
+}

@@ -1,0 +1,6 @@
+== stores/guard.jsonl
+ processes 1 | refused outside 0 [] | env opens {} | protected {}
+== identity/guard.jsonl
+ processes 2 | refused outside 0 [] | env opens {} | protected {'real /Users/shree/FaultLab_Scratch/verify-v4/checkpoint/backend/app/referee/checks.py': 16, 'real backend/app/referee/checks.py': 15}
+== gate_freeze/guard.jsonl
+ processes 2 | refused outside 0 [] | env opens {} | protected {'real /Users/shree/FaultLab_Scratch/verify-v4/checkpoint/backend/app/referee/checks.py': 6, 'real backend/app/referee/checks.py': 6}

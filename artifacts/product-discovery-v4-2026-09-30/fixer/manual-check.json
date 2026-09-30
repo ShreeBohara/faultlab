@@ -1,0 +1,1916 @@
+{
+ "baseline": {
+  "b0_by_case": {
+   "dev-1": [
+    "COMPLETED",
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "dev-2": [
+    "COMPLETED",
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "dev-3": [
+    "VIOLATION",
+    "VIOLATION",
+    "VIOLATION"
+   ],
+   "dev-4": [
+    "COMPLETED",
+    "COMPLETED",
+    "COMPLETED"
+   ],
+   "dev-5": [
+    "VIOLATION",
+    "VIOLATION",
+    "VIOLATION"
+   ],
+   "dev-6": [
+    "SAFE_UNRESOLVED",
+    "SAFE_UNRESOLVED",
+    "SAFE_UNRESOLVED"
+   ]
+  },
+  "status": "COMPLETED",
+  "study_id": "baseline-study-8fa3d6e3a8cd4af9ae2edadf4022c455"
+ },
+ "m4": {
+  "campaign_id": "campaign-99b2c27084b341f49813837e34d4af7c",
+  "composition": {
+   "baseline_studies": 1,
+   "baseline_study_episodes": 18,
+   "learn_campaigns": 0,
+   "learn_discovery_episodes": 0
+  },
+  "history_check": "CURRENT",
+  "history_rows": [
+   {
+    "case": "dev-1",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 1,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-2",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 2,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-3",
+    "outcomes": {
+     "VIOLATION": 3
+    },
+    "row": 3,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-4",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 4,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-5",
+    "outcomes": {
+     "VIOLATION": 3
+    },
+    "row": 5,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-6",
+    "outcomes": {
+     "SAFE_UNRESOLVED": 3
+    },
+    "row": 6,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   }
+  ],
+  "replay_rows": [
+   [
+    1,
+    3,
+    "dev-3",
+    "3/3",
+    [
+     "baseline_study"
+    ]
+   ],
+   [
+    2,
+    5,
+    "dev-5",
+    "3/3",
+    [
+     "baseline_study"
+    ]
+   ]
+  ],
+  "replay_statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery. A replay source goes through the normal loop (reproduction, reduction, diagnosis, candidates) before the next slot; if the campaign's candidate requests (at most 4) are used up there, discovery ends and later replays and Explorer slots do not run.",
+  "summary_hash": "463a7d865877f9dff1b58dabed96b0a6c6817395a837730a06310db8b1f62335"
+ },
+ "m4_experiments_raw": {
+  "counterexamples": [
+   {
+    "challenges": [],
+    "counterexample": {
+     "agent_registration_id": "smolagents-1.26.0-adapter-v2-6cdc7992d1fcad23",
+     "attempted_count": 3,
+     "campaign_id": "campaign-99b2c27084b341f49813837e34d4af7c",
+     "configuration_hash": "6cdc7992d1fcad233e3c0d6f3f19dc08f1fd600c827b832f15f98fd69a214b24",
+     "counterexample_id": "counterexample-91c6cc40ab6a4fd699b8df5681f30a78",
+     "created_at": "2026-09-30T05:58:18.396540Z",
+     "report_ref": "episode-13d728219f684341a473d80f4ebb4d3a",
+     "reproduced": true,
+     "reproduction_trial_ids": [
+      "episode-64d84588f19848d3a52a629c7a77c478",
+      "episode-9bf4dfddbf464853be240ee19f1a2f83",
+      "episode-85613f65381840bbaeeeb60a90e96809"
+     ],
+     "scenario_hash": "d4f33441eb491fb6ca3a04aee528602a555e3f54d8b424dd0245122f58113206",
+     "schema_version": "faultlab/v1",
+     "source_episode_id": "episode-13d728219f684341a473d80f4ebb4d3a",
+     "target_invariant": "C3",
+     "target_violation_count": 3,
+     "valid_count": 3,
+     "verdict_ref": "verdict-b69c323b559848798d53a49a930231f5"
+    },
+    "diagnostics": [
+     {
+      "authority_paths": [
+       "original_upgrade_write",
+       "identical_upgrade_replay",
+       "upgrade_status",
+       "order_projection",
+       "prior_delivered_receipts"
+      ],
+      "checker_hash": "5b83fbc84c20a7bd6db236f370093e5adc09c3c5c35e230fca2c07c8c90d45d9",
+      "counterexample_id": "counterexample-91c6cc40ab6a4fd699b8df5681f30a78",
+      "diagnostic_id": "diagnostic-cd056d7db56a4adaab5eb3efb3b59e76",
+      "diagnostic_profile_id": null,
+      "equivalence_refs": [],
+      "evidence_ids": [],
+      "explanation": "Fresh reproduction and the declared controlled intervention support a bounded policy hypothesis.",
+      "intervention_ids": [
+       "intervention-90d7b82315e5631afc3b8cb7"
+      ],
+      "kind": "POLICY_GAP",
+      "limitations": [
+       "A supported hypothesis permits a candidate proposal, never promotion or a claim of improvement."
+      ],
+      "proposed_kind": "POLICY_GAP",
+      "protocol_hash": "bfefe69bd6a91e44d24c2ad83d3b42e280df722f1662c84d658826ce38f72287",
+      "reproduction_ids": [
+       "episode-64d84588f19848d3a52a629c7a77c478",
+       "episode-9bf4dfddbf464853be240ee19f1a2f83",
+       "episode-85613f65381840bbaeeeb60a90e96809"
+      ],
+      "required_behavior": "Preserve original operation identities and require delivered matching receipts for success.",
+      "schema_version": "faultlab/v1",
+      "tested_scope": "Three fresh trials of the fixed development recipe and declared paired schedule intervention."
+     }
+    ],
+    "history_replay": {
+     "basis": "faultlab-schedule-identity/v2-order-aware",
+     "development_case_id": "dev-3",
+     "episode_id": "episode-13d728219f684341a473d80f4ebb4d3a",
+     "every_fault_fired": 3,
+     "explorer_request": false,
+     "failed_checks": {
+      "C3": 3
+     },
+     "history_row": 3,
+     "label": "history replay",
+     "of": 2,
+     "protocol": "faultlab-discovery/v4-history-replay",
+     "recipe": [
+      "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+     ],
+     "replay": 1,
+     "schedule_identity_v2": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+     "selection_id": "selection-714fe3a55c4a48b7b3bc5fc0d7c4ba82",
+     "verified_episodes": 3,
+     "violation_share": "3/3",
+     "violations": 3
+    },
+    "interventions": [
+     {
+      "change": "removes_violation",
+      "control_hash": "abe72c510a49fda18b013aac334cd0939c54919e7be71cb13abe0cb69712804f",
+      "counterexample_id": "counterexample-91c6cc40ab6a4fd699b8df5681f30a78",
+      "evidence_ids": [],
+      "hypothesis": "Handwritten review fixture: diagnosis.",
+      "intervention_id": "intervention-90d7b82315e5631afc3b8cb7",
+      "limitations": [
+       "Three paired observations test only the declared schedule change; no universal causal claim."
+      ],
+      "proposal_ref": "mechanic-88f93d6092c244dfa35244d61c516e9c",
+      "result": "SUPPORTED",
+      "schema_version": "faultlab/v1",
+      "treatment_hash": "f5b016a08fcdb16fdc90370ec2bf8457fb602ced1c5eee2ac893d00bae31e54b",
+      "trial_pairs": [
+       [
+        "episode-f30d82de12e742e48950f6f8da58db40",
+        "episode-d07f047fbb0648498cc329d5eefe768d"
+       ],
+       [
+        "episode-74d4501d18c04d82a051c01383091a38",
+        "episode-e2f8a41fd1114627ab52984052e148e8"
+       ],
+       [
+        "episode-7d609364737f40e995ad76b59b77f7f3",
+        "episode-74818f4505704d1692752b95de4d07b1"
+       ]
+      ]
+     }
+    ],
+    "matches_history_row": {
+     "basis": "faultlab-schedule-identity/v2-order-aware",
+     "development_case_id": "dev-3",
+     "row": 3
+    },
+    "reduction": {
+     "attempted_count": 3,
+     "attempts": [
+      {
+       "child_hash": "f5b016a08fcdb16fdc90370ec2bf8457fb602ced1c5eee2ac893d00bae31e54b",
+       "parent_hash": "d4f33441eb491fb6ca3a04aee528602a555e3f54d8b424dd0245122f58113206",
+       "reason": "TARGET_NOT_REPRODUCED",
+       "retained": false,
+       "transform": "remove_primitive:0",
+       "trial_ids": [
+        "episode-c583f0ca96104fbab7066da1cbe0db13",
+        "episode-9ee2786227044d6e9ea784547f86fcc4",
+        "episode-76ca548c312f4a02aa67f4c9c75d2184"
+       ]
+      },
+      {
+       "child_hash": "111c8524c9fbc61a245cb318b22c3c650d1355df1ae3dbc391e21d7810c08080",
+       "parent_hash": "d4f33441eb491fb6ca3a04aee528602a555e3f54d8b424dd0245122f58113206",
+       "reason": "TARGET_NOT_REPRODUCED",
+       "retained": false,
+       "transform": "lower_parameter:0:completion_delay_ticks:1",
+       "trial_ids": [
+        "episode-6a9b4ae8ee904ffeb8df9dc7125250c6",
+        "episode-53df7a52c6e74680b9ef2534467afe2b",
+        "episode-3f677713c38b4a59876f0b6c3a9b4823"
+       ]
+      },
+      {
+       "child_hash": "abe72c510a49fda18b013aac334cd0939c54919e7be71cb13abe0cb69712804f",
+       "parent_hash": "d4f33441eb491fb6ca3a04aee528602a555e3f54d8b424dd0245122f58113206",
+       "reason": "SAME_INVARIANT_THREE_OF_THREE",
+       "retained": true,
+       "transform": "lower_parameter:0:completion_delay_ticks:2",
+       "trial_ids": [
+        "episode-548797f26b7645fb95fdebafdefa80bb",
+        "episode-e203bd53d6df44779d66373a097ea840",
+        "episode-cfb9ba9dae6a4f038bb82c88a43cd3c8"
+       ]
+      }
+     ],
+     "counterexample_id": "counterexample-91c6cc40ab6a4fd699b8df5681f30a78",
+     "neighborhood_exhausted": true,
+     "original_recipe_hash": "d4f33441eb491fb6ca3a04aee528602a555e3f54d8b424dd0245122f58113206",
+     "reducer_hash": "c775f9cc430f3371f1e6c40dfff471943aba9dab31a96a406b96a36802dfd4d8",
+     "reduction_order": [
+      "remove_primitive",
+      "lower_occurrence",
+      "lower_kind_parameter"
+     ],
+     "retained_recipe_hash": "abe72c510a49fda18b013aac334cd0939c54919e7be71cb13abe0cb69712804f",
+     "schema_version": "faultlab/v1",
+     "status": "LOCALLY_MINIMAL",
+     "stopping_reason": "FINITE_NEIGHBORHOOD_EXHAUSTED",
+     "target_violation_count": 3,
+     "valid_count": 3
+    },
+    "retained_recipe": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 103
+    },
+    "source_recipe": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 3,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 103
+    }
+   },
+   {
+    "challenges": [],
+    "counterexample": {
+     "agent_registration_id": "smolagents-1.26.0-adapter-v2-6cdc7992d1fcad23",
+     "attempted_count": 3,
+     "campaign_id": "campaign-99b2c27084b341f49813837e34d4af7c",
+     "configuration_hash": "6cdc7992d1fcad233e3c0d6f3f19dc08f1fd600c827b832f15f98fd69a214b24",
+     "counterexample_id": "counterexample-1e94b6b53d4b49c6a77d91104f0965db",
+     "created_at": "2026-09-30T05:58:20.976100Z",
+     "report_ref": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+     "reproduced": true,
+     "reproduction_trial_ids": [
+      "episode-4f7ea0cf33a74238b89a962369b3e8fc",
+      "episode-bdc811c26cbf409fad3f2bfd141d1953",
+      "episode-155b2d36456c4287a52923d90cd5e9b3"
+     ],
+     "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+     "schema_version": "faultlab/v1",
+     "source_episode_id": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+     "target_invariant": "C3",
+     "target_violation_count": 3,
+     "valid_count": 3,
+     "verdict_ref": "verdict-8ad1f4db04db487997300288e9daf27f"
+    },
+    "diagnostics": [
+     {
+      "authority_paths": [
+       "original_upgrade_write",
+       "identical_upgrade_replay",
+       "upgrade_status",
+       "order_projection",
+       "prior_delivered_receipts"
+      ],
+      "checker_hash": "5b83fbc84c20a7bd6db236f370093e5adc09c3c5c35e230fca2c07c8c90d45d9",
+      "counterexample_id": "counterexample-1e94b6b53d4b49c6a77d91104f0965db",
+      "diagnostic_id": "diagnostic-e95a0f5f29d444ecb4e676a50872a5c3",
+      "diagnostic_profile_id": null,
+      "equivalence_refs": [],
+      "evidence_ids": [],
+      "explanation": "Fresh reproduction and the declared controlled intervention support a bounded policy hypothesis.",
+      "intervention_ids": [
+       "intervention-3f63db9f12ed1944fdc1a702"
+      ],
+      "kind": "POLICY_GAP",
+      "limitations": [
+       "A supported hypothesis permits a candidate proposal, never promotion or a claim of improvement."
+      ],
+      "proposed_kind": "POLICY_GAP",
+      "protocol_hash": "bfefe69bd6a91e44d24c2ad83d3b42e280df722f1662c84d658826ce38f72287",
+      "reproduction_ids": [
+       "episode-4f7ea0cf33a74238b89a962369b3e8fc",
+       "episode-bdc811c26cbf409fad3f2bfd141d1953",
+       "episode-155b2d36456c4287a52923d90cd5e9b3"
+      ],
+      "required_behavior": "Preserve original operation identities and require delivered matching receipts for success.",
+      "schema_version": "faultlab/v1",
+      "tested_scope": "Three fresh trials of the fixed development recipe and declared paired schedule intervention."
+     }
+    ],
+    "history_replay": {
+     "basis": "faultlab-schedule-identity/v2-order-aware",
+     "development_case_id": "dev-5",
+     "episode_id": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+     "every_fault_fired": 3,
+     "explorer_request": false,
+     "failed_checks": {
+      "C3": 3
+     },
+     "history_row": 5,
+     "label": "history replay",
+     "of": 2,
+     "protocol": "faultlab-discovery/v4-history-replay",
+     "recipe": [
+      "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+     ],
+     "replay": 2,
+     "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+     "selection_id": "selection-11957b5750534f9f89d95cbedfaba6f2",
+     "verified_episodes": 3,
+     "violation_share": "3/3",
+     "violations": 3
+    },
+    "interventions": [
+     {
+      "change": "removes_violation",
+      "control_hash": "193add68db726edf37595a5436f20e9a47a0ca010020df2783f963925fbd452d",
+      "counterexample_id": "counterexample-1e94b6b53d4b49c6a77d91104f0965db",
+      "evidence_ids": [],
+      "hypothesis": "Handwritten review fixture: diagnosis.",
+      "intervention_id": "intervention-3f63db9f12ed1944fdc1a702",
+      "limitations": [
+       "Three paired observations test only the declared schedule change; no universal causal claim."
+      ],
+      "proposal_ref": "mechanic-187343505e944b4ab8f6cb49ed89de1e",
+      "result": "SUPPORTED",
+      "schema_version": "faultlab/v1",
+      "treatment_hash": "8c8a40566d0bac05cbbc4ab0ef1c09fda57cec8c68271ad30bfaebcb334fdeec",
+      "trial_pairs": [
+       [
+        "episode-0580ab76f7a74e1d8349373ca90649a8",
+        "episode-f2370fac3ca64a138e1f71c1ac15dd32"
+       ],
+       [
+        "episode-4db2dbd90abb4ee7b5d7612bf89fc332",
+        "episode-e4293beb05724828bc84029444568f23"
+       ],
+       [
+        "episode-6f0393d4b9d14c159913ba9414c6e9e3",
+        "episode-f7660989702244669dd00bc85700f63c"
+       ]
+      ]
+     }
+    ],
+    "matches_history_row": {
+     "basis": "faultlab-schedule-identity/v2-order-aware",
+     "development_case_id": "dev-5",
+     "row": 5
+    },
+    "reduction": {
+     "attempted_count": 3,
+     "attempts": [
+      {
+       "child_hash": "8c8a40566d0bac05cbbc4ab0ef1c09fda57cec8c68271ad30bfaebcb334fdeec",
+       "parent_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+       "reason": "TARGET_NOT_REPRODUCED",
+       "retained": false,
+       "transform": "remove_primitive:0",
+       "trial_ids": [
+        "episode-9b6498c363164b27ad6ec7f5376253a3",
+        "episode-c3bba19345f74168a0a01add0af19e47",
+        "episode-71b714f86ae743f095d978b6496c9fa5"
+       ]
+      },
+      {
+       "child_hash": "193add68db726edf37595a5436f20e9a47a0ca010020df2783f963925fbd452d",
+       "parent_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+       "reason": "SAME_INVARIANT_THREE_OF_THREE",
+       "retained": true,
+       "transform": "lower_parameter:0:completion_delay_ticks:1",
+       "trial_ids": [
+        "episode-6b52253dd1dd47a6a5bb8b022ad5e484",
+        "episode-840f4513072043958d8eae16bb0b9403",
+        "episode-cb662384fbe34a43b246e2cf4990af59"
+       ]
+      }
+     ],
+     "counterexample_id": "counterexample-1e94b6b53d4b49c6a77d91104f0965db",
+     "neighborhood_exhausted": true,
+     "original_recipe_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+     "reducer_hash": "c775f9cc430f3371f1e6c40dfff471943aba9dab31a96a406b96a36802dfd4d8",
+     "reduction_order": [
+      "remove_primitive",
+      "lower_occurrence",
+      "lower_kind_parameter"
+     ],
+     "retained_recipe_hash": "193add68db726edf37595a5436f20e9a47a0ca010020df2783f963925fbd452d",
+     "schema_version": "faultlab/v1",
+     "status": "LOCALLY_MINIMAL",
+     "stopping_reason": "FINITE_NEIGHBORHOOD_EXHAUSTED",
+     "target_violation_count": 3,
+     "valid_count": 3
+    },
+    "retained_recipe": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 1,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    },
+    "source_recipe": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    }
+   }
+  ],
+  "evidence": [
+   {
+    "child_call_ids": [
+     "0f08371c-c8ff-44bf-8509-faceccda53a5",
+     "6de63e29-d8e6-4729-934b-47f1425d4a34",
+     "47b42cdc-2912-46bb-9f39-4f782cf2c9c4"
+    ],
+    "episode_id": "episode-13d728219f684341a473d80f4ebb4d3a",
+    "root_call_id": "e377f24c-a3ec-4327-8b8c-b0e0704de962",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/e377f24c-a3ec-4327-8b8c-b0e0704de962",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "50477bfe-73b5-46df-819b-c7f27d5eaca8",
+     "a6bdfc4f-36d6-4433-bb41-abd9f14aa5d1",
+     "48e14af0-b5e7-4324-911e-f6c998183302"
+    ],
+    "episode_id": "episode-64d84588f19848d3a52a629c7a77c478",
+    "root_call_id": "3374b72c-f786-4bbf-be0a-ea4e76d9d2f8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/3374b72c-f786-4bbf-be0a-ea4e76d9d2f8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "f853cc1b-3b98-4f52-9d54-49f201a37ed6",
+     "bcd4471d-45c1-4145-86ef-4ab3a1cd2b75",
+     "f2fcf91d-35c1-43e7-a974-9721ffa108a5"
+    ],
+    "episode_id": "episode-9bf4dfddbf464853be240ee19f1a2f83",
+    "root_call_id": "b25afebc-43e6-4d75-892b-646ed3a1b7d9",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/b25afebc-43e6-4d75-892b-646ed3a1b7d9",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "fccadd15-16a9-4ab7-a035-87771d198262",
+     "904704df-eb32-426d-a8fe-29ee00af6b05",
+     "fa36db32-418e-40af-a6da-d88306cf46ff"
+    ],
+    "episode_id": "episode-85613f65381840bbaeeeb60a90e96809",
+    "root_call_id": "056b1cd8-39fd-4969-b501-2160d77af999",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/056b1cd8-39fd-4969-b501-2160d77af999",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "bb4a470f-70f7-488e-a1b9-c5b7f0cb8dff",
+     "4cd0ec38-9f62-4212-b822-f3bd95eb37aa",
+     "3660dd1f-e419-4832-be20-26525eb19dd0"
+    ],
+    "episode_id": "episode-9bdaadc254b349dc9734477319c04b46",
+    "root_call_id": "589066ed-7e3c-4008-b3be-1df0c162d9c8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/589066ed-7e3c-4008-b3be-1df0c162d9c8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "9a1b4e9b-862c-44b8-a064-630b02d4b797",
+     "3434b7b8-5485-4e08-9b55-60b813ee4617",
+     "187ee515-17dd-49f6-93eb-10ec0fbcacbb"
+    ],
+    "episode_id": "episode-826de252fe564c35836e920234cf710e",
+    "root_call_id": "d506c704-764d-4daa-acaa-8f3c7bdedc11",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/d506c704-764d-4daa-acaa-8f3c7bdedc11",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "2f47a969-6a3b-4339-a09f-addbbb753de1",
+     "6fe62ccf-6932-49b8-a92c-c0f1a95e5680",
+     "d27cf60e-7bdd-492e-92d9-f068cfdb9da2"
+    ],
+    "episode_id": "episode-e1e7f50347724e66bdeb53014254c34a",
+    "root_call_id": "26ca6eac-a727-469d-a36a-a5a32905ae8f",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/26ca6eac-a727-469d-a36a-a5a32905ae8f",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "e358d135-81ec-4955-a82e-f20b19ba923b",
+     "99492dc7-f30f-4fa8-bf46-8e2fc9ce53d9",
+     "74deef21-9851-43af-9dfe-5614563fef4d"
+    ],
+    "episode_id": "episode-c583f0ca96104fbab7066da1cbe0db13",
+    "root_call_id": "e17c8353-2949-444f-84cd-10b8639428cf",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/e17c8353-2949-444f-84cd-10b8639428cf",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "a05df57e-87c2-466e-be27-83ba12e01b0c",
+     "312ee2fa-89a2-4ef5-82cc-b50f69b280be",
+     "d842bc42-48a0-450d-a9a9-31c2458de7d4"
+    ],
+    "episode_id": "episode-9ee2786227044d6e9ea784547f86fcc4",
+    "root_call_id": "c2279305-8c7d-4fad-9072-00b178dfb48f",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/c2279305-8c7d-4fad-9072-00b178dfb48f",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "98c94994-5bed-4ed1-9a3a-c09a4685dc9b",
+     "c23a4b17-2c56-4c66-bc62-a38b01dc16f9",
+     "36e38d0c-5a4b-4958-962a-b21ff8c7f5a2"
+    ],
+    "episode_id": "episode-76ca548c312f4a02aa67f4c9c75d2184",
+    "root_call_id": "06d2487a-2318-4e3d-ace6-5b40ed77c0b3",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/06d2487a-2318-4e3d-ace6-5b40ed77c0b3",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "029283ba-03cc-4346-a479-4e70fbec5ea6",
+     "7989169f-b42c-4574-87db-4586a040aa3a",
+     "24e45bb9-4c2d-40b6-8a86-568554de9c31"
+    ],
+    "episode_id": "episode-6a9b4ae8ee904ffeb8df9dc7125250c6",
+    "root_call_id": "87f2a6af-dcd1-4196-8eb2-7ee438b7a5d8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/87f2a6af-dcd1-4196-8eb2-7ee438b7a5d8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "6e82124f-06a3-4c43-ae06-fa5d4a5dec43",
+     "88b8c732-b505-4205-b908-bbdbceb95ba6",
+     "744b2326-74a6-4864-aa36-66fbce041cda"
+    ],
+    "episode_id": "episode-53df7a52c6e74680b9ef2534467afe2b",
+    "root_call_id": "b1044a08-1eec-40af-a694-ed860da9d065",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/b1044a08-1eec-40af-a694-ed860da9d065",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "f1653928-fd12-4c1e-9e2d-bf070039d141",
+     "7fcffec6-83f3-4abd-bb27-e40e64c67251",
+     "4d770d93-20e0-4b56-9413-3937604e48b7"
+    ],
+    "episode_id": "episode-3f677713c38b4a59876f0b6c3a9b4823",
+    "root_call_id": "8ee28e3f-5b79-4751-8c6f-6f1a0e5a1144",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/8ee28e3f-5b79-4751-8c6f-6f1a0e5a1144",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "7a8c8a33-eb4c-4c8f-932e-289cf6d8dd89",
+     "256d4f74-35ff-4469-b27e-ccc5384aca86",
+     "9588c50b-99d0-42d0-a6e9-4e1f16032b6e"
+    ],
+    "episode_id": "episode-548797f26b7645fb95fdebafdefa80bb",
+    "root_call_id": "8970069f-135c-4661-a2b1-ad1abcd9cc07",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/8970069f-135c-4661-a2b1-ad1abcd9cc07",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "5294a3b3-9b96-4a09-b600-1c1458c86acf",
+     "39a03834-f6e0-4443-9377-29735c85f650",
+     "6bbd56cf-bd84-415b-88bd-272dc2e65d1c"
+    ],
+    "episode_id": "episode-e203bd53d6df44779d66373a097ea840",
+    "root_call_id": "7cf29f83-9951-4faf-b54f-6b5aa443b207",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/7cf29f83-9951-4faf-b54f-6b5aa443b207",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "bb95879d-df41-4946-b18c-11b933f610f1",
+     "02d60b50-c14a-48af-9d43-1646efab9dfe",
+     "6ccc2639-2b95-4d42-a5d8-07d3e6c011e9"
+    ],
+    "episode_id": "episode-cfb9ba9dae6a4f038bb82c88a43cd3c8",
+    "root_call_id": "fd768cd1-06d6-4643-86e7-7774823f5689",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/fd768cd1-06d6-4643-86e7-7774823f5689",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "d566dca2-337d-4cbc-b344-0d88a01f0e6a",
+     "8f09e9be-b90e-40ca-bc7e-cdd4dbc59dd6",
+     "eb11b184-851c-43fd-bfc5-4f059228c871"
+    ],
+    "episode_id": "episode-f30d82de12e742e48950f6f8da58db40",
+    "root_call_id": "33cb47b6-b6f9-4e0d-9c21-b59f82677695",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/33cb47b6-b6f9-4e0d-9c21-b59f82677695",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "e4cf2091-7c34-4f92-9f1e-e61aea4efe52",
+     "a6521f6a-e188-4457-9f74-6d21653ff0f9",
+     "05198230-a3db-4791-a414-048ba52b9695"
+    ],
+    "episode_id": "episode-d07f047fbb0648498cc329d5eefe768d",
+    "root_call_id": "c22463eb-5c42-41a6-a6f9-2e6e49d68284",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/c22463eb-5c42-41a6-a6f9-2e6e49d68284",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "b73c599d-a79e-43d5-b467-b63483c8c970",
+     "5bd079b2-7a94-4178-9668-00c2442ba9e3",
+     "c163a542-93ef-460f-87f4-b29beb1f0c45"
+    ],
+    "episode_id": "episode-e2f8a41fd1114627ab52984052e148e8",
+    "root_call_id": "36fc5b60-1a9d-4072-a23c-5dd0ea01848d",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/36fc5b60-1a9d-4072-a23c-5dd0ea01848d",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "4750b809-32eb-4a02-ad14-95b296580573",
+     "d43834ff-d726-468a-be50-484c28827abb",
+     "ae3edf8b-4d74-4f50-9935-b3daa6672923"
+    ],
+    "episode_id": "episode-74d4501d18c04d82a051c01383091a38",
+    "root_call_id": "decef5f1-9ab5-4495-a8be-e616142b3830",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/decef5f1-9ab5-4495-a8be-e616142b3830",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "ed882e9c-8a97-47b1-be43-9259a4484680",
+     "ac27dd2f-bda3-45f6-8eeb-fd2b2554f412",
+     "b8191610-838c-49c8-83c4-0a87c14f3fb0"
+    ],
+    "episode_id": "episode-7d609364737f40e995ad76b59b77f7f3",
+    "root_call_id": "50389d05-6d83-4a99-9aae-3fb52ac31e83",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/50389d05-6d83-4a99-9aae-3fb52ac31e83",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "95d4b288-800a-48c0-899a-25b270a2acbc",
+     "501a2b8c-f85c-4164-87ce-170c14ebcca0",
+     "24e80ff2-a30b-4307-ae64-8b968fe79b2a"
+    ],
+    "episode_id": "episode-74818f4505704d1692752b95de4d07b1",
+    "root_call_id": "302a7b0b-5e61-4e93-930a-190d355081f9",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/302a7b0b-5e61-4e93-930a-190d355081f9",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "8fe88733-a1d3-4d40-b191-2dbd2d3e690d",
+     "5d27c729-c7cd-424f-9483-273586801a78",
+     "29af4cbe-836a-4631-b69d-bf366bcbc99d"
+    ],
+    "episode_id": "episode-a5d04c454f3f4e018a8aba55d2819da7",
+    "root_call_id": "4c5be9e6-3db2-4978-a15c-eb150d2ba4b8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/4c5be9e6-3db2-4978-a15c-eb150d2ba4b8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "4928c787-32e1-4346-bce5-fa48881af01b",
+     "14e1a2cf-63d3-41f3-b60e-bd235aab7ea5",
+     "9da35af0-7d7a-4802-be45-1deef21cb969",
+     "f375b3a4-2445-40b6-8a5d-ccd7b79ac7f0"
+    ],
+    "episode_id": "episode-f8cc3bf00b5c4044b894fedc126e7184",
+    "root_call_id": "519752db-42e7-45f0-9318-7b2631f07997",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/519752db-42e7-45f0-9318-7b2631f07997",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "e9882737-4e97-43bb-a90d-56b543031944",
+     "6d63437b-bc7f-4b22-a7c3-b201c9c518a0",
+     "b95c835b-a79f-4a8b-aef8-70ad15341784",
+     "7606484a-4d94-476a-97e8-26fe8651587d"
+    ],
+    "episode_id": "episode-25ff4e942cf349c986742628ecac78a2",
+    "root_call_id": "91fdd52a-6f1c-454c-b921-ac69ae413174",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/91fdd52a-6f1c-454c-b921-ac69ae413174",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "3f08f9b9-01f3-4d51-905a-39ef5268f9fb",
+     "19c18273-4b65-4fde-950d-26d573612b3b",
+     "f123791e-fb97-42a9-a7ed-857c53a6e64f"
+    ],
+    "episode_id": "episode-08d5d853a7644f929fafbd2bb9917e07",
+    "root_call_id": "abfb551c-e806-446a-a8a4-a1d56ada5997",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/abfb551c-e806-446a-a8a4-a1d56ada5997",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "80f89bfb-6535-46b5-b4ae-82a9fd64077a",
+     "eaebe1e4-5a98-440c-a0d8-f204d51eb5d1",
+     "7aa29dd4-a5cc-45a1-9898-28a81a5e400f"
+    ],
+    "episode_id": "episode-b52e6893cafd40639edb47073c5de34a",
+    "root_call_id": "64f3e457-1c9a-44bb-9d89-9b35db0c724c",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/64f3e457-1c9a-44bb-9d89-9b35db0c724c",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "d2f12a7e-0f69-465a-ae42-7feeb3999d00",
+     "52071fac-fab4-4c12-b44d-a6faacfc0d68",
+     "2b13769b-26c0-4285-a653-45e58b6a0948",
+     "99be8c3a-d19a-4a0d-9323-339780f53a3e"
+    ],
+    "episode_id": "episode-57431eac93ee4ee486724cb0472aa3e7",
+    "root_call_id": "93968e95-27fe-47a3-90e5-7de60537ab58",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/93968e95-27fe-47a3-90e5-7de60537ab58",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "8f09c12f-12b4-47d2-92e8-17618efc87d6",
+     "45a808df-c0c9-41c6-ad33-e271af65fd04",
+     "529e065f-1b4d-4479-8ae8-f2906dc64f5a"
+    ],
+    "episode_id": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+    "root_call_id": "27f821fe-4681-4457-99e6-baf34fc29860",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/27f821fe-4681-4457-99e6-baf34fc29860",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "17712909-0039-4b83-80ee-63c7de1a86d1",
+     "7a693f9e-4638-48b5-a002-b2090d509e6a",
+     "b2a0e6df-1c23-4cf1-8a00-785abec34b7f"
+    ],
+    "episode_id": "episode-4f7ea0cf33a74238b89a962369b3e8fc",
+    "root_call_id": "e8e59797-861e-49f2-ab22-7323924eeb08",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/e8e59797-861e-49f2-ab22-7323924eeb08",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "fc64cfb2-f092-4593-974c-df55701932c0",
+     "eea856a4-7daa-4ae5-aaec-f7e3fce1c879",
+     "3fdb9456-291e-4ae9-9dc6-7dc1063473b4"
+    ],
+    "episode_id": "episode-bdc811c26cbf409fad3f2bfd141d1953",
+    "root_call_id": "86fae4b1-c7c1-43c2-9c9b-105392d01f6c",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/86fae4b1-c7c1-43c2-9c9b-105392d01f6c",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "3a9b6d08-1589-449f-9fb7-d4f42f3cf3e4",
+     "ac83ea83-084c-45d6-ace4-2abba349f59d",
+     "65620bbc-c3d5-45e8-8edb-6533974357d2"
+    ],
+    "episode_id": "episode-155b2d36456c4287a52923d90cd5e9b3",
+    "root_call_id": "ee239168-5c0f-4c01-9e5f-8a4ce24633aa",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/ee239168-5c0f-4c01-9e5f-8a4ce24633aa",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "fe36cbac-ea91-41f0-804f-2ba4809bb5a5",
+     "340505b3-693e-45a4-933b-fe6a0f121536",
+     "f3534634-09e8-4879-9215-8bd835e785aa"
+    ],
+    "episode_id": "episode-8c7a751d4c584d25bc59defa4d67a4ed",
+    "root_call_id": "a10fdd83-09cd-4da6-9548-3e8c8ea44cc6",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/a10fdd83-09cd-4da6-9548-3e8c8ea44cc6",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "0e1439af-bbeb-4c95-8f36-0d1acaa4aca5",
+     "fd254b50-fff9-4693-a4b3-6e0bd0dc202e",
+     "efd3b746-7525-43f0-abaf-428bee564005"
+    ],
+    "episode_id": "episode-1cf1c74e4e65403dbbe6a40285f6899d",
+    "root_call_id": "0321d00c-3b2b-4e32-a2b6-b0d069341aff",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/0321d00c-3b2b-4e32-a2b6-b0d069341aff",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "85c1a0ab-92f9-41ac-b338-bbe41d262d46",
+     "131ca94e-b118-4dec-bc42-ead277d8130d",
+     "49cbbb20-4592-4a64-bfa2-dda85fbbe35f"
+    ],
+    "episode_id": "episode-aeb1f0e239e84452951c678a241f0357",
+    "root_call_id": "567bdc51-8490-4672-86d7-ed5a396fcb2e",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/567bdc51-8490-4672-86d7-ed5a396fcb2e",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "71064e6e-539b-4673-bb35-9d1c81b08246",
+     "11a3c3b1-cefd-4fb4-a529-79bf9b21716b",
+     "8ef94fc7-01f3-46d6-a636-573d384b180e"
+    ],
+    "episode_id": "episode-9b6498c363164b27ad6ec7f5376253a3",
+    "root_call_id": "e96b9fe7-1efe-4124-8297-1e2030a11ab8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/e96b9fe7-1efe-4124-8297-1e2030a11ab8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "3d4cbcbb-3902-4ad0-a69e-42c5eca34f3d",
+     "a654e36a-ee07-47e2-8bea-ddf577d34c25",
+     "9180f834-f22e-463e-b326-cf88909f7b2e"
+    ],
+    "episode_id": "episode-c3bba19345f74168a0a01add0af19e47",
+    "root_call_id": "464a06e4-5701-4646-aa2b-79419b55a65e",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/464a06e4-5701-4646-aa2b-79419b55a65e",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "11ea8cbe-b2e3-47f8-be6d-c7a3219ef409",
+     "85290ebd-8359-48dc-8287-36d15a58f114",
+     "50c91846-e4ac-4761-a6fd-e62dc9337c27"
+    ],
+    "episode_id": "episode-71b714f86ae743f095d978b6496c9fa5",
+    "root_call_id": "98d0b35b-6f88-4bbe-ab65-e0b0b45b4581",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/98d0b35b-6f88-4bbe-ab65-e0b0b45b4581",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "4cc94f99-f887-4ff1-b7ab-8e1b5c54cc6a",
+     "9f8b3dce-951e-41bf-81f7-170ad7e42a6f",
+     "71790578-754e-4e0c-8ba9-a1d0ec2b90d0"
+    ],
+    "episode_id": "episode-6b52253dd1dd47a6a5bb8b022ad5e484",
+    "root_call_id": "3ea771b9-4bbf-461d-9b31-89d94a5d6208",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/3ea771b9-4bbf-461d-9b31-89d94a5d6208",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "41a81e4c-7971-40f1-8f82-694807ec4146",
+     "1998fcc9-8df3-4213-b9e1-4bedea4258fa",
+     "de3362ff-a83f-496a-a622-5fa5039b2f3b"
+    ],
+    "episode_id": "episode-840f4513072043958d8eae16bb0b9403",
+    "root_call_id": "090699a7-2878-4810-abc3-757e6afe03a7",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/090699a7-2878-4810-abc3-757e6afe03a7",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "7e13c1e5-ef9e-44b1-a49c-77177186a5dd",
+     "6e47b673-b0b0-439d-972d-2af09d0f68b3",
+     "7c5f891f-9917-4de2-99a7-5c2299572a67"
+    ],
+    "episode_id": "episode-cb662384fbe34a43b246e2cf4990af59",
+    "root_call_id": "a83b0fe2-f607-4100-abba-db6650735c70",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/a83b0fe2-f607-4100-abba-db6650735c70",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "de866bec-6a50-4b80-b1fd-56d167f6bd14",
+     "085d4970-1ea6-4eb4-82a2-152859459097",
+     "c596241b-55d6-4820-8ac4-8f89e9be1527"
+    ],
+    "episode_id": "episode-0580ab76f7a74e1d8349373ca90649a8",
+    "root_call_id": "769351e0-500d-47bf-8ad3-da8d106b9b3a",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/769351e0-500d-47bf-8ad3-da8d106b9b3a",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "dad7fb13-610f-4b01-8b81-e278bb736319",
+     "e61d56d6-3f41-42f2-b85a-a1c45dd0271b",
+     "ceaa4658-9784-4845-838b-50f4f5c781bb"
+    ],
+    "episode_id": "episode-f2370fac3ca64a138e1f71c1ac15dd32",
+    "root_call_id": "48e2c43b-b93c-4fc7-b146-32649240a1f8",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/48e2c43b-b93c-4fc7-b146-32649240a1f8",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "53f25ad0-254c-4fa3-8e95-3131446d62f1",
+     "41a0bd77-9d11-4b1c-a931-1aa6970a8a32",
+     "9e213e35-bf16-4515-b6b3-91edefb3a534"
+    ],
+    "episode_id": "episode-e4293beb05724828bc84029444568f23",
+    "root_call_id": "5d6c5420-13d6-49df-a1ec-1556d21ff9bb",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/5d6c5420-13d6-49df-a1ec-1556d21ff9bb",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "4d12cfc6-1825-4b93-b35e-b2baba024ae1",
+     "5001a9e4-2cd5-4f31-a723-b14cc58ecdd9",
+     "a6d7ce80-91cc-4475-ad2e-5420b649dd50"
+    ],
+    "episode_id": "episode-4db2dbd90abb4ee7b5d7612bf89fc332",
+    "root_call_id": "a206210a-129b-4d00-8de2-964d6b71d3e4",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/a206210a-129b-4d00-8de2-964d6b71d3e4",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "7bd5d5b6-05b0-42b3-8a49-0666c05469a9",
+     "c3b987a9-5f9e-4a07-a3ba-3216f7d92da9",
+     "62d6f151-7831-4d45-ba52-724d1cedc54d"
+    ],
+    "episode_id": "episode-6f0393d4b9d14c159913ba9414c6e9e3",
+    "root_call_id": "17e057eb-32a0-47d7-bc94-d7528784a655",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/17e057eb-32a0-47d7-bc94-d7528784a655",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "24101826-d8bf-4328-8fdd-261825b191ad",
+     "fe68d210-c9f3-471c-b3a1-6912bd2c7dee",
+     "cc477dab-f5dc-42bb-be9a-53e071546ad7"
+    ],
+    "episode_id": "episode-f7660989702244669dd00bc85700f63c",
+    "root_call_id": "a63c17a3-a624-412a-a47c-06ed696542f2",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/a63c17a3-a624-412a-a47c-06ed696542f2",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "626d904c-dbbf-43e4-bcde-adf82ae47e35",
+     "bdf766e1-3428-42d6-b725-669b488e8fe0",
+     "56ef4d2f-be2b-40c5-b1c5-88d343deb963"
+    ],
+    "episode_id": "episode-d79a36ec17574de488736d20bc5c8800",
+    "root_call_id": "3fd0f598-4a01-4155-b089-0bb635c292a5",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/3fd0f598-4a01-4155-b089-0bb635c292a5",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "af1957af-a9b2-497e-b94c-70ed1e3da816",
+     "4857c3e4-88f2-476c-94d8-df7349575eab",
+     "a2da3bdc-432c-47a2-8af2-3ee521983346",
+     "4dd105c5-c2a2-46de-bf0a-ebbd020c71fc"
+    ],
+    "episode_id": "episode-7a909fcd9c7d43ce9fdabd946b743fd1",
+    "root_call_id": "b9acfef4-aa70-432c-b0ac-cd7b33abe58d",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/b9acfef4-aa70-432c-b0ac-cd7b33abe58d",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "7a53b2a7-5cd8-4355-9b5f-77e87843643c",
+     "d0e3786a-7e5f-4b09-b600-6712ea76b536",
+     "32db611d-eddc-404f-9340-c7923ef35671",
+     "0ff029d6-0133-445e-99c7-f815669f9a31"
+    ],
+    "episode_id": "episode-185948e6a9a24f678ff78dae4b5f9975",
+    "root_call_id": "8f0cc7e9-f430-42f6-961a-f3ff12801483",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/8f0cc7e9-f430-42f6-961a-f3ff12801483",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "b38f3ee3-5a26-4197-a376-862aefb90b97",
+     "490d9904-acfc-494e-9959-84efd7dd640e",
+     "2af9c65f-15a5-46f8-9a43-25013aaf3021"
+    ],
+    "episode_id": "episode-bd78f3fc2a7140bb974d6137352e54d5",
+    "root_call_id": "10d5053a-823e-482a-b6a5-8c58e8d6ea99",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/10d5053a-823e-482a-b6a5-8c58e8d6ea99",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "9b28bad4-cd51-4835-af1c-5c2a949c7f24",
+     "d3651846-70a0-4f8e-bd20-17c540f1d4f5",
+     "9315ea17-0523-42a5-bda0-8a1df6fada90"
+    ],
+    "episode_id": "episode-0a39d1157ef6481d93e265a88a7f6af2",
+    "root_call_id": "481dd1ad-4999-4ecc-994f-ebc0ebd2c7c1",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/481dd1ad-4999-4ecc-994f-ebc0ebd2c7c1",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   },
+   {
+    "child_call_ids": [
+     "9b07b7d3-dc51-496c-b4b8-67fd1f0a0101",
+     "9b2292bb-cb54-4bee-ad62-04058ad1aeaf",
+     "a8af31de-944f-46fd-aab6-6cc85fd4fced",
+     "8d81667a-5517-4086-aae6-1e0302eb1909"
+    ],
+    "episode_id": "episode-7a11b22b778349b7b452b6562162e6e0",
+    "root_call_id": "791f1851-1aaf-4ca8-b74b-b36ed93b30e2",
+    "root_call_url": "https://wandb.ai/entity/project/weave/calls/791f1851-1aaf-4ca8-b74b-b36ed93b30e2",
+    "source": "weave_verified",
+    "source_project": "entity/project"
+   }
+  ],
+  "ingestions": [
+   {
+    "episode_id": "episode-13d728219f684341a473d80f4ebb4d3a",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-64d84588f19848d3a52a629c7a77c478",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-9bf4dfddbf464853be240ee19f1a2f83",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-85613f65381840bbaeeeb60a90e96809",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-9bdaadc254b349dc9734477319c04b46",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-826de252fe564c35836e920234cf710e",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-e1e7f50347724e66bdeb53014254c34a",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-c583f0ca96104fbab7066da1cbe0db13",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-9ee2786227044d6e9ea784547f86fcc4",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-76ca548c312f4a02aa67f4c9c75d2184",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-6a9b4ae8ee904ffeb8df9dc7125250c6",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-53df7a52c6e74680b9ef2534467afe2b",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-3f677713c38b4a59876f0b6c3a9b4823",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-548797f26b7645fb95fdebafdefa80bb",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-e203bd53d6df44779d66373a097ea840",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-cfb9ba9dae6a4f038bb82c88a43cd3c8",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-f30d82de12e742e48950f6f8da58db40",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-d07f047fbb0648498cc329d5eefe768d",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-e2f8a41fd1114627ab52984052e148e8",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-74d4501d18c04d82a051c01383091a38",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-7d609364737f40e995ad76b59b77f7f3",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-74818f4505704d1692752b95de4d07b1",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-a5d04c454f3f4e018a8aba55d2819da7",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-f8cc3bf00b5c4044b894fedc126e7184",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-25ff4e942cf349c986742628ecac78a2",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-08d5d853a7644f929fafbd2bb9917e07",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-b52e6893cafd40639edb47073c5de34a",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-57431eac93ee4ee486724cb0472aa3e7",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-4f7ea0cf33a74238b89a962369b3e8fc",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-bdc811c26cbf409fad3f2bfd141d1953",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-155b2d36456c4287a52923d90cd5e9b3",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-8c7a751d4c584d25bc59defa4d67a4ed",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-1cf1c74e4e65403dbbe6a40285f6899d",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-aeb1f0e239e84452951c678a241f0357",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-9b6498c363164b27ad6ec7f5376253a3",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-c3bba19345f74168a0a01add0af19e47",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-71b714f86ae743f095d978b6496c9fa5",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-6b52253dd1dd47a6a5bb8b022ad5e484",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-840f4513072043958d8eae16bb0b9403",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-cb662384fbe34a43b246e2cf4990af59",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-0580ab76f7a74e1d8349373ca90649a8",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-f2370fac3ca64a138e1f71c1ac15dd32",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-e4293beb05724828bc84029444568f23",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-4db2dbd90abb4ee7b5d7612bf89fc332",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-6f0393d4b9d14c159913ba9414c6e9e3",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-f7660989702244669dd00bc85700f63c",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-d79a36ec17574de488736d20bc5c8800",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-7a909fcd9c7d43ce9fdabd946b743fd1",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-185948e6a9a24f678ff78dae4b5f9975",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-bd78f3fc2a7140bb974d6137352e54d5",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-0a39d1157ef6481d93e265a88a7f6af2",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   },
+   {
+    "episode_id": "episode-7a11b22b778349b7b452b6562162e6e0",
+    "error_code": null,
+    "execution_epoch": 0,
+    "state": "INGESTED",
+    "status": "weave_verified"
+   }
+  ],
+  "portability_ids": []
+ },
+ "m4_run": {
+  "attempts": [
+   {
+    "history_replay": 3,
+    "model_calls": 0,
+    "provenance": "history_replay",
+    "selection_index": 0,
+    "status": "SELECTED"
+   },
+   {
+    "history_replay": 5,
+    "model_calls": 0,
+    "provenance": "history_replay",
+    "selection_index": 1,
+    "status": "SELECTED"
+   }
+  ],
+  "candidate_proposals": 4,
+  "explorer_rows": 0,
+  "history_claim_rule": "Results of a discovery v4 campaign are history-informed. A source found in a history replay slot is a history replay of that row (discovery_history_replays); any other source whose recipe matches a history row re-tries recorded evidence the Explorer was shown. Report each as such, never as independent discovery, and name the store and the frozen summary hash.",
+  "replay_claim_rule": "A source found in a history replay slot re-ran a recipe from the frozen agent history, chosen by the plan's fixed replay rule and not by the Explorer. Report it as a history replay of that row (name the row, the store and the frozen summary hash), never as independent discovery or as an Explorer pick.",
+  "replay_slots": [
+   [
+    1,
+    3,
+    "dev-3"
+   ],
+   [
+    2,
+    5,
+    "dev-5"
+   ]
+  ],
+  "sources_found_by": [
+   [
+    "episode-13d728219f684341a473d80f4ebb4d3a",
+    3
+   ],
+   [
+    "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+    5
+   ]
+  ],
+  "state": "NO_CHANGE",
+  "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ },
+ "m4_search_attempts_raw": [
+  {
+   "campaign_id": "campaign-99b2c27084b341f49813837e34d4af7c",
+   "configuration_hash": "6cdc7992d1fcad233e3c0d6f3f19dc08f1fd600c827b832f15f98fd69a214b24",
+   "error": null,
+   "history_replay": {
+    "basis": "faultlab-schedule-identity/v2-order-aware",
+    "development_case_id": "dev-3",
+    "episode_id": "episode-13d728219f684341a473d80f4ebb4d3a",
+    "every_fault_fired": 3,
+    "explorer_request": false,
+    "failed_checks": {
+     "C3": 3
+    },
+    "history_row": 3,
+    "label": "history replay",
+    "of": 2,
+    "protocol": "faultlab-discovery/v4-history-replay",
+    "recipe": [
+     "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+    ],
+    "replay": 1,
+    "schedule_identity_v2": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+    "verified_episodes": 3,
+    "violation_share": "3/3",
+    "violations": 3
+   },
+   "matches_history_row": {
+    "basis": "faultlab-schedule-identity/v2-order-aware",
+    "development_case_id": "dev-3",
+    "row": 3
+   },
+   "output": {
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 3,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 103
+    },
+    "hypothesis": "History replay 1 of 2: re-runs agent history row 3 (dev-3), which violated in 3/3 verified episodes with every fault fired. Chosen by the plan's fixed replay rule, not by the Explorer; no learned selection claim."
+   },
+   "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+   "provenance": "history_replay",
+   "raw_response": "",
+   "search_decision": {
+    "history_replay": {
+     "development_case_id": "dev-3",
+     "history_row": 3,
+     "replay": 1
+    },
+    "prior_episode_refs": [],
+    "prior_selection_refs": [],
+    "reason": null,
+    "schedule_hash": "cc75ea5ef4b645c7f322b2f628b9c9c75868c04775098b25140f54e1f8c79fb1",
+    "status": "SELECTED"
+   },
+   "selected_output": {
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 3,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 103
+    },
+    "hypothesis": "History replay 1 of 2: re-runs agent history row 3 (dev-3), which violated in 3/3 verified episodes with every fault fired. Chosen by the plan's fixed replay rule, not by the Explorer; no learned selection claim."
+   },
+   "selection_index": 0,
+   "selection_ref": "selection-714fe3a55c4a48b7b3bc5fc0d7c4ba82",
+   "transport_retries": [],
+   "usage": {
+    "cost_dollars": 0.0,
+    "input_tokens": 0,
+    "model_calls": 0,
+    "output_tokens": 0
+   }
+  },
+  {
+   "campaign_id": "campaign-99b2c27084b341f49813837e34d4af7c",
+   "configuration_hash": "6cdc7992d1fcad233e3c0d6f3f19dc08f1fd600c827b832f15f98fd69a214b24",
+   "error": null,
+   "history_replay": {
+    "basis": "faultlab-schedule-identity/v2-order-aware",
+    "development_case_id": "dev-5",
+    "episode_id": "episode-aaf2b43300ac4d7299d26006a6ae4eb3",
+    "every_fault_fired": 3,
+    "explorer_request": false,
+    "failed_checks": {
+     "C3": 3
+    },
+    "history_row": 5,
+    "label": "history replay",
+    "of": 2,
+    "protocol": "faultlab-discovery/v4-history-replay",
+    "recipe": [
+     "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+    ],
+    "replay": 2,
+    "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+    "verified_episodes": 3,
+    "violation_share": "3/3",
+    "violations": 3
+   },
+   "matches_history_row": {
+    "basis": "faultlab-schedule-identity/v2-order-aware",
+    "development_case_id": "dev-5",
+    "row": 5
+   },
+   "output": {
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    },
+    "hypothesis": "History replay 2 of 2: re-runs agent history row 5 (dev-5), which violated in 3/3 verified episodes with every fault fired. Chosen by the plan's fixed replay rule, not by the Explorer; no learned selection claim."
+   },
+   "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+   "provenance": "history_replay",
+   "raw_response": "",
+   "search_decision": {
+    "history_replay": {
+     "development_case_id": "dev-5",
+     "history_row": 5,
+     "replay": 2
+    },
+    "prior_episode_refs": [],
+    "prior_selection_refs": [],
+    "reason": null,
+    "schedule_hash": "fcb8fe3403bd5fc673b1795929d050257dc761b0fad803a560a9ea61af53d6d5",
+    "status": "SELECTED"
+   },
+   "selected_output": {
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    },
+    "hypothesis": "History replay 2 of 2: re-runs agent history row 5 (dev-5), which violated in 3/3 verified episodes with every fault fired. Chosen by the plan's fixed replay rule, not by the Explorer; no learned selection claim."
+   },
+   "selection_index": 1,
+   "selection_ref": "selection-11957b5750534f9f89d95cbedfaba6f2",
+   "transport_retries": [],
+   "usage": {
+    "cost_dollars": 0.0,
+    "input_tokens": 0,
+    "model_calls": 0,
+    "output_tokens": 0
+   }
+  }
+ ],
+ "m4b": {
+  "campaign_id": "campaign-72808e41dce64ea3b105e7012957a548",
+  "composition": {
+   "baseline_studies": 1,
+   "baseline_study_episodes": 18,
+   "learn_campaigns": 0,
+   "learn_discovery_episodes": 0
+  },
+  "history_rows": [
+   {
+    "case": "dev-1",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 1,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-2",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 2,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-3",
+    "outcomes": {
+     "VIOLATION": 3
+    },
+    "row": 3,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-4",
+    "outcomes": {
+     "COMPLETED": 3
+    },
+    "row": 4,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-5",
+    "outcomes": {
+     "VIOLATION": 3
+    },
+    "row": 5,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   },
+   {
+    "case": "dev-6",
+    "outcomes": {
+     "SAFE_UNRESOLVED": 3
+    },
+    "row": 6,
+    "sources": [
+     "baseline_study"
+    ],
+    "verified": 3
+   }
+  ],
+  "replay_rows": [
+   [
+    1,
+    3,
+    "dev-3",
+    "3/3",
+    [
+     "baseline_study"
+    ]
+   ],
+   [
+    2,
+    5,
+    "dev-5",
+    "3/3",
+    [
+     "baseline_study"
+    ]
+   ]
+  ],
+  "summary_hash": "463a7d865877f9dff1b58dabed96b0a6c6817395a837730a06310db8b1f62335",
+  "verified_episodes": 18
+ },
+ "m4b_history_equals_m4_history_except_cutoff": true,
+ "registration_id": "smolagents-1.26.0-adapter-v2-6cdc7992d1fcad23",
+ "v3_same_history_as_m4b": true
+}

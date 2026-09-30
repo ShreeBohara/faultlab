@@ -1,0 +1,4 @@
+campaign state NO_CHANGE | replay row keys: ['campaign_id', 'configuration_hash', 'error', 'history_replay', 'matches_history_row', 'output', 'policy_hash', 'provenance', 'raw_response', 'search_decision', 'selected_output', 'selection_index', 'selection_ref', 'transport_retries', 'usage']
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+vitest exit 0 | network connections refused []

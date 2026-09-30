@@ -1,0 +1,5 @@
+Builder gate_freeze: working tree after the v4 edits vs before them (protected audit files dropped from FILES; checks.py hashed by gate_freeze only).
+CHANGED fingerprints/algorithm_hash: b2575eb257ebe9a1a519 -> f66ae8bb570dffb9e5c7
+CHANGED fingerprints/runtime_hash: 4553ebe7db2f9e3efda6 -> 2a1815399697a774597c
+CHANGED fingerprints/source_hash: 142a9ebcf03b9fde3afe -> 2597bffb7b0d74fc6fdd
+CHANGED fingerprints/tree_lab: ba9a78c2302ecefeded1 -> 5c71cc245ccdec2e3aa3

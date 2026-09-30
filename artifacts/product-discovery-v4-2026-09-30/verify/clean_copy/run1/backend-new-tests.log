@@ -1,0 +1,3063 @@
+FFFFF.......FFFFFFFFFFFFFFFF.FFFFFFFF.F.F...FFFFFFFFFFFFFFFFFFFFFFFFFFFF [100%]
+=================================== FAILURES ===================================
+_ test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10cdebd70>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cdeb9e0>
+
+    def test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does(owner, monkeypatch):
+>       seeder = dev5_owner(owner)                                  # baseline study: dev-5 violated 3/3, dev-1 completed 3/3
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_without_replay_records_a_learn_campaigns_explorer_pick_still_counts ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96ebd0>
+
+    def test_without_replay_records_a_learn_campaigns_explorer_pick_still_counts(owner):
+        """With no replay record in the store (every store written before discovery v4), the exclusion removes nothing: a
+        learn campaign's own Explorer pick still counts as learn discovery. Byte-identity with the code before the fix is
+        checked on every saved store separately (artifacts/product-discovery-v4-2026-09-30/fixer/store_history_compare.py),
+        and by the unchanged v3 and agent-history tests."""
+>       registration = dev5_owner(owner).registration
+                       ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8f8bc0>
+
+    def test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests(owner):
+>       options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8fa210>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d8faba0>
+
+    def test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests(owner, monkeypatch):
+        """What the sentence describes, through the real loop: two replays are listed, the first replay's source reaches the
+        candidate stage and its Mechanic uses all 4 candidate requests, so replay 2 and every Explorer slot never run."""
+        import app.lab.learning as learning
+>       seeder = dev5_owner(owner)
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:128: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8f8b90>
+
+    def test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text(owner):
+>       seeder = dev5_owner(owner)
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_review_fixes.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_plan_freezes_the_replay_list_from_exactly_v3s_history[smolagents] ____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9a19a0>
+agent = 'smolagents'
+
+    @pytest.mark.parametrize('agent', ['smolagents', 'smolagents-v2', 'reference'])
+    def test_plan_freezes_the_replay_list_from_exactly_v3s_history(owner, agent):
+        registration = register_agent(owner.store, owner.settings, agent)
+>       seeder = Seeder(owner, registration)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__ test_plan_freezes_the_replay_list_from_exactly_v3s_history[smolagents-v2] ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9a3860>
+agent = 'smolagents-v2'
+
+    @pytest.mark.parametrize('agent', ['smolagents', 'smolagents-v2', 'reference'])
+    def test_plan_freezes_the_replay_list_from_exactly_v3s_history(owner, agent):
+        registration = register_agent(owner.store, owner.settings, agent)
+>       seeder = Seeder(owner, registration)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_plan_freezes_the_replay_list_from_exactly_v3s_history[reference] _____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9a0c20>
+agent = 'reference'
+
+    @pytest.mark.parametrize('agent', ['smolagents', 'smolagents-v2', 'reference'])
+    def test_plan_freezes_the_replay_list_from_exactly_v3s_history(owner, agent):
+        registration = register_agent(owner.store, owner.settings, agent)
+>       seeder = Seeder(owner, registration)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_empty_history_plan_says_so_and_old_plans_keep_their_bytes ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d995f40>
+
+    def test_empty_history_plan_says_so_and_old_plans_keep_their_bytes(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       _, plan = v4_plan(owner, native)
+                  ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:177: in v4_plan
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, discovery_protocol=DISCOVERY_V4, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_run_options_offer_v4_with_one_plain_sentence_and_v3_budget ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d996600>
+
+    def test_run_options_offer_v4_with_one_plain_sentence_and_v3_budget(owner):
+>       options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:237: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_replay_slots_run_first_without_an_explorer_request_and_the_explorer_continues _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d967230>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d996e10>
+
+    def test_replay_slots_run_first_without_an_explorer_request_and_the_explorer_continues(owner, monkeypatch):
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:269: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_the_explorer_duplicate_rule_applies_to_the_replayed_recipe ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9946b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d994ad0>
+
+    def test_the_explorer_duplicate_rule_applies_to_the_replayed_recipe(owner, monkeypatch):
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:307: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_a_replay_violation_becomes_a_source_and_is_labelled_a_history_replay_everywhere _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d40a7b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d40bb60>
+
+    def test_a_replay_violation_becomes_a_source_and_is_labelled_a_history_replay_everywhere(owner, monkeypatch):
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_a_replay_that_does_not_violate_only_uses_its_slot ____________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d994ef0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d994ad0>
+
+    def test_a_replay_that_does_not_violate_only_uses_its_slot(owner, monkeypatch):
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_at_most_three_replays_then_the_explorer_takes_the_remaining_slots ____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d409580>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d40a120>
+
+    def test_at_most_three_replays_then_the_explorer_takes_the_remaining_slots(owner, monkeypatch):
+        registration = register_agent(owner.store, owner.settings, 'smolagents')
+>       seed_ordering(Seeder(owner, registration))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:387: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id[False] _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_with_an_empty_replay_list0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d9659a0>
+seeded = False
+
+    @pytest.mark.parametrize('seeded', [False, True])
+    def test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id(tmp_path, monkeypatch, seeded):
+        from app.config import Settings
+        from app.lab.coordinator import LabCoordinator
+        owners = [LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / name), wandb_model='deepseek-ai/DeepSeek-V3.1',
+                                          wandb_explorer_model=flow.EXPLORER_MODEL)) for name in ('v3', 'v4')]
+        try:
+            runs = []
+            for owner, protocol in zip(owners, (DISCOVERY_V3, DISCOVERY_V4)):
+                registration = register_agent(owner.store, owner.settings, 'smolagents')
+                if seeded:  # history exists, but no row qualifies (dev-5 violated only 1 of 3)
+                    seeder = Seeder(owner, registration)
+                    for failed in (('C3',), (), ()):
+                        seeder.episode(case('dev-5'), failed=failed)
+>               campaign = flow.learn_campaign(owner, protocol, 'smolagents')
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:410: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id[True] _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_with_an_empty_replay_list1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d409730>
+seeded = True
+
+    @pytest.mark.parametrize('seeded', [False, True])
+    def test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id(tmp_path, monkeypatch, seeded):
+        from app.config import Settings
+        from app.lab.coordinator import LabCoordinator
+        owners = [LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / name), wandb_model='deepseek-ai/DeepSeek-V3.1',
+                                          wandb_explorer_model=flow.EXPLORER_MODEL)) for name in ('v3', 'v4')]
+        try:
+            runs = []
+            for owner, protocol in zip(owners, (DISCOVERY_V3, DISCOVERY_V4)):
+                registration = register_agent(owner.store, owner.settings, 'smolagents')
+                if seeded:  # history exists, but no row qualifies (dev-5 violated only 1 of 3)
+>                   seeder = Seeder(owner, registration)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:407: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_start_refuses_a_changed_history_and_no_replay_runs ____________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d994e00>
+
+    def test_start_refuses_a_changed_history_and_no_replay_runs(owner):
+        from app.lab.budgets import CampaignLedger
+>       seeder = dev5_owner(owner)
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:439: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_start_refuses_a_saved_list_the_installed_replay_rule_would_not_produce __
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d40baa0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d409610>
+
+    def test_start_refuses_a_saved_list_the_installed_replay_rule_would_not_produce(owner, monkeypatch):
+        """The replay list is recomputed from the frozen history at Start and before the first replay: a plan saved under
+        another replay rule (here: the installed rule is narrowed to 2 of 2 violations) is refused, not silently re-used."""
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:459: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______________ test_history_check_button_covers_the_replay_list _______________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d967260>
+
+    def test_history_check_button_covers_the_replay_list(owner):
+        from app.lab.run_plans import plan_history_check
+>       seeder = dev5_owner(owner)
+                 ^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v4_replay.py:474: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__________ test_v3_records_and_projections_never_carry_replay_fields ___________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d837650>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d9660c0>
+
+    def test_v3_records_and_projections_never_carry_replay_fields(owner, monkeypatch):
+>       dev5_owner(owner)
+
+tests/lab/test_discovery_v4_replay.py:483: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v4_replay.py:250: in dev5_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_history_counts_the_same_agent_across_registrations_but_not_another_agent_policy_or_scorer _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d967bf0>
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_history_counts_the_same_a0')
+
+    def test_history_counts_the_same_agent_across_registrations_but_not_another_agent_policy_or_scorer(owner, tmp_path):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:188: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________________ test_used_excluded_and_out_of_scope_episodes _________________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d837b00>
+
+    def test_used_excluded_and_out_of_scope_episodes(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_a_discovery_pick_equal_to_a_case_joins_that_case_row_whatever_its_seed __
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96a8d0>
+
+    def test_a_discovery_pick_equal_to_a_case_joins_that_case_row_whatever_its_seed(owner):
+>       seeder = Seeder(owner, register_agent(owner.store, owner.settings, 'smolagents'))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_seeded_promotion_heldout_and_final_audit_records_are_excluded_and_never_counted _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9a0e90>
+
+    def test_seeded_promotion_heldout_and_final_audit_records_are_excluded_and_never_counted(owner):
+>       seeder = Seeder(owner, register_agent(owner.store, owner.settings, 'smolagents'))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__ test_plan_freezes_the_summary_hash_and_cutoff_and_later_records_never_leak __
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d969760>
+
+    def test_plan_freezes_the_summary_hash_and_cutoff_and_later_records_never_leak(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:310: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_a_tampered_or_mismatched_history_block_is_refused ____________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d75f110>
+
+    def test_a_tampered_or_mismatched_history_block_is_refused(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:344: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_no_prior_history_is_said_plainly_and_the_block_is_its_base_protocol ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10cea44a0>
+
+    def test_no_prior_history_is_said_plainly_and_the_block_is_its_base_protocol(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       campaign = planned(owner, native, discovery_protocol=DISCOVERY_V3)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:360: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________________ test_declarations_budgets_and_agent_support __________________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8fb830>
+
+    def test_declarations_budgets_and_agent_support(owner):
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+        reference = register_agent(owner.store, owner.settings, 'reference')
+>       options = {row['protocol_id']: row for row in build_run_options(owner.settings, owner.store)['learn']['discovery_protocols']}
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:378: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_single_case_baseline_runs_never_shape_the_history ____________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10cea41a0>
+
+    def test_single_case_baseline_runs_never_shape_the_history(owner):
+        """Review finding 1: operator-chosen single-case baseline runs (here three dev-5 runs) are out of scope.
+    
+        The reviewer's probe showed they alone froze a dev-5-only history. Now they are neither used nor counted;
+        only the fixed baseline study and learn campaigns' own discovery picks feed the history.
+        """
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:440: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_rows_list_the_runtime_and_adapter_builds_their_episodes_ran_under ____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8facc0>
+
+    def test_rows_list_the_runtime_and_adapter_builds_their_episodes_ran_under(owner):
+        """The same agent under another FaultLab build merges into one row, and the row says so."""
+        native = register_agent(owner.store, owner.settings, 'smolagents')
+>       seeder = Seeder(owner, native)
+                 ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_agent_history.py:490: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v1-reference-c701-None-reference-repeat] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d40a240>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d40b170>
+name = 'v1-reference-c701', protocol = None, agent = 'reference'
+mode = 'repeat'
+
+    @pytest.mark.parametrize('name,protocol,agent,mode', list(PINNED))
+    def test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3(owner, monkeypatch, name, protocol, agent, mode):
+>       campaign = flow.learn_campaign(owner, protocol, agent)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v1-native-c701-None-smolagents-repeat] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d9681d0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96a4e0>
+name = 'v1-native-c701', protocol = None, agent = 'smolagents', mode = 'repeat'
+
+    @pytest.mark.parametrize('name,protocol,agent,mode', list(PINNED))
+    def test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3(owner, monkeypatch, name, protocol, agent, mode):
+>       campaign = flow.learn_campaign(owner, protocol, agent)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v2-reference-c701-repeats-faultlab-discovery/v2-reachability-reference-repeat] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96acc0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96bf50>
+name = 'v2-reference-c701-repeats'
+protocol = 'faultlab-discovery/v2-reachability', agent = 'reference'
+mode = 'repeat'
+
+    @pytest.mark.parametrize('name,protocol,agent,mode', list(PINNED))
+    def test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3(owner, monkeypatch, name, protocol, agent, mode):
+>       campaign = flow.learn_campaign(owner, protocol, agent)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v2-reference-c701-feedback-faultlab-discovery/v2-reachability-reference-feedback] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96ba40>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10cea4590>
+name = 'v2-reference-c701-feedback'
+protocol = 'faultlab-discovery/v2-reachability', agent = 'reference'
+mode = 'feedback'
+
+    @pytest.mark.parametrize('name,protocol,agent,mode', list(PINNED))
+    def test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3(owner, monkeypatch, name, protocol, agent, mode):
+>       campaign = flow.learn_campaign(owner, protocol, agent)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:104: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_history_reaches_every_discovery_request_and_changes_nothing_else[reference-faultlab-discovery/v1-faultlab-discovery/v3-history] _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_history_reaches_every_dis0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d968f50>
+agent = 'reference', base = 'faultlab-discovery/v1'
+v3 = 'faultlab-discovery/v3-history'
+
+    @pytest.mark.parametrize('agent,base,v3', [('reference', DISCOVERY_V1, DISCOVERY_V3), ('smolagents', DISCOVERY_V1, DISCOVERY_V3),
+                                               ('reference', DISCOVERY_V2, DISCOVERY_V3_PRECHECK)])
+    def test_history_reaches_every_discovery_request_and_changes_nothing_else(tmp_path, monkeypatch, agent, base, v3):
+        import asyncio
+        from app.config import Settings
+        from app.lab.coordinator import LabCoordinator
+        owners = [LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / name), wandb_model='deepseek-ai/DeepSeek-V3.1',
+                                          wandb_explorer_model=flow.EXPLORER_MODEL)) for name in ('base', 'v3')]
+        try:
+>           seeded_owner(owners[1], agent)
+
+tests/lab/test_discovery_v3_flow.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_history_reaches_every_discovery_request_and_changes_nothing_else[smolagents-faultlab-discovery/v1-faultlab-discovery/v3-history] _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_history_reaches_every_dis1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d967140>
+agent = 'smolagents', base = 'faultlab-discovery/v1'
+v3 = 'faultlab-discovery/v3-history'
+
+    @pytest.mark.parametrize('agent,base,v3', [('reference', DISCOVERY_V1, DISCOVERY_V3), ('smolagents', DISCOVERY_V1, DISCOVERY_V3),
+                                               ('reference', DISCOVERY_V2, DISCOVERY_V3_PRECHECK)])
+    def test_history_reaches_every_discovery_request_and_changes_nothing_else(tmp_path, monkeypatch, agent, base, v3):
+        import asyncio
+        from app.config import Settings
+        from app.lab.coordinator import LabCoordinator
+        owners = [LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / name), wandb_model='deepseek-ai/DeepSeek-V3.1',
+                                          wandb_explorer_model=flow.EXPLORER_MODEL)) for name in ('base', 'v3')]
+        try:
+>           seeded_owner(owners[1], agent)
+
+tests/lab/test_discovery_v3_flow.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_history_reaches_every_discovery_request_and_changes_nothing_else[reference-faultlab-discovery/v2-reachability-faultlab-discovery/v3-history-reachability] _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_history_reaches_every_dis2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d967110>
+agent = 'reference', base = 'faultlab-discovery/v2-reachability'
+v3 = 'faultlab-discovery/v3-history-reachability'
+
+    @pytest.mark.parametrize('agent,base,v3', [('reference', DISCOVERY_V1, DISCOVERY_V3), ('smolagents', DISCOVERY_V1, DISCOVERY_V3),
+                                               ('reference', DISCOVERY_V2, DISCOVERY_V3_PRECHECK)])
+    def test_history_reaches_every_discovery_request_and_changes_nothing_else(tmp_path, monkeypatch, agent, base, v3):
+        import asyncio
+        from app.config import Settings
+        from app.lab.coordinator import LabCoordinator
+        owners = [LabCoordinator(Settings(faultlab_artifact_dir=str(tmp_path / name), wandb_model='deepseek-ai/DeepSeek-V3.1',
+                                          wandb_explorer_model=flow.EXPLORER_MODEL)) for name in ('base', 'v3')]
+        try:
+>           seeded_owner(owners[1], agent)
+
+tests/lab/test_discovery_v3_flow.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_no_prior_history_reaches_the_explorer_as_a_plain_statement ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96fb90>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96ed80>
+
+    def test_no_prior_history_reaches_the_explorer_as_a_plain_statement(owner, monkeypatch):
+>       campaign = flow.learn_campaign(owner, DISCOVERY_V3, 'smolagents')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+________ test_seeded_protected_records_never_reach_any_explorer_message ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96f4a0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96c740>
+
+    def test_seeded_protected_records_never_reach_any_explorer_message(owner, monkeypatch):
+>       seeder = seeded_owner(owner, 'smolagents')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_plan_dashboard_response_and_recording_show_the_summary_and_its_hash ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d7d83b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d7d80e0>
+
+    @pytest.mark.anyio
+    async def test_plan_dashboard_response_and_recording_show_the_summary_and_its_hash(owner, monkeypatch):
+>       seeded_owner(owner, 'smolagents')
+
+tests/lab/test_discovery_v3_flow.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_a_history_change_at_or_before_the_cutoff_stops_before_any_explorer_request _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96da00>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96e930>
+
+    def test_a_history_change_at_or_before_the_cutoff_stops_before_any_explorer_request(owner, monkeypatch):
+        from app.lab.storage import StoreConflict
+>       seeder = seeded_owner(owner, 'smolagents')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___________ test_no_prior_history_is_still_a_v3_request_not_a_v1_one ___________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d7d8fe0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d96da90>
+
+    def test_no_prior_history_is_still_a_v3_request_not_a_v1_one(owner, monkeypatch):
+        """Review finding 3: under NO_PRIOR_HISTORY the Explorer still gets the v3 section and an empty block."""
+>       campaign = flow.learn_campaign(owner, DISCOVERY_V3, 'smolagents')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_v3_picks_and_sources_that_retry_a_history_row_are_flagged_in_records_api_and_recording _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d7d9280>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d7db560>
+
+    def test_v3_picks_and_sources_that_retry_a_history_row_are_flagged_in_records_api_and_recording(owner, monkeypatch):
+        """Review finding 5: a v3 source that re-picks a recipe the history showed is marked, so a write-up
+        cannot present it as independent discovery. v1 records never carry the flag."""
+        from app.contracts.models import Counterexample, new_id
+>       seeded_owner(owner, 'smolagents')
+
+tests/lab/test_discovery_v3_flow.py:251: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________________ test_dashboard_api_checks_history_on_demand __________________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d96e8a0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d7d9070>
+
+    @pytest.mark.anyio
+    async def test_dashboard_api_checks_history_on_demand(owner, monkeypatch):
+        """The on-demand check (a button, never polled) reports a stale plan before Start; Start refuses it too."""
+        from app.lab.run_plans import validate_run_plan
+        from app.lab.storage import StoreConflict
+        from app.main import create_app
+>       seeder = seeded_owner(owner, 'smolagents')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:317: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_a_history_change_before_the_first_explorer_request_ends_the_campaign_with_the_plain_reason _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d4ecf20>
+
+    def test_a_history_change_before_the_first_explorer_request_ends_the_campaign_with_the_plain_reason(owner):
+        """Review item (product): through the coordinator's own execution path, the campaign ends ERROR with
+        AGENT_HISTORY_CHANGED and the plain message, before any Explorer request or charge."""
+        import asyncio
+        from app.lab.budgets import CampaignLedger
+>       seeder = seeded_owner(owner, 'smolagents')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_flow.py:343: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v3_flow.py:79: in seeded_owner
+    seeder = Seeder(owner, registration)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:83: in __init__
+    self.campaign = planned(owner, registration, mode='baseline', development_case_id='dev-1')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:73: in planned
+    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, **overrides))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_agent_history.py:65: in plan_request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+__ test_c701e850_outputs_through_v2_refuse_unreachable_picks_and_replan_once ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d57a2d0>
+
+    def test_c701e850_outputs_through_v2_refuse_unreachable_picks_and_replan_once(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_c701e850_outputs_through_the_default_v1_protocol_reproduce_the_recorded_decisions _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d4ee660>
+
+    def test_c701e850_outputs_through_the_default_v1_protocol_reproduce_the_recorded_decisions(owner):
+>       campaign = learn_campaign(owner)  # no discovery setting: the plan declares v1
+                   ^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_c701e850_with_an_explorer_that_uses_the_feedback_gets_every_slot_an_episode _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d4ee930>
+
+    def test_c701e850_with_an_explorer_that_uses_the_feedback_gets_every_slot_an_episode(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_____ test_refused_then_forced_replan_runs_one_episode_with_linked_records _____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d7db410>
+
+    def test_refused_then_forced_replan_runs_one_episode_with_linked_records(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____ test_refused_then_refused_again_ends_the_slot_without_a_third_request _____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d834770>
+
+    def test_refused_then_refused_again_ends_the_slot_without_a_third_request(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+____________ test_declared_budget_holds_with_every_request_refused _____________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d835010>
+
+    def test_declared_budget_holds_with_every_request_refused(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________ test_invalid_output_keeps_the_fixed_fallback_which_is_forced _________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d8b6e70>
+
+    def test_invalid_output_keeps_the_fixed_fallback_which_is_forced(owner):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:213: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_a_precheck_failure_keeps_the_charged_answer_and_stops_loudly _______
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d834d70>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d834380>
+
+    def test_a_precheck_failure_keeps_the_charged_answer_and_stops_loudly(owner, monkeypatch):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_______ test_fully_fired_violation_still_goes_to_reproduction_unchanged ________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d4ef5c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d4ef3e0>
+
+    def test_fully_fired_violation_still_goes_to_reproduction_unchanged(owner, monkeypatch):
+>       campaign = learn_campaign(owner, DISCOVERY_V2)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+______ test_native_agent_cannot_declare_v2_and_the_runtime_refuses_it_too ______
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10ce77ce0>
+
+    def test_native_agent_cannot_declare_v2_and_the_runtime_refuses_it_too(owner):
+        registration = register_agent(owner.store, owner.settings, 'smolagents')
+        with pytest.raises(StoreConflict, match='native agent'):
+>           prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=DISCOVERY_V2))
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v2_flow.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_________ test_discovery_setting_is_learn_only_and_older_plans_mean_v1 _________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d4ed340>
+
+    def test_discovery_setting_is_learn_only_and_older_plans_mean_v1(owner):
+        registration = register_agent(owner.store, owner.settings, 'reference')
+        with pytest.raises(ValueError, match='Learn'):
+>           request(owner, registration, mode='baseline', development_case_id='dev-2', discovery_protocol=DISCOVERY_V1)
+
+tests/lab/test_discovery_v2_flow.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+_ test_new_plan_records_carry_a_discovery_field_and_a_plan_saved_before_it_still_verifies_as_v1 _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10d57a660>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d4eed20>
+
+    def test_new_plan_records_carry_a_discovery_field_and_a_plan_saved_before_it_still_verifies_as_v1(owner, monkeypatch):
+        """Review finding (LOW, September 28): new plan records are not byte-identical to earlier ones.
+        A Learn plan stores its declared block (v1 by default) and a baseline plan stores
+        discovery = null, so both hash differently from a record made before the field existed.
+        Such an older record has no discovery key; its hash is checked on the raw record, so it
+        still verifies and reads back as v1."""
+        from app.lab import run_plans
+        registration = register_agent(owner.store, owner.settings, 'reference')
+>       baseline = prepare_run_plan(owner.store, owner.settings, request(owner, registration, mode='baseline',
+                                                                        development_case_id='dev-2'))
+
+tests/lab/test_discovery_v2_flow.py:282: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+___ test_baseline_study_records_become_the_frozen_history_of_a_v3_learn_plan ___
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-892/test_baseline_study_records_be0')
+
+    @pytest.mark.anyio
+    async def test_baseline_study_records_become_the_frozen_history_of_a_v3_learn_plan(tmp_path):
+        c, world, api, remote = study_runtime(tmp_path, PricedNativeInputs('accepted'))
+        try:
+>           baseline = planned_campaign(c)
+                       ^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_discovery_v3_baseline_history.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_planned_agent_execution.py:40: in planned_campaign
+    options=build_run_options(c.settings,c.store)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:400: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:361: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed to by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/Users/shree/FaultLab_Scratch/verify-v4/clean/audit/promotion.json'
+
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: FileNotFoundError
+=========================== short test summary info ============================
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_replay_episode_never_enters_a_later_agent_history_but_the_explorers_pick_does
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_without_replay_records_a_learn_campaigns_explorer_pick_still_counts
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_chooser_and_the_plan_say_a_replay_source_can_use_up_the_candidate_requests
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_candidate_requests
+FAILED tests/lab/test_discovery_v4_review_fixes.py::test_a_v4_recording_names_v4_in_its_history_claim_rule_and_a_v3_recording_keeps_its_exact_text
+FAILED tests/lab/test_discovery_v4_replay.py::test_plan_freezes_the_replay_list_from_exactly_v3s_history[smolagents]
+FAILED tests/lab/test_discovery_v4_replay.py::test_plan_freezes_the_replay_list_from_exactly_v3s_history[smolagents-v2]
+FAILED tests/lab/test_discovery_v4_replay.py::test_plan_freezes_the_replay_list_from_exactly_v3s_history[reference]
+FAILED tests/lab/test_discovery_v4_replay.py::test_empty_history_plan_says_so_and_old_plans_keep_their_bytes
+FAILED tests/lab/test_discovery_v4_replay.py::test_run_options_offer_v4_with_one_plain_sentence_and_v3_budget
+FAILED tests/lab/test_discovery_v4_replay.py::test_replay_slots_run_first_without_an_explorer_request_and_the_explorer_continues
+FAILED tests/lab/test_discovery_v4_replay.py::test_the_explorer_duplicate_rule_applies_to_the_replayed_recipe
+FAILED tests/lab/test_discovery_v4_replay.py::test_a_replay_violation_becomes_a_source_and_is_labelled_a_history_replay_everywhere
+FAILED tests/lab/test_discovery_v4_replay.py::test_a_replay_that_does_not_violate_only_uses_its_slot
+FAILED tests/lab/test_discovery_v4_replay.py::test_at_most_three_replays_then_the_explorer_takes_the_remaining_slots
+FAILED tests/lab/test_discovery_v4_replay.py::test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id[False]
+FAILED tests/lab/test_discovery_v4_replay.py::test_with_an_empty_replay_list_v4_sends_exactly_v3_history_requests_but_its_protocol_id[True]
+FAILED tests/lab/test_discovery_v4_replay.py::test_start_refuses_a_changed_history_and_no_replay_runs
+FAILED tests/lab/test_discovery_v4_replay.py::test_start_refuses_a_saved_list_the_installed_replay_rule_would_not_produce
+FAILED tests/lab/test_discovery_v4_replay.py::test_history_check_button_covers_the_replay_list
+FAILED tests/lab/test_discovery_v4_replay.py::test_v3_records_and_projections_never_carry_replay_fields
+FAILED tests/lab/test_agent_history.py::test_history_counts_the_same_agent_across_registrations_but_not_another_agent_policy_or_scorer
+FAILED tests/lab/test_agent_history.py::test_used_excluded_and_out_of_scope_episodes
+FAILED tests/lab/test_agent_history.py::test_a_discovery_pick_equal_to_a_case_joins_that_case_row_whatever_its_seed
+FAILED tests/lab/test_agent_history.py::test_seeded_promotion_heldout_and_final_audit_records_are_excluded_and_never_counted
+FAILED tests/lab/test_agent_history.py::test_plan_freezes_the_summary_hash_and_cutoff_and_later_records_never_leak
+FAILED tests/lab/test_agent_history.py::test_a_tampered_or_mismatched_history_block_is_refused
+FAILED tests/lab/test_agent_history.py::test_no_prior_history_is_said_plainly_and_the_block_is_its_base_protocol
+FAILED tests/lab/test_agent_history.py::test_declarations_budgets_and_agent_support
+FAILED tests/lab/test_agent_history.py::test_single_case_baseline_runs_never_shape_the_history
+FAILED tests/lab/test_agent_history.py::test_rows_list_the_runtime_and_adapter_builds_their_episodes_ran_under
+FAILED tests/lab/test_discovery_v3_flow.py::test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v1-reference-c701-None-reference-repeat]
+FAILED tests/lab/test_discovery_v3_flow.py::test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v1-native-c701-None-smolagents-repeat]
+FAILED tests/lab/test_discovery_v3_flow.py::test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v2-reference-c701-repeats-faultlab-discovery/v2-reachability-reference-repeat]
+FAILED tests/lab/test_discovery_v3_flow.py::test_v1_and_v2_explorer_messages_are_byte_identical_to_before_v3[v2-reference-c701-feedback-faultlab-discovery/v2-reachability-reference-feedback]
+FAILED tests/lab/test_discovery_v3_flow.py::test_history_reaches_every_discovery_request_and_changes_nothing_else[reference-faultlab-discovery/v1-faultlab-discovery/v3-history]
+FAILED tests/lab/test_discovery_v3_flow.py::test_history_reaches_every_discovery_request_and_changes_nothing_else[smolagents-faultlab-discovery/v1-faultlab-discovery/v3-history]
+FAILED tests/lab/test_discovery_v3_flow.py::test_history_reaches_every_discovery_request_and_changes_nothing_else[reference-faultlab-discovery/v2-reachability-faultlab-discovery/v3-history-reachability]
+FAILED tests/lab/test_discovery_v3_flow.py::test_no_prior_history_reaches_the_explorer_as_a_plain_statement
+FAILED tests/lab/test_discovery_v3_flow.py::test_seeded_protected_records_never_reach_any_explorer_message
+FAILED tests/lab/test_discovery_v3_flow.py::test_plan_dashboard_response_and_recording_show_the_summary_and_its_hash
+FAILED tests/lab/test_discovery_v3_flow.py::test_a_history_change_at_or_before_the_cutoff_stops_before_any_explorer_request
+FAILED tests/lab/test_discovery_v3_flow.py::test_no_prior_history_is_still_a_v3_request_not_a_v1_one
+FAILED tests/lab/test_discovery_v3_flow.py::test_v3_picks_and_sources_that_retry_a_history_row_are_flagged_in_records_api_and_recording
+FAILED tests/lab/test_discovery_v3_flow.py::test_dashboard_api_checks_history_on_demand
+FAILED tests/lab/test_discovery_v3_flow.py::test_a_history_change_before_the_first_explorer_request_ends_the_campaign_with_the_plain_reason
+FAILED tests/lab/test_discovery_v2_flow.py::test_c701e850_outputs_through_v2_refuse_unreachable_picks_and_replan_once
+FAILED tests/lab/test_discovery_v2_flow.py::test_c701e850_outputs_through_the_default_v1_protocol_reproduce_the_recorded_decisions
+FAILED tests/lab/test_discovery_v2_flow.py::test_c701e850_with_an_explorer_that_uses_the_feedback_gets_every_slot_an_episode
+FAILED tests/lab/test_discovery_v2_flow.py::test_refused_then_forced_replan_runs_one_episode_with_linked_records
+FAILED tests/lab/test_discovery_v2_flow.py::test_refused_then_refused_again_ends_the_slot_without_a_third_request
+FAILED tests/lab/test_discovery_v2_flow.py::test_declared_budget_holds_with_every_request_refused
+FAILED tests/lab/test_discovery_v2_flow.py::test_invalid_output_keeps_the_fixed_fallback_which_is_forced
+FAILED tests/lab/test_discovery_v2_flow.py::test_a_precheck_failure_keeps_the_charged_answer_and_stops_loudly
+FAILED tests/lab/test_discovery_v2_flow.py::test_fully_fired_violation_still_goes_to_reproduction_unchanged
+FAILED tests/lab/test_discovery_v2_flow.py::test_native_agent_cannot_declare_v2_and_the_runtime_refuses_it_too
+FAILED tests/lab/test_discovery_v2_flow.py::test_discovery_setting_is_learn_only_and_older_plans_mean_v1
+FAILED tests/lab/test_discovery_v2_flow.py::test_new_plan_records_carry_a_discovery_field_and_a_plan_saved_before_it_still_verifies_as_v1
+FAILED tests/lab/test_discovery_v3_baseline_history.py::test_baseline_study_records_become_the_frozen_history_of_a_v3_learn_plan
+59 failed, 13 passed in 6.63s

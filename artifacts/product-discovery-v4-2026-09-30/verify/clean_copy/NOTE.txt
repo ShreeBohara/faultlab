@@ -1,0 +1,26 @@
+Independent verifier, steps 4 and 5 (clean copy and my own mutants), 2026-09-30. Script: clean_and_mutants.py (revision 2).
+Tree: /Users/shree/FaultLab_Scratch/verify-v4/clean (outside the synced Desktop) = git archive of backup/part2-2026-09-22
+(4d1c21b) without artifacts/, plus the 25 changed/new product files copied byte for byte (copied-files.txt; each sha256
+checked against the COMMIT_LIST product lines). No .env, no .venv inside the tree (the real .venv interpreter was used; it
+has no .pth/editable install and pytest.ini sets pythonpath=. so the copy imports its own code), no caches, no git-ignored
+file. frontend/node_modules was a symlink to the real installed packages for the frontend runs and was removed after.
+
+RUN 1 (kept in run1/): audit/promotion.json and audit/final-audit.json were left out entirely. 59 of 72 backend tests failed
+with FileNotFoundError on audit/promotion.json, opened by product code (run_plans._manifests ->
+referee.manifests.load_manifest, which hashes the manifests for the run options). Both files are TRACKED (a clean clone has
+them), so this is not a git-ignored dependency. Run 1's backend mutant results are void (its unmutated control also failed);
+its frontend results were valid (control passed).
+RUN 2 (the results here): the two audit files were provided as SYMLINKS to the real tracked files (no copy), as the native
+v2b verifier did. I never opened them; the product's loader did (guard count: 436 opens of promotion.json in this step).
+
+Results (results.txt):
+  backend, 6 files (the 2 new v4 test files, the changed test_agent_history.py, and the v2/v3 flow and v3 baseline-history
+  files they import): 72 passed.
+  frontend: tests/discovery-v4.test.tsx 9 passed; whole unit suite 348 passed in 24 files.
+  native v1 golden + native v2 test files: 43 passed (../v1_golden/clean-copy-golden-and-v2.log).
+  my 12 mutants (7 backend, 5 frontend; different from the fixer's 14): 12 of 12 CAUGHT, each by the intended test;
+  controls after restoring every file: backend 3 passed, frontend 9 passed.
+  REAL M4 responses saved by the fixer (fixer/manual-check.json) through the dashboard's validators and text functions:
+  real-m4-output.json holds the exact panel sentence and the two Found-by lines.
+Guards: verify/guard (no outside connection; .env never opened). The tree held a copy of checks.py from git (hashed by
+product code only) and was deleted after the runs, with the checkpoint tree used for identity/gate_freeze.

@@ -20,6 +20,13 @@ reviewed plan freezes a summary of the same agent's earlier verified development
 same store (app.lab.agent_history) with its content hash and record cutoff; execution recomputes it
 and refuses if it differs. The Explorer is told it is prior evidence, not an instruction.
 
+v4 (``faultlab-discovery/v4-history-replay``, regression-first discovery) is exactly v3-history (v1 dispatch,
+identity and budget, the same frozen history and checks) plus a replay list frozen into the plan from that history
+(app.lab.history_replay): at most three history rows that fired every fault in every verified episode and violated
+in at least two thirds of them. Their recipes run first, one slot and one Actor episode each and no Explorer request;
+the remaining slots are v3-history's Explorer slots. An empty list leaves v3-history's dispatch unchanged. Available
+wherever v3-history is; never combined with the reachability pre-check.
+
 Transport retries (all protocols, app.agents.transport_retry): an Explorer request that
 received no answer (connection error, timeout, HTTP 503) may be re-sent once. A retry is
 the same request, not a new selection request, so it does NOT count toward
@@ -38,24 +45,39 @@ DISCOVERY_V1 = 'faultlab-discovery/v1'
 DISCOVERY_V2 = 'faultlab-discovery/v2-reachability'
 DISCOVERY_V3 = 'faultlab-discovery/v3-history'
 DISCOVERY_V3_PRECHECK = 'faultlab-discovery/v3-history-reachability'
-DISCOVERY_PROTOCOLS = (DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK)
-# The dispatch base of each protocol: v3 forms are exactly their base plus the frozen history.
+DISCOVERY_V4 = 'faultlab-discovery/v4-history-replay'
+DISCOVERY_PROTOCOLS = (DISCOVERY_V1, DISCOVERY_V2, DISCOVERY_V3, DISCOVERY_V3_PRECHECK, DISCOVERY_V4)
+# The dispatch base of each protocol: v3 forms are exactly their base plus the frozen history; v4's Explorer
+# slots dispatch exactly as v3-history's (v1), after the replay slots.
 BASE_PROTOCOL = {DISCOVERY_V1: DISCOVERY_V1, DISCOVERY_V2: DISCOVERY_V2,
-                 DISCOVERY_V3: DISCOVERY_V1, DISCOVERY_V3_PRECHECK: DISCOVERY_V2}
-HISTORY_PROTOCOLS = (DISCOVERY_V3, DISCOVERY_V3_PRECHECK)
+                 DISCOVERY_V3: DISCOVERY_V1, DISCOVERY_V3_PRECHECK: DISCOVERY_V2, DISCOVERY_V4: DISCOVERY_V1}
+# Protocols whose plan freezes the same-agent history (app.lab.agent_history).
+HISTORY_PROTOCOLS = (DISCOVERY_V3, DISCOVERY_V3_PRECHECK, DISCOVERY_V4)
+# Protocols whose plan also freezes a history replay list (app.lab.history_replay).
+REPLAY_PROTOCOLS = (DISCOVERY_V4,)
 V2_DISPATCH_RULE = ('Before any Actor episode, a free in-process replay of the real simulator labels every fault '
                     'FORCED, NOT_FORCED or IMPOSSIBLE for the registered agent. A pick runs only if every fault is '
                     'FORCED. A refused pick (a duplicate, or any fault not FORCED) gets one re-plan request in the '
                     'same slot with the reasons; if that is refused too, the slot ends without an episode.')
 V1_DISPATCH_RULE = 'Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.'
+V4_DISPATCH_RULE = ('The first slots replay the plan\'s frozen history replay list: each runs one Actor episode of that '
+                    'history row\'s recipe, without an Explorer request. Every remaining slot is exactly v3 \u00b7 agent '
+                    'history: every valid Explorer pick that is not an exact duplicate (the replays included) runs one '
+                    'Actor episode; nothing is pre-checked.')
 
 
-def declaration(protocol, caps, *, caller=None, history=None):
+def declaration(protocol, caps, *, caller=None, history=None, replay=None):
     """The discovery block frozen into a reviewed learn plan.
 
     A v3 block is its base block with the protocol id, and, once a plan freezes it, the history
     (app.lab.agent_history). In the run options, before any plan exists, a v3 block's history is None.
+    A v4 block is v3-history's block with its own protocol id and dispatch rule, the history and the frozen
+    replay list (app.lab.history_replay); both are None in the run options. Its budget numbers are v3-history's:
+    replay slots count toward the slots and Actor episodes, and use no Explorer request.
     """
+    if protocol == DISCOVERY_V4:
+        return {**declaration(DISCOVERY_V3, caps, history=history), 'protocol': DISCOVERY_V4,
+                'dispatch_rule': V4_DISPATCH_RULE, 'replay': replay}
     if protocol in HISTORY_PROTOCOLS:
         return {**declaration(BASE_PROTOCOL[protocol], caps, caller=caller), 'protocol': protocol, 'history': history}
     slots = caps.discovery_selections if hasattr(caps, 'discovery_selections') else caps['discovery_selections']

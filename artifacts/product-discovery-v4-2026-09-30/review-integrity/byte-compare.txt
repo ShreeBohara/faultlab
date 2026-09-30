@@ -1,0 +1,50 @@
+Integrity reviewer: git blob of backup/part2-2026-09-22 (4d1c21b) vs git hash-object --no-filters of the working tree
+SAME a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49 backend/app/integrations/external_agent.py
+SAME 3aab9348ff36e3058db36b090db82d556dd72165 backend/app/integrations/external_agent_v2.py
+SAME 521c9ab82982e20d970505eb7aa922636ea43596 backend/app/integrations/registry.py
+SAME e2980809692372fc34f5a3e0f5b77bf7345ea03f backend/tests/integrations/test_native_adapter_v1_golden.py
+SAME 210871284f1ee1704de4faad4e6bc0c851fd6528 backend/tests/fixtures/native_v1_golden_requests.json
+SAME 997b691d5a6df625941346c96b7560754120fbbe backend/app/agents/actor.py
+SAME 606dd9dbb2f6097958e4e01914745bd7b27f9b34 backend/app/agents/prompts/actor.md
+SAME dd4ce44eb6450d43d5426da40917594b4da0fd94 backend/app/agents/mechanic.py
+SAME 4f1c4689919b4c1a748fd00152df4f03e6bdd0ac backend/app/agents/prompts/explorer.md
+SAME 44b13099510575d555cbc7f06125e8929c0d4731 backend/app/agents/prompts/explorer_discovery_v2.md
+SAME a2c170bc5594efbb8226ab30c559433fe3237b6c backend/app/agents/prompts/explorer_discovery_v3_history.md
+SAME 5f4868adfab7ad1bcf0df5c5b9abe57d5c7d6c52 backend/app/lab/agent_history.py
+SAME 7326c0ea39496d68493bee75326ae5cfa62101f9 backend/app/lab/challenge.py
+SAME e636aeb4ccbce0ad3c388250ebd6679884fcb629 backend/app/lab/promotion.py
+SAME 9349b106d6caaf715b4c2573eeb2a0f57a420193 backend/app/lab/evaluation.py
+SAME b74dcd5474bd834d5b5cd1254f831d8d221f1e93 backend/app/lab/reproduction.py
+SAME 6a9779b8f3263bdfdf8acc0e65c73460369a4ea1 backend/app/lab/diagnosis.py
+SAME 167e1f292d824d43012a215b7351ba64420f1d70 backend/app/lab/coordinator.py
+SAME 718943ed358121de220a0e05de988884c908ddcd backend/app/lab/runner.py
+SAME f596d9060471e7b850b07952fa0cbfeabd5a8816 backend/app/lab/completion_study.py
+SAME 2edac78210c19b0bc6919dd9378d1930e6ce45c8 backend/app/lab/reachability.py
+SAME 4b5e1a83791345f1a20dee5ecd8e6a07b8b225d6 backend/app/lab/regressions.py
+SAME 3e34ba3d90c3b338452b1436cf62fa9da585e82a backend/app/referee/manifests.py
+SAME 9e647eb66eda184aeeab342969d0491756dd665e scripts/experiments/gate_freeze.py
+tree backend/app/referee: 6 files compared (checks.py via gate_freeze only), 0 differ
+tree backend/app/simulator: 8 files compared (checks.py via gate_freeze only), 0 differ
+tree contracts: 100 files compared (checks.py via gate_freeze only), 0 differ
+HEAD cbbf957e6e1cb19e1dcc2f87f24a33101859bbbe branch main; backup 4d1c21ba83fea229c23ee086e6b566000fb8640a
+index == HEAD
+builder source-sha256-at-suite-start.txt re-checked now:
+  backend/app/agents/explorer.py: OK
+  backend/app/lab/api.py: OK
+  backend/app/lab/discovery_protocol.py: OK
+  backend/app/lab/exports.py: OK
+  backend/app/lab/learning.py: OK
+  backend/app/lab/run_plans.py: OK
+  backend/tests/lab/test_agent_history.py: OK
+  frontend/src/components/CounterexamplePanel.tsx: OK
+  frontend/src/components/DiscoveryProtocol.tsx: OK
+  frontend/src/components/SearchAttemptsPanel.tsx: OK
+  frontend/src/experiments.ts: OK
+  frontend/src/runPlans.ts: OK
+  frontend/src/searchAttempts.ts: OK
+  frontend/tests/run-fixtures.ts: OK
+  backend/app/agents/prompts/explorer_discovery_v4_history_replay.md: OK
+  backend/app/lab/history_replay.py: OK
+  backend/tests/lab/test_discovery_v4_replay.py: OK
+  frontend/tests/discovery-v4.browser.ts: OK
+  frontend/tests/discovery-v4.test.tsx: OK

@@ -1,6 +1,6 @@
 import development from '../../audit/development.json' with { type: 'json' }
 import type { Campaign } from '../src/generated/contracts'
-import type { AgentHistory, DiscoveryDeclaration, EvidenceRetryDeclaration, RunOptions, RunPlan, TransportRetryDeclaration } from '../src/runPlans'
+import type { AgentHistory, DiscoveryDeclaration, DiscoveryOption, EvidenceRetryDeclaration, HistoryReplay, RunOptions, RunPlan, TransportRetryDeclaration } from '../src/runPlans'
 
 const hash = 'a'.repeat(64)
 export const discoveryV1: DiscoveryDeclaration = { protocol: 'faultlab-discovery/v1', schedule_identity: 'faultlab-schedule-identity/v1-sorted', slots: 8, explorer_requests_max: 8, explorer_transport_retries_max: 8, actor_episodes_max: 8, replans_per_slot: 0, dispatch_rule: 'Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.', pre_check: null }
@@ -29,6 +29,22 @@ const historySummary = (available: boolean) => ({ schema_version: 'faultlab-agen
 export const agentHistory = (available = true): AgentHistory => ({ schema_version: 'faultlab-agent-history/v2', status: available ? 'AVAILABLE' : 'NO_PRIOR_HISTORY',
   rule: 'Same agent: the same adapter entry point, model id, model request settings, scorer hash, simulator contract and service, capability set and per-episode limits, and the same prompt.', agent_identity: { adapter_entrypoint_id: 'smolagents-toolcalling-v1', model: 'fixture-model', episode_budget: { actor_calls: 8 } },
   policy_hash: hash, record_cutoff: 827, episode_ids_hash: 'd'.repeat(64), summary: historySummary(available), summary_hash: 'e'.repeat(64) })
+/** Discovery v4 (history replay) in the run options: v3-history's budget, its own id and dispatch rule, history and replay null.
+ * Not part of runOptions below (older tests pin its four options); discovery-v4 tests add discoveryV4Option themselves. */
+export const discoveryV4: DiscoveryDeclaration = { ...discoveryV3, protocol: 'faultlab-discovery/v4-history-replay', replay: null,
+  dispatch_rule: 'The first slots replay the plan\'s frozen history replay list: each runs one Actor episode of that history row\'s recipe, without an Explorer request.' }
+export const discoveryV4Option: DiscoveryOption = { protocol_id: 'faultlab-discovery/v4-history-replay', default: false, label: 'v4 · history replay first',
+  description: 'Before the Explorer picks anything, re-runs up to 3 recipes from this agent\'s frozen history that fired every fault and failed in at least 2 of every 3 verified episodes (one agent episode each, no Explorer request); the remaining slots are exactly v3 · agent history, but a replay source goes through the normal loop first, and if that uses up the campaign\'s candidate requests, discovery ends before any later replay or Explorer slot runs.',
+  supported_agents: ['reference', 'smolagents', 'smolagents-v2'], declaration: discoveryV4 }
+export const REPLAY_RULE = 'History replay rule (faultlab-history-replay/v1). From the plan\'s frozen agent history, a recipe row is replayed only if it has at least one scheduled fault, at least 2 verified episodes, every verified episode fired every scheduled fault, and at least 2 of every 3 verified episodes ended in VIOLATION.'
+/** The replay list the backend freezes from agentHistory() (its row 2 is dev-5: 3 of 3 violated, every fault fired). */
+export const historyReplay = (available = true): HistoryReplay => ({ schema_version: 'faultlab-history-replay/v1', status: available ? 'AVAILABLE' : 'EMPTY',
+  statement: available ? 'Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule.'
+    : 'Replay list empty: this store has no prior history for this agent, so nothing is replayed. Discovery runs exactly as v3 · agent history.',
+  rule: REPLAY_RULE, basis: 'faultlab-schedule-identity/v2-order-aware', max_rows: 3, min_verified_episodes: 2, min_violation_share: '2/3', history_summary_hash: 'e'.repeat(64),
+  rows: available ? [{ replay: 1, history_row: 2, development_case_id: 'dev-5', recipe: ['F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)'],
+    fault_spec: { schema_version: 'faultlab/v1', scope: 'orders.upgrade_then_confirm/v1', seed: 105, primitives: [{ kind: 'F2', target_tool: 'update_order', target_service: 'orders', occurrence: 1, parameters: { completion_delay_ticks: 2, terminal_status: 'FAILED', failure_code: 'UPGRADE_REJECTED' } }] },
+    schedule_identity_v2: 'f'.repeat(64), verified_episodes: 3, violations: 3, violation_share: '3/3', every_fault_fired: 3, outcomes: { VIOLATION: 3 }, failed_checks: { C3: 3, C5: 3 }, sources: ['baseline_study'] }] : [] })
 /** As the backend freezes it into every new plan (app/agents/transport_retry.py declaration(8)). */
 export const transportRetryRule: TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1', retries_per_request: 1, roles: ['actor', 'explorer', 'mechanic'], retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'], service_unavailable_delay_seconds: 1, actor_retries_per_episode_max: 8,
   rule: 'At most one blind retry of the identical request, only when no answer arrived: a connection error, a timeout, or HTTP 503 after a one-second wait. Never after any answer, even an empty or malformed one, and never for other HTTP statuses, authentication, configuration or model-identity failures. The retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only; if the budget cannot cover it the original failure stands. It never uses an actor turn or a discovery request. A second failure ends the work as before.' }

@@ -1,0 +1,15 @@
+{
+ "git_state_before.txt / git_state_after_suite.txt / git_state_final.txt": "step 1: HEAD, branch, backup tip, .git/index sha256+mtime, refs hash, stash count",
+ "suite/": "step 1: one ./scripts/test.sh run under guards (run_test_sh.sh, test-sh.log, times.txt, guard logs, sampler, guard-summary.json, ports)",
+ "guard/": "verifier guards (copied from the native v2b verifier): Python audit hook, Node require hook, socket sampler, summarizer",
+ "identity/": "step 2: identity.py (product functions) on a git-archive copy of 4d1c21b and on the working tree; compare.txt",
+ "gate_freeze/": "step 3: repo gate_freeze.py (loaded from the 4d1c21b copy) on 4d1c21b and on the working tree; compare.txt",
+ "protected_paths_check.txt": "blob equality of protected product files with 4d1c21b; no change under referee/simulator/contracts/integrations/telemetry/audit",
+ "stores/": "step 4 (MEDIUM-1): my own script: agent history of every registration in all 11 saved stores, code at 4d1c21b vs installed code, stores opened mode=ro&immutable=1",
+ "clean_copy/": "steps 4 and 5: clean copy (4d1c21b + 25 product files, no ignored files), my 12 mutants, real M4 responses through the dashboard code; NOTE.txt; run1/ = void first run (audit files absent)",
+ "v1_golden/": "native v1 golden + native v2 test files in the clean copy (43 passed)",
+ "conflict_copies/": "Desktop sync conflict-copy search before and after (no new ones; 37 pre-existing under two historical artifacts folders)",
+ "guard-summary-small-steps.txt": "guard summaries for the store, identity and gate_freeze steps",
+ "commit_list/": "step 6: commit_list.py, passes 1-3, credential scan (secret_scan.py, pass3 result, self-test)",
+ "COMMIT_LIST.txt / COMMIT_LIST.txt.json / COMMIT_LIST_NOTES.txt": "step 6: the final list, its per-path detail, and notes"
+}

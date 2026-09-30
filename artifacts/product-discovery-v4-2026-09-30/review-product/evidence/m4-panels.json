@@ -1,0 +1,43 @@
+[
+  {
+    "panel": "search attempts",
+    "text": "Fault search · selection attempts\n\nExplorer responses and executed Actor trials are different counts. A declined duplicate still uses a model request. Only the trial ledger records whether a selected fault actually ran and triggered.\n\n0\nRecorded selection responses\n2\nHistory replays · no Explorer request\n2\nSelected for execution\n0\nDuplicates declined\n0\nInvalid selections\n\nA different seed or hypothesis alone does not create a new fault schedule. These records cover autonomous discovery, not challenge or selector-comparison studies.\n\nDiscovery protocol v4: the first 2 slots were history replays of the frozen agent history (see the saved plan), with no Explorer request; the Explorer chose the remaining slots.\n\nSelection 1 · History replay 1 of 2 · agent history row 3 (dev-3) · no Explorer request\n\nselection-0e45f6a0f8dd459aa04774b0e12a38ca · history replay\n\nHistory replay 1 of 2 · agent history row 3 (dev-3): FaultLab re-ran this recorded recipe, which violated in 3/3 verified episodes with every fault fired, because the plan's fixed replay rule listed it. No Explorer request was sent. A source from this slot is a history replay of that row, never independent discovery.\n\nReplay episode\n\nepisode-3ee5fecba5e241428b9cad9c716d66e4\n\nSchedule identity:\ncc75ea5ef4b645c7f322b2f628b9c9c75868c04775098b25140f54e1f8c79fb1\n\nF2 · orders.update_order · occurrence 1\n\nInspect original response and saved selection decision\nSelection 2 · History replay 2 of 2 · agent history row 5 (dev-5) · no Explorer request\n\nselection-3f8a0341243c42139996620af4043136 · history replay\n\nHistory replay 2 of 2 · agent history row 5 (dev-5): FaultLab re-ran this recorded recipe, which violated in 3/3 verified episodes with every fault fired, because the plan's fixed replay rule listed it. No Explorer request was sent. A source from this slot is a history replay of that row, never independent discovery.\n\nReplay episode\n\nepisode-23905bfebfc14125a1a19d139fc4f636\n\nSchedule identity:\nfcb8fe3403bd5fc673b1795929d050257dc761b0fad803a560a9ea61af53d6d5\n\nF2 · orders.update_order · occurrence 1\n\nInspect original response and saved selection decision"
+  },
+  {
+    "panel": "reproduce & reduce (Found by fields)",
+    "found": [
+      "History replay 1 of 2 · agent history row 3 (dev-3): FaultLab re-ran this recorded recipe, which violated in 3/3 verified episodes with every fault fired, because the plan's fixed replay rule listed it. No Explorer request was sent. A source from this slot is a history replay of that row, never independent discovery.",
+      "History replay 2 of 2 · agent history row 5 (dev-5): FaultLab re-ran this recorded recipe, which violated in 3/3 verified episodes with every fault fired, because the plan's fixed replay rule listed it. No Explorer request was sent. A source from this slot is a history replay of that row, never independent discovery."
+    ],
+    "v3": []
+  },
+  {
+    "panel": "diagnosis",
+    "text": "06\nTested diagnosis\ndiagnostic-1bd892b6530640c08512815dd19b5024\nPOLICY_GAP\nMODEL PROPOSED KIND\nPOLICY_GAP\nFIXED FINDING\nFresh reproduction and the declared controlled intervention support a bounded policy hypothesis.\nTESTED SCOPE\nThree fresh trials of the fixed development recipe and declared paired schedule intervention.\nAVAILABLE AUTHORITY PATHS\noriginal_upgrade_write · identical_upgrade_replay · upgrade_status · order_projection · prior_delivered_receipts\nREQUIRED BEHAVIOR / ADVISORY API RECOMMENDATION\nPreserve original operation identities and require delivered matching receipts for success.\nCHECKER\n5b83fbc84c20a7bd6db236f370093e5adc09c3c5c35e230fca2c07c8c90d45d9\n\nA supported hypothesis permits a candidate proposal, never promotion or a claim of improvement.\n\nepisode-ff6294cfa097431b8403c24e760cda4a\nepisode-cb2e39a3e3624a6f96ca7ebf80c7c63b\nepisode-21f1ebb0726847fe9beccfe4fe027275\nDiagnostic evidence and protocol identity\ndiagnostic-80e8cd4bb37b4880aa74dc5520bb7e9b\nPOLICY_GAP\nMODEL PROPOSED KIND\nPOLICY_GAP\nFIXED FINDING\nFresh reproduction and the declared controlled intervention support a bounded policy hypothesis.\nTESTED SCOPE\nThree fresh trials of the fixed development recipe and declared paired schedule intervention.\nAVAILABLE AUTHORITY PATHS\noriginal_upgrade_write · identical_upgrade_replay · upgrade_status · order_projection · prior_delivered_receipts\nREQUIRED BEHAVIOR / ADVISORY API RECOMMENDATION\nPreserve original operation identities and require delivered matching "
+  },
+  {
+    "recording": {
+      "has_replays": true,
+      "sources_found_by_replay": [
+        "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+        "counterexample-dd5893d5c85f43cbbecfa6fefdce444d"
+      ],
+      "replay_slots": [
+        [
+          1,
+          3,
+          "dev-3"
+        ],
+        [
+          2,
+          5,
+          "dev-5"
+        ]
+      ]
+    }
+  },
+  {
+    "errors": [],
+    "offsite": []
+  }
+]

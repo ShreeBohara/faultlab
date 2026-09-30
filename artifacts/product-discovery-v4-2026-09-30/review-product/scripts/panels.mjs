@@ -1,0 +1,33 @@
+import { open } from './common.mjs'
+import { writeFileSync } from 'node:fs'
+const [cid, tag] = process.argv.slice(2)
+const OUT = '/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-discovery-v4-2026-09-30/review-product/screenshots'
+const { browser, page, errors, offsite } = await open()
+const log = []
+await page.goto('http://127.0.0.1:18432/')
+await page.waitForTimeout(1500)
+await page.getByLabel('Saved campaigns', { exact: true }).selectOption(cid)
+await page.getByRole('button', { name: 'Open selected campaign' }).click()
+await page.waitForTimeout(3000)
+const search = page.locator('section.panel').filter({ has: page.getByRole('heading', { name: /Fault search · selection attempts/ }) }).first()
+for (const d of await search.locator('details.attempt').all()) await d.locator(':scope > summary').click()
+await page.waitForTimeout(500)
+log.push({ panel: 'search attempts', text: await search.innerText() })
+await search.screenshot({ path: `${OUT}/${tag}-search-attempts.png` })
+const repro = page.locator('section.panel').filter({ has: page.getByRole('heading', { name: /Reproduce & reduce/ }) }).first()
+log.push({ panel: 'reproduce & reduce (Found by fields)', found: await repro.locator('dt:has-text("Found by") + dd').allInnerTexts(), v3: await repro.locator('dt:has-text("Agent history (v3)") + dd').allInnerTexts() })
+await repro.locator('dt:has-text("Found by")').first().scrollIntoViewIfNeeded()
+await repro.screenshot({ path: `${OUT}/${tag}-source-panel.png` })
+const diag = page.locator('section.panel').filter({ has: page.getByRole('heading', { name: /Tested diagnosis/ }) }).first()
+log.push({ panel: 'diagnosis', text: (await diag.innerText()).slice(0, 1500) })
+// Recording download from the dashboard
+const dl = page.waitForEvent('download')
+await page.getByRole('button', { name: 'Download campaign recording' }).click()
+const file = await (await dl).path()
+const { readFileSync } = await import('node:fs')
+const rec = JSON.parse(readFileSync(file, 'utf8'))
+log.push({ recording: { has_replays: !!rec.discovery_history_replays, sources_found_by_replay: rec.discovery_history_replays?.sources_found_by_replay, replay_slots: rec.discovery_history_replays?.replay_slots?.map(s => [s.replay, s.history_row, s.development_case_id]) } })
+log.push({ errors, offsite })
+writeFileSync(`/Users/shree/FaultLab_Scratch/review-product-v4/pw/${tag}-panels.json`, JSON.stringify(log, null, 2))
+console.log(JSON.stringify(log, null, 2))
+await browser.close()

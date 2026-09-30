@@ -1,0 +1,68 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-30, discovery v4 round: builder, two reviews, fixer).
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, paths relative to
+the faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-discovery-v4-2026-09-30/verify/COMMIT_LIST.txt
+COMMIT_LIST.txt.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and
+whether it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = 4d1c21ba83fea229c23ee086e6b566000fb8640a (as the task
+said). Commit on top of 4d1c21b (branch backup/part2-2026-09-22), NOT on cbbf957. The checked-out branch is main at
+cbbf957 (56 commits behind the backup), so `git status` against HEAD shows hundreds of entries, and plain `git diff`
+misleads. Compare with `git show 4d1c21b:<file>` or use this list.
+
+COUNTS (final pass: 304 lines)
+PRODUCT FILES: 25 (modified 18, new 7, deleted 0, mode changes 0). The 7 new files are not git-ignored.
+EVIDENCE FILES: 279, all under artifacts/product-discovery-v4-2026-09-30/ (git-ignored: needs `git add -f`):
+builder 49, review-integrity 24, review-product 45, fixer 57, verify 104 (this note included).
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md,
+  backend/app/agents/explorer.py, backend/app/lab/agent_history.py, backend/app/lab/api.py,
+  backend/app/lab/discovery_protocol.py, backend/app/lab/exports.py, backend/app/lab/learning.py,
+  backend/app/lab/run_plans.py, backend/tests/lab/test_agent_history.py,
+  docs/user-guide.md,
+  frontend/src/components/CounterexamplePanel.tsx, frontend/src/components/DiscoveryProtocol.tsx,
+  frontend/src/components/RunSummary.tsx, frontend/src/components/SearchAttemptsPanel.tsx,
+  frontend/src/experiments.ts, frontend/src/runPlans.ts, frontend/src/searchAttempts.ts, frontend/tests/run-fixtures.ts
+NEW (not in the tip, not ignored):
+  backend/app/agents/prompts/explorer_discovery_v4_history_replay.md, backend/app/lab/history_replay.py,
+  backend/tests/lab/test_discovery_v4_replay.py, backend/tests/lab/test_discovery_v4_review_fixes.py,
+  docs/DISCOVERY_V4_HISTORY_REPLAY_2026-09-30.md, frontend/tests/discovery-v4.browser.ts, frontend/tests/discovery-v4.test.tsx
+The 25 product lines are byte-identical in pass 1 (before the suite), pass 2 (after the suite), pass 3 (after all checks)
+and the final pass, and equal to the fixer's suite-start hash list (fixer/source-sha256-at-suite-start.txt, 25 of 25).
+
+METHOD (commit_list/commit_list.py; copied from the native v2b verifier with TIP, EVID and one self-exclusion changed)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index in my scratchpad outside the
+Desktop, deleted by the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and executable
+bit) with the working file; every non-ignored working file not in the tip is NEW; the git-ignored evidence folder is
+walked directly. Protected paths (backend/app/referee/checks.py, audit/promotion.json, audit/final-audit.json, heldout2)
+are never read or hashed by this script: only size and mtime are recorded (all three last modified 2026-09-12).
+checks.py equality with the tip comes from gate_freeze (file sha256, score, scorer_hash identical).
+
+EXCLUDED FROM THE EVIDENCE WALK (COMMIT_LIST.txt.json 'excluded_evidence')
+  * caches: fixer/__pycache__/ and verify/guard/__pycache__/ (written by Python while importing the guard);
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.txt.json themselves (a file cannot contain its own hash).
+  * Nothing else: no SQLite store, no file over 5 MB (largest: three 4.35 MB probe JSONs, listed), no .env, no copy of
+    checks.py, promotion.json, final-audit.json or heldout2 (names searched in the whole evidence folder). The two
+    "mutation_checks.py" files are the builder's and fixer's scripts, not copies of checks.py.
+  * My scratch trees (a git-archive copy of 4d1c21b for identity/gate_freeze, and the clean copy for step 5 and my
+    mutants; both held a copy of checks.py from git) were built OUTSIDE the Desktop in /Users/shree/FaultLab_Scratch/
+    verify-v4/ and deleted after use; /Users/shree/FaultLab_Scratch/ is empty.
+
+DESKTOP CONFLICT COPIES
+Searched the whole repository (except .venv, frontend/node_modules and .git) for "* 2.*", "* 2", "* 3.*", "* 3" before
+and after my work (conflict_copies/before.txt, after.txt): identical lists, 37 entries, all pre-existing under
+artifacts/product-import-2026-09-27/preserved-duplicate-sources/ and artifacts/product-discovery-2026-09-28/verifier4-0928/
+oldplans/. None outside artifacts/, none in this round's evidence folder, none created by this verifier.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py over every file of the pre-final pass (303 files; the final list adds only this note): 0 hits
+(secret_scan_pass3.txt covers the 298 files of pass 3; the 303-file counting pass also gave 0). Self-test on a known
+dummy key in backend/tests/lab/test_native_baseline_study_planned.py: 1 hit, masked (secret_scan_selftest.txt). This note
+was scanned after it was written (0 hits; see the verifier report).
+
+FILES NOT IN THE LIST
+Only files written after the final pass: none by me. The PM's saved copy of the verifier report, if any, is not listed.

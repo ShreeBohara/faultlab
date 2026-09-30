@@ -1,0 +1,592 @@
+{
+ "network_connections_refused": [],
+ "run_a": {
+  "baseline_study": {
+   "b0_by_case": {
+    "dev-1": [
+     "COMPLETED",
+     "COMPLETED",
+     "COMPLETED"
+    ],
+    "dev-2": [
+     "COMPLETED",
+     "COMPLETED",
+     "COMPLETED"
+    ],
+    "dev-3": [
+     "VIOLATION",
+     "VIOLATION",
+     "VIOLATION"
+    ],
+    "dev-4": [
+     "COMPLETED",
+     "COMPLETED",
+     "COMPLETED"
+    ],
+    "dev-5": [
+     "VIOLATION",
+     "VIOLATION",
+     "VIOLATION"
+    ],
+    "dev-6": [
+     "SAFE_UNRESOLVED",
+     "SAFE_UNRESOLVED",
+     "SAFE_UNRESOLVED"
+    ]
+   },
+   "status": "COMPLETED"
+  },
+  "history_check_before_start": {
+   "campaign_id": "campaign-d95ba377d1a448e2a6a0f833fb509ab9",
+   "message": "Unchanged: the store still holds exactly this history at row 827. Start checks it again.",
+   "record_cutoff": 827,
+   "status": "CURRENT",
+   "summary_hash": "36b1824877de9ea705821b8cf9b8e17efc21c4011095345d2a461c1f5681ed2e"
+  },
+  "labels": {
+   "experiments_sources": [
+    [
+     "episode-2be0a42ba2c4488ab79a22d64a58a4ed",
+     "history replay",
+     3
+    ],
+    [
+     "episode-2ce70eb65ca24614a48060c2446eefa0",
+     "history replay",
+     5
+    ],
+    [
+     "episode-7e71761afded4639b1a741a20963deca",
+     null,
+     null
+    ]
+   ],
+   "recording_replay_slots": [
+    [
+     1,
+     3,
+     "episode-2be0a42ba2c4488ab79a22d64a58a4ed"
+    ],
+    [
+     2,
+     5,
+     "episode-2ce70eb65ca24614a48060c2446eefa0"
+    ]
+   ],
+   "recording_replays": {
+    "claim_rule": "A source found in a history replay slot re-ran a recipe from the frozen agent history, chosen by the plan's fixed replay rule and not by the Explorer. Report it as a history replay of that row (name the row, the store and the frozen summary hash), never as independent discovery or as an Explorer pick.",
+    "label": "history replay",
+    "sources_found_by_replay": [
+     "counterexample-d2dec9ca0a1a4d8e87d772fc40dbde80",
+     "counterexample-b61a488c72e0477e89c17ee4e7ffb9e0"
+    ],
+    "status": "AVAILABLE"
+   },
+   "recording_selection_labels": [
+    [
+     "history_replay",
+     "history replay"
+    ],
+    [
+     "history_replay",
+     "history replay"
+    ],
+    [
+     "model",
+     null
+    ],
+    [
+     "model",
+     null
+    ],
+    [
+     "model",
+     null
+    ],
+    [
+     "model",
+     null
+    ],
+    [
+     "model",
+     null
+    ],
+    [
+     "model",
+     null
+    ]
+   ],
+   "search_attempts": [
+    [
+     0,
+     "history_replay",
+     "history replay",
+     3,
+     0
+    ],
+    [
+     1,
+     "history_replay",
+     "history replay",
+     5,
+     0
+    ],
+    [
+     2,
+     "model",
+     null,
+     null,
+     1
+    ],
+    [
+     3,
+     "model",
+     null,
+     null,
+     1
+    ],
+    [
+     4,
+     "model",
+     null,
+     null,
+     1
+    ],
+    [
+     5,
+     "model",
+     null,
+     null,
+     1
+    ],
+    [
+     6,
+     "model",
+     null,
+     null,
+     1
+    ],
+    [
+     7,
+     "model",
+     null,
+     null,
+     1
+    ]
+   ]
+  },
+  "plan": {
+   "budget_equals_v3": true,
+   "chooser": {
+    "description": "Before the Explorer picks anything, re-runs up to 3 recipes from this agent's frozen history that fired every fault and failed in at least 2 of every 3 verified episodes (one agent episode each, no Explorer request); the remaining slots are exactly v3 \u00b7 agent history.",
+    "label": "v4 \u00b7 history replay first",
+    "supported_agents": [
+     "reference",
+     "smolagents",
+     "smolagents-v2"
+    ]
+   },
+   "dispatch_rule": "The first slots replay the plan's frozen history replay list: each runs one Actor episode of that history row's recipe, without an Explorer request. Every remaining slot is exactly v3 \u00b7 agent history: every valid Explorer pick that is not an exact duplicate (the replays included) runs one Actor episode; nothing is pre-checked.",
+   "history_equals_v3_history_except_cutoff": true,
+   "history_rows": [
+    [
+     1,
+     "dev-1",
+     3,
+     {
+      "COMPLETED": 3
+     },
+     null,
+     {}
+    ],
+    [
+     2,
+     "dev-2",
+     3,
+     {
+      "COMPLETED": 3
+     },
+     3,
+     {}
+    ],
+    [
+     3,
+     "dev-3",
+     3,
+     {
+      "VIOLATION": 3
+     },
+     3,
+     {
+      "C3": 3
+     }
+    ],
+    [
+     4,
+     "dev-4",
+     3,
+     {
+      "COMPLETED": 3
+     },
+     3,
+     {}
+    ],
+    [
+     5,
+     "dev-5",
+     3,
+     {
+      "VIOLATION": 3
+     },
+     3,
+     {
+      "C3": 3
+     }
+    ],
+    [
+     6,
+     "dev-6",
+     3,
+     {
+      "SAFE_UNRESOLVED": 3
+     },
+     3,
+     {}
+    ]
+   ],
+   "history_status": "AVAILABLE",
+   "record_cutoff": 827,
+   "replay": {
+    "basis": "faultlab-schedule-identity/v2-order-aware",
+    "history_summary_hash": "36b1824877de9ea705821b8cf9b8e17efc21c4011095345d2a461c1f5681ed2e",
+    "max_rows": 3,
+    "min_verified_episodes": 2,
+    "min_violation_share": "2/3",
+    "rows": [
+     {
+      "development_case_id": "dev-3",
+      "every_fault_fired": 3,
+      "failed_checks": {
+       "C3": 3
+      },
+      "fault_spec": {
+       "primitives": [
+        {
+         "kind": "F2",
+         "occurrence": 1,
+         "parameters": {
+          "completion_delay_ticks": 3,
+          "failure_code": null,
+          "terminal_status": "SUCCEEDED"
+         },
+         "target_service": "orders",
+         "target_tool": "update_order"
+        }
+       ],
+       "schema_version": "faultlab/v1",
+       "scope": "orders.upgrade_then_confirm/v1",
+       "seed": 103
+      },
+      "history_row": 3,
+      "outcomes": {
+       "VIOLATION": 3
+      },
+      "recipe": [
+       "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+      ],
+      "replay": 1,
+      "schedule_identity_v2": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+      "sources": [
+       "baseline_study"
+      ],
+      "verified_episodes": 3,
+      "violation_share": "3/3",
+      "violations": 3
+     },
+     {
+      "development_case_id": "dev-5",
+      "every_fault_fired": 3,
+      "failed_checks": {
+       "C3": 3
+      },
+      "fault_spec": {
+       "primitives": [
+        {
+         "kind": "F2",
+         "occurrence": 1,
+         "parameters": {
+          "completion_delay_ticks": 2,
+          "failure_code": "UPGRADE_REJECTED",
+          "terminal_status": "FAILED"
+         },
+         "target_service": "orders",
+         "target_tool": "update_order"
+        }
+       ],
+       "schema_version": "faultlab/v1",
+       "scope": "orders.upgrade_then_confirm/v1",
+       "seed": 105
+      },
+      "history_row": 5,
+      "outcomes": {
+       "VIOLATION": 3
+      },
+      "recipe": [
+       "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+      ],
+      "replay": 2,
+      "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+      "sources": [
+       "baseline_study"
+      ],
+      "verified_episodes": 3,
+      "violation_share": "3/3",
+      "violations": 3
+     }
+    ],
+    "rule": "History replay rule (faultlab-history-replay/v1). From the plan's frozen agent history, a recipe row is replayed only if it has at least one scheduled fault, at least 2 verified episodes, every verified episode fired every scheduled fault, and at least 2 of every 3 verified episodes ended in VIOLATION. Eligible rows are ordered by violation share (highest first), then verified episodes (most first), then their order in the history; at most 3 are replayed. Each replay runs that row's recipe (the same order-aware schedule; a development case's public recipe, otherwise the listed faults with seed 0) as one discovery slot and one agent episode, with no Explorer request, before any Explorer slot. A replay becomes a source exactly as any discovery pick does (completed, every fault fired, VIOLATION). A result from it is a history replay of that row, never independent discovery.",
+    "schema_version": "faultlab-history-replay/v1",
+    "statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+    "status": "AVAILABLE"
+   },
+   "summary_hash": "36b1824877de9ea705821b8cf9b8e17efc21c4011095345d2a461c1f5681ed2e",
+   "v1_plan_has_no_history_or_replay_field": true,
+   "v3_plan_has_no_replay_field": true,
+   "verified_episodes": 18
+  },
+  "provider_calls": {
+   "actor": 84,
+   "explorer": 6
+  },
+  "run": {
+   "counterexamples": [
+    [
+     "counterexample-d2dec9ca0a1a4d8e87d772fc40dbde80",
+     "episode-2be0a42ba2c4488ab79a22d64a58a4ed",
+     "C3"
+    ],
+    [
+     "counterexample-b61a488c72e0477e89c17ee4e7ffb9e0",
+     "episode-2ce70eb65ca24614a48060c2446eefa0",
+     "C3"
+    ],
+    [
+     "counterexample-8faee46df1724c2bad5ea6d47f8866b0",
+     "episode-7e71761afded4639b1a741a20963deca",
+     "C3"
+    ]
+   ],
+   "explorer_requests": 6,
+   "first_explorer_request": {
+    "agent_history_equals_frozen_summary": true,
+    "discovery_protocol": "faultlab-discovery/v4-history-replay",
+    "prior_selections": [
+     [
+      0,
+      "SELECTED",
+      {
+       "development_case_id": "dev-3",
+       "history_row": 3,
+       "replay": 1
+      }
+     ],
+     [
+      1,
+      "SELECTED",
+      {
+       "development_case_id": "dev-5",
+       "history_row": 5,
+       "replay": 2
+      }
+     ]
+    ],
+    "request_token_bound": 9248,
+    "selection_index": 2,
+    "system_prompt_has_v4_section": true,
+    "tested_schedules": [
+     [
+      "episode-2be0a42ba2c4488ab79a22d64a58a4ed",
+      "VIOLATION"
+     ],
+     [
+      "episode-2ce70eb65ca24614a48060c2446eefa0",
+      "VIOLATION"
+     ]
+    ]
+   },
+   "ledger_used_calls_explorer": null,
+   "slots": [
+    {
+     "episode_outcome": "VIOLATION",
+     "history_replay": 3,
+     "index": 0,
+     "model_calls": 0,
+     "provenance": "history_replay",
+     "recipe": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 3,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "status": "SELECTED"
+    },
+    {
+     "episode_outcome": "VIOLATION",
+     "history_replay": 5,
+     "index": 1,
+     "model_calls": 0,
+     "provenance": "history_replay",
+     "recipe": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "status": "SELECTED"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 2,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 4,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "status": "SELECTED"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 3,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": null,
+     "status": "SKIPPED_DUPLICATE"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 4,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": null,
+     "status": "SKIPPED_DUPLICATE"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 5,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": null,
+     "status": "SKIPPED_DUPLICATE"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 6,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": null,
+     "status": "SKIPPED_DUPLICATE"
+    },
+    {
+     "episode_outcome": null,
+     "history_replay": null,
+     "index": 7,
+     "model_calls": 1,
+     "provenance": "model",
+     "recipe": null,
+     "status": "SKIPPED_DUPLICATE"
+    }
+   ],
+   "start_status": 202,
+   "state": "NO_CHANGE",
+   "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+  },
+  "stale_plan": {
+   "check": "CHANGED",
+   "new_selections": 0,
+   "start_message": "The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 347b1ab9be28\u2026, now 7f78f1cede64\u2026); create a new plan",
+   "start_status": 409,
+   "state": "IDLE"
+  }
+ },
+ "run_b": {
+  "counterexamples": [
+   {
+    "reproduced": true,
+    "reproduction_trials": 3,
+    "source_episode_id": "episode-0cde120e9908411194402af0abe39ca4",
+    "target_invariant": "C3",
+    "target_violation_count": 3,
+    "valid_count": 3
+   }
+  ],
+  "experiments_label": [
+   [
+    "history replay",
+    3
+   ]
+  ],
+  "explorer_requests": 0,
+  "provider_calls": {
+   "actor": 88
+  },
+  "replay_rows": [
+   [
+    1,
+    3,
+    "dev-3",
+    "3/3"
+   ],
+   [
+    2,
+    5,
+    "dev-5",
+    "3/3"
+   ]
+  ],
+  "selections": [
+   [
+    0,
+    "history_replay",
+    0
+   ]
+  ],
+  "source_is_replay_episode": true,
+  "start_status": 202,
+  "state": "NO_CHANGE",
+  "terminal_reason": "Manual check stop point: reduction is not part of this check"
+ },
+ "runtime": {
+  "algorithm_hash": "f66ae8bb570dffb9e5c7b3e26792c4bd9e9433e82994781cdd6ffc6b53b03bb3",
+  "runtime_hash": "2a1815399697a774597c1d485f605dccc9e4e57cddee9899a5b577c35ad1514d",
+  "trace_contract_version": 2
+ }
+}

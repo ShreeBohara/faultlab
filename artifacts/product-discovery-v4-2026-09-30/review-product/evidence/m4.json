@@ -1,0 +1,523 @@
+{
+  "campaign": {
+    "campaign_id": "campaign-96127d6e49e94e768b885ac54685319b",
+    "state": "NO_CHANGE",
+    "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+    "usage": {
+      "http_attempts": 0,
+      "actor_calls": 0,
+      "model_calls": 218,
+      "input_tokens": 218000,
+      "output_tokens": 10900,
+      "wait_cycles": 0,
+      "ticks": 0,
+      "policy_steps": 0,
+      "wall_seconds": 0.0,
+      "cost_dollars": 0.13408999999999963
+    }
+  },
+  "plan_replay_rows": [
+    [
+      1,
+      3,
+      "dev-3",
+      "3/3",
+      {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 103,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 3,
+              "terminal_status": "SUCCEEDED",
+              "failure_code": null
+            }
+          }
+        ]
+      }
+    ],
+    [
+      2,
+      5,
+      "dev-5",
+      "3/3",
+      {
+        "schema_version": "faultlab/v1",
+        "scope": "orders.upgrade_then_confirm/v1",
+        "seed": 105,
+        "primitives": [
+          {
+            "target_tool": "update_order",
+            "target_service": "orders",
+            "occurrence": 1,
+            "kind": "F2",
+            "parameters": {
+              "completion_delay_ticks": 2,
+              "terminal_status": "FAILED",
+              "failure_code": "UPGRADE_REJECTED"
+            }
+          }
+        ]
+      }
+    ]
+  ],
+  "plan_replay_status": "AVAILABLE",
+  "search_attempts": [
+    {
+      "slot": 0,
+      "provenance": "history_replay",
+      "status": "SELECTED",
+      "reason": null,
+      "model_calls": 0,
+      "raw_len": 0,
+      "transport_retries": [],
+      "history_replay": {
+        "label": "history replay",
+        "replay": 1,
+        "of": 2,
+        "history_row": 3,
+        "development_case_id": "dev-3",
+        "episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+        "explorer_request": false
+      },
+      "decision_history_replay": {
+        "development_case_id": "dev-3",
+        "history_row": 3,
+        "replay": 1
+      },
+      "matches_history_row": {
+        "basis": "faultlab-schedule-identity/v2-order-aware",
+        "development_case_id": "dev-3",
+        "row": 3
+      },
+      "primitives": [
+        [
+          "F2",
+          "update_order",
+          {
+            "completion_delay_ticks": 3,
+            "failure_code": null,
+            "terminal_status": "SUCCEEDED"
+          }
+        ]
+      ],
+      "episode_outcome": [
+        "VIOLATION",
+        [],
+        "discovery"
+      ]
+    },
+    {
+      "slot": 1,
+      "provenance": "history_replay",
+      "status": "SELECTED",
+      "reason": null,
+      "model_calls": 0,
+      "raw_len": 0,
+      "transport_retries": [],
+      "history_replay": {
+        "label": "history replay",
+        "replay": 2,
+        "of": 2,
+        "history_row": 5,
+        "development_case_id": "dev-5",
+        "episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+        "explorer_request": false
+      },
+      "decision_history_replay": {
+        "development_case_id": "dev-5",
+        "history_row": 5,
+        "replay": 2
+      },
+      "matches_history_row": {
+        "basis": "faultlab-schedule-identity/v2-order-aware",
+        "development_case_id": "dev-5",
+        "row": 5
+      },
+      "primitives": [
+        [
+          "F2",
+          "update_order",
+          {
+            "completion_delay_ticks": 2,
+            "failure_code": "UPGRADE_REJECTED",
+            "terminal_status": "FAILED"
+          }
+        ]
+      ],
+      "episode_outcome": [
+        "VIOLATION",
+        [],
+        "discovery"
+      ]
+    }
+  ],
+  "explorer_discovery_requests": [],
+  "first_explorer_request": null,
+  "challenge_requests": 0,
+  "mechanic_requests_total_in_log": 6,
+  "experiments": [
+    {
+      "counterexample_id": "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+      "source_episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+      "target": "C3",
+      "reproduced": true,
+      "reproduction_trials": 3,
+      "reduction_status": "LOCALLY_MINIMAL",
+      "diagnostics": [
+        [
+          "POLICY_GAP",
+          "diagnostic-1bd892b6530640c08512815dd19b5024"
+        ]
+      ],
+      "interventions": 1,
+      "challenges": 0,
+      "history_replay": {
+        "label": "history replay",
+        "replay": 1,
+        "history_row": 3,
+        "development_case_id": "dev-3",
+        "episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4"
+      },
+      "matches_history_row": {
+        "row": 3,
+        "development_case_id": "dev-3",
+        "basis": "faultlab-schedule-identity/v2-order-aware"
+      },
+      "source_recipe": [
+        [
+          "F2",
+          {
+            "completion_delay_ticks": 3,
+            "failure_code": null,
+            "terminal_status": "SUCCEEDED"
+          }
+        ]
+      ]
+    },
+    {
+      "counterexample_id": "counterexample-dd5893d5c85f43cbbecfa6fefdce444d",
+      "source_episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+      "target": "C3",
+      "reproduced": true,
+      "reproduction_trials": 3,
+      "reduction_status": "LOCALLY_MINIMAL",
+      "diagnostics": [
+        [
+          "POLICY_GAP",
+          "diagnostic-80e8cd4bb37b4880aa74dc5520bb7e9b"
+        ]
+      ],
+      "interventions": 1,
+      "challenges": 0,
+      "history_replay": {
+        "label": "history replay",
+        "replay": 2,
+        "history_row": 5,
+        "development_case_id": "dev-5",
+        "episode_id": "episode-23905bfebfc14125a1a19d139fc4f636"
+      },
+      "matches_history_row": {
+        "row": 5,
+        "development_case_id": "dev-5",
+        "basis": "faultlab-schedule-identity/v2-order-aware"
+      },
+      "source_recipe": [
+        [
+          "F2",
+          {
+            "completion_delay_ticks": 2,
+            "failure_code": "UPGRADE_REJECTED",
+            "terminal_status": "FAILED"
+          }
+        ]
+      ]
+    }
+  ],
+  "candidate_qualifications": [
+    [
+      "policy-aebfd338d3064a8e8b7d0404046edc45",
+      "SOURCE_VALIDATION",
+      "REJECTED",
+      "CANDIDATE_FAILED"
+    ],
+    [
+      "policy-9d4288cf11734b77bc4f193a118b76fe",
+      "SOURCE_VALIDATION",
+      "REJECTED",
+      "CANDIDATE_FAILED"
+    ]
+  ],
+  "campaign_proposals": [
+    [
+      "PROPOSED",
+      null
+    ],
+    [
+      "NO_CHANGE",
+      "Review fixture has no further handwritten candidate."
+    ],
+    [
+      "PROPOSED",
+      null
+    ],
+    [
+      "NO_CHANGE",
+      "Review fixture has no further handwritten candidate."
+    ]
+  ],
+  "recording": {
+    "discovery_history_replays": {
+      "claim_rule": "A source found in a history replay slot re-ran a recipe from the frozen agent history, chosen by the plan's fixed replay rule and not by the Explorer. Report it as a history replay of that row (name the row, the store and the frozen summary hash), never as independent discovery or as an Explorer pick.",
+      "label": "history replay",
+      "replay_slots": [
+        {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-3",
+          "episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+          "every_fault_fired": 3,
+          "explorer_request": false,
+          "failed_checks": {
+            "C3": 3
+          },
+          "history_row": 3,
+          "label": "history replay",
+          "of": 2,
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "recipe": [
+            "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+          ],
+          "replay": 1,
+          "schedule_identity_v2": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+          "selection_id": "selection-0e45f6a0f8dd459aa04774b0e12a38ca",
+          "verified_episodes": 3,
+          "violation_share": "3/3",
+          "violations": 3
+        },
+        {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-5",
+          "episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+          "every_fault_fired": 3,
+          "explorer_request": false,
+          "failed_checks": {
+            "C3": 3
+          },
+          "history_row": 5,
+          "label": "history replay",
+          "of": 2,
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "recipe": [
+            "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+          ],
+          "replay": 2,
+          "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+          "selection_id": "selection-3f8a0341243c42139996620af4043136",
+          "verified_episodes": 3,
+          "violation_share": "3/3",
+          "violations": 3
+        }
+      ],
+      "sources_found_by_replay": [
+        "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+        "counterexample-dd5893d5c85f43cbbecfa6fefdce444d"
+      ],
+      "statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery.",
+      "status": "AVAILABLE",
+      "summary_hash": "94bf3317b37aaf4914bfeee9bf9a4ac643a4f76484f9069bf8463c707c4bb3c0"
+    },
+    "replay_list_rows": [
+      [
+        1,
+        3,
+        "dev-3"
+      ],
+      [
+        2,
+        5,
+        "dev-5"
+      ]
+    ],
+    "sources": [
+      {
+        "counterexample_id": "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+        "history_replay": {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-3",
+          "episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+          "every_fault_fired": 3,
+          "explorer_request": false,
+          "failed_checks": {
+            "C3": 3
+          },
+          "history_row": 3,
+          "label": "history replay",
+          "of": 2,
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "recipe": [
+            "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+          ],
+          "replay": 1,
+          "schedule_identity_v2": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+          "selection_id": "selection-0e45f6a0f8dd459aa04774b0e12a38ca",
+          "verified_episodes": 3,
+          "violation_share": "3/3",
+          "violations": 3
+        },
+        "matches_history_row": {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-3",
+          "row": 3
+        },
+        "reproduced": true,
+        "source_episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+        "source_recipe_recorded": true
+      },
+      {
+        "counterexample_id": "counterexample-dd5893d5c85f43cbbecfa6fefdce444d",
+        "history_replay": {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-5",
+          "episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+          "every_fault_fired": 3,
+          "explorer_request": false,
+          "failed_checks": {
+            "C3": 3
+          },
+          "history_row": 5,
+          "label": "history replay",
+          "of": 2,
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "recipe": [
+            "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+          ],
+          "replay": 2,
+          "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+          "selection_id": "selection-3f8a0341243c42139996620af4043136",
+          "verified_episodes": 3,
+          "violation_share": "3/3",
+          "violations": 3
+        },
+        "matches_history_row": {
+          "basis": "faultlab-schedule-identity/v2-order-aware",
+          "development_case_id": "dev-5",
+          "row": 5
+        },
+        "reproduced": true,
+        "source_episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+        "source_recipe_recorded": true
+      }
+    ],
+    "v3_claim_rule": "Results of a discovery v3 campaign are history-informed. A source whose recipe matches a history row re-tries recorded evidence the Explorer was shown; report it as history-informed, never as independent discovery, and name the store and the frozen summary hash.",
+    "selection_labels": [
+      [
+        "history_replay",
+        "history replay",
+        3,
+        0
+      ],
+      [
+        "history_replay",
+        "history replay",
+        5,
+        0
+      ]
+    ]
+  },
+  "regression_bundles": [
+    {
+      "regression_id": "regression-29d810d5baad483cb47d401cadf4c700",
+      "artifact_kind": "incident_fixture",
+      "counterexample_id": "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+      "stage": "reduced_source",
+      "source_episode_id": "episode-3ee5fecba5e241428b9cad9c716d66e4",
+      "has_replays_block": true,
+      "replays_block": {
+        "label": "history replay",
+        "status": "AVAILABLE",
+        "sources_found_by_replay": [
+          "counterexample-c241dbf2b5cd495bbc120fc549cf400a"
+        ]
+      },
+      "replay_slots_in_bundle": [
+        [
+          1,
+          3,
+          "dev-3",
+          "episode-3ee5fecba5e241428b9cad9c716d66e4"
+        ]
+      ],
+      "source_history_replay": [
+        [
+          "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+          3
+        ]
+      ],
+      "selection_labels": [
+        [
+          "history_replay",
+          "history replay",
+          3
+        ]
+      ]
+    },
+    {
+      "regression_id": "regression-5629467b5bfc4ef78e1061114475b48b",
+      "artifact_kind": "incident_fixture",
+      "counterexample_id": "counterexample-dd5893d5c85f43cbbecfa6fefdce444d",
+      "stage": "reduced_source",
+      "source_episode_id": "episode-23905bfebfc14125a1a19d139fc4f636",
+      "has_replays_block": true,
+      "replays_block": {
+        "label": "history replay",
+        "status": "AVAILABLE",
+        "sources_found_by_replay": [
+          "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+          "counterexample-dd5893d5c85f43cbbecfa6fefdce444d"
+        ]
+      },
+      "replay_slots_in_bundle": [
+        [
+          1,
+          3,
+          "dev-3",
+          "episode-3ee5fecba5e241428b9cad9c716d66e4"
+        ],
+        [
+          2,
+          5,
+          "dev-5",
+          "episode-23905bfebfc14125a1a19d139fc4f636"
+        ]
+      ],
+      "source_history_replay": [
+        [
+          "counterexample-c241dbf2b5cd495bbc120fc549cf400a",
+          3
+        ],
+        [
+          "counterexample-dd5893d5c85f43cbbecfa6fefdce444d",
+          5
+        ]
+      ],
+      "selection_labels": [
+        [
+          "history_replay",
+          "history replay",
+          3
+        ],
+        [
+          "history_replay",
+          "history replay",
+          5
+        ]
+      ]
+    }
+  ],
+  "execution_errors": []
+}

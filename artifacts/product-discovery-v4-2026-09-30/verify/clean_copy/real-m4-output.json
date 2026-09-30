@@ -1,0 +1,8 @@
+{
+ "rows": 2,
+ "sentence": "Discovery protocol v4: the first 2 slots were history replays of the frozen agent history (see the saved plan), with no Explorer request. No Explorer slot is recorded: either discovery has not reached one yet, or it ended after the replays (for example because their sources used up the campaign's candidate requests); the campaign's recorded outcome says which.",
+ "found": [
+  "Found by History replay 1 of 2 · agent history row 3 (dev-3): a history replay of that row, never independent discovery.",
+  "Found by History replay 2 of 2 · agent history row 5 (dev-5): a history replay of that row, never independent discovery."
+ ]
+}

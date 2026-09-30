@@ -1,0 +1,183 @@
+{
+ "A_drop_second": {
+  "execution": {
+   "actor_episodes": 0,
+   "explorer_messages": 0,
+   "reason": "AGENT_HISTORY_CHANGED: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan",
+   "selections": 0,
+   "state": "ERROR"
+  },
+  "pre_replay_check": "refused: HistoryChanged",
+  "read_run_plan": "accepted (hash-level consistent)",
+  "start": "refused: HistoryChanged: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan"
+ },
+ "A_emptied": {
+  "execution": {
+   "actor_episodes": 0,
+   "explorer_messages": 0,
+   "reason": "AGENT_HISTORY_CHANGED: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan",
+   "selections": 0,
+   "state": "ERROR"
+  },
+  "pre_replay_check": "refused: HistoryChanged",
+  "read_run_plan": "accepted (hash-level consistent)",
+  "start": "refused: HistoryChanged: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan"
+ },
+ "A_forged_history_and_list": {
+  "execution": {
+   "actor_episodes": 0,
+   "explorer_messages": 0,
+   "reason": "AGENT_HISTORY_CHANGED: The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 88be316c7929\u2026, now e88296d03017\u2026);",
+   "selections": 0,
+   "state": "ERROR"
+  },
+  "pre_replay_check": "refused: HistoryChanged",
+  "read_run_plan": "accepted (hash-level consistent)",
+  "start": "refused: HistoryChanged: The store's prior history for this agent changed at or before the plan's record cutoff (frozen summary 88be316c7929\u2026, now e88296d03017\u2026); create a new plan"
+ },
+ "A_inject_dev6": {
+  "execution": {
+   "actor_episodes": 0,
+   "explorer_messages": 0,
+   "reason": "AGENT_HISTORY_CHANGED: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan",
+   "selections": 0,
+   "state": "ERROR"
+  },
+  "pre_replay_check": "refused: HistoryChanged",
+  "read_run_plan": "accepted (hash-level consistent)",
+  "start": "refused: HistoryChanged: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan"
+ },
+ "A_swap_order": {
+  "execution": {
+   "actor_episodes": 0,
+   "explorer_messages": 0,
+   "reason": "AGENT_HISTORY_CHANGED: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan",
+   "selections": 0,
+   "state": "ERROR"
+  },
+  "pre_replay_check": "refused: HistoryChanged",
+  "read_run_plan": "accepted (hash-level consistent)",
+  "start": "refused: HistoryChanged: The frozen history replay list does not match this plan's frozen agent history (summary e88296d03017\u2026); create a new plan"
+ },
+ "B_exclusions": {
+  "excluded_counts": {
+   "interrupted": 3,
+   "lab_error": 0,
+   "not_finished": 0,
+   "not_weave_verified": 3,
+   "recipe_unavailable": 0
+  },
+  "history_rows": {
+   "dev-5": [
+    3,
+    {
+     "VIOLATION": 3
+    }
+   ],
+   "dev-6": [
+    1,
+    {
+     "VIOLATION": 1
+    }
+   ]
+  },
+  "protected_recipe_in_plan": false,
+  "replay_rows": [
+   [
+    1,
+    "dev-5",
+    "3/3"
+   ]
+  ]
+ },
+ "C_after_cutoff": {
+  "replay_list_unchanged": true,
+  "rows": [
+   [
+    3,
+    "dev-5",
+    "3/3"
+   ],
+   [
+    2,
+    "dev-3",
+    "2/3"
+   ]
+  ],
+  "start": "accepted"
+ },
+ "D_pure": {
+  "order": [
+   [
+    3,
+    "dev-2",
+    "4/4"
+   ],
+   [
+    2,
+    "dev-5",
+    "3/3"
+   ],
+   [
+    4,
+    "dev-6",
+    "3/3"
+   ]
+  ]
+ },
+ "E_same_path": {
+  "actor_call": {
+   "arm": "B0",
+   "fixture_id": "standard-v1",
+   "purpose": "discovery",
+   "recipe": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 2,
+       "failure_code": "UPGRADE_REJECTED",
+       "terminal_status": "FAILED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 105
+   }
+  },
+  "explorer_requests": {
+   "v3": 1,
+   "v4": 0
+  },
+  "reproducer_source": [
+   {
+    "arm": "B0",
+    "fixture_id": "standard-v1",
+    "lifecycle": "COMPLETED",
+    "outcome": "VIOLATION",
+    "recipe": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    }
+   }
+  ]
+ }
+}

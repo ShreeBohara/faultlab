@@ -3,6 +3,14 @@ import json
 from app.contracts.models import canonical_json
 from app.telemetry.safety import public_json
 
+V3_HISTORY_CLAIM_RULE=('Results of a discovery v3 campaign are history-informed. A source whose recipe matches a history row '
+                       're-tries recorded evidence the Explorer was shown; report it as history-informed, never as independent '
+                       'discovery, and name the store and the frozen summary hash.')
+V4_HISTORY_CLAIM_RULE=('Results of a discovery v4 campaign are history-informed. A source found in a history replay slot is a '
+                       'history replay of that row (discovery_history_replays); any other source whose recipe matches a history '
+                       'row re-tries recorded evidence the Explorer was shown. Report each as such, never as independent '
+                       'discovery, and name the store and the frozen summary hash.')
+
 
 def episode_events(store, episode_id):
     events=[]; after=0
@@ -53,7 +61,7 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     known={p.get('request_id') for p in mechanic}
     mechanic.extend(m for m in store.list_records('mechanic_outputs') if m.get('campaign_id')==campaign_id and (not m.get('request_id') or m['request_id'] not in known))
     selections=[]
-    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row')
+    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row','history_replay')
     for selection in store.list_records('selections'):
         if selection.get('context',{}).get('campaign_id')==campaign_id:
             selections.append({k:selection[k] for k in fields if k in selection})
@@ -95,11 +103,22 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
             sources.append({'counterexample_id':counter['counterexample_id'],'source_episode_id':counter.get('source_episode_id'),
                             'reproduced':counter.get('reproduced'),'source_recipe_recorded':recipe is not None,
                             'matches_history_row':history_row_match(history['summary'],recipe) if recipe is not None else None})
+        replay=(((saved_plan or {}).get('plan') or {}).get('discovery') or {}).get('replay')
         result['discovery_history_matches']={'summary_hash':history['summary_hash'],'record_cutoff':history['record_cutoff'],
             'basis':MATCH_BASIS,'sources':sources,
-            'claim_rule':'Results of a discovery v3 campaign are history-informed. A source whose recipe matches a history row '
-                         're-tries recorded evidence the Explorer was shown; report it as history-informed, never as independent '
-                         'discovery, and name the store and the frozen summary hash.'}
+            # A v3 recording keeps its exact text; a v4 recording names v4 (review finding F4, September 30).
+            'claim_rule':V3_HISTORY_CLAIM_RULE if replay is None else V4_HISTORY_CLAIM_RULE}
+        if replay is not None:
+            # Discovery v4 only: the frozen replay list, the replay slots that ran, and which sources they found.
+            from app.lab import history_replay
+            replayed=history_replay.campaign_replays(store,campaign_id)
+            for source in sources:
+                source['history_replay']=replayed.get(source['source_episode_id'])
+            result['discovery_history_replays']={'label':history_replay.LABEL,'status':replay['status'],
+                'statement':replay['statement'],'rule':replay['rule'],'summary_hash':history['summary_hash'],
+                'replay_list':replay['rows'],'replay_slots':sorted(replayed.values(),key=lambda block:block['replay']),
+                'sources_found_by_replay':[source['counterexample_id'] for source in sources if source['history_replay']],
+                'claim_rule':history_replay.CLAIM_RULE}
     imported=store.get_record('import_execution_owners',campaign_id)
     if imported:
         target=imported['target']

@@ -1,7 +1,14 @@
 import type { Campaign, PolicyVersion } from '../generated/contracts'
 import type { Matrix } from '../api'
-import type { Experiments } from '../experiments'
+import type { ExperimentRecord, Experiments } from '../experiments'
 import { Badge, Panel } from './common'
+import { historyReplayTitle } from './SearchAttemptsPanel'
+
+/** Discovery v4 only (absent for every other protocol): which slot found the incident shown, so the summary never passes a
+ * history replay off as an Explorer find (review finding LOW-3, September 30). */
+export const foundByText = (record: ExperimentRecord | undefined) => record?.history_replay === undefined ? null
+  : record.history_replay ? `Found by ${historyReplayTitle(record.history_replay)}: a history replay of that row, never independent discovery.`
+  : 'Found by an Explorer pick in this discovery v4 campaign, not a history replay slot.'
 
 // Every value below is read from persisted records. Nothing is inferred, and a stage
 // that did not run is reported as not reached rather than left blank.
@@ -16,6 +23,7 @@ export function RunSummary({ campaign, matrix, experiments, policies }: { campai
   const records = experiments?.counterexamples ?? []
   // Keep reproduction, reduction and diagnosis attached to the same incident.
   const latest = records.at(-1)
+  const foundBy = foundByText(latest)
   const counterexample = latest?.counterexample
   const reduction = latest?.reduction ?? null
   const tested = latest?.interventions.at(-1)
@@ -31,6 +39,7 @@ export function RunSummary({ campaign, matrix, experiments, policies }: { campai
   const retainedLabel = campaign.active_policy_version === 'policy-v0' ? 'Baseline retained' : 'Current policy retained'
   return <Panel title="Run summary" className="summary-panel" aside={<div className="summary-heading-meta"><span className="small-label">Read from persisted records</span><Badge value={campaign.state ?? 'UNVERIFIED'} /></div>}>
     <div className="summary-context"><span>Actor <strong>{campaign.model}</strong></span><span>{records.length ? `Latest incident shown · ${records.length} recorded` : !experiments ? 'Incident evidence not loaded' : finished || campaign.state === 'IDLE' ? 'No learning-loop incident recorded' : 'Waiting for incident evidence'}</span></div>
+    {foundBy && <p className="muted summary-found-by">{foundBy}</p>}
     <div className="stat-strip">
       <div><strong>{counts?.valid_attempted ?? '—'}</strong><span>Main-loop trials</span></div>
       <div className="stat-alert"><strong>{counts?.violations ?? '—'}</strong><span>Main-loop violations</span></div>

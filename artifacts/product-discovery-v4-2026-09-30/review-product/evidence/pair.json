@@ -1,0 +1,16 @@
+{
+ "E4": {
+  "campaign_id": "campaign-7c73475426e645af8eb128da59eab03c",
+  "check": "CURRENT",
+  "check_message": "Unchanged: the store still holds exactly this history at row 3. Start checks it again.",
+  "state": "NO_CHANGE",
+  "reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ },
+ "E3": {
+  "campaign_id": "campaign-a16f39fa2ce9405da33bd62358c977a0",
+  "check": "CURRENT",
+  "check_message": "Unchanged: the store still holds exactly this history at row 7. Start checks it again.",
+  "state": "NO_CHANGE",
+  "reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+ }
+}

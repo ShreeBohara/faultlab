@@ -1,0 +1,5 @@
+Fixer gate_freeze: working tree after the fixer edits vs the builder's after.json (= the tree before the fixer). Protected audit files dropped from FILES; checks.py hashed by gate_freeze only, never displayed.
+CHANGED fingerprints/algorithm_hash: f66ae8bb570dffb9e5c7 -> ab296a32c118294f5f36
+CHANGED fingerprints/runtime_hash: 2a1815399697a774597c -> ee2d1df914bd54c766ea
+CHANGED fingerprints/tree_lab: 5c71cc245ccdec2e3aa3 -> cefc3b904505f6d408d5
+functions identical: 30 of 30; files identical: 20 of 20

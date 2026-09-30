@@ -1,0 +1,2 @@
+2026-09-30T05:35:33Z
+Corrected '15' -> '14' histories in CURRENT_STATUS.md (1 place) and docs/DISCOVERY_V4_HISTORY_REPLAY_2026-09-30.md (2 places) during the suite run; no test reads these files.

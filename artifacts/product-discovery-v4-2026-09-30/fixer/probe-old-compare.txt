@@ -1,0 +1,12 @@
+Fixer: old-protocol probe, reviewer checkpoint (4d1c21b, no v4) vs the current tree after the fixer (reviewer masking: created_at and 16-hex registration-id suffixes).
+run_options_default EQUAL
+run_options_first_four EQUAL
+run_options_ids DIFF ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability'] -> ['faultlab-discovery/v1', 'faultlab-discovery/v2-reachability', 'faultlab-discovery/v3-history', 'faultlab-discovery/v3-history-reachability', 'faultlab-discovery/v4-history-replay']
+v1-native | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v1-reference | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v2-reference | messages 24 selections 12 actor runs 4 ledger calls 12 state NO_CHANGE | differing fields: none
+v3-native-empty | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3-native-seeded | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3-reference-seeded | messages 16 selections 8 actor runs 7 ledger calls 8 state NO_CHANGE | differing fields: none
+v3pre-reference-seeded | messages 24 selections 12 actor runs 4 ledger calls 12 state NO_CHANGE | differing fields: none
+ALL SCENARIOS IDENTICAL: True
