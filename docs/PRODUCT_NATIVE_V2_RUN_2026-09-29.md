@@ -341,8 +341,8 @@ items are built. See the [citation-status note](PRODUCT_MECHANIC_CITATION_STATUS
 - With a healthy upgrade, neither arm needs to read the status, so the fault does not fire.
 - The challenge's completeness rule, which is a gate and stays unchanged, then makes the challenge INCONCLUSIVE.
 - The same pick ended v2d's challenge.
-- Every other challenge pair in v2f (24 of 24, plus 12 of 12 across v2d's fired schedules) had its fault fire and
-  **0 failed checks**.
+- All 24 challenge pairs in v2f had **0 failed checks** in both arms. In 18 of them the fault fired in both arms. In
+  v2d all 9 pairs had 0 failed checks, and 6 had the fault fire in both arms.
 
 **Why it stopped.**
 - The campaign had 10 evidence waits. Each cleared on its first retry.
