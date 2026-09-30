@@ -1,0 +1,21 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/app/agents/mechanic.py	2026-09-29 17:00:52
++++ backend/app/agents/mechanic.py	2026-09-29 19:03:10
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ from app.providers.runtime import RuntimeProviderError
+ from app.lab.provider_failures import record_provider_failure,record_transport_retry
+-from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,request_usage
++from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,ledger_retry_fits,request_usage
+ from app.contracts.tokens import validate_model_input
+ from pydantic import TypeAdapter,ValidationError
+ from app.contracts.models import MechanicOutput,DiagnosticProposal,canonical_json,new_id
+@@ -53,7 +53,8 @@
+                         request={'kind':request_kind,'request_id':request_id,'format_attempt':attempt,'phase':request_kind},
+                         backoff={'attempt':retry_attempt,'delay':delay,'campaign_retry_number':lab.used})  # counted just before
+                 generation,retries=await complete_with_backoff(send,failed=failed,admit=lambda:charge_ledger_retry(self.ledger,'mechanic'),
+-                                                               record=record_backoff,session=lab,role='mechanic')
++                                                               record=record_backoff,session=lab,role='mechanic',
++                                                               fits=lambda:ledger_retry_fits(self.ledger,'mechanic'))
+             self.ledger.reconcile(generation)
+             if self.metadata and generation.model_id!=expected:
+                 raise RuntimeProviderError('Provider returned a different frozen model')

@@ -1,0 +1,21 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/app/agents/explorer.py	2026-09-29 17:00:40
++++ backend/app/agents/explorer.py	2026-09-29 19:03:10
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ from app.providers.runtime import RuntimeProviderError
+ from app.lab.provider_failures import record_provider_failure,record_transport_retry
+-from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,request_usage
++from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,ledger_retry_fits,request_usage
+ from app.contracts.tokens import validate_model_input
+ from app.contracts.models import ExplorerOutput,EpisodeBudget,FaultSpec,canonical_json,new_id,content_hash
+ from app.lab.challenge import schedule_identity,identity_for
+@@ -301,7 +301,8 @@
+                              'phase':'discovery' if discovery else 'challenge' if challenge else 'other'},
+                     backoff={'attempt':attempt,'delay':delay,'campaign_retry_number':lab.used})  # counted just before
+             generation,retries=await complete_with_backoff(send,failed=failed,admit=admit_backoff,record=record_backoff,
+-                                                           session=lab,role='explorer',discovery=discovery)
++                                                           session=lab,role='explorer',discovery=discovery,
++                                                           fits=lambda:ledger_retry_fits(self.ledger,'explorer'))
+         self.ledger.reconcile(generation)
+         if self.metadata and generation.model_id!=expected:
+             raise RuntimeProviderError('Provider returned a different frozen model')

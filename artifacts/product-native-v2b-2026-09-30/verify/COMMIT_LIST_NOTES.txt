@@ -1,0 +1,81 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-30, native v2b round: builder, two reviews, fixer).
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, paths relative to
+the faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-native-v2b-2026-09-30/verify/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and whether
+it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = 2c178a7e1257731dddb7f92251d01d5db5985b4f.
+NOTE: the task text said the tip is 3a34215. The branch has one more commit on top of it: 2c178a7 "Native adapter v2
+first live run ..." (2026-09-29 16:49 -0700), which adds only docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md and files under
+artifacts/ (no code). The builder, both reviewers and the fixer all compared against 2c178a7, and so did this verifier.
+Commit on top of 2c178a7 (branch backup/part2-2026-09-22), NOT on cbbf957. The checked-out branch is main at cbbf957,
+so `git status` against HEAD shows hundreds of entries; plain `git diff 2c178a7 -- <file>` also misleads (files absent
+from main's index show as deleted). Compare with `git show 2c178a7:<file>` or use this list.
+
+COUNTS
+PRODUCT FILES: 32  (modified 27, new 5, deleted 0, mode changes 0). The 5 new files are not git-ignored.
+EVIDENCE FILES: every other line, all under artifacts/product-native-v2b-2026-09-30/ (git-ignored: needs `git add -f`):
+builder, review-integrity, review-product, fixer and verify.
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md, README.md,
+  backend/app/agents/explorer.py, backend/app/agents/mechanic.py, backend/app/agents/transport_retry.py,
+  backend/app/integrations/external_agent_v2.py, backend/app/integrations/registry.py,
+  backend/app/lab/diagnosis.py, backend/app/lab/discovery_protocol.py, backend/app/lab/learning.py,
+  backend/app/lab/provider_failures.py, backend/app/lab/readiness.py, backend/app/lab/run_plans.py,
+  backend/tests/integrations/test_native_adapter_v2.py, backend/tests/lab/test_campaign_transport_retry.py,
+  backend/tests/lab/test_native_adapter_v2_product.py, backend/tests/lab/test_transport_retry_plans.py,
+  docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md, docs/external-agent-setup.md, docs/user-guide.md,
+  frontend/src/components/CampaignPlan.tsx, frontend/src/components/DiscoveryProtocol.tsx,
+  frontend/src/components/RunSetup.tsx, frontend/src/components/SearchAttemptsPanel.tsx,
+  frontend/src/runPlans.ts, frontend/src/searchAttempts.ts, frontend/tests/native-adapter-v2.test.tsx
+NEW (not in the tip, not ignored):
+  backend/tests/agents/test_lab_backoff_review_fixes.py, backend/tests/agents/test_lab_role_backoff.py,
+  backend/tests/lab/test_lab_backoff_campaign.py, backend/tests/lab/test_native_v2_label_views.py,
+  frontend/tests/transport-backoff.test.tsx
+
+METHOD (commit_list/commit_list.py; copied from the native v2 verifier, TIP/EVID changed, revision 2 noted below)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index in verify/commit_list/, deleted by
+the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and executable bit) with the working
+file; every non-ignored working file not in the tip is NEW; the git-ignored evidence folder is walked directly.
+Passes: pass 1 before the test suite, pass 2 after the suite, pass 3 after all checks, and the final pass that wrote
+COMMIT_LIST.txt. The 32 product lines are byte-identical in all passes.
+Revision 2 (after pass 1): the copied script let `git hash-object` hash the protected paths (audit/promotion.json,
+audit/final-audit.json, backend/app/referee/checks.py) to compare them with the tip blobs. Pass 1 did that once (all three
+equal to the tip; no content opened by the verifier or displayed). From pass 1b on, the script records only their size and
+mtime (protected_not_read in the .json: the two audit JSONs last modified 2026-09-12). checks.py equality with the tip is
+established by gate_freeze (the repo's own code): file sha256 and scorer_hash equal.
+
+EXCLUDED FROM THE EVIDENCE WALK (listed in COMMIT_LIST.json 'excluded_evidence')
+  * caches: __pycache__ directories (fixer/testplugin, review-product/checks, review-product/gate_freeze, builder/gate_freeze);
+  * review-product/store-copy/lab.sqlite3 (+ -shm, -wal): the product reviewer's PRIVATE COPY of the live store
+    (/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3, 8.7 MB, over 5 MB anyway); the reviewer asked that it not
+    be force-added. The script's label for it says "scratch SQLite written by a probe"; it is in fact that store copy.
+    review-product/store-copy/exported-bundle.zip (57 KB, the regression bundle the reviewer exported from that copy) IS in
+    the list;
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.json themselves (a file cannot contain its own hash).
+  * No file over 5 MB is in the list, and no copy of checks.py: verify/checkpoint/tree (git archive of 2c178a7 used for
+    identity and gate_freeze), verify/clean_copy/tree (step 5 clean copy) and verify/spot/mutation-tree (my mutant runs)
+    were deleted before the final pass (they are absent, so they are not listed).
+  * Files written after the final pass are not in the list: only the PM's saved copy of the verifier report, if any.
+
+SYNC NOTE (important for anyone re-running scratch trees here)
+The Desktop folder is synced (iCloud-style). My mutant script rebuilt and deleted verify/spot/mutation-tree many times in a
+few minutes; afterwards the sync client re-created that folder with conflict copies ("docs 2", "promotion 2.py", ...,
+241 files: copies of backend/ and of NON-protected audit files, plus symlinks to the real contracts, docs, scripts,
+taskpacks and referee; no copy of checks.py, promotion.json or final-audit.json). A commit-list pass then sat idle
+while reading one of those copies until I killed it (the likely cause is a copy whose content the sync client had not
+yet written locally). I deleted the folder again (03:07:50 UTC) and confirmed it
+stayed deleted, except that at 03:08 UTC the sync client re-created an EMPTY directory skeleton
+(spot/mutation-tree/backend/tests/lab, no files), which I removed at ~03:10 UTC (empty directories are never listed); no conflict copy exists anywhere else in this evidence folder or anywhere in the repo outside artifacts/.
+Build scratch trees outside the synced Desktop, or create them once and delete them once.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py over every file in pass 3 (397 files): 0 hits (secret_scan_pass3.txt). The scanner was
+sanity-checked on a known dummy key in backend/tests/lab/test_native_baseline_study_planned.py (secret_scan_selftest.txt:
+1 hit, masked). The files added after pass 3 (this note, git_state_final.txt, scan outputs, pass files) were scanned before
+the final pass (secret_scan_final_additions.txt).

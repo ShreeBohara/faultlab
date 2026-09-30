@@ -1,0 +1,24 @@
+gate_freeze differences, ac7a12d2 tree (previous verifier record) -> this working tree: 14
+  files/backend/app/agents/mechanic.py: 266d6aad26b88e9f -> 0a2e77de302bdf76
+  files/backend/app/lab/diagnosis.py: d1d7bee025664dae -> 76d53c108e287156
+  fingerprints/algorithm_hash: 7afabd51a2a4f6bb -> b2575eb257ebe9a1
+  fingerprints/runtime_hash: ac7a12d2c1fc3baf -> 182924246224e4dc
+  fingerprints/source_hash: 99a9034f5f2a9ed5 -> f6d2d6eb342d7990
+  fingerprints/tree_lab: 21bb95305f32817d -> ba9a78c2302ecefe
+  functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256: 947a277409050dfd -> e03cb7bc44b781da
+  functions/backend/app/agents/mechanic.py::Mechanic/lines: 13-76 -> 13-90
+  functions/backend/app/agents/mechanic.py::Mechanic/text_sha256: b76ad23b0199598b -> 330db33d2ddb2f4c
+  functions/backend/app/lab/diagnosis.py::runtime_contract/ast_sha256: 15ee64ec846de8b9 -> 433dbcff3667392e
+  functions/backend/app/lab/diagnosis.py::runtime_contract/lines: 17-77 -> 29-89
+  functions/backend/app/lab/diagnosis.py::runtime_contract/text_sha256: 9b2564c7234e2514 -> 388a0581b83552c8
+  functions/backend/app/lab/diagnosis.py::summarize_evidence/lines: 143-184 -> 155-196
+  functions/backend/app/lab/diagnosis.py::trial_outcomes/lines: 79-90 -> 91-102
+files/backend/app/referee/checks.py unchanged: True
+files/backend/app/referee/manifests.py unchanged: True
+files/backend/app/lab/promotion.py unchanged: True
+files/backend/app/lab/evaluation.py unchanged: True
+files/backend/app/agents/actor.py unchanged: True
+files/backend/app/agents/prompts/actor.md unchanged: True
+files/backend/app/agents/progress.py unchanged: True
+files/audit/development.json unchanged: True
+assess_pairs unchanged (text, ast, lines): True 3 fields

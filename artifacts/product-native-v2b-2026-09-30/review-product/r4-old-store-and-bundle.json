@@ -1,0 +1,149 @@
+{
+ "api_vs_saved_snapshots": {
+  "learn-budget-final.json": "IDENTICAL",
+  "learn-evidence-wait-final.json": "IDENTICAL",
+  "learn-experiments-final.json": "IDENTICAL",
+  "learn-final.json": "IDENTICAL",
+  "learn-matrix-final.json": "IDENTICAL",
+  "learn-plan-final.json": "IDENTICAL",
+  "learn-policy-status-final.json": "IDENTICAL",
+  "learn-search-attempts-final.json": "IDENTICAL"
+ },
+ "baseline_campaign": "campaign-1f350c6d8861419f9e2d246e104fb6ab",
+ "first_build_report_record": {
+  "citation_protocol": "faultlab-native-adapter/v2-shown-labels-final-turn",
+  "cited_evidence_tokens": [
+   "obs-1",
+   "obs-2",
+   "obs-4",
+   "obs-5",
+   "obs-6"
+  ],
+  "cited_unshown_labels": [],
+  "labels_shown_to_agent": [
+   "obs-1",
+   "obs-2",
+   "obs-4",
+   "obs-5",
+   "obs-6"
+  ]
+ },
+ "import": {
+  "import_id": "bundle-5cf40a410f0c455b8fc4e6e45938f177",
+  "v21_target": {
+   "agent": "smolagents-v2",
+   "agent_registration_id": "smolagents-1.26.0-adapter-v2-3569203f8253c047",
+   "compatible": true,
+   "configuration_hash": "3569203f8253c0472042c30c2160becd221f422635ce8e1d1dc604827c32c3ed",
+   "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "reason": null
+  }
+ },
+ "import_rerun": {
+  "assertions": {
+   "attempted": 3,
+   "fresh": true,
+   "lab_integrity_errors": 0,
+   "provider_backed": false,
+   "reproduced": false,
+   "required_trials": 3,
+   "source_modes": [
+    "offline_fixture"
+   ],
+   "target_failures": 0,
+   "target_invariant": "C4",
+   "valid_trials": 3
+  },
+  "episodes": [
+   {
+    "cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "hidden_rows": [
+     3
+    ],
+    "journal_rows": 4,
+    "labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "not_decoded": [],
+    "protocol": "faultlab-native-adapter/v2.1-shown-order-labels"
+   },
+   {
+    "cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "hidden_rows": [
+     3
+    ],
+    "journal_rows": 4,
+    "labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "not_decoded": [],
+    "protocol": "faultlab-native-adapter/v2.1-shown-order-labels"
+   },
+   {
+    "cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "hidden_rows": [
+     3
+    ],
+    "journal_rows": 4,
+    "labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "not_decoded": [],
+    "protocol": "faultlab-native-adapter/v2.1-shown-order-labels"
+   }
+  ],
+  "status": "COMPLETED"
+ },
+ "learn_campaign": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+ "learn_recording": {
+  "episodes": 35,
+  "plan_transport_retry": "faultlab-transport-retry/v1",
+  "transport_retries": [
+   {
+    "attempt": 1,
+    "campaign_id": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+    "charged_model_calls": 1,
+    "code": "CONNECTION_ERROR",
+    "episode_id": "episode-8a4faaec254c4b2491278b5eebcb2a4c",
+    "protocol": "faultlab-transport-retry/v1",
+    "provider_failure_id": "provider-failure-676e97ea680a46a988dc22f4adf5f054",
+    "recorded_at": "2026-09-29T23:44:23.520455+00:00",
+    "request": {
+     "challenge": false,
+     "kind": "explorer_selection",
+     "selection_index": 5,
+     "slot_request": null
+    },
+    "retry_id": "transport-retry-d2adcae467bf4411b8cacac031ea35d0",
+    "role": "explorer",
+    "study_id": "campaign-b05ac2809c844a2f9d5211a006c372f4"
+   }
+  ]
+ },
+ "registrations_in_old_store": [
+  "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4"
+ ],
+ "regressions": [
+  "regression-53b03496c96b4355884ade7497a13168",
+  "regression-d811705bdca24ce2a2f0ca914e6fa667",
+  "regression-26623a3673c34c2894795e0cc38de3a1"
+ ]
+}

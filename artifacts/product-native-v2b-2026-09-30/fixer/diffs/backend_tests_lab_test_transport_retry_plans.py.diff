@@ -1,0 +1,11 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/tests/lab/test_transport_retry_plans.py	2026-09-29 17:03:04
++++ backend/tests/lab/test_transport_retry_plans.py	2026-09-29 19:05:01
+@@ -80,7 +80,7 @@
+ 
+ 
+ def test_retries_are_visible_in_search_attempts_and_the_campaign_recording(owner):
+-    campaign = learn_campaign_v1_rule(owner, DISCOVERY_V2)   # rule v1 records (rule v2: test_lab_transport_backoff.py)
++    campaign = learn_campaign_v1_rule(owner, DISCOVERY_V2)   # rule v1 records (rule v2: test_lab_backoff_campaign.py)
+     execute(owner, campaign, Flaky(lambda slot, request, context: raw(DELAYED, seed=slot), failing={1}))
+     retry, = owner.store.list_records('transport_retries')
+ 

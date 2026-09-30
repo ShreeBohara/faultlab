@@ -1,0 +1,14 @@
+{
+ "git_state_before.txt / git_state_after_suite.txt / git_state_final.txt": "HEAD, branch, backup tip, .git/index sha256 and mtime, staged count, refs hash, stash count; identical at start, after the suite and at the end",
+ "guard/": "verifier network/.env guards reused unchanged from artifacts/product-native-v2-2026-09-29/verify/guard/ (README.txt)",
+ "suite/": "one ./scripts/test.sh run (all four stages) under the guards: test-sh.log (exit 0), guard-summary.json, sampler, ports, times",
+ "identity/": "identity.py (product's own functions) on the working tree and on a git-archive copy of backup tip 2c178a7; compare.txt also checks every value the fixer reported (0 mismatches)",
+ "gate_freeze/": "repo gate_freeze.py (loaded from the tip copy) on the tip copy and the working tree, audit JSONs dropped; compare.txt; protected_paths_check.txt",
+ "checkpoint/NOTE.txt": "the git-archive copy of 2c178a7 used above (deleted after use; it held a copy of checks.py)",
+ "spot/": "spot checks of the fixer's findings: doc_checks.py re-run on repo (20/20) and on fixer/before (0/20); fixer/before copies equal the product reviewer's end snapshot; files changed since the review; misreading check and its self-test re-run; my own 11 mutants (my_mutants.py, my-mutants.log: all caught, controls pass)",
+ "ignored_deps/": "step 5: the new/changed tests run under an open-recording hook (backend 122 passed, frontend 10 passed) and every repository path they opened classified with git check-ignore",
+ "clean_copy/": "step 5: new/changed tests (and the whole frontend unit suite) in a git-archive copy of 2c178a7 plus the 32 changed files, no ignored files (NOTE.txt)",
+ "v1_golden/NOTE.txt": "native adapter v1 module, golden fixture and golden test byte-identical to the tip; golden test passed in the suite",
+ "commit_list/": "commit_list.py (revision 2 never hashes protected paths), passes 1-4, secret_scan.py and its outputs",
+ "COMMIT_LIST.txt / COMMIT_LIST.json / COMMIT_LIST_NOTES.txt": "the commit list (final pass) and its notes"
+}

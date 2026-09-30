@@ -1,0 +1,29 @@
+{
+  "note": "Illustrative, with FAKE ids (evidence-A..D). Each shape is pinned by a named offline test; no live data.",
+  "native_v2_labels_after_a_broker_retried_send_F4": {
+    "journal": {"row1": "evidence-A get_order", "row2": "evidence-B update_order", "row3": "evidence-C send_confirmation attempt 1 (TRANSIENT_UNAVAILABLE, never returned to the agent)", "row4": "evidence-D send_confirmation attempt 2 (TRANSIENT_UNAVAILABLE, the tool result)"},
+    "before_v2_journal_positions": {"agent_sees": ["obs-1", "obs-2", "obs-4"], "report_submitted": {"labels_shown_to_agent": ["obs-1", "obs-2", "obs-4"], "evidence_labels": {"evidence-A": "obs-1", "evidence-B": "obs-2", "evidence-C": "obs-3", "evidence-D": "obs-4"}, "cited_unshown_labels": []}},
+    "after_v2_1_shown_order": {"agent_sees": ["obs-1", "obs-2", "obs-3"], "report_cites": ["obs-1", "obs-2", "obs-3"], "decoded": ["evidence-A", "evidence-B", "evidence-D"], "report_submitted": {"citation_protocol": "faultlab-native-adapter/v2.1-shown-order-labels", "labels_shown_to_agent": ["obs-1", "obs-2", "obs-3"], "evidence_labels": {"evidence-A": "obs-1", "evidence-B": "obs-2", "evidence-D": "obs-3"}, "cited_tokens_not_decoded": []}},
+    "a_guess_past_the_shown_labels_after": {"report_cites": ["obs-1", "obs-2", "obs-3", "obs-4"], "decoded": ["evidence-A", "evidence-B", "evidence-D", "obs-4"], "cited_tokens_not_decoded": ["obs-4"], "scored": "C6 fails: Report references undelivered evidence"},
+    "business_budget_closes_later": {"observations_list_shown_in_journal_order": ["obs-1", "obs-2", "obs-4", "obs-3"], "meaning": "evidence-C is shown for the first time here, so it gets the next number (obs-4); the others keep theirs"},
+    "tests": ["backend/tests/integrations/test_native_adapter_v2.py::test_a_broker_retried_send_gives_contiguous_labels_and_decodes_to_the_rows_shown", "::test_a_guess_past_the_shown_labels_is_not_decoded", "::test_an_observation_first_shown_later_gets_the_next_label_and_shown_ones_keep_theirs"]
+  },
+  "what_the_diagnosis_Mechanic_reads_for_that_episode (unchanged view, new contract text)": {
+    "observation_rows": [["evidence-A", 1, 0], ["evidence-B", 2, 1], ["evidence-C", 3, 2], ["evidence-D", 4, 2]],
+    "report_row_evidence_ids": ["o1", "o2", "o4"],
+    "agent_labels_anywhere_in_request": "none (no obs-<digit> token)",
+    "actor_contract.memory_before": "... the agent sees each delivered observation's evidence_id as its journal label (obs-N), and its report's cited labels are decoded back to the full evidence IDs before validation.",
+    "actor_contract.memory_after": "... numbered 1, 2, 3, ... in the order the observations were first shown to it; an observation it was never shown ... gets no label ... In an evidence summary a report citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, including ones the agent never saw, so it can differ from the agent's obs-N.",
+    "test": "backend/tests/lab/test_native_v2_label_views.py::test_diagnosis_context_for_a_v2_f4_episode_has_no_label_gap_or_undecoded_label"
+  },
+  "lab_role_transport_retry": {
+    "before_rule_v1_learn_plan": {"explorer_request": "lost -> retry after ~0 s -> lost -> campaign ERROR", "terminal_reason": "CONNECTION_ERROR: A model request failed; inspect the saved provider diagnostics."},
+    "after_rule_v2_learn_plan": {
+      "explorer_request_lost_twice": "lost -> wait 5 s -> retry 1 (charged, recorded) -> lost -> wait 20 s -> retry 2 (charged, recorded) -> answered; campaign continues",
+      "transport_retries_record": {"retry_id": "transport-retry-FAKE1", "protocol": "faultlab-transport-retry/v2-lab-backoff", "code": "CONNECTION_ERROR", "attempt": 2, "retry_delay_seconds": 20, "campaign_retry_number": 2, "campaign_retries_max": 12, "role": "explorer", "request": {"kind": "explorer_selection", "phase": "discovery", "challenge": false, "selection_index": 0, "slot_request": null}, "charged_model_calls": 1, "provider_failure_id": "provider-failure-FAKE2"},
+      "all_retries_fail_terminal_reason": "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry of this request failed. Inspect the saved provider diagnostics.",
+      "stop_during_wait_terminal_reason": "External stop requested while a failed Explorer model request waited to be re-sent (transport retry backoff); it was not sent again. Remote effects are retained."
+    },
+    "tests": ["backend/tests/agents/test_lab_role_backoff.py", "backend/tests/lab/test_lab_backoff_campaign.py", "frontend/tests/transport-backoff.test.tsx"]
+  }
+}

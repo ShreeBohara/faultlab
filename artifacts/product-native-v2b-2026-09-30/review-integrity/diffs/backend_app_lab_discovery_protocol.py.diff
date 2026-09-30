@@ -1,0 +1,14 @@
+--- backup:backend/app/lab/discovery_protocol.py
++++ worktree:backend/app/lab/discovery_protocol.py
+@@ -26,7 +26,10 @@
+ ``explorer_requests_max`` (counting it would let a network fault use up a slot's re-plan).
+ It is bounded separately and declared as ``explorer_transport_retries_max`` (one per
+ request: 8 under v1, 16 under v2), and charged on the campaign ledger before it is sent.
+-Plans saved before this field existed declare no Explorer retry.
++Plans saved before this field existed declare no Explorer retry. Under the model transport
++retry rule v2 (faultlab-transport-retry/v2-lab-backoff, every new Learn plan) one request may
++get up to three backed-off retries; the declared number above still bounds all discovery-phase
++Explorer retries (enforced for every discovery protocol), within the campaign's cap of 12.
+ """
+ from app.agents.transport_retry import RETRIES_PER_REQUEST
+ from app.lab.challenge import SCHEDULE_IDENTITY_V1, SCHEDULE_IDENTITY_V2, identity_for

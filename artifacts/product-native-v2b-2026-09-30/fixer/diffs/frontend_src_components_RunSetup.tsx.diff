@@ -1,0 +1,11 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/frontend/src/components/RunSetup.tsx	2026-09-29 17:13:08
++++ frontend/src/components/RunSetup.tsx	2026-09-29 19:06:39
+@@ -56,7 +56,7 @@
+           <p className="muted">{agent.source_conformance === 'VERIFIED' ? 'Installed source and adapter conformance verified.' : 'Installed source and adapter conformance unavailable.'} This is not behavioral validation. Provider access has not been checked.</p>
+           {!!agent.limitations.length && <details><summary>Agent limitations</summary><ul className="muted">{agent.limitations.map(item => <li key={item}>{item}</li>)}</ul></details>}
+           {isNativeAgent(agentKind) && <p className="muted">Supports baseline, original Learn and compatible policy comparison. Separate reference-context and completion research studies are not supported.</p>}
+-          {agentKind === 'smolagents-v2' && <p className="muted">Adapter v2 is a separate agent from v1 (the same smolagents code): it shows each delivered observation's evidence ID as a short label (obs-1, obs-2, …), decodes cited labels back to the real IDs, and on the final turn offers only final_answer with a structured final-report format. Its results are never pooled with adapter v1.</p>}
++          {agentKind === 'smolagents-v2' && <p className="muted">Adapter v2 is a separate agent from v1 (the same smolagents code): it shows each observation it hands to the agent as a short label (obs-1, obs-2, …, numbered in the order the agent first sees them; an observation it never sees gets no label), decodes the labels it showed back to the real IDs, and on the final turn offers only final_answer with a structured final-report format. Its results are never pooled with adapter v1.</p>}
+         </>}
+       </div> : <p className="profile-note">Offline smoke uses the handwritten reference in a fresh synthetic world. It makes no model calls and does not measure learned improvement.</p>}
+       <div className="supported-task"><span className="small-label">SUPPORTED TASK</span><h3>{value.task.label}</h3><p className="muted">{value.task.description}</p></div>

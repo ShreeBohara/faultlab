@@ -1,0 +1,21 @@
+Product review (native-v2b), how the evidence in this folder was produced. All offline, $0, no provider/W&B/Weave call.
+
+Backend/frontend/build:  ./scripts/test.sh backend frontend build   -> full-test-backend-frontend-build.log
+Browser:                 FAULTLAB_DASHBOARD_PORT=5199 ./scripts/test.sh browser   -> browser-stage.log
+Reviewer checks (pytest, backend suite's own socket guard and .env audit hook loaded by checks/conftest.py), from faultlab/backend:
+  ../.venv/bin/python -m pytest -c ../artifacts/product-native-v2b-2026-09-30/review-product/checks/pytest.ini \
+     --rootdir ../artifacts/product-native-v2b-2026-09-30/review-product/checks -p no:cacheprovider -s -q \
+     ../artifacts/product-native-v2b-2026-09-30/review-product/checks            -> all-review-checks.log (20 passed)
+  per-file logs: r1-backoff-operator.log, r1b-backoff-loop-roles.log, r2-native-v21-labels.log, r3-v3-learn-mechanic-view.log,
+  r4-old-store-and-bundle.log; JSON: r2-native-v21-summary.json, r3-v3-learn-mechanic-view.json, r4-old-store-and-bundle.json
+UI validators on real API JSON (ui-fixtures/ written by test_r1_backoff_operator.py::test_save_real_api_json...):
+  cd ui-check && ln -s ../../../../frontend/node_modules node_modules && ./node_modules/.bin/vitest run --config vitest.config.mjs \
+     --reporter=verbose --silent=false ; rm node_modules          -> ui-check.log
+Identities: backend$ ../.venv/bin/python ../artifacts/.../review-product/identity_guarded.py -> identity-review.json (== builder/identity-after.json)
+Gate freeze: python3 gate_freeze/run.py <faultlab root> (gate_freeze.py taken from backup/part2-2026-09-22 by git show) -> gate_freeze/compare.txt
+Saved store: store-copy/lab.sqlite3 is a PRIVATE COPY of /Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3 made with the
+  SQLite backup API from a mode=ro&immutable=1 connection; source size/mtime/sha256 identical before and after
+  (store-source-stat-before.txt / -after.txt). 9 MB; *.sqlite3 is git-ignored, but do not force-add it. store-copy/exported-bundle.zip
+  is the regression bundle downloaded from that copy in check 4.
+live_mechanic_view.py -> live-mechanic-view.json; history_identity_check.py -> history-identity-check.json (both read the copy read-only).
+No product file changed: snapshot-start.txt == snapshot-end.txt (blob hashes of every non-ignored file outside artifacts/).

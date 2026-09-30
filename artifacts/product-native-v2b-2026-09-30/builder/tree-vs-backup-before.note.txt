@@ -1,0 +1,1 @@
+First run (before any edit) compared every tracked file including the 3 protected files by git blob hash only (no content displayed); result: 0 differences. Script since changed to skip them.

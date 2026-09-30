@@ -1,0 +1,4 @@
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 0, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 0, "dotenv_opens": 0, "unix_connect": 0}}
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 0, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 0, "dotenv_opens": 0, "unix_connect": 0}}
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 0, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 0, "dotenv_opens": 0, "unix_connect": 0}}
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 0, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 0, "dotenv_opens": 0, "unix_connect": 0}}

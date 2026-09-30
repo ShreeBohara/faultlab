@@ -1,0 +1,18 @@
+diff --git a/- b/backend/app/lab/readiness.py
+index 0000000..d127ba1 100644
+--- a/-
++++ b/backend/app/lab/readiness.py
+@@ -59,6 +59,13 @@ def execution_failure(error):
+     elif isinstance(error, RuntimeProviderError):
+         result = {'code': error.code, 'message': 'A model request failed; inspect the saved provider diagnostics.',
+                   'diagnostics': error.diagnostics}
++        # Rule v2 lab-role backoff (app.agents.transport_retry): say how many retries were tried and why no
++        # further one was sent. Fixed FaultLab text and counts only; failures under rule v1 keep the text above.
++        summary = getattr(error, 'transport_retry_summary', None)
++        if isinstance(summary, dict):
++            from app.agents.transport_retry import retry_failure_message
++            result['message'] = retry_failure_message(summary)
++            result['transport_retries'] = {key: summary[key] for key in ('protocol', 'role', 'retries_tried', 'waits_seconds', 'reason')}
+     elif isinstance(error, httpx.HTTPStatusError):
+         result = {'code': 'LOCAL_HTTP_ERROR', 'message': 'A local service rejected the request.',
+                   'http_status': error.response.status_code}

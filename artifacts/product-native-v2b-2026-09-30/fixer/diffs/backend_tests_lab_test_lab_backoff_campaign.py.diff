@@ -1,0 +1,25 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/tests/lab/test_lab_backoff_campaign.py	2026-09-29 17:48:36
++++ backend/tests/lab/test_lab_backoff_campaign.py	2026-09-29 19:05:10
+@@ -101,6 +101,22 @@
+     assert final.state == 'ERROR' and 'declared discovery Explorer retry bound was reached' in final.terminal_reason
+     assert len(v2_records(owner)) == 8 and waits == [5, 20] * 4
+     assert provider.sent == ledger.used_calls == 13       # four slots of three requests, then the refused one
++
++
++def test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting(owner, monkeypatch):
++    """Review findings LOW-2 / P-4 (September 30): the unreserved budget is checked before the backoff wait (without
++    charging), so the campaign ends at once, and the message says no retry was sent (not "after 0 transport retries")."""
++    waits = record_waits(monkeypatch)
++    campaign = learn_campaign(owner, DISCOVERY_V1)
++    provider = Flaky(answer, failing={1})
++    final, ledger, runner = execute(owner, campaign, provider, headroom=1)     # room for the first request only
++    message = ("A model request failed and no transport retry was sent: a retry did not fit the campaign's unreserved "
++               'budget. Inspect the saved provider diagnostics.')
++    assert final.state == 'ERROR' and final.terminal_reason == 'CONNECTION_ERROR: ' + message
++    error, = owner.store.list_records('execution_errors')
++    assert error['message'] == message and error['transport_retries'] == {
++        'protocol': TRANSPORT_RETRY_PROTOCOL_V2, 'role': 'explorer', 'retries_tried': 0, 'waits_seconds': [], 'reason': 'BUDGET_REFUSED'}
++    assert waits == [] and provider.sent == 1 and not v2_records(owner)
+ 
+ 
+ def test_retries_are_visible_in_search_attempts_and_the_recording(owner, monkeypatch):

@@ -1,0 +1,1263 @@
+[
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 0
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":0},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [],
+   "prior_selection_refs": [],
+   "reachability": {
+    "agent_business_calls": 6,
+    "agent_outcome": {
+     "notification": "SUCCEEDED",
+     "upgrade": "SUCCEEDED"
+    },
+    "agent_path": [
+     "get_order:orders#200",
+     "update_order:orders#202",
+     "get_operation_status:orders#200",
+     "get_operation_status:orders#200",
+     "get_operation_status:orders#200",
+     "send_confirmation:notifications#201"
+    ],
+    "all_forced": true,
+    "caller_model": {
+     "adapter_attempts": 2,
+     "agent": "reference",
+     "caller_id": "reference-actor/policy-v0/v2",
+     "client_timeout_seconds": 1.0,
+     "facts": [
+      "This agent has no wait action; the clock advances only when it makes a business call.",
+      "Every HTTP attempt advances the clock 1 tick, including the automatic retry attempt.",
+      "It has at most 7 business calls: turn 8 is reserved for the final report.",
+      "The adapter makes at most 2 attempts per call, retrying after 429/5xx or a 1 s timeout, so a failure_count of 1 is absorbed before the agent sees it.",
+      "While an operation is pending it checks that operation's status once per turn until it finishes.",
+      "On its normal path it does not send a failed write again. If both attempts of a write fail, the status check says UNKNOWN; it then checks status at most 3 times (a failed check counts too) and stops, leaving the task unfinished."
+     ],
+     "http_attempts": 18,
+     "max_business_calls": 7,
+     "polling": "one status check per turn while the operation is pending; at most 3 checks that return UNKNOWN or fail, and no re-send",
+     "resends_failed_writes": false,
+     "ticks": 20,
+     "ticks_per_http_attempt": 1,
+     "unknown_status_checks": 3,
+     "validated_against": "the typical path of deepseek-ai/DeepSeek-V3.1 under policy-v0, not other models: in a read-only back-test of stored completed development episodes, every modelled attempt seen in at least 10 of them was reached in at least 80% (scripts/experiments/check_reachability_caller.py)",
+     "wait_action": false
+    },
+    "faults": [
+     {
+      "agent_attempts_seen": 1,
+      "attempt": 1,
+      "explanation": "Fires on this agent's normal path: update_order:orders attempt 1 happens in the pre-check replay (business call 2 of at most 7).",
+      "fault": "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED",
+      "index": 0,
+      "kind": "F2",
+      "reason_code": "FORCED",
+      "rule": null,
+      "target": "update_order:orders",
+      "verdict": "FORCED"
+     }
+    ],
+    "fixture_id": "standard-v1",
+    "labeller": "faultlab-reachability/v2",
+    "recipe": [
+     "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+    ],
+    "simulator_business_source_hash": "0cf3b1e55878f439375a1612fc4edb42935e97732c3e83f2bcd152ed2c083171"
+   },
+   "reason": null,
+   "refused_fault_spec": null,
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SELECTED"
+  },
+  "selected_output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 0
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "selection_index": 0,
+  "selection_ref": "selection-134d39f4e756447eb55cd4b057edcf4d",
+  "transport_retries": [
+   {
+    "attempt": 1,
+    "code": "HTTP_ERROR",
+    "http_status": 503,
+    "protocol": "faultlab-transport-retry/v2-lab-backoff",
+    "provider_failure_id": "provider-failure-eab4b84153894e93b817ef92f448569c",
+    "retry_delay_seconds": 5,
+    "retry_id": "transport-retry-82cc62eebac34ac68ac60928c6b9c8b5"
+   },
+   {
+    "attempt": 2,
+    "code": "REQUEST_TIMEOUT",
+    "protocol": "faultlab-transport-retry/v2-lab-backoff",
+    "provider_failure_id": "provider-failure-4ea5bccc82784672bd57ff6cf0729c30",
+    "retry_delay_seconds": 20,
+    "retry_id": "transport-retry-80ad06a8aabb4ee9aa90a0b299968f93"
+   }
+  ],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 3,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 1
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":1},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 1
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 1,
+  "selection_ref": "selection-07a20c3f255047439d40f249a100d835",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 1
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":1},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 1
+   },
+   "replan_of": "selection-07a20c3f255047439d40f249a100d835",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 1,
+  "selection_ref": "selection-3ac8a28b08774975a334ba33dd1c2192",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 2
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":2},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 2
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 2,
+  "selection_ref": "selection-a0dbe83e8e6f447082c4379820180bd7",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 2
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":2},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 2
+   },
+   "replan_of": "selection-a0dbe83e8e6f447082c4379820180bd7",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 2,
+  "selection_ref": "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 3
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":3},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 3
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 3,
+  "selection_ref": "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 3
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":3},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 3
+   },
+   "replan_of": "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 3,
+  "selection_ref": "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 4
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":4},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 4
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 4,
+  "selection_ref": "selection-dcbe05b161fd4674aac70ae60433476d",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 4
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":4},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 4
+   },
+   "replan_of": "selection-dcbe05b161fd4674aac70ae60433476d",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 4,
+  "selection_ref": "selection-256c6556ab3846dc914988ffb742cf34",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 5
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":5},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 5
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 5,
+  "selection_ref": "selection-57b93eb709b3438f8dd0c196607ab268",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 5
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":5},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34",
+    "selection-57b93eb709b3438f8dd0c196607ab268"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 5
+   },
+   "replan_of": "selection-57b93eb709b3438f8dd0c196607ab268",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 5,
+  "selection_ref": "selection-0b70fa7153314d0f90b241d8692f12d0",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 6
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":6},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34",
+    "selection-57b93eb709b3438f8dd0c196607ab268",
+    "selection-0b70fa7153314d0f90b241d8692f12d0"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 6
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 6,
+  "selection_ref": "selection-f3f672fc05e846d392708d5d377102bb",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 6
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":6},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34",
+    "selection-57b93eb709b3438f8dd0c196607ab268",
+    "selection-0b70fa7153314d0f90b241d8692f12d0",
+    "selection-f3f672fc05e846d392708d5d377102bb"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 6
+   },
+   "replan_of": "selection-f3f672fc05e846d392708d5d377102bb",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 6,
+  "selection_ref": "selection-a25c80653ae447cc8acc8afb56ee56ab",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 7
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":7},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34",
+    "selection-57b93eb709b3438f8dd0c196607ab268",
+    "selection-0b70fa7153314d0f90b241d8692f12d0",
+    "selection-f3f672fc05e846d392708d5d377102bb",
+    "selection-a25c80653ae447cc8acc8afb56ee56ab"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 7
+   },
+   "replan_of": null,
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 1,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 7,
+  "selection_ref": "selection-1c8d7fc1d08f42e5bba2e98d7155e7b2",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ },
+ {
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "error": null,
+  "output": {
+   "fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 7
+   },
+   "hypothesis": "Offline scripted selection"
+  },
+  "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "provenance": "model",
+  "raw_response": "{\"fault_spec\":{\"primitives\":[{\"kind\":\"F2\",\"occurrence\":1,\"parameters\":{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"},\"target_service\":\"orders\",\"target_tool\":\"update_order\"}],\"seed\":7},\"hypothesis\":\"Offline scripted selection\"}",
+  "search_decision": {
+   "discovery_protocol": "faultlab-discovery/v2-reachability",
+   "identity_version": "faultlab-schedule-identity/v2-order-aware",
+   "prior_episode_refs": [
+    "episode-bda518e969af4335b51d5aa73033f55f"
+   ],
+   "prior_selection_refs": [
+    "selection-134d39f4e756447eb55cd4b057edcf4d",
+    "selection-07a20c3f255047439d40f249a100d835",
+    "selection-3ac8a28b08774975a334ba33dd1c2192",
+    "selection-a0dbe83e8e6f447082c4379820180bd7",
+    "selection-ffce0ebfe27d42a38d49959b3274d1ea",
+    "selection-7b7fcda5cc794265b3d2f6d664ed6b39",
+    "selection-8ae77f27b41449d88b244ab6cfcb9fdf",
+    "selection-dcbe05b161fd4674aac70ae60433476d",
+    "selection-256c6556ab3846dc914988ffb742cf34",
+    "selection-57b93eb709b3438f8dd0c196607ab268",
+    "selection-0b70fa7153314d0f90b241d8692f12d0",
+    "selection-f3f672fc05e846d392708d5d377102bb",
+    "selection-a25c80653ae447cc8acc8afb56ee56ab",
+    "selection-1c8d7fc1d08f42e5bba2e98d7155e7b2"
+   ],
+   "reachability": null,
+   "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+   "refused_fault_spec": {
+    "primitives": [
+     {
+      "kind": "F2",
+      "occurrence": 1,
+      "parameters": {
+       "completion_delay_ticks": 3,
+       "failure_code": null,
+       "terminal_status": "SUCCEEDED"
+      },
+      "target_service": "orders",
+      "target_tool": "update_order"
+     }
+    ],
+    "schema_version": "faultlab/v1",
+    "scope": "orders.upgrade_then_confirm/v1",
+    "seed": 7
+   },
+   "replan_of": "selection-1c8d7fc1d08f42e5bba2e98d7155e7b2",
+   "schedule_hash": "241e0fb06c08fc9b576bce58a10085df6b8c0160626ac30a38cbf8c6a65fa2c0",
+   "slot_request": 2,
+   "status": "SKIPPED_DUPLICATE"
+  },
+  "selected_output": null,
+  "selection_index": 7,
+  "selection_ref": "selection-532b88771c2348a09d366a8432aeea7e",
+  "transport_retries": [],
+  "usage": {
+   "cost_dollars": null,
+   "input_tokens": 100,
+   "model_calls": 1,
+   "output_tokens": 20
+  }
+ }
+]

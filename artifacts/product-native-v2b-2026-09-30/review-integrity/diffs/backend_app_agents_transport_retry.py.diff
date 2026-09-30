@@ -1,0 +1,219 @@
+--- backup:backend/app/agents/transport_retry.py
++++ worktree:backend/app/agents/transport_retry.py
+@@ -19,6 +19,21 @@
+ 
+ A retry never spends an actor turn or a declared discovery request, so it never changes
+ what a model is shown on a later turn.
++
++Rule v2 (``faultlab-transport-retry/v2-lab-backoff``, frozen into every new Learn plan):
++the agent roles (reference Actor, native smolagents adapters v1 and v2) keep exactly the
++rule above. FaultLab's own lab roles in that Learn campaign -- the Explorer (discovery and
++challenge selections) and the Mechanic (diagnosis and candidate requests) -- may re-send
++the identical request up to THREE times, waiting 5 s, 20 s and 60 s before the first,
++second and third retry, under the same conditions (no answer arrived: connection error,
++timeout, HTTP 503). A campaign-wide cap of 12 such retries bounds a long outage; during
++discovery the plan's declared Explorer retry bound also applies. Each retry is admitted and
++charged on the ledger before it is sent, exactly like a v1 retry, and recorded (attempt
++number and wait). A wait is cancellable: a Stop during it ends the campaign STOPPED with a
++plain reason, and nothing more is sent. If every allowed retry fails, the original failure
++ends the campaign as before, and the error message says how many retries were tried.
++Plans saved before v2, separate studies started on a campaign (selection comparison,
++completion study) and baseline/compare plans keep rule v1.
+ """
+ import asyncio
+ 
+@@ -115,3 +130,194 @@
+                     retries.append(record(error, failure_id))
+                     continue
+             raise
++
++
++# ----------------------------------------------------------------------------- rule v2: lab roles back off
++
++TRANSPORT_RETRY_PROTOCOL_V2 = 'faultlab-transport-retry/v2-lab-backoff'
++LAB_ROLES = ('explorer', 'mechanic')
++LAB_RETRIES_PER_REQUEST = 3
++LAB_BACKOFF_SECONDS = (5, 20, 60)
++LAB_RETRIES_PER_CAMPAIGN_MAX = 12
++# A wait checks for a Stop at least this often, so a Stop ends it within about half a second.
++WAIT_POLL_SECONDS = 0.5
++RULE_V2 = ('Agent roles (the reference Actor and the native smolagents adapters) keep rule v1: at most one blind '
++           'retry of the identical request, only when no answer arrived (a connection error, a timeout, or HTTP 503 '
++           'after a one-second wait). FaultLab\'s own lab roles in this Learn campaign (Explorer discovery and challenge '
++           'selections, Mechanic diagnosis and candidate requests) may re-send the identical request up to 3 times, '
++           'after waits of 5 s, 20 s and 60 s, only when no answer arrived (connection error, timeout, HTTP 503), and '
++           'at most 12 times in the whole campaign; during discovery the declared Explorer retry bound also applies. '
++           'An answer, even an empty or malformed one, is never retried, and neither is any other HTTP status or an '
++           'authentication, configuration or model-identity failure. Every retry is charged in model calls, tokens and '
++           'dollars before it is sent, from unreserved campaign capacity only. A Stop during a wait ends the campaign '
++           'STOPPED and nothing more is sent. If every allowed retry fails, the campaign ends ERROR as before and says '
++           'how many retries were tried. Separate studies started on the campaign keep rule v1.')
++
++# Why a lab-role request stopped being retried (saved with the failure; see retry_failure_message).
++RETRY_END_REASONS = ('ALL_RETRIES_FAILED', 'CAMPAIGN_RETRY_LIMIT', 'DISCOVERY_RETRY_LIMIT', 'BUDGET_REFUSED', 'NOT_RETRYABLE')
++
++
++def declaration_v2(actor_calls):
++    """Rule v2 as frozen into a reviewed Learn plan (run_plans.TransportRetryPlanV2)."""
++    return {'protocol': TRANSPORT_RETRY_PROTOCOL_V2,
++            'retryable': ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'],
++            # Agent roles: exactly rule v1.
++            'agent_roles': ['actor'], 'agent_retries_per_request': RETRIES_PER_REQUEST,
++            'service_unavailable_delay_seconds': SERVICE_UNAVAILABLE_DELAY_SECONDS,
++            'actor_retries_per_episode_max': actor_calls * RETRIES_PER_REQUEST,
++            # Lab roles of this Learn campaign.
++            'lab_roles': list(LAB_ROLES), 'lab_retries_per_request': LAB_RETRIES_PER_REQUEST,
++            'lab_backoff_seconds': list(LAB_BACKOFF_SECONDS),
++            'lab_retries_per_campaign_max': LAB_RETRIES_PER_CAMPAIGN_MAX,
++            'stop_during_wait': 'STOPPED',
++            'rule': RULE_V2}
++
++
++def backoff_payload(error, attempt, delay):
++    """The recorded facts of one admitted rule-v2 retry (no message, header or response text)."""
++    payload = {'protocol': TRANSPORT_RETRY_PROTOCOL_V2, 'code': error.code, 'attempt': attempt,
++               'retry_delay_seconds': delay}
++    if service_unavailable(error):
++        payload['http_status'] = 503
++    return payload
++
++
++def _plural(count, one, many):
++    return f'{count} {one if count == 1 else many}'
++
++
++def retry_failure_message(summary):
++    """Plain text for a lab-role request that still failed under rule v2 (fixed FaultLab text only)."""
++    tried, reason = summary['retries_tried'], summary['reason']
++    waits = summary.get('waits_seconds') or []
++    head = f'A model request failed after {_plural(tried, "transport retry", "transport retries")}'
++    if waits:
++        head += ' (waits of ' + ', '.join(f'{seconds} s' for seconds in waits) + ')'
++    detail = {
++        'ALL_RETRIES_FAILED': 'every allowed retry of this request failed',
++        'CAMPAIGN_RETRY_LIMIT': (f'the campaign\'s limit of {LAB_RETRIES_PER_CAMPAIGN_MAX} lab-role transport '
++                                 'retries was reached'),
++        'DISCOVERY_RETRY_LIMIT': 'the plan\'s declared discovery Explorer retry bound was reached',
++        'BUDGET_REFUSED': 'the next retry did not fit the campaign\'s unreserved budget, so it was not sent',
++        'NOT_RETRYABLE': 'the last failure is of a kind that is never retried',
++    }[reason]
++    return f'{head}; {detail}. Inspect the saved provider diagnostics.'
++
++
++class TransportRetryStopped(StopRequested):
++    """A Stop that arrived while a lab-role request waited to be re-sent (rule v2)."""
++
++
++async def cancellable_wait(seconds, stopped, *, poll=None):
++    """Wait ``seconds``, checking ``stopped()`` before each step of at most ``poll`` seconds
++    (default WAIT_POLL_SECONDS, read at call time).
++
++    Returns False when the whole wait passed, True as soon as a Stop is seen. It counts the
++    time it slept rather than reading a clock, so a test that replaces asyncio.sleep sees the
++    exact steps. Cancellation of the task still propagates at once.
++    """
++    poll = WAIT_POLL_SECONDS if poll is None else poll
++    remaining = float(seconds)
++    while True:
++        if stopped():
++            return True
++        if remaining <= 0:
++            return False
++        step = min(poll, remaining)
++        await asyncio.sleep(step)
++        remaining -= step
++
++
++class LabBackoff:
++    """One Learn campaign's lab-role transport retries under rule v2.
++
++    Counts come from the store's transport_retries records of this campaign (rule v2 only), so
++    the campaign cap holds across every Explorer and Mechanic of the campaign. ``stopped`` is the
++    campaign's Stop check; ``discovery_retries_max`` is the plan's declared discovery Explorer bound.
++    """
++    protocol = TRANSPORT_RETRY_PROTOCOL_V2
++
++    def __init__(self, store, campaign_id, *, stopped, discovery_retries_max=None):
++        self.store, self.campaign_id, self.stopped = store, campaign_id, stopped
++        prior = [row for row in store.list_records('transport_retries')
++                 if row.get('campaign_id') == campaign_id and row.get('protocol') == TRANSPORT_RETRY_PROTOCOL_V2]
++        self.used = len(prior)
++        self.discovery_used = sum(1 for row in prior if (row.get('request') or {}).get('phase') == 'discovery')
++        self.discovery_retries_max = discovery_retries_max
++        self.waits = []   # (role, attempt, seconds) of every completed wait, in order
++
++    def refusal(self, *, discovery):
++        """Why no further retry may be admitted now, or None."""
++        if self.used >= LAB_RETRIES_PER_CAMPAIGN_MAX:
++            return 'CAMPAIGN_RETRY_LIMIT'
++        if discovery and self.discovery_used >= (self.discovery_retries_max or 0):
++            return 'DISCOVERY_RETRY_LIMIT'
++        return None
++
++    def admitted(self, *, discovery):
++        self.used += 1
++        if discovery:
++            self.discovery_used += 1
++
++    async def wait(self, seconds, *, role, attempt):
++        if await cancellable_wait(seconds, self.stopped):
++            raise self.stop_error(role)
++        self.waits.append((role, attempt, seconds))
++
++    def stop_error(self, role):
++        return TransportRetryStopped(f'External stop requested while a failed {role.capitalize()} model request waited to '
++                                     'be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.')
++
++
++async def complete_with_backoff(send, *, failed, admit, record, session, role, discovery=False):
++    """Run one charged lab-role request with at most three backed-off blind retries (rule v2).
++
++    ``send(retry)`` performs the request (its first attempt is already charged by the caller);
++    ``failed(error)`` records each failure and returns its failure id; ``admit()`` charges one
++    retry on the ledger and returns False when it cannot be admitted; ``record(error, failure_id,
++    attempt, delay)`` records an admitted retry and returns its facts. Returns (generation, retries).
++    A Stop seen during a wait or at admission raises TransportRetryStopped; a request that is not
++    retried again raises its failure with ``transport_retry_summary`` set.
++    """
++    retries = []
++    while True:
++        try:
++            return await send(bool(retries)), retries
++        except RuntimeProviderError as error:
++            failure_id = failed(error)
++            attempt = len(retries) + 1
++            if not blind_retry_allowed(error):
++                reason = 'NOT_RETRYABLE'
++            elif attempt > LAB_RETRIES_PER_REQUEST:
++                reason = 'ALL_RETRIES_FAILED'
++            else:
++                reason = session.refusal(discovery=discovery)
++            if reason is None:
++                delay = LAB_BACKOFF_SECONDS[attempt - 1]
++                await session.wait(delay, role=role, attempt=attempt)     # a Stop raises here
++                if session.stopped():
++                    raise session.stop_error(role) from None
++                reason = session.refusal(discovery=discovery)
++                if reason is None and not admit():
++                    if session.stopped():
++                        raise session.stop_error(role) from None
++                    reason = 'BUDGET_REFUSED'
++                if reason is None:
++                    session.admitted(discovery=discovery)
++                    retries.append(record(error, failure_id, attempt, delay))
++                    continue
++            if retries or reason != 'NOT_RETRYABLE':
++                error.transport_retry_summary = {
++                    'protocol': TRANSPORT_RETRY_PROTOCOL_V2, 'role': role, 'retries_tried': len(retries),
++                    'waits_seconds': [LAB_BACKOFF_SECONDS[index] for index in range(len(retries))], 'reason': reason}
++            raise
++
++
++def lab_backoff_for_campaign(store, campaign, *, stopped):
++    """The rule-v2 session a Learn campaign's plan declares, or None (rule v1: one blind retry)."""
++    from app.lab.runner import campaign_run_plan
++    plan = campaign_run_plan(store, campaign)
++    if ((plan or {}).get('transport_retry') or {}).get('protocol') != TRANSPORT_RETRY_PROTOCOL_V2:
++        return None
++    return LabBackoff(store, campaign.campaign_id, stopped=stopped,
++                      discovery_retries_max=(plan.get('discovery') or {}).get('explorer_transport_retries_max'))

@@ -1,0 +1,4 @@
+MUTANT journal_position_labels: 50 failed, 190 passed in 12.84s
+MUTANT decode_unshown_rows: 50 failed, 190 passed in 12.14s
+MUTANT drop_a_field: 240 failed in 13.19s
+CONTROL (no mutant): 240 passed in 11.60s

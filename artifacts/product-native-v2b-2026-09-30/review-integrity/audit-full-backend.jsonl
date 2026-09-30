@@ -1,0 +1,152 @@
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62053) test=tests/adapters/test_connect_freeze.py::test_a_loop_freeze_while_the_resend_connects_still_reaches_the_world (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62053) test=tests/adapters/test_connect_freeze.py::test_a_loop_freeze_while_the_resend_connects_still_reaches_the_world (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62060) test=tests/adapters/test_connect_freeze.py::test_no_freeze_placement_during_a_fresh_connection_loses_a_request (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62134) test=tests/adapters/test_connect_freeze.py::test_a_response_delay_still_times_out_on_read (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62134) test=tests/adapters/test_connect_freeze.py::test_a_response_delay_still_times_out_on_read (call)"}
+{"kind": "socket_connect_local", "detail": "('::1', 62250) test=tests/experiments/test_run_gap_probe.py::test_port_listeners_sees_every_server_beside_the_held_port_by_state (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62250) test=tests/experiments/test_run_gap_probe.py::test_port_listeners_sees_every_server_beside_the_held_port_by_state (call)"}
+{"kind": "socket_connect_local", "detail": "('::1', 62250) test=tests/experiments/test_run_gap_probe.py::test_port_listeners_sees_every_server_beside_the_held_port_by_state (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62483) test=tests/integration/test_correlated_readback.py::test_decorated_http_episode_outage_then_exact_readback_without_rerun[False] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62485) test=tests/integration/test_correlated_readback.py::test_decorated_http_episode_outage_then_exact_readback_without_rerun[True] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62485) test=tests/integration/test_correlated_readback.py::test_decorated_http_episode_outage_then_exact_readback_without_rerun[True] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62488) test=tests/integration/test_diagnostic_evidence.py::test_real_http_gap_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62488) test=tests/integration/test_diagnostic_evidence.py::test_real_http_gap_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62488) test=tests/integration/test_diagnostic_evidence.py::test_real_http_gap_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62488) test=tests/integration/test_diagnostic_evidence.py::test_real_http_gap_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62512) test=tests/integration/test_evidence_projection.py::test_http_control_p95_and_persisted_evidence_identity (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62511) test=tests/integration/test_evidence_projection.py::test_http_control_p95_and_persisted_evidence_identity (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62511) test=tests/integration/test_evidence_projection.py::test_http_control_p95_and_persisted_evidence_identity (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62519) test=tests/integration/test_fault_campaign.py::test_reference_six_frozen_cases_three_fresh_trials (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62519) test=tests/integration/test_fault_campaign.py::test_reference_six_frozen_cases_three_fresh_trials (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62519) test=tests/integration/test_fault_campaign.py::test_reference_six_frozen_cases_three_fresh_trials (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62519) test=tests/integration/test_fault_campaign.py::test_reference_six_frozen_cases_three_fresh_trials (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62539) test=tests/integration/test_foundation.py::test_simulator_real_localhost_health (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62555) test=tests/integration/test_policy_restart.py::test_fresh_http_world_and_actor_conversation_after_coordinator_restart (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62555) test=tests/integration/test_policy_restart.py::test_fresh_http_world_and_actor_conversation_after_coordinator_restart (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62562) test=tests/integration/test_prototype_weave_path.py::test_fresh_reference_real_http_and_read_only_history (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62562) test=tests/integration/test_prototype_weave_path.py::test_fresh_reference_real_http_and_read_only_history (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62566) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives0] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62566) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives0] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62573) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives1] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62573) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives1] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62580) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives2] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62582) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives3] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62582) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives3] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62597) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives4] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62599) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives5] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62601) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives6] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62603) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives7] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62605) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives8] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62607) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives9] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62609) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives10] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62611) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives11] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62613) test=tests/integration/test_reachability_faithfulness.py::test_in_process_replay_matches_the_real_adapter_on_a_real_socket[primitives12] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62615) test=tests/integration/test_readiness.py::test_readiness_checks_control_without_provider_calls_or_world_creation (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62619) test=tests/integration/test_readiness.py::test_bad_control_access_prevents_start_and_budget_reservation (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62619) test=tests/integration/test_readiness.py::test_bad_control_access_prevents_start_and_budget_reservation (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62622) test=tests/integration/test_readiness.py::test_unavailable_simulator_is_explained_before_execution (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62682) test=tests/integration/test_stop_inflight.py::test_stop_during_http_timeout_preserves_commit (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 62682) test=tests/integration/test_stop_inflight.py::test_stop_during_http_timeout_preserves_commit (call)"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_building_the_native_agent0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_control_unguarded_smolage0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_importing_app_disables_im0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_importing_app_disables_im0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_test_process_disables_imp0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_git_provenance_is_safe_an0/.env"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64231) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64315) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64339) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[rejected] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64341) test=tests/lab/test_original_loop_integration.py::test_original_workflow_with_real_worlds_and_declared_reference_inputs[interrupted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64347) test=tests/lab/test_original_loop_integration.py::test_source_passed_candidate_becomes_incomplete_after_lab_failure[False] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64349) test=tests/lab/test_original_loop_integration.py::test_source_passed_candidate_becomes_incomplete_after_lab_failure[True] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64375) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[accepted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64421) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[rejected] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64428) test=tests/lab/test_planned_agent_execution.py::test_native_selected_original_learning_reaches_unchanged_acceptance_and_comparison[interrupted] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64499) test=tests/simulator/test_faults_http.py::test_post_commit_timeout_releases_transaction_and_survives_disconnect (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64499) test=tests/simulator/test_faults_http.py::test_post_commit_timeout_releases_transaction_and_survives_disconnect (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64506) test=tests/simulator/test_faults_http.py::test_delayed_success_and_rejection_use_logical_ticks[SUCCEEDED] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64508) test=tests/simulator/test_faults_http.py::test_delayed_success_and_rejection_use_logical_ticks[FAILED] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64510) test=tests/simulator/test_faults_http.py::test_pre_effect_fault_precedes_delay_and_lost_response (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64512) test=tests/simulator/test_faults_http.py::test_f1_cannot_claim_lost_commit_for_pending_acceptance (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64514) test=tests/simulator/test_faults_http.py::test_concurrent_identical_requests_have_one_commit (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64514) test=tests/simulator/test_faults_http.py::test_concurrent_identical_requests_have_one_commit (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64514) test=tests/simulator/test_faults_http.py::test_concurrent_identical_requests_have_one_commit (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64514) test=tests/simulator/test_faults_http.py::test_concurrent_identical_requests_have_one_commit (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64519) test=tests/simulator/test_faults_http.py::test_real_diagnostic_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64519) test=tests/simulator/test_faults_http.py::test_real_diagnostic_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64519) test=tests/simulator/test_faults_http.py::test_real_diagnostic_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64519) test=tests/simulator/test_faults_http.py::test_real_diagnostic_witness_and_available_status_control (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64519) test=tests/simulator/test_faults_http.py::test_real_diagnostic_witness_and_available_status_control (call)"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_environment_overrides_fil0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_environment_overrides_fil0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_dotenv_values_are_not_int0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_dotenv_values_are_not_int0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_explicit_role_and_histori0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_explicit_role_and_histori0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_explicit_role_and_histori0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_legacy_explicit_lab_model0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_legacy_explicit_lab_model0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_old_empty_env_model_place0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_old_empty_env_model_place0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_old_empty_env_model_place0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_other_env_files_are_unaff0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_other_env_files_are_unaff0/.env"}
+{"kind": "dotenv_open_attempt", "detail": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-793/test_other_env_files_are_unaff0/.env"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64554) test=tests/world/test_clock_integrity.py::test_real_response_timeout_after_commit_remains_valid (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 64554) test=tests/world/test_clock_integrity.py::test_real_response_timeout_after_commit_remains_valid (call)"}
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 127, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 21, "dotenv_opens": 24, "unix_connect": 0}}

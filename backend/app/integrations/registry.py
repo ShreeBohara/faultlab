@@ -29,6 +29,11 @@ AGENT_ENTRYPOINTS = {"reference": REFERENCE_ENTRYPOINT, "smolagents": NATIVE_V1,
 ENTRYPOINT_AGENTS = {entry: agent for agent, entry in AGENT_ENTRYPOINTS.items()}
 NATIVE_AGENTS = ("smolagents", "smolagents-v2")
 NATIVE_V2_DISPLAY_NAME = "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)"
+# What a v2 registration records about its evidence labels (adapter protocol v2.1, shown-order labels).
+V2_LABEL_LIMITATION = ("Adapter v2 (protocol v2.1) shows each observation it hands to the agent under a short label obs-1, obs-2, ..., "
+                       "numbered in the order the agent first sees them; an observation the agent never sees (the first attempt of a "
+                       "write the broker retried, or a non-blocking policy step's read) gets no label. Cited labels the agent had been "
+                       "shown are decoded back to the real IDs before validation; any other token is kept as written.")
 _ADAPTER_FILES = {NATIVE_V1: ("registry.py", "external_agent.py"),
                   NATIVE_V2: ("registry.py", "external_agent.py", "external_agent_v2.py")}
 
@@ -44,8 +49,8 @@ def _native_entrypoint(entrypoint):
 
 
 def adapter_hash(entrypoint=NATIVE_V1):
-    """v1: registry.py + external_agent.py, as before. v2 also covers its own module and the evidence-label code
-    it executes (app/agents/progress.py); v2 imports and runs v1's module, so that file is covered too."""
+    """v1: registry.py + external_agent.py, as before. v2 also covers its own module and app/agents/progress.py
+    (whose evidence-label constants it uses); v2 imports and runs v1's module, so that file is covered too."""
     files = {name: digest(Path(__file__).with_name(name)) for name in _ADAPTER_FILES[_native_entrypoint(entrypoint)]}
     if entrypoint == NATIVE_V2:
         files["agents/progress.py"] = digest(Path(__file__).parents[1] / "agents" / "progress.py")
@@ -226,7 +231,8 @@ class AgentRegistry:
         registration_id, name = "smolagents-1.26.0-" + config_hash[:16], "Hugging Face smolagents ToolCallingAgent"
         if entrypoint == NATIVE_V2:
             registration_id, name = "smolagents-1.26.0-adapter-v2-" + config_hash[:16], "Hugging Face " + NATIVE_V2_DISPLAY_NAME
-            limitations += ["Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
+            # Registrations are immutable, so this text must describe the installed adapter protocol (v2.1 since September 30).
+            limitations += [V2_LABEL_LIMITATION,
                             "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
                             "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled."]
         registration = AgentRegistration(

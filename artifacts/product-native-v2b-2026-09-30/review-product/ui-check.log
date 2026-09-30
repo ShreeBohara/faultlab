@@ -1,0 +1,20 @@
+
+ RUN  v4.1.11 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2b-2026-09-30/review-product/ui-check
+
+stdout | real-api.test.tsx > real rule-v2 responses pass the dashboard validators and render the retries
+PLAN TEXT: Agent (Actor) requests: at most one charged retry per request that received no answer (connection error, timeout, HTTP 503) · at most 8 per episode · Explorer and Mechanic requests: up to 3 charged retries each, after waits of 5 s, 20 s, 60 s · at most 12 per campaign · a Stop during a wait ends the campaign STOPPED · never after an answer · never an extra turn
+DISCOVERY TEXT: 8 slots · at most 16 Explorer requests · at most 16 charged Explorer transport retries during discovery (up to 3 per request with no answer, after waits of 5 s, 20 s and 60 s) · at most 8 Actor episodes · one re-plan per refused slot
+
+stdout | real-api.test.tsx > real rule-v2 responses pass the dashboard validators and render the retries
+PANEL NOTES: [
+ "Transport retry 1 of at most 3: the previous request received no answer (HTTP 503), so after waiting 5 s the identical request was sent again. Every request is charged (3 model requests in all); this is not a new selection request. Provider failure provider-failure-106aa8c4f3f84202b087ed7461c6b12b.",
+ "Transport retry 2 of at most 3: the previous request received no answer (request timeout), so after waiting 20 s the identical request was sent again. Every request is charged (3 model requests in all); this is not a new selection request. Provider failure provider-failure-3e00f35c6e834f36a8d0805c58e9a817."
+]
+
+ ✓ real-api.test.tsx > real rule-v2 responses pass the dashboard validators and render the retries 118ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  18:40:24
+   Duration  748ms (transform 167ms, setup 0ms, import 261ms, tests 118ms, environment 297ms)
+

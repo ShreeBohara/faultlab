@@ -1,0 +1,10 @@
+Independent verifier, step 5 (c): clean copy. git archive of backup/part2-2026-09-22 = 2c178a7 (every tracked file except
+audit/promotion.json and audit/final-audit.json, which were SYMLINKED to the real files instead of copied, so the product's
+manifest loader finds them as it would in a clean clone), plus the 32 changed/new non-evidence files from the working tree
+copied byte for byte (copied-files.txt; copied-verify.txt = shasum -c against COMMIT_LIST product lines, all OK).
+No .env, no .venv (the real .venv interpreter was used), no caches, no git-ignored files; frontend/node_modules symlinked
+for the frontend run and removed after.
+Results: backend new/changed test files 122 passed (backend-new-tests.log); frontend new/changed test files 10 passed
+(frontend-new-tests.log) and the whole frontend unit suite 339 passed in 23 files (frontend-all-tests.log).
+Guards: verify/guard (no outside connection, no .env). The tree (it held a copy of checks.py from git) was deleted after
+the runs.

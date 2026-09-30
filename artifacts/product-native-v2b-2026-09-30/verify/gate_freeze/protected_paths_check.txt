@@ -1,0 +1,17 @@
+Protected paths vs backup/part2-2026-09-22 (2c178a7): tracked files under each, and how many differ in the working tree (commit list)
+  referee (checks.py compared only via gate_freeze)       tracked   7  changed/new 0 
+  simulator                                               tracked   8  changed/new 0 
+  contracts (C1-C8 definitions, schemas)                  tracked 100  changed/new 0 
+  promotion.py                                            tracked   1  changed/new 0 
+  challenge.py                                            tracked   1  changed/new 0 
+  evaluation.py                                           tracked   1  changed/new 0 
+  completion_study.py (assess_pairs)                      tracked   1  changed/new 0 
+  budgets.py (interpreter)                                tracked   1  changed/new 0 
+  policy_interpreter.py                                   tracked   1  changed/new 0 
+  policy_state.py                                         tracked   1  changed/new 0 
+  reference Actor prompt                                  tracked   1  changed/new 0 
+  reference Actor                                         tracked   1  changed/new 0 
+  Actor context/labels (progress.py)                      tracked   1  changed/new 0 
+  native adapter v1                                       tracked   1  changed/new 0 
+  thresholds (any file named *threshold*)                 tracked   0  changed/new 0 
+Changed backend/app files overall: ['backend/app/agents/explorer.py', 'backend/app/agents/mechanic.py', 'backend/app/agents/transport_retry.py', 'backend/app/integrations/external_agent_v2.py', 'backend/app/integrations/registry.py', 'backend/app/lab/diagnosis.py', 'backend/app/lab/discovery_protocol.py', 'backend/app/lab/learning.py', 'backend/app/lab/provider_failures.py', 'backend/app/lab/readiness.py', 'backend/app/lab/run_plans.py']

@@ -1,0 +1,33 @@
+--- backup:frontend/src/searchAttempts.ts
++++ wt:frontend/src/searchAttempts.ts
+@@ -15,15 +15,26 @@
+     refused_fault_spec?: FaultSpec | null; reachability?: Reachability | null
+   }
+   selected_output: ExplorerOutput | null; output: ExplorerOutput | null; raw_response: string; usage: Usage; provenance: string; error: string | null
+-  /** A charged blind retry of this request after it received no answer (at most one). */
++  /** Charged blind retries of this request after it received no answer: at most one under rule v1; under rule v2
++   * (lab-role backoff) up to three, attempts 1-3 after waits of 5 s, 20 s and 60 s. */
+   transport_retries?: TransportRetry[]
+   /** Discovery v3 only: the frozen history row this pick re-tries, or null (checked, no match). Absent for v1/v2. */
+   matches_history_row?: HistoryRowMatch | null
+ }
+-export type TransportRetry = { retry_id: string; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1; http_status?: 503; retry_delay_seconds?: 1; provider_failure_id: string }
++export type TransportRetryV1 = { retry_id: string; protocol?: undefined; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1; http_status?: 503; retry_delay_seconds?: 1; provider_failure_id: string }
++export type TransportRetryV2 = { retry_id: string; protocol: 'faultlab-transport-retry/v2-lab-backoff'; code: 'CONNECTION_ERROR' | 'REQUEST_TIMEOUT' | 'HTTP_ERROR'; attempt: 1 | 2 | 3; http_status?: 503; retry_delay_seconds: 5 | 20 | 60; provider_failure_id: string }
++export type TransportRetry = TransportRetryV1 | TransportRetryV2
++const BACKOFF_SECONDS = [5, 20, 60]
+ function transportRetries(value: unknown): value is TransportRetry[] {
+-  return Array.isArray(value) && value.length <= 1 && value.every(retry => object(retry) && nonempty(retry.retry_id) && nonempty(retry.provider_failure_id) && retry.attempt === 1
+-    && (retry.code === 'HTTP_ERROR' ? retry.http_status === 503 && retry.retry_delay_seconds === 1 : ['CONNECTION_ERROR', 'REQUEST_TIMEOUT'].includes(String(retry.code)) && retry.http_status === undefined))
++  if (!Array.isArray(value) || !value.every(retry => object(retry) && nonempty(retry.retry_id) && nonempty(retry.provider_failure_id)
++    && (retry.code === 'HTTP_ERROR' ? retry.http_status === 503 : ['CONNECTION_ERROR', 'REQUEST_TIMEOUT'].includes(String(retry.code)) && retry.http_status === undefined))) return false
++  const rows = value as Record<string, unknown>[]
++  // Rule v2 (lab-role backoff): attempts 1, 2, 3 in order, each after its declared wait. Never mixed with rule v1.
++  if (rows.some(retry => retry.protocol !== undefined)) {
++    return rows.length <= 3 && rows.every((retry, index) => retry.protocol === 'faultlab-transport-retry/v2-lab-backoff' && retry.attempt === index + 1 && retry.retry_delay_seconds === BACKOFF_SECONDS[index])
++  }
++  // Rule v1: at most one retry; a 503 retry waited one second.
++  return rows.length <= 1 && rows.every(retry => retry.attempt === 1 && (retry.code === 'HTTP_ERROR' ? retry.retry_delay_seconds === 1 : retry.retry_delay_seconds === undefined))
+ }
+ const nonempty = (value: unknown): value is string => typeof value === 'string' && value.length > 0
+ const hash = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)

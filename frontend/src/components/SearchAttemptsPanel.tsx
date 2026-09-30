@@ -1,4 +1,4 @@
-import { getSearchAttempts, type SearchAttempt } from '../searchAttempts'
+import { getSearchAttempts, type SearchAttempt, type TransportRetry } from '../searchAttempts'
 import type { HistoryRowMatch } from '../runPlans'
 import { useResource } from '../useResource'
 import { Empty, EpisodeLinks, Hash, Json, Panel, ResourceNote } from './common'
@@ -8,6 +8,7 @@ const decisionLabel = {
   SKIPPED_UNREACHABLE: 'Refused by the reachability pre-check · no Actor trial', PRECHECK_FAILED: 'Pre-check could not run · no Actor trial',
 }
 const verdictLabel = { FORCED: 'Forced', NOT_FORCED: 'Not forced', IMPOSSIBLE: 'Impossible' }
+const failureText = (retry: TransportRetry) => retry.code === 'HTTP_ERROR' ? `HTTP ${retry.http_status}` : retry.code.replaceAll('_', ' ').toLowerCase()
 /** Discovery v3: whether a pick (or a source) re-tries a row of the frozen agent history the Explorer was shown. */
 export const historyMatchText = (match: HistoryRowMatch | null) => match
   ? `History-informed: this recipe re-tries agent history row ${match.row}${match.development_case_id ? ` (${match.development_case_id})` : ''} that the Explorer was shown. Report a result from it as history-informed, not as independent discovery.`
@@ -44,7 +45,9 @@ export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: str
     {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {decisionLabel[row.search_decision.status]}</summary>
       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>
       {row.search_decision.reason && <p>Recorded reason: {row.search_decision.reason.replaceAll('_', ' ').toLowerCase()}.</p>}
-      {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">Transport retry: the first request received no answer ({retry.code === 'HTTP_ERROR' ? `HTTP ${retry.http_status}` : retry.code.replaceAll('_', ' ').toLowerCase()}), so the identical request was sent once more. Both requests are charged ({row.usage.model_calls} model requests); this is not a new selection request. Provider failure <code>{retry.provider_failure_id}</code>.</p>)}
+      {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">{retry.protocol === undefined
+        ? <>Transport retry: the first request received no answer ({failureText(retry)}), so the identical request was sent once more. Both requests are charged ({row.usage.model_calls} model requests); this is not a new selection request.</>
+        : <>Transport retry {retry.attempt} of at most 3: the previous request received no answer ({failureText(retry)}), so after waiting {retry.retry_delay_seconds} s the identical request was sent again. Every request is charged ({row.usage.model_calls} model requests in all); this is not a new selection request.</>} Provider failure <code>{retry.provider_failure_id}</code>.</p>)}
       {row.matches_history_row !== undefined && <p className={row.matches_history_row ? 'notice' : 'muted'}>{historyMatchText(row.matches_history_row)}</p>}
       <p>Schedule identity: <Hash value={row.search_decision.schedule_hash} /></p>
       {(row.selected_output ?? row.output)?.fault_spec.primitives.map((primitive, index) => <p key={index}>{primitive.kind} · {primitive.target_service}.{primitive.target_tool} · occurrence {primitive.occurrence}</p>)}

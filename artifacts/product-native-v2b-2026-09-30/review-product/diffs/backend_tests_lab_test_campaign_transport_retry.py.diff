@@ -1,0 +1,65 @@
+--- backup:backend/tests/lab/test_campaign_transport_retry.py
++++ wt:backend/tests/lab/test_campaign_transport_retry.py
+@@ -3,12 +3,17 @@
+ The real coordinator runs a declared discovery-v2 Learn campaign through _execute: real
+ Explorer, ledger, plan and learning loop; a scripted Explorer model and a fake Actor runner.
+ No provider, simulator port, W&B or model call is made.
++
++Since rule v2 (faultlab-transport-retry/v2-lab-backoff) every NEW Learn plan declares lab-role
++backoff (tests/lab/test_lab_transport_backoff.py). The tests below pin that a Learn plan saved
++before it, which declares rule v1, still runs exactly rule v1: one blind retry, no backoff.
+ """
+ import asyncio
+ from types import SimpleNamespace
+ 
+ import pytest
+ 
++from app.agents.transport_retry import declaration as rule_v1
+ from app.lab.budgets import CampaignLedger
+ from app.lab.discovery_protocol import DISCOVERY_V1, DISCOVERY_V2
+ from app.lab.run_plans import read_run_plan
+@@ -29,6 +34,17 @@
+         return await super().complete(messages, **kwargs)
+ 
+ 
++def learn_campaign_v1_rule(owner, protocol=None, agent='reference'):
++    """A Learn plan as saved before rule v2 existed: it declares rule v1 (one blind retry per request)."""
++    from app.lab.run_plans import prepare_run_plan
++    from app.lab.operator_actions import register_agent
++    from test_discovery_v2_flow import request
++    registration = register_agent(owner.store, owner.settings, agent)
++    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
++    prepared.plan['transport_retry'] = rule_v1(prepared.plan['episode_budget']['actor_calls'])
++    return owner.create(prepared.campaign_request, run_plan=prepared)
++
++
+ def execute(owner, campaign, provider, *, headroom=None):
+     """Run the campaign's own _execute, as Start does after admission."""
+     id = campaign.campaign_id
+@@ -60,7 +76,7 @@
+ 
+ @pytest.mark.parametrize('protocol', [DISCOVERY_V1, DISCOVERY_V2])
+ def test_one_lost_explorer_connection_is_retried_and_the_campaign_continues(owner, protocol):
+-    campaign = learn_campaign(owner, protocol)
++    campaign = learn_campaign_v1_rule(owner, protocol)
+     provider = Flaky(lambda slot, request, context: raw(DELAYED, seed=slot), failing={1})
+     final, ledger, runner = execute(owner, campaign, provider)
+     assert final.state == 'NO_CHANGE', final.terminal_reason       # the campaign ran to its normal end
+@@ -80,7 +96,7 @@
+ 
+ 
+ def test_two_lost_connections_on_one_request_end_the_campaign_error_as_before(owner):
+-    campaign = learn_campaign(owner, DISCOVERY_V2)
++    campaign = learn_campaign_v1_rule(owner, DISCOVERY_V2)
+     provider = Flaky(lambda slot, request, context: raw(DELAYED, seed=slot), failing={3, 4})
+     final, ledger, runner = execute(owner, campaign, provider)
+     assert final.state == 'ERROR' and final.terminal_reason.startswith('CONNECTION_ERROR:')
+@@ -92,7 +108,7 @@
+ 
+ 
+ def test_a_retry_the_budget_cannot_cover_is_refused_before_sending_and_the_campaign_errors(owner):
+-    campaign = learn_campaign(owner, DISCOVERY_V2)
++    campaign = learn_campaign_v1_rule(owner, DISCOVERY_V2)
+     provider = Flaky(lambda slot, request, context: raw(DELAYED, seed=slot), failing={1})
+     final, ledger, runner = execute(owner, campaign, provider, headroom=1)
+     assert final.state == 'ERROR' and final.terminal_reason.startswith('CONNECTION_ERROR:')  # the original failure

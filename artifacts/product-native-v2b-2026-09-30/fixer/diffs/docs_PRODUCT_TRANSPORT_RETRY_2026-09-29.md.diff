@@ -1,0 +1,60 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md	2026-09-29 17:15:03
++++ docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md	2026-09-29 19:12:05
+@@ -206,10 +206,14 @@
+ - **At most 12 lab-role retries per campaign** (declared in the rule; counted from the campaign's saved
+   `transport_retries` records). During discovery the plan's declared Explorer retry bound
+   (`explorer_transport_retries_max`, 8 under discovery v1/v3-history, 16 under v2) also applies, now for every
+-  discovery protocol.
++  discovery protocol. Under discovery v2 the campaign cap of 12 is reached first, so 12 is the real discovery bound
++  there; the discovery budget text in the dashboard says so.
+ - **Charged before it is sent, exactly like v1:** each retry is charged (one model call, its token bound, the
+   role's dollar bound) from unreserved campaign capacity just before it is sent, after its wait. If the budget
+-  cannot cover it, the original failure stands.
++  cannot cover it, the original failure stands. The unreserved budget is also checked **before** the wait, without
++  charging anything (`ledger_retry_fits`, a read-only restatement of the ledger's own admission check), so a retry
++  the budget cannot cover is refused at once instead of after a 5, 20 or 60 s wait. The charge after the wait remains
++  the only admission.
+ - **Recorded:** each admitted retry is a `transport_retries` record with `protocol`, `attempt` (1-3),
+   `retry_delay_seconds` (5/20/60), `campaign_retry_number` (1-12), `request.phase` (`discovery`, `challenge`,
+   `mechanic_diagnosis`, `mechanic_proposal`) and its provider failure. The saved selection or Mechanic output lists
+@@ -221,7 +225,9 @@
+ - **If every allowed retry fails**, the campaign ends ERROR as before, with the provider diagnostics, and the
+   message now says how many retries were tried and why no further one was sent, for example
+   "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry
+-  of this request failed. Inspect the saved provider diagnostics." The `execution_errors` record also carries
++  of this request failed. Inspect the saved provider diagnostics." When no retry could be sent at all, it says so, for
++  example "A model request failed and no transport retry was sent: the campaign's limit of 12 lab-role transport
++  retries was reached." (not "after 0 transport retries"). The `execution_errors` record also carries
+   `transport_retries: {protocol, role, retries_tried, waits_seconds, reason}`; reasons are `ALL_RETRIES_FAILED`,
+   `CAMPAIGN_RETRY_LIMIT`, `DISCOVERY_RETRY_LIMIT`, `BUDGET_REFUSED` and `NOT_RETRYABLE`.
+ 
+@@ -232,8 +238,21 @@
+ 
+ **Worst case.** A lab-role outage can add at most 12 charged requests to a campaign and at most 85 s of waiting
+ per request (5 + 20 + 60). The dashboard shows the rule in the saved plan ("Model transport retries"), beside the
+-discovery budget, in the Learn setup form, and on each retried selection in the fault-search panel.
++discovery budget and in the Learn setup form.
++
++**Where an operator sees the retries.** A **discovery** selection's retries are shown on that selection in the
++fault-search panel. A **challenge** selection's retries and a **Mechanic** request's retries appear only in the
++campaign recording (download: `transport_retries`, and the selection or Mechanic output record) and in the budget
++counts; the dashboard does not list them. While a request waits to be re-sent (up to 85 s), the campaign stays in its
++current state (for example SELECTING or DIAGNOSING) and nothing shows the wait: the provider failure is saved but is
++not exposed by any API view, and the retry record appears only once the retry is sent. A live "waiting to re-send"
++note is not built.
+ 
++**Older checkouts.** Every new Learn plan now declares rule v2. A checkout from before rule v2 (runtime `ac7a12d2…`
++or earlier) accepts only rule v1 in a saved plan, so it reports such a campaign as "Saved campaign plan is missing,
++corrupt or inconsistent" and will not start it; it does not change the store (found by reading that code, not
++run). Open a store that holds new Learn plans with this runtime or a later one.
++
+ **Agent-side failures, for information (unchanged this round).** A reference Actor or native agent request that
+ fails after its one retry ends only that **episode** (lifecycle `LAB_ERROR`, reason = the provider code). In a Learn
+ campaign the loop then carries on: a lab-error discovery source is recorded and the slot is spent; a reproduction
+@@ -245,4 +264,5 @@
+ wait), `explorer.py`, `mechanic.py`, `lab/learning.py` (one session per Learn campaign), `lab/run_plans.py`
+ (`TransportRetryPlanV2`, freezing, Start check), `lab/provider_failures.py`, `lab/readiness.py` (message). Tests:
+ `backend/tests/agents/test_lab_role_backoff.py`, `backend/tests/lab/test_lab_backoff_campaign.py`,
+-`frontend/tests/transport-backoff.test.tsx`. Evidence: `artifacts/product-native-v2b-2026-09-30/builder/`.
++`frontend/tests/transport-backoff.test.tsx`; review fixes: `backend/tests/agents/test_lab_backoff_review_fixes.py`.
++Evidence: `artifacts/product-native-v2b-2026-09-30/builder/`, `review-integrity/`, `review-product/`, `fixer/`.

@@ -1,0 +1,60 @@
+{
+ "first_v2_build": {
+  "identity_hash": "6f991735297078c521c5518786c792beb951f3d6a22966d4e556ab370d64ad53",
+  "prompt_hash": "cee3aedab1a0476e7d0d656c8a68ac4982ade315a82c70e3731a8ba5b7a2bee0",
+  "status": "AVAILABLE",
+  "verified_episodes": 23,
+  "recipes": [
+   [
+    "dev-1",
+    3
+   ],
+   [
+    "dev-2",
+    3
+   ],
+   [
+    "dev-3",
+    3
+   ],
+   [
+    "dev-4",
+    3
+   ],
+   [
+    "dev-5",
+    3
+   ],
+   [
+    "dev-6",
+    4
+   ],
+   [
+    null,
+    1
+   ],
+   [
+    null,
+    1
+   ],
+   [
+    null,
+    1
+   ],
+   [
+    null,
+    1
+   ]
+  ]
+ },
+ "v2.1_same_setup": {
+  "identity_hash": "ef91c765602303d72d70f4d26e263bccfd06f57b93c584a52a8a4a798ae70119",
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "status": "NO_PRIOR_HISTORY",
+  "verified_episodes": 0,
+  "recipes": []
+ },
+ "identity_fields_that_differ": [
+  "prompt_hash"
+ ]
+}

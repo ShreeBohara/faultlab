@@ -89,7 +89,7 @@ Dark and light themes switch from the header. `node scripts/capture-dashboard.mj
 
 ## Built with
 
-- **W&B Inference** hosts the models. Calls are bounded and use structured output; one blind retry is allowed for specified transport failures.
+- **W&B Inference** hosts the models. Calls are bounded and use structured output. When a request gets no answer (connection error, timeout, HTTP 503), the agent gets one charged blind retry; in a Learn campaign FaultLab's own Explorer and Mechanic may retry up to three times after waits of 5, 20 and 60 seconds, at most 12 times per campaign.
 - **Weave** stores the trace of every live attempt. FaultLab reads each trace back by its exact ID and checks it against the local record before the evidence can count.
 - **Aria** reads a finished campaign and writes one advisory summary. It cannot score attempts or promote rules. In one campaign its totals did not match ours, which led us to a defect in our own telemetry: we had published only 18 of that campaign's 36 traces.
 

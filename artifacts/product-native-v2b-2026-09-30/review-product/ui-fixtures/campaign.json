@@ -1,0 +1,43 @@
+{
+ "active_policy_version": "policy-v0",
+ "aria_status": "PENDING",
+ "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+ "caps": {
+  "candidates": 4,
+  "discovery_selections": 8,
+  "dollars": 100.0,
+  "input_tokens_per_call": 32000,
+  "model_calls": 6000,
+  "output_tokens_per_call": 2000,
+  "tokens": 204000000
+ },
+ "config_profile_id": "live-v1",
+ "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+ "created_at": "2026-09-30T01:44:40.824748Z",
+ "execution_epoch": 0,
+ "latest_episode_id": "episode-bda518e969af4335b51d5aa73033f55f",
+ "mode": "learn",
+ "model": "deepseek-ai/DeepSeek-V3.1",
+ "order_id": "order-planned",
+ "reserved_calls": 1064,
+ "schema_version": "faultlab/v1",
+ "state": "NO_CHANGE",
+ "state_seq": 10,
+ "stop_requested": false,
+ "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation.",
+ "telemetry_status": "local_recorded",
+ "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+ "updated_at": "2026-09-30T01:44:41.070857Z",
+ "usage": {
+  "actor_calls": 0,
+  "cost_dollars": null,
+  "http_attempts": 0,
+  "input_tokens": 1500,
+  "model_calls": 17,
+  "output_tokens": 300,
+  "policy_steps": 0,
+  "ticks": 0,
+  "wait_cycles": 0,
+  "wall_seconds": 0.0
+ }
+}

@@ -1,0 +1,177 @@
+--- backup:backend/tests/integrations/test_native_adapter_v2.py
++++ wt:backend/tests/integrations/test_native_adapter_v2.py
+@@ -400,11 +400,11 @@
+     assert external_agent_v2.TRANSPORT_CONTRACT is external_agent.TRANSPORT_CONTRACT
+ 
+ 
+-def test_decode_uses_only_observations_delivered_by_the_request(tmp_path, store, baseline):
+-    """A label for an observation delivered after the model's request stays as written (the reference Actor's rule).
++def test_decode_uses_only_labels_shown_by_the_request(tmp_path, store, baseline):
++    """A label handed over after the model's request stays as written (the reference Actor's rule).
+ 
+-    In the native loop nothing is delivered between a request and its final_answer, so this pins the rule directly.
+-    The request saw (was shown) two observations; the section below pins labels delivered but never shown.
++    In the native loop nothing is shown between a request and its final_answer, so this pins the rule directly.
++    The request saw (was shown) two observations; a third was shown later. Section 5 pins observations never shown.
+     """
+     from app.integrations.external_agent_v2 import _BridgeV2
+     async def run():
+@@ -413,25 +413,33 @@
+             for _ in range(3):
+                 await context.broker.call("get_order")
+             bridge = _BridgeV2(context, asyncio.get_running_loop())
+-            rows = bridge._journal_rows()
+-            bridge.request_observations = rows[:2]            # the request saw two observations; a third came later
+-            bridge.request_shown_labels = frozenset({"obs-1", "obs-2"})
++            rows = [o.model_dump(mode="json") for o in context.broker.journal.observations]
++            journal = bridge._journal_ids()
++            assert [bridge._shown(row, journal)["evidence_id"] for row in rows[:2]] == ["obs-1", "obs-2"]
++            bridge.request_labels = {label: evidence_id for evidence_id, label in bridge.labels.items()}   # the request
++            assert bridge._shown(rows[2], journal)["evidence_id"] == "obs-3"                                # shown later
+             answer = {"upgrade_outcome": "NOT_STARTED", "notification_outcome": "NOT_STARTED", "overall": "SAFE_UNRESOLVED",
+                       "evidence_ids": ["obs-1", "obs-2", "obs-3"], "next_action": {"kind": "ESCALATE"}}
+             report = await bridge._final_answer({"answer": answer})
+             assert report["evidence_ids"] == [rows[0]["evidence_id"], rows[1]["evidence_id"], "obs-3"]
+             submitted, = [e for e in store.events("snapshot-rule")["events"] if e["type"] == "report_submitted"]
+-            assert submitted["payload"]["evidence_labels"] == {rows[0]["evidence_id"]: "obs-1", rows[1]["evidence_id"]: "obs-2"}
++            payload = submitted["payload"]
++            assert payload["evidence_labels"] == {rows[0]["evidence_id"]: "obs-1", rows[1]["evidence_id"]: "obs-2"}
++            assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2"] and payload["cited_tokens_not_decoded"] == ["obs-3"]
++            assert payload["citation_protocol"] == "faultlab-native-adapter/v2.1-shown-order-labels"
++            assert "cited_unshown_labels" not in payload
+         finally:
+             await client.close()
+     asyncio.run(run())
+ 
+ 
+-# ----------------------------------------------------------------------------- 5. only labels shown to the agent are decoded
+-# Review findings INT-1 and M1 (artifacts/product-native-v2-2026-09-29/review-integrity, review-product). The journal can hold
+-# an observation the agent is never shown. It still has a journal position, so its label exists; a guessed label for it
+-# must stay as written and fail exactly as in v1 (where a hidden hex ID cannot be guessed) and as the reference Actor's
+-# rule says (a label outside the request cannot make a guessed citation valid).
++# ----------------------------------------------------------------------------- 5. labels count only what the agent is shown
++# Protocol v2.1 (September 30). The journal can hold an observation the agent is never shown: the read of a non-blocking
++# before_confirmation policy step, or the first attempt of a write the broker retried inside one tool call. The first v2
++# build labelled journal positions, so the agent saw gaps (obs-1, obs-2, obs-4) and the first live v2 run's Mechanic read the
++# gap as a missing observation. Now such an observation gets no label, the labels the agent sees are obs-1..obs-n with no
++# gaps, each keeps its label on later turns, and only a label that was shown is decoded; any other token (obs-4 below, or
++# any guess) stays as written and fails the evidence check (C6) exactly as in v1, where a hidden ID cannot be guessed.
+ 
+ NON_BLOCKING_CONFIRMATION = {"parent_version": "policy-v0", "rules": [{"hook": "before_confirmation", "when": "always", "steps": [
+     {"op": "read_current_operation"}, {"op": "require_receipt", "service": "orders", "status": "SUCCEEDED"}]}]}
+@@ -455,7 +463,18 @@
+         return f"FAILS: {error}"
+ 
+ 
+-def test_a_non_blocking_hook_read_the_agent_never_saw_cannot_be_cited_by_a_guessed_label(tmp_path, monkeypatch):
++def with_broker_retried_send(monkeypatch):
++    original = WorldClient.create
++    async def create(self, episode_id, intent, fault_spec, *args, **kwargs):
++        return await original(self, episode_id, intent, TWO_TRANSIENT_CONFIRMATIONS, *args, **kwargs)
++    monkeypatch.setattr(WorldClient, "create", create)
++
++
++def labels_per_request(provider):
++    return [shown_evidence_ids(request["messages"]) for request in provider.requests]
++
++
++def test_a_non_blocking_hook_read_the_agent_never_saw_gets_no_label_and_the_labels_stay_contiguous(tmp_path, monkeypatch):
+     def script(call, messages):
+         if call == 1: return {"name": "update_order", "arguments": {"desired_shipping": "express"}}
+         if call == 2: return {"name": "send_confirmation", "arguments": {}}
+@@ -466,39 +485,78 @@
+     # The hook's own status read is journal row 2; it passed, so v1's tool result (shared) returned only the confirmation.
+     assert [(c["tool"], c["caller"], c["hook"]) for c in context.broker.logical_calls] == [
+         ("update_order", "actor", None), ("get_operation_status", "policy", "before_confirmation"), ("send_confirmation", "actor", None)]
+-    assert shown_evidence_ids(provider.requests[-1]["messages"]) == ["obs-1", "obs-3"]
+-    # obs-1 and obs-3 decode; obs-2 was shown to no one, so it stays as written.
+-    assert outcome["report"]["evidence_ids"] == [ids[0], ids[2], "obs-2"]
+-    submitted, = events(store, context, "report_submitted")
+-    payload = submitted["payload"]
++    assert labels_per_request(provider) == [[], ["obs-1"], ["obs-1", "obs-2"]]        # no gap; obs-1 kept on every turn
++    # obs-1 and obs-2 decode (journal rows 1 and 3); obs-3 was never a label, so it stays as written.
++    assert outcome["report"]["evidence_ids"] == [ids[0], "obs-3", ids[2]]
++    payload = events(store, context, "report_submitted")[0]["payload"]
+     assert payload["cited_evidence_tokens"] == ["obs-1", "obs-3", "obs-2"]
+-    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-3"] and payload["cited_unshown_labels"] == ["obs-2"]
+-    assert payload["evidence_labels"] == {ids[0]: "obs-1", ids[1]: "obs-2", ids[2]: "obs-3"}   # positions are unchanged
+-    # Scored as written: it cites undelivered evidence, exactly as the same written answer does under v1.
++    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2"] and payload["cited_tokens_not_decoded"] == ["obs-3"]
++    assert payload["evidence_labels"] == {ids[0]: "obs-1", ids[2]: "obs-2"}           # the hook's read has no label
+     assert scored_references(context, outcome["report"]) == "FAILS: Report references undelivered evidence"
+ 
+ 
+-def test_a_write_attempt_the_broker_retried_internally_cannot_be_cited_by_a_guessed_label(tmp_path, monkeypatch):
+-    original = WorldClient.create
+-    async def create(self, episode_id, intent, fault_spec, *args, **kwargs):
+-        return await original(self, episode_id, intent, TWO_TRANSIENT_CONFIRMATIONS, *args, **kwargs)
+-    monkeypatch.setattr(WorldClient, "create", create)
++def test_a_broker_retried_send_gives_contiguous_labels_and_decodes_to_the_rows_shown(tmp_path, monkeypatch):
++    with_broker_retried_send(monkeypatch)
+     def script(call, messages):
+         if call == 1: return {"name": "get_order", "arguments": {}}
+         if call == 2: return {"name": "update_order", "arguments": {"desired_shipping": "express"}}
+         if call == 3: return {"name": "send_confirmation", "arguments": {}}
+-        return unresolved_report(["obs-1", "obs-2", "obs-3", "obs-4"])
++        return unresolved_report(shown_evidence_ids(messages))
+     provider, outcome, context, store = episode(tmp_path, SmolagentsActorV2, script, monkeypatch=monkeypatch)
+     ids = real_ids(context)
+     journal = [(o.result.tool, o.result.error_code) for o in context.broker.journal.observations]
+     assert journal == [("get_order", None), ("update_order", None),
+                        ("send_confirmation", "TRANSIENT_UNAVAILABLE"), ("send_confirmation", "TRANSIENT_UNAVAILABLE")]
+     assert len(context.broker.logical_calls[-1]["attempt_ids"]) == 2        # one tool call, two attempts
+-    assert shown_evidence_ids(provider.requests[-1]["messages"]) == ["obs-1", "obs-2", "obs-4"]
+-    assert outcome["report"]["evidence_ids"] == [ids[0], ids[1], "obs-3", ids[3]]
++    # The first send attempt (journal row 3) is never shown: the labels are obs-1, obs-2, obs-3, not obs-1, obs-2, obs-4.
++    assert labels_per_request(provider) == [[], ["obs-1"], ["obs-1", "obs-2"], ["obs-1", "obs-2", "obs-3"]]
++    assert outcome["report"]["evidence_ids"] == [ids[0], ids[1], ids[3]]
+     payload = events(store, context, "report_submitted")[0]["payload"]
+-    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2", "obs-4"] and payload["cited_unshown_labels"] == ["obs-3"]
++    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2", "obs-3"] and payload["cited_tokens_not_decoded"] == []
++    assert payload["evidence_labels"] == {ids[0]: "obs-1", ids[1]: "obs-2", ids[3]: "obs-3"}
++    assert payload["decoded_evidence_ids"] == [ids[0], ids[1], ids[3]]
++    assert scored_references(context, outcome["report"]) == "PASSES"
++
++
++def test_a_guess_past_the_shown_labels_is_not_decoded(tmp_path, monkeypatch):
++    with_broker_retried_send(monkeypatch)
++    def script(call, messages):
++        if call == 1: return {"name": "get_order", "arguments": {}}
++        if call == 2: return {"name": "update_order", "arguments": {"desired_shipping": "express"}}
++        if call == 3: return {"name": "send_confirmation", "arguments": {}}
++        return unresolved_report(["obs-1", "obs-2", "obs-3", "obs-4"])
++    provider, outcome, context, store = episode(tmp_path, SmolagentsActorV2, script, monkeypatch=monkeypatch)
++    ids = real_ids(context)
++    assert outcome["report"]["evidence_ids"] == [ids[0], ids[1], ids[3], "obs-4"]
++    payload = events(store, context, "report_submitted")[0]["payload"]
++    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2", "obs-3"] and payload["cited_tokens_not_decoded"] == ["obs-4"]
+     assert scored_references(context, outcome["report"]) == "FAILS: Report references undelivered evidence"
++
++
++def test_an_observation_first_shown_later_gets_the_next_label_and_shown_ones_keep_theirs(tmp_path, monkeypatch):
++    """After the business budget closes, v1's tool result lists every journal row, the hidden first send attempt
++    included. It is shown for the first time then, so it gets the next number; the others keep theirs."""
++    with_broker_retried_send(monkeypatch)
++    def script(call, messages):
++        if call == 1: return {"name": "get_order", "arguments": {}}
++        if call == 2: return {"name": "update_order", "arguments": {"desired_shipping": "express"}}
++        if call == 3: return {"name": "send_confirmation", "arguments": {}}
++        if call == 4: return {"name": "get_order", "arguments": {}}             # over the 4-attempt budget: closes business
++        return unresolved_report(shown_evidence_ids(messages))
++    provider, outcome, context, store = episode(tmp_path, SmolagentsActorV2, script, caps=EpisodeBudget(http_attempts=4),
++                                                monkeypatch=monkeypatch)
++    ids = real_ids(context)
++    closed = provider.requests[4]
++    result = [row for row in embedded_objects(closed["messages"]) if "error" in row and "observations" in row][0]
++    assert result["error"].startswith("Business budget exhausted")
++    # Journal order in the list; labels by first showing: rows 1, 2 and 4 keep obs-1..obs-3, row 3 is new: obs-4.
++    assert [row["evidence_id"] for row in result["observations"]] == ["obs-1", "obs-2", "obs-4", "obs-3"]
++    assert not REAL_ID.search(request_text(closed))
++    assert outcome["report"]["evidence_ids"] == [ids[0], ids[1], ids[3], ids[2]]
++    payload = events(store, context, "report_submitted")[0]["payload"]
++    assert payload["labels_shown_to_agent"] == ["obs-1", "obs-2", "obs-3", "obs-4"]
++    assert payload["evidence_labels"] == {ids[0]: "obs-1", ids[1]: "obs-2", ids[3]: "obs-3", ids[2]: "obs-4"}
++    assert scored_references(context, outcome["report"]) == "PASSES"
+ 
+ 
+ def test_citing_only_the_labels_shown_still_decodes_to_what_v1_would_cite(tmp_path, monkeypatch):

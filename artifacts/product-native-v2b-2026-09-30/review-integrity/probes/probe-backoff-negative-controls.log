@@ -1,0 +1,20 @@
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[explorer-CONNECTION_ERROR-None]
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[explorer-REQUEST_TIMEOUT-None]
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[explorer-HTTP_ERROR-503]
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[mechanic-CONNECTION_ERROR-None]
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[mechanic-REQUEST_TIMEOUT-None]
+MUTANT reroll_answers: FAILED ::test_failure_with_a_generation_is_never_retried[mechanic-HTTP_ERROR-503]
+MUTANT reroll_answers: 6 failed, 20 passed in 5.93s
+MUTANT no_charge: FAILED ::test_each_retry_is_charged_then_recorded_then_sent[explorer] - Asser...
+MUTANT no_charge: FAILED ::test_each_retry_is_charged_then_recorded_then_sent[mechanic] - Asser...
+MUTANT no_charge: FAILED ::test_three_retries_per_request_then_the_original_failure_with_a_count
+MUTANT no_charge: FAILED ::test_campaign_cap_counts_only_this_campaigns_v2_records_across_roles
+MUTANT no_charge: FAILED ::test_budget_refusal_sends_nothing_more - Failed: DID NOT RAISE Runti...
+MUTANT no_charge: FAILED ::test_no_session_is_rule_v1 - assert (2 == 1)
+MUTANT no_charge: 6 failed, 20 passed in 3.99s
+MUTANT stop_ignored: FAILED ::test_stop_during_a_real_wait[explorer] - AssertionError: 3.699993583...
+MUTANT stop_ignored: FAILED ::test_stop_during_a_real_wait[mechanic] - AssertionError: 3.701389999...
+MUTANT stop_ignored: 2 failed, 24 passed in 10.97s
+MUTANT no_campaign_cap: FAILED ::test_campaign_cap_counts_only_this_campaigns_v2_records_across_roles
+MUTANT no_campaign_cap: 1 failed, 25 passed in 3.99s
+CONTROL (no mutant): 26 passed in 3.77s

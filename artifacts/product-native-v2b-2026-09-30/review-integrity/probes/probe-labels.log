@@ -1,0 +1,650 @@
+{"case": [1, "healthy", "none", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [2, "healthy", "none", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [3, "healthy", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [4, "healthy", "nonblocking_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [5, "healthy", "nonblocking_confirm", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [6, "healthy", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [7, "healthy", "block_confirm", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [8, "healthy", "block_confirm", "http4"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+{"case": [9, "healthy", "block_confirm", "http2"], "requests": 5, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [10, "healthy", "block_report", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 6, "v1": "report", "v2": "report"}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['evidence-0000000000000000000000000000000a',
+'evidence-0000000000000000000000000000000e', 
+'evidence-00000000000000000000000000000012', 
+'evidence-00000000000000000000000000000016'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['evidence-0000000000000000000000000000000a',
+'evidence-0000000000000000000000000000000e', 
+'evidence-00000000000000000000000000000012', 
+'evidence-00000000000000000000000000000016'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['evidence-0000000000000000000000000000000a',
+'evidence-0000000000000000000000000000000e', 
+'evidence-00000000000000000000000000000012', 
+'evidence-00000000000000000000000000000016'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['evidence-0000000000000000000000000000000a',
+'evidence-0000000000000000000000000000000e', 
+'evidence-00000000000000000000000000000012', 
+'evidence-00000000000000000000000000000016'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-1', 'obs-2', 'obs-3', 'obs-4'], 
+'next_action': {'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget 
+exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-1', 'obs-2', 'obs-3', 'obs-4'], 
+'next_action': {'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget 
+exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-1', 'obs-2', 'obs-3', 'obs-4'], 
+'next_action': {'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget 
+exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-1', 'obs-2', 'obs-3', 'obs-4'], 
+'next_action': {'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget 
+exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [11, "healthy", "block_report", "http4"], "requests": 8, "labels": 4, "report": false, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "v1_v2_requests_compared": 7, "v1": "ActorReportError", "v2": "ActorReportError"}
+.{"case": [12, "healthy", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [13, "healthy", "defer_after_upgrade", "default"], "requests": 3, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [14, "healthy", "defer_after_upgrade", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [15, "healthy", "defer_after_upgrade", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [16, "send_fc1", "none", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [17, "send_fc1", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [18, "send_fc1", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [19, "send_fc1", "nonblocking_confirm", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 7, "v1": "report", "v2": "report"}
+.{"case": [20, "send_fc1", "nonblocking_confirm", "http4"], "requests": 4, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [21, "send_fc1", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [22, "send_fc1", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+{"case": [23, "send_fc1", "block_confirm", "http4"], "requests": 7, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 6, "v1": "report", "v2": "report"}
+.{"case": [24, "send_fc1", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [25, "send_fc1", "block_report", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 2, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [26, "send_fc1", "block_report", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [27, "send_fc1", "block_report", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [28, "send_fc1", "defer_after_upgrade", "default"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [29, "send_fc1", "defer_after_upgrade", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [30, "send_fc1", "defer_after_upgrade", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [31, "send_fc2", "none", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [32, "send_fc2", "none", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [33, "send_fc2", "none", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [34, "send_fc2", "nonblocking_confirm", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 5, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 6, "v1": "report", "v2": "report"}
+.{"case": [35, "send_fc2", "nonblocking_confirm", "http4"], "requests": 4, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+{"case": [36, "send_fc2", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [37, "send_fc2", "block_confirm", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 7, "v1": "report", "v2": "report"}
+.Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+{"case": [38, "send_fc2", "block_confirm", "http4"], "requests": 7, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 6, "v1": "report", "v2": "report"}
+.{"case": [39, "send_fc2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [40, "send_fc2", "block_report", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 5, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [41, "send_fc2", "block_report", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [42, "send_fc2", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [43, "send_fc2", "defer_after_upgrade", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [44, "send_fc2", "defer_after_upgrade", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [45, "send_fc2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [46, "send_fc3", "none", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [47, "send_fc3", "none", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [48, "send_fc3", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [49, "send_fc3", "nonblocking_confirm", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [50, "send_fc3", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [51, "send_fc3", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [52, "send_fc3", "block_confirm", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [53, "send_fc3", "block_confirm", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [54, "send_fc3", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [55, "send_fc3", "block_report", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [56, "send_fc3", "block_report", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': [], 'next_action': {'kind': 'ESCALATE'}}}: 
+BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [57, "send_fc3", "block_report", "http2"], "requests": 8, "labels": 1, "report": false, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "v1_v2_requests_compared": 7, "v1": "ActorReportError", "v2": "ActorReportError"}
+.{"case": [58, "send_fc3", "defer_after_upgrade", "default"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [59, "send_fc3", "defer_after_upgrade", "http4"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [60, "send_fc3", "defer_after_upgrade", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [61, "update_fc2", "none", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 5, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [62, "update_fc2", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [63, "update_fc2", "none", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [64, "update_fc2", "nonblocking_confirm", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [65, "update_fc2", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [66, "update_fc2", "nonblocking_confirm", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [67, "update_fc2", "block_confirm", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [68, "update_fc2", "block_confirm", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [69, "update_fc2", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [70, "update_fc2", "block_report", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [71, "update_fc2", "block_report", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [72, "update_fc2", "block_report", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [73, "update_fc2", "defer_after_upgrade", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [74, "update_fc2", "defer_after_upgrade", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [75, "update_fc2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [76, "get_fc2", "none", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [77, "get_fc2", "none", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [78, "get_fc2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [79, "get_fc2", "nonblocking_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [80, "get_fc2", "nonblocking_confirm", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [81, "get_fc2", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [82, "get_fc2", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [83, "get_fc2", "block_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [84, "get_fc2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [85, "get_fc2", "block_report", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 2, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [86, "get_fc2", "block_report", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [87, "get_fc2", "block_report", "http2"], "requests": 8, "labels": 2, "report": false, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "v1_v2_requests_compared": 7, "v1": "ActorReportError", "v2": "ActorReportError"}
+.{"case": [88, "get_fc2", "defer_after_upgrade", "default"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [89, "get_fc2", "defer_after_upgrade", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [90, "get_fc2", "defer_after_upgrade", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [91, "status_fc2", "none", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [92, "status_fc2", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [93, "status_fc2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [94, "status_fc2", "nonblocking_confirm", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 8, "rows_never_shown_by_last_request": 3, "not_decoded": 0, "v1_v2_requests_compared": 6, "v1": "report", "v2": "report"}
+.{"case": [95, "status_fc2", "nonblocking_confirm", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [96, "status_fc2", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [97, "status_fc2", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [98, "status_fc2", "block_confirm", "http4"], "requests": 4, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [99, "status_fc2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [100, "status_fc2", "block_report", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 2, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [101, "status_fc2", "block_report", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-00000000000000000000000000000010'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [102, "status_fc2", "block_report", "http2"], "requests": 8, "labels": 2, "report": false, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "v1_v2_requests_compared": 7, "v1": "ActorReportError", "v2": "ActorReportError"}
+.{"case": [103, "status_fc2", "defer_after_upgrade", "default"], "requests": 3, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [104, "status_fc2", "defer_after_upgrade", "http4"], "requests": 2, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [105, "status_fc2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [106, "send_fc2_occ2", "none", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 7, "v1": "report", "v2": "report"}
+.{"case": [107, "send_fc2_occ2", "none", "http4"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [108, "send_fc2_occ2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [109, "send_fc2_occ2", "nonblocking_confirm", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [110, "send_fc2_occ2", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [111, "send_fc2_occ2", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [112, "send_fc2_occ2", "block_confirm", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.{"case": [113, "send_fc2_occ2", "block_confirm", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 2, "v1": "report", "v2": "report"}
+.{"case": [114, "send_fc2_occ2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 3, "v1": "report", "v2": "report"}
+.{"case": [115, "send_fc2_occ2", "block_report", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 0, "v1_v2_requests_compared": 4, "v1": "report", "v2": "report"}
+.{"case": [116, "send_fc2_occ2", "block_report", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 5, "v1": "report", "v2": "report"}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': 
+['evidence-0000000000000000000000000000000f'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2'], 'next_action': {'kind': 
+'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [117, "send_fc2_occ2", "block_report", "http2"], "requests": 8, "labels": 2, "report": false, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "v1_v2_requests_compared": 7, "v1": "ActorReportError", "v2": "ActorReportError"}
+.{"case": [118, "send_fc2_occ2", "defer_after_upgrade", "default"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [119, "send_fc2_occ2", "defer_after_upgrade", "http4"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [120, "send_fc2_occ2", "defer_after_upgrade", "http2"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0, "v1_v2_requests_compared": 1, "v1": "report", "v2": "report"}
+.{"case": [1, "healthy", "none", "default"], "requests": 8, "labels": 7, "report": true, "journal_rows": 7, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [2, "healthy", "none", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 0}
+.{"case": [3, "healthy", "none", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [4, "healthy", "nonblocking_confirm", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [5, "healthy", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [6, "healthy", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [7, "healthy", "block_confirm", "default"], "requests": 8, "labels": 7, "report": true, "journal_rows": 8, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [8, "healthy", "block_confirm", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [9, "healthy", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [10, "healthy", "block_report", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 7, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [11, "healthy", "block_report", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [12, "healthy", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [13, "healthy", "defer_after_upgrade", "default"], "requests": 3, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [14, "healthy", "defer_after_upgrade", "http4"], "requests": 3, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [15, "healthy", "defer_after_upgrade", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [16, "send_fc1", "none", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 0}
+.{"case": [17, "send_fc1", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [18, "send_fc1", "none", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [19, "send_fc1", "nonblocking_confirm", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [20, "send_fc1", "nonblocking_confirm", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [21, "send_fc1", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [22, "send_fc1", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [23, "send_fc1", "block_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [24, "send_fc1", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [25, "send_fc1", "block_report", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 1, "not_decoded": 0}
+.{"case": [26, "send_fc1", "block_report", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [27, "send_fc1", "block_report", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [28, "send_fc1", "defer_after_upgrade", "default"], "requests": 5, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [29, "send_fc1", "defer_after_upgrade", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [30, "send_fc1", "defer_after_upgrade", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 0}
+.{"case": [31, "send_fc2", "none", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 7, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [32, "send_fc2", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [33, "send_fc2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [34, "send_fc2", "nonblocking_confirm", "default"], "requests": 8, "labels": 7, "report": true, "journal_rows": 7, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [35, "send_fc2", "nonblocking_confirm", "http4"], "requests": 4, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [36, "send_fc2", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [37, "send_fc2", "block_confirm", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [38, "send_fc2", "block_confirm", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [39, "send_fc2", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [40, "send_fc2", "block_report", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-6'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-6'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-6'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-6'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [41, "send_fc2", "block_report", "http4"], "requests": 8, "labels": 4, "report": false, "journal_rows": 4, "rows_never_shown_by_last_request": 0}
+.{"case": [42, "send_fc2", "block_report", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [43, "send_fc2", "defer_after_upgrade", "default"], "requests": 5, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [44, "send_fc2", "defer_after_upgrade", "http4"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [45, "send_fc2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [46, "send_fc3", "none", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 5, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [47, "send_fc3", "none", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [48, "send_fc3", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [49, "send_fc3", "nonblocking_confirm", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 8, "rows_never_shown_by_last_request": 2, "not_decoded": 2}
+.{"case": [50, "send_fc3", "nonblocking_confirm", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [51, "send_fc3", "nonblocking_confirm", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [52, "send_fc3", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.Error executing tool 'send_confirmation' with arguments {}: BudgetExhausted: 
+HTTP/tick budget exhausted
+Please try again or use another tool
+{"case": [53, "send_fc3", "block_confirm", "http4"], "requests": 7, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [54, "send_fc3", "block_confirm", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [55, "send_fc3", "block_report", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.{"case": [56, "send_fc3", "block_report", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.{"case": [57, "send_fc3", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [58, "send_fc3", "defer_after_upgrade", "default"], "requests": 3, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [59, "send_fc3", "defer_after_upgrade", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [60, "send_fc3", "defer_after_upgrade", "http2"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [61, "update_fc2", "none", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [62, "update_fc2", "none", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.{"case": [63, "update_fc2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [64, "update_fc2", "nonblocking_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [65, "update_fc2", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [66, "update_fc2", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [67, "update_fc2", "block_confirm", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [68, "update_fc2", "block_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [69, "update_fc2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [70, "update_fc2", "block_report", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [71, "update_fc2", "block_report", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.{"case": [72, "update_fc2", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [73, "update_fc2", "defer_after_upgrade", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [74, "update_fc2", "defer_after_upgrade", "http4"], "requests": 4, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [75, "update_fc2", "defer_after_upgrade", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [76, "get_fc2", "none", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [77, "get_fc2", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [78, "get_fc2", "none", "http2"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [79, "get_fc2", "nonblocking_confirm", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 2}
+.{"case": [80, "get_fc2", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [81, "get_fc2", "nonblocking_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [82, "get_fc2", "block_confirm", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [83, "get_fc2", "block_confirm", "http4"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [84, "get_fc2", "block_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 0}
+.{"case": [85, "get_fc2", "block_report", "default"], "requests": 7, "labels": 6, "report": true, "journal_rows": 8, "rows_never_shown_by_last_request": 2, "not_decoded": 1}
+.{"case": [86, "get_fc2", "block_report", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [87, "get_fc2", "block_report", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [88, "get_fc2", "defer_after_upgrade", "default"], "requests": 6, "labels": 6, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [89, "get_fc2", "defer_after_upgrade", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [90, "get_fc2", "defer_after_upgrade", "http2"], "requests": 2, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 3}
+.{"case": [91, "status_fc2", "none", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [92, "status_fc2", "none", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [93, "status_fc2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [94, "status_fc2", "nonblocking_confirm", "default"], "requests": 6, "labels": 6, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [95, "status_fc2", "nonblocking_confirm", "http4"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [96, "status_fc2", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [97, "status_fc2", "block_confirm", "default"], "requests": 6, "labels": 5, "report": true, "journal_rows": 6, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [98, "status_fc2", "block_confirm", "http4"], "requests": 3, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [99, "status_fc2", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [100, "status_fc2", "block_report", "default"], "requests": 2, "labels": 1, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-3'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-3'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-3'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-3'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Error executing tool 'final_answer' with arguments {'answer': 
+{'upgrade_outcome': 'UNKNOWN', 'notification_outcome': 'UNKNOWN', 'overall': 
+'SAFE_UNRESOLVED', 'evidence_ids': ['obs-2', 'obs-3', 'obs-3'], 'next_action': 
+{'kind': 'ESCALATE'}}}: BudgetExhausted: HTTP/tick budget exhausted
+Please try again or use another tool
+Reached max steps.
+{"case": [101, "status_fc2", "block_report", "http4"], "requests": 8, "labels": 3, "report": false, "journal_rows": 4, "rows_never_shown_by_last_request": 1}
+.{"case": [102, "status_fc2", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [103, "status_fc2", "defer_after_upgrade", "default"], "requests": 4, "labels": 4, "report": true, "journal_rows": 5, "rows_never_shown_by_last_request": 1, "not_decoded": 1}
+.{"case": [104, "status_fc2", "defer_after_upgrade", "http4"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [105, "status_fc2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [106, "send_fc2_occ2", "none", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [107, "send_fc2_occ2", "none", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [108, "send_fc2_occ2", "none", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [109, "send_fc2_occ2", "nonblocking_confirm", "default"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [110, "send_fc2_occ2", "nonblocking_confirm", "http4"], "requests": 5, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [111, "send_fc2_occ2", "nonblocking_confirm", "http2"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [112, "send_fc2_occ2", "block_confirm", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 3, "rows_never_shown_by_last_request": 0, "not_decoded": 0}
+.{"case": [113, "send_fc2_occ2", "block_confirm", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [114, "send_fc2_occ2", "block_confirm", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [115, "send_fc2_occ2", "block_report", "default"], "requests": 4, "labels": 3, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 1, "not_decoded": 3}
+.{"case": [116, "send_fc2_occ2", "block_report", "http4"], "requests": 6, "labels": 4, "report": true, "journal_rows": 4, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [117, "send_fc2_occ2", "block_report", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.{"case": [118, "send_fc2_occ2", "defer_after_upgrade", "default"], "requests": 3, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [119, "send_fc2_occ2", "defer_after_upgrade", "http4"], "requests": 2, "labels": 1, "report": true, "journal_rows": 1, "rows_never_shown_by_last_request": 0, "not_decoded": 1}
+.{"case": [120, "send_fc2_occ2", "defer_after_upgrade", "http2"], "requests": 4, "labels": 2, "report": true, "journal_rows": 2, "rows_never_shown_by_last_request": 0, "not_decoded": 2}
+.
+240 passed in 12.22s

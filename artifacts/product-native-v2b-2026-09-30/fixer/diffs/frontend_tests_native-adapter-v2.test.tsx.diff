@@ -1,0 +1,11 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/frontend/tests/native-adapter-v2.test.tsx	2026-09-29 19:06:49
++++ frontend/tests/native-adapter-v2.test.tsx	2026-09-29 19:06:49
+@@ -83,6 +83,8 @@
+   expect(screen.queryByText(/Adapter v2 is a separate agent/)).toBeNull()
+   fireEvent.change(agentSelect, { target: { value: 'smolagents-v2' } })
+   expect(screen.getByText(/Adapter v2 is a separate agent from v1/)).toBeTruthy()
++  // v2.1 (September 30, review finding P-2): labels count what the agent is shown, not journal positions.
++  expect(screen.getByText(/Adapter v2 is a separate agent from v1/).textContent).toContain('numbered in the order the agent first sees them; an observation it never sees gets no label')
+   expect(screen.getByText(/Separate reference-context and completion research studies are not supported/)).toBeTruthy()
+   expect(screen.getByRole('region', { name: 'Current plan preview' }).textContent).toContain(V2)
+   fireEvent.click(screen.getByRole('button', { name: 'Register configured agent' }))

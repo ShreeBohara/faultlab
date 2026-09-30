@@ -1,0 +1,227 @@
+.
+### 1a-faultlab-discovery/v1
+{
+ "budget_used_calls": 10,
+ "records": [
+  {
+   "attempt": 1,
+   "campaign_retry_number": 1,
+   "request": {
+    "challenge": false,
+    "kind": "explorer_selection",
+    "phase": "discovery",
+    "selection_index": 0,
+    "slot_request": null
+   },
+   "retry_delay_seconds": 5,
+   "role": "explorer"
+  },
+  {
+   "attempt": 2,
+   "campaign_retry_number": 2,
+   "request": {
+    "challenge": false,
+    "kind": "explorer_selection",
+    "phase": "discovery",
+    "selection_index": 0,
+    "slot_request": null
+   },
+   "retry_delay_seconds": 20,
+   "role": "explorer"
+  }
+ ],
+ "requests_sent": 10,
+ "search_attempt_retries": [
+  {
+   "attempt": 1,
+   "code": "CONNECTION_ERROR",
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "provider_failure_id": "provider-failure-469b29915fec4adb817d5e14e5a4767f",
+   "retry_delay_seconds": 5,
+   "retry_id": "transport-retry-0c872068320b40a2a470e0ae0a4036b1"
+  },
+  {
+   "attempt": 2,
+   "code": "CONNECTION_ERROR",
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "provider_failure_id": "provider-failure-64b2c497d4de4bbb8fa2060cf073f9fa",
+   "retry_delay_seconds": 20,
+   "retry_id": "transport-retry-9a9a57c4103d43009899223682ad6efe"
+  }
+ ],
+ "selection_model_calls": 3,
+ "state": "NO_CHANGE",
+ "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+ "virtual_wait_seconds": 25.0
+}
+.
+### 1a-faultlab-discovery/v2-reachability
+{
+ "budget_used_calls": 17,
+ "records": [
+  {
+   "attempt": 1,
+   "campaign_retry_number": 1,
+   "request": {
+    "challenge": false,
+    "kind": "explorer_selection",
+    "phase": "discovery",
+    "selection_index": 0,
+    "slot_request": 1
+   },
+   "retry_delay_seconds": 5,
+   "role": "explorer"
+  },
+  {
+   "attempt": 2,
+   "campaign_retry_number": 2,
+   "request": {
+    "challenge": false,
+    "kind": "explorer_selection",
+    "phase": "discovery",
+    "selection_index": 0,
+    "slot_request": 1
+   },
+   "retry_delay_seconds": 20,
+   "role": "explorer"
+  }
+ ],
+ "requests_sent": 17,
+ "search_attempt_retries": [
+  {
+   "attempt": 1,
+   "code": "CONNECTION_ERROR",
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "provider_failure_id": "provider-failure-95bc40be670441efa7d39f3bfb62d255",
+   "retry_delay_seconds": 5,
+   "retry_id": "transport-retry-b742f6c00d9f4d2e943cf032fbc79f10"
+  },
+  {
+   "attempt": 2,
+   "code": "CONNECTION_ERROR",
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "provider_failure_id": "provider-failure-61eb9a44f7294743b1db5a658340a5b9",
+   "retry_delay_seconds": 20,
+   "retry_id": "transport-retry-6d2d3c4554bc48d98598eb5cebd077a6"
+  }
+ ],
+ "selection_model_calls": 3,
+ "state": "NO_CHANGE",
+ "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+ "virtual_wait_seconds": 25.0
+}
+.
+### 1b-all-retries-failed
+{
+ "execution_error": {
+  "campaign_id": "campaign-24659ac547c44ff9974823f850763e91",
+  "code": "CONNECTION_ERROR",
+  "diagnostics": {
+   "code": "CONNECTION_ERROR",
+   "error_class": "APIConnectionError",
+   "finish_reason": null,
+   "http_status": null,
+   "input_tokens": null,
+   "output_tokens": null
+  },
+  "error_class": "RuntimeProviderError",
+  "locations": [
+   {
+    "file": "lab/coordinator.py",
+    "line": 434
+   },
+   {
+    "file": "lab/coordinator.py",
+    "line": 501
+   },
+   {
+    "file": "lab/learning.py",
+    "line": 150
+   },
+   {
+    "file": "agents/explorer.py",
+    "line": 303
+   },
+   {
+    "file": "agents/transport_retry.py",
+    "line": 285
+   },
+   {
+    "file": "agents/explorer.py",
+    "line": 266
+   }
+  ],
+  "message": "A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry of this request failed. Inspect the saved provider diagnostics.",
+  "recorded_at": "2026-09-30T01:44:12.668123+00:00",
+  "transport_retries": {
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "reason": "ALL_RETRIES_FAILED",
+   "retries_tried": 3,
+   "role": "explorer",
+   "waits_seconds": [
+    5,
+    20,
+    60
+   ]
+  }
+ },
+ "terminal_reason": "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry of this request failed. Inspect the saved provider diagnostics.",
+ "virtual_wait_seconds": 85.0
+}
+.
+### 1b-campaign-cap
+{
+ "execution_error_transport_retries": {
+  "protocol": "faultlab-transport-retry/v2-lab-backoff",
+  "reason": "CAMPAIGN_RETRY_LIMIT",
+  "retries_tried": 0,
+  "role": "explorer",
+  "waits_seconds": []
+ },
+ "records": 12,
+ "requests_sent": 19,
+ "terminal_reason": "CONNECTION_ERROR: A model request failed after 0 transport retries; the campaign's limit of 12 lab-role transport retries was reached. Inspect the saved provider diagnostics.",
+ "virtual_wait_seconds": 150.0
+}
+.
+### 1b-discovery-bound
+{
+ "terminal_reason": "CONNECTION_ERROR: A model request failed after 0 transport retries; the plan's declared discovery Explorer retry bound was reached. Inspect the saved provider diagnostics."
+}
+.
+### 1b-budget-refused
+{
+ "terminal_reason": "CONNECTION_ERROR: A model request failed after 0 transport retries; the next retry did not fit the campaign's unreserved budget, so it was not sent. Inspect the saved provider diagnostics.",
+ "waited_virtual_seconds_before_refusal": 5.0
+}
+.
+### 1c-stop-0.3
+{
+ "api_state": "STOPPED",
+ "stop_to_wait_end_seconds": 0.2,
+ "terminal_reason": "External stop requested while a failed Explorer model request waited to be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.",
+ "whole_execute_seconds": 0.517
+}
+.
+### 1c-stop-1.2
+{
+ "api_state": "STOPPED",
+ "stop_to_wait_end_seconds": 0.302,
+ "terminal_reason": "External stop requested while a failed Explorer model request waited to be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.",
+ "whole_execute_seconds": 1.515
+}
+.
+### 1c-stop-3.7
+{
+ "api_state": "STOPPED",
+ "stop_to_wait_end_seconds": 0.323,
+ "terminal_reason": "External stop requested while a failed Explorer model request waited to be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.",
+ "whole_execute_seconds": 4.036
+}
+...
+### 1h-cancel
+{
+ "cancel_to_end_seconds": 0.0004
+}
+.
+13 passed in 13.00s

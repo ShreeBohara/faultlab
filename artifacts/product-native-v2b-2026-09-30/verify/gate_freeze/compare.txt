@@ -1,0 +1,43 @@
+gate_freeze differences, checkpoint 2c178a7 (runtime ac7a12d2) -> current working tree:
+  files/backend/app/agents/mechanic.py 266d6aad26b88e9f -> 0b4606b3d03bd445
+  files/backend/app/lab/diagnosis.py d1d7bee025664dae -> 76d53c108e287156
+  fingerprints/algorithm_hash 7afabd51a2a4f6bb -> b2575eb257ebe9a1
+  fingerprints/runtime_hash ac7a12d2c1fc3baf -> 4553ebe7db2f9e3e
+  fingerprints/source_hash 99a9034f5f2a9ed5 -> 142a9ebcf03b9fde
+  fingerprints/tree_lab 21bb95305f32817d -> ba9a78c2302ecefe
+  functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256 947a277409050dfd -> d17477edb0dd1be1
+  functions/backend/app/agents/mechanic.py::Mechanic/lines 13-76 -> 13-91
+  functions/backend/app/agents/mechanic.py::Mechanic/text_sha256 b76ad23b0199598b -> 70d726f88d85f5a2
+  functions/backend/app/lab/diagnosis.py::runtime_contract/ast_sha256 15ee64ec846de8b9 -> 433dbcff3667392e
+  functions/backend/app/lab/diagnosis.py::runtime_contract/lines 17-77 -> 29-89
+  functions/backend/app/lab/diagnosis.py::runtime_contract/text_sha256 9b2564c7234e2514 -> 388a0581b83552c8
+  functions/backend/app/lab/diagnosis.py::summarize_evidence/lines 143-184 -> 155-196
+  functions/backend/app/lab/diagnosis.py::trial_outcomes/lines 79-90 -> 91-102
+
+scorer_hash (sha256 of checks.py) equal to checkpoint: True 19de811c96473eb4
+checks.py file hash equal to checkpoint: True
+checks.py::score and ::scorer_hash functions equal: True
+assess_pairs text equal: True  ast equal: True  lines 106-147
+assess_pairs text sha first 40 = 783e8e58f91992f36066a2c6a152c4fbd242bd7e (Phase 15 recorded 783e8e58...)
+backend/app/lab/promotion.py file equal to checkpoint: True
+backend/app/lab/evaluation.py file equal to checkpoint: True
+backend/app/agents/actor.py file equal to checkpoint: True
+backend/app/agents/prompts/actor.md file equal to checkpoint: True
+backend/app/referee/manifests.py file equal to checkpoint: True
+backend/app/lab/diagnosis.py file equal to checkpoint: False
+backend/app/lab/runner.py file equal to checkpoint: True
+backend/app/lab/evidence.py file equal to checkpoint: True
+backend/app/lab/reproduction.py file equal to checkpoint: True
+vs phase28 gate-freeze-after.json: scorer True | assess_pairs text True | ast True | checks.py file True
+my checkpoint copy vs previous verifier record of the v2 tree (runtime ac7a12d2): fingerprints equal: True | functions equal: True | files equal: True
+my current vs fixer gate_freeze/current.json: fingerprints equal: True | functions equal: True | files equal: True
+functions identical (text, ast, lines) to checkpoint: 26 of 30
+   changed function: backend/app/agents/mechanic.py::Mechanic | text False | ast False | lines 13-76 -> 13-91
+   changed function: backend/app/lab/diagnosis.py::runtime_contract | text False | ast False | lines 17-77 -> 29-89
+   changed function: backend/app/lab/diagnosis.py::summarize_evidence | text True | ast True | lines 143-184 -> 155-196
+   changed function: backend/app/lab/diagnosis.py::trial_outcomes | text True | ast True | lines 79-90 -> 91-102
+files identical to checkpoint: 18 of 20 (audit/promotion.json and audit/final-audit.json dropped from FILES; not read)
+   changed file: backend/app/agents/mechanic.py
+   changed file: backend/app/lab/diagnosis.py
+current fingerprints: runtime 4553ebe7db2f9e3efda6f8761e987c6f1ea58dce12d3fde2dfbc8812ebb7c057 algorithm b2575eb257ebe9a1a519a7c3b8ca92994edb62e4581321e6dd2460647441beef
+                      service 3ce5bcd25af4b37e contract 6f9d778323a4efc2 interpreter 6da0714adef40c02

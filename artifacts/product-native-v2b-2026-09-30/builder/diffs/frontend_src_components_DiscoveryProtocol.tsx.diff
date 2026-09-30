@@ -1,0 +1,63 @@
+diff --git a/- b/frontend/src/components/DiscoveryProtocol.tsx
+index 0000000..d2b53a5 100644
+--- a/-
++++ b/frontend/src/components/DiscoveryProtocol.tsx
+@@ -1,5 +1,5 @@
+ import { useState } from 'react'
+-import { HISTORY_SOURCES, runApi, type AgentHistory, type DiscoveryDeclaration, type HistoryCheck, type HistorySource } from '../runPlans'
++import { HISTORY_SOURCES, isLabBackoff, runApi, type AgentHistory, type DiscoveryDeclaration, type HistoryCheck, type HistorySource, type TransportRetryDeclaration } from '../runPlans'
+ import { Field } from './common'
+ 
+ const NAMES: Record<DiscoveryDeclaration['protocol'], string> = {
+@@ -12,21 +12,24 @@ export const discoveryName = (declaration: DiscoveryDeclaration) => NAMES[declar
+ 
+ /**
+  * Explorer transport retries are declared separately: a retry re-sends a request that got no answer; it is not a new request.
+- * The declared number covers discovery-phase Explorer requests only (review finding, September 29).
++ * The declared number covers discovery-phase Explorer requests only (review finding, September 29). How many a single
++ * request may get depends on the plan's transport retry rule: one under rule v1, up to three with backoff under rule v2.
+  */
+-export const explorerRetries = (declaration: DiscoveryDeclaration) =>
++export const explorerRetries = (declaration: DiscoveryDeclaration, rule?: TransportRetryDeclaration | null) =>
+   typeof declaration.explorer_transport_retries_max === 'number'
+-    ? `at most ${declaration.explorer_transport_retries_max} charged Explorer transport retries during discovery (one per request with no answer)`
++    ? `at most ${declaration.explorer_transport_retries_max} charged Explorer transport retries during discovery (${isLabBackoff(rule) ? 'up to 3 per request with no answer, after waits of 5 s, 20 s and 60 s' : 'one per request with no answer'})`
+     : 'no Explorer transport retry declared'
+ 
+-/** Retries after discovery have no separate declared count; they are bounded per request and by the campaign limits. */
++/** Rule v1: retries after discovery have no separate declared count; they are bounded per request and by the campaign limits. */
+ export const LATER_PHASE_RETRIES = 'The retry bound above covers discovery only. In later phases, every Explorer request (challenge selections, selection comparison) and every Mechanic request can also get one charged retry when no answer arrives; those retries have no separate count and are bounded by one retry per request and by the campaign limits.'
++/** Rule v2 (lab-role backoff, every new Learn plan). */
++export const LATER_PHASE_RETRIES_V2 = 'The retry bound above covers discovery only. In later phases, every Explorer challenge selection and every Mechanic diagnosis or candidate request can also be sent again up to 3 times when no answer arrives, after waits of 5 s, 20 s and 60 s. All of this campaign\'s Explorer and Mechanic retries, discovery included, are capped at 12, and every one is charged before it is sent. A selection comparison started separately keeps one retry per request.'
+ 
+ /** Discovery v3 before a plan exists: nothing is frozen yet. */
+ export const HISTORY_AT_PLAN_TIME = 'The agent history is read from this store and frozen into the plan when you create the campaign. Review it in the saved plan before pressing Start.'
+ 
+-export const discoveryBudget = (declaration: DiscoveryDeclaration) =>
+-  `${declaration.slots} slots · at most ${declaration.explorer_requests_max} Explorer requests · ${explorerRetries(declaration)} · at most ${declaration.actor_episodes_max} Actor episodes · ${declaration.replans_per_slot ? 'one re-plan per refused slot' : 'no re-plans'}`
++export const discoveryBudget = (declaration: DiscoveryDeclaration, rule?: TransportRetryDeclaration | null) =>
++  `${declaration.slots} slots · at most ${declaration.explorer_requests_max} Explorer requests · ${explorerRetries(declaration, rule)} · at most ${declaration.actor_episodes_max} Actor episodes · ${declaration.replans_per_slot ? 'one re-plan per refused slot' : 'no re-plans'}`
+ 
+ const tally = (values: Record<string, number>) => Object.entries(values).map(([key, value]) => `${key} ${value}`).join(' · ') || 'none'
+ const EXCLUDED: Record<string, string> = { lab_error: 'lab errors', interrupted: 'interrupted', not_finished: 'not finished', not_weave_verified: 'without verified evidence', recipe_unavailable: 'recipe not in a public record' }
+@@ -92,17 +95,17 @@ export function AgentHistoryFacts({ history, campaign }: { history: AgentHistory
+ }
+ 
+ /** The declared discovery protocol and selection budget, in plain words. */
+-export function DiscoveryProtocolFacts({ declaration, campaign }: { declaration: DiscoveryDeclaration; campaign?: { campaign_id: string; state?: string | null } }) {
++export function DiscoveryProtocolFacts({ declaration, campaign, transportRetry }: { declaration: DiscoveryDeclaration; campaign?: { campaign_id: string; state?: string | null }; transportRetry?: TransportRetryDeclaration | null }) {
+   const caller = declaration.pre_check?.caller_model
+   const v3 = declaration.history !== undefined
+   return <div className="discovery-protocol">
+     <dl className="facts compact">
+       <Field name="Discovery protocol">{discoveryName(declaration)}</Field>
+-      <Field name="Selection budget">{discoveryBudget(declaration)}</Field>
++      <Field name="Selection budget">{discoveryBudget(declaration, transportRetry)}</Field>
+       <Field name="Schedule identity">{declaration.schedule_identity.endsWith('v2-order-aware') ? 'Order-aware: order counts only for overlapping same-kind faults on one tool' : 'Sorted primitives (seed and order ignored)'}</Field>
+     </dl>
+     <p className="muted">{declaration.dispatch_rule}</p>
+-    {typeof declaration.explorer_transport_retries_max === 'number' && <p className="muted">{LATER_PHASE_RETRIES}</p>}
++    {typeof declaration.explorer_transport_retries_max === 'number' && <p className="muted">{isLabBackoff(transportRetry) ? LATER_PHASE_RETRIES_V2 : LATER_PHASE_RETRIES}</p>}
+     {caller && <details><summary>Pre-check caller model · this agent's limits and typical path</summary><ul className="muted">{caller.facts.map(fact => <li key={fact}>{fact}</li>)}</ul><p className="muted">Caller model <code>{caller.caller_id}</code> describes {caller.validated_against}. The pre-check changes only which picks run; it never changes what the Actor sees or how a trial is scored.</p></details>}
+     {v3 && (declaration.history ? <AgentHistoryFacts history={declaration.history} campaign={campaign} /> : <p className="muted">{HISTORY_AT_PLAN_TIME}</p>)}
+   </div>

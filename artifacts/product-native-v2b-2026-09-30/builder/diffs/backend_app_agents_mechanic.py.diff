@@ -1,0 +1,43 @@
+diff --git a/- b/backend/app/agents/mechanic.py
+index 0000000..d1448e8 100644
+--- a/-
++++ b/backend/app/agents/mechanic.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ from app.providers.runtime import RuntimeProviderError
+ from app.lab.provider_failures import record_provider_failure,record_transport_retry
+-from app.agents.transport_retry import charge_ledger_retry,complete_with_one_retry,request_usage
++from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,request_usage
+ from app.contracts.tokens import validate_model_input
+ from pydantic import TypeAdapter,ValidationError
+ from app.contracts.models import MechanicOutput,DiagnosticProposal,canonical_json,new_id
+@@ -14,6 +14,9 @@ class Mechanic:
+     def __init__(self,provider,store,ledger):
+         self.provider,self.store,self.ledger=provider,store,ledger
+         self.trace=None; self.metadata=None
++        # The Learn campaign's rule-v2 lab-role backoff (app.agents.transport_retry.LabBackoff), set by the
++        # learning loop when its plan declares it. None keeps rule v1's single blind retry.
++        self.lab_retry=None
+     async def _generate(self,prompt,context,adapter,*,reservation=None,allow_format_repair=True,validate_result=None):
+         context={**context,'output_schema':adapter.json_schema()}
+         messages=[{'role':'system','content':(PROMPTS/prompt).read_text()},{'role':'user','content':canonical_json(context)}]
+@@ -39,7 +42,18 @@ class Mechanic:
+             # The shared blind-retry rule (app.agents.transport_retry): one retry of this same
+             # request, charged on the ledger first from unreserved capacity, never after an answer.
+             # A format repair (the second attempt above) is a new request, not a retry.
+-            generation,retries=await complete_with_one_retry(send,failed=failed,admit=lambda:charge_ledger_retry(self.ledger,'mechanic'),record=record)
++            lab=self.lab_retry
++            if lab is None:
++                generation,retries=await complete_with_one_retry(send,failed=failed,admit=lambda:charge_ledger_retry(self.ledger,'mechanic'),record=record)
++            else:
++                # Rule v2: up to three backed-off retries of this same request within the campaign's lab-role cap,
++                # each charged on the ledger before it is sent; a Stop during a wait ends the campaign STOPPED.
++                def record_backoff(error,failure_id,retry_attempt,delay):
++                    return record_transport_retry(self.store,error,role='mechanic',failure_id=failure_id,metadata=self.metadata or context,
++                        request={'kind':request_kind,'request_id':request_id,'format_attempt':attempt,'phase':request_kind},
++                        backoff={'attempt':retry_attempt,'delay':delay,'campaign_retry_number':lab.used})  # counted just before
++                generation,retries=await complete_with_backoff(send,failed=failed,admit=lambda:charge_ledger_retry(self.ledger,'mechanic'),
++                                                               record=record_backoff,session=lab,role='mechanic')
+             self.ledger.reconcile(generation)
+             if self.metadata and generation.model_id!=expected:
+                 raise RuntimeProviderError('Provider returned a different frozen model')

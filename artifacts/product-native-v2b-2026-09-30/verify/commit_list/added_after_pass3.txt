@@ -1,0 +1,6 @@
+artifacts/product-native-v2b-2026-09-30/verify/COMMIT_LIST_NOTES.txt
+artifacts/product-native-v2b-2026-09-30/verify/commit_list/commit_list_pass3_after_checks.txt
+artifacts/product-native-v2b-2026-09-30/verify/commit_list/commit_list_pass3_after_checks.txt.json
+artifacts/product-native-v2b-2026-09-30/verify/commit_list/secret_scan_pass3.txt
+artifacts/product-native-v2b-2026-09-30/verify/commit_list/secret_scan_selftest.txt
+artifacts/product-native-v2b-2026-09-30/verify/git_state_final.txt

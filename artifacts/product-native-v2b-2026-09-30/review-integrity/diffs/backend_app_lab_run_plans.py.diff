@@ -1,0 +1,110 @@
+--- backup:backend/app/lab/run_plans.py
++++ worktree:backend/app/lab/run_plans.py
+@@ -14,7 +14,9 @@
+ from app.contracts.models import (AgentRegistration, Campaign, CampaignBudget,
+     CampaignRequest, Digest, EpisodeBudget, FaultSpec, Id, PolicyVersion, SendableTaskText,
+     StrictModel, canonical_json, content_hash)
+-from app.agents.transport_retry import RETRIES_PER_REQUEST, declaration as transport_retry_declaration
++from app.agents.transport_retry import (LAB_BACKOFF_SECONDS, LAB_RETRIES_PER_CAMPAIGN_MAX, LAB_RETRIES_PER_REQUEST,
++    RETRIES_PER_REQUEST, TRANSPORT_RETRY_PROTOCOL_V2, declaration as transport_retry_declaration,
++    declaration_v2 as transport_retry_declaration_v2)
+ from app.lab.evidence_wait import declaration as evidence_retry_declaration
+ from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NATIVE_AGENTS, NATIVE_V2_DISPLAY_NAME,
+                                       AgentRegistry)
+@@ -175,6 +177,35 @@
+         return self
+ 
+ 
++class TransportRetryPlanV2(StrictModel):
++    """Rule v2 (app.agents.transport_retry, faultlab-transport-retry/v2-lab-backoff), frozen into every new Learn
++    plan: the agent roles keep rule v1; the Explorer and the Mechanic of that Learn campaign back off and retry."""
++    protocol: Literal['faultlab-transport-retry/v2-lab-backoff']
++    retryable: list[Literal['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']] = Field(min_length=3, max_length=3)
++    agent_roles: list[Literal['actor']] = Field(min_length=1, max_length=1)
++    agent_retries_per_request: Literal[1]
++    service_unavailable_delay_seconds: Literal[1]
++    actor_retries_per_episode_max: int = Field(ge=1, le=8)
++    lab_roles: list[Literal['explorer', 'mechanic']] = Field(min_length=2, max_length=2)
++    lab_retries_per_request: Literal[3]
++    lab_backoff_seconds: list[int] = Field(min_length=3, max_length=3)
++    lab_retries_per_campaign_max: Literal[12]
++    stop_during_wait: Literal['STOPPED']
++    rule: str = Field(min_length=1, max_length=1400)
++
++    @model_validator(mode='after')
++    def exact_lists(self):
++        if (self.retryable != ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'] or self.lab_roles != ['explorer', 'mechanic']
++                or self.lab_backoff_seconds != list(LAB_BACKOFF_SECONDS)
++                or self.lab_retries_per_request != LAB_RETRIES_PER_REQUEST
++                or self.lab_retries_per_campaign_max != LAB_RETRIES_PER_CAMPAIGN_MAX):
++            raise ValueError('Inconsistent transport retry declaration')
++        return self
++
++
++TransportRetry = Annotated[Union[TransportRetryPlan, TransportRetryPlanV2], Field(discriminator='protocol')]
++
++
+ class EvidenceRetryPlanV1(StrictModel):
+     """The first automatic evidence retry rule (per-wait limit only). Built and reviewed offline on
+     2026-09-29, never run live; a saved v1 plan still reads, and Start refuses it (the installed rule differs)."""
+@@ -226,8 +257,9 @@
+     initial_policy_hash: Digest
+     selection: Selection
+     discovery: DiscoveryPlan | None = None
+-    # None: saved before the shared transport-retry rule was declared in plans.
+-    transport_retry: TransportRetryPlan | None = None
++    # None: saved before the shared transport-retry rule was declared in plans. Rule v1 in every plan saved before
++    # rule v2 and in every baseline/compare plan; rule v2 (lab-role backoff) in every new Learn plan.
++    transport_retry: TransportRetry | None = None
+     # Learn only. None: not a Learn plan, or saved before automatic evidence retries were declared
+     # (such a campaign keeps manual Retry evidence sync only).
+     evidence_retry: EvidenceRetry | None = None
+@@ -368,7 +400,9 @@
+             for case in development['cases']]},
+         'learn': {'manifest_hash': development['manifest_hash'],
+                   'search_space': deepcopy(development['development_grammar']), 'selection_limit': caps.discovery_selections,
+-                  'discovery_protocols': discovery_options(caps)},
++                  'discovery_protocols': discovery_options(caps),
++                  # The model transport retry rule every new Learn plan freezes (rule v2: lab-role backoff).
++                  'transport_retry': transport_retry_declaration_v2(offline_configuration['episode_budget']['actor_calls'])},
+         'compare': comparison, 'agents': agents,
+         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
+         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
+@@ -485,7 +519,11 @@
+     if request.mode == 'learn':
+         plan['discovery'] = deepcopy(discovery)
+         plan['evidence_retry'] = evidence_retry_declaration()
+-    plan['transport_retry'] = transport_retry_declaration(configuration['episode_budget']['actor_calls'])
++    # Rule v2 (lab-role backoff) for every new Learn plan: only Learn runs Explorer and Mechanic requests.
++    # Baseline and compare plans make agent requests only, so they keep rule v1 exactly as before.
++    actor_calls = configuration['episode_budget']['actor_calls']
++    plan['transport_retry'] = (transport_retry_declaration_v2(actor_calls) if request.mode == 'learn'
++                               else transport_retry_declaration(actor_calls))
+     return PreparedRunPlan(campaign_request, deepcopy(configuration), registration, deepcopy(plan))
+ 
+ 
+@@ -518,6 +556,8 @@
+             raise StoreConflict('Saved agent history was frozen for another starting policy')
+     if plan.get('evidence_retry') is not None and campaign.mode != 'learn':
+         raise StoreConflict('Only a Learn plan declares an automatic evidence retry')
++    if (plan.get('transport_retry') or {}).get('protocol') == TRANSPORT_RETRY_PROTOCOL_V2 and campaign.mode != 'learn':
++        raise StoreConflict('Only a Learn plan declares lab-role transport retries with backoff')
+     offline = campaign.config_profile_id == 'offline-v1'
+     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
+             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
+@@ -636,8 +676,13 @@
+         raise StoreConflict('Current source, model or campaign limits differ from the saved plan. Register the agent '
+                             'again and create a new campaign; this saved plan stays readable')
+     registry.verify(registration.registration_id, current)
+-    # Execution applies the installed retry rule, so the saved plan must declare exactly it.
+-    if plan.get('transport_retry') != transport_retry_declaration(plan['episode_budget']['actor_calls']):
++    # Execution applies the rule the saved plan declares, so it must be exactly one the installed code runs:
++    # rule v1 (every plan saved before rule v2, and every baseline/compare plan) or, for Learn, rule v2.
++    actor_calls = plan['episode_budget']['actor_calls']
++    installed = [transport_retry_declaration(actor_calls)]
++    if campaign.mode == 'learn':
++        installed.append(transport_retry_declaration_v2(actor_calls))
++    if plan.get('transport_retry') not in installed:
+         raise StoreConflict('The installed model transport retry rule differs from the saved plan')
+     # A declared automatic evidence retry must be exactly the installed rule. A Learn plan without one
+     # (saved before it existed) keeps manual Retry evidence sync only, which is what it declared.

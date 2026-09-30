@@ -1,0 +1,138 @@
+
+### 1d-mechanic-all-failed
+{
+ "execution_error_transport_retries": {
+  "protocol": "faultlab-transport-retry/v2-lab-backoff",
+  "reason": "ALL_RETRIES_FAILED",
+  "retries_tried": 3,
+  "role": "mechanic",
+  "waits_seconds": [
+   5,
+   20,
+   60
+  ]
+ },
+ "reason": "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry of this request failed. Inspect the saved provider diagnostics.",
+ "state": "ERROR"
+}
+.
+### 1e-mechanic-stop
+{
+ "lost": [
+  [
+   "mechanic",
+   "diagnosis"
+  ]
+ ],
+ "reason": "External stop requested while a failed Mechanic model request waited to be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.",
+ "state": "STOPPED",
+ "stop_to_wait_end_seconds": 0.0
+}
+.
+### 1f-challenge-all-failed
+{
+ "errors": [
+  {
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "reason": "ALL_RETRIES_FAILED",
+   "retries_tried": 3,
+   "role": "explorer",
+   "waits_seconds": [
+    5,
+    20,
+    60
+   ]
+  }
+ ],
+ "reason": "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry of this request failed. Inspect the saved provider diagnostics.",
+ "retries": [
+  [
+   "explorer",
+   "challenge",
+   1,
+   5
+  ],
+  [
+   "explorer",
+   "challenge",
+   2,
+   20
+  ],
+  [
+   "explorer",
+   "challenge",
+   3,
+   60
+  ]
+ ],
+ "state": "ERROR",
+ "virtual_wait_seconds": 85.0
+}
+.Error while generating output:
+scripted loss
+
+### 1g-native-agent-loss
+{
+ "actor_retry_events": [
+  {
+   "attempt": 1,
+   "code": "CONNECTION_ERROR"
+  }
+ ],
+ "decision": "BASELINE",
+ "discovery_decisions": [
+  [
+   0,
+   "SELECTED",
+   null
+  ],
+  [
+   1,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   2,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   3,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   4,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   5,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   6,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ],
+  [
+   7,
+   "SKIPPED_DUPLICATE",
+   "DUPLICATE_DISCOVERY_SCHEDULE"
+  ]
+ ],
+ "lab_error_episodes": [
+  [
+   "episode-1f79bbee73c34b58a230e644dc134e0f",
+   "CONNECTION_ERROR",
+   "discovery"
+  ]
+ ],
+ "lab_transport_retry_records": 0,
+ "reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+ "state": "NO_CHANGE",
+ "virtual_wait_seconds": 0.0
+}
+.
+4 passed in 10.60s

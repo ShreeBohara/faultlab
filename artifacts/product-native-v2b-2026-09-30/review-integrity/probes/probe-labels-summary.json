@@ -1,0 +1,14 @@
+{
+ "parity_cases": 120,
+ "guess_cases": 120,
+ "parity_with_rows_never_shown": 17,
+ "parity_outcomes": {
+  "report/report": 115,
+  "ActorReportError/ActorReportError": 5
+ },
+ "parity_nonfinal_requests_compared": 424,
+ "guess_reports": 118,
+ "guess_tokens_left_undecoded": 195,
+ "guess_with_rows_never_shown": 28,
+ "total_requests_checked_C1_C4": 963
+}

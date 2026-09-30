@@ -1,0 +1,19 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/tests/integrations/test_native_adapter_v2.py	2026-09-29 17:10:43
++++ backend/tests/integrations/test_native_adapter_v2.py	2026-09-29 19:06:25
+@@ -107,13 +107,14 @@
+             expected = expected.replace(evidence_id, label)
+         if transport(b)["final_report_required"]:
+             continue                                                # compared in the final-turn tests below
+-        # Everything the agent sees is v1's bytes, except each delivered evidence_id is its journal label.
++        # Everything the agent sees is v1's bytes, except each delivered evidence_id is its label obs-N (these scripts have
++        # no hidden rows, so the shown order is also the journal order).
+         assert request_text(b) == expected, f"request {index}"
+         assert b["kwargs"] == a["kwargs"] and "response_contract" not in b["kwargs"]
+         assert not REAL_ID.search(request_text(b))
+ 
+ 
+-def test_labels_are_journal_positions_and_the_report_is_decoded_before_validation(tmp_path, monkeypatch):
++def test_labels_are_numbered_in_shown_order_and_the_report_is_decoded_before_validation(tmp_path, monkeypatch):
+     provider, outcome, context, store = episode(tmp_path, SmolagentsActorV2, SCRIPTS["success"], monkeypatch=monkeypatch)
+     ids = real_ids(context)
+     assert len(ids) == 3

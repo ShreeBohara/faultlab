@@ -1,0 +1,37 @@
+REF backup/part2-2026-09-22 = 2c178a7e1257731dddb7f92251d01d5db5985b4f   HEAD = cbbf957e6e1cb19e1dcc2f87f24a33101859bbbe
+SKIPPED audit/final-audit.json
+SKIPPED audit/promotion.json
+SKIPPED backend/app/referee/checks.py
+CHANGED CURRENT_STATUS.md
+CHANGED README.md
+CHANGED backend/app/agents/explorer.py
+CHANGED backend/app/agents/mechanic.py
+CHANGED backend/app/agents/transport_retry.py
+CHANGED backend/app/integrations/external_agent_v2.py
+CHANGED backend/app/integrations/registry.py
+CHANGED backend/app/lab/diagnosis.py
+CHANGED backend/app/lab/discovery_protocol.py
+CHANGED backend/app/lab/learning.py
+CHANGED backend/app/lab/provider_failures.py
+CHANGED backend/app/lab/readiness.py
+CHANGED backend/app/lab/run_plans.py
+CHANGED backend/tests/integrations/test_native_adapter_v2.py
+CHANGED backend/tests/lab/test_campaign_transport_retry.py
+CHANGED backend/tests/lab/test_native_adapter_v2_product.py
+CHANGED backend/tests/lab/test_transport_retry_plans.py
+CHANGED docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md
+CHANGED docs/external-agent-setup.md
+CHANGED docs/user-guide.md
+CHANGED frontend/src/components/CampaignPlan.tsx
+CHANGED frontend/src/components/DiscoveryProtocol.tsx
+CHANGED frontend/src/components/RunSetup.tsx
+CHANGED frontend/src/components/SearchAttemptsPanel.tsx
+CHANGED frontend/src/runPlans.ts
+CHANGED frontend/src/searchAttempts.ts
+CHANGED frontend/tests/native-adapter-v2.test.tsx
+ADDED backend/tests/agents/test_lab_backoff_review_fixes.py
+ADDED backend/tests/agents/test_lab_role_backoff.py
+ADDED backend/tests/lab/test_lab_backoff_campaign.py
+ADDED backend/tests/lab/test_native_v2_label_views.py
+ADDED frontend/tests/transport-backoff.test.tsx
+TOTAL changed 27 missing 0 added 5 skipped 3

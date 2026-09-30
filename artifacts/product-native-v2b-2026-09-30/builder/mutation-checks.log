@@ -1,0 +1,64 @@
+CONTROL unmutated copy: exit 0: 80 passed in 29.42s
+CAUGHT  rule v2 files as before this round (backup branch): exit 2: 2 errors in 0.20s
+      ERROR tests/agents/test_lab_role_backoff.py
+      ERROR tests/lab/test_lab_backoff_campaign.py
+CAUGHT  learning loop never gives the Explorer/Mechanic the rule-v2 session: exit 1: 7 failed, 3 passed in 8.98s
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_lost_explorer_request_backs_off_and_the_campaign_continues[faultlab-discovery/v1]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_lost_explorer_request_backs_off_and_the_campaign_continues[faultlab-discovery/v2-reachability]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_when_every_retry_fails_the_campaign_ends_error_and_says_how_many_were_tried
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_the_declared_discovery_bound_still_caps_explorer_retries_during_discovery
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_retries_are_visible_in_search_attempts_and_the_recording
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_stop_during_a_backoff_wait_ends_the_campaign_stopped_promptly
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio]
+CAUGHT  a wait ignores Stop: exit 1: 5 failed, 33 passed in 133.88s (0:02:13)
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_stop_during_a_wait_ends_it_at_once_uncharged_and_unsent
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_stop_already_requested_ends_without_any_wait_for_the_mechanic_too
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_real_wait_notices_a_stop_promptly
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_stop_during_a_backoff_wait_ends_the_campaign_stopped_promptly
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_only_a_learn_plan_may_declare_rule_v2_and_only_exactly_it
+CAUGHT  a retry is sent without being charged: exit 1: 12 failed, 16 passed in 1.58s
+      FAILED tests/agents/test_lab_role_backoff.py::test_explorer_fails_n_times_then_succeeds_with_waits_of_5_20_60[1]
+      FAILED tests/agents/test_lab_role_backoff.py::test_explorer_fails_n_times_then_succeeds_with_waits_of_5_20_60[2]
+      FAILED tests/agents/test_lab_role_backoff.py::test_explorer_fails_n_times_then_succeeds_with_waits_of_5_20_60[3]
+      FAILED tests/agents/test_lab_role_backoff.py::test_all_three_retries_fail_raises_the_original_failure_and_says_how_many_were_tried
+      FAILED tests/agents/test_lab_role_backoff.py::test_an_answer_after_a_lost_connection_is_not_re_rolled
+      FAILED tests/agents/test_lab_role_backoff.py::test_each_retry_is_charged_and_recorded_before_it_is_sent
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_retry_the_budget_cannot_cover_is_not_sent_and_the_original_failure_stands
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_retry_never_draws_on_a_batch_reservation
+      FAILED tests/agents/test_lab_role_backoff.py::test_the_campaign_cap_of_12_counts_every_lab_role_retry
+      FAILED tests/agents/test_lab_role_backoff.py::test_discovery_v2_session_counts_the_same_retries
+      FAILED tests/agents/test_lab_role_backoff.py::test_mechanic_diagnosis_and_candidate_requests_back_off[diagnose]
+      FAILED tests/agents/test_lab_role_backoff.py::test_mechanic_diagnosis_and_candidate_requests_back_off[propose]
+CAUGHT  no campaign cap: exit 1: 2 failed, 26 passed in 1.40s
+      FAILED tests/agents/test_lab_role_backoff.py::test_the_campaign_cap_of_12_counts_every_lab_role_retry
+      FAILED tests/agents/test_lab_role_backoff.py::test_the_campaign_count_is_read_from_the_store_so_it_holds_for_every_role
+CAUGHT  waits of 1 s instead of 5/20/60: exit 1: 11 failed, 27 passed in 25.53s
+      FAILED tests/agents/test_lab_role_backoff.py::test_all_three_retries_fail_raises_the_original_failure_and_says_how_many_were_tried
+      FAILED tests/agents/test_lab_role_backoff.py::test_503_waits_the_backoff_not_one_second_and_timeouts_are_retried_too
+      FAILED tests/agents/test_lab_role_backoff.py::test_a_stop_during_a_wait_ends_it_at_once_uncharged_and_unsent
+      FAILED tests/agents/test_lab_role_backoff.py::test_mechanic_diagnosis_and_candidate_requests_back_off[diagnose]
+      FAILED tests/agents/test_lab_role_backoff.py::test_mechanic_diagnosis_and_candidate_requests_back_off[propose]
+      FAILED tests/agents/test_lab_role_backoff.py::test_the_declared_rule_v2
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_lost_explorer_request_backs_off_and_the_campaign_continues[faultlab-discovery/v1]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_lost_explorer_request_backs_off_and_the_campaign_continues[faultlab-discovery/v2-reachability]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_when_every_retry_fails_the_campaign_ends_error_and_says_how_many_were_tried
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_the_declared_discovery_bound_still_caps_explorer_retries_during_discovery
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio]
+CAUGHT  Start refuses a Learn plan saved with rule v1: exit 1: 1 failed, 9 passed in 24.19s
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_learn_plan_saved_before_rule_v2_reads_starts_and_keeps_rule_v1
+CAUGHT  error message does not say how many retries were tried: exit 1: 3 failed, 35 passed in 25.69s
+      FAILED tests/agents/test_lab_role_backoff.py::test_all_three_retries_fail_raises_the_original_failure_and_says_how_many_were_tried
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_when_every_retry_fails_the_campaign_ends_error_and_says_how_many_were_tried
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_the_declared_discovery_bound_still_caps_explorer_retries_during_discovery
+CAUGHT  native adapter v2 as before this round (journal-position labels): exit 1: 6 failed, 36 passed in 4.24s
+      FAILED tests/integrations/test_native_adapter_v2.py::test_decode_uses_only_labels_shown_by_the_request
+      FAILED tests/integrations/test_native_adapter_v2.py::test_a_non_blocking_hook_read_the_agent_never_saw_gets_no_label_and_the_labels_stay_contiguous
+      FAILED tests/integrations/test_native_adapter_v2.py::test_a_broker_retried_send_gives_contiguous_labels_and_decodes_to_the_rows_shown
+      FAILED tests/integrations/test_native_adapter_v2.py::test_a_guess_past_the_shown_labels_is_not_decoded
+      FAILED tests/integrations/test_native_adapter_v2.py::test_an_observation_first_shown_later_gets_the_next_label_and_shown_ones_keep_theirs
+      FAILED tests/lab/test_native_v2_label_views.py::test_diagnosis_context_for_a_v2_f4_episode_has_no_label_gap_or_undecoded_label
+CAUGHT  v2 contract text for model readers as before this round (journal-label wording, constant kept for the import): exit 1: 2 failed, 1 passed in 2.66s
+      FAILED tests/lab/test_native_v2_label_views.py::test_diagnosis_context_for_a_v2_f4_episode_has_no_label_gap_or_undecoded_label
+      FAILED tests/lab/test_native_v2_label_views.py::test_the_explorer_reads_the_same_decoded_view_of_that_episode
+ALL MUTATIONS CAUGHT
+exit 0

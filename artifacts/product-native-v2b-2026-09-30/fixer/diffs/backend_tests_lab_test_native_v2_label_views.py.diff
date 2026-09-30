@@ -1,0 +1,44 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/tests/lab/test_native_v2_label_views.py	2026-09-29 17:11:39
++++ backend/tests/lab/test_native_v2_label_views.py	2026-09-29 19:06:25
+@@ -5,8 +5,10 @@
+ agent had been shown, but v2 then numbered journal positions, so the agent's labels had a gap (obs-3 was the
+ hidden first send attempt). These tests build the real diagnosis request and the real discovery request for
+ such an episode and pin what a model reader sees: the report's decoded evidence IDs (as that episode's oN
+-row aliases, in the same ID space as the observation rows it is shown), never an agent label, and a contract
+-text that describes the numbering. Offline and $0: real smolagents, in-process simulator, real runner, real
++row aliases, in the same ID space as the observation rows it is shown), never a label the adapter decoded, and a
++contract text that describes the numbering. The alias view itself is unchanged by v2.1: a report citing only what
++the agent saw still skips the hidden row (o1, o2, o4), and a token the adapter did not decode (a guess such as
++obs-4) reaches the summary as written (review finding LOW-1, September 30). Offline and $0: real smolagents, in-process simulator, real runner, real
+ Mechanic and Explorer; only model transports are scripted.
+ """
+ import json
+@@ -68,7 +70,7 @@
+ 
+ 
+ @pytest.mark.anyio
+-async def test_diagnosis_context_for_a_v2_f4_episode_has_no_label_gap_or_undecoded_label(tmp_path):
++async def test_diagnosis_context_for_a_v2_f4_episode_has_no_undecoded_label_but_still_skips_the_hidden_row(tmp_path):
+     c = await runtime(tmp_path)
+     try:
+         campaign, _ = planned_v2(c, mode='learn')
+@@ -153,3 +155,19 @@
+         assert runtime_contract()['actor_contract'] == ACTOR_PROMPT
+     finally:
+         await c.close()
++
++
++def test_an_undecoded_token_reaches_the_evidence_summary_as_written():
++    """Review finding LOW-1 (September 30): model readers never see a label the adapter decoded, but a token it did
++    not decode (a guess such as obs-4) is part of the saved report and reaches their evidence summary unchanged, next
++    to the oN aliases of the rows the report did cite. summarize_evidence itself is unchanged (gate_freeze)."""
++    ids = [f'evidence-{n:032x}' for n in range(1, 5)]
++    def row(index):
++        return SimpleNamespace(evidence_id=ids[index], delivered_tick=index,
++                               result=SimpleNamespace(model_dump=lambda mode, index=index: {'tool': 'get_order', 'row': index}))
++    report = SimpleNamespace(model_dump=lambda mode: {'overall': 'COMPLETED', 'evidence_ids': [ids[0], ids[1], ids[3], 'obs-4']})
++    bundle = SimpleNamespace(episode_id='episode-guess', source='weave_verified', observations=[row(i) for i in range(4)],
++                             report=report, findings=[])
++    view = summarize_evidence([bundle])
++    episode, = view['episodes']
++    assert view['reports'][episode['report_row']]['evidence_ids'] == ['o1', 'o2', 'o4', 'obs-4']

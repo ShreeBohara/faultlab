@@ -1,0 +1,16 @@
+{
+ "reviewer": "integrity (product-native-v2b, 2026-09-30)", "cost_dollars": 0, "network_or_provider_calls": 0,
+ "tree": {"tree_compare.py": "blob-hash compare vs backup/part2-2026-09-22 (2c178a7), skips .env, audit/promotion.json, audit/final-audit*, artifacts/heldout2/, referee/checks.py",
+          "tree-vs-backup.txt": "26 CHANGED + 4 ADDED tests (+ this artifacts folder); nothing MISSING",
+          "tree-vs-backup-final.txt": "same list re-run at the end: the review changed nothing outside its folder",
+          "diffs/": "reviewer's own unified diffs of every changed file vs 2c178a7",
+          "protected-blobs.txt": "external_agent.py, golden fixture+test, registry.py, progress.py, actor.py, actor.md, promotion.py, challenge.py, evaluation.py, completion_study.py, coordinator.py, providers/runtime.py identical to 2c178a7"},
+ "gates": {"gate_freeze/": "repo gate_freeze.py (checkpoint copy) on a git-archive of 2c178a7 and on the working tree; compare.txt"},
+ "identity": {"identity/": "builder's identity_snapshot.py re-run under a .env/network-refusing audit hook on both trees; equals builder before/after JSON; rule v1 declaration + functions unchanged"},
+ "views": {"views/": "runtime_contract for reference, native v1, native v2 on both trees: reference and v1 byte-identical; v2 differs only in adapter_protocol label fields, version and memory"},
+ "probes": {"probes/test_probe_labels.py": "240 randomised scripted native episodes (8 fault recipes x 5 policies x 3 caps, parity + guesses): all checks C1-C6 pass; 3 negative-control mutants caught (probe-labels-negative-controls.log)",
+            "probes/test_probe_backoff.py": "26 reviewer-written checks of rule v2 (no re-roll with generation attached, charge->record->send order, caps, discovery bound, budget refusal, real-time Stop): pass; 4 negative-control mutants caught",
+            "probes/old_plan_check.py": "live run's saved Learn plan (b05ac280, exported JSON) revalidates to identical bytes, keeps rule v1, gets no backoff session; tampered v2 blocks refused"},
+ "tests": {"targeted-tests.log": "92 passed (new + changed + golden)", "full-backend.log": "2867 passed, 180 skipped, 0 failed",
+           "frontend/vitest.log": "338 passed, --no-cache, no files written", "audit-*.jsonl": "reviewer audit hook: 0 non-loopback connects/DNS in every run; the only real-.env events are the env-guard test's synthetic sys.audit calls"}
+}

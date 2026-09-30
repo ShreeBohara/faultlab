@@ -1,0 +1,74 @@
+diff --git a/- b/frontend/src/runPlans.ts
+index 0000000..2c04e49 100644
+--- a/-
++++ b/frontend/src/runPlans.ts
+@@ -39,8 +39,14 @@ export type CallerModel = { caller_id: string; agent: 'reference'; max_business_
+ export type DiscoveryDeclaration = { protocol: DiscoveryProtocolId; schedule_identity: string; slots: number; explorer_requests_max: number; explorer_transport_retries_max?: number | null; actor_episodes_max: number; replans_per_slot: number; dispatch_rule: string; pre_check: null | { labeller: string; caller_model: CallerModel }
+   /** Discovery v3 only: null in the run options (frozen when a plan is saved), the frozen block in a saved plan; absent for v1/v2. */
+   history?: AgentHistory | null }
+-/** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py). */
+-export type TransportRetryDeclaration = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
++/** The shared model-request retry rule frozen into a plan (backend app/agents/transport_retry.py): rule v1, one blind retry for every role. */
++export type TransportRetryDeclarationV1 = { protocol: 'faultlab-transport-retry/v1'; retries_per_request: 1; roles: ['actor', 'explorer', 'mechanic']; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number; rule: string }
++/** Rule v2, frozen into every new Learn plan: the agent roles keep rule v1; the Explorer and Mechanic back off (5 s, 20 s, 60 s) and retry up to 3 times, at most 12 per campaign. */
++export type TransportRetryDeclarationV2 = { protocol: 'faultlab-transport-retry/v2-lab-backoff'; retryable: ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503']; agent_roles: ['actor']; agent_retries_per_request: 1; service_unavailable_delay_seconds: 1; actor_retries_per_episode_max: number
++  lab_roles: ['explorer', 'mechanic']; lab_retries_per_request: 3; lab_backoff_seconds: [5, 20, 60]; lab_retries_per_campaign_max: 12; stop_during_wait: 'STOPPED'; rule: string }
++export type TransportRetryDeclaration = TransportRetryDeclarationV1 | TransportRetryDeclarationV2
++export const TRANSPORT_RETRY_V2 = 'faultlab-transport-retry/v2-lab-backoff'
++export const isLabBackoff = (value: TransportRetryDeclaration | null | undefined): value is TransportRetryDeclarationV2 => value?.protocol === TRANSPORT_RETRY_V2
+ /** The automatic evidence retry rule frozen into a Learn plan (backend app/lab/evidence_wait.py): telemetry only, bounded per wait
+  * and (v2) per campaign. v1 had no campaign limit; it was never run live, and Start refuses a saved v1 plan. */
+ type EvidenceRetryBase = { trigger: 'WAITING_EVIDENCE'; automatic_retries_per_wait: 3; delays_seconds: [30, 120, 300]; path: 'retry-evidence'; telemetry_only: true; repeats_model_requests: false; repeats_business_actions: false; charged_model_calls: 0; after_last_retry: 'NEEDS_OPERATOR'; rule: string }
+@@ -53,7 +59,8 @@ export type RunOptions = {
+   task: { task_definition_id: typeof TASK_DEFINITION; label: string; description: string; task_text_default: string }
+   profiles: { profile_id: RunProfile; label: string; source_mode: 'offline_fixture' | 'live'; arm: 'B1' | 'B0'; registration_required: boolean }[]
+   development: { manifest_hash: string; cases: DevelopmentCase[] }
+-  learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[] }
++  /** transport_retry: the rule every new Learn plan freezes (rule v2); absent from backends that predate it. */
++  learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[]; transport_retry?: TransportRetryDeclarationV2 }
+   compare: { partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
+   agents: RunAgent[]; offline: { agent: 'reference'; configuration_hash: string; registration_required: false }
+   caps: RunCaps; episode_budget: Required<EpisodeBudget>; models: { actor: string; explorer: string; mechanic: string }; provider_calls: 0
+@@ -135,12 +142,20 @@ export function discoveryDeclaration(value: unknown, saved = false): value is Di
+     && typeof caller.client_timeout_seconds === 'number' && caller.wait_action === false && stringList(caller.facts) && text(caller.validated_against)
+ }
+ const same = (value: unknown, expected: string[]) => Array.isArray(value) && value.length === expected.length && value.every((item, index) => item === expected[index])
+-/** The declared transport retry rule, exactly as the backend freezes it. */
+-export function transportRetry(value: unknown, actorCalls: number): value is TransportRetryDeclaration {
++/** The declared transport retry rule v1, exactly as the backend freezes it. */
++export function transportRetry(value: unknown, actorCalls: number): value is TransportRetryDeclarationV1 {
+   return object(value) && value.protocol === 'faultlab-transport-retry/v1' && value.retries_per_request === 1
+     && same(value.roles, ['actor', 'explorer', 'mechanic']) && same(value.retryable, ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'])
+     && value.service_unavailable_delay_seconds === 1 && value.actor_retries_per_episode_max === actorCalls && text(value.rule)
+ }
++/** Rule v2 (lab-role backoff), exactly as the backend freezes it into a Learn plan. */
++export function transportRetryV2(value: unknown, actorCalls: number): value is TransportRetryDeclarationV2 {
++  return object(value) && value.protocol === TRANSPORT_RETRY_V2 && same(value.retryable, ['CONNECTION_ERROR', 'REQUEST_TIMEOUT', 'HTTP_503'])
++    && same(value.agent_roles, ['actor']) && value.agent_retries_per_request === 1 && value.service_unavailable_delay_seconds === 1
++    && value.actor_retries_per_episode_max === actorCalls && same(value.lab_roles, ['explorer', 'mechanic']) && value.lab_retries_per_request === 3
++    && Array.isArray(value.lab_backoff_seconds) && value.lab_backoff_seconds.length === 3 && [5, 20, 60].every((delay, index) => (value.lab_backoff_seconds as unknown[])[index] === delay)
++    && value.lab_retries_per_campaign_max === 12 && value.stop_during_wait === 'STOPPED' && text(value.rule)
++}
+ /** The declared automatic evidence retry rule, exactly as the backend freezes it into a Learn plan. */
+ export function evidenceRetry(value: unknown): value is EvidenceRetryDeclaration {
+   if (!object(value)) return false
+@@ -192,6 +207,7 @@ export function validateRunOptions(value: unknown): RunOptions {
+   }
+   if (!object(value.learn) || !digest(value.learn.manifest_hash) || !searchSpace(value.learn.search_space) || !positive(value.learn.selection_limit) || !comparison(value.compare)) return malformed('run search space')
+   if (value.learn.discovery_protocols !== undefined && !discoveryOptions(value.learn.discovery_protocols)) return malformed('discovery protocols')
++  if (value.learn.transport_retry !== undefined && !(object(value.episode_budget) && transportRetryV2(value.learn.transport_retry, value.episode_budget.actor_calls as number))) return malformed('Learn transport retry rule')
+   // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
+   if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
+     || !['reference', 'smolagents'].every(kind => (value.agents as unknown[]).some(a => object(a) && a.agent === kind))) return malformed('reviewed agents')
+@@ -222,7 +238,10 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
+   } else if (plan.mode === 'learn') {
+     if (selection.kind !== 'development_search' || !digest(selection.manifest_hash) || !searchSpace(selection.search_space)) return malformed('campaign plan search space')
+   } else if (selection.kind !== 'protected_comparison' || !comparison(selection)) return malformed('campaign plan comparison')
+-  if (!(plan.transport_retry === undefined || plan.transport_retry === null || transportRetry(plan.transport_retry, (plan.episode_budget as Required<EpisodeBudget>).actor_calls))) return malformed('campaign plan transport retry rule')
++  // Rule v1 in any plan (every plan saved before rule v2, and every baseline or compare plan); rule v2 only in a Learn plan.
++  const actorCalls = (plan.episode_budget as Required<EpisodeBudget>).actor_calls
++  if (!(plan.transport_retry === undefined || plan.transport_retry === null || transportRetry(plan.transport_retry, actorCalls)
++    || (plan.mode === 'learn' && transportRetryV2(plan.transport_retry, actorCalls)))) return malformed('campaign plan transport retry rule')
+   // Only a Learn plan waits for evidence, so only a Learn plan may declare automatic evidence retries.
+   if (!(plan.evidence_retry === undefined || plan.evidence_retry === null || (plan.mode === 'learn' && evidenceRetry(plan.evidence_retry)))) return malformed('campaign plan evidence retry rule')
+   if (plan.discovery !== undefined && plan.discovery !== null) {

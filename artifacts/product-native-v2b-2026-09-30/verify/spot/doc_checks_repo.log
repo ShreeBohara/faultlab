@@ -1,0 +1,21 @@
+PASS  LOW-5  no reference to the nonexistent tests/lab/test_lab_transport_backoff.py
+PASS  LOW-5  no test named ...labels_are_journal_positions...
+PASS  P-6    no test claims "has_no_label_gap" while asserting the o1, o2, o4 gap
+PASS  LOW-5  user guide gives the same Stop latency as the other docs (about half a second)
+PASS  P-6    external-agent-setup heading no longer says v2 was not yet run live
+PASS  P-6    'Why this changed' no longer ends 'the agent no longer sees one' and says the Mechanic's view is unchanged
+PASS  P-6    user guide no longer says every retry is "listed on its selection"
+PASS  P-6    the CURRENT_STATUS results table has no blank line inside it
+PASS  P-6    transport note says the campaign cap of 12 is the real discovery bound under discovery v2
+PASS  P-6    no link uses the old external-agent-setup anchor
+PASS  P-3    transport note no longer says retries show "on each retried selection in the fault-search panel"
+PASS  P-3    CURRENT_STATUS says challenge and Mechanic retries appear only in the recording and budget
+PASS  P-5    transport note states the older-checkout limit for new Learn plans
+PASS  P-5    CURRENT_STATUS states the older-checkout limit
+PASS  LOW-2  transport note says the budget is checked before the wait
+PASS  P-4    transport note shows the zero-retry wording
+PASS  LOW-1  setup doc no longer says model readers 'never see the agent's labels' without qualification
+PASS  P-1    CURRENT_STATUS says the September 29 misdiagnosis is not addressed
+PASS  LOW-1  CURRENT_STATUS no longer says the Mechanic 'never saw the agent's labels'
+PASS  status CURRENT_STATUS names the new runtime and the chain, not committed, register v2 again
+20 passed, 0 failed

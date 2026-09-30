@@ -1,0 +1,49 @@
+--- backup:backend/app/agents/explorer.py
++++ worktree:backend/app/agents/explorer.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ from app.providers.runtime import RuntimeProviderError
+ from app.lab.provider_failures import record_provider_failure,record_transport_retry
+-from app.agents.transport_retry import charge_ledger_retry,complete_with_one_retry,request_usage
++from app.agents.transport_retry import charge_ledger_retry,complete_with_backoff,complete_with_one_retry,request_usage
+ from app.contracts.tokens import validate_model_input
+ from app.contracts.models import ExplorerOutput,EpisodeBudget,FaultSpec,canonical_json,new_id,content_hash
+ from app.lab.challenge import schedule_identity,identity_for
+@@ -224,6 +224,9 @@
+     def __init__(self,provider,store,ledger):
+         self.provider,self.store,self.ledger=provider,store,ledger
+         self.trace=None; self.metadata=None
++        # The Learn campaign's rule-v2 lab-role backoff (app.agents.transport_retry.LabBackoff), set by the
++        # learning loop when its plan declares it. None keeps rule v1's single blind retry.
++        self.lab_retry=None
+     async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None,discovery_history=None):
+         # The selector benchmark and active challenge have separately declared
+         # duplicate/repetition rules. Do not silently change those protocols.
+@@ -279,7 +282,26 @@
+             return record_transport_retry(self.store,error,role='explorer',failure_id=failure_id,metadata=self.metadata or context,
+                 request={'kind':'explorer_selection','challenge':challenge,'selection_index':span_inputs['selection_index'],
+                          'slot_request':context.get('slot_request') if v2 is not None else None})
+-        generation,retries=await complete_with_one_retry(send,failed=failed,admit=admit,record=record)
++        lab=self.lab_retry
++        if lab is None:
++            generation,retries=await complete_with_one_retry(send,failed=failed,admit=admit,record=record)
++        else:
++            # Rule v2 (the plan declared faultlab-transport-retry/v2-lab-backoff): up to three backed-off retries of
++            # this same request, within the campaign's lab-role cap and, during discovery, the declared Explorer bound
++            # (v2's own counter too). Each is charged on the ledger before it is sent; a Stop during a wait ends it.
++            def admit_backoff():
++                if v2 is not None and not v2.transport_retry_available(): return False
++                if not charge_ledger_retry(self.ledger,'explorer'): return False
++                if v2 is not None: v2.transport_retries+=1
++                return True
++            def record_backoff(error,failure_id,attempt,delay):
++                return record_transport_retry(self.store,error,role='explorer',failure_id=failure_id,metadata=self.metadata or context,
++                    request={'kind':'explorer_selection','challenge':challenge,'selection_index':span_inputs['selection_index'],
++                             'slot_request':context.get('slot_request') if v2 is not None else None,
++                             'phase':'discovery' if discovery else 'challenge' if challenge else 'other'},
++                    backoff={'attempt':attempt,'delay':delay,'campaign_retry_number':lab.used})  # counted just before
++            generation,retries=await complete_with_backoff(send,failed=failed,admit=admit_backoff,record=record_backoff,
++                                                           session=lab,role='explorer',discovery=discovery)
+         self.ledger.reconcile(generation)
+         if self.metadata and generation.model_id!=expected:
+             raise RuntimeProviderError('Provider returned a different frozen model')

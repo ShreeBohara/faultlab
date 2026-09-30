@@ -185,3 +185,84 @@ that did not change.
 
 **Manual $0 checks.** (1) The real dashboard (real backend and simulator on 127.0.0.1 over a scratch store, Vite, headless Chrome that resolves only localhost; guard events 0): a task with one presentation selector after each digit of "ref 1234" shows 4 markers in the Run desk "Recorded task", the saved plan's "Frozen instructions" and the history "Saved task"; a task with the keycaps 1️⃣ and #️⃣, ❤️ and a text-style © shows none; a selector after a period and after a letter each show a marker. The stored task texts are exact. The single console 404 seen on first load is Chrome's automatic `/favicon.ico` request (the dashboard ships no icon), not an API call; it is the benign 404 the correctness review could not place. (2) The companion checker, read-only (every SQLite open forced to `mode=ro&immutable=1`): on the native-probe store the result is unchanged (drifted 0, 13 cleared, exit 0; the pinned original with `--worlds` still reproduces the saved `clock-drift.txt` byte for byte); on the Phase 1 store its 13 rows stay drift, each now giving its reason ("no private_world_integrity record", plus "no world attempt count" without `--worlds`). Store sizes and timestamps unchanged.
 
+
+## 12. Rule v2: FaultLab's own lab roles back off (September 30, $0, not yet run live)
+
+**Why.** The first live native adapter v2 run (campaign `b05ac280`, 2026-09-29 23:44 UTC) ended **ERROR**: Explorer
+selection 6 lost its connection (`APIConnectionError`), rule v1's one blind retry went out about 130 ms later and
+failed the same way, and the whole campaign stopped (`execution_errors`: coordinator → learning → explorer →
+transport_retry → providers/runtime). Connectivity was back a minute later. One immediate retry is too short for a
+brief outage.
+
+**Rule v2 (`faultlab-transport-retry/v2-lab-backoff`), frozen into every new Learn plan:**
+
+- **Agent roles keep rule v1 unchanged:** the reference Actor and both native smolagents adapters still get at
+  most one blind retry per request (after one second for HTTP 503).
+- **Lab roles of that Learn campaign** — the Explorer (discovery and challenge selections) and the Mechanic
+  (diagnosis and candidate requests) — may re-send the identical request **up to 3 times**, waiting **5 s, 20 s
+  and 60 s** before the first, second and third retry. Same conditions as v1: only when no answer arrived
+  (connection error, timeout, HTTP 503); never after any answer, even an empty or malformed one; never for another
+  HTTP status, authentication, configuration or model-identity failure.
+- **At most 12 lab-role retries per campaign** (declared in the rule; counted from the campaign's saved
+  `transport_retries` records). During discovery the plan's declared Explorer retry bound
+  (`explorer_transport_retries_max`, 8 under discovery v1/v3-history, 16 under v2) also applies, now for every
+  discovery protocol. Under discovery v2 the campaign cap of 12 is reached first, so 12 is the real discovery bound
+  there; the discovery budget text in the dashboard says so.
+- **Charged before it is sent, exactly like v1:** each retry is charged (one model call, its token bound, the
+  role's dollar bound) from unreserved campaign capacity just before it is sent, after its wait. If the budget
+  cannot cover it, the original failure stands. The unreserved budget is also checked **before** the wait, without
+  charging anything (`ledger_retry_fits`, a read-only restatement of the ledger's own admission check), so a retry
+  the budget cannot cover is refused at once instead of after a 5, 20 or 60 s wait. The charge after the wait remains
+  the only admission.
+- **Recorded:** each admitted retry is a `transport_retries` record with `protocol`, `attempt` (1-3),
+  `retry_delay_seconds` (5/20/60), `campaign_retry_number` (1-12), `request.phase` (`discovery`, `challenge`,
+  `mechanic_diagnosis`, `mechanic_proposal`) and its provider failure. The saved selection or Mechanic output lists
+  its retries and `usage.model_calls` counts every attempt.
+- **A Stop during a wait** ends the campaign **STOPPED** with a plain reason ("External stop requested while a
+  failed Explorer model request waited to be re-sent (transport retry backoff); it was not sent again. Remote
+  effects are retained."). The wait checks for a Stop every 0.5 s, so it ends within about half a second; nothing
+  more is sent or charged, and no execution error is recorded.
+- **If every allowed retry fails**, the campaign ends ERROR as before, with the provider diagnostics, and the
+  message now says how many retries were tried and why no further one was sent, for example
+  "CONNECTION_ERROR: A model request failed after 3 transport retries (waits of 5 s, 20 s, 60 s); every allowed retry
+  of this request failed. Inspect the saved provider diagnostics." When no retry could be sent at all, it says so, for
+  example "A model request failed and no transport retry was sent: the campaign's limit of 12 lab-role transport
+  retries was reached." (not "after 0 transport retries"). The `execution_errors` record also carries
+  `transport_retries: {protocol, role, retries_tried, waits_seconds, reason}`; reasons are `ALL_RETRIES_FAILED`,
+  `CAMPAIGN_RETRY_LIMIT`, `DISCOVERY_RETRY_LIMIT`, `BUDGET_REFUSED` and `NOT_RETRYABLE`.
+
+**What keeps rule v1:** every plan saved before rule v2 (it still reads and starts, and runs exactly v1); every
+baseline and compare plan (they make agent requests only, so their saved bytes are unchanged); and separate
+studies started on a campaign (selection comparison, completion study), which do not read the plan's rule.
+Start accepts a saved plan only if it declares exactly rule v1, or (Learn only) exactly rule v2.
+
+**Worst case.** A lab-role outage can add at most 12 charged requests to a campaign and at most 85 s of waiting
+per request (5 + 20 + 60). The dashboard shows the rule in the saved plan ("Model transport retries"), beside the
+discovery budget and in the Learn setup form.
+
+**Where an operator sees the retries.** A **discovery** selection's retries are shown on that selection in the
+fault-search panel. A **challenge** selection's retries and a **Mechanic** request's retries appear only in the
+campaign recording (download: `transport_retries`, and the selection or Mechanic output record) and in the budget
+counts; the dashboard does not list them. While a request waits to be re-sent (up to 85 s), the campaign stays in its
+current state (for example SELECTING or DIAGNOSING) and nothing shows the wait: the provider failure is saved but is
+not exposed by any API view, and the retry record appears only once the retry is sent. A live "waiting to re-send"
+note is not built.
+
+**Older checkouts.** Every new Learn plan now declares rule v2. A checkout from before rule v2 (runtime `ac7a12d2…`
+or earlier) accepts only rule v1 in a saved plan, so it reports such a campaign as "Saved campaign plan is missing,
+corrupt or inconsistent" and will not start it; it does not change the store (found by reading that code, not
+run). Open a store that holds new Learn plans with this runtime or a later one.
+
+**Agent-side failures, for information (unchanged this round).** A reference Actor or native agent request that
+fails after its one retry ends only that **episode** (lifecycle `LAB_ERROR`, reason = the provider code). In a Learn
+campaign the loop then carries on: a lab-error discovery source is recorded and the slot is spent; a reproduction
+batch stops at that trial, so the source does not count as reproduced; a paired evaluation keeps the pair as
+"Infrastructure error pair retained" and, where the evaluation allows it, runs that pair once more. It ends the whole
+campaign only in a **baseline** campaign, whose single episode is the campaign (state ERROR with the provider code).
+
+Code: `backend/app/agents/transport_retry.py` (rule v2, `LabBackoff`, `complete_with_backoff`, the cancellable
+wait), `explorer.py`, `mechanic.py`, `lab/learning.py` (one session per Learn campaign), `lab/run_plans.py`
+(`TransportRetryPlanV2`, freezing, Start check), `lab/provider_failures.py`, `lab/readiness.py` (message). Tests:
+`backend/tests/agents/test_lab_role_backoff.py`, `backend/tests/lab/test_lab_backoff_campaign.py`,
+`frontend/tests/transport-backoff.test.tsx`; review fixes: `backend/tests/agents/test_lab_backoff_review_fixes.py`.
+Evidence: `artifacts/product-native-v2b-2026-09-30/builder/`, `review-integrity/`, `review-product/`, `fixer/`.

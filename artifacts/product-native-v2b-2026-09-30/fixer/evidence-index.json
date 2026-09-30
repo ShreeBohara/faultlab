@@ -1,0 +1,17 @@
+{
+ "before/": "pre-fix copies of every file the fixer edited (SHA256SUMS.txt); the \"unfixed code\" for mutation checks",
+ "diffs/": "unified diffs: pre-fix copy -> fixed file, one per edited file",
+ "tree_compare.py": "blob-hash comparison with backup/part2-2026-09-22 incl. untracked files; skips .env, audit/promotion.json, audit/final-audit*, artifacts/heldout2/, referee/checks.py (LOW-3)",
+ "tree-vs-backup-before.txt": "before any fixer edit (equals review-integrity/tree-vs-backup-final.txt)",
+ "tree-vs-backup-interim.txt / tree-vs-backup-after.txt": "after the fixer edits (27 changed, 5 added, 0 missing)",
+ "mutation_checks.py / mutation-checks.log": "negative controls: each fix's test fails on the unfixed code or a one-line mutant, passes on the control; doc checks on before/ vs repo",
+ "doc_checks.py": "20 checks for the doc-only and naming parts of the findings",
+ "targeted-tests.log": "182 targeted backend tests after the fixes",
+ "full-test-sh.log / full-test-sh.timing": "one scripts/test.sh run after the last edit (exit 0)",
+ "audit-full-test-sh.jsonl": "audit hook during that run: 0 non-loopback connects, 0 outside DNS lookups; .env open attempts only in pytest tmp dirs and the 3 refused synthetic ones of tests/test_env_guard.py",
+ "testplugin/fixer_audit.py": "the logging audit hook (copy of the integrity reviewer's)",
+ "identity_snapshot.py, guarded_run.py, identity-after.json, identity-compare.txt": "product identity functions under a .env/network-refusing hook; comparison with builder/identity-after.json",
+ "gate_freeze/": "repo gate_freeze.py on the working tree (audit JSONs dropped) and comparison with builder, integrity reviewer and the backup-branch checkpoint",
+ "check_evidence_gap_misreading.py, misreading-check-sep29.json, check_evidence_gap_misreading_selftest.py, misreading-check-selftest.log": "pre-registrable P-1 check; MISREADING on the Sep 29 export; 5/5 controls",
+ "edit_status.py": "the scripted CURRENT_STATUS.md edit"
+}

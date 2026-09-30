@@ -1,0 +1,153 @@
+{
+ "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+ "plan": {
+  "agent": "reference",
+  "agent_registration_id": "orders-v1-054dd3e36f18615f",
+  "campaign_id": "campaign-22bd4cfa1a324a41b6476107c6f7d53a",
+  "caps": {
+   "candidates": 4,
+   "discovery_selections": 8,
+   "dollars": 100.0,
+   "input_tokens_per_call": 32000,
+   "model_calls": 6000,
+   "output_tokens_per_call": 2000,
+   "tokens": 204000000
+  },
+  "config_profile_id": "live-v1",
+  "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+  "discovery": {
+   "actor_episodes_max": 8,
+   "dispatch_rule": "Before any Actor episode, a free in-process replay of the real simulator labels every fault FORCED, NOT_FORCED or IMPOSSIBLE for the registered agent. A pick runs only if every fault is FORCED. A refused pick (a duplicate, or any fault not FORCED) gets one re-plan request in the same slot with the reasons; if that is refused too, the slot ends without an episode.",
+   "explorer_requests_max": 16,
+   "explorer_transport_retries_max": 16,
+   "pre_check": {
+    "caller_model": {
+     "adapter_attempts": 2,
+     "agent": "reference",
+     "caller_id": "reference-actor/policy-v0/v2",
+     "client_timeout_seconds": 1.0,
+     "facts": [
+      "This agent has no wait action; the clock advances only when it makes a business call.",
+      "Every HTTP attempt advances the clock 1 tick, including the automatic retry attempt.",
+      "It has at most 7 business calls: turn 8 is reserved for the final report.",
+      "The adapter makes at most 2 attempts per call, retrying after 429/5xx or a 1 s timeout, so a failure_count of 1 is absorbed before the agent sees it.",
+      "While an operation is pending it checks that operation's status once per turn until it finishes.",
+      "On its normal path it does not send a failed write again. If both attempts of a write fail, the status check says UNKNOWN; it then checks status at most 3 times (a failed check counts too) and stops, leaving the task unfinished."
+     ],
+     "http_attempts": 18,
+     "max_business_calls": 7,
+     "polling": "one status check per turn while the operation is pending; at most 3 checks that return UNKNOWN or fail, and no re-send",
+     "resends_failed_writes": false,
+     "ticks": 20,
+     "ticks_per_http_attempt": 1,
+     "unknown_status_checks": 3,
+     "validated_against": "the typical path of deepseek-ai/DeepSeek-V3.1 under policy-v0, not other models: in a read-only back-test of stored completed development episodes, every modelled attempt seen in at least 10 of them was reached in at least 80% (scripts/experiments/check_reachability_caller.py)",
+     "wait_action": false
+    },
+    "labeller": "faultlab-reachability/v2"
+   },
+   "protocol": "faultlab-discovery/v2-reachability",
+   "replans_per_slot": 1,
+   "schedule_identity": "faultlab-schedule-identity/v2-order-aware",
+   "slots": 8
+  },
+  "episode_budget": {
+   "actor_calls": 8,
+   "http_attempts": 18,
+   "policy_steps": 32,
+   "ticks": 20,
+   "wait_cycles": 4,
+   "wall_seconds": 90
+  },
+  "evidence_retry": {
+   "after_last_retry": "NEEDS_OPERATOR",
+   "automatic_retries_per_campaign": 6,
+   "automatic_retries_per_wait": 3,
+   "charged_model_calls": 0,
+   "delays_seconds": [
+    30,
+    120,
+    300
+   ],
+   "path": "retry-evidence",
+   "protocol": "faultlab-evidence-retry/v2",
+   "repeats_business_actions": false,
+   "repeats_model_requests": false,
+   "rule": "While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 times per wait and at most 6 times per campaign: 30 s, 120 s and 300 s after the wait starts or after the previous retry still left the evidence unverified. Each automatic retry uses the same telemetry-only path as Retry evidence sync: it re-sends the saved trace records of the episodes the wait needs and reads them back. It never runs an episode, a business tool or a model request again, and charges nothing to the campaign budget. Every attempt is recorded. When a limit is reached the campaign keeps waiting and shows \"needs operator\"; Retry evidence sync and Stop still work. A stop during the wait ends the campaign as STOPPED.",
+   "telemetry_only": true,
+   "trigger": "WAITING_EVIDENCE"
+  },
+  "initial_policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "initial_policy_version": "policy-v0",
+  "mode": "learn",
+  "order_id": "order-planned",
+  "plan_hash": "d88099d50b605430bbbd6acda327dc1403b100eafbbf3e0b12b04d9e64c37721",
+  "schema_version": "faultlab-run-plan/v1",
+  "selection": {
+   "kind": "development_search",
+   "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+   "search_space": {
+    "f1_milliseconds": [
+     1500,
+     3000
+    ],
+    "f2_ticks": [
+     1,
+     20
+    ],
+    "f3_versions": [
+     1,
+     3
+    ],
+    "f4_count": [
+     1,
+     18
+    ],
+    "kinds": [
+     "F1",
+     "F2",
+     "F3",
+     "F4"
+    ],
+    "maximum_primitives": 2,
+    "occurrence": [
+     1,
+     18
+    ],
+    "preflight_required": true
+   }
+  },
+  "setup_hash": "d96cdfdd2cd61f29905c7c1d4e455b80b2831bed0a84931435af550c2945263d",
+  "source_mode": "live",
+  "task_definition_id": "orders.upgrade_then_confirm/v1",
+  "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation.",
+  "transport_retry": {
+   "actor_retries_per_episode_max": 8,
+   "agent_retries_per_request": 1,
+   "agent_roles": [
+    "actor"
+   ],
+   "lab_backoff_seconds": [
+    5,
+    20,
+    60
+   ],
+   "lab_retries_per_campaign_max": 12,
+   "lab_retries_per_request": 3,
+   "lab_roles": [
+    "explorer",
+    "mechanic"
+   ],
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "retryable": [
+    "CONNECTION_ERROR",
+    "REQUEST_TIMEOUT",
+    "HTTP_503"
+   ],
+   "rule": "Agent roles (the reference Actor and the native smolagents adapters) keep rule v1: at most one blind retry of the identical request, only when no answer arrived (a connection error, a timeout, or HTTP 503 after a one-second wait). FaultLab's own lab roles in this Learn campaign (Explorer discovery and challenge selections, Mechanic diagnosis and candidate requests) may re-send the identical request up to 3 times, after waits of 5 s, 20 s and 60 s, only when no answer arrived (connection error, timeout, HTTP 503), and at most 12 times in the whole campaign; during discovery the declared Explorer retry bound also applies. An answer, even an empty or malformed one, is never retried, and neither is any other HTTP status or an authentication, configuration or model-identity failure. Every retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only. A Stop during a wait ends the campaign STOPPED and nothing more is sent. If every allowed retry fails, the campaign ends ERROR as before and says how many retries were tried. Separate studies started on the campaign keep rule v1.",
+   "service_unavailable_delay_seconds": 1,
+   "stop_during_wait": "STOPPED"
+  }
+ },
+ "status": "PLANNED"
+}

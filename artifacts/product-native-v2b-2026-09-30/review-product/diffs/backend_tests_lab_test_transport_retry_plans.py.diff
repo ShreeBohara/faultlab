@@ -1,0 +1,46 @@
+--- backup:backend/tests/lab/test_transport_retry_plans.py
++++ wt:backend/tests/lab/test_transport_retry_plans.py
+@@ -5,7 +5,7 @@
+ import pytest
+ from pydantic import ValidationError
+ 
+-from app.agents.transport_retry import declaration as retry_declaration
++from app.agents.transport_retry import declaration as retry_declaration, declaration_v2 as retry_declaration_v2
+ from app.lab.discovery_protocol import DISCOVERY_V1, DISCOVERY_V2, campaign_discovery
+ from app.lab.exports import development_recording
+ from app.lab.operator_actions import register_agent
+@@ -13,20 +13,22 @@
+ from app.lab.storage import StoreConflict
+ from app.main import create_app
+ from app.providers.runtime import RuntimeProviderError
+-from test_campaign_transport_retry import Flaky, execute
++from test_campaign_transport_retry import Flaky, execute, learn_campaign_v1_rule
+ from test_discovery_v2_flow import DELAYED, learn_campaign, owner, raw, request  # noqa: F401  (fixture)
+ 
+ 
+ def test_every_new_plan_declares_the_shared_rule_and_learn_plans_the_explorer_bound(owner):
+     registration = register_agent(owner.store, owner.settings, 'reference')
+     baseline = prepare_run_plan(owner.store, owner.settings, request(owner, registration, mode='baseline', development_case_id='dev-1'))
+-    assert baseline.plan['transport_retry'] == retry_declaration(8)
++    assert baseline.plan['transport_retry'] == retry_declaration(8)            # baseline and compare keep rule v1
+     assert baseline.plan['transport_retry']['actor_retries_per_episode_max'] == 8 and 'discovery' not in baseline.plan
+     for protocol, requests in ((DISCOVERY_V1, 8), (DISCOVERY_V2, 16)):
+         learn = learn_campaign(owner, protocol)
+         plan = read_run_plan(owner.store, learn)['plan']
+         assert plan['discovery']['explorer_requests_max'] == plan['discovery']['explorer_transport_retries_max'] == requests
+-        assert plan['transport_retry']['roles'] == ['actor', 'explorer', 'mechanic']
++        # Every new Learn plan freezes rule v2 (lab-role backoff); its agent roles keep rule v1.
++        assert plan['transport_retry'] == retry_declaration_v2(8)
++        assert plan['transport_retry']['agent_roles'] == ['actor'] and plan['transport_retry']['lab_roles'] == ['explorer', 'mechanic']
+         assert validate_run_plan(owner.store, owner.settings, owner.get(learn.campaign_id)) == plan
+     native = register_agent(owner.store, owner.settings, 'smolagents')
+     native_plan = prepare_run_plan(owner.store, owner.settings, request(owner, native, mode='baseline', development_case_id='dev-3'))
+@@ -78,7 +80,7 @@
+ 
+ 
+ def test_retries_are_visible_in_search_attempts_and_the_campaign_recording(owner):
+-    campaign = learn_campaign(owner, DISCOVERY_V2)
++    campaign = learn_campaign_v1_rule(owner, DISCOVERY_V2)   # rule v1 records (rule v2: test_lab_transport_backoff.py)
+     execute(owner, campaign, Flaky(lambda slot, request, context: raw(DELAYED, seed=slot), failing={1}))
+     retry, = owner.store.list_records('transport_retries')
+ 

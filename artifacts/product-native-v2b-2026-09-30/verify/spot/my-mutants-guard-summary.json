@@ -1,0 +1,24 @@
+{
+ "python:my-mutants-guard.jsonl": {
+  "processes_with_guard": 9,
+  "process_summaries": 9,
+  "totals": {
+   "loopback_connect": 14,
+   "local_lookup": 0,
+   "unix_connect": 0,
+   "refused_outside": 0,
+   "env_open": 0
+  },
+  "refused_outside_events": [],
+  "env_open_by_outcome": {},
+  "protected_opens": {
+   "real audit/promotion.json": 189,
+   "real backend/app/referee/checks.py": 6063,
+   "real artifacts/product-native-v2b-2026-09-30/verify/spot/mutation-tree/backend/heldout2": 24
+  }
+ },
+ "node:my-mutants-node-guard.jsonl": {
+  "node_processes_with_guard": 13,
+  "refused": []
+ }
+}

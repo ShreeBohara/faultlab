@@ -127,6 +127,10 @@ async def run_learning_cycle(coordinator,campaign,runner):
         frozen_history=discovery_history(store,campaign)  # None unless the plan declared discovery v3
         # The plan's declared automatic evidence retry (app.lab.evidence_wait), or None: manual retry only.
         evidence_rule=evidence_wait.campaign_rule(store,campaign)
+        # The plan's declared lab-role transport retry rule: v2 (backoff) gives the Explorer (discovery and challenge
+        # selections) and the Mechanic (diagnosis, candidates) one shared LabBackoff; a plan saved before it keeps v1.
+        from app.agents.transport_retry import lab_backoff_for_campaign
+        explorer.lab_retry=mechanic.lab_retry=lab_backoff_for_campaign(store,campaign,stopped=lambda:ledger.stopped or stop())
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')

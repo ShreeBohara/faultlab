@@ -1,0 +1,474 @@
+{
+ "agents": [
+  {
+   "accepted_policy_version": null,
+   "agent": "reference",
+   "behavior_verified": false,
+   "compare_available": false,
+   "configuration_hash": "054dd3e36f18615f37903f132cb16cb8b119ae4708c8319ddae2db118f2ce12e",
+   "label": "FaultLab reference Actor",
+   "limitations": [
+    "This reference/internal fixture is not independent external validation."
+   ],
+   "message": "Installed source and task mappings match the reviewed local contract.",
+   "model": "deepseek-ai/DeepSeek-V3.1",
+   "proposed_registration_id": "orders-v1-054dd3e36f18615f",
+   "provider_access": "not_checked",
+   "reason_code": "READY",
+   "registered": true,
+   "registration_id": "orders-v1-054dd3e36f18615f",
+   "source_conformance": "VERIFIED",
+   "status": "READY"
+  },
+  {
+   "accepted_policy_version": null,
+   "agent": "smolagents",
+   "behavior_verified": false,
+   "compare_available": false,
+   "configuration_hash": "feff069a53bf5484f4c4a5bfc5b73d5652b949353599af2342345f95de093766",
+   "label": "smolagents ToolCallingAgent 1.26.0",
+   "limitations": [
+    "Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.",
+    "Only ToolCallingAgent and four synthetic order tools are supported.",
+    "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn.",
+    "Reference Actor context, completion and dependent heldout studies are unavailable for this selected native agent."
+   ],
+   "message": "Installed source and task mappings match the reviewed local contract.",
+   "model": "deepseek-ai/DeepSeek-V3.1",
+   "proposed_registration_id": "smolagents-1.26.0-feff069a53bf5484",
+   "provider_access": "not_checked",
+   "reason_code": "READY",
+   "registered": false,
+   "registration_id": null,
+   "source_conformance": "VERIFIED",
+   "status": "READY"
+  },
+  {
+   "accepted_policy_version": null,
+   "agent": "smolagents-v2",
+   "behavior_verified": false,
+   "compare_available": false,
+   "configuration_hash": "312ee448236496b2196c5a8e8a811eb109a9e76fd81fb77bd0769a2e06453de6",
+   "label": "smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)",
+   "limitations": [
+    "Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.",
+    "Only ToolCallingAgent and four synthetic order tools are supported.",
+    "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn.",
+    "Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
+    "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
+    "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled.",
+    "Reference Actor context, completion and dependent heldout studies are unavailable for this selected native agent."
+   ],
+   "message": "Installed source and task mappings match the reviewed local contract.",
+   "model": "deepseek-ai/DeepSeek-V3.1",
+   "proposed_registration_id": "smolagents-1.26.0-adapter-v2-312ee448236496b2",
+   "provider_access": "not_checked",
+   "reason_code": "READY",
+   "registered": false,
+   "registration_id": null,
+   "source_conformance": "VERIFIED",
+   "status": "READY"
+  }
+ ],
+ "caps": {
+  "candidates": 4,
+  "discovery_selections": 8,
+  "dollars": 100.0,
+  "input_tokens_per_call": 32000,
+  "model_calls": 6000,
+  "output_tokens_per_call": 2000,
+  "tokens": 204000000
+ },
+ "compare": {
+  "case_count": 6,
+  "manifest_hash": "3417649ee62d4c24769e05dc6f0a37a356e3ca5358e9147a1b8f5d90d0f1553c",
+  "partition": "promotion",
+  "trials_per_case": 3
+ },
+ "data_store": {
+  "identity": "f21e149165d4760c57e8741667863e1f0df7c96adbb15bb3fe388322d15a06fb",
+  "path": "/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-807/test_save_real_api_json_for_th0/lab/lab.sqlite3",
+  "read_only": false
+ },
+ "development": {
+  "cases": [
+   {
+    "case_id": "dev-1",
+    "description": "No injected service fault.",
+    "expected_version": 1,
+    "fault_spec": {
+     "primitives": [],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 101
+    },
+    "fixture_id": "standard-v1",
+    "label": "Healthy services"
+   },
+   {
+    "case_id": "dev-2",
+    "description": "The accepted upgrade response arrives after the HTTP timeout.",
+    "expected_version": 1,
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F1",
+       "occurrence": 1,
+       "parameters": {
+        "response_delay_ms": 1500
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 102
+    },
+    "fixture_id": "standard-v1",
+    "label": "Lost upgrade response"
+   },
+   {
+    "case_id": "dev-3",
+    "description": "The upgrade remains pending before completing successfully.",
+    "expected_version": 1,
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 3,
+        "failure_code": null,
+        "terminal_status": "SUCCEEDED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 103
+    },
+    "fixture_id": "standard-v1",
+    "label": "Delayed upgrade"
+   },
+   {
+    "case_id": "dev-4",
+    "description": "An order read returns an older saved version.",
+    "expected_version": 4,
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F3",
+       "occurrence": 1,
+       "parameters": {
+        "versions_back": 1
+       },
+       "target_service": "orders",
+       "target_tool": "get_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 104
+    },
+    "fixture_id": "history-v1",
+    "label": "Historical order read"
+   },
+   {
+    "case_id": "dev-5",
+    "description": "The upgrade reaches a terminal rejection.",
+    "expected_version": 1,
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F2",
+       "occurrence": 1,
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "failure_code": "UPGRADE_REJECTED",
+        "terminal_status": "FAILED"
+       },
+       "target_service": "orders",
+       "target_tool": "update_order"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105
+    },
+    "fixture_id": "standard-v1",
+    "label": "Upgrade rejected"
+   },
+   {
+    "case_id": "dev-6",
+    "description": "The first two confirmation attempts receive transient failures.",
+    "expected_version": 1,
+    "fault_spec": {
+     "primitives": [
+      {
+       "kind": "F4",
+       "occurrence": 1,
+       "parameters": {
+        "failure_count": 2
+       },
+       "target_service": "notifications",
+       "target_tool": "send_confirmation"
+      }
+     ],
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 106
+    },
+    "fixture_id": "standard-v1",
+    "label": "Notification failures"
+   }
+  ],
+  "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1"
+ },
+ "episode_budget": {
+  "actor_calls": 8,
+  "http_attempts": 18,
+  "policy_steps": 32,
+  "ticks": 20,
+  "wait_cycles": 4,
+  "wall_seconds": 90
+ },
+ "learn": {
+  "discovery_protocols": [
+   {
+    "declaration": {
+     "actor_episodes_max": 8,
+     "dispatch_rule": "Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.",
+     "explorer_requests_max": 8,
+     "explorer_transport_retries_max": 8,
+     "pre_check": null,
+     "protocol": "faultlab-discovery/v1",
+     "replans_per_slot": 0,
+     "schedule_identity": "faultlab-schedule-identity/v1-sorted",
+     "slots": 8
+    },
+    "default": true,
+    "description": "Today's behaviour: one Explorer request per slot; each valid pick that is not an exact duplicate runs one Actor episode.",
+    "label": "v1 \u00b7 every valid new pick runs",
+    "protocol_id": "faultlab-discovery/v1",
+    "supported_agents": [
+     "reference",
+     "smolagents",
+     "smolagents-v2"
+    ]
+   },
+   {
+    "declaration": {
+     "actor_episodes_max": 8,
+     "dispatch_rule": "Before any Actor episode, a free in-process replay of the real simulator labels every fault FORCED, NOT_FORCED or IMPOSSIBLE for the registered agent. A pick runs only if every fault is FORCED. A refused pick (a duplicate, or any fault not FORCED) gets one re-plan request in the same slot with the reasons; if that is refused too, the slot ends without an episode.",
+     "explorer_requests_max": 16,
+     "explorer_transport_retries_max": 16,
+     "pre_check": {
+      "caller_model": {
+       "adapter_attempts": 2,
+       "agent": "reference",
+       "caller_id": "reference-actor/policy-v0/v2",
+       "client_timeout_seconds": 1.0,
+       "facts": [
+        "This agent has no wait action; the clock advances only when it makes a business call.",
+        "Every HTTP attempt advances the clock 1 tick, including the automatic retry attempt.",
+        "It has at most 7 business calls: turn 8 is reserved for the final report.",
+        "The adapter makes at most 2 attempts per call, retrying after 429/5xx or a 1 s timeout, so a failure_count of 1 is absorbed before the agent sees it.",
+        "While an operation is pending it checks that operation's status once per turn until it finishes.",
+        "On its normal path it does not send a failed write again. If both attempts of a write fail, the status check says UNKNOWN; it then checks status at most 3 times (a failed check counts too) and stops, leaving the task unfinished."
+       ],
+       "http_attempts": 18,
+       "max_business_calls": 7,
+       "polling": "one status check per turn while the operation is pending; at most 3 checks that return UNKNOWN or fail, and no re-send",
+       "resends_failed_writes": false,
+       "ticks": 20,
+       "ticks_per_http_attempt": 1,
+       "unknown_status_checks": 3,
+       "validated_against": "the typical path of deepseek-ai/DeepSeek-V3.1 under policy-v0, not other models: in a read-only back-test of stored completed development episodes, every modelled attempt seen in at least 10 of them was reached in at least 80% (scripts/experiments/check_reachability_caller.py)",
+       "wait_action": false
+      },
+      "labeller": "faultlab-reachability/v2"
+     },
+     "protocol": "faultlab-discovery/v2-reachability",
+     "replans_per_slot": 1,
+     "schedule_identity": "faultlab-schedule-identity/v2-order-aware",
+     "slots": 8
+    },
+    "default": false,
+    "description": "A free replay of the real simulator labels each fault before any paid Actor episode; only picks whose every fault is FORCED run, and a refused pick gets one re-plan with the reason.",
+    "label": "v2 \u00b7 reachability pre-check",
+    "protocol_id": "faultlab-discovery/v2-reachability",
+    "supported_agents": [
+     "reference"
+    ],
+    "unsupported_reason": "The pre-check models only the FaultLab reference Actor under policy-v0; the native agent has a different action space."
+   },
+   {
+    "declaration": {
+     "actor_episodes_max": 8,
+     "dispatch_rule": "Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.",
+     "explorer_requests_max": 8,
+     "explorer_transport_retries_max": 8,
+     "history": null,
+     "pre_check": null,
+     "protocol": "faultlab-discovery/v3-history",
+     "replans_per_slot": 0,
+     "schedule_identity": "faultlab-schedule-identity/v1-sorted",
+     "slots": 8
+    },
+    "default": false,
+    "description": "Exactly v1 (every valid new pick runs, same budget). Adds one read-only piece of Explorer context: a summary of this same agent's earlier verified development outcomes in this store (per recipe: verified episodes, outcomes and failed checks), frozen into the plan with its hash when you create the campaign. The Explorer still chooses freely; the history is prior evidence, not an instruction. Protected evaluation data is never included.",
+    "label": "v3 \u00b7 agent history",
+    "protocol_id": "faultlab-discovery/v3-history",
+    "supported_agents": [
+     "reference",
+     "smolagents",
+     "smolagents-v2"
+    ]
+   },
+   {
+    "declaration": {
+     "actor_episodes_max": 8,
+     "dispatch_rule": "Before any Actor episode, a free in-process replay of the real simulator labels every fault FORCED, NOT_FORCED or IMPOSSIBLE for the registered agent. A pick runs only if every fault is FORCED. A refused pick (a duplicate, or any fault not FORCED) gets one re-plan request in the same slot with the reasons; if that is refused too, the slot ends without an episode.",
+     "explorer_requests_max": 16,
+     "explorer_transport_retries_max": 16,
+     "history": null,
+     "pre_check": {
+      "caller_model": {
+       "adapter_attempts": 2,
+       "agent": "reference",
+       "caller_id": "reference-actor/policy-v0/v2",
+       "client_timeout_seconds": 1.0,
+       "facts": [
+        "This agent has no wait action; the clock advances only when it makes a business call.",
+        "Every HTTP attempt advances the clock 1 tick, including the automatic retry attempt.",
+        "It has at most 7 business calls: turn 8 is reserved for the final report.",
+        "The adapter makes at most 2 attempts per call, retrying after 429/5xx or a 1 s timeout, so a failure_count of 1 is absorbed before the agent sees it.",
+        "While an operation is pending it checks that operation's status once per turn until it finishes.",
+        "On its normal path it does not send a failed write again. If both attempts of a write fail, the status check says UNKNOWN; it then checks status at most 3 times (a failed check counts too) and stops, leaving the task unfinished."
+       ],
+       "http_attempts": 18,
+       "max_business_calls": 7,
+       "polling": "one status check per turn while the operation is pending; at most 3 checks that return UNKNOWN or fail, and no re-send",
+       "resends_failed_writes": false,
+       "ticks": 20,
+       "ticks_per_http_attempt": 1,
+       "unknown_status_checks": 3,
+       "validated_against": "the typical path of deepseek-ai/DeepSeek-V3.1 under policy-v0, not other models: in a read-only back-test of stored completed development episodes, every modelled attempt seen in at least 10 of them was reached in at least 80% (scripts/experiments/check_reachability_caller.py)",
+       "wait_action": false
+      },
+      "labeller": "faultlab-reachability/v2"
+     },
+     "protocol": "faultlab-discovery/v3-history-reachability",
+     "replans_per_slot": 1,
+     "schedule_identity": "faultlab-schedule-identity/v2-order-aware",
+     "slots": 8
+    },
+    "default": false,
+    "description": "Exactly v2 (pre-check, one re-plan per refused slot, same budget). Adds one read-only piece of Explorer context: a summary of this same agent's earlier verified development outcomes in this store (per recipe: verified episodes, outcomes and failed checks), frozen into the plan with its hash when you create the campaign. The Explorer still chooses freely; the history is prior evidence, not an instruction. Protected evaluation data is never included.",
+    "label": "v3 \u00b7 agent history + reachability pre-check",
+    "protocol_id": "faultlab-discovery/v3-history-reachability",
+    "supported_agents": [
+     "reference"
+    ],
+    "unsupported_reason": "The pre-check models only the FaultLab reference Actor under policy-v0; for the native agent choose v3 \u00b7 agent history, which has no pre-check."
+   }
+  ],
+  "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+  "search_space": {
+   "f1_milliseconds": [
+    1500,
+    3000
+   ],
+   "f2_ticks": [
+    1,
+    20
+   ],
+   "f3_versions": [
+    1,
+    3
+   ],
+   "f4_count": [
+    1,
+    18
+   ],
+   "kinds": [
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+   ],
+   "maximum_primitives": 2,
+   "occurrence": [
+    1,
+    18
+   ],
+   "preflight_required": true
+  },
+  "selection_limit": 8,
+  "transport_retry": {
+   "actor_retries_per_episode_max": 8,
+   "agent_retries_per_request": 1,
+   "agent_roles": [
+    "actor"
+   ],
+   "lab_backoff_seconds": [
+    5,
+    20,
+    60
+   ],
+   "lab_retries_per_campaign_max": 12,
+   "lab_retries_per_request": 3,
+   "lab_roles": [
+    "explorer",
+    "mechanic"
+   ],
+   "protocol": "faultlab-transport-retry/v2-lab-backoff",
+   "retryable": [
+    "CONNECTION_ERROR",
+    "REQUEST_TIMEOUT",
+    "HTTP_503"
+   ],
+   "rule": "Agent roles (the reference Actor and the native smolagents adapters) keep rule v1: at most one blind retry of the identical request, only when no answer arrived (a connection error, a timeout, or HTTP 503 after a one-second wait). FaultLab's own lab roles in this Learn campaign (Explorer discovery and challenge selections, Mechanic diagnosis and candidate requests) may re-send the identical request up to 3 times, after waits of 5 s, 20 s and 60 s, only when no answer arrived (connection error, timeout, HTTP 503), and at most 12 times in the whole campaign; during discovery the declared Explorer retry bound also applies. An answer, even an empty or malformed one, is never retried, and neither is any other HTTP status or an authentication, configuration or model-identity failure. Every retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only. A Stop during a wait ends the campaign STOPPED and nothing more is sent. If every allowed retry fails, the campaign ends ERROR as before and says how many retries were tried. Separate studies started on the campaign keep rule v1.",
+   "service_unavailable_delay_seconds": 1,
+   "stop_during_wait": "STOPPED"
+  }
+ },
+ "models": {
+  "actor": "deepseek-ai/DeepSeek-V3.1",
+  "explorer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+  "mechanic": "deepseek-ai/DeepSeek-V3.1"
+ },
+ "offline": {
+  "agent": "reference",
+  "configuration_hash": "b1d9251be6329c81798f4913e96d709da7a7c3fd5f1d36878b9033c95e1e6216",
+  "registration_required": false
+ },
+ "profiles": [
+  {
+   "arm": "B1",
+   "label": "Offline reference smoke",
+   "profile_id": "offline-v1",
+   "registration_required": false,
+   "source_mode": "offline_fixture"
+  },
+  {
+   "arm": "B0",
+   "label": "Live reviewed agent",
+   "profile_id": "live-v1",
+   "registration_required": true,
+   "source_mode": "live"
+  }
+ ],
+ "provider_calls": 0,
+ "schema_version": "faultlab-run-options/v1",
+ "setup_hash": "d96cdfdd2cd61f29905c7c1d4e455b80b2831bed0a84931435af550c2945263d",
+ "task": {
+  "description": "One synthetic authorized order, express shipping, and one truthful confirmation. The fixed C1\u2013C8 checks apply.",
+  "label": "Upgrade an order and confirm",
+  "task_definition_id": "orders.upgrade_then_confirm/v1",
+  "task_text_default": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+ }
+}

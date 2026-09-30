@@ -1,0 +1,8 @@
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "socket_connect_local", "detail": "('127.0.0.1', 50666) test=tests/lab/test_lab_backoff_campaign.py::test_lost_explorer_and_mechanic_requests_in_every_lab_phase_back_off_and_the_loop_completes[asyncio] (call)"}
+{"kind": "summary", "detail": {"socket_connect_nonlocal": 0, "socket_connect_local": 7, "getaddrinfo_nonlocal": 0, "getaddrinfo_local": 0, "dotenv_opens": 0, "unix_connect": 0}}

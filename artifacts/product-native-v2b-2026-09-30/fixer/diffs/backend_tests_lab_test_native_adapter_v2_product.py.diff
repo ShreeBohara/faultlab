@@ -1,0 +1,29 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/tests/lab/test_native_adapter_v2_product.py	2026-09-29 15:36:04
++++ backend/tests/lab/test_native_adapter_v2_product.py	2026-09-29 19:02:43
+@@ -133,6 +133,26 @@
+     protocols = {row['protocol_id']: row['supported_agents'] for row in options['learn']['discovery_protocols']}
+     assert protocols['faultlab-discovery/v1'] == protocols['faultlab-discovery/v3-history'] == ['reference', 'smolagents', 'smolagents-v2']
+     assert protocols['faultlab-discovery/v2-reachability'] == ['reference']
++
++
++def test_v2_registration_records_the_installed_label_protocol(owner):
++    """Review finding P-2 (September 30): registrations are immutable and the dashboard shows their limitations
++    ("Agent limitations" in the run setup, the portability panel), so a v2.1 registration must describe shown-order
++    labels, not the first v2 build's journal labels."""
++    from app.integrations.external_agent_v2 import PROTOCOL_VERSION
++    v2 = register_agent(owner.store, owner.settings, 'smolagents-v2')
++    labels = [item for item in v2.limitations if 'obs-1' in item]
++    assert len(labels) == 1, v2.limitations
++    text = labels[0]
++    assert 'journal' not in text.lower()
++    assert PROTOCOL_VERSION.startswith('faultlab-native-adapter/v2.1-') and 'protocol v2.1' in text
++    assert 'numbered in the order the agent first sees them' in text and 'gets no label' in text
++    assert 'had been shown are decoded' in text and 'kept as written' in text
++    # The run setup lists exactly the recorded text for that registration.
++    rows = {row['agent']: row for row in build_run_options(owner.settings, owner.store)['agents']}
++    assert rows['smolagents-v2']['registration_id'] == v2.registration_id
++    assert text in rows['smolagents-v2']['limitations']
++    assert not any('obs-1' in item for item in rows['smolagents']['limitations'])
+ 
+ 
+ # ----------------------------------------------------------------------------- plans and planned execution

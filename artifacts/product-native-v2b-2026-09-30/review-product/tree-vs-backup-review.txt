@@ -1,0 +1,30 @@
+backup tip: 2c178a7e1257731dddb7f92251d01d5db5985b4f
+artifacts/product-native-v2b-2026-09-30/review-product/tree_vs_backup_review.sh: line 7: /tmp/..//Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2b-2026-09-30/review-product/.backup_paths.txt: No such file or directory
+CHANGED CURRENT_STATUS.md
+CHANGED README.md
+CHANGED backend/app/agents/explorer.py
+CHANGED backend/app/agents/mechanic.py
+CHANGED backend/app/agents/transport_retry.py
+CHANGED backend/app/integrations/external_agent_v2.py
+CHANGED backend/app/lab/diagnosis.py
+CHANGED backend/app/lab/discovery_protocol.py
+CHANGED backend/app/lab/learning.py
+CHANGED backend/app/lab/provider_failures.py
+CHANGED backend/app/lab/readiness.py
+CHANGED backend/app/lab/run_plans.py
+CHANGED backend/tests/integrations/test_native_adapter_v2.py
+CHANGED backend/tests/lab/test_campaign_transport_retry.py
+CHANGED backend/tests/lab/test_transport_retry_plans.py
+CHANGED docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md
+CHANGED docs/external-agent-setup.md
+CHANGED docs/user-guide.md
+CHANGED frontend/src/components/CampaignPlan.tsx
+CHANGED frontend/src/components/DiscoveryProtocol.tsx
+CHANGED frontend/src/components/RunSetup.tsx
+CHANGED frontend/src/components/SearchAttemptsPanel.tsx
+CHANGED frontend/src/runPlans.ts
+CHANGED frontend/src/searchAttempts.ts
+NEW backend/tests/agents/test_lab_role_backoff.py
+NEW backend/tests/lab/test_lab_backoff_campaign.py
+NEW backend/tests/lab/test_native_v2_label_views.py
+NEW frontend/tests/transport-backoff.test.tsx

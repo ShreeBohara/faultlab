@@ -1,0 +1,47 @@
+CAUGHT  LOW-2 mine: the read-only check is off by one on the call cap (>= instead of >): exit 1: 3 failed, 9 passed in 3.02s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_with_budget_room_the_schedule_is_unchanged
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mine: the budget is checked only before the FIRST wait, not before later ones: exit 1: 1 failed, 11 passed in 5.47s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+CAUGHT  LOW-2 mine: the Explorer asks the budget check for the wrong role (mechanic bound): exit 1: 1 failed, 11 passed in 3.50s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_check_is_wired_into_both_lab_roles
+CAUGHT  LOW-2 mine: a Stop no longer wins over the budget check (the stopped() guard dropped): exit 1: 1 failed, 11 passed in 3.78s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_stop_still_wins_over_the_budget_check
+CAUGHT  P-4 mine: a budget refusal with no retry uses the "next retry ... so it was not sent" wording: exit 1: 3 failed, 20 passed in 33.68s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_explorer_retry_the_budget_cannot_cover_is_refused_before_any_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_request_that_got_no_retry_says_so_plainly[BUDGET_REFUSED-a retry did not fit the campaign's unreserved budget]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  P-4 mine: messages after 1+ retries changed (plural helper broken): exit 1: 1 failed, 11 passed in 3.41s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+CAUGHT  P-2 mine: the v2 registration text still says journal labels: exit 1: 1 failed, 15 passed in 13.65s
+      FAILED tests/lab/test_native_adapter_v2_product.py::test_v2_registration_records_the_installed_label_protocol
+CAUGHT  v1 golden sensitivity: a comment line appended to the v1 module (must fail the v1 golden/byte tests): exit 1: 1 failed, 19 passed in 14.16s
+      FAILED tests/lab/test_native_adapter_v2_product.py::test_v1_module_is_byte_identical_to_before_v2
+CONTROL backend (unmutated copy): exit 0: 75 passed in 49.75s
+CAUGHT  LOW-2 mine: the read-only check is off by one on the call cap (>= instead of >): exit 1: 3 failed, 9 passed in 3.02s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_with_budget_room_the_schedule_is_unchanged
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mine: the budget is checked only before the FIRST wait, not before later ones: exit 1: 1 failed, 11 passed in 5.47s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+CAUGHT  LOW-2 mine: the Explorer asks the budget check for the wrong role (mechanic bound): exit 1: 1 failed, 11 passed in 3.50s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_check_is_wired_into_both_lab_roles
+CAUGHT  LOW-2 mine: a Stop no longer wins over the budget check (the stopped() guard dropped): exit 1: 1 failed, 11 passed in 3.78s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_stop_still_wins_over_the_budget_check
+CAUGHT  P-4 mine: a budget refusal with no retry uses the "next retry ... so it was not sent" wording: exit 1: 3 failed, 20 passed in 33.68s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_explorer_retry_the_budget_cannot_cover_is_refused_before_any_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_request_that_got_no_retry_says_so_plainly[BUDGET_REFUSED-a retry did not fit the campaign's unreserved budget]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  P-4 mine: messages after 1+ retries changed (plural helper broken): exit 1: 1 failed, 11 passed in 3.41s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+CAUGHT  P-2 mine: the v2 registration text still says journal labels: exit 1: 1 failed, 15 passed in 13.65s
+      FAILED tests/lab/test_native_adapter_v2_product.py::test_v2_registration_records_the_installed_label_protocol
+CAUGHT  v1 golden sensitivity: a comment line appended to the v1 module (must fail the v1 golden/byte tests): exit 1: 1 failed, 19 passed in 14.16s
+      FAILED tests/lab/test_native_adapter_v2_product.py::test_v1_module_is_byte_identical_to_before_v2
+CONTROL frontend (unmutated copy): exit 0: Test Files  2 passed (2) | Tests  10 passed (10)
+CAUGHT  P-6 mine: the discovery bound uses Math.max instead of Math.min: exit 1: × shows rule v2 in the saved plan, beside the discovery bound, and rule v1 for a plan saved before it 75ms | × states the real discovery retry bound when the campaign cap of 12 is lower than the declared one 0ms | Test Files  1 failed (1) | Tests  2 failed | 3 passed (5) | FAIL  tests/transport-backoff.test.tsx > shows rule v2 in the saved plan, beside the discovery bound, and rule v1 for a plan saved before it | FAIL  tests/transport-backoff.test.tsx > states the real discovery retry bound when the campaign cap of 12 is lower than the declared one
+CAUGHT  P-6 mine: the cap note is dropped (only the number is shown): exit 1: × states the real discovery retry bound when the campaign cap of 12 is lower than the declared one 2ms | Test Files  1 failed (1) | Tests  1 failed | 4 passed (5) | FAIL  tests/transport-backoff.test.tsx > states the real discovery retry bound when the campaign cap of 12 is lower than the declared one
+CAUGHT  P-2 mine: RunSetup v2 text omits "an observation it never sees gets no label": exit 1: × keeps v1 as the default native choice and registers v2 only when it is chosen explicitly 32ms | Test Files  1 failed (1) | Tests  1 failed | 4 passed (5) | FAIL  tests/native-adapter-v2.test.tsx > keeps v1 as the default native choice and registers v2 only when it is chosen explicitly
+scratch tree deleted: True
+ALL MY MUTANTS CAUGHT, CONTROLS PASS

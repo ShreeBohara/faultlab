@@ -1,0 +1,20 @@
+--- backup:frontend/src/components/RunSetup.tsx
++++ worktree:frontend/src/components/RunSetup.tsx
+@@ -67,7 +67,7 @@
+       {mode === 'learn' && <p className="muted">Explorer selects from the fixed public development search space: {value.learn.search_space.kinds.join(', ')}, up to {value.learn.search_space.maximum_primitives} faults per recipe and {value.learn.selection_limit} selections. Reproduction, diagnosis, repair and challenge run only when their evidence gates qualify.</p>}
+       {mode === 'learn' && !!discoveryOptions.length && <>
+         <div className="setup-field"><label htmlFor={`${fieldId}-discovery`}>Discovery protocol</label><select id={`${fieldId}-discovery`} value={discoveryId} disabled={!!busy} onChange={event => { setDiscoveryId(event.target.value as DiscoveryProtocolId); setError(null); setMessage(null) }}>{discoveryOptions.map(item => <option key={item.protocol_id} value={item.protocol_id} disabled={!item.supported_agents.includes(agentKind)}>{item.label}{item.default ? ' (default)' : ''}</option>)}</select></div>
+-        {discovery && <><p className="muted">{discovery.description}</p><DiscoveryProtocolFacts declaration={discovery.declaration} /></>}
++        {discovery && <><p className="muted">{discovery.description}</p><DiscoveryProtocolFacts declaration={discovery.declaration} transportRetry={value.learn.transport_retry} /></>}
+         {!discoverySupported && <p className="notice">{discovery?.unsupported_reason ?? 'This discovery protocol does not support the selected agent.'}</p>}
+       </>}
+       {mode === 'compare' && <p className="muted">Compare the compatible accepted policy with the empty baseline using the fixed protected comparison: {value.compare.case_count} cases × {value.compare.trials_per_case} paired trials. Protected cases are not shown or used as development choices.</p>}
+@@ -75,7 +75,7 @@
+         <Field name="Execution">{live ? 'Live provider execution' : 'Offline handwritten reference · B1'}</Field><Field name="Agent">{live ? agent?.label : 'Handwritten reference smoke'}</Field>
+         <Field name="Task">{value.task.label}</Field><Field name="Mode / case">{mode === 'baseline' ? developmentCase?.label : mode === 'learn' ? 'Original learning workflow' : 'Accepted-policy comparison'}</Field>
+         <Field name="Initial policy">{mode === 'compare' ? agent?.accepted_policy_version : mode === 'learn' ? agent?.accepted_policy_version ?? 'policy-v0' : 'policy-v0'}</Field>
+-        {mode === 'learn' && discovery && <Field name="Discovery">{discovery.label} · {discoveryBudget(discovery.declaration)}</Field>}
++        {mode === 'learn' && discovery && <Field name="Discovery">{discovery.label} · {discoveryBudget(discovery.declaration, value.learn.transport_retry)}</Field>}
+         <Field name="Campaign limits">{value.caps.model_calls} model requests · {value.caps.tokens.toLocaleString()} tokens · ${value.caps.dollars.toFixed(2)}</Field>
+         <Field name="Per-episode limits">{value.episode_budget.actor_calls} actor turns · {value.episode_budget.http_attempts} HTTP attempts · {value.episode_budget.wall_seconds} seconds</Field>
+       </dl><p className="muted">{live ? 'Live execution can make bounded, billable provider calls. These are caps, not a predicted bill.' : 'Expected provider calls and model cost: zero.'} Creating the campaign saves an idle plan. Review that frozen plan before pressing Start.</p></section>

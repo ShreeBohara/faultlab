@@ -22,7 +22,7 @@ For configured paid work, choose **Live reviewed agent**, select **FaultLab refe
 **smolagents ToolCallingAgent 1.26.0** (native adapter v1) or **smolagents ToolCallingAgent - adapter v2
 (short evidence labels, strict final report turn)**, then **Register configured agent**. The two smolagents
 choices run the same unmodified agent through different declared adapters; they are separate agents whose
-results are never pooled ([adapter v2](external-agent-setup.md#native-adapter-v2-september-29-2026-built-offline-not-yet-run-live)). Registration checks installed
+results are never pooled ([adapter v2](external-agent-setup.md#native-adapter-v2-first-build-run-live-september-29-2026-v21-labels-not-yet-run-live)). Registration checks installed
 source and the adapter contract; it makes no provider call and does not establish agent quality or
 provider access. Baseline runs use the chosen public case. **Learn** uses the bounded development
 search; **Compare** requires an accepted policy for the exact selected configuration. Every original
@@ -30,6 +30,18 @@ learning stage uses the selected agent, while the B1 handwritten control is labe
 Reference-only context, completion and dependent heldout research studies are unavailable for native
 campaigns. Independent portability requires a different reviewed implementation; rerunning the same
 native agent is a regression measurement, not independent validation.
+
+**Lost model requests in a Learn campaign.** A new Learn plan freezes the model transport retry rule v2
+(`faultlab-transport-retry/v2-lab-backoff`). When an Explorer or Mechanic request gets no answer (connection error,
+timeout, HTTP 503), FaultLab waits 5 s, 20 s and then 60 s and sends the identical request again, at most 3 times per
+request and 12 times per campaign. Each retry is charged before it is sent; a retry the campaign's unreserved budget
+cannot cover is refused at once, without waiting. A discovery selection's retries are listed on that selection in the
+fault-search panel; a challenge selection's or a Mechanic request's retries appear only in the campaign recording and
+in the budget counts. While FaultLab waits, the campaign simply stays in its current state (for example SELECTING or
+DIAGNOSING); nothing on the dashboard shows the wait until the retry is sent. **Stop** during such a wait ends the
+campaign STOPPED within about half a second. If every allowed retry fails, the campaign ends ERROR and says how many
+retries were tried (or, if none could be sent, why not). The agent itself keeps one retry per request. Plans saved earlier, and
+baseline or compare plans, keep one retry per request ([details](PRODUCT_TRANSPORT_RETRY_2026-09-29.md#12-rule-v2-faultlabs-own-lab-roles-back-off-september-30-0-not-yet-run-live)).
 
 Use **Download campaign recording** to save the plan, configuration, registration and public
 development evidence, including failed attempts and `NO_CHANGE` runs. The JSON download makes no

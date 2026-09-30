@@ -1,6 +1,6 @@
 # FaultLab — current status
 
-Updated **September 29, 2026 (UTC)**. This is the single current status and continuation page.
+Updated **September 30, 2026 (UTC)**. This is the single current status and continuation page.
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
@@ -10,7 +10,8 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run;
-current code is **`ac7a12d2…`** (native adapter v2 and its review fixes, below; $0, offline only; committed locally as `c9db705`). Nothing pushed. Carried conservative total **$887.39**
+current code is **`4553ebe7…`** (September 30: builder, two $0 reviews and fixer: lab-role transport backoff and native adapter v2.1 labels, below; $0, offline only;
+**not committed, not run live**), built on `ac7a12d2…` (native adapter v2 and its review fixes; committed locally as `c9db705`). Nothing pushed. Carried conservative total **$893.86** after the native v2 run ($6.47)
 (ledger `artifacts/product-live-2026-09-28/ledger.json`; owner added funds 2026-09-28, old $1,000 cap no longer binds).
 
 | run | result | doc |
@@ -19,10 +20,10 @@ current code is **`ac7a12d2…`** (native adapter v2 and its review fixes, below
 | Discovery v2 first run | INCOMPLETE 5/8 (Explorer connection error; no retry then) — led to the transport-retry fix | `docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md` |
 | Discovery v2 complete run (reference V3.1) | **8/8 slots fully fired vs v1 4/8** (p=0.038, not a concurrent control); 1 pick refused + re-planned; NO_CHANGE (no source) | `docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md` |
 | Original loop vs native agent | **First live reproduce → reduce → diagnose of real sources**: 2 C5 sources, each 3/3, both diagnosed INCONCLUSIVE → no candidate → NO_CHANGE. The repairable C3 failure was never exposed (Explorer never picked a rejected upgrade) | `docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md` |
-
+| Native adapter v2, first live run (2026-09-29 23:36-23:44 UTC, runtime `ac7a12d2`) | Baseline probe: v2 clean on dev-1..dev-4 (12/12), dev-5 C3+C5 3/3, dev-6 C4+C5 2/3; 53 reports, 0 cited labels outside the labels shown. Learn campaign `b05ac280` (discovery v3-history): 3 C4 sources (F4 send failures); source 3 diagnosed: every citation was a label the agent had been shown, but after a broker-retried send the agent's labels had a gap (obs-1, obs-2, obs-4) and the report's cited rows did too (o1, o2, o4, …; o3 is the hidden first attempt); the Mechanic claimed a citation of an undelivered observation (CONTRACT_EVIDENCE_GAP) → INCONCLUSIVE; then Explorer selection 6 lost its connection twice ~130 ms apart → campaign **ERROR**. $6.47 conservative. Both led to the September 30 builder round below | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
 | History-informed (v3) original loop vs native agent | **First live POLICY_GAP diagnosis, first live generated candidates, source validation and challenge.** 4 C5 sources (3/3 each); candidate 1 passed source validation, challenge found a counterexample → REJECTED; candidate 2 failed source validation. STOPPED at the 6 h limit during a Weave evidence wait (FaultLab gap: no automatic telemetry retry). Native agent's report-writing failures (hex evidence IDs, calls after final-report-required) are the binding limit | `docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md` |
 
-Carried total now **$887.39**. Still unproven live: promotion and ACCEPTED. The run's two FaultLab defects (no
+Carried total now **$893.86** (the native adapter v2 run added $6.47; `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md`). Still unproven live: promotion and ACCEPTED. The run's two FaultLab defects (no
 automatic evidence retry; a stop during an evidence wait saved as UnexpectedError) are **fixed offline, not yet
 run live** (*Current work*, first paragraph).
 **Built after these runs ($0, not run live): discovery protocol v3 (history-informed)**, an opt-in answer to the
@@ -38,7 +39,81 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Current runtime: `ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090`** (algorithm
+**Current runtime: `4553ebe7db2f9e3efda6f8761e987c6f1ea58dce12d3fde2dfbc8812ebb7c057`** (algorithm
+`b2575eb2…`): the September 30 round (builder, two $0 reviews, fixer; next paragraph), **not yet committed** and not
+run live; built on `ac7a12d2`. Chain: `ac7a12d2` → `18292424` (September 30 builder, never committed) → **`4553ebe7`**
+(September 30 fixer: the reviews' findings). Simulator service `3ce5bcd2…`, contract `6f9d7783…`, interpreter
+`6da0714a…`, scorer `19de811c…` and capability `8e8e04af…` are unchanged; `external_agent.py` (native v1) is
+byte-identical and v1's prompt hash (`22515428…`) is unchanged. **v1's adapter hash changed** `fa7a58db…` → `6f303264…`:
+`registry.py`, part of it, now records v2.1's label rule in a v2 registration (review finding P-2); v1's history identity
+does not use the adapter hash, so v1's history is unaffected. **Register every agent again before a live run** (the
+runtime changed, as after every build). **Native adapter v2 must be registered again and is a new identity:** its adapter
+protocol (part of its prompt hash) changed, prompt hash `cee3aeda…` → `fff397c9…`, adapter hash `d27c374f…` →
+`dfd41b33…`; a v3 agent history for v2 does not include the first v2 build's episodes, and the two builds' results must
+not be pooled. The reference Actor's source hash (a tree hash of `backend/app/agents`, which now holds the retry code)
+changed `99a9034f…` → `142a9ebc…`; its prompt, context and response protocols, and so its history identity and
+model-visible behaviour, are unchanged.
+
+**September 30 (builder, two reviewers, fixer; $0, offline; not run live, not committed): two fixes from the first live
+v2 run.** Evidence: `artifacts/product-native-v2b-2026-09-30/` (`builder/`, `review-integrity/`, `review-product/`,
+`fixer/`).
+* **Lab-role transport retry with backoff** (rule `faultlab-transport-retry/v2-lab-backoff`, frozen into every new
+  Learn plan). Campaign `b05ac280` ended ERROR because rule v1's single retry of a lost Explorer request went out
+  ~130 ms later, into the same outage. Now the Explorer (discovery and challenge selections) and the Mechanic
+  (diagnosis and candidate requests) of a Learn campaign re-send a request that got no answer (connection error,
+  timeout, HTTP 503) up to **3 times after waits of 5 s, 20 s and 60 s**, at most **12 times per campaign** (during
+  discovery also within the plan's declared Explorer retry bound). Each retry is charged on the ledger before it is
+  sent and recorded (`transport_retries`: attempt, wait, campaign retry number); a returned answer is never re-rolled.
+  **Stop during a wait** ends the campaign STOPPED with a plain reason within about half a second. If every retry
+  fails, the campaign ends ERROR as before and the message says how many retries were tried. The agent roles
+  (reference Actor, native v1 and v2) keep rule v1 (one retry). Plans saved before, baseline/compare plans, and
+  separate studies (selection comparison, completion study) keep rule v1; Start accepts a saved plan only with
+  exactly rule v1 or (Learn) exactly rule v2. Shown in the saved plan, the discovery budget and the Learn setup form;
+  a **discovery** selection's retries are shown on it in the fault-search panel, while challenge-selection and
+  Mechanic retries appear only in the campaign recording and the budget counts, and nothing shows a wait while it
+  happens (the campaign stays SELECTING or DIAGNOSING). Review fixes: a retry the unreserved budget cannot cover is
+  refused **before** its wait (a read-only budget check; the charge after the wait stays the only admission); a
+  request that got no retry says "no transport retry was sent: <reason>" instead of "after 0 transport retries"; under
+  discovery v2 the dashboard states the real discovery bound (12, the campaign cap, not the declared 16). A store with a
+  new Learn plan needs this runtime or a later one: an older checkout (`ac7a12d2` or earlier) reports such a plan as
+  "missing, corrupt or inconsistent" (read from that code, not run). Details: [transport retry note, section 12](docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md#12-rule-v2-faultlabs-own-lab-roles-back-off-september-30-0-not-yet-run-live).
+* **Native adapter v2.1: contiguous labels over what the agent is shown** (adapter protocol
+  `faultlab-native-adapter/v2.1-shown-order-labels`). Labels now count observations in the order v2 first shows them
+  (`obs-1..obs-n`, no gaps); an observation the agent never sees (a broker-retried first write attempt, a
+  non-blocking policy read) gets no label; decoding maps only labels already shown. `report_submitted` now lists
+  `cited_tokens_not_decoded` instead of `cited_unshown_labels`. A new v2 registration records this rule in its
+  limitations (review fix; the builder's text still said "journal label"). The Mechanic and Explorer never see a
+  label the adapter decoded; they see each report's decoded IDs as the episode's `oN` row aliases. A token the adapter
+  did **not** decode (a guess such as `obs-4`) reaches them as written. That view is unchanged for the same citations
+  (the hidden first attempt is still a recorded row, so a report citing only what the agent saw still skips it, e.g.
+  o1, o2, o4). What changed for them is only the v2 contract text: it now says unseen observations exist and get no
+  label, and that `oN` counts every recorded observation, so it can differ from the agent's `obs-N` (v1 and reference
+  views unchanged). Details: [external agent setup](docs/external-agent-setup.md#native-adapter-v2-first-build-run-live-september-29-2026-v21-labels-not-yet-run-live).
+* **Not fixed: the September 29 misdiagnosis (review findings P-1, LOW-1; deferred to the PM).** The live
+  INCONCLUSIVE came from the diagnosis **Mechanic** misreading reports (all 53 v2 reports cited only labels the agent
+  had been shown; the Mechanic claimed "o6" was undelivered, which was false on the rows it was given). v2.1 changes
+  what the agent sees, **not** what the Mechanic reads: its evidence view is byte-for-byte the same (only the
+  `V2_MEMORY` contract text is new), so this round does not address that failure, and whether a Mechanic now reads
+  such reports correctly is unmeasured. Options for the PM: (a) measure it in the next declared live run with the
+  pre-registrable check `artifacts/product-native-v2b-2026-09-30/fixer/check_evidence_gap_misreading.py` (reads a
+  campaign export only; on the September 29 export it returns MISREADING for the one diagnosis, and its negative
+  controls pass: `fixer/misreading-check-selftest.log`); or (b) for smolagents-v2 plans only, add a per-episode list
+  of rows the agent was not shown under a new, declared compact-evidence format ID (needs a gate-freeze exception,
+  because `summarize_evidence` is frozen).
+* **Checks run by the builder (one `scripts/test.sh` after its last code edit, `builder/full-test-sh.log`):** backend
+  **2,867 passed, 180 skipped, 0 failed** (43 more than `ac7a12d2`'s 2,824); frontend **338** unit tests (4 new);
+  build passed; browser **17 passed, 1 opt-in skip**. Negative controls (`builder/mutation-checks.log`): all 10
+  mutations caught. Repo `gate_freeze.py`: referee, promotion, evaluation, actor, actor prompt and progress files and
+  `assess_pairs` unchanged.
+* **Reviews ($0):** integrity PASS WITH NOTES (5 LOW findings; `review-integrity/`), product review (2 MEDIUM, 4 LOW;
+  `review-product/`). **Fixer:** the findings' fixes each have a check that fails on the unfixed code and passes after
+  (`fixer/mutation-checks.log`); P-1/LOW-1 deferred as above; P-3's optional live "waiting to re-send" note not built
+  (the docs now say what is and is not shown). Suites after the fixer's last edit: one `scripts/test.sh` run,
+  `fixer/full-test-sh.log` (the counts are in the fixer's report).
+  Next: commit (owner's OK), register every agent again, then a declared live run that exercises rule v2 and the v2.1
+  labels, with the misreading check pre-registered.
+
+**Previous runtime: `ac7a12d2c1fc3baf4c680719afaa9b6287971e5a9211064c80f27c06a3382090`** (algorithm
 `7afabd51…`): native adapter v2 and its review fixes, committed locally as `c9db705` on `backup/part2-2026-09-22` (next paragraph); independent verification READY_WITH_NOTES (`artifacts/product-native-v2-2026-09-29/verify/REPORT.md`): backend 2,824 passed / 180 skipped / 0 failed, frontend 334, build passed, browser 17 + 1 opt-in skip. The runtime before it,
 `5583dcad…` (algorithm `5c95f2a9…`), is committed locally as `94b130e` on backup branch `backup/part2-2026-09-22` (previous checkpoint
 `af5a3fb`, runtime `08e4c20d…`); simulator service **`3ce5bcd2…`**, contract **`6f9d7783…`** and interpreter hash `6da0714a…`
@@ -50,7 +125,8 @@ unchanged. An idle campaign saved under an older runtime cannot be started (crea
 fixes, below) → `a8a32234` (discovery v3, below) → `08e4c20d` (discovery v3 review fixes; the checkpoint) →
 `c4157e33` (builder A: automatic evidence retry, truthful stop during a wait) → `4016cff9` (builder B: ports,
 launcher, CLI, test runner, CI, docs) → `5583dcad` (fixer: both reviews' findings) → `7968b622` (native
-adapter v2, builder) → **`ac7a12d2`** (native adapter v2 review fixes).
+adapter v2, builder) → **`ac7a12d2`** (native adapter v2 review fixes; committed) → `18292424` (September 30
+builder) → `4553ebe7` (September 30 fixer; current, not committed).
 
 **September 29 (builder, two reviewers, fixer; $0, not run live): native adapter v2 for smolagents.** A second
 declared adapter, `smolagents-toolcalling-v2` (agent kind `smolagents-v2`), for the same unmodified smolagents
@@ -60,7 +136,7 @@ structured output). v1 is unchanged and stays the default; v1 and v2 are separat
 pooled. Review fixes: a label is decoded only if the agent had been shown it (the journal can hold a policy step's
 read or a broker-retried attempt the agent never sees; a guessed label for one now fails C6, as it would under v1);
 the final turn's size check counts its schema before the turn is charged; the docs and the Start refusal now say
-to register again. How to use it: [external agent setup](docs/external-agent-setup.md#native-adapter-v2-september-29-2026-built-offline-not-yet-run-live).
+to register again. How to use it: [external agent setup](docs/external-agent-setup.md#native-adapter-v2-first-build-run-live-september-29-2026-v21-labels-not-yet-run-live).
 Evidence: `artifacts/product-native-v2-2026-09-29/` (`builder/`, `review-integrity/`, `review-product/`, `fixer/`).
 
 **September 29 (builders A and B, two reviewers, fixer; $0, not run live): a more dependable product.**
@@ -603,14 +679,15 @@ new runtimes; historical campaigns are read-only. Recheck processes before start
 
 ## Budget
 
-**Current carried accounting: $887.39 conservatively charged** (ledger
+**Current carried accounting: $893.86 conservatively charged** (ledger
 `artifacts/product-live-2026-09-28/ledger.json`) = $856.96 below
 + $2.14 native baseline probe `e5b01658` ([result](docs/PRODUCT_NATIVE_PROBE_2026-09-28.md))
 + $1.04 INCOMPLETE discovery-v2 run `a301846e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md))
 + $1.46 complete discovery-v2 run `17d60a9e` ([result](docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md))
 + $7.53 native original-loop learn `7ee35abe` ([result](docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md))
-+ $2.35 v3 baseline study `aaceaf2f` + $15.91 v3 learn campaign `a2fbffe3` ([result](docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md)).
-The transport-retry, discovery-v3 and dependability builds made no provider call ($0).
++ $2.35 v3 baseline study `aaceaf2f` + $15.91 v3 learn campaign `a2fbffe3` ([result](docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md))
++ $6.47 native adapter v2 first live run ($2.07 baseline probe + $4.40 learn `b05ac280`; [result](docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md)).
+The transport-retry, discovery-v3, dependability, native-v2 and September 30 builds made no provider call ($0).
 
 The previous carried accounting was **$856.96 conservatively charged**: the previous $855.91 plus
 $1.05 for the completed original-workflow campaign (39 requests, exact bound $1.04662).

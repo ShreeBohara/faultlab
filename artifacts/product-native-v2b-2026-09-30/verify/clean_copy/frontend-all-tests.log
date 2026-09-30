@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2b-2026-09-30/verify/clean_copy/tree/frontend
+
+
+ Test Files  23 passed (23)
+      Tests  339 passed (339)
+   Start at  20:04:00
+   Duration  4.01s (transform 4.17s, setup 0ms, import 8.95s, tests 13.50s, environment 12.55s)
+

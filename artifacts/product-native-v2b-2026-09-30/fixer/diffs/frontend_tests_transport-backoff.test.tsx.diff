@@ -1,0 +1,34 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/frontend/tests/transport-backoff.test.tsx	2026-09-29 17:13:54
++++ frontend/tests/transport-backoff.test.tsx	2026-09-29 19:05:46
+@@ -7,12 +7,12 @@
+ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
+ import { runApi, validateCampaignPlan, validateRunOptions, type RunOptions, type TransportRetryDeclarationV2 } from '../src/runPlans'
+ import { CampaignPlan } from '../src/components/CampaignPlan'
+-import { LATER_PHASE_RETRIES, LATER_PHASE_RETRIES_V2 } from '../src/components/DiscoveryProtocol'
++import { LATER_PHASE_RETRIES, LATER_PHASE_RETRIES_V2, discoveryBudget, explorerRetries } from '../src/components/DiscoveryProtocol'
+ import { RunSetup } from '../src/components/RunSetup'
+ import { SearchAttemptsPanel } from '../src/components/SearchAttemptsPanel'
+ import { validateSearchAttempts, type SearchAttempt } from '../src/searchAttempts'
+ import { campaign, config, fixtureResponse, hash, readiness } from './fixtures'
+-import { discoveryV1, planned, runOptions, transportRetryRule } from './run-fixtures'
++import { discoveryV1, discoveryV2, planned, runOptions, transportRetryRule } from './run-fixtures'
+ 
+ beforeEach(() => { vi.stubGlobal('fetch', vi.fn(async (url: string) => ({ ok: true, json: async () => fixtureResponse(url) }))) })
+ afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals() })
+@@ -55,6 +55,16 @@
+   expect(within(region).getByText(LATER_PHASE_RETRIES)).toBeTruthy()
+ })
+ 
++it('states the real discovery retry bound when the campaign cap of 12 is lower than the declared one', () => {
++  // Review finding P-6 (September 30): discovery v2 declares 16 Explorer transport retries, but under rule v2 the
++  // campaign-wide cap of 12 lab-role retries is reached first, so 16 is never the real bound.
++  expect(explorerRetries(discoveryV2, ruleV2)).toBe('at most 12 charged Explorer transport retries during discovery (up to 3 per request with no answer, after waits of 5 s, 20 s and 60 s; the plan declares 16, but the campaign\'s cap of 12 Explorer and Mechanic retries is reached first)')
++  expect(discoveryBudget(discoveryV2, ruleV2)).toContain('at most 16 Explorer requests · at most 12 charged Explorer transport retries during discovery')
++  expect(explorerRetries(discoveryV1, ruleV2)).toBe('at most 8 charged Explorer transport retries during discovery (up to 3 per request with no answer, after waits of 5 s, 20 s and 60 s)')
++  expect(explorerRetries(discoveryV2, transportRetryRule)).toBe('at most 16 charged Explorer transport retries during discovery (one per request with no answer)')
++  expect(explorerRetries({ ...discoveryV2, explorer_transport_retries_max: null }, ruleV2)).toBe('no Explorer transport retry declared')
++})
++
+ it('describes rule v2 in the Learn setup when the backend offers it', async () => {
+   const offered: RunOptions = { ...runOptions, learn: { ...runOptions.learn, transport_retry: ruleV2 },
+     agents: runOptions.agents.map(agent => ({ ...agent, registered: true, registration_id: agent.proposed_registration_id })) }

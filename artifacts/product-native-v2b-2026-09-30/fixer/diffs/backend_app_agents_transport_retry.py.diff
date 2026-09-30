@@ -1,0 +1,103 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/backend/app/agents/transport_retry.py	2026-09-29 17:03:44
++++ backend/app/agents/transport_retry.py	2026-09-29 19:04:06
+@@ -37,7 +37,7 @@
+ """
+ import asyncio
+ 
+-from app.lab.budgets import BudgetExhausted, StopRequested
++from app.lab.budgets import BudgetExhausted, CampaignLedger, StopRequested
+ from app.providers.runtime import RuntimeProviderError
+ 
+ TRANSPORT_RETRY_PROTOCOL = 'faultlab-transport-retry/v1'
+@@ -92,6 +92,33 @@
+             'service_unavailable_delay_seconds': SERVICE_UNAVAILABLE_DELAY_SECONDS,
+             'actor_retries_per_episode_max': actor_calls * RETRIES_PER_REQUEST,
+             'rule': RULE}
++
++
++def ledger_retry_fits(ledger, role):
++    """Whether charge_ledger_retry(ledger, role) would be admitted now, WITHOUT charging anything.
++
++    A read-only restatement of CampaignLedger.consume_call's checks for an unreserved call (reservation=None).
++    budgets.py is part of the frozen interpreter hash, so it is mirrored here rather than changed; a test compares
++    this function with consume_call over many ledger states. Rule v2 asks it BEFORE a backoff wait, so a retry the
++    budget cannot cover is refused at once instead of after a pointless wait; the real charge after the wait stays
++    the only admission. Anything that is not a CampaignLedger (a test double) answers True: admission then decides.
++    """
++    if not isinstance(ledger, CampaignLedger):
++        return True
++    with ledger.store.lock:
++        if ledger.stopped or role not in ('actor', 'explorer', 'mechanic'):
++            return False
++        protected_calls, protected_tokens = ledger.reserved_calls, ledger.reserved_tokens
++        role_bound = ledger.dollar_bounds.get(role) if ledger.dollar_bounds else None
++        if (role_bound is not None
++                and ledger.used_dollar_upper_bound + role_bound + protected_calls * ledger.dollar_bound > ledger.caps.dollars):
++            return False
++        if (ledger.used_calls + 1 + protected_calls > ledger.caps.model_calls
++                or ledger.used_tokens + ledger.tokens_per_call + protected_tokens > ledger.caps.tokens):
++            return False
++        if ledger.used_cost is not None and ledger.used_cost >= ledger.caps.dollars:
++            return False
++        return True
+ 
+ 
+ def charge_ledger_retry(ledger, role):
+@@ -190,9 +217,6 @@
+     """Plain text for a lab-role request that still failed under rule v2 (fixed FaultLab text only)."""
+     tried, reason = summary['retries_tried'], summary['reason']
+     waits = summary.get('waits_seconds') or []
+-    head = f'A model request failed after {_plural(tried, "transport retry", "transport retries")}'
+-    if waits:
+-        head += ' (waits of ' + ', '.join(f'{seconds} s' for seconds in waits) + ')'
+     detail = {
+         'ALL_RETRIES_FAILED': 'every allowed retry of this request failed',
+         'CAMPAIGN_RETRY_LIMIT': (f'the campaign\'s limit of {LAB_RETRIES_PER_CAMPAIGN_MAX} lab-role transport '
+@@ -201,6 +225,14 @@
+         'BUDGET_REFUSED': 'the next retry did not fit the campaign\'s unreserved budget, so it was not sent',
+         'NOT_RETRYABLE': 'the last failure is of a kind that is never retried',
+     }[reason]
++    if not tried:
++        # Review finding P-4 (September 30): say plainly that no retry was sent, not "after 0 transport retries".
++        if reason == 'BUDGET_REFUSED':
++            detail = 'a retry did not fit the campaign\'s unreserved budget'
++        return f'A model request failed and no transport retry was sent: {detail}. Inspect the saved provider diagnostics.'
++    head = f'A model request failed after {_plural(tried, "transport retry", "transport retries")}'
++    if waits:
++        head += ' (waits of ' + ', '.join(f'{seconds} s' for seconds in waits) + ')'
+     return f'{head}; {detail}. Inspect the saved provider diagnostics.'
+ 
+ 
+@@ -269,15 +301,19 @@
+                                      'be re-sent (transport retry backoff); it was not sent again. Remote effects are retained.')
+ 
+ 
+-async def complete_with_backoff(send, *, failed, admit, record, session, role, discovery=False):
++async def complete_with_backoff(send, *, failed, admit, record, session, role, discovery=False, fits=None):
+     """Run one charged lab-role request with at most three backed-off blind retries (rule v2).
+ 
+     ``send(retry)`` performs the request (its first attempt is already charged by the caller);
+     ``failed(error)`` records each failure and returns its failure id; ``admit()`` charges one
+     retry on the ledger and returns False when it cannot be admitted; ``record(error, failure_id,
+-    attempt, delay)`` records an admitted retry and returns its facts. Returns (generation, retries).
+-    A Stop seen during a wait or at admission raises TransportRetryStopped; a request that is not
+-    retried again raises its failure with ``transport_retry_summary`` set.
++    attempt, delay)`` records an admitted retry and returns its facts. ``fits()`` (optional) says,
++    without charging, whether the budget could still admit a retry: it is asked before each wait, so
++    a retry the budget cannot cover is refused at once (BUDGET_REFUSED) instead of after its wait
++    (review findings LOW-2 / P-4, September 30); ``admit()`` after the wait remains the only charge.
++    Returns (generation, retries). A Stop seen during a wait or at admission raises
++    TransportRetryStopped; a request that is not retried again raises its failure with
++    ``transport_retry_summary`` set.
+     """
+     retries = []
+     while True:
+@@ -292,6 +328,8 @@
+                 reason = 'ALL_RETRIES_FAILED'
+             else:
+                 reason = session.refusal(discovery=discovery)
++            if reason is None and fits is not None and not session.stopped() and not fits():
++                reason = 'BUDGET_REFUSED'                                   # refused before waiting; nothing charged
+             if reason is None:
+                 delay = LAB_BACKOFF_SECONDS[attempt - 1]
+                 await session.wait(delay, role=role, attempt=attempt)     # a Stop raises here

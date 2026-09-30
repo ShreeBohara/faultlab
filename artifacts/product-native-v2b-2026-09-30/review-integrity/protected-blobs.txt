@@ -1,0 +1,19 @@
+blob hashes: backup/part2-2026-09-22 (2c178a7) vs working tree
+backend/app/integrations/external_agent.py ref=a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49 wt=a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49 SAME
+backend/tests/fixtures/native_v1_golden_requests.json ref=210871284f1ee1704de4faad4e6bc0c851fd6528 wt=210871284f1ee1704de4faad4e6bc0c851fd6528 SAME
+backend/tests/integrations/test_native_adapter_v1_golden.py ref=e2980809692372fc34f5a3e0f5b77bf7345ea03f wt=e2980809692372fc34f5a3e0f5b77bf7345ea03f SAME
+backend/app/integrations/registry.py ref=8431d1dc0cbca6161f8cf5b3ffb79cc713642e75 wt=8431d1dc0cbca6161f8cf5b3ffb79cc713642e75 SAME
+backend/app/agents/progress.py ref=d4e3357abf0aa9c061b75d0d60ab5d43e9d2f71e wt=d4e3357abf0aa9c061b75d0d60ab5d43e9d2f71e SAME
+backend/app/agents/actor.py ref=997b691d5a6df625941346c96b7560754120fbbe wt=997b691d5a6df625941346c96b7560754120fbbe SAME
+backend/app/agents/prompts/actor.md ref=606dd9dbb2f6097958e4e01914745bd7b27f9b34 wt=606dd9dbb2f6097958e4e01914745bd7b27f9b34 SAME
+backend/app/lab/promotion.py ref=e636aeb4ccbce0ad3c388250ebd6679884fcb629 wt=e636aeb4ccbce0ad3c388250ebd6679884fcb629 SAME
+backend/app/lab/challenge.py ref=7326c0ea39496d68493bee75326ae5cfa62101f9 wt=7326c0ea39496d68493bee75326ae5cfa62101f9 SAME
+backend/app/lab/evaluation.py ref=9349b106d6caaf715b4c2573eeb2a0f57a420193 wt=9349b106d6caaf715b4c2573eeb2a0f57a420193 SAME
+backend/app/lab/completion_study.py ref=f596d9060471e7b850b07952fa0cbfeabd5a8816 wt=f596d9060471e7b850b07952fa0cbfeabd5a8816 SAME
+backend/app/lab/coordinator.py ref=167e1f292d824d43012a215b7351ba64420f1d70 wt=167e1f292d824d43012a215b7351ba64420f1d70 SAME
+backend/app/providers/runtime.py ref=178af3c6a3067a3b35493aa984ea501f078ad745 wt=178af3c6a3067a3b35493aa984ea501f078ad745 SAME
+external_agent.py at c9db705 (v2 commit): a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49
+tree hashes of dirs (ref vs wt, via git write-tree-free compare of ls-tree):
+backend/app/simulator: c3b2c517d3eefb2f listed files; changed-in-wt: 0
+backend/app/referee: f31dcf6486c02b88 listed files; changed-in-wt: 0
+contracts: c51a955d3530f190 listed files; changed-in-wt: 0

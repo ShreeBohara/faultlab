@@ -1,0 +1,31 @@
+{
+ "learn-plan-before.json": {
+  "mode_is_learn_plan": true,
+  "transport_retry_protocol": "faultlab-transport-retry/v1",
+  "revalidated_bytes_identical": true,
+  "plan_hash_recomputes": true,
+  "equals_installed_rule_v1": true,
+  "would_get_backoff_session": false
+ },
+ "learn-plan-final.json": {
+  "mode_is_learn_plan": true,
+  "transport_retry_protocol": "faultlab-transport-retry/v1",
+  "revalidated_bytes_identical": true,
+  "plan_hash_recomputes": true,
+  "equals_installed_rule_v1": true,
+  "would_get_backoff_session": false
+ },
+ "v2_block_round_trip_identical": true,
+ "tampered_v2_blocks_refused_by_schema": {
+  "{\"lab_backoff_seconds\": [5, 20, 61]}": true,
+  "{\"lab_backoff_seconds\": [1, 1, 1]}": true,
+  "{\"lab_retries_per_campaign_max\": 13}": true,
+  "{\"lab_retries_per_request\": 2}": true,
+  "{\"retryable\": [\"CONNECTION_ERROR\", \"REQUEST_TIMEOUT\", \"HTTP_500\"]}": true,
+  "{\"agent_roles\": [\"actor\", \"explorer\"]}": true,
+  "{\"lab_roles\": [\"mechanic\", \"explorer\"]}": true,
+  "{\"extra\": 1}": true,
+  "{\"service_unavailable_delay_seconds\": 5}": true
+ },
+ "rule_text_change_passes_schema_but_differs_from_installed": true
+}

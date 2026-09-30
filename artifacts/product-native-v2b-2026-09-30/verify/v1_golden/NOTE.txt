@@ -1,0 +1,10 @@
+v1 module byte identity vs backup tip 2c178a7:
+  tip blob     a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49
+  working blob a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49
+  sha256 working 6c0909bfff3753b470570baef5c96b39904a922ea7a8f9d548fb30f5be9380f7
+  golden fixture tip blob 210871284f1ee1704de4faad4e6bc0c851fd6528 working 210871284f1ee1704de4faad4e6bc0c851fd6528
+  golden test file tip blob e2980809692372fc34f5a3e0f5b77bf7345ea03f working e2980809692372fc34f5a3e0f5b77bf7345ea03f
+in the full suite run (suite/test-sh.log):
+92:tests/integrations/test_native_adapter_v1_golden.py ....                 [ 57%]
+in the step-5 run and the clean copy: included in the 122 passed (ignored_deps/backend-new-tests-pytest.log, clean_copy/backend-new-tests.log)
+v1 prompt hash (product registry.native_prompt_hash(NATIVE_V1)): working tree and checkpoint both 2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989 (identity/compare.txt)

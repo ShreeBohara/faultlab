@@ -1,0 +1,32 @@
+diff --git a/- b/backend/app/lab/diagnosis.py
+index 0000000..6a9779b 100644
+--- a/-
++++ b/backend/app/lab/diagnosis.py
+@@ -14,6 +14,18 @@ EVIDENCE_PROTOCOLS = (COMPACT_EVIDENCE_V1, COMPACT_EVIDENCE_V2)
+ TASK_OUTCOME_CLAUSE = (' task_outcome is the adjudicated public outcome of that episode, '
+                        'the same value grouped in observed_outcomes.')
+ 
++# Native adapter v2 (protocol v2.1, shown-order labels): what a Mechanic or Explorer reading this campaign's records
++# needs to know about the agent's citations. It describes the adapter only; it adds nothing about any episode.
++V2_MEMORY=('Fresh native agent and empty native memory for each episode. The agent is shown each observation\'s evidence_id '
++           'as a short label obs-N, numbered 1, 2, 3, ... in the order the observations were first shown to it; an observation '
++           'it was never shown (for example the first attempt of a write the broker retried inside one tool call, or a policy '
++           'step\'s read that did not block) gets no label. When it submits its report, each cited label it had been shown is '
++           'decoded back to the full evidence ID before validation, and any other cited token is kept exactly as written. '
++           'So a report in these records cites the same full evidence IDs as the recorded observations; a token kept as written '
++           'is one the agent was never shown as a label, and it fails the evidence check. In an evidence summary a report '
++           'citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, '
++           'including ones the agent never saw, so it can differ from the agent\'s obs-N.')
++
+ def runtime_contract(store=None,campaign=None):
+     actor_contract=ACTOR_PROMPT
+     if store is not None and campaign is not None:
+@@ -36,7 +48,7 @@ def runtime_contract(store=None,campaign=None):
+             actor_contract={'implementation':'smolagents/1.26.0 ToolCallingAgent, FaultLab native adapter v2',
+                             'task_contract':TASK_CONTRACT,'transport_contract':TRANSPORT_CONTRACT,
+                             'adapter_protocol':adapter_protocol(),
+-                            'memory':'Fresh native agent and empty native memory for each episode; the agent sees each delivered observation\'s evidence_id as its journal label (obs-N), and its report\'s cited labels are decoded back to the full evidence IDs before validation.',
++                            'memory':V2_MEMORY,
+                             'prompt_hash':registration.prompt_hash,'source_hash':registration.source_hash,
+                             'native_template_hash':NATIVE_FILES['prompts/toolcalling_agent.yaml']}
+     return {'actor_contract':actor_contract,'episode_limits':EpisodeBudget().model_dump(mode='json'),

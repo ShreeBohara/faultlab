@@ -1,0 +1,1 @@
+git archive of 2c178a7e1257731dddb7f92251d01d5db5985b4f excluding artifacts/ and audit/, extracted 2026-09-30T02:39:30Z; holds a copy of checks.py; never displayed; excluded from COMMIT_LIST; deleted after the identity and gate_freeze runs (2026-09-30 ~03:1x UTC); checkpoint.json files in identity/ and gate_freeze/ are its record

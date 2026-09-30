@@ -1,0 +1,528 @@
+{
+ "baseline_b0_episodes": [
+  {
+   "case": "dev-1",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-45cea2b7bb6549a995f4baf3b1a96d8f",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-1",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-ca80c0b931974596bef9d76bfcc27dea",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-1",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-51837c1e43ad41e38755f523c6093d11",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-2",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-334b82c4556742d29f4bb631f04c7735",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-2",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-473fe84c043d446e8a9210155545c234",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-2",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-339c92101b9a46a88a3454a6e4dc3aab",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-3",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-2f595c625f7644669b1c964fb6e77124",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-3",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-40f110cacdf643f3bf617af5e5b33ea9",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-3",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-0410649a39174afa9046e25de35b11e5",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-4",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-f0e67ba5b2c440b095008d9a4888a683",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-4",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-b2989a0ae72d47c0a7f3b5cceb993654",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-4",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-a14a60b19c2140fab97609771d9ef5a6",
+   "failed_checks": [],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "COMPLETED"
+  },
+  {
+   "case": "dev-5",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-ff45dc77f470454e9eb31985283c5778",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-5",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-fbafcf90f6654329bf969b879d2d445b",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-5",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-d51ee5426b7c45cfa6733b884d725f92",
+   "failed_checks": [
+    "C3"
+   ],
+   "hidden_journal_rows": 0,
+   "hidden_row_positions": [],
+   "journal_rows": 3,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "VIOLATION"
+  },
+  {
+   "case": "dev-6",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-a0673352768744469628a33aa04c9e0b",
+   "failed_checks": [],
+   "hidden_journal_rows": 1,
+   "hidden_row_positions": [
+    3
+   ],
+   "journal_rows": 4,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "SAFE_UNRESOLVED"
+  },
+  {
+   "case": "dev-6",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-ae3214100386451d9a573b1851a18fe6",
+   "failed_checks": [],
+   "hidden_journal_rows": 1,
+   "hidden_row_positions": [
+    3
+   ],
+   "journal_rows": 4,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "SAFE_UNRESOLVED"
+  },
+  {
+   "case": "dev-6",
+   "cited": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "episode_id": "episode-3a8cb0d3e39e4b998fec3d651dbb0f6b",
+   "failed_checks": [],
+   "hidden_journal_rows": 1,
+   "hidden_row_positions": [
+    3
+   ],
+   "journal_rows": 4,
+   "labels_per_request": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "labels_shown": [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   "outcome": "SAFE_UNRESOLVED"
+  }
+ ],
+ "first_v2_build": {
+  "adapter_hash": "d27c374f4836f554795207c4bcf7caa84abb75105b69328cd0848a4569338898",
+  "configuration_hash": "e5bfdfc21e5c56a4ec60414679d527954c73fb50e3eeb20b0bebf1cdeff5dd64",
+  "prompt_hash": "cee3aedab1a0476e7d0d656c8a68ac4982ade315a82c70e3731a8ba5b7a2bee0",
+  "registration_id": "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4"
+ },
+ "learn_plan": {
+  "campaign_id": "campaign-7e6c76bb53dd4deba94af76881fd5041",
+  "discovery_protocol": "faultlab-discovery/v3-history",
+  "explorer_transport_retries_max": 8,
+  "history_status": "AVAILABLE",
+  "recipes": [
+   [
+    "dev-1",
+    3
+   ],
+   [
+    "dev-2",
+    3
+   ],
+   [
+    "dev-3",
+    3
+   ],
+   [
+    "dev-4",
+    3
+   ],
+   [
+    "dev-5",
+    3
+   ],
+   [
+    "dev-6",
+    3
+   ]
+  ],
+  "transport_retry": "faultlab-transport-retry/v2-lab-backoff",
+  "verified_episodes": 18
+ },
+ "new_history_identity_hash": "ef91c765602303d72d70f4d26e263bccfd06f57b93c584a52a8a4a798ae70119",
+ "new_identity_prompt_hash_differs_from_first_build": true,
+ "registration": {
+  "adapter_hash": "4ba8b785191adb65f88356a6f157369450ae48c021bf127d593db0b3906ac1a8",
+  "configuration_hash": "17453461884dd62def5c3caec0b4bc9841b1d71a073eae4d41b592ef93486e4c",
+  "limitations": [
+   "Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.",
+   "Only ToolCallingAgent and four synthetic order tools are supported.",
+   "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn.",
+   "Adapter v2 shows each delivered observation's evidence_id as its journal label (obs-1, obs-2, ...) and decodes cited labels back to the real IDs before validation; an unknown token passes through unchanged.",
+   "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
+   "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled."
+  ],
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "registration_id": "smolagents-1.26.0-adapter-v2-17453461884dd62d"
+ }
+}

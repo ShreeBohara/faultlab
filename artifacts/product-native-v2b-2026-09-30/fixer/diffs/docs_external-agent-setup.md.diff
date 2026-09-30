@@ -1,0 +1,58 @@
+--- artifacts/product-native-v2b-2026-09-30/fixer/before/docs/external-agent-setup.md	2026-09-29 17:57:04
++++ docs/external-agent-setup.md	2026-09-29 19:12:05
+@@ -44,7 +44,7 @@
+ six cases × three fresh external B0/L pairs and fresh regression-bundle execution remain
+ unmeasured. An internal smoke registration is reported separately and cannot clear that gate.
+ 
+-## Native adapter v2 (September 29, 2026; built offline, not yet run live)
++## Native adapter v2 (first build run live September 29, 2026; v2.1 labels not yet run live)
+ 
+ FaultLab now has two declared adapters for the same unmodified smolagents 1.26.0 `ToolCallingAgent`.
+ They are separate agents: each has its own entry point, prompt hash, adapter hash, registration,
+@@ -75,19 +75,24 @@
+      row 4).
+ 
+      *Why this changed.* The first v2 build numbered journal positions, so in that case the agent saw `obs-1`,
+-     `obs-2`, `obs-4`. In the first live v2 run (campaign `b05ac280`, September 29) every citation was a label the
+-     agent had been shown, but the Mechanic, reading reports whose cited rows skipped the hidden attempt, claimed a
+-     citation of an undelivered observation, proposed `CONTRACT_EVIDENCE_GAP`, and the diagnosis ended INCONCLUSIVE.
+-     A gap invites a guess; the agent no longer sees one.
++     `obs-2`, `obs-4`. A gap in the labels invites a guessed `obs-3`; v2.1 removes the gap from what the agent sees.
++     In the first live v2 run (campaign `b05ac280`, September 29) the agent did **not** guess: all 53 reports cited
++     only labels it had been shown. The failure there was the **Mechanic's**: reading reports whose cited rows skipped
++     the hidden attempt (`o1`, `o2`, `o4`, `o5`, `o6`), it claimed a citation of an undelivered observation, proposed
++     `CONTRACT_EVIDENCE_GAP`, and the diagnosis ended INCONCLUSIVE. **v2.1 does not change what the Mechanic reads**
++     (see *What FaultLab's own models read* below), so it does not address that misdiagnosis; whether a Mechanic now reads such reports
++     correctly is unmeasured.
+ 
+      The `report_submitted` event records the cited tokens as written (`cited_evidence_tokens`), the decoded IDs,
+      the label map as shown by that request (`evidence_labels`), `labels_shown_to_agent`, any
+      `cited_tokens_not_decoded` (it replaces the first build's `cited_unshown_labels`, which no longer applies),
+      the final-turn flag and the response contract.
+ 
+-     *What FaultLab's own models read.* The diagnosis and candidate Mechanic and the Explorer never see the
+-     agent's labels: their evidence summaries show each report with its decoded IDs, written as that episode's
++     *What FaultLab's own models read.* The diagnosis and candidate Mechanic and the Explorer never see a label the
++     adapter decoded: their evidence summaries show each report with its decoded IDs, written as that episode's
+      `oN` row aliases (the Nth recorded observation), the same ID space as the observation rows they are shown.
++     A token the adapter did **not** decode (a guess such as `obs-4`) is part of the saved report and reaches them
++     as written, next to the aliases (it also fails C6).
+      That numbering counts every recorded observation, including ones the agent never saw, so it can differ from
+      the agent's `obs-N`, and a report that cites only what the agent saw still skips the hidden row (for example
+      `o1`, `o2`, `o4`); that view did not change. The v2 contract text they receive (`actor_contract.memory` and the
+@@ -110,9 +115,12 @@
+ as for v1. **The v2.1 labels changed v2's adapter protocol, which is part of v2's prompt hash**, so v2 must be
+ registered again, and it is a different agent identity from the first v2 build: a discovery v3 agent history for
+ v2 does not include episodes run by the first v2 build (September 29), and their results must not be pooled. v1's
+-module, prompt hash and adapter hash are unchanged. Adding v2 changed `registry.py`, which is part of v1's adapter hash, so **v1 registrations made
+-before v2 must be made again too**; an idle campaign saved under the old runtime cannot be started (create a
+-new campaign), but it stays readable. Each `report_submitted` event of v2 records the cited tokens as
++module and prompt hash are unchanged. `registry.py` is part of v1's adapter hash: adding v2 changed it (`61497db3…` →
++`fa7a58db…`), and on September 30 the review fixes changed it again (`fa7a58db…` → `6f303264…`) so that a new v2
++registration records the v2.1 label rule in its limitations (registrations are immutable). v1's history identity does
++not include the adapter hash, so v1's history is unaffected, but **v1 must be registered again too** (as after every
++runtime change); an idle campaign saved under the old runtime cannot be started (create a new campaign), but it stays
++readable. Each `report_submitted` event of v2 records the cited tokens as
+ written, the decoded IDs, the label map, the labels shown to the agent, any tokens not decoded and whether the
+ report came from the strict final turn.
+ 

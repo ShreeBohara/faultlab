@@ -1,0 +1,23 @@
+BEFORE memory: Fresh native agent and empty native memory for each episode; the agent sees each delivered observation's evidence_id as its journal label (obs-N), and its report's cited labels are decoded back to the full evidence IDs before validation.
+
+AFTER memory: Fresh native agent and empty native memory for each episode. The agent is shown each observation's evidence_id as a short label obs-N, numbered 1, 2, 3, ... in the order the observations were first shown to it; an observation it was never shown (for example the first attempt of a write the broker retried inside one tool call, or a policy step's read that did not block) gets no label. When it submits its report, each cited label it had been shown is decoded back to the full evidence ID before validation, and any other cited token is kept exactly as written. So a report in these records cites the same full evidence IDs as the recorded observations; a token kept as written is one the agent was never shown as a label, and it fails the evidence check. In an evidence summary a report citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, including ones the agent never saw, so it can differ from the agent's obs-N.
+
+[citation_decode]
+  BEFORE: exact-match label lookup over observations already delivered in this episode; unmatched tokens pass through verbatim and are scored as written
+  AFTER:  exact-match lookup over the labels already shown to the agent when that model request was made; any other token passes through verbatim and is scored as written
+[decoded_labels]
+  BEFORE: only labels already shown to the agent when that request was made; any other token, including the label of a journal observation the agent was never shown, passes through as written
+  AFTER:  None
+[difference_from_reference]
+  BEFORE: None
+  AFTER:  the reference Actor is shown every journal row, so its journal positions are also its shown order; v2 numbers only the rows it shows
+[evidence_naming]
+  BEFORE: 1-based journal position of each delivered observation
+  AFTER:  obs-N, where N is the 1-based order in which v2 first showed each observation to the agent; an observation keeps its label on every later turn, and an observation the agent is never shown gets no label, so the labels the agent sees are numbered from 1 with no gaps
+[label_order_within_one_result]
+  BEFORE: None
+  AFTER:  the order the agent reads the rows: canonical JSON (sorted keys), then list order
+[unshown_observations]
+  BEFORE: None
+  AFTER:  never labelled: the read of a non-blocking policy step and the first attempt of a write the broker retried inside one tool call are not in any tool result
+version faultlab-native-adapter/v2-shown-labels-final-turn -> faultlab-native-adapter/v2.1-shown-order-labels

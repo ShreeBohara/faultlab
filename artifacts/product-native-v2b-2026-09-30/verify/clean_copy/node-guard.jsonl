@@ -1,0 +1,3 @@
+{"t":1790737439283,"pid":93231,"event":"guard_loaded","host":"/Users/shree/.nvm/versions/node/v20.19.0/bin/node","argv":"/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-native-v2b-2026-09-30/verify/clean_copy/tree/frontend/node_modules/.bin/vitest run"}
+{"t":1790737439488,"pid":93233,"event":"guard_loaded","host":"/Users/shree/.nvm/versions/node/v20.19.0/bin/node","argv":"/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/vitest/dist/workers/forks.js"}
+{"t":1790737439488,"pid":93232,"event":"guard_loaded","host":"/Users/shree/.nvm/versions/node/v20.19.0/bin/node","argv":"/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/frontend/node_modules/vitest/dist/workers/forks.js"}

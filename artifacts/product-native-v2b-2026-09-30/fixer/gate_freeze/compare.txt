@@ -1,0 +1,38 @@
+Fixer gate_freeze (working tree after the fixer edits) compared with the builder's and the integrity reviewer's records of the reviewed tree.
+== vs builder/gate_freeze/current.json
+  CHANGED functions backend/app/agents/mechanic.py::Mechanic ( text_sha256, ast_sha256, lines )
+  CHANGED files backend/app/agents/mechanic.py 0a2e77de302bdf76 -> 0b4606b3d03bd445
+  CHANGED fingerprints runtime_hash 182924246224e4dc -> 4553ebe7db2f9e3e
+  CHANGED fingerprints source_hash f6d2d6eb342d7990 -> 142a9ebcf03b9fde
+  unchanged entries: 59
+== vs review-integrity/gate_freeze/current.json
+  CHANGED functions backend/app/agents/mechanic.py::Mechanic ( text_sha256, ast_sha256, lines )
+  CHANGED files backend/app/agents/mechanic.py 0a2e77de302bdf76 -> 0b4606b3d03bd445
+  CHANGED fingerprints runtime_hash 182924246224e4dc -> 4553ebe7db2f9e3e
+  CHANGED fingerprints source_hash f6d2d6eb342d7990 -> 142a9ebcf03b9fde
+  unchanged entries: 59
+== vs review-integrity/gate_freeze/checkpoint_2c178a7.json (backup branch)
+  CHANGED functions backend/app/agents/mechanic.py::Mechanic ( text_sha256, ast_sha256, lines )
+  CHANGED functions backend/app/lab/diagnosis.py::runtime_contract ( text_sha256, ast_sha256, lines )
+  CHANGED functions backend/app/lab/diagnosis.py::summarize_evidence ( lines )
+  CHANGED functions backend/app/lab/diagnosis.py::trial_outcomes ( lines )
+  CHANGED files backend/app/agents/mechanic.py 266d6aad26b88e9f -> 0b4606b3d03bd445
+  CHANGED files backend/app/lab/diagnosis.py d1d7bee025664dae -> 76d53c108e287156
+  CHANGED fingerprints algorithm_hash 7afabd51a2a4f6bb -> b2575eb257ebe9a1
+  CHANGED fingerprints runtime_hash ac7a12d2c1fc3baf -> 4553ebe7db2f9e3e
+  CHANGED fingerprints source_hash 99a9034f5f2a9ed5 -> 142a9ebcf03b9fde
+  CHANGED fingerprints tree_lab 21bb95305f32817d -> ba9a78c2302ecefe
+  unchanged entries: 53
+current backend/app/referee/checks.py::score b5eec41b1f429705
+current backend/app/referee/checks.py::scorer_hash fc3e1c4cfdca8a8b
+current backend/app/lab/completion_study.py::assess_pairs 783e8e58f91992f3
+current backend/app/lab/diagnosis.py::summarize_evidence 7eeac342898580c4
+current backend/app/lab/promotion.py::promotion_decision 665474c0215441df
+current fingerprint scorer_hash 19de811c96473eb4
+current fingerprint interpreter_hash 6da0714adef40c02
+current fingerprint service_hash 3ce5bcd25af4b37e
+current fingerprint contract_hash 6f9d778323a4efc2
+current fingerprint algorithm_hash b2575eb257ebe9a1
+current fingerprint runtime_hash 4553ebe7db2f9e3e
+current fingerprint source_hash 142a9ebcf03b9fde
+current fingerprint actor_prompt_hash 12eabe7f41028c05

@@ -1,0 +1,47 @@
+CONTROL backend (unmutated copy): exit 0: 15 passed in 4.31s
+CAUGHT  P-2 unfixed: registry.py before the fix (journal-label limitation text): exit 1: 1 failed in 0.39s
+      FAILED tests/lab/test_native_adapter_v2_product.py::test_v2_registration_records_the_installed_label_protocol
+CAUGHT  LOW-2/P-4 unfixed: transport_retry.py, explorer.py and mechanic.py before the fix: exit 2: 1 error in 0.28s
+      ERROR tests/agents/test_lab_backoff_review_fixes.py
+CAUGHT  LOW-2/P-4 unfixed, campaign level only (this test imports only names the unfixed code has, so it runs): exit 1: 1 failed in 0.86s
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  P-4 mutant: the zero-retry case says "after 0 transport retries" again: exit 1: 5 failed, 8 passed in 4.10s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_explorer_retry_the_budget_cannot_cover_is_refused_before_any_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_request_that_got_no_retry_says_so_plainly[CAMPAIGN_RETRY_LIMIT-the campaign's limit of 12 lab-role transport retries was reached]
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_request_that_got_no_retry_says_so_plainly[DISCOVERY_RETRY_LIMIT-the plan's declared discovery Explorer retry bound was reached]
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_a_request_that_got_no_retry_says_so_plainly[BUDGET_REFUSED-a retry did not fit the campaign's unreserved budget]
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  LOW-2 mutant: no budget check before the wait: exit 1: 4 failed, 9 passed in 3.88s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_explorer_retry_the_budget_cannot_cover_is_refused_before_any_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_dollar_bound_is_checked_before_the_wait_too
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  LOW-2 mutant: the Explorer does not pass the budget check: exit 1: 4 failed, 9 passed in 4.01s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_explorer_retry_the_budget_cannot_cover_is_refused_before_any_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_dollar_bound_is_checked_before_the_wait_too
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_check_is_wired_into_both_lab_roles
+      FAILED tests/lab/test_lab_backoff_campaign.py::test_a_retry_the_budget_cannot_cover_ends_the_campaign_error_without_waiting
+CAUGHT  LOW-2 mutant: the Mechanic does not pass the budget check: exit 1: 2 failed, 10 passed in 3.32s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_mechanic_second_retry_the_budget_cannot_cover_is_refused_before_its_20_s_wait
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_check_is_wired_into_both_lab_roles
+CAUGHT  LOW-2 mutant: the read-only check ignores Stop: exit 1: 1 failed in 0.68s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mutant: the read-only check ignores the dollar bound: exit 1: 1 failed in 0.83s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mutant: the read-only check ignores reserved calls: exit 1: 1 failed in 1.56s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mutant: the read-only check ignores the token cap: exit 1: 1 failed in 2.08s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mutant: the read-only check ignores measured cost: exit 1: 1 failed in 0.52s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-2 mutant: the read-only check charges the ledger (it must not): exit 1: 1 failed in 0.56s
+      FAILED tests/agents/test_lab_backoff_review_fixes.py::test_the_read_only_check_agrees_with_real_admission_on_every_state
+CAUGHT  LOW-1 sensitivity (not a fix; summarize_evidence is frozen): an undecoded token would be dropped from the view: exit 1: 1 failed in 0.34s
+      FAILED tests/lab/test_native_v2_label_views.py::test_an_undecoded_token_reaches_the_evidence_summary_as_written
+CONTROL frontend (unmutated copy): exit 0: Test Files  2 passed (2) | Tests  10 passed (10)
+CAUGHT  P-6 unfixed: DiscoveryProtocol.tsx before the fix ("at most 16" under rule v2): exit 1: × states the real discovery retry bound when the campaign cap of 12 is lower than the declared one 3ms | Test Files  1 failed (1) | Tests  1 failed | 4 passed (5) | FAIL  tests/transport-backoff.test.tsx > states the real discovery retry bound when the campaign cap of 12 is lower than the declared one
+CAUGHT  P-6 mutant: the campaign cap is ignored in the discovery bound: exit 1: × states the real discovery retry bound when the campaign cap of 12 is lower than the declared one 2ms | Test Files  1 failed (1) | Tests  1 failed | 4 passed (5) | FAIL  tests/transport-backoff.test.tsx > states the real discovery retry bound when the campaign cap of 12 is lower than the declared one
+CAUGHT  P-2 unfixed: RunSetup.tsx before the fix (v2 description without shown-order labels): exit 1: × keeps v1 as the default native choice and registers v2 only when it is chosen explicitly 33ms | Test Files  1 failed (1) | Tests  1 failed | 4 passed (5) | FAIL  tests/native-adapter-v2.test.tsx > keeps v1 as the default native choice and registers v2 only when it is chosen explicitly
+CONTROL doc_checks.py on the repo (fixed docs and names): exit 0: 20 passed, 0 failed
+CAUGHT  doc_checks.py on fixer/before/ (pre-fix docs and names): exit 1: 0 passed, 20 failed
+ALL MUTATIONS CAUGHT

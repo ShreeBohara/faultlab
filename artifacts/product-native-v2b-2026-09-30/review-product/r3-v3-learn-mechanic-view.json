@@ -1,0 +1,153 @@
+{
+ "counterexamples": [
+  {
+   "counterexample_id": "counterexample-0ccb0530e76e4241b91ca085a8a886f5",
+   "source_episode_id": "episode-daf79f8888e54518b6bcf9ed8755ce67",
+   "target_invariant": "C4",
+   "target_violation_count": 3
+  }
+ ],
+ "diagnosis_request": {
+  "agent_label_tokens_in_request": [],
+  "episode_views": [
+   {
+    "agent_cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "agent_labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "episode_id": "episode-daf79f8888e54518b6bcf9ed8755ce67",
+    "hidden_rows": [
+     3
+    ],
+    "recorded_rows": 4,
+    "report_aliases": [
+     "o1",
+     "o2",
+     "o4"
+    ]
+   },
+   {
+    "agent_cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "agent_labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "episode_id": "episode-4c49171909b340a8bfc088aa70b124b0",
+    "hidden_rows": [
+     3
+    ],
+    "recorded_rows": 4,
+    "report_aliases": [
+     "o1",
+     "o2",
+     "o4"
+    ]
+   },
+   {
+    "agent_cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "agent_labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "episode_id": "episode-1228a76534244f83be165d815c0c9cda",
+    "hidden_rows": [
+     3
+    ],
+    "recorded_rows": 4,
+    "report_aliases": [
+     "o1",
+     "o2",
+     "o4"
+    ]
+   },
+   {
+    "agent_cited": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "agent_labels_shown": [
+     "obs-1",
+     "obs-2",
+     "obs-3"
+    ],
+    "episode_id": "episode-737a21066d6d4cfaab83943213455a41",
+    "hidden_rows": [
+     3
+    ],
+    "recorded_rows": 4,
+    "report_aliases": [
+     "o1",
+     "o2",
+     "o4"
+    ]
+   }
+  ],
+  "legend": "Each observation row is [exact evidence_id, delivered_tick, results table index]. Reports/checks use their table indexes. original_report_present=false means no final original report was recorded; it does not establish what the actor may have proposed. A present report is not necessarily correct. oN cites the Nth observation of that episode. @iN consistently aliases an opaque operation/order/intent/receipt/call/event identity within that episode; different aliases remain different identities. Omitted nullable fields are null. All trials and all delivered results, including contradictions, are retained. Original complete records are referenced by exact episode/evidence IDs.",
+  "memory_is_V2_MEMORY": true
+ },
+ "diagnostics": [
+  {
+   "explanation": "Fresh reproduction and the declared controlled intervention support a bounded policy hypothesis.",
+   "kind": "POLICY_GAP",
+   "proposed_kind": "POLICY_GAP"
+  }
+ ],
+ "execution_errors": [],
+ "final": {
+  "state": "COMPLETED",
+  "terminal_reason": "Generated policy accepted after repeated source, active challenge and independent promotion"
+ },
+ "learn_reports": {
+  "episodes": 85,
+  "label_sets": [
+   [
+    "obs-1",
+    "obs-2",
+    "obs-3"
+   ],
+   [
+    "obs-1",
+    "obs-2",
+    "obs-3",
+    "obs-4",
+    "obs-5"
+   ],
+   [
+    "obs-1",
+    "obs-2",
+    "obs-3",
+    "obs-4",
+    "obs-5",
+    "obs-6"
+   ],
+   [
+    "obs-1",
+    "obs-2",
+    "obs-3",
+    "obs-4",
+    "obs-5",
+    "obs-6",
+    "obs-7"
+   ]
+  ],
+  "not_decoded_tokens": [],
+  "with_report": 85
+ }
+}

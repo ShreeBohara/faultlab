@@ -1,0 +1,61 @@
+{
+ "episodes": [
+  {
+   "episode_id": "episode-3a4582d9215040fd99cd2ab799b19684",
+   "recorded_rows": 6,
+   "report_row": 0
+  },
+  {
+   "episode_id": "episode-40130001730c4d8a920380407672a97c",
+   "recorded_rows": 5,
+   "report_row": 1
+  },
+  {
+   "episode_id": "episode-a3aab0bb9bde42acaeb6882b7f6cf3b3",
+   "recorded_rows": 6,
+   "report_row": 0
+  },
+  {
+   "episode_id": "episode-c5fb89143e934b84a280724f9846867e",
+   "recorded_rows": 6,
+   "report_row": 2
+  }
+ ],
+ "reports_table": [
+  {
+   "row": 0,
+   "evidence_ids": [
+    "o1",
+    "o2",
+    "o4",
+    "o5",
+    "o6"
+   ],
+   "overall": "COMPLETED",
+   "notification_outcome": "UNKNOWN"
+  },
+  {
+   "row": 1,
+   "evidence_ids": [
+    "o1",
+    "o2",
+    "o4",
+    "o5"
+   ],
+   "overall": "COMPLETED",
+   "notification_outcome": "UNKNOWN"
+  },
+  {
+   "row": 2,
+   "evidence_ids": [
+    "o1",
+    "o2",
+    "o4",
+    "o5",
+    "o6"
+   ],
+   "overall": "COMPLETED",
+   "notification_outcome": "UNKNOWN"
+  }
+ ]
+}
