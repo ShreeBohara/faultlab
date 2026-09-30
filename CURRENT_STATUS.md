@@ -7,6 +7,21 @@ their own frozen experiments; their settings, budgets and next steps are not cur
 **Install and test:** [Setup](docs/setup.md#install-and-test-start-here) has the current commands,
 timings and expected results for a fresh clone, and the port settings.
 
+## BLOCKER (2026-09-30 22:38 UTC): model provider refuses calls
+
+W&B Inference returns **HTTP 402 Payment Required** for every call since **2026-09-30 22:38:46 UTC**
+(`artifacts/product-live-2026-09-30/diagnosis-probe2/answers.jsonl`). No paid run can succeed until the owner checks W&B
+billing (credit or spending limit). Agents must not touch billing. Carried conservative total **$937.99**
+(ledger `artifacts/product-live-2026-09-28/ledger.json`).
+
+**Where the work stands (2026-09-30):** diagnosis rules committed (`7120def`, runtime `1abba8a6`): Rule 1
+`faultlab-mechanic-diagnosis/v1-repair-and-record` is offered; Rule 2 `faultlab-diagnosis-guide/v1-kinds-and-checks`
+is built but **not offered**. Probe 1 (`artifacts/product-live-2026-09-30/diagnosis-probe-decl/RESULT.md`): P1
+UNINFORMATIVE (checker too narrow), P2 PASS, P3 strongly favours the guide (valid requests 40/40 vs 17/40); Rule 2 not
+shipped under the declared rule. Probe 2 (`…/diagnosis-probe2-decl/RESULT.md`): INCOMPLETE (402), descriptively the
+same. **Next once calls work again:** a fresh declared probe under P1b; if Rule 2 passes, offer it and run the next
+history-replay Learn campaign on native v2.1 (store `native-v2b`).
+
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run.
