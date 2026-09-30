@@ -114,8 +114,17 @@
    "charged_rounded_up": 2.88,
    "token_priced_estimate": "about 0.4",
    "carried_after": 906.67
+  },
+  {
+   "stage": "v2f: history-replay Learn on native v2.1 with citation status: dev-5 replay source -> POLICY_GAP (correct hypothesis) -> 2 candidates PASSED source validation, each full 4-schedule/12-pair challenge 0 failed checks but INCONCLUSIVE (lone orders status-read fault did not fire); 3rd Mechanic output NO_CHANGE; dev-6 replay C4 source reproduced 3/3; evidence waits exhausted retries; PM early stop (documented deviation) -> STOPPED",
+   "campaign": "campaign-53db74766f4d4635b94a0de89e492577",
+   "calls": 465,
+   "charged_exact": 10.12366,
+   "charged_rounded_up": 10.13,
+   "token_priced_estimate": "about 1.3",
+   "carried_after": 916.8
   }
  ],
- "carried_total": 906.67,
+ "carried_total": 916.8,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

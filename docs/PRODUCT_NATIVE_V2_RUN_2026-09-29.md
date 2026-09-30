@@ -317,3 +317,53 @@ items are built. See the [citation-status note](PRODUCT_MECHANIC_CITATION_STATUS
   denials ("no label was never shown") are not read as claims, and so that every output states whether it is post-hoc
   and lists each matched sentence for a human check. The revised version gives the same two results, and the matched
   sentences are real claims.
+
+---
+
+# Fifth live run: v2f (2026-09-30, 12:32–13:09 UTC). **STOPPED**, with two complete zero-violation challenges
+
+- **Build:** runtime `95042e4d…` (backup commit `47b8f69`), which adds
+  `faultlab-mechanic-evidence/v2-native-citation-status`: the Mechanic sees each episode's recorded citation outcome.
+- **Setup:** otherwise the same as v2e.
+- **Cost:** 465 calls, **$10.13**. Ledger: **$916.80**.
+
+| stage | result |
+|---|---|
+| Replay 1 (dev-5) | source → reproduced 3 of 3 → reduced |
+| Diagnosis | **POLICY_GAP**. This time the Mechanic's hypothesis described the real failure: after a FAILED upgrade receipt the agent still confirmed and reported "correctly rejected". It made no citation claim. Pre-registered checker v2: NOT_CHECKED (no such claim). Descriptive only: there is no control run |
+| Candidate 1 `…d478c897` | source validation **PASSED** → challenge: 4 schedules, 12 pairs, **0 failed checks** in both arms → **INCONCLUSIVE** |
+| Candidate 2 `…4edb2f69` | generated because the bounded Mechanic context now fits → source validation **PASSED** → challenge: 4 schedules, 12 pairs, **0 failed checks** → **INCONCLUSIVE** |
+| Candidate 3 `…6a032923` | the Mechanic re-proposed the same rules → NO_CHANGE |
+| Replay 2 (dev-6) | C4 source, reproduced 3 of 3. The campaign was stopped during its reduction (see below) |
+
+**Why both challenges were inconclusive: the same Explorer pick every time.**
+- The pick was **one failed orders status read, with no other fault**.
+- With a healthy upgrade, neither arm needs to read the status, so the fault does not fire.
+- The challenge's completeness rule, which is a gate and stays unchanged, then makes the challenge INCONCLUSIVE.
+- The same pick ended v2d's challenge.
+- Every other challenge pair in v2f (24 of 24, plus 12 of 12 across v2d's fired schedules) had its fault fire and
+  **0 failed checks**.
+
+**Why it stopped.**
+- The campaign had 10 evidence waits. Each cleared on its first retry.
+- The product's cap is 6 automatic retries per campaign; the watcher's declared operator retries are 3.
+- At the 10th wait both were exhausted, so the campaign could not progress.
+- The PM stopped it rather than let it idle 9 hours to the declared 10-hour limit, which gives the same STOPPED
+  outcome. This is recorded as a declared-rule deviation in `native-v2f-run/DEVIATION.md`.
+- The product recorded the stop truthfully: "Stopped during an evidence wait…".
+
+**Integrity:** 204 episodes in the store, 0 clock drift (both checks), 204 of 204 worlds VALID.
+
+## What v2d–v2f add up to
+
+- **Two FaultLab-generated guardrails for an external agent passed source validation and ran full challenges with
+  zero violations.** They block the confirmation unless the upgrade succeeded, and close business calls after a
+  definite failure.
+- What stopped them is a challenge schedule that cannot fire its fault, chosen by the Explorer again and again. It is
+  not a violation, and not a gate.
+- **Still not shown:** promotion or ACCEPTED.
+
+**Next product fixes (declared, $0):**
+1. The challenge Explorer should avoid fault schedules that never fired in **this agent's own recorded history under
+   the starting policy**. This is candidate-independent, unlike the rule withdrawn after review.
+2. Raise the per-campaign automatic evidence-retry cap for long campaigns.
