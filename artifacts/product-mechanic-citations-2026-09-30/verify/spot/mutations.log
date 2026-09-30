@@ -1,0 +1,16 @@
+UNMUTATED: exit 0 | 51 passed in 8.10s
+CAUGHT     V1 LOW-4: builder null clause restored | restored=True | 1 failed, 50 passed in 8.16s
+CAUGHT     V2 MEDIUM-1: bare "undecoded" counts again | restored=True | 9 failed, 42 passed in 5.85s
+CAUGHT     V3 MEDIUM-1: bare "not decoded" counts again | restored=True | 2 failed, 49 passed in 5.85s
+CAUGHT     V4 MEDIUM-1: denial rule never matches | restored=True | 6 failed, 45 passed in 5.93s
+CAUGHT     V5 MEDIUM-1: clause boundaries removed (denial word anywhere before the match) | restored=True | 2 failed, 49 passed in 6.02s
+CAUGHT     V6 MEDIUM-1: denied matches are counted in the verdict | restored=True | 5 failed, 46 passed in 6.14s
+CAUGHT     V7 MEDIUM-1: human_confirmation_required dropped | restored=True | 1 failed, 50 passed in 6.11s
+CAUGHT     V8 LOW-1: --read-out optional (defaults to post-hoc) | restored=True | 1 failed, 50 passed in 6.14s
+CAUGHT     V9 LOW-1: read_out_status not written | restored=True | 1 failed, 50 passed in 6.25s
+CAUGHT     V10 LOW-1: wrong checker sha256 written (hash of the export instead) | restored=True | 1 failed, 50 passed in 6.12s
+CAUGHT     V11 claim shape: "was/were not decoded" branch removed | restored=True | 2 failed, 49 passed in 6.13s
+NOT CAUGHT V12 coverage probe (beyond the fixer claim): citation_row ignores the length check of decoded IDs | restored=True | 51 passed in 6.10s
+CAUGHT     V13 coverage probe (beyond the fixer claim): "no" removed from the denial words | restored=True | 5 failed, 46 passed in 6.17s
+caught 12/13
+UNMUTATED AFTER: exit 0 | 51 passed in 6.14s

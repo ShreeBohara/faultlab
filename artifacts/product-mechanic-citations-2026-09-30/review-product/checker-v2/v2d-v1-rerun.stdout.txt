@@ -1,0 +1,1 @@
+{"campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963", "summary": {"MISREADING": 0, "SUPPORTED": 0, "NOT_CHECKED": 1}, "verdicts": [["diagnostic-57fa14bc65e941bfa5d55c392d325b7c", "NOT_CHECKED"]]}

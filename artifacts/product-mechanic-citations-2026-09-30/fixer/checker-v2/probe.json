@@ -1,0 +1,126 @@
+{
+ "checker_version": "faultlab-misreading-check/v2.1-claim-shapes-and-denials",
+ "integrity_probe": [
+  {
+   "text": "The native_citation_status block shows undecoded is empty for every episode, yet the report is inconsistent with the confirmation outcome.",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "undecoded: [] in all four episodes",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "All cited tokens decoded (cited 5, decoded 5, undecoded none).",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "No cited label was not shown to the agent.",
+   "counted": [],
+   "denied": [
+    [
+     "was not shown",
+     "no"
+    ]
+   ]
+  },
+  {
+   "text": "None of the citations were not decoded.",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "0 tokens undecoded",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "the report cites only labels that were shown; nothing is outside the shown labels",
+   "counted": [],
+   "denied": [
+    [
+     "outside the shown labels",
+     "nothing"
+    ]
+   ]
+  },
+  {
+   "text": "every token decoded, so no token was never shown",
+   "counted": [],
+   "denied": [
+    [
+     "never shown",
+     "no"
+    ]
+   ]
+  },
+  {
+   "text": "0 undecoded",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "text": "no undecoded tokens",
+   "counted": [],
+   "denied": []
+  }
+ ],
+ "integrity_probe_counted": 0,
+ "request_texts": [
+  {
+   "name": "meaning",
+   "text": "Each row is what the native adapter recorded when that episode's agent submitted its report: cited is how many evidence tokens the report cited, decoded is how many of them were obs-N labels the agent had been shown and so were decoded to the evidence ID of an observation delivered to it, and undecoded lists every cited token that was not decoded and was kept exactly as written (all three are null when no complete native adapter v2.1 citation record was recorded for that episode).",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "name": "memory_pointer",
+   "text": "This request's native_citation_status block lists, for each episode in its evidence, the adapter's recorded outcome of that decoding: how many tokens the report cited, how many decoded to delivered evidence, and any token kept as written.",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_1",
+   "text": "Fresh native agent and empty native memory for each episode.",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_2",
+   "text": "The agent is shown each observation's evidence_id as a short label obs-N, numbered 1, 2, 3, ...",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_3",
+   "text": "in the order the observations were first shown to it; an observation it was never shown (for example the first attempt of a write the broker retried inside one tool call, or a policy step's read that did not block) gets no label.",
+   "counted": [
+    "never shown"
+   ],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_4",
+   "text": "When it submits its report, each cited label it had been shown is decoded back to the full evidence ID before validation, and any other cited token is kept exactly as written.",
+   "counted": [],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_5",
+   "text": "So a report in these records cites the same full evidence IDs as the recorded observations; a token kept as written is one the agent was never shown as a label, and it fails the evidence check.",
+   "counted": [
+    "never shown"
+   ],
+   "denied": []
+  },
+  {
+   "name": "v2_memory_sentence_6",
+   "text": "In an evidence summary a report citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, including ones the agent never saw, so it can differ from the agent's obs-N.",
+   "counted": [],
+   "denied": []
+  }
+ ],
+ "note": "A counted match in a v2 memory sentence is the known limit: a Mechanic repeating that unchanged rule text would count, and only the human check of claim_matches sentences catches it."
+}

@@ -1,0 +1,22 @@
+REF backup/part2-2026-09-22 = d38c0b8dd0ca2d1b76f487cd3a19f13e6216adf3   HEAD = cbbf957e6e1cb19e1dcc2f87f24a33101859bbbe
+SKIPPED audit/final-audit.json
+SKIPPED audit/promotion.json
+SKIPPED backend/app/referee/checks.py
+CHANGED CURRENT_STATUS.md
+CHANGED backend/app/lab/learning.py
+CHANGED backend/app/lab/run_plans.py
+CHANGED docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md
+CHANGED docs/user-guide.md
+CHANGED frontend/src/components/CampaignPlan.tsx
+CHANGED frontend/src/components/LoopLimits.tsx
+CHANGED frontend/src/components/RunSetup.tsx
+CHANGED frontend/src/loopLimits.ts
+CHANGED frontend/src/runPlans.ts
+ADDED backend/app/lab/citation_status.py
+ADDED backend/tests/experiments/test_check_evidence_gap_misreading_v2.py
+ADDED backend/tests/lab/citation_status_saved.py
+ADDED backend/tests/lab/test_citation_status.py
+ADDED docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md
+ADDED frontend/tests/citation-status.test.tsx
+ADDED scripts/experiments/check_evidence_gap_misreading_v2.py
+TOTAL changed 10 missing 0 added 7 skipped 3

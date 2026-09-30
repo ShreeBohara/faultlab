@@ -1,0 +1,7 @@
+vs backup d38c0b8 (builder/gate_freeze/before.json): files: 20/20 identical; changed: []
+vs backup d38c0b8 (builder/gate_freeze/before.json): functions: 30/30 identical; changed: []
+vs backup d38c0b8 (builder/gate_freeze/before.json): fingerprints: 10/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'tree_lab']
+vs builder tree (builder/gate_freeze/after.json): files: 20/20 identical; changed: []
+vs builder tree (builder/gate_freeze/after.json): functions: 30/30 identical; changed: []
+vs builder tree (builder/gate_freeze/after.json): fingerprints: 10/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'tree_lab']
+(after.json = this tree after the fixer)

@@ -1,0 +1,108 @@
+{
+ "after": {
+  "native_citation_status": {
+   "episodes": [
+    {
+     "cited": 5,
+     "decoded": 5,
+     "episode_id": "episode-FAKE01",
+     "undecoded": []
+    },
+    {
+     "cited": 5,
+     "decoded": 5,
+     "episode_id": "episode-FAKE02",
+     "undecoded": []
+    },
+    {
+     "cited": 6,
+     "decoded": 6,
+     "episode_id": "episode-FAKE03",
+     "undecoded": []
+    },
+    {
+     "cited": 6,
+     "decoded": 6,
+     "episode_id": "episode-FAKE04",
+     "undecoded": []
+    }
+   ],
+   "meaning": "Each row is what the native adapter recorded when that episode's agent submitted its report: cited is how many evidence tokens the report cited, decoded is how many of them were obs-N labels the agent had been shown and so were decoded to the evidence ID of an observation delivered to it, and undecoded lists every cited token that was not decoded and was kept exactly as written (all three are null when no submitted report was recorded).",
+   "protocol": "faultlab-mechanic-evidence/v2-native-citation-status"
+  },
+  "observations.episodes[0]": {
+   "check_row": 0,
+   "episode_id": "episode-FAKE01",
+   "observations": [
+    [
+     "evidence-FAKE01",
+     1,
+     0
+    ],
+    [
+     "evidence-FAKE02",
+     2,
+     1
+    ],
+    [
+     "evidence-FAKE03",
+     3,
+     2
+    ],
+    [
+     "evidence-FAKE04",
+     4,
+     3
+    ],
+    [
+     "evidence-FAKE05",
+     5,
+     4
+    ]
+   ],
+   "original_report_present": true,
+   "report_row": 0,
+   "source": "weave_verified"
+  },
+  "runtime_contract.actor_contract.memory": "Fresh native agent and empty native memory for each episode. The agent is shown each observation's evidence_id as a short label obs-N, numbered 1, 2, 3, ... in the order the observations were first shown to it; an observation it was never shown (for example the first attempt of a write the broker retried inside one tool call, or a policy step's read that did not block) gets no label. When it submits its report, each cited label it had been shown is decoded back to the full evidence ID before validation, and any other cited token is kept exactly as written. So a report in these records cites the same full evidence IDs as the recorded observations; a token kept as written is one the agent was never shown as a label, and it fails the evidence check. In an evidence summary a report citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, including ones the agent never saw, so it can differ from the agent's obs-N. This request's native_citation_status block lists, for each episode in its evidence, the adapter's recorded outcome of that decoding: how many tokens the report cited, how many decoded to delivered evidence, and any token kept as written."
+ },
+ "before": {
+  "native_citation_status": "(absent)",
+  "observations.episodes[0]": {
+   "check_row": 0,
+   "episode_id": "episode-FAKE01",
+   "observations": [
+    [
+     "evidence-FAKE01",
+     1,
+     0
+    ],
+    [
+     "evidence-FAKE02",
+     2,
+     1
+    ],
+    [
+     "evidence-FAKE03",
+     3,
+     2
+    ],
+    [
+     "evidence-FAKE04",
+     4,
+     3
+    ],
+    [
+     "evidence-FAKE05",
+     5,
+     4
+    ]
+   ],
+   "original_report_present": true,
+   "report_row": 0,
+   "source": "weave_verified"
+  },
+  "runtime_contract.actor_contract.memory": "Fresh native agent and empty native memory for each episode. The agent is shown each observation's evidence_id as a short label obs-N, numbered 1, 2, 3, ... in the order the observations were first shown to it; an observation it was never shown (for example the first attempt of a write the broker retried inside one tool call, or a policy step's read that did not block) gets no label. When it submits its report, each cited label it had been shown is decoded back to the full evidence ID before validation, and any other cited token is kept exactly as written. So a report in these records cites the same full evidence IDs as the recorded observations; a token kept as written is one the agent was never shown as a label, and it fails the evidence check. In an evidence summary a report citation oN means the Nth observation row of that episode; that numbering counts every recorded observation, including ones the agent never saw, so it can differ from the agent's obs-N."
+ },
+ "note": "v2e diagnosis request, rebuilt from a scratch copy of the saved store; IDs replaced by fake ones consistently; only the changed parts and the first evidence row are shown."
+}

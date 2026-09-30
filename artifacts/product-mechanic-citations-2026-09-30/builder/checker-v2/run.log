@@ -1,0 +1,4 @@
+{"campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963", "summary": {"MISREADING": 1, "SUPPORTED": 0, "NOT_CHECKED": 0}, "verdicts": [["diagnostic-57fa14bc65e941bfa5d55c392d325b7c", "MISREADING", ["cannot be decoded", "never shown"]]]}
+{"campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963", "summary": {"MISREADING": 0, "SUPPORTED": 0, "NOT_CHECKED": 1}, "verdicts": [["diagnostic-57fa14bc65e941bfa5d55c392d325b7c", "NOT_CHECKED"]]}
+{"campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa", "summary": {"MISREADING": 1, "SUPPORTED": 0, "NOT_CHECKED": 0}, "verdicts": [["diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d", "MISREADING", ["never shown"]]]}
+{"campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa", "summary": {"MISREADING": 0, "SUPPORTED": 0, "NOT_CHECKED": 1}, "verdicts": [["diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d", "NOT_CHECKED"]]}

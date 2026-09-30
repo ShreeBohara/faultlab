@@ -1,0 +1,17 @@
+plan keys (v2 new): ['mechanic_context', 'mechanic_evidence']
+plan keys (v2 old): ['mechanic_context']
+plan keys (reference): ['mechanic_context']
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/mechanic-citations-builder/contract/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  03:49:27
+   Duration  212ms (transform 115ms, setup 0ms, import 147ms, tests 3ms, environment 0ms)
+
+
+
+vitest exit 0
+scratch removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

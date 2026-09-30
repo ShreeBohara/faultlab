@@ -1,0 +1,192 @@
+{
+ "files": {
+  "audit/development.json": "a33952dee8cc4779ee67e1eeb9774a08203342259cda8428239c2e50676b4ec1",
+  "backend/app/agents/actor.py": "9887c06d19d4e1195a5669f162a188726fd11c7a358436fbc267617105bdfe6e",
+  "backend/app/agents/mechanic.py": "0b4606b3d03bd445130ee3b78407621b27b60b1746eb26c72fd6a142557512b3",
+  "backend/app/agents/progress.py": "e2aad55fbe231375e04bff2463b707f47ab0a0151eb4686090bccdcf3b18ae6e",
+  "backend/app/agents/prompts/actor.md": "99a1b17daa637348b82849512df47d91db5f9364bddb0e5cb989c48a1885885e",
+  "backend/app/agents/prompts/completion.md": "e3b9362f281e1616fea7013fb3d9b7cf85432884f726a95cde39e4a9dadd1673",
+  "backend/app/lab/baseline_study.py": "64f4edde02c818a1d6076be6c68ef918f1c41134cf1ce8a25650f7accedc3373",
+  "backend/app/lab/completion_study.py": "f2b66c16300a5b5f68be47c7fceca10f23343f6277852c79f8fa10c44c1762ba",
+  "backend/app/lab/diagnosis.py": "76d53c108e287156dca692491f391d459cf309d3aecf5a1f6df95b87b2276690",
+  "backend/app/lab/evaluation.py": "8c3de93d9fb71f52cb29ae69264eb909c4e25489a3bab456553a45eef25674af",
+  "backend/app/lab/evidence.py": "3fa0e1b68c09c7c5b962d95273d35c3201e6e3d34ace670842c74144108a8b39",
+  "backend/app/lab/policies.py": "a248d4780d6d84669e622a85caf3512d368b4489f7eabd5603cf604412fe874e",
+  "backend/app/lab/promotion.py": "f00f669c5b530fb059e1c9f6069db0edffbb02551f93e360cef947f7d2dfe4f8",
+  "backend/app/lab/reproduction.py": "fddbb1bd52532ef10bfdb37499a3ab4d0799e3275a7d59ee13e7c8ad671558d8",
+  "backend/app/lab/runner.py": "c36212c545e1672cc6e87792e11b1a0c1e14e4287e9cc35cc3dee2b7122b7e7f",
+  "backend/app/referee/checks.py": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+  "backend/app/referee/manifests.py": "49fb68f658123f90409f51a8fc51bfb8206a471fff663f967bdec0ceb587eb7a",
+  "backend/app/telemetry/tracing.py": "d9068eec26fb59aac7c0709ba01e5ca4532141fcaea62618570114f301efedb9",
+  "backend/app/telemetry/weave_reader.py": "cb138624b488391ae041f6fe3f3b5931ed4578a59e757bf35522ed20ed5e20b4",
+  "backend/app/telemetry/worker.py": "ec9fc58dff23e685f3bbd32e6e8cc9e073d63cdccc33059089cbc9503b466da6"
+ },
+ "fingerprints": {
+  "actor_prompt_hash": "12eabe7f41028c05e37d4143f5208843a9414bd14bcb0deea600e3a5e7d9f7b2",
+  "adapter_hash": "0cd810b7ffc7e92205587d3d96c3a8c189eba4a6974e39175e54e611296e7d4b",
+  "algorithm_hash": "ea1ed61350257afe69d63198a615477654677148c509d74353ea5260942608e5",
+  "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+  "dependency_lock_hash": "dc19e8608e601200380593bcfef7d5bd1cca2546b2252370403734deb5a902fb",
+  "interpreter_hash": "6da0714adef40c0268ce65c1d9b1d4a17f829ff04b8dbc6a7059f24f03e6622a",
+  "runtime_hash": "c4195af104fbc90f2b2ba2b8fa2aad3ca17a3f74dd47b36612efcacc6f19c60c",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+  "service_hash": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3",
+  "source_hash": "fb5e1894ba1abb546cc61fc7aa5a7775f142659d336c7e2bec5c595f3f603663",
+  "tree_lab": "8dcbe3dfd9b47d69aaeee3677579a98ecbf62f09092f297752bed6ad6b416e5e",
+  "tree_referee": "e3f3f9a3fd346b444dd78ae724485a54d13f078f39e5162bf38bae9d39b06bba",
+  "tree_telemetry": "f58806b7da3b3302edc0b1cbaf9cbc6dabd4b63ab3935263c711f22c5400a26b"
+ },
+ "functions": {
+  "backend/app/agents/mechanic.py::Mechanic": {
+   "ast_sha256": "d17477edb0dd1be10a7a7bab5a3559685a561e17b11c2de02da2a5ec32020080",
+   "lines": "13-91",
+   "text_sha256": "70d726f88d85f5a29a7b1cbc6188e87b3ab3d80d6adc9062d26b2f3d858cdeec"
+  },
+  "backend/app/contracts/models.py::EvidenceBundle": {
+   "ast_sha256": "088b4c7de7917a794692015958c71bf4fdc85291960b1e997851eef74d14fb37",
+   "lines": "807-820",
+   "text_sha256": "f289da8c946d3c8e1147636c9b25d88d1b2f575addcb464651963ee096f538fc"
+  },
+  "backend/app/contracts/models.py::PolicyVersion": {
+   "ast_sha256": "9cabceafe6a28387561a7f701fef9f29caf6da5ee51d97f75b75927bdfa32eb1",
+   "lines": "793-804",
+   "text_sha256": "ca0ef13cc9c9bc3a011e52ed97445a211d995e890b81ccb1a599fe82821cf5c6"
+  },
+  "backend/app/contracts/models.py::TrialResult": {
+   "ast_sha256": "ee61a4f002bac2a23d0906c1890c61e13f0889406608db7d26327e6400f2d46b",
+   "lines": "486-499",
+   "text_sha256": "04190daeee82077c3a08fa71cd1e712c5a3bcdf65bc970c78a03a157da51ecdc"
+  },
+  "backend/app/contracts/models.py::Usage": {
+   "ast_sha256": "1c8bc765c567777aa5f43c94192eb66a1a975155ebcff22c1857d34ebdd25b25",
+   "lines": "393-403",
+   "text_sha256": "9ab0ad430155ea97dc41682792001f23394091ecf607e734b5f7d8c0247d9047"
+  },
+  "backend/app/contracts/models.py::canonical_json": {
+   "ast_sha256": "99b46e49c7201a36bb6a1474ba1ed521daa955c9d5a52ba7f1a4d37a83be5808",
+   "lines": "57-64",
+   "text_sha256": "b072db9e4fc33b11762fd768ef46313c3a0aab027afedfaf8165adc9e75e7481"
+  },
+  "backend/app/contracts/models.py::content_hash": {
+   "ast_sha256": "3b8f05ea11fad69b2a5623fbd2515967f639d5dcaa24a17a3266343098c61ab7",
+   "lines": "67-68",
+   "text_sha256": "dd36acf0f88f5f0a054b5549d90d333b207c990d7dbf1852cc7556aa892b7ee9"
+  },
+  "backend/app/lab/baseline_study.py::summarize": {
+   "ast_sha256": "3ea96128eb377e0c5996211cf6a98fb48ff17ab24c7ec0052f1a8a8f75311711",
+   "lines": "14-30",
+   "text_sha256": "1f3b7cccb13a7b9c444dda05707d7a7565e2e91785791484f7b149185e8356e1"
+  },
+  "backend/app/lab/completion_study.py::_execute": {
+   "ast_sha256": "a823306efff2b86dd50d6069efdf1ea31a9bebf364bfaf943d7517838b2afedc",
+   "lines": "235-493",
+   "text_sha256": "35e14dfa33c9171d0375aca75943cad2ed3490a95b38926499d220a0da38b09d"
+  },
+  "backend/app/lab/completion_study.py::assess_pairs": {
+   "ast_sha256": "466614df87db208dbf06dad9e547584d39d1ec8a1cad6f1273330a7026a111d7",
+   "lines": "106-147",
+   "text_sha256": "783e8e58f91992f36066a2c6a152c4fbd242bd7e3966320b18ce45d525074aa2"
+  },
+  "backend/app/lab/completion_study.py::case_manifest": {
+   "ast_sha256": "7af0904f050244fba980e4e34b3a69fc9d28a62d50ba4dd900d70838597cf884",
+   "lines": "43-83",
+   "text_sha256": "0a5346c86561a032f26b837e5d63a2aefadfa7a43be00ad2f9539b0b2ea3e8e1"
+  },
+  "backend/app/lab/completion_study.py::planned_slots": {
+   "ast_sha256": "8a4f3ab3fcd66107cfa73cbac82979bfd384813cbe4d454b871b3652eec9e93c",
+   "lines": "86-103",
+   "text_sha256": "495f60fc5110326c13fcded6431d47f19c1d4117ecb4b6e3cc14f76a20dae64d"
+  },
+  "backend/app/lab/completion_study.py::queue_completion_study": {
+   "ast_sha256": "5479a41d053cc5109e81370ea814c722f05ba11b7cbeb85bb49483d331942a51",
+   "lines": "150-232",
+   "text_sha256": "9d6847766e6100d6911768955382ba05edfc57dfa733b5fb7b1c5ba6103ae898"
+  },
+  "backend/app/lab/diagnosis.py::runtime_contract": {
+   "ast_sha256": "433dbcff3667392ec64948f1095a2c27a044d9f4e3df729f2d07160a9567e83c",
+   "lines": "29-89",
+   "text_sha256": "388a0581b83552c89500d3c7ec9a7ad390fd8cf3edf38c5531e90b7829cc1eea"
+  },
+  "backend/app/lab/diagnosis.py::summarize_evidence": {
+   "ast_sha256": "945100ebe2e7735e2f62867d58a50a361b581740ed18630699a0f844d4e7e662",
+   "lines": "155-196",
+   "text_sha256": "7eeac342898580c46d8085a680ecf73e65010447f79e695f5028bedc226fa9b4"
+  },
+  "backend/app/lab/diagnosis.py::trial_outcomes": {
+   "ast_sha256": "42c0e6cd92d9023bd57a1757f6951b700147301561f77ae4efa622bb560f7039",
+   "lines": "91-102",
+   "text_sha256": "6e7f3276273cbdb57aa67cdf160ae1d2286f4e1ae1fda8541c27f7c96dcd255b"
+  },
+  "backend/app/lab/evaluation.py::aggregate_usage": {
+   "ast_sha256": "36912144544c5ba8e6d8353abe75ed96027edc6287231579b61580880e4c53b6",
+   "lines": "14-19",
+   "text_sha256": "94b4bd9e3426e3ec6311431814573c529c9c8640e875f74827e86cc2fc4972aa"
+  },
+  "backend/app/lab/evaluation.py::paired_complete": {
+   "ast_sha256": "f47f7a59e4d7c0ab3ea61c3f651601569c470a5a921793e9d6a53f83ac46dc80",
+   "lines": "22-33",
+   "text_sha256": "350212a53965a8d0c414b9c7d43983766358900e0df522e846f2326aed501693"
+  },
+  "backend/app/lab/evidence.py::EvidenceGateway.authorize": {
+   "ast_sha256": "aacb9160095cceec08a4bbf7cb62b35ba73f6e432818345091f27ac07e8be311",
+   "lines": "22-30",
+   "text_sha256": "25d65727a340da6bb5ae862a9396e35f37cf2d70e604b0b3e61c84bd800e372d"
+  },
+  "backend/app/lab/evidence.py::EvidenceGateway.get": {
+   "ast_sha256": "48837aa84be88b4b82bb6bb1d39490d7746f063479e32d899a85afca6c394db9",
+   "lines": "49-78",
+   "text_sha256": "3262681c262862ae134cdf343384bb0c3eeed073c836bb69d013ae1346d37cce"
+  },
+  "backend/app/lab/evidence.py::EvidenceGateway.retry": {
+   "ast_sha256": "310a30b785fec3afb53b4c8f0bd59c55d08427645f8c73b05d73f63770e55db3",
+   "lines": "80-86",
+   "text_sha256": "bd99e9bbd8d290cbc1e6a090488487d471cba08dc4f20b3a73417f4ce736f18f"
+  },
+  "backend/app/lab/promotion.py::commit_promotion": {
+   "ast_sha256": "4c61a42b1d3e127e0a908392cc9488be1cd5bc0557fada0714b674be479efefc",
+   "lines": "28-43",
+   "text_sha256": "4e476b5bbb972aace63a83fd5826c51ad1f824cc37316dccac32788e0ccc512c"
+  },
+  "backend/app/lab/promotion.py::promotion_decision": {
+   "ast_sha256": "184209c77a2a09b878dff84aabbb9b5ee49c9fbc2411a9413d2a4a0a5a8dcc46",
+   "lines": "7-25",
+   "text_sha256": "665474c0215441dfe78a0934500582f2fc09b66b7a6579f60893d11ee2b74db4"
+  },
+  "backend/app/lab/reproduction.py::valid_trial": {
+   "ast_sha256": "ed478a5f1b2bfab68f62c591400425176f7d6c3ea49ccfa40580eb35f24387f1",
+   "lines": "4-5",
+   "text_sha256": "1b9558c0722e8c75ed912a0d86e7033a982be2053631d2bd2b10b923ec3aeaf5"
+  },
+  "backend/app/lab/runner.py::EpisodeRunner.run": {
+   "ast_sha256": "c691e23816f909a356b161f00835ab9687dfd3e6cd884d052bc2476341436e41",
+   "lines": "158-254",
+   "text_sha256": "2d8320757565dc69d253738eab33190c34a668113e90855abfbc1330226d8c4d"
+  },
+  "backend/app/referee/checks.py::score": {
+   "ast_sha256": "dbd8911dbdb4607fe993d56a6ebb3d5797037a4f6259e8c5423a95ec7416d080",
+   "lines": "11-86",
+   "text_sha256": "b5eec41b1f429705e62eea6422eda7cbb820a8638071ecbbd7cefb1396d50ba6"
+  },
+  "backend/app/referee/checks.py::scorer_hash": {
+   "ast_sha256": "d157fa4fa5c982079f17af7f08660c9aa3f1e6e814761eee3e39d4fa0d7f2569",
+   "lines": "7-8",
+   "text_sha256": "fc3e1c4cfdca8a8b727a42457da5a0db2353252c061074c72e060ef7210c3762"
+  },
+  "backend/app/referee/manifests.py::load_manifest": {
+   "ast_sha256": "bf1443e5aefbae771b187bd3f3e650335d2d7e72e89b3e1b2f976ee49a6c9bd8",
+   "lines": "12-18",
+   "text_sha256": "043b5bfa684803b5b5d5f1eebbc3d37efbabe7fcf4558edebc3cdef972e70728"
+  },
+  "backend/app/referee/manifests.py::manifest_hash": {
+   "ast_sha256": "173026ddf7ecce8dc4614dd50ac20455d29afa25ddb030c038180b49c38b08de",
+   "lines": "10-10",
+   "text_sha256": "132410fe3650524df849816a2e95f270563c2678131e5a8a475e5c01257c146c"
+  },
+  "backend/app/telemetry/worker.py::WeaveWorker": {
+   "ast_sha256": "7c249c6b683da882d8616067febf9d9465773bd8c486808751795f3a309b7428",
+   "lines": "209-279",
+   "text_sha256": "15cccc343abe621bfadc470b0da576553b6aa6f965937d7365b9804b61aa5b9f"
+  }
+ },
+ "schema_version": "faultlab-gate-freeze/v1"
+}

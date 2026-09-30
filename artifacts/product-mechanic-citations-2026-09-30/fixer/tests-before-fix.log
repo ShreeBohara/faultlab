@@ -1,0 +1,46 @@
+2026-09-30T11:34:16Z
+        store = LabStore(tmp_path / 'lab.db')
+        report_event(store, 'e-v1', ['evidence-1'], [], protocol=None)                          # a report, no v2.1 record
+        register(store, 'e-short')
+        store.append_event('e-short', role='actor', type='report_submitted',                  # a v2.1 record missing a list
+                           payload={'report': {}, 'citation_protocol': V21, 'cited_evidence_tokens': ['obs-1']})
+        for episode in ('e-v1', 'e-short'):
+            assert citation_status.submitted_report(store, episode) is not None                # a report WAS recorded
+            assert citation_status.block(store, [episode])['episodes'] == [
+                {'episode_id': episode, 'cited': None, 'decoded': None, 'undecoded': None}]
+>       assert 'no submitted report was recorded' not in MEANING
+E       AssertionError: assert 'no submitte...was recorded' not in 'Each row is...s recorded).'
+E         
+E         'no submitted report was recorded' is contained here:
+E           null when no submitted report was recorded).
+
+tests/lab/test_citation_status.py:110: AssertionError
+=========================== short test summary info ============================
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The native_citation_status block shows undecoded is empty for every episode, yet the report is inconsistent with the confirmation outcome.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[undecoded: [] in all four episodes]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[All cited tokens decoded (cited 5, decoded 5, undecoded none).]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[No cited label was not shown to the agent.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[None of the citations were not decoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[0 tokens undecoded]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[the report cites only labels that were shown; nothing is outside the shown labels]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[every token decoded, so no token was never shown]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The native_citation_status block shows undecoded is empty for every episode.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[Every row has cited equal to decoded and an empty undecoded list.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[All cited tokens decoded; none undecoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[undecoded: [] in all four rows, so every citation was shown and decoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[No token was left undecoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[There were no tokens undecoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The block lists nothing as undecoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[Nothing was undecoded.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The block confirms no label was never shown.]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_contract_gap_diagnosis_that_echoes_an_empty_undecoded_list_for_another_reason_is_not_scored
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_sentences_this_build_adds_to_every_native_v2_request_are_not_claims
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The actor's report is scored as untruthful because it cites evidence labels that were never shown to it under the v2.1 shown-order labeling contract, not because the underlying upgrade failure was misreported. The delivered terminal FAILED receipt for update_order is present, but the report's evidence_ids include tokens that cannot be decoded to delivered evidence IDs, causing C5 to fail while C3 fails due to the scheduled upgrade failure.-phrases0]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The actor's report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the delivered observations support a CORRECTLY_REJECTED report.-phrases1]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[Episode 2 has 1 undecoded token, so the report cites a label the agent was never shown.-phrases2]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The report cites undecoded tokens.-phrases3]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[Two citations were not decoded.-phrases4]
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_denied_match_is_listed_for_the_human_check_but_not_counted
+FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_every_output_states_its_read_out_status_and_the_checkers_own_sha256
+FAILED tests/lab/test_citation_status.py::test_the_meaning_sentence_describes_every_null_row
+27 failed, 7 passed in 0.25s

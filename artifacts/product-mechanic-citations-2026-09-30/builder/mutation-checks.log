@@ -1,0 +1,19 @@
+CAUGHT  M1 decoded counts every cited token (ignores the label map) | restored=True | 1 failed in 1.75s | FAILED tests/lab/test_citation_status.py::test_a_row_is_the_adapters_recorded_citation_outcome_and_an_undecoded_token_is_shown
+CAUGHT  M2 undecoded tokens dropped | restored=True | 1 failed in 0.12s | FAILED tests/lab/test_citation_status.py::test_a_row_is_the_adapters_recorded_citation_outcome_and_an_undecoded_token_is_shown
+CAUGHT  M3 no memory pointer in Mechanic requests | restored=True | 1 failed, 3 passed in 0.15s | FAILED tests/lab/test_citation_status.py::test_each_request_kind_gets_one_block_in_evidence_order_and_mechanic_requests_get_the_memory_pointer
+CAUGHT  M4 private events read too | restored=True | 1 failed, 1 passed in 0.12s | FAILED tests/lab/test_citation_status.py::test_nothing_is_read_from_scoring
+CAUGHT  M5 episodes sorted instead of first-listing order | restored=True | 1 failed, 3 passed in 0.13s | FAILED tests/lab/test_citation_status.py::test_each_request_kind_gets_one_block_in_evidence_order_and_mechanic_requests_get_the_memory_pointer
+CAUGHT  M6 challenge wrapper also changes non-challenge requests | restored=True | 1 failed, 5 passed in 0.14s | FAILED tests/lab/test_citation_status.py::test_the_wrappers_add_the_block_only_to_diagnosis_and_challenge_requests
+CAUGHT  M7 every new Learn plan declares it (not only native v2) | restored=True | 1 failed, 6 passed in 0.79s | FAILED tests/lab/test_citation_status.py::test_only_a_new_native_v2_learn_plan_declares_it
+CAUGHT  M8 other agents or modes may declare it | restored=True | 1 failed, 8 passed in 4.09s | FAILED tests/lab/test_citation_status.py::test_start_refuses_another_rule_text_and_other_agents_or_modes_cannot_declare_it
+CAUGHT  M9 Start accepts another rule text | restored=True | 1 failed, 8 passed in 3.60s | FAILED tests/lab/test_citation_status.py::test_start_refuses_another_rule_text_and_other_agents_or_modes_cannot_declare_it
+CAUGHT  M10 an absent rule is saved as null (older plans change bytes) | restored=True | 1 failed, 6 passed in 0.82s | FAILED tests/lab/test_citation_status.py::test_only_a_new_native_v2_learn_plan_declares_it
+CAUGHT  M11 learning loop: no block in candidate requests | restored=True | 1 failed, 10 passed in 4.65s | FAILED tests/lab/test_citation_status.py::test_a_native_v2_campaign_sends_the_block_in_candidate_and_challenge_requests_but_not_discovery
+CAUGHT  M12 learning loop: block added after the size rule counts the diagnosis request | restored=True | 1 failed, 11 passed in 4.85s | FAILED tests/lab/test_citation_status.py::test_a_native_v2_diagnosis_request_carries_the_block_and_the_size_rule_counts_it
+CAUGHT  M13 learning loop: challenge Explorer requests unwrapped | restored=True | 1 failed, 10 passed in 4.67s | FAILED tests/lab/test_citation_status.py::test_a_native_v2_campaign_sends_the_block_in_candidate_and_challenge_requests_but_not_discovery
+CAUGHT  M14 learning loop: the rule applied to every plan | restored=True | 1 failed, 13 passed in 4.92s | FAILED tests/lab/test_citation_status.py::test_without_the_rule_the_loop_never_runs_the_citation_code
+CAUGHT  M15 learning loop: candidate block added after the size rule | restored=True | 1 failed, 12 passed in 4.90s | FAILED tests/lab/test_citation_status.py::test_a_candidate_request_gets_the_block_before_the_size_rule_counts_it
+CAUGHT  M16 checker v2: "never shown" removed from the phrase list | restored=True | 1 failed in 0.03s | FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+CAUGHT  M17 checker v2: a count of none read as a claim | restored=True | 1 failed in 0.03s | FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+caught 17/17
+all files restored (sha256 identical)

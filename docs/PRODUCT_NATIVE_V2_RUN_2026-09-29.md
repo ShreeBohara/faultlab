@@ -298,3 +298,22 @@ writing it.
 **Next:** give the Mechanic, for native v2 plans only, each episode's recorded citation status (for example "all
 N cited labels decoded; 0 undecoded"). This is already-recorded, non-scoring information, and it removes the basis
 for this misreading. Also fix the checker's phrase list for future runs.
+
+**Follow-up (September 30, builder, two $0 reviews and fixer, all offline; not yet committed, not run live).** Both
+items are built. See the [citation-status note](PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md).
+- `faultlab-mechanic-evidence/v2-native-citation-status` is frozen into every new Learn plan of native adapter v2.
+  - Each Mechanic diagnosis or candidate request, and each challenge Explorer request, that carries episode evidence
+    gets a `native_citation_status` block.
+  - The block holds one sentence saying what it means, then one row per episode: tokens cited, how many decoded to
+    delivered evidence, and the undecoded tokens.
+  - The rows are read only from the `report_submitted` event.
+  - Rebuilt from a scratch copy of the store, v2e's diagnosis request gets 4 rows of 5/5, 5/5, 6/6 and 6/6 with 0
+    undecoded. It grows from 9,088 to 9,434 tokens (fixer's wording; the builder's was 9,424).
+- `scripts/experiments/check_evidence_gap_misreading_v2.py` has a broader phrase list and self-tests. The pre-registered
+  v1 is untouched. v2 scores **both v2d and v2e MISREADING**: v2d on "cannot be decoded" and "never shown", v2e on
+  "never shown". Each had 4 episodes read, with 0 report IDs not recorded and 0 tokens not decoded. **These results are
+  post-hoc**: the phrase list was widened after reading these hypotheses. The declared read-out above stays
+  NOT_CHECKED. After the reviews, the fixer revised checker v2 so that echoes of the new block ("undecoded: []") and
+  denials ("no label was never shown") are not read as claims, and so that every output states whether it is post-hoc
+  and lists each matched sentence for a human check. The revised version gives the same two results, and the matched
+  sentences are real claims.

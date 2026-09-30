@@ -1,0 +1,155 @@
+{
+ "scratch_copy_removed": true,
+ "store_scan": {
+  "block_rows_for_first_3_with_undecoded": [],
+  "episodes_with_undecoded": 0,
+  "raw_rows_for_same": [],
+  "v21_reports": 99
+ },
+ "v2d": {
+  "actor_contract_changed_keys": [
+   "memory"
+  ],
+  "adapter_undecoded_equals_recomputed": true,
+  "block_keys": [
+   "episodes",
+   "meaning",
+   "protocol"
+  ],
+  "campaign": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "changed_top_keys": [
+   "native_citation_status",
+   "runtime_contract"
+  ],
+  "episodes_with_failed_findings_already_in_plain_request": {
+   "0d5f3d51": 2,
+   "1018186f": 2,
+   "392e3216": 2,
+   "6b0ede05": 2
+  },
+  "every_decoded_id_delivered": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "independent_rows_match": true,
+  "memory_suffix": " This request's native_citation_status block lists, for each episode in its evidence, the adapter's recorded outcome of that decoding: how many tokens the report cited, how many decoded to delivered evidence, and any token kept as written.",
+  "plain_memory_is_V2_MEMORY": true,
+  "private_report_events": 0,
+  "row_keys": [
+   [
+    "episode_id",
+    "cited",
+    "decoded",
+    "undecoded"
+   ]
+  ],
+  "rows": [
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-65b09661d1744e54a446b6000d5f3d51",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-fa22f36722394550b7fe3514392e3216",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-21d6d63a16ff41a7b7e55e791018186f",
+    "undecoded": []
+   }
+  ],
+  "runtime_contract_changed_keys": [
+   "actor_contract"
+  ],
+  "scoring_words_in_block": [],
+  "tokens_plain": 8990,
+  "tokens_with_block": 9321
+ },
+ "v2e": {
+  "actor_contract_changed_keys": [
+   "memory"
+  ],
+  "adapter_undecoded_equals_recomputed": true,
+  "block_keys": [
+   "episodes",
+   "meaning",
+   "protocol"
+  ],
+  "campaign": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "changed_top_keys": [
+   "native_citation_status",
+   "runtime_contract"
+  ],
+  "episodes_with_failed_findings_already_in_plain_request": {
+   "8de2eab3": 2,
+   "a6ab1f5a": 2,
+   "c77177e3": 2,
+   "dd01bfc9": 2
+  },
+  "every_decoded_id_delivered": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "independent_rows_match": true,
+  "memory_suffix": " This request's native_citation_status block lists, for each episode in its evidence, the adapter's recorded outcome of that decoding: how many tokens the report cited, how many decoded to delivered evidence, and any token kept as written.",
+  "plain_memory_is_V2_MEMORY": true,
+  "private_report_events": 0,
+  "row_keys": [
+   [
+    "episode_id",
+    "cited",
+    "decoded",
+    "undecoded"
+   ]
+  ],
+  "rows": [
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+    "undecoded": []
+   }
+  ],
+  "runtime_contract_changed_keys": [
+   "actor_contract"
+  ],
+  "scoring_words_in_block": [
+   "c3"
+  ],
+  "tokens_plain": 9088,
+  "tokens_with_block": 9424
+ }
+}

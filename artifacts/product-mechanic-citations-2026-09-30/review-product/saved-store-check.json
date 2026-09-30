@@ -1,0 +1,422 @@
+{
+ "diagnosis_requests": {
+  "v2d": {
+   "block": {
+    "episodes": [
+     {
+      "cited": 5,
+      "decoded": 5,
+      "episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+      "undecoded": []
+     },
+     {
+      "cited": 6,
+      "decoded": 6,
+      "episode_id": "episode-65b09661d1744e54a446b6000d5f3d51",
+      "undecoded": []
+     },
+     {
+      "cited": 6,
+      "decoded": 6,
+      "episode_id": "episode-fa22f36722394550b7fe3514392e3216",
+      "undecoded": []
+     },
+     {
+      "cited": 5,
+      "decoded": 5,
+      "episode_id": "episode-21d6d63a16ff41a7b7e55e791018186f",
+      "undecoded": []
+     }
+    ],
+    "meaning": "Each row is what the native adapter recorded when that episode's agent submitted its report: cited is how many evidence tokens the report cited, decoded is how many of them were obs-N labels the agent had been shown and so were decoded to the evidence ID of an observation delivered to it, and undecoded lists every cited token that was not decoded and was kept exactly as written (all three are null when no submitted report was recorded).",
+    "protocol": "faultlab-mechanic-evidence/v2-native-citation-status"
+   },
+   "block_episode_order_is_source_then_reproductions": true,
+   "block_marginal_tokens_in_empty_context": 284,
+   "block_rows_match_independent_sql": true,
+   "every_other_field_identical": true,
+   "plain_memory_is_V2_MEMORY": true,
+   "rule_memory_is_pointer_text": true,
+   "runtime_contract_differs_only_in_memory": true,
+   "tokens_added": 331,
+   "tokens_plain": 8990,
+   "tokens_with_block": 9321
+  },
+  "v2e": {
+   "block": {
+    "episodes": [
+     {
+      "cited": 5,
+      "decoded": 5,
+      "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+      "undecoded": []
+     },
+     {
+      "cited": 5,
+      "decoded": 5,
+      "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+      "undecoded": []
+     },
+     {
+      "cited": 6,
+      "decoded": 6,
+      "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+      "undecoded": []
+     },
+     {
+      "cited": 6,
+      "decoded": 6,
+      "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+      "undecoded": []
+     }
+    ],
+    "meaning": "Each row is what the native adapter recorded when that episode's agent submitted its report: cited is how many evidence tokens the report cited, decoded is how many of them were obs-N labels the agent had been shown and so were decoded to the evidence ID of an observation delivered to it, and undecoded lists every cited token that was not decoded and was kept exactly as written (all three are null when no submitted report was recorded).",
+    "protocol": "faultlab-mechanic-evidence/v2-native-citation-status"
+   },
+   "block_episode_order_is_source_then_reproductions": true,
+   "block_marginal_tokens_in_empty_context": 289,
+   "block_rows_match_independent_sql": true,
+   "every_other_field_identical": true,
+   "plain_memory_is_V2_MEMORY": true,
+   "rule_memory_is_pointer_text": true,
+   "runtime_contract_differs_only_in_memory": true,
+   "tokens_added": 336,
+   "tokens_plain": 9088,
+   "tokens_with_block": 9424
+  }
+ },
+ "independent_raw_sql": {
+  "v2d": {
+   "counterexample_id": "counterexample-b5ad7261afb4478f95d36530642000d6",
+   "rows": [
+    {
+     "cited": 5,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5"
+     ],
+     "decoded": 5,
+     "decoded_and_delivered_per_observation_events": 5,
+     "episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+     "labels_shown": 5,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 6,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5",
+      "obs-6"
+     ],
+     "decoded": 6,
+     "decoded_and_delivered_per_observation_events": 6,
+     "episode_id": "episode-65b09661d1744e54a446b6000d5f3d51",
+     "labels_shown": 6,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 6,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5",
+      "obs-6"
+     ],
+     "decoded": 6,
+     "decoded_and_delivered_per_observation_events": 6,
+     "episode_id": "episode-fa22f36722394550b7fe3514392e3216",
+     "labels_shown": 6,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 5,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5"
+     ],
+     "decoded": 5,
+     "decoded_and_delivered_per_observation_events": 5,
+     "episode_id": "episode-21d6d63a16ff41a7b7e55e791018186f",
+     "labels_shown": 5,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    }
+   ]
+  },
+  "v2e": {
+   "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+   "rows": [
+    {
+     "cited": 5,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5"
+     ],
+     "decoded": 5,
+     "decoded_and_delivered_per_observation_events": 5,
+     "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+     "labels_shown": 5,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 5,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5"
+     ],
+     "decoded": 5,
+     "decoded_and_delivered_per_observation_events": 5,
+     "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+     "labels_shown": 5,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 6,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5",
+      "obs-6"
+     ],
+     "decoded": 6,
+     "decoded_and_delivered_per_observation_events": 6,
+     "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+     "labels_shown": 6,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    },
+    {
+     "cited": 6,
+     "cited_tokens": [
+      "obs-1",
+      "obs-2",
+      "obs-3",
+      "obs-4",
+      "obs-5",
+      "obs-6"
+     ],
+     "decoded": 6,
+     "decoded_and_delivered_per_observation_events": 6,
+     "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+     "labels_shown": 6,
+     "protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "reports_in_episode": 1,
+     "undecoded_recomputed": [],
+     "undecoded_recorded": []
+    }
+   ]
+  }
+ },
+ "input_token_limit": 32000,
+ "new_plan": {
+  "agent": "smolagents-v2",
+  "campaign_rule_is_declaration": true,
+  "discovery_protocol": "faultlab-discovery/v4-history-replay",
+  "has_mechanic_evidence": true,
+  "mechanic_evidence_equals_declaration": true
+ },
+ "old_plans_in_copy": {
+  "v2d": {
+   "agent": "smolagents-v2",
+   "campaign_rule": null,
+   "has_mechanic_evidence": false,
+   "reads": true
+  },
+  "v2e": {
+   "agent": "smolagents-v2",
+   "campaign_rule": null,
+   "has_mechanic_evidence": false,
+   "reads": true
+  }
+ },
+ "saved_store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "scratch_deleted": true,
+ "v2d_challenge_explorer_requests": [
+  {
+   "episodes_in_block": 6,
+   "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "proposal_index": 0,
+   "provider_reported_input_tokens": 7363,
+   "rows": [
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ]
+   ],
+   "tokens_recorded_context": 7499,
+   "tokens_with_block": 7867
+  },
+  {
+   "episodes_in_block": 6,
+   "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "proposal_index": 1,
+   "provider_reported_input_tokens": 7462,
+   "rows": [
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ]
+   ],
+   "tokens_recorded_context": 7598,
+   "tokens_with_block": 7966
+  },
+  {
+   "episodes_in_block": 6,
+   "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+   "proposal_index": 2,
+   "provider_reported_input_tokens": 7582,
+   "rows": [
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     5,
+     5,
+     0
+    ],
+    [
+     3,
+     3,
+     0
+    ]
+   ],
+   "tokens_recorded_context": 7718,
+   "tokens_with_block": 8086
+  }
+ ],
+ "v2d_refused_candidate_request": {
+  "block_rows_for_episodes_not_in_compacted_evidence": 24,
+  "block_unchanged_by_compaction": true,
+  "episodes_in_block": 34,
+  "kept_evidence_episodes": 10,
+  "null_rows": 0,
+  "rows_all_zero_undecoded": true,
+  "rows_cited_equals_decoded": true,
+  "tokens_with_block": 34796,
+  "tokens_without_block": 33223,
+  "with_block_attempts": [
+   35184,
+   29629,
+   22674
+  ],
+  "with_block_fits": true,
+  "with_block_stages_applied": [
+   "IDENTICAL_CLEAN_ROWS",
+   "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+   "NO_CLEAN_EPISODE_ROWS"
+  ],
+  "without_block_attempts": [
+   33611,
+   28056,
+   21101
+  ],
+  "without_block_fits": true
+ }
+}

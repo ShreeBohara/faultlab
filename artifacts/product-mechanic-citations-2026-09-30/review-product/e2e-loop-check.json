@@ -1,0 +1,919 @@
+{
+ "summary": [
+  {
+   "agent": "smolagents-v2",
+   "part": "diagnosis",
+   "plan_declares_rule": true,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "by_kind": {
+    "explorer_discovery": {
+     "n": 8,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "v2": 8
+     }
+    },
+    "mechanic_diagnosis": {
+     "n": 1,
+     "with_block": 1,
+     "order_ok": 1,
+     "memory": {
+      "v2+pointer": 1
+     }
+    }
+   },
+   "undecoded_episode_rows(undecoded,cited,decoded)": [
+    [
+     [
+      "obs-9"
+     ],
+     2,
+     1
+    ]
+   ],
+   "other_rows(undecoded,cited,decoded)": [],
+   "challenge_selection_records": 0,
+   "challenge_selection_records_with_block": 0
+  },
+  {
+   "agent": "smolagents-v2",
+   "part": "candidate",
+   "plan_declares_rule": true,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "by_kind": {
+    "explorer_discovery": {
+     "n": 8,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "v2": 8
+     }
+    },
+    "mechanic_proposal": {
+     "n": 2,
+     "with_block": 2,
+     "order_ok": 2,
+     "memory": {
+      "v2+pointer": 2
+     }
+    },
+    "explorer_challenge": {
+     "n": 1,
+     "with_block": 1,
+     "order_ok": 1,
+     "memory": {
+      "None": 1
+     }
+    }
+   },
+   "undecoded_episode_rows(undecoded,cited,decoded)": [
+    [
+     [
+      "obs-9"
+     ],
+     2,
+     1
+    ]
+   ],
+   "other_rows(undecoded,cited,decoded)": [
+    [
+     [],
+     2,
+     2
+    ]
+   ],
+   "challenge_selection_records": 1,
+   "challenge_selection_records_with_block": 1
+  },
+  {
+   "agent": "smolagents",
+   "part": "candidate",
+   "plan_declares_rule": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "by_kind": {
+    "explorer_discovery": {
+     "n": 8,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "other": 8
+     }
+    },
+    "mechanic_proposal": {
+     "n": 2,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "other": 2
+     }
+    },
+    "explorer_challenge": {
+     "n": 1,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "None": 1
+     }
+    }
+   },
+   "undecoded_episode_rows(undecoded,cited,decoded)": [],
+   "other_rows(undecoded,cited,decoded)": [],
+   "challenge_selection_records": 1,
+   "challenge_selection_records_with_block": 0
+  },
+  {
+   "agent": "reference",
+   "part": "candidate",
+   "plan_declares_rule": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "by_kind": {
+    "explorer_discovery": {
+     "n": 8,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "None": 8
+     }
+    },
+    "mechanic_proposal": {
+     "n": 2,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "None": 2
+     }
+    },
+    "explorer_challenge": {
+     "n": 1,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "None": 1
+     }
+    }
+   },
+   "undecoded_episode_rows(undecoded,cited,decoded)": [],
+   "other_rows(undecoded,cited,decoded)": [],
+   "challenge_selection_records": 1,
+   "challenge_selection_records_with_block": 0
+  },
+  {
+   "agent": "smolagents",
+   "part": "diagnosis",
+   "plan_declares_rule": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "by_kind": {
+    "explorer_discovery": {
+     "n": 8,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "other": 8
+     }
+    },
+    "mechanic_diagnosis": {
+     "n": 1,
+     "with_block": 0,
+     "order_ok": 0,
+     "memory": {
+      "other": 1
+     }
+    }
+   },
+   "undecoded_episode_rows(undecoded,cited,decoded)": [],
+   "other_rows(undecoded,cited,decoded)": [],
+   "challenge_selection_records": 0,
+   "challenge_selection_records_with_block": 0
+  }
+ ],
+ "scratch_deleted": true,
+ "detail": [
+  {
+   "agent": "smolagents-v2",
+   "part": "diagnosis",
+   "plan_agent": "smolagents-v2",
+   "plan_discovery": "faultlab-discovery/v4-history-replay",
+   "plan_declares_rule": true,
+   "campaign_rule_real": true,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "undecoded_episode": "episode-68688935cb81409eaa88eb38b77ae7e0",
+   "requests": [
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 0
+    },
+    {
+     "kind": "mechanic_diagnosis",
+     "has_block": true,
+     "block_episode_ids_equal_first_listing_order": true,
+     "block_rows": [
+      [
+       true,
+       2,
+       1,
+       [
+        "obs-9"
+       ]
+      ]
+     ],
+     "memory_has_pointer": true,
+     "memory_is_plain_v2": false,
+     "memory_kind": "v2+pointer",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    }
+   ],
+   "challenge_selection_records_with_block": 0,
+   "challenge_selection_records": 0
+  },
+  {
+   "agent": "smolagents-v2",
+   "part": "candidate",
+   "plan_agent": "smolagents-v2",
+   "plan_discovery": "faultlab-discovery/v4-history-replay",
+   "plan_declares_rule": true,
+   "campaign_rule_real": true,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "undecoded_episode": "episode-475fa875de2843e485319ba11925cc7b",
+   "requests": [
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 0
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": true,
+     "block_episode_ids_equal_first_listing_order": true,
+     "block_rows": [
+      [
+       true,
+       2,
+       1,
+       [
+        "obs-9"
+       ]
+      ]
+     ],
+     "memory_has_pointer": true,
+     "memory_is_plain_v2": false,
+     "memory_kind": "v2+pointer",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_challenge",
+     "has_block": true,
+     "block_episode_ids_equal_first_listing_order": true,
+     "block_rows": [
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ]
+     ],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 6
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": true,
+     "block_episode_ids_equal_first_listing_order": true,
+     "block_rows": [
+      [
+       true,
+       2,
+       1,
+       [
+        "obs-9"
+       ]
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ],
+      [
+       false,
+       2,
+       2,
+       []
+      ]
+     ],
+     "memory_has_pointer": true,
+     "memory_is_plain_v2": false,
+     "memory_kind": "v2+pointer",
+     "episodes_listed": 13
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": true,
+     "memory_kind": "v2",
+     "episodes_listed": 1
+    }
+   ],
+   "challenge_selection_records_with_block": 1,
+   "challenge_selection_records": 1
+  },
+  {
+   "agent": "smolagents",
+   "part": "candidate",
+   "plan_agent": "smolagents",
+   "plan_discovery": "faultlab-discovery/v4-history-replay",
+   "plan_declares_rule": false,
+   "campaign_rule_real": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "undecoded_episode": "episode-9a79dad7e0b945d3991e58102e7f1da2",
+   "requests": [
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 0
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_challenge",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 6
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 13
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    }
+   ],
+   "challenge_selection_records_with_block": 0,
+   "challenge_selection_records": 1
+  },
+  {
+   "agent": "reference",
+   "part": "candidate",
+   "plan_agent": "reference",
+   "plan_discovery": "faultlab-discovery/v4-history-replay",
+   "plan_declares_rule": false,
+   "campaign_rule_real": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "undecoded_episode": "episode-76ad088309d54bdd95007efb22347e57",
+   "requests": [
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 0
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_challenge",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 6
+    },
+    {
+     "kind": "mechanic_proposal",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 13
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": null,
+     "memory_is_plain_v2": null,
+     "memory_kind": null,
+     "episodes_listed": 1
+    }
+   ],
+   "challenge_selection_records_with_block": 0,
+   "challenge_selection_records": 1
+  },
+  {
+   "agent": "smolagents",
+   "part": "diagnosis",
+   "plan_agent": "smolagents",
+   "plan_discovery": "faultlab-discovery/v4-history-replay",
+   "plan_declares_rule": false,
+   "campaign_rule_real": false,
+   "final_state": "NO_CHANGE",
+   "error": null,
+   "undecoded_episode": "episode-ced5908bd8f54be2ac08b8653f88d2e4",
+   "requests": [
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 0
+    },
+    {
+     "kind": "mechanic_diagnosis",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    },
+    {
+     "kind": "explorer_discovery",
+     "has_block": false,
+     "block_episode_ids_equal_first_listing_order": false,
+     "block_rows": [],
+     "memory_has_pointer": false,
+     "memory_is_plain_v2": false,
+     "memory_kind": "other",
+     "episodes_listed": 1
+    }
+   ],
+   "challenge_selection_records_with_block": 0,
+   "challenge_selection_records": 0
+  }
+ ]
+}

@@ -70,7 +70,7 @@ export function RunSetup({ config, replay, readiness, onCampaign }: { config?: C
         <div className="setup-field"><label htmlFor={`${fieldId}-discovery`}>Discovery protocol</label><select id={`${fieldId}-discovery`} value={discoveryId} disabled={!!busy} onChange={event => { setDiscoveryId(event.target.value as DiscoveryProtocolId); setError(null); setMessage(null) }}>{discoveryOptions.map(item => <option key={item.protocol_id} value={item.protocol_id} disabled={!item.supported_agents.includes(agentKind)}>{item.label}{item.default ? ' (default)' : ''}</option>)}</select></div>
         {discovery && <><p className="muted">{discovery.description}</p><DiscoveryProtocolFacts declaration={discovery.declaration} transportRetry={value.learn.transport_retry} /></>}
         {!discoverySupported && <p className="notice">{discovery?.unsupported_reason ?? 'This discovery protocol does not support the selected agent.'}</p>}
-        <OfferedLoopLimits mechanicContext={value.learn.mechanic_context} challengeSelection={value.learn.challenge_selection} />
+        <OfferedLoopLimits mechanicContext={value.learn.mechanic_context} challengeSelection={value.learn.challenge_selection} mechanicEvidence={value.learn.mechanic_evidence} agent={live ? agentKind : undefined} />
       </>}
       {mode === 'compare' && <p className="muted">Compare the compatible accepted policy with the empty baseline using the fixed protected comparison: {value.compare.case_count} cases × {value.compare.trials_per_case} paired trials. Protected cases are not shown or used as development choices.</p>}
       <section className="plan-preview" aria-label="Current plan preview"><h3>Current plan preview</h3><dl className="facts compact">

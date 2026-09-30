@@ -10,8 +10,13 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run.
-**Newest build: `f058c03c…`** (September 30, the Learn-loop limits after v2d: the Mechanic request-size rule, and the
-challenge-pick rule withdrawn after review; not yet committed, not run live; *Current work*, first paragraph). Before it, current code was **`ee2d1df9…`** (September 30: discovery protocol v4, history replay; builder, two $0 reviews and
+**Newest build: `95042e4d…`** (September 30, after v2e: native citation status in Mechanic and challenge Explorer
+requests, `faultlab-mechanic-evidence/v2-native-citation-status`, native adapter v2 Learn plans only; builder, two $0
+reviews and fixer, all offline; **not yet committed**, not run live; the builder's unreviewed `c4195af1…` is superseded;
+*Current work*, first paragraph). Before it, current code was
+**`f058c03c…`** (September 30, the Learn-loop limits after v2d: the Mechanic request-size rule, and the challenge-pick
+rule withdrawn after review; committed locally as `884de24` and **run live once, v2e**, row below; *Current work*, the
+paragraph after the newest build). Before that, current code was **`ee2d1df9…`** (September 30: discovery protocol v4, history replay; builder, two $0 reviews and
 fixer, all offline; committed locally as `814a6e3` and **run live once, v2d**, row below; *Current work*, the paragraph after the newest build), built on `4553ebe7…` (lab-role
 transport backoff and native adapter v2.1 labels, committed locally as `78878bb`; commit `4d1c21b` records its v2.1 live
 runs; written up in `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md`), built on `ac7a12d2…` (native adapter v2 and its review fixes;
@@ -29,7 +34,7 @@ superseded. Owner added funds 2026-09-28; the old $1,000 cap no longer binds.
 | Native adapter v2, first live run (2026-09-29 23:36-23:44 UTC, runtime `ac7a12d2`) | Baseline probe: v2 clean on dev-1..dev-4 (12/12), dev-5 C3+C5 3/3, dev-6 C4+C5 2/3; 53 reports, 0 cited labels outside the labels shown. Learn campaign `b05ac280` (discovery v3-history): 3 C4 sources (F4 send failures); source 3 diagnosed: every citation was a label the agent had been shown, but after a broker-retried send the agent's labels had a gap (obs-1, obs-2, obs-4) and the report's cited rows did too (o1, o2, o4, …; o3 is the hidden first attempt); the Mechanic claimed a citation of an undelivered observation (CONTRACT_EVIDENCE_GAP) → INCONCLUSIVE; then Explorer selection 6 lost its connection twice ~130 ms apart → campaign **ERROR**. $6.47 conservative. Both led to the September 30 builder round below | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
 | Native adapter v2.1 (2026-09-30 03:14-03:22 UTC, runtime `4553ebe7`) | Probe **NO_GO** under its declared rule (C5 3 of 15 outside dev-5); disclosed as a rule error: in 71 v2/v2.1 episodes every C5 was an untruthful report with C3/C4, 0 missing reports. Separately declared Learn `077b8434` (v3-history): **NO_CHANGE**, the Explorer never picked the reliable dev-5 failure | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
 | **v2d: history replay** (2026-09-30 06:31-06:39 UTC, runtime `ee2d1df9`) | **Furthest a generated repair has got:** replay of dev-5 → source reproduced 3/3 → **first native source to survive reduction** → **POLICY_GAP** → candidate `policy-c65cc08e…` (block confirmation without an upgrade SUCCEEDED receipt; close business on a definite failure) **PASSED source validation** (baseline C3 3/3, candidate 0 violations) → challenge **0 failed checks in 9 pairs** but INCONCLUSIVE (a status-read fault the candidate makes unnecessary did not fire; *corrected September 30:* with a healthy upgrade neither arm needed that read, so it fired in 1 of 6 episodes) → next Mechanic request 33,223 > 32,000 tokens → **ERROR**. Integrity clean; both evidence waits cleared by the product's own automatic retry. $5.21 | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
-| v2e (2026-09-30 10:11-10:15 UTC, runtime `f058c03c`, bounded Mechanic context) | dev-5 replay source reproduced 3/3 and reduced again → diagnosis **INCONCLUSIVE**: the Mechanic again claimed (falsely: 8 of 8 diagnosed episodes had every cited label shown and decoded) that the agent cited unshown labels, and this time requested no intervention → **NO_CHANGE**. The pre-registered misreading checker scored it NOT_CHECKED (its phrases miss "never shown"; PM error, disclosed). $2.88; ledger **$906.67** | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
+| v2e (2026-09-30 10:11-10:15 UTC, runtime `f058c03c`, bounded Mechanic context) | dev-5 replay source reproduced 3/3 and reduced again → diagnosis **INCONCLUSIVE**: the Mechanic again claimed (falsely: 8 of 8 diagnosed episodes had every cited label shown and decoded) that the agent cited unshown labels, and this time requested no intervention → **NO_CHANGE**. The pre-registered misreading checker scored it NOT_CHECKED (its phrases miss "never shown"; PM error, disclosed); checker v2 (built after the run, **post-hoc**; the fixer's revision agrees) scores v2d and v2e MISREADING. $2.88; ledger **$906.67** | `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md` |
 | History-informed (v3) original loop vs native agent | **First live POLICY_GAP diagnosis, first live generated candidates, source validation and challenge.** 4 C5 sources (3/3 each); candidate 1 passed source validation, challenge found a counterexample → REJECTED; candidate 2 failed source validation. STOPPED at the 6 h limit during a Weave evidence wait (FaultLab gap: no automatic telemetry retry). Native agent's report-writing failures (hex evidence IDs, calls after final-report-required) are the binding limit | `docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md` |
 
 Carried total now **$898.58** ($893.86 after the native adapter v2 run, `docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md`, plus $4.72 for the native v2.1 runs, evidence `artifacts/product-live-2026-09-30/native-v2b-run/` and `native-v2c-run/`). Still unproven live: promotion and ACCEPTED. The run's two FaultLab defects (no
@@ -48,8 +53,67 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Newest build (September 30, after live run v2d; builder, two $0 reviews and fixer, all offline): the Learn-loop
-limits. Not yet committed, not run live.** Runtime `f058c03c53b6442cd1c3d308d46007af8b755af0478595d57b964261aa17677a` (algorithm `a08a8d61…`), built on
+**Newest build (September 30, after live run v2e; builder, two $0 reviews and fixer, all offline): native citation
+status in Mechanic requests. Not yet committed, not run live.** Runtime
+`95042e4d9a67c739387a3841152bd7c23448f89cd5271ca32806552d6f3fc36c` (algorithm `4e5a8f90…`), built on `f058c03c`
+(= `backup/part2-2026-09-22` at `d38c0b8`); the builder's unreviewed `c4195af1…` is superseded. Design, measurements,
+the review findings and the fixer's table: [citation-status note](docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md)
+(sections 8 and 9). Evidence: `artifacts/product-mechanic-citations-2026-09-30/` (`builder/`, `review-integrity/`,
+`review-product/`, `fixer/`).
+* **Why:** in v2d and v2e the diagnosis Mechanic twice claimed the agent cited labels it was never shown. It was false
+  both times: all 8 diagnosed episodes had every cited label shown and decoded. The Mechanic could not see the
+  adapter's per-report citation record.
+* **What:** `faultlab-mechanic-evidence/v2-native-citation-status` (plan field `mechanic_evidence`) is frozen into
+  **every new Learn plan of native adapter v2 only**. Each Mechanic diagnosis or candidate request, and each challenge
+  Explorer request, that carries episode evidence gets a separate `native_citation_status` block:
+  * one plain sentence saying what the block means;
+  * one row per episode: tokens cited, how many decoded to delivered evidence, and any undecoded tokens.
+
+  The rows are read only from the `report_submitted` event, never from scoring. The v2 memory text in Mechanic requests
+  gets one sentence pointing to the block. The block is added before the request-size rule counts the request, and it
+  is never compacted.
+* **Unchanged:** discovery Explorer requests. Every other plan (older v2 plans, the reference Actor, native v1, baseline
+  and compare) is byte for byte the same (differential check against the backup `learning.py`). So are the gates,
+  `diagnosis.py`, `mechanic.py`, `explorer.py` and `challenge.py`, both native adapters and their prompts (v2.1
+  `fff397c9…`), simulator `3ce5bcd2…`, contract `6f9d7783…`, interpreter `6da0714a…` and scorer `19de811c…`.
+  `gate_freeze.py` (builder and fixer): 30/30 functions and 20/20 files are identical; only the runtime, algorithm and
+  lab-tree fingerprints changed. The reference Actor source hash (`fb5e1894…`) is unchanged, but the runtime changed,
+  so **register every agent again before a live run**.
+* **Measured on scratch copies of the saved v2b store** (fixer's wording):
+  * v2e's diagnosis request is 9,088 → 9,434 tokens, and its block shows 4 episodes with 0 undecoded;
+  * v2d's refused candidate request is 33,223 → 34,806 tokens and still fits at compaction stage 3 (22,684 ≤ 28,000),
+    with all 34 rows kept. The block counts toward that target and is never omitted from it.
+* **Misreading checker v2** (`scripts/experiments/check_evidence_gap_misreading_v2.py`, sha256 `11920882…` after the
+  fixer; v1 untouched). It scores v2d and v2e **MISREADING, POST-HOC**; the pre-registered read-out stays NOT_CHECKED.
+  The fixer made it safe to use after this build: bare "undecoded" and "not decoded" (the block's own words) no longer
+  count, a denied claim ("no label was never shown") does not count, every match is listed with its sentence for a
+  **required human check**, and every output states `read_out_status` (POST_HOC or PRE_REGISTERED) and the script's
+  sha256.
+* **Reviews and fixer:** both reviews reproduced the builder's claims and found no product defect. 7 findings (1 MEDIUM,
+  on checker v2, found by both; 6 LOW, one found by both). Fixed: the checker (MEDIUM-1), its output labels (LOW-1),
+  the block's null clause, which was narrower than the code (LOW-4, declaration `163c1a4c…` → `b84f55db…`), and three
+  doc findings. Deferred: a product record that a Mechanic request carried the block, the size rule's recorded wording
+  (frozen), and a paid paired probe. Table: note section 9.
+* **Checks ($0):**
+  * builder: 17 backend tests, 4 checker tests, 3 frontend tests, 17/17 mutations caught, real API responses pass the
+    dashboard validators; its final `scripts/test.sh` (`builder/full-test-sh.log`): backend **2,970 passed, 180
+    skipped, 0 failed** (2 known warnings), frontend **356**, build passed, browser **19 passed, 1 opt-in skip**;
+  * fixer: 1 new backend test and 29 new checker test cases, each written first and failing on the builder's code
+    (`fixer/tests-before-fix.log`: 27 failed); 11/11 new mutations caught (`fixer/mutation-checks.log`); a targeted
+    backend run after the fixes, 185 passed; the reviewers' probe wordings re-run, 0 of 20 counted.
+
+  The one final `scripts/test.sh`, after the fixer's last edit, is `fixer/full-test-sh.log`; its counts are that log's
+  last lines and are in the fixer's report.
+* **Next:** commit (owner's OK), register every agent again, then a declared live Learn run (v2 agent, v4 history
+  replay, `native-v2b` store). Its read-out must be **descriptive only** (did the diagnosis claim unshown citations; did
+  it request the declared intervention), because there is no concurrent control without the block. Declared steps
+  (note section 8): rebuild each diagnosis and candidate request offline to confirm the block and its rows (provider
+  tokens = rebuilt local count − 136); run the frozen checker v2 with `--read-out pre-registered` and confirm each
+  counted sentence by hand. For a causal answer, first a small paid paired probe with and without the block (owner's
+  decision).
+
+**Build before this one (September 30, after live run v2d; builder, two $0 reviews and fixer, all offline): the
+Learn-loop limits. Committed locally as `884de24`; run live once (v2e).** Runtime `f058c03c53b6442cd1c3d308d46007af8b755af0478595d57b964261aa17677a` (algorithm `a08a8d61…`), built on
 `ee2d1df9` (= `backup/part2-2026-09-22` at `3b31b58`); the builder's unreviewed `4d0d7914…` is superseded. Design,
 measurements and the PM decision: [loop-limits note](docs/PRODUCT_LOOP_LIMITS_2026-09-30.md). Evidence:
 `artifacts/product-loop-limits-2026-09-30/` (`builder/`, `review-integrity/`, `review-product/`, `fixer/`).

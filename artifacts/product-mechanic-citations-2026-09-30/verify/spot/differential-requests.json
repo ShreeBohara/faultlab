@@ -1,0 +1,79 @@
+{
+ "all_identical": true,
+ "backup_learning_py_lines": 376,
+ "positive_control": {
+  "block_present": true,
+  "differs_from_backup": true,
+  "pointer_present": true
+ },
+ "reference": "backup/part2-2026-09-22",
+ "scenarios": [
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 1,
+   "contract": "reference",
+   "explorer_contexts": 2,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 2,
+   "normalised_bytes": 43068,
+   "part": "candidate"
+  },
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 0,
+   "contract": "reference",
+   "explorer_contexts": 1,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 1,
+   "normalised_bytes": 11239,
+   "part": "diagnosis"
+  },
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 1,
+   "contract": "native-v1",
+   "explorer_contexts": 2,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 2,
+   "normalised_bytes": 40455,
+   "part": "candidate"
+  },
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 0,
+   "contract": "native-v1",
+   "explorer_contexts": 1,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 1,
+   "normalised_bytes": 9497,
+   "part": "diagnosis"
+  },
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 1,
+   "contract": "native-v2-plan-before-the-rule",
+   "explorer_contexts": 2,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 2,
+   "normalised_bytes": 43044,
+   "part": "candidate"
+  },
+  {
+   "block_anywhere": false,
+   "byte_identical_after_id_normalisation": true,
+   "challenge_explorer_contexts": 0,
+   "contract": "native-v2-plan-before-the-rule",
+   "explorer_contexts": 1,
+   "final_state": "NO_CHANGE",
+   "mechanic_requests": 1,
+   "normalised_bytes": 11223,
+   "part": "diagnosis"
+  }
+ ],
+ "scratch_deleted": true
+}

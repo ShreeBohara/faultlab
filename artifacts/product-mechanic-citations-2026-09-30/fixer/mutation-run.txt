@@ -1,0 +1,52 @@
+2026-09-30T11:36:57Z
+CAUGHT  F1 MEDIUM-1: bare "undecoded" counts again | restored=True | 9 failed, 24 passed in 0.10s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The native_citation_status block shows undecoded is empty for every episode, yet the report is inconsistent with the confirmation outcome.]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[undecoded: [] in all four episodes]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[All cited tokens decoded (cited 5, decoded 5, undecoded none).]
+           ... and 5 more
+CAUGHT  F2 MEDIUM-1: bare "not decoded" counts again | restored=True | 2 failed, 31 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_sentences_this_build_adds_to_every_native_v2_request_are_not_claims
+CAUGHT  F3 MEDIUM-1: denial rule off | restored=True | 6 failed, 27 passed in 0.09s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[No cited label was not shown to the agent.]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[the report cites only labels that were shown; nothing is outside the shown labels]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[every token decoded, so no token was never shown]
+           ... and 2 more
+CAUGHT  F4 MEDIUM-1: denial rule reads the whole text before the match (no clause boundary) | restored=True | 2 failed, 31 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_post_hoc_on_v2d_and_v2e_version_2_reads_a_misreading_where_version_1_read_nothing[native-v2d-run-diagnostic-57fa14bc65e941bfa5d55c392d325b7c-phrases0]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The actor's report is scored as untruthful because it cites evidence labels that were never shown to it under the v2.1 shown-order labeling contract, not because the underlying upgrade failure was misreported. The delivered terminal FAILED receipt for update_order is present, but the report's evidence_ids include tokens that cannot be decoded to delivered evidence IDs, causing C5 to fail while C3 fails due to the scheduled upgrade failure.-phrases0]
+CAUGHT  F5 MEDIUM-1: a count of 0 is a claim amount | restored=True | 2 failed, 31 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[Each report had 0 undecoded tokens.]
+CAUGHT  F6 MEDIUM-1: "no" is not a denial word | restored=True | 5 failed, 28 passed in 0.09s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[No cited label was not shown to the agent.]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[every token decoded, so no token was never shown]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[The block confirms no label was never shown.]
+           ... and 1 more
+CAUGHT  F7 MEDIUM-1: the verdict counts denied matches too | restored=True | 5 failed, 28 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[No cited label was not shown to the agent.]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[the report cites only labels that were shown; nothing is outside the shown labels]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_an_echo_of_the_block_or_a_denial_is_not_a_claim[every token decoded, so no token was never shown]
+           ... and 1 more
+CAUGHT  F8 MEDIUM-1 (human check): matches not reported with their sentences | restored=True | 7 failed, 26 passed in 0.09s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_the_self_tests_pass
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The actor's report is scored as untruthful because it cites evidence labels that were never shown to it under the v2.1 shown-order labeling contract, not because the underlying upgrade failure was misreported. The delivered terminal FAILED receipt for update_order is present, but the report's evidence_ids include tokens that cannot be decoded to delivered evidence IDs, causing C5 to fail while C3 fails due to the scheduled upgrade failure.-phrases0]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[The actor's report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the delivered observations support a CORRECTLY_REJECTED report.-phrases1]
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_a_claim_is_still_read_as_a_claim_and_each_match_is_reported_with_its_sentence[Episode 2 has 1 undecoded token, so the report cites a label the agent was never shown.-phrases2]
+           ... and 3 more
+CAUGHT  F9 LOW-1: an output without a read-out status is allowed | restored=True | 1 failed, 32 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_every_output_states_its_read_out_status_and_the_checkers_own_sha256
+CAUGHT  F10 LOW-1: the read-out status and sha256 are not written into the output | restored=True | 1 failed, 32 passed in 0.08s
+           FAILED tests/experiments/test_check_evidence_gap_misreading_v2.py::test_every_output_states_its_read_out_status_and_the_checkers_own_sha256
+CAUGHT  F11 LOW-4: the null clause says "no submitted report was recorded" again | restored=True | 1 failed, 17 passed in 6.46s
+           FAILED tests/lab/test_citation_status.py::test_the_meaning_sentence_describes_every_null_row
+caught 11/11
+exit=0
+../scripts/experiments/check_evidence_gap_misreading_v2.py: OK
+app/lab/citation_status.py: OK
+all files restored (sha256 identical)
+2026-09-30T11:37:10Z

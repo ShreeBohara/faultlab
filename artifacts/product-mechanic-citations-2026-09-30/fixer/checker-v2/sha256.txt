@@ -1,0 +1,8 @@
+11920882f8c7e9885242e455b7c37e3e8f8649d3bb1c86b927d6da5c07be3b7b  scripts/experiments/check_evidence_gap_misreading_v2.py
+70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033  artifacts/product-native-v2b-2026-09-30/fixer/check_evidence_gap_misreading.py
+70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033  artifacts/product-live-2026-09-30/native-v2d-run/check_evidence_gap_misreading.py
+70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033  artifacts/product-live-2026-09-30/native-v2e-run/check_evidence_gap_misreading.py
+70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033  artifacts/product-live-2026-09-30/native-v2b-run/check_evidence_gap_misreading.py
+70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033  artifacts/product-live-2026-09-30/native-v2c-run/check_evidence_gap_misreading.py
+6f83806413c934a1c869f1995cff87ff5aef0daf331a35e34a37de0b0893d0c8  artifacts/product-live-2026-09-30/native-v2d-run/export.json
+25d48347de9ad13281b6ec025ca58648c4836d091678be3d6fab9fe7b8ab163e  artifacts/product-live-2026-09-30/native-v2e-run/export.json

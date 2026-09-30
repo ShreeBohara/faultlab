@@ -2,22 +2,29 @@
 // plan, the challenge panel (each checked pick, only for a plan that declares the withdrawn challenge-pick rule) and the
 // diagnosis panel (each Mechanic request-size record).
 import { CHALLENGE_SELECTION_V2, MECHANIC_CONTEXT_V2, REACH_STATUS_LABELS, challengeSelectionText, contextRecordLabel, contextRecordText, mechanicContextText,
-  reachDecisionText, type ChallengeReachDecision, type ChallengeSelectionDeclaration, type MechanicContextDeclaration, type MechanicContextRecord } from '../loopLimits'
+  mechanicEvidenceText, reachDecisionText, type ChallengeReachDecision, type ChallengeSelectionDeclaration, type MechanicContextDeclaration, type MechanicContextRecord,
+  type MechanicEvidenceDeclaration } from '../loopLimits'
+import type { AgentKind } from '../runPlans'
 import { Field, Json } from './common'
 
 function StatusBadge({ value, text }: { value: string; text: string }) { return <span className={`badge badge-${value.toLowerCase()}`}>{text}</span> }
 
-/** The rules a new Learn plan will freeze, as the backend offers them (only the offered ones; nothing is said about others). */
-export function OfferedLoopLimits({ mechanicContext, challengeSelection }: { mechanicContext?: MechanicContextDeclaration; challengeSelection?: ChallengeSelectionDeclaration }) {
+/** The rules a new Learn plan will freeze, as the backend offers them (only the offered ones; nothing is said about others).
+ * The native citation-status rule is frozen only for native adapter v2, so it is shown only when that agent is chosen. */
+export function OfferedLoopLimits({ mechanicContext, challengeSelection, mechanicEvidence, agent }: { mechanicContext?: MechanicContextDeclaration; challengeSelection?: ChallengeSelectionDeclaration; mechanicEvidence?: MechanicEvidenceDeclaration; agent?: AgentKind }) {
   const count = (mechanicContext ? 1 : 0) + (challengeSelection ? 1 : 0)
-  if (!count) return null
-  return <><p className="muted">{count === 1 ? 'Every new Learn plan also freezes this rule:' : 'Every new Learn plan also freezes these two rules:'}</p>
-    <dl className="facts compact">{mechanicContext && <Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field>}{challengeSelection && <Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>}</dl></>
+  const citation = mechanicEvidence && agent !== undefined && (mechanicEvidence.agents as string[]).includes(agent) ? mechanicEvidence : undefined
+  if (!count && !citation) return null
+  return <>{!!count && <><p className="muted">{count === 1 ? 'Every new Learn plan also freezes this rule:' : 'Every new Learn plan also freezes these two rules:'}</p>
+    <dl className="facts compact">{mechanicContext && <Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field>}{challengeSelection && <Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>}</dl></>}
+    {citation && <><p className="muted">A new Learn plan for native adapter v2 also freezes:</p><dl className="facts compact"><Field name="Native citation status">{mechanicEvidenceText(citation)}</Field></dl></>}</>
 }
 
-export function LoopLimitFacts({ mechanicContext, challengeSelection }: { mechanicContext: MechanicContextDeclaration | null | undefined; challengeSelection: ChallengeSelectionDeclaration | null | undefined }) {
-  return <><dl className="facts compact"><Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field><Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field></dl>
-    {(mechanicContext || challengeSelection) && <details><summary>Exact rule text</summary>{mechanicContext && <p className="muted">{mechanicContext.protocol}: {mechanicContext.rule}</p>}{challengeSelection && <p className="muted">{challengeSelection.protocol}: {challengeSelection.rule}</p>}</details>}</>
+export function LoopLimitFacts({ mechanicContext, challengeSelection, mechanicEvidence, agent }: { mechanicContext: MechanicContextDeclaration | null | undefined; challengeSelection: ChallengeSelectionDeclaration | null | undefined; mechanicEvidence?: MechanicEvidenceDeclaration | null; agent?: AgentKind }) {
+  // Native citation status applies to native adapter v2 only; other agents' plans say nothing about it.
+  const native = agent === 'smolagents-v2'
+  return <><dl className="facts compact"><Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field><Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>{native && <Field name="Native citation status">{mechanicEvidenceText(mechanicEvidence)}</Field>}</dl>
+    {(mechanicContext || challengeSelection || (native && mechanicEvidence)) && <details><summary>Exact rule text</summary>{mechanicContext && <p className="muted">{mechanicContext.protocol}: {mechanicContext.rule}</p>}{challengeSelection && <p className="muted">{challengeSelection.protocol}: {challengeSelection.rule}</p>}{native && mechanicEvidence && <p className="muted">{mechanicEvidence.protocol}: {mechanicEvidence.rule}</p>}</details>}</>
 }
 
 export function ChallengeReachList({ rows }: { rows?: ChallengeReachDecision[] }) {

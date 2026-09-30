@@ -1,0 +1,4 @@
+SAME backend/app/lab/diagnosis.py::summarize_evidence text fe9675887b5288c4 ast 945100ebe2e7735e (backup text fe9675887b5288c4 ast 945100ebe2e7735e)
+SAME backend/app/lab/diagnosis.py::trial_outcomes text 064d54347bdfb24f ast 42c0e6cd92d9023b (backup text 064d54347bdfb24f ast 42c0e6cd92d9023b)
+SAME backend/app/referee/diagnostics.py::classify_policy_gap text 2e85612e7b2f8018 ast 4df22fed015b971b (backup text 2e85612e7b2f8018 ast 4df22fed015b971b)
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

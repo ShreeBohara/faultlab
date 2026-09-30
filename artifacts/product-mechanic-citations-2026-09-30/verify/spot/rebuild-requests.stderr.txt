@@ -1,0 +1,2 @@
+mechanic_outputs diagnosis rows: {'campaign-37e66b6c3a544a4d9bde4161db6bf0aa': [(8952, ['attempt', 'campaign_id', 'episode_id', 'model_id', 'prompt', 'raw', 'request_id', 'role', 'usage'])], 'campaign-ea66672d7a904bd8a011d6922790c963': [(8854, ['attempt', 'campaign_id', 'episode_id', 'model_id', 'prompt', 'raw', 'request_id', 'role', 'usage'])]}
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

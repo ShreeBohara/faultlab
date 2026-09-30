@@ -1,0 +1,65 @@
+{
+ "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+ "checker_version": "faultlab-misreading-check/v2-broader-claim-phrases",
+ "claim_pattern": "undelivered|not\\s+(?:been\\s+)?delivered|never\\s+(?:been\\s+)?delivered|not\\s+(?:been\\s+)?shown|unshown|do(?:es)?\\s+not\\s+contain|outside\\s+the\\s+delivered|never\\s+(?:been\\s+)?shown|(?:was|were)\\s+not\\s+shown|(?:has|have|had)\\s+not\\s+been\\s+shown|(?:cannot|can\\s*not|can\\'t|could\\s+not|couldn\\'t)\\s+be\\s+decoded|not\\s+decodable|undecodable|not\\s+(?:been\\s+)?decoded|(?<!\\b0\\s)(?<!\\bno\\s)(?<!zero\\s)(?<!without\\s)undecoded|outside\\s+(?:of\\s+)?the\\s+shown(?:\\s+labels)?|outside\\s+(?:of\\s+)?the\\s+labels\\s+(?:it\\s+was\\s+|that\\s+were\\s+)?shown",
+ "diagnostics": [
+  {
+   "claims_undelivered_citation": true,
+   "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+   "diagnostic_id": "diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d",
+   "episodes_read": [
+    {
+     "adapter_tokens_not_decoded": [],
+     "citation_protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+     "recorded_observations": 5,
+     "report_citations": 5,
+     "report_ids_not_recorded": [],
+     "report_present": true
+    },
+    {
+     "adapter_tokens_not_decoded": [],
+     "citation_protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+     "recorded_observations": 5,
+     "report_citations": 5,
+     "report_ids_not_recorded": [],
+     "report_present": true
+    },
+    {
+     "adapter_tokens_not_decoded": [],
+     "citation_protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+     "recorded_observations": 6,
+     "report_citations": 6,
+     "report_ids_not_recorded": [],
+     "report_present": true
+    },
+    {
+     "adapter_tokens_not_decoded": [],
+     "citation_protocol": "faultlab-native-adapter/v2.1-shown-order-labels",
+     "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+     "recorded_observations": 6,
+     "report_citations": 6,
+     "report_ids_not_recorded": [],
+     "report_present": true
+    }
+   ],
+   "hypotheses": [
+    "The actor's report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the delivered observations support a CORRECTLY_REJECTED report. The fixed intervention removing the F2 primitive eliminates the target violation, but the supplied observations do not establish whether the report's evidence citations were valid under the shown-order label contract."
+   ],
+   "kind": "INCONCLUSIVE",
+   "matched_claim_phrases": [
+    "never shown"
+   ],
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "verdict": "MISREADING"
+  }
+ ],
+ "rule": "A diagnosis is CHECKED when the Mechanic's proposed_kind is CONTRACT_EVIDENCE_GAP and its saved hypothesis claims an\n  undelivered, unshown or undecodable citation (case-insensitive match of CLAIM below). The episodes it read are the\n  counterexample's source episode and the diagnosis's fresh reproduction episodes. For each episode read, the data show\n  an undelivered citation when (a) a report evidence ID is not one of that episode's recorded observation IDs, or (b)\n  the adapter recorded a cited token it did not decode (v2.1 `cited_tokens_not_decoded`; the first v2 build's\n  `cited_unshown_labels`). A CHECKED diagnosis is a MISREADING when no episode it read shows an undelivered citation,\n  and SUPPORTED otherwise. Diagnoses that do not make that claim are NOT_CHECKED (listed, never scored).",
+ "summary": {
+  "MISREADING": 1,
+  "NOT_CHECKED": 0,
+  "SUPPORTED": 0
+ }
+}

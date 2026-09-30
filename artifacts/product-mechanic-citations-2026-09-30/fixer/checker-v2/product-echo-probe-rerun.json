@@ -1,0 +1,52 @@
+{
+ "phrase_probe": [
+  {
+   "text": "The native_citation_status block shows undecoded is empty for every episode.",
+   "matched": []
+  },
+  {
+   "text": "Every row has cited equal to decoded and an empty undecoded list.",
+   "matched": []
+  },
+  {
+   "text": "All cited tokens decoded; none undecoded.",
+   "matched": []
+  },
+  {
+   "text": "undecoded: [] in all four rows, so every citation was shown and decoded.",
+   "matched": []
+  },
+  {
+   "text": "No token was left undecoded.",
+   "matched": []
+  },
+  {
+   "text": "There were no tokens undecoded.",
+   "matched": []
+  },
+  {
+   "text": "The block lists nothing as undecoded.",
+   "matched": []
+  },
+  {
+   "text": "Nothing was undecoded.",
+   "matched": []
+  },
+  {
+   "text": "Each report had 0 undecoded tokens.",
+   "matched": []
+  },
+  {
+   "text": "The block confirms no label was never shown.",
+   "matched": [
+    "never shown"
+   ]
+  }
+ ],
+ "false_claim_count": 1,
+ "contract_gap_other_reason": {
+  "hypothesis": "Every row of native_citation_status has an empty undecoded list, so the citations were valid; the gap is that the cited FAILED receipt contradicts the report overall, which the evidence contract should reject.",
+  "matched": [],
+  "verdict": "NOT_CHECKED"
+ }
+}

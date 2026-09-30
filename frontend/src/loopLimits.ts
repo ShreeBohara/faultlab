@@ -7,11 +7,15 @@ import type { FaultSpec } from './generated/contracts'
 
 export const MECHANIC_CONTEXT_V2 = 'faultlab-mechanic-context/v2-bounded' as const
 export const CHALLENGE_SELECTION_V2 = 'faultlab-challenge-selection/v2-candidate-reach' as const
+/** Native citation status (backend app/lab/citation_status.py), frozen into every new Learn plan of native adapter v2 only. */
+export const MECHANIC_EVIDENCE_V2 = 'faultlab-mechanic-evidence/v2-native-citation-status' as const
 export const COMPACTION_STAGES = ['IDENTICAL_CLEAN_ROWS', 'ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP', 'NO_CLEAN_EPISODE_ROWS'] as const
 export type CompactionStage = typeof COMPACTION_STAGES[number]
 
 /** The Mechanic request-size rule exactly as the backend freezes it (mechanic_context_declaration()). */
 export type MechanicContextDeclaration = { protocol: typeof MECHANIC_CONTEXT_V2; applies_to: ['mechanic_diagnosis', 'mechanic_proposal']; input_token_limit: 32000; format_repair_reserve_tokens: 4000; compaction_target_tokens: 28000; stages: CompactionStage[]; always_kept: string[]; when_unfit: 'END_SOURCE_CANDIDATE_SEARCH'; unsent_request_uses_candidate_request: false; requests_over_limit_sent: 0; rule: string }
+/** The native citation-status rule exactly as the backend freezes it (citation_status.declaration()). */
+export type MechanicEvidenceDeclaration = { protocol: typeof MECHANIC_EVIDENCE_V2; agents: ['smolagents-v2']; applies_to: ['mechanic_diagnosis', 'mechanic_proposal', 'explorer_challenge']; block: 'native_citation_status'; row_fields: ['episode_id', 'cited', 'decoded', 'undecoded']; source_event: 'report_submitted'; source_protocol: string; reads_scoring: false; compacted: false; discovery_requests_changed: false; meaning: string; memory_pointer: string; rule: string }
 /** The challenge-pick rule exactly as the backend freezes it (challenge_selection_declaration()). */
 export type ChallengeSelectionDeclaration = { protocol: typeof CHALLENGE_SELECTION_V2; basis: 'candidate_arm_source_validation_agent_calls'; caller_counted: 'actor'; target: 'tool_and_service'; replans_per_refused_pick: 1; explorer_requests_per_challenge: 8; refused_pick_runs_episodes: false; challenge_rules_changed: false; rule: string }
 
@@ -32,6 +36,13 @@ export function mechanicContextDeclaration(value: unknown): value is MechanicCon
     && value.input_token_limit === 32000 && value.format_repair_reserve_tokens === 4000 && value.compaction_target_tokens === 28000
     && same(value.stages, COMPACTION_STAGES) && strings(value.always_kept) && value.always_kept.length > 0 && value.when_unfit === 'END_SOURCE_CANDIDATE_SEARCH'
     && value.unsent_request_uses_candidate_request === false && value.requests_over_limit_sent === 0 && text(value.rule)
+}
+export function mechanicEvidenceDeclaration(value: unknown): value is MechanicEvidenceDeclaration {
+  return object(value) && value.protocol === MECHANIC_EVIDENCE_V2 && same(value.agents, ['smolagents-v2'])
+    && same(value.applies_to, ['mechanic_diagnosis', 'mechanic_proposal', 'explorer_challenge']) && value.block === 'native_citation_status'
+    && same(value.row_fields, ['episode_id', 'cited', 'decoded', 'undecoded']) && value.source_event === 'report_submitted' && text(value.source_protocol)
+    && value.reads_scoring === false && value.compacted === false && value.discovery_requests_changed === false
+    && text(value.meaning) && text(value.memory_pointer) && text(value.rule)
 }
 export function challengeSelectionDeclaration(value: unknown): value is ChallengeSelectionDeclaration {
   return object(value) && value.protocol === CHALLENGE_SELECTION_V2 && value.basis === 'candidate_arm_source_validation_agent_calls'
@@ -68,6 +79,11 @@ export function validateMechanicContext(value: unknown): MechanicContextRecord[]
 export function mechanicContextText(rule: MechanicContextDeclaration | null | undefined): string {
   if (!rule) return 'Not declared: this plan was saved before the Mechanic request-size rule. A Mechanic request over the 32,000-token input limit is refused before sending and ends the campaign in ERROR, as before.'
   return `A Mechanic diagnosis or candidate request over ${rule.input_token_limit.toLocaleString()} input tokens is compacted in ${rule.stages.length} fixed stages to at most ${rule.compaction_target_tokens.toLocaleString()} (${rule.format_repair_reserve_tokens.toLocaleString()} kept for one format-repair turn) · only clean episodes' rows are omitted, each still named with its outcome · the source, its reproductions and every episode with a failed check stay in full · if it still does not fit, nothing is sent and that source's search ends with a recorded reason, never ERROR`
+}
+/** The saved plan's native citation-status rule in one line, for a native adapter v2 plan (null or absent: saved before it). */
+export function mechanicEvidenceText(rule: MechanicEvidenceDeclaration | null | undefined): string {
+  if (!rule) return 'Not declared: this native adapter v2 plan was saved before the rule. Its Mechanic and challenge requests carry no per-episode citation status, as before.'
+  return 'Each Mechanic diagnosis or candidate request and each challenge Explorer request gets, per episode, what the adapter recorded when the agent submitted its report: tokens cited, how many decoded to delivered evidence, and any token not decoded · read only from the report_submitted event, nothing from scoring · never compacted · discovery requests unchanged'
 }
 /** The saved plan's challenge-pick rule in one line (null or absent: not declared, which is every new plan too). */
 export function challengeSelectionText(rule: ChallengeSelectionDeclaration | null | undefined): string {

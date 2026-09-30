@@ -1,0 +1,22 @@
+{
+ "actor_prompt_hash": "12eabe7f41028c05e37d4143f5208843a9414bd14bcb0deea600e3a5e7d9f7b2",
+ "algorithm_hash": "ea1ed61350257afe69d63198a615477654677148c509d74353ea5260942608e5",
+ "capability_hash": "8e8e04afb34f894316b2e7cc129fba02a405f066d442bd799f7fc2fbdc652289",
+ "citation_status_declaration_hash": "163c1a4caa54204762c733914398e119cd845ee98187c6bcbac23dddcebb40f9",
+ "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+ "interpreter_hash": "6da0714adef40c0268ce65c1d9b1d4a17f829ff04b8dbc6a7059f24f03e6622a",
+ "mechanic_context_v2_declaration_hash": "11bf9e323ec88e9be5c42597aabe73e2431e388c89c35bf63160d7331ed6b70d",
+ "native_v1_adapter_hash": "6f3032648ad8d1ca4cfb4c78deba738211c802adf1ec20a6e2d2781158a8dbe2",
+ "native_v1_prompt_hash": "2251542869cf3e0fb841e536f56c8d2780f77e852d91ae30e12d4edf3e4c4989",
+ "native_v2_adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+ "native_v2_adapter_protocol_hash": "0136604791ce5b3af16ed51ccdbf330d10af8a060acdd9cc255e21821e62ec5f",
+ "native_v2_prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+ "native_v2_protocol_version": "faultlab-native-adapter/v2.1-shown-order-labels",
+ "runtime_hash": "c4195af104fbc90f2b2ba2b8fa2aad3ca17a3f74dd47b36612efcacc6f19c60c",
+ "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+ "service_hash": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3",
+ "source_hash": "fb5e1894ba1abb546cc61fc7aa5a7775f142659d336c7e2bec5c595f3f603663",
+ "trace_contract_version": 2,
+ "v2_memory_text_hash": "6cbe23d4640b6fc12f0ddc8fdcab64fc72cd262a4822e15e1d7338cf2721dbc3",
+ "v2_memory_with_pointer_hash": "75241be81cd30ae6bc910640b7bb60573e48004f6b92f10c1c9c9ce31bd6cf11"
+}

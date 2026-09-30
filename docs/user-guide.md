@@ -77,6 +77,20 @@ freezes one more rule; the Learn setup form and the saved plan show it.
 Plans saved before these rules keep the old behaviour, and their saved plan says so
 ([details](PRODUCT_LOOP_LIMITS_2026-09-30.md)).
 
+**Native citation status (September 30, built, reviewed and fixed offline; not yet committed or run live).** A new Learn plan for **native
+adapter v2** also freezes `faultlab-mechanic-evidence/v2-native-citation-status`. The Learn setup form shows it when that
+agent is chosen, and the saved plan shows it under "Native citation status".
+
+- **What it adds.** Each Mechanic diagnosis or candidate request, and each challenge Explorer request, gets one short
+  block for the episodes whose evidence it carries.
+- **What the block says.** Per episode, it gives what the adapter recorded when the agent submitted its report: how many
+  evidence tokens the report cited, how many decoded to evidence delivered to the agent, and any token that did not
+  decode.
+- **Where it comes from.** It is read only from the recorded report, never from scoring.
+- **What it is for.** It stops the Mechanic having to guess whether the agent cited labels it was never shown.
+- **What is unchanged.** Discovery requests, and every other agent's plans. A native adapter v2 plan saved before the
+  rule reads "Not declared" ([details](PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md)).
+
 Use **Download campaign recording** to save the plan, configuration, registration and public
 development evidence, including failed attempts and `NO_CHANGE` runs. The JSON download makes no
 provider call. Protected trials and private simulator state are excluded. This recording is an

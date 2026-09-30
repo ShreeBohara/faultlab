@@ -1,0 +1,35 @@
+{
+ "approx_tokens_per_row": 44.9,
+ "headroom_at_stage3_tokens": 5326,
+ "scratch_removed": true,
+ "with_block": {
+  "attempts": [
+   35184,
+   29629,
+   22674
+  ],
+  "block_identical_after_compaction": true,
+  "block_rows": 34,
+  "block_tokens_alone": 1526,
+  "fits": true,
+  "full": 34796,
+  "kept_in_full": 10,
+  "rows_all_decoded": true,
+  "rows_equal_first_listing": true,
+  "stage": "NO_CLEAN_EPISODE_ROWS"
+ },
+ "without_block": {
+  "attempts": [
+   33611,
+   28056,
+   21101
+  ],
+  "block_identical_after_compaction": true,
+  "block_rows": 0,
+  "block_tokens_alone": 0,
+  "fits": true,
+  "full": 33223,
+  "kept_in_full": 10,
+  "stage": "NO_CLEAN_EPISODE_ROWS"
+ }
+}

@@ -1,0 +1,43 @@
+conflict-like names found: 42 | outside artifacts/: 0
+artifacts artifacts/product-loop-limits-2026-09-30/verify/commit_list/conflict_scan.py
+artifacts artifacts/product-loop-limits-2026-09-30/verify/commit_list/conflict-scan.txt
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/dashboard-reliability.test 2.ts
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/fixtures 2.ts
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/evidence-screen.test 2.ts
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/evidence-screen.browser 2.ts
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/run-readiness.test 2.tsx
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/tests/campaign-history.test 2.tsx
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/src/styles 2.css
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/src/api 2.ts
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/src/components/RunControls 2.tsx
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/src/components/EvidenceScreen 2.tsx
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/frontend/src/components/CampaignHistory 2.tsx
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/main 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/api 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/reproduction 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/completion_study 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/search_benchmark 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/exports 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/operator_actions 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/learning 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/coordinator 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/baseline_study 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/tracing 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/runner 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/evaluation 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/portability 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/diagnosis 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/heldout_check 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/lab/context_study 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/cli/freeze 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/integrations/registry 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/integrations/external_agent 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/app/integrations/portability 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/tests/integration/test_freeze_cli 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/tests/integration/test_cli_operator_api 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/tests/lab/test_actor_context_selection 2.py
+artifacts artifacts/product-import-2026-09-27/preserved-duplicate-sources/backend/tests/integrations/test_portability 2.py
+artifacts artifacts/product-mechanic-citations-2026-09-30/verify/commit_list/conflict_scan.py
+artifacts artifacts/product-mechanic-citations-2026-09-30/verify/commit_list/conflict-scan.txt
+artifacts artifacts/product-discovery-v4-2026-09-30/verify/conflict_copies
+artifacts artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2

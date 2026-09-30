@@ -1,0 +1,16 @@
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2d-run/__pycache__/check_evidence_gap_misreading.cpython-312.pyc NOT TRACKED
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2d-run/check_evidence_gap_misreading.py tracked in d38c0b8
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2d-run/export.json tracked in d38c0b8
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2e-run/__pycache__/check_evidence_gap_misreading.cpython-312.pyc NOT TRACKED
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2e-run/check_evidence_gap_misreading.py tracked in d38c0b8
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2e-run/export.json tracked in d38c0b8
+.venv (environment): 933
+device: 1
+name that does not exist in the scratch tree (relative name opened through a dir_fd, e.g. shutil.rmtree of pytest temp folders, resolved against the cwd by the hook): 242
+python install / system: 71
+scratch tree: one of the 17 changed/added files: 7
+scratch tree: tracked file of the backup tip: 213
+temp (pytest tmp_path etc.): 24
+verifier scratch (outside the tree): 1
+scratch-tree paths neither tracked nor added (would they be ignored?):
+paths outside the scratch tree, .venv, temp and python install:

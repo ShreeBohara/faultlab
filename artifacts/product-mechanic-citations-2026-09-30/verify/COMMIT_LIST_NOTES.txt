@@ -1,0 +1,86 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-30, native citation-status round: builder, two reviews, fixer,
+verifier). $0, offline.
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, relative to the
+faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-mechanic-citations-2026-09-30/verify/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and whether
+it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = d38c0b8dd0ca2d1b76f487cd3a19f13e6216adf3 (as the task
+said). The checked-out branch is main at cbbf957, so `git status` against HEAD shows hundreds of entries, and plain
+`git diff d38c0b8 -- <file>` can mislead (files absent from main's index show as untracked). Commit on top of d38c0b8
+(branch backup/part2-2026-09-22), NOT on cbbf957. Compare with `git show d38c0b8:<file>` or use this list.
+
+COUNTS
+PRODUCT FILES: 17 (modified 10, new 7, deleted 0, mode changes 0). The 7 new files are not git-ignored.
+EVIDENCE FILES: every other line, all under artifacts/product-mechanic-citations-2026-09-30/ (git-ignored, as the whole
+artifacts/ folder is: needs `git add -f`): builder/, review-integrity/, review-product/, fixer/ and verify/.
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md,
+  backend/app/lab/learning.py, backend/app/lab/run_plans.py,
+  docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md (a follow-up paragraph appended; original text unchanged),
+  docs/user-guide.md (one section appended; original text unchanged),
+  frontend/src/components/CampaignPlan.tsx, frontend/src/components/LoopLimits.tsx, frontend/src/components/RunSetup.tsx,
+  frontend/src/loopLimits.ts, frontend/src/runPlans.ts
+NEW (not in the tip, not ignored):
+  backend/app/lab/citation_status.py, backend/tests/experiments/test_check_evidence_gap_misreading_v2.py,
+  backend/tests/lab/citation_status_saved.py, backend/tests/lab/test_citation_status.py,
+  docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md, frontend/tests/citation-status.test.tsx,
+  scripts/experiments/check_evidence_gap_misreading_v2.py (sha256 11920882f8c7e9885242e455b7c37e3e8f8649d3bb1c86b927d6da5c07be3b7b)
+The 17 product sha256 values equal the fixer's recorded end state (fixer/source-sha256-at-suite-start.txt) and did not
+change during this verification (verify/tree-vs-backup-start.txt, -at-suite-start.txt, -after-suite.txt and -end.txt are
+identical apart from their REF header line).
+Against the builder's recorded state (builder/source-sha256-at-suite-start.txt) exactly the 8 files the fixer named
+differ (verify/spot/builder-vs-fixer-files.txt).
+
+METHOD (commit_list/commit_list.py; copied from the loop-limits verifier with only TIP, EVID and the docstring changed)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index outside the Desktop,
+/Users/shree/FaultLab_Scratch/vc-tmp-index, deleted by the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip
+was byte-compared (and executable bit) with the working file; every non-ignored working file not in the tip is NEW; the
+git-ignored evidence folder is walked directly.
+Protected paths (backend/app/referee/checks.py, audit/promotion.json, audit/final-audit.json, artifacts/heldout2/) are
+never read or hashed by the script (only size and mtime, 'protected_not_read' in the .json); checks.py equality with the
+tip is established by the repo's gate_freeze.py (verify/gate_freeze/compare.txt: scorer_hash and tree_referee equal).
+Passes: pass 1 (commit_list/commit_list_pass1.txt, after the test suite) and the final pass that wrote COMMIT_LIST.txt.
+The 17 product lines are byte-identical in both.
+
+EXCLUDED
+  * Nothing inside the evidence folder needed excluding: no caches (__pycache__, .pytest_cache, .DS_Store, *.pyc), no
+    SQLite file, no file over 5 MB, no symlink, no tree copy, no copy of checks.py, promotion.json, final-audit*,
+    heldout2 or any .env name (surveyed before pass 1; 'excluded_evidence' is empty in the .json).
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.json themselves (a file cannot contain its own hash).
+  * Files written after the final pass are not in the list: verify/commit_list/secret_scan_final.txt and
+    verify/commit_list/shasum-check.txt.
+  * Outside the repo and never listed: the verifier's scratch folder /Users/shree/FaultLab_Scratch/verify-citations
+    (a git-archive checkpoint of d38c0b8 with audit/promotion.json and audit/final-audit.json removed unread, a scratch
+    test tree = checkpoint + the 17 files, doc/backup copies for diffs, the rebuild's store copy); deleted before pass 1.
+    The rebuild's and the differential check's own scratch copies were deleted by those scripts (scratch_copy_deleted
+    and scratch_deleted = true in their outputs).
+  * Not in the list and not to be committed: caches, node_modules, .venv, .env, frontend/dist, sqlite files.
+
+CONFLICT COPIES
+commit_list/conflict_scan.py over the whole faultlab tree (names only; skips .git, node_modules, .venv, caches, and
+prunes artifacts/heldout2): 0 conflict-like names outside artifacts/. Inside this round's folder the only hits are the
+scan's own two files (conflict_scan.py, conflict-scan.txt: their names contain "conflict"). Other hits are older folders
+under artifacts/ from earlier rounds, not part of this list.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py (copied unchanged from the loop-limits verifier) is run over every file in the final list after
+it is written; result in commit_list/secret_scan_final.txt. Pass 1: 225 files scanned, 0 hits. Self-test
+(commit_list/secret_scan_selftest.txt): it flags the known dummy key in backend/tests/test_providers.py (masked).
+
+EVIDENCE MAP (verify/)
+  git_state.sh, git-state-start/-after-suite/-end.txt; tree_vs_backup.py, tree-vs-backup-*.txt;
+  saved-stores-sha256-start/-after-suite/-end.txt (43 files: 11 lab stores with -wal/-shm);
+  run_suite_with_monitor.sh, full-test-sh.start/.end/.log, net-monitor.log (scripts/test.sh once, lsof monitor);
+  identity/ (product identity functions on the d38c0b8 checkpoint and the working tree; compare.txt; end-check.txt);
+  gate_freeze/ (the repo's gate_freeze.py on both trees; compare.txt); protected/ (byte identity of named files and
+  folders; frozen function text and AST);
+  spot/ (checker probe, 13 negative controls in the scratch tree, the fixer's request rebuild and the builder's
+  differential check re-run with the verifier guard, a no-cache frontend type check);
+  ignored_deps/ (the new tests run in the scratch tree with every opened path recorded and classified);
+  commit_list/ (list script, pass 1, conflict and credential scans).

@@ -13,6 +13,7 @@ from app.lab.budgets import CANDIDATE_CALLS,BudgetExhausted,StopRequested
 from app.lab.tracing import execute_phase,execute_sync_phase
 from app.lab import evidence_wait
 from app.lab import loop_limits
+from app.lab import citation_status
 from app.contracts.tokens import ModelInputLimit
 
 def source_validation_assessment(batch,target_invariant):
@@ -156,6 +157,11 @@ async def run_learning_cycle(coordinator,campaign,runner):
         # Challenge picks (faultlab-challenge-selection/v2-candidate-reach): WITHDRAWN before any live run. No new plan
         # declares it and Start refuses a plan that does (run_plans.withdrawn_rule_problem), so this is always None here.
         explorer.challenge_reach=loop_limits.challenge_selection_rule(store,campaign)
+        # Native citation status (faultlab-mechanic-evidence/v2-native-citation-status; native adapter v2 Learn plans only):
+        # each Mechanic diagnosis or candidate request and each challenge Explorer request that carries episode evidence
+        # gets the adapter's recorded per-episode citation outcome (app.lab.citation_status). None: today's requests exactly.
+        citation_rule=citation_status.campaign_rule(store,campaign)
+        challenge_explorer=explorer if citation_rule is None else citation_status.CitationStatusExplorer(explorer,store)
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -220,6 +226,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
             if reduced.result.status in ('FLAKY','INCOMPLETE'): continue
             coordinator.transition(id,'DIAGNOSING')
             diagnosis_mechanic=mechanic if context_rule is None else loop_limits.BoundedMechanic(mechanic,store,campaign_id=id,counterexample=counter)
+            if citation_rule is not None: diagnosis_mechanic=citation_status.CitationStatusMechanic(diagnosis_mechanic,store)  # block first, then the size rule counts it
             try:
                 diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,diagnosis_mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
             except loop_limits.MechanicContextUnfit:
@@ -235,6 +242,9 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 candidate_count+=1
                 try:
                     proposal_context={'campaign_id':id,'source_context_id':source_context,'parent_version':incumbent.version,'target_invariant':counter.target_invariant,'diagnostic':diagnostic.model_dump(mode='json'),'development_evidence':summarize_evidence(source_evidence+reproduced_evidence+intervention_evidence+source_feedback_evidence),'candidate_history':list(candidate_history),'challenge_counterexamples':list(feedback),'source_validation_feedback':list(source_feedback),'runtime_contract':runtime_contract(store,current),'retained_fault_spec':retained.model_dump(mode='json'),'reduction':reduction_summary}
+                    if citation_rule is not None:
+                        # Added before the size rule counts the request; that rule compacts only the evidence tables.
+                        proposal_context=citation_status.attach(store,proposal_context,request_kind='mechanic_proposal')
                     compaction_ref=None
                     if context_rule is not None:
                         size={'source_context_id':source_context,'candidate_index':candidate_count-1}
@@ -301,7 +311,7 @@ async def run_learning_cycle(coordinator,campaign,runner):
                         continue
                     coordinator.transition(id,'CHALLENGING')
                     prior_evaluation_ids={b['batch_id'] for b in store.list_records('evaluations')}
-                    challenge=await execute_phase(getattr(runner,'trace',None),'challenge_policy',explorer.metadata,{'source_episode_id':source.episode_id},lambda: (Challenger(store,explorer,evaluator) if identity is schedule_identity else Challenger(store,explorer,evaluator,identity=identity)).run(current,incumbent,candidate,source_batch,reservation=name,prior_hashes=[identity(retained)],prior_recipes=[retained],evidence_summary=summarize_evidence(source_retest_evidence),stop=stop))
+                    challenge=await execute_phase(getattr(runner,'trace',None),'challenge_policy',explorer.metadata,{'source_episode_id':source.episode_id},lambda: (Challenger(store,challenge_explorer,evaluator) if identity is schedule_identity else Challenger(store,challenge_explorer,evaluator,identity=identity)).run(current,incumbent,candidate,source_batch,reservation=name,prior_hashes=[identity(retained)],prior_recipes=[retained],evidence_summary=summarize_evidence(source_retest_evidence),stop=stop))
                     from app.contracts.models import TrialResult
                     # Keep failed infrastructure attempts too, not only pairs that
                     # qualified after the evaluator's allowed infrastructure retry.

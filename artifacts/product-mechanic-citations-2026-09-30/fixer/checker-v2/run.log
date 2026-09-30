@@ -1,0 +1,10 @@
+self-test exit=0
+{"campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963", "read_out_status": "POST_HOC", "summary": {"MISREADING": 1, "SUPPORTED": 0, "NOT_CHECKED": 0}, "verdicts": [["diagnostic-57fa14bc65e941bfa5d55c392d325b7c", "MISREADING", ["cannot be decoded", "never shown"]]]}
+v2d exit=0
+{"campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa", "read_out_status": "POST_HOC", "summary": {"MISREADING": 1, "SUPPORTED": 0, "NOT_CHECKED": 0}, "verdicts": [["diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d", "MISREADING", ["never shown"]]]}
+v2e exit=0
+usage: scripts/experiments/check_evidence_gap_misreading_v2.py
+       [-h] --read-out {post-hoc,pre-registered} export [out]
+scripts/experiments/check_evidence_gap_misreading_v2.py: error: the following arguments are required: --read-out
+no --read-out: exit=2
+ls: artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/unlabelled-must-not-exist.json: No such file or directory

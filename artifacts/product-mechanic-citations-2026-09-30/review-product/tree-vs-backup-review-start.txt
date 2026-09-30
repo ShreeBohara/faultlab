@@ -1,0 +1,18 @@
+CHANGED CURRENT_STATUS.md
+CHANGED backend/app/lab/learning.py
+CHANGED backend/app/lab/run_plans.py
+CHANGED docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md
+CHANGED docs/user-guide.md
+CHANGED frontend/src/components/CampaignPlan.tsx
+CHANGED frontend/src/components/LoopLimits.tsx
+CHANGED frontend/src/components/RunSetup.tsx
+CHANGED frontend/src/loopLimits.ts
+CHANGED frontend/src/runPlans.ts
+ADDED backend/app/lab/citation_status.py
+ADDED backend/tests/experiments/test_check_evidence_gap_misreading_v2.py
+ADDED backend/tests/lab/citation_status_saved.py
+ADDED backend/tests/lab/test_citation_status.py
+ADDED docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md
+ADDED frontend/tests/citation-status.test.tsx
+ADDED scripts/experiments/check_evidence_gap_misreading_v2.py
+TOTAL changed 10 added 7 missing 0 skipped(not opened) 1424

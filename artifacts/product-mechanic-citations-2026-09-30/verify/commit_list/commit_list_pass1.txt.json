@@ -1,0 +1,1586 @@
+{
+ "candidates_checked": 2394,
+ "differences": {
+  "CURRENT_STATUS.md": {
+   "sha256": "d043dd324c392084d0ed58504cfe47202ecf8eab22433b38ea1d6ba207780cb6",
+   "status": "MODIFIED",
+   "tip_sha256": "72b0bf60682be3ad232cda13da11174134255c3f2aa72f8133b84eea3a6323da"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/api-contract-check.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "217cfc949b61c5cb994a6f36998483b02455d2933ac58a2c74a2f552fe7ec573",
+   "size": 510,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/api_contract_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2fb15790c627ad6afe4ee1a625d716ff0ef5195c7c9cb898b1650b651120862b",
+   "size": 6448,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/checker-v2/run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a44b4c225cd53a122fba848fd6a67ccb8a96c23c0ce49e98e07fb4232ab60b3e",
+   "size": 865,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/checker-v2/self-test.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b295508afd6175314b5f67573dc47c357462803f68caf75bef44263f6df0e076",
+   "size": 133,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/checker-v2/sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d4c4f37f7e86a6e908381a853a2878a4b4fbec760e1623f2cbcfc7854ce08b2f",
+   "size": 817,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/checker-v2/v2d-misreading-check-v2-POSTHOC.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b486eb19563408edb8cf823d1d4303ea454af9b888898510c31f9aa8a595292e",
+   "size": 3796,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/checker-v2/v2e-misreading-check-v2-POSTHOC.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4945161b05f37e242fc0cb00133ee5083cf6ae4b39c900cd44b3f07b7151369",
+   "size": 3735,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/differential-requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f68a1047345b59ca53fb361342ef73ee7b4f1e8c399241d0b385f25ef40493f0",
+   "size": 2037,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/differential-requests.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/differential_requests.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1bb0c74417e5103b64193ddddd190ce61c2462e03a09068bdc6d56699af72dc9",
+   "size": 8014,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0c0633bf1c8d5cb7d65303fb4ae6acf5fc8a10d181734618c01daeb693021b2e",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bd3eea8f022d892a13733b013c92c1251d5e434ddbb449266a9fdb46a643b88e",
+   "size": 20570,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "555d52c8780e77aa937e68fda70dfcc9f26830e720eb30896244cd09f4341467",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/after.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "faad4766b23bfee242bc352ea644e83af7285228805a40511e64c663bc4fa306",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/before.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9588e90e9c120663b4f9d0b0f2471e3531d0053a2e22529763e7eb81872457b3",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26aeabd9e48920c85dd8cd7c340811b01bd3fd7e5235b5cee68c49ccd900723f",
+   "size": 274,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/git-state-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8441dd91777c429deebb25cb9a4f1914b55bf40626915950eed7740635d6e8bc",
+   "size": 159,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ecfc1032ae5352b2bb9faaca53fbe10fc7f50da8ea800170152ed7c8995b1189",
+   "size": 3164,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity-before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2f51d44a2a79c17eb2823d7d1e218bc74eefeba40bcb7298a6abdf0846ffc049",
+   "size": 2971,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity-before.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5c3382634a490be4f6e323e653e9da133349e2214bd811cc93aeddeb067edd95",
+   "size": 5287,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0873e12b4d41997ff49c7c0b1b820108d4b9e08bfbbcf82d9b701556806a4977",
+   "size": 1674,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/mutation-before-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "78fc8e67629abbac048dcb6223a3f76be61681bca9523933f55d998151b7109f",
+   "size": 391,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d285a15d27236fcd3fc42da86662643847ab2f19ae5572f4df30865a3b40442d",
+   "size": 3789,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "558aaaebb5eea6074818d065c971ba5c8ff1f032b55e7ff10dd595ee3524197d",
+   "size": 8096,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/rebuild-requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d091d67a6fb52c54b35dd3eaa38611d9e01c239e28ef86e7b22cad29b25c5d0",
+   "size": 3611,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/rebuild-requests.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/rebuild_requests.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9ca7c83321c15b70196caa5dfd4d2569faf742eabba22254b0e4fa58222ba67c",
+   "size": 10246,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52a0ddf4caa7b8a740977519b5ebd0d1e3460d087be5560c05925dd4e1e1c203",
+   "size": 4178,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52a0ddf4caa7b8a740977519b5ebd0d1e3460d087be5560c05925dd4e1e1c203",
+   "size": 4178,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/source-sha256-after-suite-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a753bc62e4131d34bbeded5d5c30b104639995338eb5a87f57906b5b71199e79",
+   "size": 52,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/source-sha256-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8811938d303f5da83f04fa25e7e10b67fa003db14108a3cb2bb4623a8598a8ed",
+   "size": 60288,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/tree-vs-backup-before.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8e3e51f7fafdb02b61c2fac3f53284b110d005664fd8231a92ecf6ff338519d2",
+   "size": 263,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0ddc1f41cdcc4fde1f941cdac0a66b113051029fb414aaec80695ef0d7242d37",
+   "size": 1025,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/tree_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6dc0e15183ac3e6aa10a5622789b077006e7f2fc446a86fd0ab8df991aae9ff6",
+   "size": 2639,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/builder/v2e-diagnosis-request-excerpt.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4261392d1dce7db842ae3317c6a48b155d535b4811ac5add09b736c36243e53",
+   "size": 4480,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0500ef2b4dbbb1b183339dfb3e9163eda4cce71b08ba2a193ddcc41ad85cbeeb",
+   "size": 4047,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/probe.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/product-echo-probe-rerun.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6afb35c9d0d2dfc1caa5dc26a4aa094ad6dfcd587f58a0ee75b8b785b5dd179c",
+   "size": 1242,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8b6ffe3f164fdcbbd53768385515fd2344c1c9fd34bf685513faaf720311ea07",
+   "size": 947,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/self-test.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "33293d6da3434e013968f09c6401151c20d89486f98b5cd8b0b0d27f6dbf8446",
+   "size": 224,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c051d5cc6d2757ac58c67020f3c1a0a755d21849b4a5d3b4d78b21f4d435c639",
+   "size": 1113,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/v2d-misreading-check-v2.1-POSTHOC.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0fedbdd6c04e19aed5b2699b15c0faf8cf7b097ac2a652076c065453e21485ae",
+   "size": 5407,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker-v2/v2e-misreading-check-v2.1-POSTHOC.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "33f1b3f5130c06326dcb881ca2cfcf6b5268b6e8ca7d63e57ec637df6fc3505c",
+   "size": 5022,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/checker_v2_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5433ee2cfb20b47fcbba7d4cdd98ceb2ddd480a61e2243f42ea204b14a349711",
+   "size": 2056,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "feb801c30ed72991f16f7139a71ff4b12620d23e12d233095fcda93a1ff9f298",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3d895ae667b2683ace899cd7eebb7257c7d496e5d2556fc2dffbc94645e9fc31",
+   "size": 20649,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5828f559bd10f795a92b984b8b63ff02fd1a12f46c0d24a33abe4e497f181cdf",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/gate_freeze/after.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/gate_freeze/after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64fa886862e0b210c891145473ecc982fe3f74646ea37a4be20d2fe664225653",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "14453fc47a2d44c0f3b4be53654f80e6c0fb14a1a8c6dbaf4b67d96bebb16ae1",
+   "size": 676,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/git-state-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8441dd91777c429deebb25cb9a4f1914b55bf40626915950eed7740635d6e8bc",
+   "size": 159,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cac6bbd206dac95e60a3502d213b732025ea59db30361b6440de29c47529530e",
+   "size": 180,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2eb0ed4b59a9eb73cc09e86f118a5ab06603976b9ec627566312963ba42721d1",
+   "size": 3164,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1575cd72f97b867a5bfd8c3eb13ef1bf85be8875200320fcddca5665ebbb90d4",
+   "size": 5353,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2eb0ed4b59a9eb73cc09e86f118a5ab06603976b9ec627566312963ba42721d1",
+   "size": 3164,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity-end.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0873e12b4d41997ff49c7c0b1b820108d4b9e08bfbbcf82d9b701556806a4977",
+   "size": 1674,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/mutation-before-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8550e2447efdbb62219cb553bd1e6e2eb5bf67f1c323f29967dc55289a4c5721",
+   "size": 218,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "74940ef1b3a9ba176b3674d92f6e80a849d4cdb45b2a0394df47788ed8314356",
+   "size": 8289,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/mutation-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a86d5301a5c4bcbadacb559cd11eb887df9949a706f3cf6fee6d704b447a9bb7",
+   "size": 7375,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52bd1c3b9bcee7b57d691506fc6d2bc84e1a39b0ab0b4e27774086a77f976d98",
+   "size": 4708,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/rebuild-requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "de7f323af5136e9d0435b2bdf90ae13958674fb99b4be7730aade10e3545b779",
+   "size": 3611,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/rebuild-requests.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/rebuild-requests.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4ffa31037cb52b7c0e4cad454cc519b4b469a17b827194f46946417781c3db63",
+   "size": 2111,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/rebuild_requests.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "813d0758f34c64a43b81090cc082213a407c8341e950b571789e93b7d91f7a44",
+   "size": 10220,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/source-sha256-after-suite-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8e8b20127f5197021133d9d3d19c99d6b3116701943a848bf59415e37ecbdbce",
+   "size": 57,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/source-sha256-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "86d952c836cc8141abbdb951219cf67f154ef1cc4fa2e97e60027a75ffe3672a",
+   "size": 60288,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/targeted-tests-after-fix.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4b15a12685fadcb9af99ad50417b468d8ef808ccc427c5774691c17d69a93577",
+   "size": 303,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/tests-before-fix.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ff03a9da1749e65f40b6ca7735433600e57c65ff30f35712165c6fe516d683aa",
+   "size": 6467,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/tree-vs-backup-before-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0ddc1f41cdcc4fde1f941cdac0a66b113051029fb414aaec80695ef0d7242d37",
+   "size": 1025,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0ddc1f41cdcc4fde1f941cdac0a66b113051029fb414aaec80695ef0d7242d37",
+   "size": 1025,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0ddc1f41cdcc4fde1f941cdac0a66b113051029fb414aaec80695ef0d7242d37",
+   "size": 1025,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/tree_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6dc0e15183ac3e6aa10a5622789b077006e7f2fc446a86fd0ab8df991aae9ff6",
+   "size": 2639,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/fixer/v2e-diagnosis-request-excerpt.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2ecd81bdd4f1da48e2a360f32c53a46f018389faa80d87538782b13946ce2de0",
+   "size": 4525,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/checker-v2-negation-probe.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ffe0e98d8fe049c2236db5f5fec5d9d39baf501c946b335dfe519f58b909e677",
+   "size": 813,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/checker-v2-rerun/v2d-v1.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a1aa48725f60c391e848a852be0fc9e52a84db7c81df2d357af0a05da088dc7c",
+   "size": 3029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/checker-v2-rerun/v2d-v2.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b486eb19563408edb8cf823d1d4303ea454af9b888898510c31f9aa8a595292e",
+   "size": 3796,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/checker-v2-rerun/v2e-v1.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7899f62c3eb4b79a4bc44715fbe1ffda35f574547697e2d678ddda6abc2bc570",
+   "size": 2993,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/checker-v2-rerun/v2e-v2.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4945161b05f37e242fc0cb00133ee5083cf6ae4b39c900cd44b3f07b7151369",
+   "size": 3735,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/gate-freeze-backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/gate-freeze-backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9588e90e9c120663b4f9d0b0f2471e3531d0053a2e22529763e7eb81872457b3",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/gate-freeze-tree.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/gate-freeze-tree.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "faad4766b23bfee242bc352ea644e83af7285228805a40511e64c663bc4fa306",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/identity-backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/identity-backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2f51d44a2a79c17eb2823d7d1e218bc74eefeba40bcb7298a6abdf0846ffc049",
+   "size": 2971,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/identity-compare-review.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "24fdbdec5f260a3f0f45fe032aa0f6c3f1dff63e68b74141f5647b6c5eed2705",
+   "size": 3679,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/identity-tree.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/identity-tree.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ecfc1032ae5352b2bb9faaca53fbe10fc7f50da8ea800170152ed7c8995b1189",
+   "size": 3164,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review-saved-plans.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "76e5d758dbfd0ce658ba27afb911ce61d153cc7ec100c10cda3303396d586e42",
+   "size": 3608,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review-saved-store.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5eb258dac9d067d82d1243d0424e7829535e9d64532529dd829747df65d7d998",
+   "size": 3504,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review-v2d-candidate.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c2c65cdf34efec3b82ac038b99c17b83772acb97e8f09a37722edc9b2cac481a",
+   "size": 670,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review_saved_plans.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9f817bc6a3bb47d3f4e3a6dc795f086427d65dfc5352f36092825d1387978232",
+   "size": 3029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review_saved_plans_diffkeys.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d4ef2f1fe87135eac48d353ac4c17a924424c2cade67053785206d134f0e6000",
+   "size": 1662,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review_saved_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "afdf4841fb629f46c36ee581fae122e85309bf6747b21529b9ed548baecd98fb",
+   "size": 8362,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/review_v2d_candidate.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "af46e8c9ecc9aa17598ab9ece8c2bc69eb7220d58e369254cd0c82966c6d4152",
+   "size": 3308,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/saved-plans-dump-backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2f4d66ed6155b40d7a13714f04cbe5f4fb32c992164d61d0aaa83af65bf118cc",
+   "size": 4659,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/saved-plans-dump-tree.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1ecce166287fb5f32e6848be40bc41160706f8bef42110e55555d43608815310",
+   "size": 4658,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/saved-stores-sha256-review-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52a0ddf4caa7b8a740977519b5ebd0d1e3460d087be5560c05925dd4e1e1c203",
+   "size": 4178,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/saved-stores-sha256-review-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52a0ddf4caa7b8a740977519b5ebd0d1e3460d087be5560c05925dd4e1e1c203",
+   "size": 4178,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/targeted-pytest.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "03df5b8c49f42071f13acbde3c56d4ac1d49a6924d3cec468c9b171dfd8f6fe7",
+   "size": 271,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/tracked-artifacts-vs-backup.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aa22c310c773cec099be82375b2b43e6481205bdc0beeec6bae9b79d81de4d48",
+   "size": 77,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/tree-vs-backup-review.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3da76dcd2015c594a095cfc4c63850dce75a8bebbf8626cb4657291b904a51e2",
+   "size": 65783,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-integrity/tree_compare_review.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2c81d3fefb555086dc14fc215175b9ea5e0096a1e327002d4e3dc36a1e65cb51",
+   "size": 2375,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/echo-probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1bb693121109b3fdf576b3f5e09c4fc7433f06b2ee90518055bd5d233111cb71",
+   "size": 1419,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/self-test.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b295508afd6175314b5f67573dc47c357462803f68caf75bef44263f6df0e076",
+   "size": 133,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2d-v1-rerun.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a1aa48725f60c391e848a852be0fc9e52a84db7c81df2d357af0a05da088dc7c",
+   "size": 3029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2d-v1-rerun.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f3d3c8d8251e89cf5c2c604adbb3a48230dde3668192e8393cd4faf27fba6c56",
+   "size": 203,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2d-v2.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b486eb19563408edb8cf823d1d4303ea454af9b888898510c31f9aa8a595292e",
+   "size": 3796,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2d-v2.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f43f5ff49c71c38da52baed0dcf21b545c4dacaa94c38d5bc51820f139739e1b",
+   "size": 240,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2e-v1-rerun.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7899f62c3eb4b79a4bc44715fbe1ffda35f574547697e2d678ddda6abc2bc570",
+   "size": 2993,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2e-v1-rerun.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d2aec884bb6f2134b11f3d9c49d75de05a4a79cfff6cc65b735d775c0216ed1",
+   "size": 203,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2e-v2.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4945161b05f37e242fc0cb00133ee5083cf6ae4b39c900cd44b3f07b7151369",
+   "size": 3735,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker-v2/v2e-v2.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4143ab3a55f2a3f3dd22b08a9d35a29f28ec578bba3d86c488a7ff8e9ede80a",
+   "size": 219,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/checker_v2_echo_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "441fb9d494445a10cee9e5ad802971722bcb00d68cef454c12a580c971ea03ae",
+   "size": 1897,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/e2e-loop-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "538b19a2bb6441e9d8434a1f6834bdb4864a4a8b48bbc2f77178ff5ddb59b3b5",
+   "size": 21285,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/e2e-loop-check.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a2e9d11ed3ffc695585a672c7e4aa4b78135f7b37eedf71bfaf64feb502668dd",
+   "size": 62,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/gate_freeze/review.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/gate_freeze/review.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "faad4766b23bfee242bc352ea644e83af7285228805a40511e64c663bc4fa306",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "352fd516d5940feede3d63cdcedf6193afb453f4ff0cea691d9affb0f71915ed",
+   "size": 640,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/identity-review.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3ea273713738d58de19308dd0709e0250ac77168684ad2ed01043c4bb1c297c1",
+   "size": 1781,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/identity-review.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a2e9d11ed3ffc695585a672c7e4aa4b78135f7b37eedf71bfaf64feb502668dd",
+   "size": 62,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/review_e2e_loop.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e100bc0a3a0e591cc0d1e16ae2d5cdfb65cac5069023b9929ed813f6d9068c7b",
+   "size": 14401,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/review_identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5f26280775f1abf5f72b4cde5761640db9a5a66f0922e9a9024b5b7939c630ea",
+   "size": 1687,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/review_saved_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0615f60ead78674268c1515076fd72ef8cfd5a73df9cf8c1c0404dbc7692d22",
+   "size": 14951,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/rguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1a57d2b5bb37568327d0fb3d744f1f8c4f91bbef91b3d5da73a48ecf1765334a",
+   "size": 1883,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/saved-store-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "466606e8cc4fc730733f6ee745fa1ea7bdf959a8f8c854d791b90d7f013994af",
+   "size": 9797,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/saved-store-check.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a2e9d11ed3ffc695585a672c7e4aa4b78135f7b37eedf71bfaf64feb502668dd",
+   "size": 62,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/targeted-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cf366e8a1d74e3d9a71a838dcd91c9415301c9f858deeb4c7645b6c1c5b86752",
+   "size": 100,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/tree-vs-backup-review-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3dcc01c3488429efe2d31816970046a74a1d8ea90f1867c356a11f2518889f9a",
+   "size": 821,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/tree-vs-backup-review-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3dcc01c3488429efe2d31816970046a74a1d8ea90f1867c356a11f2518889f9a",
+   "size": 821,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/review-product/tree_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "00e68355d1c65175424771861a05f7f251c2925e2032c65193039257af57c473",
+   "size": 1808,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/commit_list/commit_list.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "368d3056f90869a365a519e0b2f4142dfd0a4b7e10bf4f4e4e25bab7529ab99d",
+   "size": 7982,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/commit_list/conflict_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c2bf2dabe8376dcffb4508aad13be9542fb861a355459fa1ddb0072c1e223b",
+   "size": 1260,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/commit_list/secret_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aab015745ee935daba53f277bec4faadb720f66635d7bcb448f60e46f8e5cf9d",
+   "size": 2131,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8eeaee6d9af316885fc90c006b1751199ff38e84465f5449e6417dac3643ff4b",
+   "size": 63,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "db7436d379e1cf85e42885e2e1957c40ec532f148e7ed995a47a24b6beef7c0a",
+   "size": 20643,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52fea7c68c32a5ef5df33eff9a7977ca86738d2383af8e41e1152d7bdfcafabf",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/checkpoint.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/checkpoint.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9588e90e9c120663b4f9d0b0f2471e3531d0053a2e22529763e7eb81872457b3",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cd4a7e2f776d2e83978bd163edbbc17a05c29cc136516add306271c0c4c2772a",
+   "size": 736,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b1e2ee067b0d0bc99bb8d57d88a921fc21ba6018d26b2fd297327d275497075e",
+   "size": 2347,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64fa886862e0b210c891145473ecc982fe3f74646ea37a4be20d2fe664225653",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c2b2b6bc845535fc7617f2f0486bcfcd5934ef56d515de5df7dca4f2fabab8a8",
+   "size": 908,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/git-state-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c6a94587a4469d11bca18a2081152460137e00141b6331329eb56dd8ece52ec0",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7c3d7ff364aeb4053dcde1bcbfcd8db341d2f077aa730253d3a919d68072e8b4",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/git_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "abc17d57c0e24d95812ea24b6defacb924cbeb6007feb8c71ed2ec10fd471750",
+   "size": 749,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3471c368a2f0d46a67ee4cbefd5e5cf0bac5a049dfcc5c215c7eb86c385d5994",
+   "size": 3053,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5283a7434d7cfde5a573a6428a4e13fa426099127a8c05fb5e9150606c9cdb23",
+   "size": 1307,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3b1fbb13453858d1c8a0b5d14b661eeb794cbef26b8e92897ef009fa72437077",
+   "size": 5442,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/current-end.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/current-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c22342d5296c3302a098fe8e5a832a7e03945badde9f1c0356682d5e359336df",
+   "size": 3136,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c22342d5296c3302a098fe8e5a832a7e03945badde9f1c0356682d5e359336df",
+   "size": 3136,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/end-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8d3c99cc323cfd583101db8c299935301d0b55fbee279dd07677336204150083",
+   "size": 41,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/identity/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "044c133b1faba76540c48e3165b038851048a03c5fbd0811df5695cd7fdc057d",
+   "size": 3915,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/ignored_deps/backend-new-tests-scratch.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2b060b549d8add98578176377244f651a9842da6b725bbb7b05307bd4ef96caf",
+   "size": 193,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/ignored_deps/backend-opens-classified.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ab7866ce73ba660a41f0c027c355d304e32993f12d12605ff1c08b886616d42c",
+   "size": 1279,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/ignored_deps/classify_opens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a08486dab9690c7e0f2e4e9d9f23e4cf8b453856dfc02b9becc9ddef024afea3",
+   "size": 2972,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/ignored_deps/opens-raw.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f949035ee6dd08861794ddf4186fc5fdd2237d6920068dad715ec698a3977203",
+   "size": 186015,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/ignored_deps/vopens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7fcbe934769e32fbd3a1c34dbc0f67e3ba763226bd54d68d706f0e348eb1eeba",
+   "size": 680,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/net-monitor.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/protected/byte-identity.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fff17a6ba0421b10dc5b82efd79a89c2fa108523b40b1a91e2ebd7e44db7de5a",
+   "size": 2285,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/protected/byte_identity.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "1b773a46e7b88d86b81b5e779c1ad138f62d95c93dced1e4a00ecaf3798c2360",
+   "size": 2255,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/protected/frozen-functions.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4e852f724ddb52b3c697e162ee5d1322fbfe5319614b46c9c0d5beebde4347eb",
+   "size": 544,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/protected/frozen_functions.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "50c48debe11b4ae98664052cb57dcce5d2c25a6b278b476bd33610af1d1ea901",
+   "size": 1642,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/run_suite_with_monitor.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "d409bf74c9a5c1adfc4113de870ef6327a01ec3df88850df59f717c7ed09699a",
+   "size": 1199,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/saved-stores-sha256-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7100eaed70b5d497c0b0437a4994df27f602e9c6efba290dd029292be8bba2d1",
+   "size": 6029,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/builder-vs-fixer-files.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "22a0dc5cfae7e01b605fbf3e5a031f1ddd5be11e4efe0b28324c58e6c67ac1e8",
+   "size": 692,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/checker-probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d0d9fcb09f54461f146a192e52eb53e3fc145d318c33184cfbb449586a071a8",
+   "size": 12349,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/checker-probe.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/checker_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "df427f9e55f790f734ea21b7c29ad41359a5ba4d4ffcbb757be0b0e153bdfcb7",
+   "size": 8699,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/differential-requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f68a1047345b59ca53fb361342ef73ee7b4f1e8c399241d0b385f25ef40493f0",
+   "size": 2037,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/differential-requests.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/differential-requests.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f68a1047345b59ca53fb361342ef73ee7b4f1e8c399241d0b385f25ef40493f0",
+   "size": 2037,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/differential_requests_verifier.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9bcb3a4a6d0f65e0f7283a0a5cf9a6d4e0cae8f796069f3409c36e636a113fb7",
+   "size": 8423,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/frontend-tsc-nocache.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cbf7de6a7ab22aa8f3b63eed31368677222a5389d4a0bcaa112a952910051cec",
+   "size": 11,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "94b695bba471b7e0381fe04b0314dcf7f7c8d1a88bbde7f0400a964df8716bce",
+   "size": 1583,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c95f4b0d6a4566af3f458d69f0ebe2623c31fee68838aac5bfea9804e95c588c",
+   "size": 5261,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/rebuild-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "433f76de876793fda77f9debf729b07cdedc7dc23568bde961d07fcba20d8080",
+   "size": 1660,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/rebuild-requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f50c8729c81ed01ed68fdd4b79aff7d53fb49d2d91f978125804e178ae441e4a",
+   "size": 3785,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/rebuild-requests.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d77bd718dd3965df175133a781f52b5203b64b34406d02519bc357d6f4df7689",
+   "size": 442,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/rebuild-requests.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64bc477f6b6e792e33629da9d3c4c10bfe3e5d8042d4f29e65448f6437c33903",
+   "size": 2285,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/rebuild_requests_verifier.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b31da936131d17c510601a33bf12a71d5be3dcbb755a8fe102afd27fd963e7c0",
+   "size": 11851,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/v2e-diagnosis-request-excerpt.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2ecd81bdd4f1da48e2a360f32c53a46f018389faa80d87538782b13946ce2de0",
+   "size": 4525,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/spot/vstub.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0158a71f01b8d967e78e533e445018172a6a3e12f9a85cf29749a99044780ff",
+   "size": 976,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/tree-vs-backup-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "27865d495fa0e56e2a161157bc3dec20b1e65214ee9df7044a2086bf2a555fc8",
+   "size": 2022,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/tree-vs-backup-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "27865d495fa0e56e2a161157bc3dec20b1e65214ee9df7044a2086bf2a555fc8",
+   "size": 2022,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "27865d495fa0e56e2a161157bc3dec20b1e65214ee9df7044a2086bf2a555fc8",
+   "size": 2022,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/tree_vs_backup.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9045f82ab2e5f777ceb92d973d4e0d40ca6aba3e304e4612dbf4d1f18028864b",
+   "size": 2440,
+   "status": "NEW"
+  },
+  "artifacts/product-mechanic-citations-2026-09-30/verify/vguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae45119cb9d60e64c6664c41c86225a7536185e3621ac317fd9eca1feca397a4",
+   "size": 3166,
+   "status": "NEW"
+  },
+  "backend/app/lab/citation_status.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "d1a5bc26bba5b17670ca0426b05809ec1ef2039a09285f85241966ed71d00a54",
+   "size": 11446,
+   "status": "NEW"
+  },
+  "backend/app/lab/learning.py": {
+   "sha256": "67725f11125b675b51d0814b1c793f2215f7bdd658500cbea1f5a95ac8423209",
+   "status": "MODIFIED",
+   "tip_sha256": "bd78437ce0ab62b3b87b83e4aaa15ee56a01c307900177e5d9708a267d532e29"
+  },
+  "backend/app/lab/run_plans.py": {
+   "sha256": "7f097546ee2e33fecd80983d89c2be8fd0296fdf41fccce5deba3a566d50bcac",
+   "status": "MODIFIED",
+   "tip_sha256": "df044f44425355d17e3a21a54944f37f32b5c51d01c88eb670740f058c638d38"
+  },
+  "backend/tests/experiments/test_check_evidence_gap_misreading_v2.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "ed5e99712fb673fd1466accac6f826ef82cecfb6d80601e38f262d0f8fa368a3",
+   "size": 8616,
+   "status": "NEW"
+  },
+  "backend/tests/lab/citation_status_saved.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "85a9e3017c802701151f8fbc16d6a8fee7181299f755507d4c02898f93d22cd7",
+   "size": 4862,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_citation_status.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "3b385e8e6ffd7e103bd42c90c22eb4789b2931471fb01b944dab05104990fabb",
+   "size": 34264,
+   "status": "NEW"
+  },
+  "docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "9265d9cf22b753e122c58077315ce5b0d621e715f4bf88f2d74285712bb4ba6e",
+   "size": 22427,
+   "status": "NEW"
+  },
+  "docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md": {
+   "sha256": "7bab5b1f5c6f87fe7036623bad880b6682a455f63bff310d27c0df6c9c126f1c",
+   "status": "MODIFIED",
+   "tip_sha256": "7a567948f89de439b2a5aac4bac18799de0d22b7f86caad1a32941e6ff992b16"
+  },
+  "docs/user-guide.md": {
+   "sha256": "ee0f19e7b89b64eb52b6e1c340f66a6d89f9550547570c3f6c7ad8c95187aa85",
+   "status": "MODIFIED",
+   "tip_sha256": "ad184a0c95fe6f8d3fb8744b039232909ad58b2e0aa20be00c69e5276e06b1fb"
+  },
+  "frontend/src/components/CampaignPlan.tsx": {
+   "sha256": "e3264da7e5d8ef01848058ecb2a347a8ff60e656ef1442bee0d2b23e0b5773a6",
+   "status": "MODIFIED",
+   "tip_sha256": "f57703cbf8252a84bc7805956c574251d07396f82ce287b353f3b2fef8e9573c"
+  },
+  "frontend/src/components/LoopLimits.tsx": {
+   "sha256": "73ba62f2787e58d7b4550c97a321f6a2afd569268ada91052e0a4dbf5e1599bb",
+   "status": "MODIFIED",
+   "tip_sha256": "4a5798220de0ca38250f5d8808251c71cf2dfe3e0a42da452f01f3cc4a4bd78f"
+  },
+  "frontend/src/components/RunSetup.tsx": {
+   "sha256": "18af30bbe51d0ecd2fc72fb4da4486f84223e46b0516e606fe878eac97522f2a",
+   "status": "MODIFIED",
+   "tip_sha256": "16833b4c6761917c8f953a1a7efec789bd4192c762c635cbf92d67ff70a4b100"
+  },
+  "frontend/src/loopLimits.ts": {
+   "sha256": "1e6770425b3aee9c90b3260d8cb72b156b610324ded210e65f92b471ac51fec1",
+   "status": "MODIFIED",
+   "tip_sha256": "f24c10f854cfd89240d0ed49c6799bfd1c6078f47aa3ee9bc6174568a9aad1e2"
+  },
+  "frontend/src/runPlans.ts": {
+   "sha256": "e1dcd352f38e37f4bd2a012eb1b66dd4c29e209273b22a4a235753668d3abce6",
+   "status": "MODIFIED",
+   "tip_sha256": "7360be94ddce27a74fb018b06efe3b3c04fc03e19bf98fe57089879454183020"
+  },
+  "frontend/tests/citation-status.test.tsx": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "21476888b6cbce39fc1d8b1220cdecd58201c70302a5020cfa8bc9271c8fecd2",
+   "size": 7308,
+   "status": "NEW"
+  },
+  "scripts/experiments/check_evidence_gap_misreading_v2.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "11920882f8c7e9885242e455b7c37e3e8f8649d3bb1c86b927d6da5c07be3b7b",
+   "size": 19827,
+   "status": "NEW"
+  }
+ },
+ "excluded_evidence": [],
+ "protected_not_read": [
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/final-audit.json",
+   "size": 5771
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/promotion.json",
+   "size": 3996
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:30Z",
+   "path": "backend/app/referee/checks.py",
+   "size": 7809
+  }
+ ],
+ "tip": "d38c0b8dd0ca2d1b76f487cd3a19f13e6216adf3",
+ "tip_files": 2179
+}

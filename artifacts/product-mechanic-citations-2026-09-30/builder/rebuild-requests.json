@@ -1,0 +1,137 @@
+{
+ "scratch_copy_deleted": true,
+ "v2d_candidate_request": {
+  "block_alone_tokens": 1666,
+  "block_cost_tokens": 1573,
+  "block_unchanged_by_compaction": true,
+  "compaction_with_block": {
+   "attempts": [
+    35184,
+    29629,
+    22674
+   ],
+   "compacted_tokens": 22674,
+   "fits": true,
+   "stages_applied": [
+    "IDENTICAL_CLEAN_ROWS",
+    "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+    "NO_CLEAN_EPISODE_ROWS"
+   ]
+  },
+  "compaction_without_block": {
+   "attempts": [
+    33611,
+    28056,
+    21101
+   ],
+   "fits": true,
+   "stages_applied": [
+    "IDENTICAL_CLEAN_ROWS",
+    "ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP",
+    "NO_CLEAN_EPISODE_ROWS"
+   ]
+  },
+  "episodes_in_block": 34,
+  "episodes_with_every_cited_token_decoded": 34,
+  "episodes_with_zero_undecoded": 34,
+  "episodes_without_recorded_report": 0,
+  "kept_episodes_all_in_block": true,
+  "request_tokens_with_block": 34796,
+  "request_tokens_without_block": 33223,
+  "within_target": true
+ },
+ "v2d_diagnosis": {
+  "block_alone_tokens": 424,
+  "block_cost_tokens": 331,
+  "block_rows": [
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-65b09661d1744e54a446b6000d5f3d51",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-fa22f36722394550b7fe3514392e3216",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-21d6d63a16ff41a7b7e55e791018186f",
+    "undecoded": []
+   }
+  ],
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "counterexample_id": "counterexample-b5ad7261afb4478f95d36530642000d6",
+  "episodes_in_evidence": [
+   "episode-183b78c814f44c26af8030a16b0ede05",
+   "episode-65b09661d1744e54a446b6000d5f3d51",
+   "episode-fa22f36722394550b7fe3514392e3216",
+   "episode-21d6d63a16ff41a7b7e55e791018186f"
+  ],
+  "every_cited_token_decoded": true,
+  "every_episode_zero_undecoded": true,
+  "every_other_field_unchanged": true,
+  "memory_after_is_v2_memory_plus_pointer": true,
+  "memory_before_is_v2_memory": true,
+  "provider_reported_input_tokens": 8854,
+  "rebuilt_request_tokens_without_block": 8990,
+  "request_tokens_with_block": 9321,
+  "target_invariant": "C3"
+ },
+ "v2e_diagnosis": {
+  "block_alone_tokens": 429,
+  "block_cost_tokens": 336,
+  "block_rows": [
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+    "undecoded": []
+   }
+  ],
+  "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+  "episodes_in_evidence": [
+   "episode-88c3e54b243249c9aa00fa85c77177e3",
+   "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+   "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+   "episode-3982fa63e06a48ab826322e0a6ab1f5a"
+  ],
+  "every_cited_token_decoded": true,
+  "every_episode_zero_undecoded": true,
+  "every_other_field_unchanged": true,
+  "memory_after_is_v2_memory_plus_pointer": true,
+  "memory_before_is_v2_memory": true,
+  "provider_reported_input_tokens": 8952,
+  "rebuilt_request_tokens_without_block": 9088,
+  "request_tokens_with_block": 9424,
+  "target_invariant": "C3"
+ }
+}

@@ -1,0 +1,25 @@
+IDENTICAL 7326c0ea39496d68493bee75326ae5cfa62101f9 backend/app/lab/challenge.py
+IDENTICAL e636aeb4ccbce0ad3c388250ebd6679884fcb629 backend/app/lab/promotion.py
+IDENTICAL 9349b106d6caaf715b4c2573eeb2a0f57a420193 backend/app/lab/evaluation.py
+IDENTICAL 6a9779b8f3263bdfdf8acc0e65c73460369a4ea1 backend/app/lab/diagnosis.py
+IDENTICAL b74dcd5474bd834d5b5cd1254f831d8d221f1e93 backend/app/lab/reproduction.py
+IDENTICAL 2edac78210c19b0bc6919dd9378d1930e6ce45c8 backend/app/lab/reachability.py
+IDENTICAL ba670c9c8523616143f08aa3f3537ced038bf31c backend/app/lab/loop_limits.py
+IDENTICAL aac13067abbf2171a814d01e59f8b6ddb661ef64 backend/app/lab/policies.py
+IDENTICAL dd4ce44eb6450d43d5426da40917594b4da0fd94 backend/app/agents/mechanic.py
+IDENTICAL 526484a5736406af72fbe62dee56ebd64412b8b4 backend/app/agents/explorer.py
+IDENTICAL 997b691d5a6df625941346c96b7560754120fbbe backend/app/agents/actor.py
+IDENTICAL 606dd9dbb2f6097958e4e01914745bd7b27f9b34 backend/app/agents/prompts/actor.md
+IDENTICAL 07ae1b5a1232728e7bc0253a8e5e7b9d46099d66 backend/app/agents/prompts/mechanic.md
+IDENTICAL 4f1c4689919b4c1a748fd00152df4f03e6bdd0ac backend/app/agents/prompts/explorer.md
+IDENTICAL a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49 backend/app/integrations/external_agent.py
+IDENTICAL 3aab9348ff36e3058db36b090db82d556dd72165 backend/app/integrations/external_agent_v2.py
+IDENTICAL 521c9ab82982e20d970505eb7aa922636ea43596 backend/app/integrations/registry.py
+IDENTICAL e0de987be0d7e04d75480bd99e6b500123b3fa60 backend/app/lab/discovery_protocol.py
+IDENTICAL 1b8cb2ac98721593208da66e827bce9370b2c0dd backend/app/contracts/tokens.py
+IDENTICAL c2287655fec7c1c9cbd729e8fed716436330e3f7 backend/app/lab/policy_interpreter.py
+IDENTICAL e2980809692372fc34f5a3e0f5b77bf7345ea03f backend/tests/integrations/test_native_adapter_v1_golden.py
+DIR backend/app/referee: 6 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/simulator: 8 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR contracts: 100 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/contracts: 5 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup

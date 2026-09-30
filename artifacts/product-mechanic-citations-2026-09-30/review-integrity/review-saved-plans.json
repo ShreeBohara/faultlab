@@ -1,0 +1,196 @@
+{
+ "stores": {
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-durability/offline-01/lab.sqlite3": {
+   "agents": {},
+   "campaign_rule_none": 0,
+   "declares_mechanic_evidence": 0,
+   "differs": [],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 0
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3": {
+   "agents": {},
+   "campaign_rule_none": 0,
+   "declares_mechanic_evidence": 0,
+   "differs": [],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 0
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3": {
+   "agents": {
+    "reference": 1
+   },
+   "campaign_rule_none": 1,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "876374bd",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 1
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/offline-01/lab.sqlite3": {
+   "agents": {
+    "reference": 6
+   },
+   "campaign_rule_none": 6,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "dacf6c11",
+     false,
+     false
+    ],
+    [
+     "9e45521e",
+     false,
+     false
+    ],
+    [
+     "d45ae717",
+     false,
+     false
+    ],
+    [
+     "4278e12c",
+     false,
+     false
+    ],
+    [
+     "db610f33",
+     false,
+     false
+    ],
+    [
+     "1a144f9f",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 6
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-28/discovery-v2/lab.sqlite3": {
+   "agents": {
+    "reference": 1
+   },
+   "campaign_rule_none": 1,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "3c6e1819",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 1
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3": {
+   "agents": {
+    "smolagents": 1
+   },
+   "campaign_rule_none": 1,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "8f3d595b",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 1
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/discovery-v2b/lab.sqlite3": {
+   "agents": {
+    "reference": 1
+   },
+   "campaign_rule_none": 1,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "eabe8279",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 1
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3": {
+   "agents": {
+    "smolagents": 2
+   },
+   "campaign_rule_none": 2,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "cdb0afa8",
+     false,
+     false
+    ],
+    [
+     "286e2f7d",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 2
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3": {
+   "agents": {
+    "smolagents": 1
+   },
+   "campaign_rule_none": 1,
+   "declares_mechanic_evidence": 0,
+   "differs": [
+    [
+     "d75e66dc",
+     false,
+     false
+    ]
+   ],
+   "identical_bytes": 0,
+   "invalid": [],
+   "plans": 1
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3": {
+   "agents": {
+    "smolagents-v2": 2
+   },
+   "campaign_rule_none": 2,
+   "declares_mechanic_evidence": 0,
+   "differs": [],
+   "identical_bytes": 2,
+   "invalid": [],
+   "plans": 2
+  },
+  "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3": {
+   "agents": {
+    "smolagents-v2": 4
+   },
+   "campaign_rule_none": 4,
+   "declares_mechanic_evidence": 0,
+   "differs": [],
+   "identical_bytes": 4,
+   "invalid": [],
+   "plans": 4
+  }
+ },
+ "total_identical": 6,
+ "total_invalid": 0,
+ "total_plans": 19
+}

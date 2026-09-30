@@ -1,0 +1,16 @@
+< CURRENT_STATUS.md
+> CURRENT_STATUS.md
+< backend/app/lab/citation_status.py
+> backend/app/lab/citation_status.py
+< backend/tests/experiments/test_check_evidence_gap_misreading_v2.py
+> backend/tests/experiments/test_check_evidence_gap_misreading_v2.py
+< backend/tests/lab/test_citation_status.py
+> backend/tests/lab/test_citation_status.py
+< docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md
+> docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md
+< docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md
+> docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md
+< docs/user-guide.md
+> docs/user-guide.md
+< scripts/experiments/check_evidence_gap_misreading_v2.py
+> scripts/experiments/check_evidence_gap_misreading_v2.py

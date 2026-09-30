@@ -26,6 +26,8 @@ from app.lab.discovery_protocol import (BASE_PROTOCOL, DISCOVERY_V1, DISCOVERY_V
     DISCOVERY_V4, HISTORY_PROTOCOLS, REPLAY_PROTOCOLS, declaration as discovery_declaration)
 from app.lab.loop_limits import (CHALLENGE_SELECTION_WITHDRAWN, COMPACTION_TARGET_TOKENS, FORMAT_REPAIR_RESERVE_TOKENS,
     STAGES as COMPACTION_STAGES, mechanic_context_declaration)
+from app.lab.citation_status import (AGENTS as CITATION_STATUS_AGENTS, APPLIES_TO as CITATION_STATUS_APPLIES_TO,
+    ROW_FIELDS as CITATION_STATUS_ROW_FIELDS, declaration as mechanic_evidence_declaration)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -335,6 +337,31 @@ class ChallengeSelectionPlan(StrictModel):
     rule: str = Field(min_length=1, max_length=1600)
 
 
+class MechanicEvidencePlan(StrictModel):
+    """The frozen native citation-status rule (app.lab.citation_status, faultlab-mechanic-evidence/v2-native-citation-status)
+    of a Learn plan whose agent is native adapter v2."""
+    protocol: Literal['faultlab-mechanic-evidence/v2-native-citation-status']
+    agents: list[Literal['smolagents-v2']] = Field(min_length=1, max_length=1)
+    applies_to: list[Literal['mechanic_diagnosis', 'mechanic_proposal', 'explorer_challenge']] = Field(min_length=3, max_length=3)
+    block: Literal['native_citation_status']
+    row_fields: list[str] = Field(min_length=4, max_length=4)
+    source_event: Literal['report_submitted']
+    source_protocol: Literal['faultlab-native-adapter/v2.1-shown-order-labels']
+    reads_scoring: Literal[False]
+    compacted: Literal[False]
+    discovery_requests_changed: Literal[False]
+    meaning: str = Field(min_length=1, max_length=800)
+    memory_pointer: str = Field(min_length=1, max_length=600)
+    rule: str = Field(min_length=1, max_length=1600)
+
+    @model_validator(mode='after')
+    def exact_lists(self):
+        if (self.agents != list(CITATION_STATUS_AGENTS) or self.applies_to != list(CITATION_STATUS_APPLIES_TO)
+                or self.row_fields != list(CITATION_STATUS_ROW_FIELDS)):
+            raise ValueError('Inconsistent native citation-status declaration')
+        return self
+
+
 class SavedRunPlan(StrictModel):
     schema_version: Literal['faultlab-run-plan/v1']
     campaign_id: Id
@@ -365,12 +392,15 @@ class SavedRunPlan(StrictModel):
     mechanic_context: MechanicContextPlan | None = None
     # Withdrawn before any live run: no new plan declares it; a plan that does still reads, but cannot start.
     challenge_selection: ChallengeSelectionPlan | None = None
+    # Learn plans of native adapter v2 only, every new one (September 30, after live run v2e). Absent (not null) in every
+    # other plan and in every plan saved before it, so those plans keep their exact bytes and today's requests.
+    mechanic_evidence: MechanicEvidencePlan | None = None
     plan_hash: Digest
 
     @model_serializer(mode='wrap')
     def _omit_absent_loop_limits(self, handler):
         data = handler(self)
-        for key in ('mechanic_context', 'challenge_selection'):
+        for key in ('mechanic_context', 'challenge_selection', 'mechanic_evidence'):
             if data.get(key) is None:
                 data.pop(key, None)
         return data
@@ -515,7 +545,9 @@ def build_run_options(settings, store=None):
                   'transport_retry': transport_retry_declaration_v2(offline_configuration['episode_budget']['actor_calls']),
                   # The loop-limit rule every new Learn plan freezes (app.lab.loop_limits). The challenge-pick rule
                   # (v2-candidate-reach) is withdrawn and not offered.
-                  'mechanic_context': mechanic_context_declaration()},
+                  'mechanic_context': mechanic_context_declaration(),
+                  # Frozen only into a new Learn plan whose agent is native adapter v2 (its declaration names the agent).
+                  'mechanic_evidence': mechanic_evidence_declaration()},
         'compare': comparison, 'agents': agents,
         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
@@ -655,6 +687,10 @@ def prepare_run_plan(store, settings, request):
         # Only Learn sends Mechanic requests, so only a Learn plan freezes this rule. The challenge-pick rule
         # (v2-candidate-reach) is withdrawn before any live run (both reviews, HIGH-1) and is not frozen.
         plan['mechanic_context'] = mechanic_context_declaration()
+        # Native adapter v2 only: each Mechanic and challenge Explorer request that carries episode evidence also gets the
+        # adapter's recorded per-episode citation outcome (app.lab.citation_status). Other agents' plans do not declare it.
+        if agent in CITATION_STATUS_AGENTS:
+            plan['mechanic_evidence'] = mechanic_evidence_declaration()
     # Rule v2 (lab-role backoff) for every new Learn plan: only Learn runs Explorer and Mechanic requests.
     # Baseline and compare plans make agent requests only, so they keep rule v1 exactly as before.
     actor_calls = configuration['episode_budget']['actor_calls']
@@ -699,6 +735,8 @@ def _bindings(store, campaign, plan, *, first_start=False):
         raise StoreConflict('Only a Learn plan declares lab-role transport retries with backoff')
     if (plan.get('mechanic_context') is not None or plan.get('challenge_selection') is not None) and campaign.mode != 'learn':
         raise StoreConflict('Only a Learn plan declares the Mechanic request-size and challenge-pick rules')
+    if plan.get('mechanic_evidence') is not None and (campaign.mode != 'learn' or plan['agent'] not in CITATION_STATUS_AGENTS):
+        raise StoreConflict('Only a Learn plan of native adapter v2 declares the native citation-status block')
     offline = campaign.config_profile_id == 'offline-v1'
     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
@@ -848,6 +886,10 @@ def validate_run_plan(store, settings, campaign):
     # Mechanic rule must be exactly the installed one; the withdrawn challenge-pick rule never runs.
     if plan.get('mechanic_context') is not None and plan['mechanic_context'] != mechanic_context_declaration():
         raise StoreConflict('The installed Mechanic request-size rule differs from the saved plan')
+    # A native adapter v2 Learn plan saved before the citation-status rule declares none and keeps today's requests; a
+    # declared one must be exactly the installed rule.
+    if plan.get('mechanic_evidence') is not None and plan['mechanic_evidence'] != mechanic_evidence_declaration():
+        raise StoreConflict('The installed native citation-status rule differs from the saved plan')
     problem = withdrawn_rule_problem(plan)
     if problem is not None:
         raise StoreConflict(problem)
