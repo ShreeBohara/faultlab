@@ -1,0 +1,910 @@
+{
+ "ac_equality": {
+  "adapter_protocol": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "implementation": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "memory": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "native_template_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "prompt_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "source_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "task_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "transport_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ]
+ },
+ "equality": {
+  "control_fault_spec": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "counterexample_id": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "evidence_ids": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "intervention_ids": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "interventions": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "native_citation_status": [
+   [
+    "v2f-dev5"
+   ],
+   [
+    "v2g-dev5"
+   ]
+  ],
+  "observations": [
+   [
+    "v2d-dev5"
+   ],
+   [
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5"
+   ],
+   [
+    "v2g-dev5"
+   ]
+  ],
+  "observed_control_trials": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "output_schema": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "reduction": [
+   [
+    "v2d-dev5"
+   ],
+   [
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5"
+   ],
+   [
+    "v2g-dev5"
+   ]
+  ],
+  "reproduction_counts": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "runtime_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "target_invariant": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ]
+ },
+ "keywords": {
+  "v2d-dev5": {
+   "native_citation_status": null,
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 4,
+    "confirm": 0,
+    "decode": 1,
+    "evidence": 5,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 6,
+    "confirm": 15,
+    "decode": 3,
+    "evidence": 104,
+    "label": 15,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2e-dev5": {
+   "native_citation_status": null,
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 4,
+    "confirm": 0,
+    "decode": 1,
+    "evidence": 5,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 6,
+    "confirm": 15,
+    "decode": 3,
+    "evidence": 104,
+    "label": 15,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2f-dev5": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 16,
+    "decode": 17,
+    "evidence": 111,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2g-dev5": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 16,
+    "decode": 17,
+    "evidence": 112,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2g-dev6": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 18,
+    "decode": 17,
+    "evidence": 113,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  }
+ },
+ "rc_equality": {
+  "actor_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "condition_evidence": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "condition_semantics": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "episode_limits": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "hook_boundaries": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "hook_execution": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "primitive_semantics": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "report_control": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ]
+ },
+ "sizes": {
+  "v2d-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 27235,
+    "tokens": 8484
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 20
+   },
+   "evidence_ids": {
+    "chars": 969,
+    "tokens": 473
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 22
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 199
+   },
+   "observations": {
+    "chars": 9529,
+    "tokens": 3336
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 95
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2719,
+    "tokens": 1181
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 11879,
+    "tokens": 2780
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 974,
+    "tokens": 206
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2e-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 27501,
+    "tokens": 8582
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 21
+   },
+   "evidence_ids": {
+    "chars": 969,
+    "tokens": 485
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 18
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 190
+   },
+   "observations": {
+    "chars": 9529,
+    "tokens": 3353
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 94
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2985,
+    "tokens": 1263
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 11879,
+    "tokens": 2780
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 974,
+    "tokens": 206
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2f-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 29349,
+    "tokens": 9133
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 18
+   },
+   "evidence_ids": {
+    "chars": 1013,
+    "tokens": 486
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 22
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 201
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 285
+   },
+   "observations": {
+    "chars": 10376,
+    "tokens": 3603
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 97
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2719,
+    "tokens": 1211
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2g-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 30008,
+    "tokens": 9288
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 21
+   },
+   "evidence_ids": {
+    "chars": 1013,
+    "tokens": 475
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 18
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 195
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 291
+   },
+   "observations": {
+    "chars": 11042,
+    "tokens": 3815
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 94
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2712,
+    "tokens": 1169
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2g-dev6": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 28340,
+    "tokens": 8846
+   },
+   "control_fault_spec": {
+    "chars": 228,
+    "tokens": 64
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 23
+   },
+   "evidence_ids": {
+    "chars": 1057,
+    "tokens": 533
+   },
+   "intervention_ids": {
+    "chars": 81,
+    "tokens": 35
+   },
+   "interventions": {
+    "chars": 1248,
+    "tokens": 428
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 291
+   },
+   "observations": {
+    "chars": 8937,
+    "tokens": 3172
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 91
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2428,
+    "tokens": 1082
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  }
+ }
+}

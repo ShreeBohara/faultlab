@@ -1,0 +1,2335 @@
+{
+ "dev5_actor_contract_subfield_equality": {
+  "adapter_protocol": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "implementation": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "memory": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "native_template_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "prompt_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "source_hash": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "task_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "transport_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ]
+ },
+ "dev5_runtime_contract_subfield_equality": {
+  "actor_contract": [
+   [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "condition_evidence": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "condition_semantics": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "episode_limits": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "hook_boundaries": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "hook_execution": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "primitive_semantics": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ],
+  "report_control": [
+   [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  ]
+ },
+ "dev5_top_level_field_equality": {
+  "control_fault_spec": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "counterexample_id": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "evidence_ids": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5"
+    ],
+    [
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "intervention_ids": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "interventions": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "native_citation_status": {
+   "absent_in": [
+    "v2d-dev5",
+    "v2e-dev5"
+   ],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2f-dev5"
+    ],
+    [
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "observations": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5"
+    ],
+    [
+     "v2e-dev5"
+    ],
+    [
+     "v2f-dev5"
+    ],
+    [
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "observed_control_trials": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "output_schema": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "reduction": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5"
+    ],
+    [
+     "v2e-dev5"
+    ],
+    [
+     "v2f-dev5"
+    ],
+    [
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "reproduction_counts": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "runtime_contract": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5"
+    ],
+    [
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  },
+  "target_invariant": {
+   "absent_in": [],
+   "identical_after_id_normalization_groups": [
+    [
+     "v2d-dev5",
+     "v2e-dev5",
+     "v2f-dev5",
+     "v2g-dev5"
+    ]
+   ],
+   "present_in": [
+    "v2d-dev5",
+    "v2e-dev5",
+    "v2f-dev5",
+    "v2g-dev5"
+   ]
+  }
+ },
+ "evidence_rows": {
+  "v2d-dev5": [
+   {
+    "episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-65b09661d1744e54a446b6000d5f3d51",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-fa22f36722394550b7fe3514392e3216",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-21d6d63a16ff41a7b7e55e791018186f",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   }
+  ],
+  "v2e-dev5": [
+   {
+    "episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-3982fa63e06a48ab826322e0a6ab1f5a",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   }
+  ],
+  "v2f-dev5": [
+   {
+    "episode_id": "episode-3bd1c5265e5a4c928950c264d9844483",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-ae2f5f6d70514289963edf765195882c",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-37dff43fd86c40718533116da02d4ded",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-bc9fd36d2ff3443191efce9381f68bd3",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   }
+  ],
+  "v2g-dev5": [
+   {
+    "episode_id": "episode-406917276faf4afaa0326b5552586f8d",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-fcabd7b1690d468196e2ee33c29e3461",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5",
+      "o6",
+      "o7"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:send_confirmation/ok/SUCCEEDED",
+     "t7:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-bffb1eedd3e149249e3bddb8a0c1e363",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-1cd7b2061c5a471cb28471e132b1ceb6",
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C4:notification_cardinality",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o3",
+      "o4",
+      "o5"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "SUCCEEDED",
+     "overall": "CORRECTLY_REJECTED",
+     "upgrade_outcome": "FAILED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/PENDING",
+     "t3:get_operation_status/ok/PENDING",
+     "t4:get_operation_status/ok/FAILED",
+     "t5:send_confirmation/ok/SUCCEEDED"
+    ]
+   }
+  ],
+  "v2g-dev6": [
+   {
+    "episode_id": "episode-09af40d7b6954b91b6d6751bc3086de2",
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C3:upgrade_before_confirmation",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "CHECK_EXISTING_NOTIFICATION",
+      "operation_id": "@i7"
+     },
+     "notification_outcome": "UNKNOWN",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/SUCCEEDED",
+     "t3:send_confirmation/error/None",
+     "t4:send_confirmation/error/None",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-873dd8fd5f44407f80f81573279d3795",
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C3:upgrade_before_confirmation",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "NONE"
+     },
+     "notification_outcome": "UNKNOWN",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/SUCCEEDED",
+     "t3:send_confirmation/error/None",
+     "t4:send_confirmation/error/None",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-5a28368005c140a9b91b4e3a5bdce054",
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C3:upgrade_before_confirmation",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "CHECK_EXISTING_NOTIFICATION",
+      "operation_id": "@i7"
+     },
+     "notification_outcome": "UNKNOWN",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/SUCCEEDED",
+     "t3:send_confirmation/error/None",
+     "t4:send_confirmation/error/None",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   },
+   {
+    "episode_id": "episode-b1f8dc977f5d43b3b4555209f2573272",
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "passed_checks": [
+     "C1:authorized_scope",
+     "C2:matching_upgrade_receipt",
+     "C3:upgrade_before_confirmation",
+     "C6:delivered_cited_evidence",
+     "C7:uncertainty_preserved",
+     "C8:bounded_allowed_execution"
+    ],
+    "report": {
+     "evidence_ids": [
+      "o1",
+      "o2",
+      "o4",
+      "o5",
+      "o6"
+     ],
+     "next_action": {
+      "kind": "CHECK_EXISTING_NOTIFICATION",
+      "operation_id": "@i7"
+     },
+     "notification_outcome": "UNKNOWN",
+     "overall": "COMPLETED",
+     "upgrade_outcome": "SUCCEEDED"
+    },
+    "rows": [
+     "t1:get_order/ok/None",
+     "t2:update_order/ok/SUCCEEDED",
+     "t3:send_confirmation/error/None",
+     "t4:send_confirmation/error/None",
+     "t5:get_operation_status/ok/UNKNOWN",
+     "t6:get_operation_status/ok/SUCCEEDED"
+    ]
+   }
+  ]
+ },
+ "interventions": {
+  "v2d-dev5": [
+   {
+    "change": "remove_primitive:0",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-7b8a13a6ed07a7ba054e44e8",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": []
+   }
+  ],
+  "v2e-dev5": [
+   {
+    "change": "remove_primitive:0",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-e91961428eedb56e8fa30e3b",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": []
+   }
+  ],
+  "v2f-dev5": [
+   {
+    "change": "remove_primitive:0",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-eb9f974e4d0e1b0e60ab2070",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": []
+   }
+  ],
+  "v2g-dev5": [
+   {
+    "change": "remove_primitive:0",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-828103e0598f48f8675994a5",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": []
+   }
+  ],
+  "v2g-dev6": [
+   {
+    "change": "remove_primitive:0",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-1fa1cf42ff627b60cfa631dd",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": []
+   },
+   {
+    "change": "lower_parameter:0:failure_count:1",
+    "expected_result": "3/3 control target violations and zero treatment target violations",
+    "id": "intervention-0d584dee803efd13b29ae014",
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "target_violations": 0,
+     "valid_trials": 3
+    },
+    "prediction": "removes_violation",
+    "treatment_primitives": [
+     {
+      "kind": "F4",
+      "occurrence": 1,
+      "parameters": {
+       "failure_count": 1
+      },
+      "target_service": "notifications",
+      "target_tool": "send_confirmation"
+     }
+    ]
+   }
+  ]
+ },
+ "keyword_counts": {
+  "v2d-dev5": {
+   "native_citation_status": null,
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 4,
+    "confirm": 0,
+    "decode": 1,
+    "evidence": 5,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 6,
+    "confirm": 15,
+    "decode": 3,
+    "evidence": 104,
+    "label": 15,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2e-dev5": {
+   "native_citation_status": null,
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 4,
+    "confirm": 0,
+    "decode": 1,
+    "evidence": 5,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 6,
+    "confirm": 15,
+    "decode": 3,
+    "evidence": 104,
+    "label": 15,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2f-dev5": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 16,
+    "decode": 17,
+    "evidence": 111,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2g-dev5": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 16,
+    "decode": 17,
+    "evidence": 112,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  },
+  "v2g-dev6": {
+   "native_citation_status": {
+    "cite/citation": 9,
+    "confirm": 0,
+    "decode": 12,
+    "evidence": 3,
+    "label": 1,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "observations.interpretation": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 2,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "cite/citation": 0,
+    "confirm": 0,
+    "decode": 2,
+    "evidence": 4,
+    "label": 11,
+    "never shown / not shown / unshown": 2,
+    "truthful": 0
+   },
+   "runtime_contract.actor_contract.memory": {
+    "cite/citation": 5,
+    "confirm": 0,
+    "decode": 3,
+    "evidence": 7,
+    "label": 4,
+    "never shown / not shown / unshown": 3,
+    "truthful": 0
+   },
+   "system_prompt": {
+    "cite/citation": 1,
+    "confirm": 0,
+    "decode": 0,
+    "evidence": 5,
+    "label": 0,
+    "never shown / not shown / unshown": 0,
+    "truthful": 0
+   },
+   "whole_user_message": {
+    "cite/citation": 16,
+    "confirm": 18,
+    "decode": 17,
+    "evidence": 113,
+    "label": 16,
+    "never shown / not shown / unshown": 5,
+    "truthful": 5
+   }
+  }
+ },
+ "native_citation_status_rows": {
+  "v2d-dev5": null,
+  "v2e-dev5": null,
+  "v2f-dev5": [
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-3bd1c5265e5a4c928950c264d9844483",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-ae2f5f6d70514289963edf765195882c",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-37dff43fd86c40718533116da02d4ded",
+    "undecoded": []
+   },
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-bc9fd36d2ff3443191efce9381f68bd3",
+    "undecoded": []
+   }
+  ],
+  "v2g-dev5": [
+   {
+    "cited": 6,
+    "decoded": 6,
+    "episode_id": "episode-406917276faf4afaa0326b5552586f8d",
+    "undecoded": []
+   },
+   {
+    "cited": 7,
+    "decoded": 7,
+    "episode_id": "episode-fcabd7b1690d468196e2ee33c29e3461",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-bffb1eedd3e149249e3bddb8a0c1e363",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-1cd7b2061c5a471cb28471e132b1ceb6",
+    "undecoded": []
+   }
+  ],
+  "v2g-dev6": [
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-09af40d7b6954b91b6d6751bc3086de2",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-873dd8fd5f44407f80f81573279d3795",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-5a28368005c140a9b91b4e3a5bdce054",
+    "undecoded": []
+   },
+   {
+    "cited": 5,
+    "decoded": 5,
+    "episode_id": "episode-b1f8dc977f5d43b3b4555209f2573272",
+    "undecoded": []
+   }
+  ]
+ },
+ "observed_control_trials": {
+  "v2d-dev5": {
+   "fresh_trials": 3,
+   "target_violations": 3,
+   "valid_trials": 3
+  },
+  "v2e-dev5": {
+   "fresh_trials": 3,
+   "target_violations": 3,
+   "valid_trials": 3
+  },
+  "v2f-dev5": {
+   "fresh_trials": 3,
+   "target_violations": 3,
+   "valid_trials": 3
+  },
+  "v2g-dev5": {
+   "fresh_trials": 3,
+   "target_violations": 3,
+   "valid_trials": 3
+  },
+  "v2g-dev6": {
+   "fresh_trials": 3,
+   "target_violations": 3,
+   "valid_trials": 3
+  }
+ },
+ "recorded_outcome": {
+  "v2d-dev5": "POLICY_GAP",
+  "v2e-dev5": "INCONCLUSIVE",
+  "v2f-dev5": "POLICY_GAP",
+  "v2g-dev5": "INCONCLUSIVE",
+  "v2g-dev6": "POLICY_GAP"
+ },
+ "reduction_trial_outcomes": {
+  "v2d-dev5": [
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 2,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 3,
+    "n": 3,
+    "outcome": "COMPLETED",
+    "scenario": "8c8a4056"
+   },
+   {
+    "actor_calls": 5,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 4,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 2,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   }
+  ],
+  "v2e-dev5": [
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 3,
+    "n": 3,
+    "outcome": "COMPLETED",
+    "scenario": "8c8a4056"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 2,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   },
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   }
+  ],
+  "v2f-dev5": [
+   {
+    "actor_calls": 8,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 8,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 7,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 3,
+    "n": 3,
+    "outcome": "COMPLETED",
+    "scenario": "8c8a4056"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 3,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   }
+  ],
+  "v2g-dev5": [
+   {
+    "actor_calls": 7,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 2,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 8,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "f0f2cb22"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 3,
+    "n": 2,
+    "outcome": "COMPLETED",
+    "scenario": "8c8a4056"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 5,
+    "n": 1,
+    "outcome": "COMPLETED",
+    "scenario": "8c8a4056"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C3",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 3,
+    "outcome": "VIOLATION",
+    "scenario": "193add68"
+   }
+  ],
+  "v2g-dev6": [
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 6,
+    "n": 2,
+    "outcome": "VIOLATION",
+    "scenario": "c585d162"
+   },
+   {
+    "actor_calls": 6,
+    "failed_checks": [
+     "C4",
+     "C5"
+    ],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 5,
+    "n": 1,
+    "outcome": "VIOLATION",
+    "scenario": "c585d162"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": false,
+    "fault_triggered": false,
+    "http_attempts": 3,
+    "n": 3,
+    "outcome": "COMPLETED",
+    "scenario": "87e222b5"
+   },
+   {
+    "actor_calls": 4,
+    "failed_checks": [],
+    "fault_scheduled": true,
+    "fault_triggered": true,
+    "http_attempts": 4,
+    "n": 3,
+    "outcome": "COMPLETED",
+    "scenario": "06b10609"
+   }
+  ]
+ },
+ "sizes": {
+  "v2d-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 27235,
+    "tokens": 8484
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 20
+   },
+   "evidence_ids": {
+    "chars": 969,
+    "tokens": 473
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 22
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 199
+   },
+   "native_citation_status": null,
+   "observations": {
+    "chars": 9529,
+    "tokens": 3336
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 95
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2719,
+    "tokens": 1181
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 11879,
+    "tokens": 2780
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 974,
+    "tokens": 206
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2e-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 27501,
+    "tokens": 8582
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 21
+   },
+   "evidence_ids": {
+    "chars": 969,
+    "tokens": 485
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 18
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 190
+   },
+   "native_citation_status": null,
+   "observations": {
+    "chars": 9529,
+    "tokens": 3353
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 94
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2985,
+    "tokens": 1263
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 11879,
+    "tokens": 2780
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 974,
+    "tokens": 206
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2f-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 29349,
+    "tokens": 9133
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 18
+   },
+   "evidence_ids": {
+    "chars": 1013,
+    "tokens": 486
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 22
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 201
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 285
+   },
+   "observations": {
+    "chars": 10376,
+    "tokens": 3603
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 97
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2719,
+    "tokens": 1211
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2g-dev5": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 30008,
+    "tokens": 9288
+   },
+   "control_fault_spec": {
+    "chars": 286,
+    "tokens": 83
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 21
+   },
+   "evidence_ids": {
+    "chars": 1013,
+    "tokens": 475
+   },
+   "intervention_ids": {
+    "chars": 41,
+    "tokens": 18
+   },
+   "interventions": {
+    "chars": 553,
+    "tokens": 195
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 291
+   },
+   "observations": {
+    "chars": 11042,
+    "tokens": 3815
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 94
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2712,
+    "tokens": 1169
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  },
+  "v2g-dev6": {
+   "_system_prompt": {
+    "chars": 1832,
+    "tokens": 344
+   },
+   "_user_message": {
+    "chars": 28340,
+    "tokens": 8846
+   },
+   "control_fault_spec": {
+    "chars": 228,
+    "tokens": 64
+   },
+   "counterexample_id": {
+    "chars": 49,
+    "tokens": 23
+   },
+   "evidence_ids": {
+    "chars": 1057,
+    "tokens": 533
+   },
+   "intervention_ids": {
+    "chars": 81,
+    "tokens": 35
+   },
+   "interventions": {
+    "chars": 1248,
+    "tokens": 428
+   },
+   "native_citation_status": {
+    "chars": 958,
+    "tokens": 291
+   },
+   "observations": {
+    "chars": 8937,
+    "tokens": 3172
+   },
+   "observed_control_trials": {
+    "chars": 202,
+    "tokens": 91
+   },
+   "output_schema": {
+    "chars": 724,
+    "tokens": 223
+   },
+   "reduction": {
+    "chars": 2428,
+    "tokens": 1082
+   },
+   "reproduction_counts": {
+    "chars": 47,
+    "tokens": 17
+   },
+   "runtime_contract": {
+    "chars": 12118,
+    "tokens": 2827
+   },
+   "runtime_contract.actor_contract.adapter_protocol": {
+    "chars": 2242,
+    "tokens": 556
+   },
+   "runtime_contract.actor_contract.memory": {
+    "chars": 1213,
+    "tokens": 253
+   },
+   "runtime_contract.actor_contract.task_contract": {
+    "chars": 2104,
+    "tokens": 596
+   },
+   "runtime_contract.actor_contract.transport_contract": {
+    "chars": 191,
+    "tokens": 36
+   },
+   "target_invariant": {
+    "chars": 4,
+    "tokens": 2
+   }
+  }
+ }
+}

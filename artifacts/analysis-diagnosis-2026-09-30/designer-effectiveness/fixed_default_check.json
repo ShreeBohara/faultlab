@@ -1,0 +1,62 @@
+{
+  "rows": [
+    {
+      "run": "v2d-dev5",
+      "target": "C3",
+      "options": 1,
+      "fixed_default": "intervention-7b8a13a6ed07a7ba054e44e8",
+      "mechanic_selected": "intervention-7b8a13a6ed07a7ba054e44e8",
+      "selected_by_under_rule": "MECHANIC",
+      "selected_under_rule": "intervention-7b8a13a6ed07a7ba054e44e8",
+      "fixed_hypothesis_chars": 454
+    },
+    {
+      "run": "v2e-dev5",
+      "target": "C3",
+      "options": 1,
+      "fixed_default": "intervention-e91961428eedb56e8fa30e3b",
+      "mechanic_selected": null,
+      "selected_by_under_rule": "FIXED_DEFAULT",
+      "selected_under_rule": "intervention-e91961428eedb56e8fa30e3b",
+      "fixed_hypothesis_chars": 454
+    },
+    {
+      "run": "v2f-dev5",
+      "target": "C3",
+      "options": 1,
+      "fixed_default": "intervention-eb9f974e4d0e1b0e60ab2070",
+      "mechanic_selected": "intervention-eb9f974e4d0e1b0e60ab2070",
+      "selected_by_under_rule": "MECHANIC",
+      "selected_under_rule": "intervention-eb9f974e4d0e1b0e60ab2070",
+      "fixed_hypothesis_chars": 454
+    },
+    {
+      "run": "v2g-dev5",
+      "target": "C3",
+      "options": 1,
+      "fixed_default": "intervention-828103e0598f48f8675994a5",
+      "mechanic_selected": null,
+      "selected_by_under_rule": "FIXED_DEFAULT",
+      "selected_under_rule": "intervention-828103e0598f48f8675994a5",
+      "fixed_hypothesis_chars": 454
+    },
+    {
+      "run": "v2g-dev6",
+      "target": "C4",
+      "options": 2,
+      "fixed_default": "intervention-1fa1cf42ff627b60cfa631dd",
+      "mechanic_selected": "intervention-1fa1cf42ff627b60cfa631dd",
+      "selected_by_under_rule": "MECHANIC",
+      "selected_under_rule": "intervention-1fa1cf42ff627b60cfa631dd",
+      "fixed_hypothesis_chars": 454
+    }
+  ],
+  "negatives": {
+    "all_options_one_of_three (eac3d243 shape)": null,
+    "control_two_of_three": null,
+    "treatment_two_valid": null,
+    "treatment_untested": null
+  },
+  "longest_plausible_hypothesis_chars": 479,
+  "limit": 600
+}

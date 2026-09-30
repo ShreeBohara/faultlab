@@ -1,0 +1,579 @@
+{
+ "diagnostic-93da89fedc11490b9254b384d3616dbc": {
+  "options": {
+   "intervention-febb2173605face939e826f6": "remove_primitive:0",
+   "intervention-97f9a4dfd3fa57df7bb51aa1": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-681d196e4a92d62a437321dc": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-73a437868966adc80c1018a2": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-ad431ac64c1e47b0933cc3db76d88053",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "evidence_ids.15:string_pattern_mismatch"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   },
+   {
+    "mechanic_output_id": "mechanic-ba0c48719ce84310a759f63f73298106",
+    "attempt": 1,
+    "schema_and_option_errors": [
+     "evidence_ids.7:string_pattern_mismatch",
+     "evidence_ids.16:string_pattern_mismatch",
+     "evidence_ids.23:string_pattern_mismatch"
+    ],
+    "requested_in_options": null,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-352d30caea6740519f86cb65d2f8bcc3": {
+  "options": {
+   "intervention-bea19a854fdf53a41b7f1d24": "remove_primitive:0",
+   "intervention-f0a2aa283dfbd43e0c453cf7": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-b210f1ec883b3ef61b0509a7": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-c430b91d384f9b2b9cf614f1": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-99dd7c37e8154e9490fb8c054d4aeb6c",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-55ee968b244940d3ae933cbdcffcadca": {
+  "options": {
+   "intervention-bd688ca71a5183592f2103db": "remove_primitive:0",
+   "intervention-58e0150f76f0550c02ae646a": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-5211ed2e57924817a9f81cd0": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-25d25a343e0fbb0662e761cb": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-ae8df91780ab4a8087a5a3a52b4d0210",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-7fe4d06bad8b4754a01f21787e722ad9": {
+  "options": {
+   "intervention-a95e4afcf477fab431984237": "remove_primitive:0",
+   "intervention-af7cfe1a29df78ce4ac72c4b": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-c62b9e3653ea9a450441153f": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-d9ab7ac039438a2855e7417d": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-3923df241a434b69b9f76c402e714251",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-ffd281b96ea04022a5d541930995793f": {
+  "options": {
+   "intervention-594f3d88972dcbf8dbd20da3": "remove_primitive:0",
+   "intervention-6f7c28220470eb8af31808f8": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-31a61f440aeb94ef4742a8e7": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-9dd0f8f83ee583b6440530ae": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-9932c09657a746b4bd48fa7c9d4e1b45",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-2b06444a15b84e1d8cfa54640d5090ba": {
+  "options": {
+   "intervention-dcfbdf1fd5d1f03f60cc0fc5": "remove_primitive:0",
+   "intervention-8de337efaac37bf2f372e66f": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-7283182c2f69298bbe32d5a5": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-421c2acdf02a948eedfd821b": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-7239f2824b64457cbc16639cb28891bd",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-4c3a41b4c5d644f096283c23f846b961": {
+  "options": {
+   "intervention-f2b33c4fbb4fe1dcbbf8ba43": "remove_primitive:0",
+   "intervention-cc376c97d36157cf881584e7": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-0c6b6d4b7fcdf16ed3c99038": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-c727046e8c3e7ef49e778d7c": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-7da7d0cd73af4eedbcabbae65d9fd0e1",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-5d606f16d6194a9fbedb59a09631bdab": {
+  "options": {
+   "intervention-e4d8db5c59c6b017c369b7a6": "remove_primitive:0",
+   "intervention-81cc84cbbf59a9b7826798bc": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-f35fe7b0a5488bb1404a5a7f": "lower_parameter:0:completion_delay_ticks:2"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-ce43e918b36a48ffbb21913efcef538a",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-b2a7dda495164438a2479e8980fff9b7": {
+  "options": {
+   "intervention-d4e0ad6ebbc1926717fe143c": "remove_primitive:0",
+   "intervention-44a9d0477746c2ac82c0a27a": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-40ac78942ab4f8dbcfc8705c": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-9cb5b140d48cb421d60e77e0": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-c87bc9e08f7a43a39229a837ad8d26f4",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-a3397fd8e7014bab9ae40f7998591265": {
+  "options": {
+   "intervention-1a0af6226ae0ae446122c8ac": "remove_primitive:0",
+   "intervention-dba0989a87ffc5be36f7fd40": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-c27ece4465bb2bed1f7bd2f8": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-3f84e92cfdca0b13b57d8660": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-fcbf40760e2b473299a8ad393b0a4761",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-0af91fe7d78c4e6ca785e96f488571ef": {
+  "options": {
+   "intervention-031b6e8527557461041ce517": "remove_primitive:0",
+   "intervention-4374d3239a05de3c7f2989ab": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-96e716698e1351ae44b27e1c": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-df37615aa6810b81a233e48a": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-1b43b0c35e2e42eb96d149b1d3d261ba",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-112bdd985a84402387efc14661449af8": {
+  "options": {
+   "intervention-b78d5aba0df2d74ec6be3905": "remove_primitive:0",
+   "intervention-85d9a5a99ea233a519f5b546": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-c33c3cde693414f531b3de39": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-6e4587ed1d837912c01bd6fa": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-597e9d5260504bcf9577a8b83c8de476",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "hypothesis:string_too_long"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   },
+   {
+    "mechanic_output_id": "mechanic-6cae3f577e7e40cabe35a9232853f4a0",
+    "attempt": 1,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-d96bd0461a1a4eb6b3a176ef3395df93": {
+  "options": {
+   "intervention-4f2f32ead174f0c06f248513": "remove_primitive:0",
+   "intervention-78068aa2f89e8cff2f42850b": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-0845d0292bd7a4fd4e0a8824": "lower_parameter:0:completion_delay_ticks:2"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-77fd03143ac844de80edb7cd9d1e1592",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "hypothesis:string_too_long"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   },
+   {
+    "mechanic_output_id": "mechanic-c535b2aec89c41f9b0fe19ea38d292c2",
+    "attempt": 1,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-d6f22b2a662a4b879b9d00ae1b6bc2d8": {
+  "options": {
+   "intervention-7884baee3abfdd2a37f61c5d": "remove_primitive:0",
+   "intervention-e8188e2bb7c3882239676773": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-dc9d93fbe7c3cdc08b7f98d3": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-84d882325ec543780cacd99b": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-c497f44eb5ac4717ad572939e400ae0a",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-52616f564f904fba82a0dd8cad2166ad": {
+  "options": {
+   "intervention-235f1848f1c12d75bc2d0439": "remove_primitive:0",
+   "intervention-9dd82edff7a5edf327afa104": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-f0132fd21c9957f2b53c8bae": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-d186079d299177dca13e02c7": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-d88c47a25afb43119b93948ee5ce2d93",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-53ba2834fd4a4d9c83117cc4aa6ac722": {
+  "options": {
+   "intervention-934c91ba7a5ef3a0726ff221": "remove_primitive:0",
+   "intervention-dc79fd6603b4f03f58de7879": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-9cde532d5cda1b6bab9f816f": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-9711fbe059516b6d3bb5ec20": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-5fb0ad92aaeb45fe97cb8e3a49dacada",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-dc1a11d2f0484b6f944452feba4e5348": {
+  "options": {
+   "intervention-d87d41fce35fcf240f994219": "remove_primitive:0",
+   "intervention-b08b4cf4474010554e1c0186": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-faa0904449fbc5fdffb6aedf": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-0691ece576c2231c247c4b94": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-88cda09f76774edbbb529073a86dc528",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-e0a68956fc2845a9a5f74c24b274c242": {
+  "options": {
+   "intervention-953d2c51e7f61ae59ec4fa66": "remove_primitive:0",
+   "intervention-2bcf495a6b2dfe3a9bdc3b78": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-0f63f69f1d25cd3779a56642": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-9e7a1ce72ad146b1ee393326": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-032b78bc736546189dd83ea4be1f3e83",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-6cb0e8abe9664eb5bf02d681c5f3818e": {
+  "options": {
+   "intervention-1885a4fda8187ce242e8e585": "remove_primitive:0",
+   "intervention-1c3113858691a41cbef3c41b": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-c4629affb5c03d91ecccfb6a": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-d3b470565bc5e99780d69ccf": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-bf1d4263262449be8e2e5cbe9b6e8345",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "unknown_intervention_reference"
+    ],
+    "requested_in_options": false,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-bdf0f68d5aad441b96357fc2e00741f4": {
+  "options": {
+   "intervention-2c7d153e4b48a661e56f35c1": "remove_primitive:0",
+   "intervention-e74466b318b575ad29c94139": "lower_parameter:0:completion_delay_ticks:1"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-05422fae21ee4a589f2948df804404f8",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-eac3d243bec74689a9f1edcc0b175e7e": {
+  "options": {
+   "intervention-a9de5a1fdc5637c82dd8be48": "remove_primitive:0",
+   "intervention-bc02099cc6b11d5de67fa2ca": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-3bd7d7262e029c0182e2e13f": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-a29f042289fb9a5cb58c758f": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-07f729220aea4dfdb270cb8ff0df889a",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": null,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-a4c8395a07eb4c83972c5d211414444c": {
+  "options": {
+   "intervention-83f8eca135beaf44de6eeac0": "remove_primitive:0",
+   "intervention-6139acbf4757556c94b518d3": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-c9fb59a161e3df9cdd71b01a": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-d79ba0809971cd3d5cc69602": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-0c66b36262ed4ca4a09b51adee715461",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-b4c25b59deea48c5a44bd13c16a96c44": {
+  "options": {
+   "intervention-02185cfd1fdbb50de170f992": "remove_primitive:0",
+   "intervention-391ab9cfc3792c47b7ed34ff": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-d491b56eaf79a35a84895453": "lower_parameter:0:completion_delay_ticks:2",
+   "intervention-4e1e2b3f901205ade9a06bce": "lower_parameter:0:completion_delay_ticks:3"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-aa07f3bd1ca04083837c08a3820b9122",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-da825066a535464bb5512d9b95899a43": {
+  "options": {
+   "intervention-e0f184575a5360df7c4849df": "remove_primitive:0",
+   "intervention-5fc7e71ad9be8b509aabe88c": "lower_parameter:0:completion_delay_ticks:1",
+   "intervention-72aa46d1358a9faab75008f3": "lower_parameter:0:completion_delay_ticks:2"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-521bcf5d01e34f9bae9cd9c5d04b37a1",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-723354f7ba3e4957a8ff9ea3c7aacafa": {
+  "options": {
+   "intervention-aa2da50ce5af1899561d4bf5": "remove_primitive:0",
+   "intervention-b2cfce208140573e65dd4bc4": "lower_parameter:0:failure_count:1",
+   "intervention-c5ab23db9b6e94254094c4aa": "lower_parameter:0:failure_count:2"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-a47cef83278149e0bf91287f7bbbb363",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": null,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-57fa14bc65e941bfa5d55c392d325b7c": {
+  "options": {
+   "intervention-7b8a13a6ed07a7ba054e44e8": "remove_primitive:0"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-01188b04304645d8ab752f717411daa9",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d": {
+  "options": {
+   "intervention-e91961428eedb56e8fa30e3b": "remove_primitive:0"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-ed993d65639949d7a6faf49021b31620",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": null,
+    "requested_change": null
+   }
+  ]
+ },
+ "diagnostic-dddc1a1b692147cf9bb9aa15d0a80ca0": {
+  "options": {
+   "intervention-eb9f974e4d0e1b0e60ab2070": "remove_primitive:0"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-36a16b375d5240b1983dbece2944f1eb",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "hypothesis:string_too_long"
+    ],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   },
+   {
+    "mechanic_output_id": "mechanic-cf9b2b6da60d4f609cb2a2c9c3a7c063",
+    "attempt": 1,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-a0dd0c487cff41ddb5ec546c8dc14131": {
+  "options": {
+   "intervention-828103e0598f48f8675994a5": "remove_primitive:0"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-ec2f80bf4d9b4543adf0b5ac3473f69c",
+    "attempt": 0,
+    "schema_and_option_errors": [
+     "hypothesis:string_too_long"
+    ],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   },
+   {
+    "mechanic_output_id": "mechanic-5bb12477f42d43afb96d991b3e865001",
+    "attempt": 1,
+    "schema_and_option_errors": [
+     "hypothesis:string_too_long"
+    ],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ },
+ "diagnostic-dc19567fb237465cac75b2caa63e7cea": {
+  "options": {
+   "intervention-1fa1cf42ff627b60cfa631dd": "remove_primitive:0",
+   "intervention-0d584dee803efd13b29ae014": "lower_parameter:0:failure_count:1"
+  },
+  "attempts": [
+   {
+    "mechanic_output_id": "mechanic-6804f09abb3b421ab7782f6784a3924e",
+    "attempt": 0,
+    "schema_and_option_errors": [],
+    "requested_in_options": true,
+    "requested_change": "remove_primitive:0"
+   }
+  ]
+ }
+}

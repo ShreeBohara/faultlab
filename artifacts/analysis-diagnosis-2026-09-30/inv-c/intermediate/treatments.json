@@ -1,0 +1,102 @@
+{
+ "intervention-5ebf98ec477782e8f5783f38": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-2d5fed9dc3c7326e4a9ba276": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-efcbe17b5cd18b0dac763d72": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-cfcd016b34291403a19d4fe9": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-54f43939aeff3f323f854fbf": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":2,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-8c71f51cd6adb55962406672": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-17dd06445445191febf62127": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-00ccb26ea5cdfcebf1d9cca5": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-e2e0940a46c67e6f38eb0040": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-53d0cb07e3c8cdc20df7f5db": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-02791146e7d5119b0368db0d": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-e8d0b573ef2f0cba9b95f446": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-65b1f10c227c99e72bd04f2f": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-4475882d5aec7f3a9174682c": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-226189e4115b6b24f94da39a": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-59f58ec8d193bc8a35093450": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":2,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-3ce2b6142d745c3bd6231fd2": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-b8fdb80bf4dc7d090e6873ea": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":5,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}"
+ },
+ "intervention-2c7d153e4b48a661e56f35c1": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":2,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-83f8eca135beaf44de6eeac0": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-02185cfd1fdbb50de170f992": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":4,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-e0f184575a5360df7c4849df": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":3,\"failure_code\":null,\"terminal_status\":\"SUCCEEDED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-7b8a13a6ed07a7ba054e44e8": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":\"UPGRADE_REJECTED\",\"terminal_status\":\"FAILED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-eb9f974e4d0e1b0e60ab2070": {
+  "control": "F2@update_order#1{\"completion_delay_ticks\":1,\"failure_code\":\"UPGRADE_REJECTED\",\"terminal_status\":\"FAILED\"}",
+  "treatment": "NO_FAULT"
+ },
+ "intervention-1fa1cf42ff627b60cfa631dd": {
+  "control": "F4@send_confirmation#1{\"failure_count\":2}",
+  "treatment": "NO_FAULT"
+ }
+}

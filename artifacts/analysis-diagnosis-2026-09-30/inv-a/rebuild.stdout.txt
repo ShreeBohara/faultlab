@@ -1,0 +1,226 @@
+{
+ "_scratch_copy_deleted": true,
+ "v2d-dev5": {
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "context_file": "v2d-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-b5ad7261afb4478f95d36530642000d6",
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-7b8a13a6ed07a7ba054e44e8"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-01188b04304645d8ab752f717411daa9"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 8990,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-57fa14bc65e941bfa5d55c392d325b7c",
+  "recorded_intervention_ids": [
+   "intervention-7b8a13a6ed07a7ba054e44e8"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "request_file": "v2d-dev5-diagnosis-request.json",
+  "run": "v2d",
+  "source_episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 27235,
+  "user_message_sha256": "7ae400eb192aed652504b02d5f2ead3f5976f057fd429b60a545af7617c37532",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 8854,
+    "provider_output_tokens": 222
+   }
+  ],
+  "wrappers_applied": []
+ },
+ "v2e-dev5": {
+  "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "context_file": "v2e-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-e91961428eedb56e8fa30e3b"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-ed993d65639949d7a6faf49021b31620"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9088,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d",
+  "recorded_intervention_ids": [],
+  "recorded_kind": "INCONCLUSIVE",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "request_file": "v2e-dev5-diagnosis-request.json",
+  "run": "v2e",
+  "source_episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 27501,
+  "user_message_sha256": "497bf5d46f98b3527b63b82436152e2f2801caccc81a04eb7326b3a4b9e4373d",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 8952,
+    "provider_output_tokens": 185
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic"
+  ]
+ },
+ "v2f-dev5": {
+  "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+  "context_file": "v2f-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-c26c27511e0044bba306085f1816b105",
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-eb9f974e4d0e1b0e60ab2070"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-36a16b375d5240b1983dbece2944f1eb",
+   "mechanic-cf9b2b6da60d4f609cb2a2c9c3a7c063"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9639,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": 10030,
+  "recorded_diagnostic_id": "diagnostic-dddc1a1b692147cf9bb9aa15d0a80ca0",
+  "recorded_intervention_ids": [
+   "intervention-eb9f974e4d0e1b0e60ab2070"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "request_file": "v2f-dev5-diagnosis-request.json",
+  "run": "v2f",
+  "source_episode_id": "episode-3bd1c5265e5a4c928950c264d9844483",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 29349,
+  "user_message_sha256": "e223e257d83b4bbb94aae6f122cd427025c503a24367decd4b5873f7380c3b12",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9503,
+    "provider_output_tokens": 282
+   },
+   {
+    "attempt": 1,
+    "errors": [],
+    "provider_input_tokens": 9863,
+    "provider_output_tokens": 220
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ },
+ "v2g-dev5": {
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "context_file": "v2g-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-c8e897379e0b461491a3c256ceea4f30",
+  "final_answer_valid": false,
+  "intervention_options": [
+   "intervention-828103e0598f48f8675994a5"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-ec2f80bf4d9b4543adf0b5ac3473f69c",
+   "mechanic-5bb12477f42d43afb96d991b3e865001"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9794,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": 10153,
+  "recorded_diagnostic_id": "diagnostic-a0dd0c487cff41ddb5ec546c8dc14131",
+  "recorded_intervention_ids": [],
+  "recorded_kind": "INCONCLUSIVE",
+  "recorded_proposed_kind": "INCONCLUSIVE",
+  "request_file": "v2g-dev5-diagnosis-request.json",
+  "run": "v2g",
+  "source_episode_id": "episode-406917276faf4afaa0326b5552586f8d",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 30008,
+  "user_message_sha256": "4b915f49f555cb4beb2041564f24675a97a05199d99bfd4659fcdec15d91f9c1",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9658,
+    "provider_output_tokens": 250
+   },
+   {
+    "attempt": 1,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9986,
+    "provider_output_tokens": 250
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ },
+ "v2g-dev6": {
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "context_file": "v2g-dev6-diagnosis-context.json",
+  "counterexample_id": "counterexample-913db40010c446a0aa370d6a2e0a0a93",
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-1fa1cf42ff627b60cfa631dd",
+   "intervention-0d584dee803efd13b29ae014"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-6804f09abb3b421ab7782f6784a3924e"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9352,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-dc19567fb237465cac75b2caa63e7cea",
+  "recorded_intervention_ids": [
+   "intervention-1fa1cf42ff627b60cfa631dd"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "request_file": "v2g-dev6-diagnosis-request.json",
+  "run": "v2g",
+  "source_episode_id": "episode-09af40d7b6954b91b6d6751bc3086de2",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C4",
+  "user_message_chars": 28340,
+  "user_message_sha256": "fe65a062bc14da5e8c93fd950940949805cd620b6366bbe559bbcb8fbb67db50",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 9216,
+    "provider_output_tokens": 189
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ }
+}

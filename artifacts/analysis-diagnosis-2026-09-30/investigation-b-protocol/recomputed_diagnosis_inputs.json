@@ -1,0 +1,384 @@
+[
+ {
+  "run": "v2d",
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "counterexample_id": "counterexample-b5ad7261afb4478f95d36530642000d6",
+  "source_episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+  "target_invariant": "C3",
+  "retained_primitives": [
+   {
+    "target_tool": "update_order",
+    "target_service": "orders",
+    "occurrence": 1,
+    "kind": "F2",
+    "parameters": {
+     "completion_delay_ticks": 1,
+     "terminal_status": "FAILED",
+     "failure_code": "UPGRADE_REJECTED"
+    }
+   }
+  ],
+  "observed_control_trials": {
+   "fresh_trials": 3,
+   "valid_trials": 3,
+   "target_violations": 3,
+   "episode_ids": [
+    "episode-95385a1c0f394a90bbe8cd8a0b25df6a",
+    "episode-917d1ead75a249d3a456bba292ceb33a",
+    "episode-b756eb63d20a4391b599e4e187a50932"
+   ]
+  },
+  "offered_options": [
+   {
+    "id": "intervention-7b8a13a6ed07a7ba054e44e8",
+    "change": "remove_primitive:0",
+    "treatment_primitives": [],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-332028a2a3d3435d969321f1cf535157",
+      "episode-069c2f9f96474f3593d44e34a2f90796",
+      "episode-cf5b9257e5d34d0084e57c752896025c"
+     ]
+    }
+   }
+  ],
+  "mechanic_diagnosis_outputs": [
+   {
+    "mechanic_output_id": "mechanic-01188b04304645d8ab752f717411daa9",
+    "request_id": "mechanic-request-dc4241571bac4f8fb6de6140060c6aed",
+    "format_attempt": 0,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-7b8a13a6ed07a7ba054e44e8",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 443,
+    "schema": "OK"
+   }
+  ],
+  "diagnostic_id": "diagnostic-57fa14bc65e941bfa5d55c392d325b7c",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "verdict_kind": "POLICY_GAP",
+  "recorded_intervention_ids": [
+   "intervention-7b8a13a6ed07a7ba054e44e8"
+  ],
+  "intervention_results": {
+   "intervention-7b8a13a6ed07a7ba054e44e8": "SUPPORTED"
+  }
+ },
+ {
+  "run": "v2e",
+  "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+  "source_episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+  "target_invariant": "C3",
+  "retained_primitives": [
+   {
+    "target_tool": "update_order",
+    "target_service": "orders",
+    "occurrence": 1,
+    "kind": "F2",
+    "parameters": {
+     "completion_delay_ticks": 1,
+     "terminal_status": "FAILED",
+     "failure_code": "UPGRADE_REJECTED"
+    }
+   }
+  ],
+  "observed_control_trials": {
+   "fresh_trials": 3,
+   "valid_trials": 3,
+   "target_violations": 3,
+   "episode_ids": [
+    "episode-f90075977ebb4b8cbd7c43c1ba2d778e",
+    "episode-8b35e11c670c4748a0cddb505edd8f72",
+    "episode-bff7c30869be452a943803e2f013563b"
+   ]
+  },
+  "offered_options": [
+   {
+    "id": "intervention-e91961428eedb56e8fa30e3b",
+    "change": "remove_primitive:0",
+    "treatment_primitives": [],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-0e68273647b7418a92e2bcf244826229",
+      "episode-6111ec48d03e45458fdeeb838f96b8b7",
+      "episode-f2824ecacf6340699e440be813cde940"
+     ]
+    }
+   }
+  ],
+  "mechanic_diagnosis_outputs": [
+   {
+    "mechanic_output_id": "mechanic-ed993d65639949d7a6faf49021b31620",
+    "request_id": "mechanic-request-803b1c270eba4c9da62e2dcf1756cb69",
+    "format_attempt": 0,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": null,
+    "requested_id_is_offered_option": false,
+    "hypothesis_chars": 405,
+    "schema": "OK"
+   }
+  ],
+  "diagnostic_id": "diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "verdict_kind": "INCONCLUSIVE",
+  "recorded_intervention_ids": [],
+  "intervention_results": {}
+ },
+ {
+  "run": "v2f",
+  "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+  "counterexample_id": "counterexample-c26c27511e0044bba306085f1816b105",
+  "source_episode_id": "episode-3bd1c5265e5a4c928950c264d9844483",
+  "target_invariant": "C3",
+  "retained_primitives": [
+   {
+    "target_tool": "update_order",
+    "target_service": "orders",
+    "occurrence": 1,
+    "kind": "F2",
+    "parameters": {
+     "completion_delay_ticks": 1,
+     "terminal_status": "FAILED",
+     "failure_code": "UPGRADE_REJECTED"
+    }
+   }
+  ],
+  "observed_control_trials": {
+   "fresh_trials": 3,
+   "valid_trials": 3,
+   "target_violations": 3,
+   "episode_ids": [
+    "episode-a519842cda3f4afab0dd3380dafea326",
+    "episode-2ca568bbb0a9437bb4cb0a18fa4aec61",
+    "episode-b0a9ffbfb83a47e3831cbfd8e68655e0"
+   ]
+  },
+  "offered_options": [
+   {
+    "id": "intervention-eb9f974e4d0e1b0e60ab2070",
+    "change": "remove_primitive:0",
+    "treatment_primitives": [],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-1c23ba665d4445bf88d871c8fb7d719d",
+      "episode-4d2f9a0222df400882766ba15e2d3cbf",
+      "episode-2e7008e219f443c5bf46c68f24939be4"
+     ]
+    }
+   }
+  ],
+  "mechanic_diagnosis_outputs": [
+   {
+    "mechanic_output_id": "mechanic-36a16b375d5240b1983dbece2944f1eb",
+    "request_id": "mechanic-request-89b0aa51bc184af0a7eefe64d82a3b47",
+    "format_attempt": 0,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 743,
+    "schema": "INVALID: ('hypothesis',):string_too_long"
+   },
+   {
+    "mechanic_output_id": "mechanic-cf9b2b6da60d4f609cb2a2c9c3a7c063",
+    "request_id": "mechanic-request-89b0aa51bc184af0a7eefe64d82a3b47",
+    "format_attempt": 1,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 428,
+    "schema": "OK"
+   }
+  ],
+  "diagnostic_id": "diagnostic-dddc1a1b692147cf9bb9aa15d0a80ca0",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "verdict_kind": "POLICY_GAP",
+  "recorded_intervention_ids": [
+   "intervention-eb9f974e4d0e1b0e60ab2070"
+  ],
+  "intervention_results": {
+   "intervention-eb9f974e4d0e1b0e60ab2070": "SUPPORTED"
+  }
+ },
+ {
+  "run": "v2g",
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "counterexample_id": "counterexample-913db40010c446a0aa370d6a2e0a0a93",
+  "source_episode_id": "episode-09af40d7b6954b91b6d6751bc3086de2",
+  "target_invariant": "C4",
+  "retained_primitives": [
+   {
+    "target_tool": "send_confirmation",
+    "target_service": "notifications",
+    "occurrence": 1,
+    "kind": "F4",
+    "parameters": {
+     "failure_count": 2
+    }
+   }
+  ],
+  "observed_control_trials": {
+   "fresh_trials": 3,
+   "valid_trials": 3,
+   "target_violations": 3,
+   "episode_ids": [
+    "episode-6df721f19a53446eaf54798cb763903c",
+    "episode-772d65676b834da29fb76c214fa657d7",
+    "episode-d1e5bd4a78f4446caa1166861cd17bc5"
+   ]
+  },
+  "offered_options": [
+   {
+    "id": "intervention-1fa1cf42ff627b60cfa631dd",
+    "change": "remove_primitive:0",
+    "treatment_primitives": [],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-a47673a1ef16434f90f7f36093dcad1b",
+      "episode-f25d02a4022a458c9b7465f94e45fc5d",
+      "episode-5f5f5a725bdd4f8f98d8edcfc77ab32d"
+     ]
+    }
+   },
+   {
+    "id": "intervention-0d584dee803efd13b29ae014",
+    "change": "lower_parameter:0:failure_count:1",
+    "treatment_primitives": [
+     {
+      "target_tool": "send_confirmation",
+      "target_service": "notifications",
+      "occurrence": 1,
+      "kind": "F4",
+      "parameters": {
+       "failure_count": 1
+      }
+     }
+    ],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-99da80a0ee4645f39dc26b6b38548103",
+      "episode-a2c6bb2716c44d80b3749e517ca5c261",
+      "episode-a339a6fc2d8e459089ed23a73ae4b171"
+     ]
+    }
+   }
+  ],
+  "mechanic_diagnosis_outputs": [
+   {
+    "mechanic_output_id": "mechanic-6804f09abb3b421ab7782f6784a3924e",
+    "request_id": "mechanic-request-084f1d9b4c61477784ba9a0ec7156fd9",
+    "format_attempt": 0,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-1fa1cf42ff627b60cfa631dd",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 295,
+    "schema": "OK"
+   }
+  ],
+  "diagnostic_id": "diagnostic-dc19567fb237465cac75b2caa63e7cea",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "verdict_kind": "POLICY_GAP",
+  "recorded_intervention_ids": [
+   "intervention-1fa1cf42ff627b60cfa631dd"
+  ],
+  "intervention_results": {
+   "intervention-1fa1cf42ff627b60cfa631dd": "SUPPORTED"
+  }
+ },
+ {
+  "run": "v2g",
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "counterexample_id": "counterexample-c8e897379e0b461491a3c256ceea4f30",
+  "source_episode_id": "episode-406917276faf4afaa0326b5552586f8d",
+  "target_invariant": "C3",
+  "retained_primitives": [
+   {
+    "target_tool": "update_order",
+    "target_service": "orders",
+    "occurrence": 1,
+    "kind": "F2",
+    "parameters": {
+     "completion_delay_ticks": 1,
+     "terminal_status": "FAILED",
+     "failure_code": "UPGRADE_REJECTED"
+    }
+   }
+  ],
+  "observed_control_trials": {
+   "fresh_trials": 3,
+   "valid_trials": 3,
+   "target_violations": 3,
+   "episode_ids": [
+    "episode-4916787c075d44f183de95ec36168a36",
+    "episode-691d942c494d46c6a5604cf203e8d69c",
+    "episode-92504ed482f649a4b0c5ae3daf53564a"
+   ]
+  },
+  "offered_options": [
+   {
+    "id": "intervention-828103e0598f48f8675994a5",
+    "change": "remove_primitive:0",
+    "treatment_primitives": [],
+    "observed_treatment_trials": {
+     "fresh_trials": 3,
+     "valid_trials": 3,
+     "target_violations": 0,
+     "episode_ids": [
+      "episode-ee37a99142234d97bddc012d4e6529f9",
+      "episode-d56ffd0abb614ef7a0c1ad33a877e72d",
+      "episode-fa4852f883a64408bd8c9580bc69a42f"
+     ]
+    }
+   }
+  ],
+  "mechanic_diagnosis_outputs": [
+   {
+    "mechanic_output_id": "mechanic-ec2f80bf4d9b4543adf0b5ac3473f69c",
+    "request_id": "mechanic-request-e93fda592ce146e49dadeae69be4651e",
+    "format_attempt": 0,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-828103e0598f48f8675994a5",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 614,
+    "schema": "INVALID: ('hypothesis',):string_too_long"
+   },
+   {
+    "mechanic_output_id": "mechanic-5bb12477f42d43afb96d991b3e865001",
+    "request_id": "mechanic-request-e93fda592ce146e49dadeae69be4651e",
+    "format_attempt": 1,
+    "model_id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "raw_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "raw_requested_intervention_id": "intervention-828103e0598f48f8675994a5",
+    "requested_id_is_offered_option": true,
+    "hypothesis_chars": 614,
+    "schema": "INVALID: ('hypothesis',):string_too_long"
+   }
+  ],
+  "diagnostic_id": "diagnostic-a0dd0c487cff41ddb5ec546c8dc14131",
+  "recorded_proposed_kind": "INCONCLUSIVE",
+  "verdict_kind": "INCONCLUSIVE",
+  "recorded_intervention_ids": [],
+  "intervention_results": {}
+ }
+]

@@ -1,0 +1,385 @@
+{
+ "method": "Every *.sqlite3 under /Users/shree/FaultLab_Runs/ and faultlab/artifacts/ (excluding world-* stores and artifacts/heldout2/) was opened as file:PATH?mode=ro&immutable=1 (all -wal files were 0 bytes) and its records table searched for kind=diagnostics. 483 store files scanned (374 + 109 verifier copies); 76 contain diagnostics; 74 distinct diagnostic ids; 30 are live.",
+ "class_counts": {
+  "LIVE (canonical store used for the table)": 5,
+  "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)": 18,
+  "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)": 50
+ },
+ "stores_with_diagnostics": [
+  {
+   "store": "artifacts/lab.sqlite3",
+   "diagnostics": 19,
+   "class": "LIVE (canonical store used for the table)"
+  },
+  {
+   "store": "artifacts/phase1-2026-09-20/after.sqlite3",
+   "diagnostics": 18,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase1-2026-09-20/before.sqlite3",
+   "diagnostics": 13,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase1-incident-validation/lab.sqlite3",
+   "diagnostics": 13,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase10-2026-09-21/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase11-2026-09-21/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase12-2026-09-21/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase2-2026-09-20/after.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase2-2026-09-20/before.sqlite3",
+   "diagnostics": 18,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase3-2026-09-20/after.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase3-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase3-2026-09-20/pre-restart.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase4-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase4-followup-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase5-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase6-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase8-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/phase9-2026-09-20/before.sqlite3",
+   "diagnostics": 19,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/016-test_native_selected_original_0-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/017-test_native_selected_original_1-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/046-test_native_selected_original_0-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/047-test_native_selected_original_1-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/087-test_native_selected_original_0-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-discovery-2026-09-28/verifier4-0928/oldplans/copies 2/088-test_native_selected_original_1-lab.copy.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-01/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-02/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-03/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-03/rejected/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-04/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-loop-2026-09-27/attempt-04/rejected/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-native-v2b-2026-09-30/review-product/store-copy/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "SNAPSHOT/COPY of a live store (same diagnostic ids; deduplicated)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-fixtures/test_native_selected_original_0/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-fixtures/test_native_selected_original_1/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_native_selected_original_0/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_native_selected_original_1/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_original_workflow_with_re0/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_original_workflow_with_re1/rejected/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_source_passed_candidate_b0/lab-failure/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-runtime-fixtures/test_source_passed_candidate_b1/lab-failure/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_native_selected_original_0/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_native_selected_original_1/lab/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_original_workflow_with_re0/accepted/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_original_workflow_with_re1/rejected/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_source_passed_candidate_b0/lab-failure/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-onboarding-2026-09-27/loop/final-v2-fixtures/test_source_passed_candidate_b1/lab-failure/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/builder/manual/run-attempt2-summary-encoding-bug/baseline/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/builder/manual/run-attempt2-summary-encoding-bug/lossy/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/builder/manual/run/baseline/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/builder/manual/run/lossy/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/norm-control/a/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/norm-control/b/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/clean-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/clean-v2-a/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/clean-v2-b/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/double-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/lossy-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run1/lossy-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/clean-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/clean-v2-a/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/clean-v2-b/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/double-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/lossy-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run2/lossy-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/clean-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/clean-v2-a/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/clean-v2-b/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/double-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/lossy-v1/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "artifacts/product-retry-2026-09-29/verify/probes/e2e/lab-stores-created-at-repo-root/e2e/run3/lossy-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "OFFLINE fixture/test/scripted run (excluded; every one is scripted POLICY_GAP->POLICY_GAP)"
+  },
+  {
+   "store": "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3",
+   "diagnostics": 3,
+   "class": "LIVE (canonical store used for the table)"
+  },
+  {
+   "store": "/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3",
+   "diagnostics": 2,
+   "class": "LIVE (canonical store used for the table)"
+  },
+  {
+   "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3",
+   "diagnostics": 1,
+   "class": "LIVE (canonical store used for the table)"
+  },
+  {
+   "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+   "diagnostics": 5,
+   "class": "LIVE (canonical store used for the table)"
+  }
+ ],
+ "text_only_ids_not_in_any_store": {
+  "count": 8,
+  "where": "artifacts/product-discovery-v4-2026-09-30/review-product/evidence/m4*.json, fixer/manual-check.json, docs/diagnostic-evidence.json, artifacts/diagnostic-verification/...",
+  "class": "offline review/fixture evidence, excluded"
+ },
+ "readiness_probes_excluded": [
+  "artifacts/v4-direct-diagnosis-readiness-20260913.json",
+  "artifacts/mechanic-readiness-result-20260913.json",
+  "artifacts/mechanic-readiness-concise-result-20260913.json"
+ ]
+}

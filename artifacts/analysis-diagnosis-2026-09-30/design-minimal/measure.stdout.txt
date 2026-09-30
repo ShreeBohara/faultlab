@@ -1,0 +1,18 @@
+{
+  "proposal": "faultlab-diagnosis-guide/v1-kinds-and-checks",
+  "block_characters": 3090,
+  "block_sha256": "b5bb6bf3ad79154be0f36d4baa0af479c7135508e3983abfd0c789e782e24ecc",
+  "declaration_sha256": "f5cdda04f3bf62e0c1e887cb04dfb2ae10647f30416d063766a8bf6562b25671",
+  "system_prompts_identical_across_requests": true,
+  "tokens_added_first_turn": [
+    631
+  ],
+  "max_first_turn_after": 10425,
+  "compaction_target_tokens": 28000,
+  "provider_calls": 0
+}
+v2d-dev5 pos 3 first 8990 -> 9621 (+631) repair None -> None
+v2e-dev5 pos 3 first 9088 -> 9719 (+631) repair None -> None
+v2f-dev5 pos 3 first 9639 -> 10270 (+631) repair 10030 -> 10661
+v2g-dev5 pos 3 first 9794 -> 10425 (+631) repair 10153 -> 10784
+v2g-dev6 pos 3 first 9352 -> 9983 (+631) repair None -> None

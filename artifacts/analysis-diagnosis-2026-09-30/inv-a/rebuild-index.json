@@ -1,0 +1,424 @@
+{
+ "_scratch_copy_deleted": true,
+ "v2d-dev5": {
+  "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+  "context_fields": [
+   "control_fault_spec",
+   "counterexample_id",
+   "evidence_ids",
+   "intervention_ids",
+   "interventions",
+   "observations",
+   "observed_control_trials",
+   "reduction",
+   "reproduction_counts",
+   "runtime_contract",
+   "target_invariant"
+  ],
+  "context_file": "v2d-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-b5ad7261afb4478f95d36530642000d6",
+  "final_answer": {
+   "evidence_ids": [
+    "evidence-7647723ecbee4d719bb4f98d9566f8ca",
+    "evidence-7f2507e37c324eb386812c9b3ebbb1e7",
+    "evidence-e506ba9b1cdb487f99c71cc35454ab50"
+   ],
+   "hypothesis": "The actor's report is scored as untruthful because it cites evidence labels that were never shown to it under the v2.1 shown-order labeling contract, not because the underlying upgrade failure was misreported. The delivered terminal FAILED receipt for update_order is present, but the report's evidence_ids include tokens that cannot be decoded to delivered evidence IDs, causing C5 to fail while C3 fails due to the scheduled upgrade failure.",
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": "intervention-7b8a13a6ed07a7ba054e44e8"
+  },
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-7b8a13a6ed07a7ba054e44e8"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-01188b04304645d8ab752f717411daa9"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 8990,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-57fa14bc65e941bfa5d55c392d325b7c",
+  "recorded_intervention_ids": [
+   "intervention-7b8a13a6ed07a7ba054e44e8"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "reduction_trial_ids_in_order": [
+   "episode-09286f0b289b464f80e3e7dd51dd4e3e",
+   "episode-e7f4d4be312543b18668bd00328ad32f",
+   "episode-7571a527994c4ceeb553593277a5a0fc",
+   "episode-332028a2a3d3435d969321f1cf535157",
+   "episode-069c2f9f96474f3593d44e34a2f90796",
+   "episode-cf5b9257e5d34d0084e57c752896025c",
+   "episode-95385a1c0f394a90bbe8cd8a0b25df6a",
+   "episode-917d1ead75a249d3a456bba292ceb33a",
+   "episode-b756eb63d20a4391b599e4e187a50932"
+  ],
+  "reproduction_trial_ids": [
+   "episode-65b09661d1744e54a446b6000d5f3d51",
+   "episode-fa22f36722394550b7fe3514392e3216",
+   "episode-21d6d63a16ff41a7b7e55e791018186f"
+  ],
+  "request_file": "v2d-dev5-diagnosis-request.json",
+  "run": "v2d",
+  "source_episode_id": "episode-183b78c814f44c26af8030a16b0ede05",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 27235,
+  "user_message_sha256": "7ae400eb192aed652504b02d5f2ead3f5976f057fd429b60a545af7617c37532",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 8854,
+    "provider_output_tokens": 222
+   }
+  ],
+  "wrappers_applied": []
+ },
+ "v2e-dev5": {
+  "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "context_fields": [
+   "control_fault_spec",
+   "counterexample_id",
+   "evidence_ids",
+   "intervention_ids",
+   "interventions",
+   "observations",
+   "observed_control_trials",
+   "reduction",
+   "reproduction_counts",
+   "runtime_contract",
+   "target_invariant"
+  ],
+  "context_file": "v2e-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-466a973d90f341b79b1fe05ed3632bfd",
+  "final_answer": {
+   "evidence_ids": [
+    "evidence-071a6dc9fee84f6d9e9b6bf302170934",
+    "evidence-7e5dc60fdae841ae847badfde5cccc7a",
+    "evidence-3381c3415fe44cad9ecfd689c4ead0b0"
+   ],
+   "hypothesis": "The actor's report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the delivered observations support a CORRECTLY_REJECTED report. The fixed intervention removing the F2 primitive eliminates the target violation, but the supplied observations do not establish whether the report's evidence citations were valid under the shown-order label contract.",
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": null
+  },
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-e91961428eedb56e8fa30e3b"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-ed993d65639949d7a6faf49021b31620"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9088,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-b0eeb89d02d94b90b4ad5093d1402e6d",
+  "recorded_intervention_ids": [],
+  "recorded_kind": "INCONCLUSIVE",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "reduction_trial_ids_in_order": [
+   "episode-e91ba330f6094e08bc6a464d75e25531",
+   "episode-c387d5c8730a4594b16285a12247e637",
+   "episode-5bc234415a1f406ab22b17f355d3447a",
+   "episode-0e68273647b7418a92e2bcf244826229",
+   "episode-6111ec48d03e45458fdeeb838f96b8b7",
+   "episode-f2824ecacf6340699e440be813cde940",
+   "episode-f90075977ebb4b8cbd7c43c1ba2d778e",
+   "episode-8b35e11c670c4748a0cddb505edd8f72",
+   "episode-bff7c30869be452a943803e2f013563b"
+  ],
+  "reproduction_trial_ids": [
+   "episode-6d99e80139a245ea97cf86f6dd01bfc9",
+   "episode-0cc0a7b33ce44911b61b269b8de2eab3",
+   "episode-3982fa63e06a48ab826322e0a6ab1f5a"
+  ],
+  "request_file": "v2e-dev5-diagnosis-request.json",
+  "run": "v2e",
+  "source_episode_id": "episode-88c3e54b243249c9aa00fa85c77177e3",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 27501,
+  "user_message_sha256": "497bf5d46f98b3527b63b82436152e2f2801caccc81a04eb7326b3a4b9e4373d",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 8952,
+    "provider_output_tokens": 185
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic"
+  ]
+ },
+ "v2f-dev5": {
+  "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+  "context_fields": [
+   "control_fault_spec",
+   "counterexample_id",
+   "evidence_ids",
+   "intervention_ids",
+   "interventions",
+   "native_citation_status",
+   "observations",
+   "observed_control_trials",
+   "reduction",
+   "reproduction_counts",
+   "runtime_contract",
+   "target_invariant"
+  ],
+  "context_file": "v2f-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-c26c27511e0044bba306085f1816b105",
+  "final_answer": {
+   "evidence_ids": [
+    "evidence-2cdc8c09367a491c80c02c79a4f56981",
+    "evidence-139c575ab09d4bf2a87de91341a3126b",
+    "evidence-7104ba105316426aae2b8be62520b250"
+   ],
+   "hypothesis": "The actor reports CORRECTLY_REJECTED and notification SUCCEEDED after observing a terminal FAILED orders receipt for the upgrade, but C5 and C3 fail because the report's upgrade_outcome is FAILED while notification_outcome is SUCCEEDED. The intervention removing the injected F2 primitive is expected to eliminate the target violation, indicating the fault is the delayed FAILED upgrade receipt rather than a missing capability.",
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070"
+  },
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-eb9f974e4d0e1b0e60ab2070"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-36a16b375d5240b1983dbece2944f1eb",
+   "mechanic-cf9b2b6da60d4f609cb2a2c9c3a7c063"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9639,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": 10030,
+  "recorded_diagnostic_id": "diagnostic-dddc1a1b692147cf9bb9aa15d0a80ca0",
+  "recorded_intervention_ids": [
+   "intervention-eb9f974e4d0e1b0e60ab2070"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "reduction_trial_ids_in_order": [
+   "episode-3205024cbef1416eae8c164ab2a2d66c",
+   "episode-3adcd9f7e2414012804f4a7b1f25b0d4",
+   "episode-077c3e4a2ef646d2b6e4e90b948bb465",
+   "episode-1c23ba665d4445bf88d871c8fb7d719d",
+   "episode-4d2f9a0222df400882766ba15e2d3cbf",
+   "episode-2e7008e219f443c5bf46c68f24939be4",
+   "episode-a519842cda3f4afab0dd3380dafea326",
+   "episode-2ca568bbb0a9437bb4cb0a18fa4aec61",
+   "episode-b0a9ffbfb83a47e3831cbfd8e68655e0"
+  ],
+  "reproduction_trial_ids": [
+   "episode-ae2f5f6d70514289963edf765195882c",
+   "episode-37dff43fd86c40718533116da02d4ded",
+   "episode-bc9fd36d2ff3443191efce9381f68bd3"
+  ],
+  "request_file": "v2f-dev5-diagnosis-request.json",
+  "run": "v2f",
+  "source_episode_id": "episode-3bd1c5265e5a4c928950c264d9844483",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 29349,
+  "user_message_sha256": "e223e257d83b4bbb94aae6f122cd427025c503a24367decd4b5873f7380c3b12",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9503,
+    "provider_output_tokens": 282
+   },
+   {
+    "attempt": 1,
+    "errors": [],
+    "provider_input_tokens": 9863,
+    "provider_output_tokens": 220
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ },
+ "v2g-dev5": {
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "context_fields": [
+   "control_fault_spec",
+   "counterexample_id",
+   "evidence_ids",
+   "intervention_ids",
+   "interventions",
+   "native_citation_status",
+   "observations",
+   "observed_control_trials",
+   "reduction",
+   "reproduction_counts",
+   "runtime_contract",
+   "target_invariant"
+  ],
+  "context_file": "v2g-dev5-diagnosis-context.json",
+  "counterexample_id": "counterexample-c8e897379e0b461491a3c256ceea4f30",
+  "final_answer": {
+   "evidence_ids": [
+    "evidence-a5c7777902134b268c3c662b70199c86",
+    "evidence-db6c1d4f80ce404d84657917000e8b39",
+    "evidence-04ada46bee2d4d5f9c1326d8ed6bc70b"
+   ],
+   "hypothesis": "The actor's final report cites only delivered observations and correctly reports the FAILED upgrade receipt, but the runtime contract's C3/C5 checks treat the report as untruthful because the report's evidence_ids omit the unshown first write attempt or because the report's overall/notification fields are judged against a policy expectation not visible in the delivered observations. The observed control trials show C3 and C5 failing while C6 passes, indicating the report is well-cited but the contract's truthfulness/upgrade-before-confirmation conditions are not satisfied by the evidence the actor can cite.",
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": "intervention-828103e0598f48f8675994a5"
+  },
+  "final_answer_valid": false,
+  "intervention_options": [
+   "intervention-828103e0598f48f8675994a5"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-ec2f80bf4d9b4543adf0b5ac3473f69c",
+   "mechanic-5bb12477f42d43afb96d991b3e865001"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9794,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": 10153,
+  "recorded_diagnostic_id": "diagnostic-a0dd0c487cff41ddb5ec546c8dc14131",
+  "recorded_intervention_ids": [],
+  "recorded_kind": "INCONCLUSIVE",
+  "recorded_proposed_kind": "INCONCLUSIVE",
+  "reduction_trial_ids_in_order": [
+   "episode-e77720f2db284ee4a47110551e0d8165",
+   "episode-b1fdc89cc27e4b83800c15d2feab1953",
+   "episode-b30ff7666192474dacbb6142837bd10d",
+   "episode-ee37a99142234d97bddc012d4e6529f9",
+   "episode-d56ffd0abb614ef7a0c1ad33a877e72d",
+   "episode-fa4852f883a64408bd8c9580bc69a42f",
+   "episode-4916787c075d44f183de95ec36168a36",
+   "episode-691d942c494d46c6a5604cf203e8d69c",
+   "episode-92504ed482f649a4b0c5ae3daf53564a"
+  ],
+  "reproduction_trial_ids": [
+   "episode-fcabd7b1690d468196e2ee33c29e3461",
+   "episode-bffb1eedd3e149249e3bddb8a0c1e363",
+   "episode-1cd7b2061c5a471cb28471e132b1ceb6"
+  ],
+  "request_file": "v2g-dev5-diagnosis-request.json",
+  "run": "v2g",
+  "source_episode_id": "episode-406917276faf4afaa0326b5552586f8d",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C3",
+  "user_message_chars": 30008,
+  "user_message_sha256": "4b915f49f555cb4beb2041564f24675a97a05199d99bfd4659fcdec15d91f9c1",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9658,
+    "provider_output_tokens": 250
+   },
+   {
+    "attempt": 1,
+    "errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "type": "string_too_long"
+     }
+    ],
+    "provider_input_tokens": 9986,
+    "provider_output_tokens": 250
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ },
+ "v2g-dev6": {
+  "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+  "context_fields": [
+   "control_fault_spec",
+   "counterexample_id",
+   "evidence_ids",
+   "intervention_ids",
+   "interventions",
+   "native_citation_status",
+   "observations",
+   "observed_control_trials",
+   "reduction",
+   "reproduction_counts",
+   "runtime_contract",
+   "target_invariant"
+  ],
+  "context_file": "v2g-dev6-diagnosis-context.json",
+  "counterexample_id": "counterexample-913db40010c446a0aa370d6a2e0a0a93",
+  "final_answer": {
+   "evidence_ids": [
+    "evidence-0b80c7beb60243959bd04ea4260b801d",
+    "evidence-af7bfcb37f1e4f8a8df955394b71a66f",
+    "evidence-6a7c5a177301409e983de5a39d4a9cf2"
+   ],
+   "hypothesis": "The actor's report cites only delivered evidence but omits the transient send_confirmation error observation, so it cannot truthfully represent notification outcome as UNKNOWN; the contract's evidence-labeling/citation rules create a gap between what the actor saw and what the report can prove.",
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": "intervention-1fa1cf42ff627b60cfa631dd"
+  },
+  "final_answer_valid": true,
+  "intervention_options": [
+   "intervention-1fa1cf42ff627b60cfa631dd",
+   "intervention-0d584dee803efd13b29ae014"
+  ],
+  "mechanic_output_record_ids": [
+   "mechanic-6804f09abb3b421ab7782f6784a3924e"
+  ],
+  "rebuilt_first_turn_tokens_frozen_tokenizer": 9352,
+  "rebuilt_repair_turn_tokens_frozen_tokenizer": null,
+  "recorded_diagnostic_id": "diagnostic-dc19567fb237465cac75b2caa63e7cea",
+  "recorded_intervention_ids": [
+   "intervention-1fa1cf42ff627b60cfa631dd"
+  ],
+  "recorded_kind": "POLICY_GAP",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "reduction_trial_ids_in_order": [
+   "episode-6df721f19a53446eaf54798cb763903c",
+   "episode-d1e5bd4a78f4446caa1166861cd17bc5",
+   "episode-772d65676b834da29fb76c214fa657d7",
+   "episode-a47673a1ef16434f90f7f36093dcad1b",
+   "episode-f25d02a4022a458c9b7465f94e45fc5d",
+   "episode-5f5f5a725bdd4f8f98d8edcfc77ab32d",
+   "episode-99da80a0ee4645f39dc26b6b38548103",
+   "episode-a2c6bb2716c44d80b3749e517ca5c261",
+   "episode-a339a6fc2d8e459089ed23a73ae4b171"
+  ],
+  "reproduction_trial_ids": [
+   "episode-873dd8fd5f44407f80f81573279d3795",
+   "episode-5a28368005c140a9b91b4e3a5bdce054",
+   "episode-b1f8dc977f5d43b3b4555209f2573272"
+  ],
+  "request_file": "v2g-dev6-diagnosis-request.json",
+  "run": "v2g",
+  "source_episode_id": "episode-09af40d7b6954b91b6d6751bc3086de2",
+  "system_message_sha256": "5488c7f5b1736002003d8dff9ba1774bbfd814572daa49de9dd222fea701a4e5",
+  "target_invariant": "C4",
+  "user_message_chars": 28340,
+  "user_message_sha256": "fe65a062bc14da5e8c93fd950940949805cd620b6366bbe559bbcb8fbb67db50",
+  "validation_by_attempt": [
+   {
+    "attempt": 0,
+    "errors": [],
+    "provider_input_tokens": 9216,
+    "provider_output_tokens": 189
+   }
+  ],
+  "wrappers_applied": [
+   "BoundedMechanic",
+   "CitationStatusMechanic"
+  ]
+ }
+}

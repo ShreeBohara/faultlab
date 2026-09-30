@@ -1,0 +1,208 @@
+{
+ "diagnoses": {
+  "v2d-dev5": {
+   "added_tokens": 700,
+   "block_alone_tokens": 839,
+   "existing_keys_byte_identical": true,
+   "first_turn_tokens_after": 9690,
+   "first_turn_tokens_before": 8990,
+   "sidecar": {
+    "attempts": [
+     {
+      "attempt": 0,
+      "mechanic_outputs_record": "mechanic-01188b04304645d8ab752f717411daa9",
+      "validation_errors": []
+     }
+    ],
+    "last_raw_unvalidated": {
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-7b8a13a6ed07a7ba054e44e8"
+    },
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind_source": "model"
+   },
+   "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+  },
+  "v2e-dev5": {
+   "added_tokens": 700,
+   "block_alone_tokens": 839,
+   "existing_keys_byte_identical": true,
+   "first_turn_tokens_after": 9788,
+   "first_turn_tokens_before": 9088,
+   "sidecar": {
+    "attempts": [
+     {
+      "attempt": 0,
+      "mechanic_outputs_record": "mechanic-ed993d65639949d7a6faf49021b31620",
+      "validation_errors": []
+     }
+    ],
+    "last_raw_unvalidated": {
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": null
+    },
+    "proposal_status": "VALID_NO_REQUEST",
+    "recorded_proposed_kind_source": "model"
+   },
+   "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+  },
+  "v2f-dev5": {
+   "added_tokens": 700,
+   "block_alone_tokens": 839,
+   "existing_keys_byte_identical": true,
+   "first_turn_tokens_after": 10339,
+   "first_turn_tokens_before": 9639,
+   "repair_turn": {
+    "proposed": {
+     "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 743
+      }
+     ]
+    },
+    "proposed_turn_tokens_without_block": 10077,
+    "today": {
+     "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution.",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "type": "string_too_long"
+      }
+     ]
+    },
+    "today_turn_tokens": 10030
+   },
+   "sidecar": {
+    "attempts": [
+     {
+      "attempt": 0,
+      "mechanic_outputs_record": "mechanic-36a16b375d5240b1983dbece2944f1eb",
+      "validation_errors": [
+       {
+        "location": [
+         "hypothesis"
+        ],
+        "type": "string_too_long"
+       }
+      ]
+     },
+     {
+      "attempt": 1,
+      "mechanic_outputs_record": "mechanic-cf9b2b6da60d4f609cb2a2c9c3a7c063",
+      "validation_errors": []
+     }
+    ],
+    "last_raw_unvalidated": {
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070"
+    },
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind_source": "model"
+   },
+   "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+  },
+  "v2g-dev5": {
+   "added_tokens": 700,
+   "block_alone_tokens": 839,
+   "existing_keys_byte_identical": true,
+   "first_turn_tokens_after": 10494,
+   "first_turn_tokens_before": 9794,
+   "repair_turn": {
+    "proposed": {
+     "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ]
+    },
+    "proposed_turn_tokens_without_block": 10200,
+    "today": {
+     "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution.",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "type": "string_too_long"
+      }
+     ]
+    },
+    "today_turn_tokens": 10153
+   },
+   "sidecar": {
+    "attempts": [
+     {
+      "attempt": 0,
+      "mechanic_outputs_record": "mechanic-ec2f80bf4d9b4543adf0b5ac3473f69c",
+      "validation_errors": [
+       {
+        "location": [
+         "hypothesis"
+        ],
+        "type": "string_too_long"
+       }
+      ]
+     },
+     {
+      "attempt": 1,
+      "mechanic_outputs_record": "mechanic-5bb12477f42d43afb96d991b3e865001",
+      "validation_errors": [
+       {
+        "location": [
+         "hypothesis"
+        ],
+        "type": "string_too_long"
+       }
+      ]
+     }
+    ],
+    "last_raw_unvalidated": {
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-828103e0598f48f8675994a5"
+    },
+    "proposal_status": "INVALID_OUTPUT",
+    "recorded_proposed_kind_source": "code_default"
+   },
+   "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+  },
+  "v2g-dev6": {
+   "added_tokens": 700,
+   "block_alone_tokens": 839,
+   "existing_keys_byte_identical": true,
+   "first_turn_tokens_after": 10052,
+   "first_turn_tokens_before": 9352,
+   "sidecar": {
+    "attempts": [
+     {
+      "attempt": 0,
+      "mechanic_outputs_record": "mechanic-6804f09abb3b421ab7782f6784a3924e",
+      "validation_errors": []
+     }
+    ],
+    "last_raw_unvalidated": {
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-1fa1cf42ff627b60cfa631dd"
+    },
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind_source": "model"
+   },
+   "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation."
+  }
+ },
+ "model_tokenizer": "deepseek-ai/DeepSeek-V4-Pro-0813",
+ "protocol": "faultlab-mechanic-diagnosis/v2-declared-semantics"
+}
