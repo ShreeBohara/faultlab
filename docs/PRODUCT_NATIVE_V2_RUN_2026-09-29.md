@@ -170,3 +170,72 @@ and 9 of 9 on v1. That is the only failure consistent enough to survive six runs
   - The first slots replay this same agent's verified, consistently failing development recipes, most reliable
     first; the Explorer then uses the remaining slots.
   - Replay sources are always labelled as replays, never as independent discovery.
+
+---
+
+# Third live run: history replay, v2d (2026-09-30, 06:31–06:39 UTC). The furthest a generated repair has ever got
+
+- **Declaration:** `artifacts/product-live-2026-09-30/native-v2d-run/PLAN.md` and `DECLARATION.json`, declared before
+  Start.
+- **Build:** runtime `ee2d1df9…` (backup commit `814a6e3`), with discovery `faultlab-discovery/v4-history-replay`
+  (built and verified at $0 the same night).
+- **Agent and store:** native adapter v2.1 in the v2b store.
+- **Frozen replay list:** dev-5 (rejected upgrade), then dev-6.
+- **Cost:** 242 calls, **$5.21** conservative. Ledger: **$903.79**.
+
+## Stage by stage
+
+| stage | result |
+|---|---|
+| Discovery | slot 1 = **history replay of dev-5** → VIOLATION (C3), so it became a source. This is a replay of a known failing development recipe, **not independent discovery** |
+| Reproduction | 3 of 3 C3 |
+| Reduction | the re-run was 3 of 3 again, and the source was retained. **This is the first native-agent source to survive reduction** |
+| Diagnosis | **POLICY_GAP**: a declared intervention removed the failure. The Mechanic's own proposed kind was CONTRACT_EVIDENCE_GAP, but the fixed code decided from the evidence. Misreading check: NOT_CHECKED, because the diagnosis made no undelivered-citation claim |
+| Candidate `policy-c65cc08e…` | See the list below the table. |
+| Source validation | **PASSED**: the unchanged agent failed C3 in 3 of 3; with the candidate there were **0 violations** in 3 of 3 |
+| Challenge | See "The challenge" below. |
+| Next candidate | The Mechanic's request carrying the challenge feedback came to **33,223 input tokens, over the 32,000 limit**. It was refused before sending, and the campaign ended **ERROR** (`INPUT_LIMIT`) |
+
+The candidate policy `policy-c65cc08e…` has four rules:
+- **After an uncertain upgrade:** wait one tick, read the upgrade status, and require a SUCCEEDED receipt.
+- **After a definite upgrade failure:** close business calls and ask the agent for its report.
+- **Before a confirmation:** block it unless the upgrade has a SUCCEEDED receipt.
+- **Before the final report:** re-read the upgrade status.
+
+**The challenge.** The Explorer chose 3 new schedules:
+- a 2.5 s response delay on the upgrade;
+- an 8-tick slow upgrade;
+- one failed status read.
+
+Across **9 pairs, both arms had 0 failed checks, 18 of 18 episodes.** The status-read fault often **did not fire**:
+- the candidate reads the status itself, so the agent never calls the faulted tool;
+- the challenge stops at the first pair whose fault did not fire.
+
+The result was **INCONCLUSIVE**, and the qualification was INCOMPLETE, not rejected.
+
+## Integrity
+
+- 95 episodes: 0 clock drift (both checks), 95 of 95 worlds VALID.
+- 2 evidence waits, each **resolved by the product's own first automatic retry**. This is the first live use of
+  `faultlab-evidence-retry/v2`.
+- 2 agent-side connection blips, each recovered by the agent's single blind retry.
+
+## What it shows, and what it does not
+
+**Shows.** For the first time, a FaultLab-generated runtime policy for an external agent:
+- passed source validation;
+- went through a live challenge with **zero violations**.
+
+The replay protocol worked as designed: it exposed the agent's reliable failure on the first slot.
+
+**Does not show:**
+- promotion or ACCEPTED;
+- that the candidate would survive a complete challenge, or the 6 promotion cases.
+
+**The run was stopped by two FaultLab limits, not by the agent or the gates:**
+1. **The Mechanic's next-candidate context can exceed the model input limit, and that ends the campaign in ERROR.**
+   It should instead be bounded by a declared, deterministic compaction, or end the candidate search with a plain
+   reason.
+2. **A challenge schedule can target a tool the candidate makes unnecessary.** Its fault then never fires, and the
+   challenge is INCONCLUSIVE. The challenge's completeness rule is a gate and stays unchanged. The fix belongs in how
+   challenge schedules are chosen, for example preferring faults that fire under the candidate.

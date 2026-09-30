@@ -1,0 +1,18 @@
+06:31:02 state=RUNNING used_calls=0 charged=0.0 selections=0 counterexamples=0 policy=policy-v0
+06:31:32 state=REPRODUCING used_calls=23 charged=0.4806999999999997 selections=1 counterexamples=1 policy=policy-v0
+06:32:02 state=REDUCING used_calls=47 charged=0.9823000000000004 selections=1 counterexamples=1 policy=policy-v0
+06:32:32 state=REDUCING used_calls=77 charged=1.609299999999998 selections=1 counterexamples=1 policy=policy-v0
+06:33:03 state=DIAGNOSING used_calls=96 charged=2.035339999999997 selections=1 counterexamples=1 policy=policy-v0
+06:33:33 state=CANDIDATE_VALIDATION used_calls=114 charged=2.4404799999999995 selections=1 counterexamples=1 policy=policy-v0
+06:34:03 state=CANDIDATE_VALIDATION used_calls=135 charged=2.8793800000000025 selections=1 counterexamples=1 policy=policy-v0
+06:34:33 state=CHALLENGING used_calls=152 charged=3.263620000000005 selections=1 counterexamples=1 policy=policy-v0
+06:35:03 state=CHALLENGING used_calls=164 charged=3.5144200000000065 selections=1 counterexamples=1 policy=policy-v0
+06:36:03 state=CHALLENGING used_calls=181 charged=3.898660000000009 selections=1 counterexamples=1 policy=policy-v0
+06:36:33 state=CHALLENGING used_calls=214 charged=4.588360000000013 selections=1 counterexamples=1 policy=policy-v0
+06:37:03 state=WAITING_EVIDENCE used_calls=242 charged=5.2025000000000166 selections=1 counterexamples=1 policy=policy-v0
+06:37:03 evidence-wait status=AUTOMATIC_RETRY_SCHEDULED auto_total=0 waits_total=1 current_started=2026-09-30T06:36:59.562310+00:00
+06:37:33 evidence-wait status=AUTOMATIC_RETRY_RUNNING auto_total=1 waits_total=1 current_started=2026-09-30T06:36:59.562310+00:00
+06:38:33 evidence-wait status=AUTOMATIC_RETRY_SCHEDULED auto_total=1 waits_total=2 current_started=2026-09-30T06:38:29.623978+00:00
+06:39:03 evidence-wait status=AUTOMATIC_RETRY_RUNNING auto_total=2 waits_total=2 current_started=2026-09-30T06:38:29.623978+00:00
+06:39:33 state=ERROR used_calls=242 charged=5.2025000000000166 selections=1 counterexamples=1 policy=policy-v0
+FINAL ERROR INPUT_LIMIT: Saved evidence exceeds the model input limit. This request was rejected before provider dispatch. state=ERROR used_calls=242 charged=5.2025000000000166 selections=1 counterexamples=1 policy=policy-v0 operator_retries=0 states=['RUNNING', 'REPRODUCING', 'REDUCING', 'DIAGNOSING', 'CANDIDATE_VALIDATION', 'CHALLENGING', 'WAITING_EVIDENCE', 'ERROR']

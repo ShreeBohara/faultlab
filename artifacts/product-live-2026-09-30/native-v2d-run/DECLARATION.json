@@ -1,0 +1,128 @@
+{
+ "title": "v2d: Learn campaign with discovery v4 history replay on native adapter v2.1",
+ "declared_at_utc": "2026-09-30T06:30:53+00:00",
+ "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+ "plan_sha256": "241534936e94f9ef511e95d8da6633e270aee054fccecd88ea53270c6b6d2747",
+ "misreading_check_sha256": "70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033",
+ "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+ "plan_hash": "4e8d2b09ee032bd258f901b00d481cf6cf1fe987c592537a8ce2aef5c4ece546",
+ "configuration_hash": "4e071e46da94e43870a750ce9cf05740238f4d9751c28a02e5e93b27ec918b92",
+ "agent_registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+ "agent_inputs": {
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "identities": {
+  "algorithm_hash": "ab296a32c118294f5f36c1c42ffc3fa066863007b449acd88bc29d2b0f1b2b81",
+  "runtime_hash": "ee2d1df914bd54c766eaec200715ad976f7d905964e1077adbb14ce46cc928e9",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "source_commit": "814a6e3 (backup/part2-2026-09-22), runtime ee2d1df9",
+ "discovery_protocol": "faultlab-discovery/v4-history-replay",
+ "history": {
+  "status": "AVAILABLE",
+  "record_cutoff": 1537,
+  "episode_ids_hash": "841b11c9ac44a9df09af6c570efd0072ad096546b8c75228186f4dd1201ecd14",
+  "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27"
+ },
+ "frozen_replay": {
+  "schema_version": "faultlab-history-replay/v1",
+  "status": "AVAILABLE",
+  "statement": "Replayed first, before any Explorer request: the recipes below, taken from the frozen agent history by the fixed replay rule. Each uses one discovery slot and one agent episode and no Explorer request. A source found by one is a history replay of that row, never independent discovery. A replay source goes through the normal loop (reproduction, reduction, diagnosis, candidates) before the next slot; if the campaign's candidate requests (at most 4) are used up there, discovery ends and later replays and Explorer slots do not run.",
+  "rule": "History replay rule (faultlab-history-replay/v1). From the plan's frozen agent history, a recipe row is replayed only if it has at least one scheduled fault, at least 2 verified episodes, every verified episode fired every scheduled fault, and at least 2 of every 3 verified episodes ended in VIOLATION. Eligible rows are ordered by violation share (highest first), then verified episodes (most first), then their order in the history; at most 3 are replayed. Each replay runs that row's recipe (the same order-aware schedule; a development case's public recipe, otherwise the listed faults with seed 0) as one discovery slot and one agent episode, with no Explorer request, before any Explorer slot. A replay becomes a source exactly as any discovery pick does (completed, every fault fired, VIOLATION). A result from it is a history replay of that row, never independent discovery.",
+  "basis": "faultlab-schedule-identity/v2-order-aware",
+  "max_rows": 3,
+  "min_verified_episodes": 2,
+  "min_violation_share": "2/3",
+  "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+  "rows": [
+   {
+    "replay": 1,
+    "history_row": 5,
+    "development_case_id": "dev-5",
+    "recipe": [
+     "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+    ],
+    "fault_spec": {
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 105,
+     "primitives": [
+      {
+       "target_tool": "update_order",
+       "target_service": "orders",
+       "occurrence": 1,
+       "kind": "F2",
+       "parameters": {
+        "completion_delay_ticks": 2,
+        "terminal_status": "FAILED",
+        "failure_code": "UPGRADE_REJECTED"
+       }
+      }
+     ]
+    },
+    "schedule_identity_v2": "056d47cefc8bd388cae36f698e5f52f41854cec1d420ce2450af24a9b9e10982",
+    "verified_episodes": 3,
+    "violations": 3,
+    "violation_share": "3/3",
+    "every_fault_fired": 3,
+    "outcomes": {
+     "VIOLATION": 3
+    },
+    "failed_checks": {
+     "C3": 3,
+     "C5": 3
+    },
+    "sources": [
+     "baseline_study"
+    ]
+   },
+   {
+    "replay": 2,
+    "history_row": 6,
+    "development_case_id": "dev-6",
+    "recipe": [
+     "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+    ],
+    "fault_spec": {
+     "schema_version": "faultlab/v1",
+     "scope": "orders.upgrade_then_confirm/v1",
+     "seed": 106,
+     "primitives": [
+      {
+       "target_tool": "send_confirmation",
+       "target_service": "notifications",
+       "occurrence": 1,
+       "kind": "F4",
+       "parameters": {
+        "failure_count": 2
+       }
+      }
+     ]
+    },
+    "schedule_identity_v2": "7d9d3bf98889f98b6b67f1405161bf68a7cae87b3d46f712d653e7a5551121fd",
+    "verified_episodes": 3,
+    "violations": 2,
+    "violation_share": "2/3",
+    "every_fault_fired": 3,
+    "outcomes": {
+     "SAFE_UNRESOLVED": 1,
+     "VIOLATION": 2
+    },
+    "failed_checks": {
+     "C4": 2,
+     "C5": 2
+    },
+    "sources": [
+     "baseline_study"
+    ]
+   }
+  ]
+ },
+ "bounds": "PLAN.md: ledger ceiling 4936 requests / about 106.87 dollars; before any counterexample 144 requests / 3.47 dollars; 10 hours; 3 operator evidence retries; lab-role backoff retry",
+ "prices": "native-v2b-run/price-check.json (2026-09-30, unchanged)",
+ "ledger_before_dollars": 898.58
+}

@@ -96,8 +96,17 @@
    "charged_rounded_up": 2.6,
    "token_priced_estimate": 0.29,
    "carried_after": 898.58
+  },
+  {
+   "stage": "v2d: history-replay Learn campaign on native adapter v2.1: dev-5 replay source -> reproduced 3/3 -> reduced -> POLICY_GAP -> candidate PASSED source validation -> challenge 0 failed checks in 9 pairs but INCONCLUSIVE (untriggered pair) -> next Mechanic request over input limit (33,223 > 32,000) -> ERROR",
+   "campaign": "campaign-ea66672d7a904bd8a011d6922790c963",
+   "calls": 242,
+   "charged_exact": 5.2025,
+   "charged_rounded_up": 5.21,
+   "token_priced_estimate": "about 0.7",
+   "carried_after": 903.79
   }
  ],
- "carried_total": 898.58,
+ "carried_total": 903.79,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }
