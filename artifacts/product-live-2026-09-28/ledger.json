@@ -141,8 +141,17 @@
    "charged_rounded_up": 7.08,
    "token_priced_estimate": 1.894135,
    "carried_after": 930.61
+  },
+  {
+   "stage": "diagnosis probe 2 (pre-registered replication with person-majority P1b): INCOMPLETE - provider returned HTTP 402 Payment Required from 22:38:46 UTC; 88 of 140 answers delivered (rounds 0-5), 52 failed",
+   "campaign": "probe ledger artifacts/product-live-2026-09-30/diagnosis-probe2/probe-ledger.sqlite3",
+   "calls": 148,
+   "charged_exact": 7.37632,
+   "charged_rounded_up": 7.38,
+   "token_priced_estimate": 1.186474,
+   "carried_after": 937.99
   }
  ],
- "carried_total": 930.61,
+ "carried_total": 937.99,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

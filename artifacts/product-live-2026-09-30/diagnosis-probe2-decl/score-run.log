@@ -1,0 +1,116 @@
+{
+ "P1": {
+  "arms": {
+   "CONTROL": {
+    "auto_matched": 11,
+    "confirmed": 11,
+    "counted_against_bar": 11,
+    "delivered": 27,
+    "distinct_hypotheses": 27,
+    "person_flagged_without_auto_match": 10,
+    "person_reviewed": 27,
+    "planned": 40
+   },
+   "GUIDE": {
+    "auto_matched": 0,
+    "confirmed": 0,
+    "counted_against_bar": 0,
+    "delivered": 25,
+    "distinct_hypotheses": 20,
+    "person_flagged_without_auto_match": 0,
+    "person_reviewed": 25,
+    "planned": 40
+   }
+  },
+  "measure": "dev-5 first-turn hypotheses with a checker v2 claim match confirmed by a person (Y)",
+  "provisional_from_auto_matches": {
+   "control_at_least_20": false,
+   "guide_at_most_4": true
+  },
+  "rule": "dev-5 first-turn hypotheses that blame citations, labels or evidence ids. A person marks every delivered dev-5 row Y or N in review-blinded.csv without seeing the checker or the arm. Confirmed = a checker v2 claim match AND the person's Y. Pass if CONTROL confirmed >= 20 of 40 AND GUIDE confirmed plus GUIDE rows the person marked Y without a checker match (these are counted against the GUIDE bar) <= 4 of 40; CONTROL confirmed < 20 of 40 is UNINFORMATIVE (the premise failed).",
+  "status": "INCOMPLETE"
+ },
+ "P2": {
+  "arms": {
+   "CONTROL": {
+    "delivered": 27,
+    "distinct_raw_answers": 27,
+    "over_600": 6,
+    "valid": 21
+   },
+   "GUIDE": {
+    "delivered": 25,
+    "distinct_raw_answers": 22,
+    "over_600": 0,
+    "valid": 25
+   }
+  },
+  "measure": "dev-5 first-attempt validity and over-600 counts",
+  "status": "INCOMPLETE"
+ },
+ "P4": {
+  "measure": "repair turns returning a valid answer with hypothesis <= 600 characters",
+  "rule1_worse_than_today_in_total": false,
+  "setups": {
+   "v2f-dev5/REPAIR_RULE1": {
+    "delivered": 6,
+    "distinct_raw_answers": 3,
+    "hypothesis_characters": [
+     525,
+     558,
+     618,
+     558,
+     525,
+     525
+    ],
+    "planned": 10,
+    "valid_within_600": 5
+   },
+   "v2f-dev5/REPAIR_TODAY": {
+    "delivered": 6,
+    "distinct_raw_answers": 2,
+    "hypothesis_characters": [
+     743,
+     558,
+     558,
+     558,
+     558,
+     743
+    ],
+    "planned": 10,
+    "valid_within_600": 4
+   },
+   "v2g-dev5/REPAIR_RULE1": {
+    "delivered": 6,
+    "distinct_raw_answers": 4,
+    "hypothesis_characters": [
+     601,
+     541,
+     571,
+     614,
+     571,
+     601
+    ],
+    "planned": 10,
+    "valid_within_600": 3
+   },
+   "v2g-dev5/REPAIR_TODAY": {
+    "delivered": 6,
+    "distinct_raw_answers": 3,
+    "hypothesis_characters": [
+     384,
+     614,
+     614,
+     501,
+     384,
+     384
+    ],
+    "planned": 10,
+    "valid_within_600": 4
+   }
+  },
+  "status": "INCOMPLETE",
+  "worse_means": "the Rule 1 message's valid-within-600 total over both setups is lower than today's total"
+ }
+}
+repeats: 0 of 14 request keys got one distinct answer (temperature 0); see scoring.json repeats

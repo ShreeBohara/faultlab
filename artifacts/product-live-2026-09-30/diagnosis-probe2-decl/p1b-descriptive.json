@@ -1,0 +1,9 @@
+{
+ "P1b": {
+  "CONTROL_Y": "21/27",
+  "GUIDE_Y": "0/25",
+  "status": "PASS"
+ },
+ "P2": "INCOMPLETE",
+ "rule2_ships": false
+}

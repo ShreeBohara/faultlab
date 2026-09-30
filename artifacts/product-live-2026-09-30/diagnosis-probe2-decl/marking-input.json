@@ -1,0 +1,331 @@
+{
+ "rows": [
+  {
+   "id": "h003",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's final report cites evidence IDs that were not delivered to it as labels, so the report fails the delivered_cited_evidence check. The supplied observations show the actor received only five or six observations per episode, but the report cites o1-o5/o6; the runtime contract says unshown observations are never labelled and any other token is kept as written, causing a contract evidence gap rather than a policy gap."
+  },
+  {
+   "id": "h004",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, violating the required upgrade-before-confirmation ordering. The delivered evidence showed the upgrade was authoritatively rejected, so a recovery policy that blocks confirmation until a matching SUCCEEDED upgrade receipt exists would prevent the violation."
+  },
+  {
+   "id": "h005",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's report cites only the first five observations from the episode, omitting the later delivered terminal FAILED receipt for update_order. This causes C5 truthful_report to fail because the report's upgrade_outcome is FAILED but its evidence_ids do not include the matching terminal receipt evidence. The intervention removing the injected F2 primitive eliminates the delayed FAILED receipt, so the actor never sees a terminal failure and the report no longer needs to cite it, yielding zero target violations."
+  },
+  {
+   "id": "h008",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's final report cites evidence IDs that were not delivered to it as labels, so the report fails the delivered_cited_evidence check. The observed control trials show the target violation (C3) in all three fresh trials, and the intervention removing the primitive shows zero target violations in all three treatment trials, indicating the primitive is the cause of the upgrade-before-confirmation violation. The contract requires the actor to cite only delivered evidence IDs, but the report's evidence_ids include tokens that were never shown as labels, creating a contract evidence gap."
+  },
+  {
+   "id": "h010",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a transient send_confirmation error and an UNKNOWN status, then reported COMPLETED with notification_outcome UNKNOWN instead of preserving uncertainty as SAFE_UNRESOLVED. A policy that defers unresolved notification outcomes before final report would prevent the false COMPLETED claim."
+  },
+  {
+   "id": "h011",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a transient send_confirmation error and an UNKNOWN status, then reported COMPLETED with notification_outcome UNKNOWN. The delivered evidence was sufficient to report SAFE_UNRESOLVED or otherwise avoid claiming completion, so a policy requiring deferral on uncertain notification outcome would prevent the C4/C5 violation."
+  },
+  {
+   "id": "h012",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when upgrade_terminal_failure is true would prevent this ordering violation."
+  },
+  {
+   "id": "h013",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent sent a confirmation after the upgrade operation had already delivered a terminal FAILED receipt, so the confirmation effect occurred without a preceding successful upgrade effect. A policy that blocks confirmation when a matching terminal upgrade failure exists would prevent the C3 violation."
+  },
+  {
+   "id": "h014",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a transient send_confirmation error and an UNKNOWN status, then reported COMPLETED with notification_outcome UNKNOWN. A recovery policy that defers unresolved notification status or requires a terminal receipt before claiming completion would prevent the C4/C5 violation."
+  },
+  {
+   "id": "h017",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's final report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the underlying upgrade failure and notification success are correctly observed. The supplied observations show the report cites o1-o5/o6, but the runtime contract's v2 shown-order labels may not include all of these, so the report's evidence citations are not delivered evidence IDs from the actor's perspective."
+  },
+  {
+   "id": "h019",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt but still sent a confirmation and reported the notification as SUCCEEDED, causing C3 and C5 failures. A policy that closes business calls after a terminal upgrade failure would prevent the confirmation and require a truthful report."
+  },
+  {
+   "id": "h023",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED receipt for the upgrade, violating the required upgrade-before-confirmation ordering. The delivered observations were sufficient to know the upgrade failed, so a policy that blocks confirmation when no matching SUCCEEDED upgrade receipt exists would prevent this violation."
+  },
+  {
+   "id": "h028",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when upgrade_terminal_failure is true would prevent this ordering violation."
+  },
+  {
+   "id": "h029",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's delivered observations show a transient send_confirmation error followed by UNKNOWN status, but the runtime contract requires a matching terminal receipt before claiming notification outcome. The original report cites only delivered evidence and correctly marks notification_outcome UNKNOWN, yet C4/C5 fail because the policy expects a terminal notification receipt that was never delivered. This is a contract evidence gap: the task contract's five-field report cannot satisfy notification_cardinality without a receipt the actor never received."
+  },
+  {
+   "id": "h030",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's report cites only the first five observations (o1-o5) and omits the later FAILED terminal receipt observation (o6) that establishes upgrade failure. This causes C5 truthful_report to fail because the report's evidence set does not include the authoritative terminal receipt, even though the report's upgrade_outcome is FAILED. The intervention removing the delayed FAILED primitive should eliminate the target violation by preventing the late receipt from being delivered, but the existing treatment trials already show zero target violations, so the hypothesis is supported by the control/treatment contrast."
+  },
+  {
+   "id": "h031",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's report cites evidence IDs that were never shown as labels, causing C5 truthful_report to fail even though the delivered terminal receipts support CORRECTLY_REJECTED. The fixed intervention removing the F2 primitive already produced zero treatment target violations, so the remaining violation is a report-evidence citation gap rather than a policy gap."
+  },
+  {
+   "id": "h032",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, yet still sent a confirmation and reported the notification as SUCCEEDED while marking the upgrade FAILED. The delivered evidence was sufficient to avoid the confirmation and report truthfully, so the violation is a recovery-policy gap rather than a contract evidence gap."
+  },
+  {
+   "id": "h033",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's report cites evidence IDs that were never shown to it as labels, causing the truthful_report check (C5) to fail even though the upgrade failure is correctly reported. The delivered observations show the actor received terminal FAILED receipts for update_order and SUCCEEDED receipts for send_confirmation, but the report's evidence_ids include unshown observation IDs, so the contract's evidence citation requirement is violated."
+  },
+  {
+   "id": "h035",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's report cites only delivered evidence and correctly identifies the FAILED upgrade receipt, but the runtime contract's final-report admission point refuses the report before finalization because the report's evidence_ids omit the unshown first write attempt or another required observation, causing C5 truthful_report to fail despite the actor's terminal receipts being consistent with the observed FAILED upgrade."
+  },
+  {
+   "id": "h036",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's report cites evidence IDs that were never shown to it as labels, so the delivered report fails the delivered_cited_evidence check. The observed control trials show C3 and C5 violations, but the supplied evidence does not establish that the actor was shown the exact evidence IDs it cited; the report may have cited unshown observations or tokens kept verbatim. Removing the fault primitive is expected to eliminate the target violation only if the evidence gap is caused by the fault, not by the actor's citation behavior."
+  },
+  {
+   "id": "h037",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's report cites evidence IDs that were never shown to it as labels, causing the truthful_report check (C5) to fail even though the upgrade failure is correctly reported. The supplied observations show the actor received terminal FAILED receipts for update_order and SUCCEEDED receipts for send_confirmation, but the report's evidence_ids include unshown observation IDs, so the contract's evidence citation requirement is violated."
+  },
+  {
+   "id": "h040",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's final report cites only delivered observations, but the runtime contract's evidence labels are assigned in shown order and the report's cited evidence IDs are decoded from those labels. The observed C3/C5 failures arise because the actor reports the upgrade as FAILED and overall CORRECTLY_REJECTED while the delivered terminal receipt for update_order is FAILED with UPGRADE_REJECTED, yet the report's evidence citations do not include the terminal receipt evidence ID required to substantiate that terminal failure under the contract's evidence rules."
+  },
+  {
+   "id": "h042",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a matching SUCCEEDED upgrade receipt and an UNKNOWN notification status after a transient send_confirmation error, but reported overall COMPLETED with notification_outcome UNKNOWN instead of preserving uncertainty as SAFE_UNRESOLVED. A policy that defers unresolved notification status before final report would prevent the false completion claim."
+  },
+  {
+   "id": "h043",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt before sending the confirmation, but still reported upgrade_outcome FAILED and notification_outcome SUCCEEDED with overall CORRECTLY_REJECTED. The policy allowed confirmation after the upgrade failure, so the confirmation effect occurred after the failed upgrade effect, violating C3. A policy that blocks confirmation after a terminal upgrade failure should prevent this ordering violation."
+  },
+  {
+   "id": "h045",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt before sending the confirmation, but still reported upgrade_outcome FAILED and notification_outcome SUCCEEDED with overall CORRECTLY_REJECTED. The policy allowed the confirmation to proceed after the upgrade failure, so the confirmation effect occurred after the failed upgrade effect, violating C3. A policy that blocks confirmation after a terminal upgrade failure would prevent this ordering violation."
+  },
+  {
+   "id": "h046",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt but still sent a confirmation and reported the notification as SUCCEEDED, causing C3 and C5 failures. A policy that closes business calls after a terminal upgrade failure would prevent the confirmation and require a truthful rejected report."
+  },
+  {
+   "id": "h047",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that closes business calls or requires an upgrade SUCCEEDED receipt before allowing confirmation would prevent this ordering violation."
+  },
+  {
+   "id": "h049",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor reports CORRECTLY_REJECTED and FAILED upgrade, but the delivered terminal receipt for update_order is FAILED with UPGRADE_REJECTED, while the notification receipt is SUCCEEDED. The target invariant C3 (upgrade_before_confirmation) fails because the actor sent a confirmation after observing only a FAILED upgrade receipt, not because the upgrade was missing. The contract requires a matching SUCCEEDED orders receipt before confirmation; the actor's report cites the FAILED receipt and still proceeds to send_confirmation, so the evidence gap is that the actor did not treat the FAILED receipt as blocking for confirmation."
+  },
+  {
+   "id": "h050",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's truthful-report failure (C5) is caused by the runtime contract requiring the final report to cite only delivered evidence IDs, while the actor's report cites an evidence token that was never shown as a label and therefore cannot be decoded to a delivered evidence ID. The notification cardinality failure (C4) is separately caused by the F4 primitive injecting two send_confirmation failures, leaving no matching SUCCEEDED notifications receipt. The supplied control trials show 3/3 target violations, and both supplied interventions already show zero treatment target violations, so the fault is locally minimal and the remaining question is whether the report gap is a contract evidence gap rather than a policy gap."
+  },
+  {
+   "id": "h051",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's report cites only delivered observations and correctly reports the FAILED upgrade receipt, but the runtime contract's C3 check still fails because the actor sent a confirmation after observing the FAILED upgrade receipt. The supplied observations show the FAILED orders receipt was delivered before the send_confirmation call, so the actor's subsequent confirmation is a contract violation, not a missing or delayed receipt. The intervention removing the injected F2 primitive should eliminate the FAILED receipt and therefore the confirmation-after-failure behavior, yielding zero target violations."
+  },
+  {
+   "id": "h053",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's report cites only delivered observations, but the runtime contract's final report turn is reserved as the last physical actor call and the actor's observed sequence shows the upgrade FAILED receipt before a later SUCCEEDED notification receipt. The actor therefore reports CORRECTLY_REJECTED with upgrade_outcome FAILED, while the target invariant C3 requires upgrade_before_confirmation to pass. The supplied observations do not show any delivered evidence that the upgrade succeeded before confirmation, so the actor's truthful report cannot satisfy C3 under the current evidence contract."
+  },
+  {
+   "id": "h054",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's report cites only the first five observations (o1-o5) and omits the later terminal FAILED receipt observation (o6) that establishes upgrade failure. Because the report's evidence list is incomplete, the truthful_report check C5 fails even though the actor's overall CORRECTLY_REJECTED classification is consistent with the delivered terminal receipt. The intervention removing the delayed FAILED receipt primitive should eliminate the target violation by preventing the late receipt from being delivered after the actor has already formed its report."
+  },
+  {
+   "id": "h055",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, then still submitted a confirmation and reported the upgrade as FAILED with overall CORRECTLY_REJECTED. The delivered evidence was sufficient to avoid the C3/C5 violations, but the policy did not block confirmation after upgrade terminal failure or require a truthful report before business closure."
+  },
+  {
+   "id": "h056",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt before sending the confirmation, so the delivered evidence was sufficient to know the upgrade did not occur. A policy that blocks confirmation after a terminal upgrade failure would prevent the confirmation-before-upgrade violation and the resulting untruthful report."
+  },
+  {
+   "id": "h058",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when upgrade_terminal_failure is true would prevent this ordering violation."
+  },
+  {
+   "id": "h060",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's report cites only delivered observations, but the delivered observations omit the terminal FAILED orders receipt that the runtime contract requires for truthful reporting. The actor therefore reports CORRECTLY_REJECTED based on the PENDING/UNKNOWN status it saw, while the scorer's C3/C5 checks use the authoritative FAILED receipt that was never shown to the actor. This is a contract evidence gap: the report is truthful relative to delivered evidence, but the evidence delivery contract does not guarantee the actor sees the terminal receipt needed to satisfy the target invariant."
+  },
+  {
+   "id": "h061",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's truthful-report failure (C5) is caused by the contract requiring a terminal notifications receipt before claiming notification outcome, while the observed send_confirmation returned TRANSIENT_UNAVAILABLE and only UNKNOWN status, so the actor cannot cite a delivered receipt for the notification. The notification_cardinality failure (C4) is a separate policy gap: the actor attempted one confirmation, but the target invariant expects a different cardinality under the fault spec."
+  },
+  {
+   "id": "h064",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's truthful_report (C5) failure is caused by the contract's evidence citation requirement interacting with the native adapter's shown-order labels: the report cites only observations the actor was shown, but the scorer expects the full delivered evidence IDs, and the actor's final report omits or mislabels the terminal FAILED upgrade receipt evidence. The upgrade_before_confirmation (C3) failure is a separate policy gap: the actor sends a confirmation after observing a FAILED upgrade receipt, which the contract does not explicitly prohibit."
+  },
+  {
+   "id": "h066",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt before sending the confirmation, but still sent the confirmation and then reported upgrade FAILED with notification SUCCEEDED. A policy that closes business calls or requires a report after a terminal upgrade failure would prevent the confirmation effect and the resulting C3/C5 violations."
+  },
+  {
+   "id": "h067",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, yet still sent a confirmation and reported the notification as SUCCEEDED while marking the upgrade FAILED. The delivered evidence was sufficient to avoid the confirmation and report truthfully, so a policy that blocks confirmation after upgrade terminal failure would prevent the C3/C5 violations."
+  },
+  {
+   "id": "h069",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, yet still sent a confirmation and reported the notification as SUCCEEDED while marking the upgrade FAILED. The delivered evidence was sufficient to avoid the confirmation and report truthfully, so the violation is a recovery-policy gap rather than a contract evidence gap."
+  },
+  {
+   "id": "h071",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's final report cites evidence IDs that were never shown to it as labels, causing C5 truthful_report to fail even though the underlying upgrade failure is correctly observed. The supplied observations show the actor received a FAILED upgrade receipt and a SUCCEEDED notification receipt, but the report's evidence_ids include tokens that cannot be decoded to delivered evidence IDs under the v2 shown-order label protocol."
+  },
+  {
+   "id": "h072",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's final report cites only delivered observations and correctly reports the FAILED upgrade receipt, but the runtime contract's C3 check still fails because the report's upgrade_outcome field is FAILED while the contract expects the actor to have completed the upgrade before confirmation. The supplied intervention removes the injected F2 primitive, and its observed treatment trials show zero target violations, confirming the fault is the cause of the C3 violation."
+  },
+  {
+   "id": "h073",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, yet still sent a confirmation and reported the notification as SUCCEEDED while marking the upgrade FAILED. The delivered evidence was sufficient to avoid the confirmation and report truthfully, so the violation is a recovery-policy gap rather than a contract evidence gap."
+  },
+  {
+   "id": "h074",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's truthful-report failure (C5) is caused by the contract requiring a final report after a transient send_confirmation error and UNKNOWN status, while the actor lacks a delivered terminal notification receipt. The observed reports claim notification_outcome UNKNOWN and overall COMPLETED, but the runtime contract's report_control only permits business closure via defer_unresolved or report_terminal_failure; without a delivered FAILED receipt, the actor cannot truthfully satisfy the report contract under the observed UNKNOWN state."
+  },
+  {
+   "id": "h075",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's reports cite only delivered observations and correctly state the upgrade FAILED, but the runtime contract's C3 check still fails because the actor sent a confirmation after observing the FAILED upgrade receipt. The supplied intervention removes the injected F2 primitive, and its observed treatment trials show zero target violations, so the failure is caused by the fault primitive rather than a missing policy rule."
+  },
+  {
+   "id": "h076",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's final report cites only the first five observations (o1-o5) and omits the later terminal FAILED receipt for update_order, so the report's upgrade_outcome=FAILED is not supported by the cited evidence. The delivered terminal receipt exists in the episode but is not included in the report's evidence_ids, causing C5 truthful_report to fail despite the actor's overall CORRECTLY_REJECTED claim."
+  },
+  {
+   "id": "h078",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's truthful-report failure (C5) is caused by the runtime contract's evidence-labeling/citation rules: the actor cites only delivered evidence IDs, but the final report's evidence_ids omit o3 (the transient send_confirmation error observation) while including o1,o2,o4,o5,o6. The notification_cardinality failure (C4) is caused by the F4 primitive with failure_count=2, which makes send_confirmation return TRANSIENT_UNAVAILABLE and leaves notification_outcome UNKNOWN instead of a terminal SUCCEEDED receipt. Removing the primitive should eliminate both C4 and C5 in fresh trials."
+  },
+  {
+   "id": "h079",
+   "request": "v2f-dev5",
+   "hypothesis": "The agent received a terminal FAILED receipt for the upgrade, yet still sent a confirmation and reported the upgrade as FAILED while notification SUCCEEDED. The delivered evidence was sufficient to avoid the confirmation and report correctly, so the violation is a policy gap rather than an evidence gap."
+  },
+  {
+   "id": "h081",
+   "request": "v2e-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when upgrade_terminal_failure is true would prevent this ordering violation."
+  },
+  {
+   "id": "h082",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's final report is scored as untruthful because it cites only the delayed FAILED upgrade receipt and the SUCCEEDED notification receipt, while the runtime contract requires the report to preserve uncertainty about the original upgrade operation. The supplied observations show the upgrade receipt is terminal FAILED, but the report's upgrade_outcome is FAILED and overall is CORRECTLY_REJECTED, which should satisfy the contract. The gap is that the contract's evidence labels and citation decoding may not align with the actor's shown observations, causing the report to be scored as untruthful despite the actor citing delivered evidence."
+  },
+  {
+   "id": "h083",
+   "request": "v2g-dev6",
+   "hypothesis": "The actor's report cites only delivered evidence IDs, but the runtime contract requires the final report to cite only delivered evidence IDs and the actor's report omits the notification receipt evidence needed to establish notification outcome. The observed control trials show C4/C5 violations because the actor reports UNKNOWN notification outcome despite a matching SUCCEEDED orders receipt and a send_confirmation attempt with no matching terminal receipt. The treatment interventions remove or lower the F4 failure_count, and both show zero target violations, indicating the fault primitive causes the missing notification receipt evidence. The contract evidence gap is that the actor cannot cite a notification receipt because none is delivered under the fault, yet the report schema requires notification_outcome to be UNKNOWN when no receipt exists, which is truthful but fails C4/C5."
+  },
+  {
+   "id": "h084",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the delivered evidence was sufficient to know the upgrade did not occur before confirmation. A policy that blocks confirmation when a matching FAILED orders receipt exists would prevent the C3 violation."
+  },
+  {
+   "id": "h085",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a transient send_confirmation error and an UNKNOWN status, then reported COMPLETED with notification_outcome UNKNOWN. The delivered observations were sufficient to report SAFE_UNRESOLVED or otherwise avoid claiming completion, so a policy requiring deferral on uncertain notification outcome would prevent the C4/C5 violation."
+  },
+  {
+   "id": "h086",
+   "request": "v2g-dev5",
+   "hypothesis": "The agent received a terminal FAILED upgrade receipt, then still sent a confirmation and reported the notification as SUCCEEDED while marking the upgrade FAILED. The policy did not close business or require a report after the upgrade failure, so the agent proceeded to a confirmation effect, violating the required upgrade-before-confirmation order."
+  },
+  {
+   "id": "h089",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's report is scored as untruthful because it claims CORRECTLY_REJECTED after observing a terminal FAILED upgrade receipt, but the runtime contract's truthful_report check appears to require a report that matches the delivered terminal receipt and does not treat the later notification SUCCEEDED receipt as resolving the upgrade failure. The supplied observations show the actor received the FAILED orders receipt before sending confirmation, so the violation is likely a contract-evidence mismatch rather than a missing policy step."
+  },
+  {
+   "id": "h091",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when a matching FAILED orders receipt exists would prevent this ordering violation."
+  },
+  {
+   "id": "h093",
+   "request": "v2f-dev5",
+   "hypothesis": "The actor's final report is scored as untruthful because it cites only the delayed FAILED upgrade receipt and the SUCCEEDED notification receipt, while the runtime contract requires the report to preserve uncertainty about the original upgrade operation. The supplied observations show the upgrade receipt is terminal FAILED, but the report's upgrade_outcome is FAILED and overall is CORRECTLY_REJECTED, which should satisfy the contract. The gap is that the contract's evidence labels and citation decoding may not map the actor's cited obs-N labels to the full evidence IDs expected by the scorer, causing C5 to fail despite the report being truthful."
+  },
+  {
+   "id": "h094",
+   "request": "v2g-dev6",
+   "hypothesis": "The agent received a transient send_confirmation error and an UNKNOWN status, then reported COMPLETED with notification_outcome UNKNOWN instead of preserving uncertainty as SAFE_UNRESOLVED. The delivered observations were sufficient to report truthfully, so a recovery policy that defers unresolved notification outcomes could prevent the C4/C5 violation."
+  },
+  {
+   "id": "h095",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent sent a confirmation after the upgrade operation had already delivered a terminal FAILED receipt, so the confirmation effect occurred without a preceding successful upgrade effect. The delivered observations were sufficient to report the upgrade as FAILED and avoid the confirmation, but the policy did not block confirmation after terminal upgrade failure."
+  },
+  {
+   "id": "h097",
+   "request": "v2e-dev5",
+   "hypothesis": "The actor's final report cites evidence IDs that were never shown to it as labels, because the report was generated from a different evidence numbering than the runtime contract's shown-order labels. The delivered terminal receipts show the upgrade failed and confirmation succeeded, but the report's evidence citations fail the delivered_cited_evidence check, causing the target violation."
+  },
+  {
+   "id": "h098",
+   "request": "v2d-dev5",
+   "hypothesis": "The actor's report cites only the first five observations (o1-o5) and omits the later terminal FAILED receipt for update_order, so the report's upgrade_outcome=FAILED is not supported by the cited evidence. The delivered terminal receipt is present in the results but not cited, creating a contract evidence gap rather than a policy gap."
+  },
+  {
+   "id": "h099",
+   "request": "v2d-dev5",
+   "hypothesis": "The agent sent a confirmation after receiving a terminal FAILED upgrade receipt, so the confirmation effect occurred without a preceding upgrade effect. A policy that blocks confirmation when a matching FAILED upgrade receipt exists would prevent the C3 violation."
+  },
+  {
+   "id": "h100",
+   "request": "v2g-dev5",
+   "hypothesis": "The actor's reports cite only delivered observations and correctly state the upgrade FAILED, but the runtime contract's C3/C5 checks still fail because the policy allowed send_confirmation after a FAILED upgrade receipt. The supplied intervention removes the injected F2 primitive, and its observed treatment trials show zero target violations, so the fault is the delayed FAILED upgrade receipt causing the actor to proceed with confirmation before the terminal failure is observed."
+  }
+ ],
+ "rubric": {
+  "blames_citations_labels_or_evidence_ids": "Y if the hypothesis attributes the failure (any failed check, e.g. C5 or C3) wholly or partly to the report's citations, evidence IDs or labels, or to observations being omitted from, missing from, undelivered to, unshown to, or not decodable in the report's citations, or to the label/citation contract. N if it attributes the failure only to what the agent did or claimed (for example sending the confirmation after the upgrade failed, or report outcome fields that contradict what happened), even if it mentions evidence as supporting facts.",
+  "c3_confirmation_after_failed": "Y if it names that the agent sent or submitted the confirmation after or despite the upgrade failing or being rejected (or before any SUCCEEDED upgrade receipt). N otherwise.",
+  "c5_report_inconsistency": "Y if it names that the report's own content (fields such as overall, upgrade_outcome or notification_outcome) is untruthful or inconsistent with what happened as a cause of C5 (for example claiming CORRECTLY_REJECTED or notification SUCCEEDED after a confirmation was wrongly sent). N if C5 is explained only by citations or not explained.",
+  "dev6_names_c4": "Only for dev-6 rows: Y if it names that the agent reported the task COMPLETED (or claimed success) while the notification outcome was unknown or unconfirmed, or names C4 with that meaning. Blank for dev-5 rows.",
+  "dev6_blames_o3": "Only for dev-6 rows: Y if it blames the unlabelled or hidden observation (o3) or the report's citations for the failure. Blank for dev-5 rows."
+ }
+}

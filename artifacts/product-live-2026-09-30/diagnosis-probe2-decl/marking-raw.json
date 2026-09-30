@@ -1,0 +1,1550 @@
+[
+ {
+  "marks": [
+   {
+    "id": "h003",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h004",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h005",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h008",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h010",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h011",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h012",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h013",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h014",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h017",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h019",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h023",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h028",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h029",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h030",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h031",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h032",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h033",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h035",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h036",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h037",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h040",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h042",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h043",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h045",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h046",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h047",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h049",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h050",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h051",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h053",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h054",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h055",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h056",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h058",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h060",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h061",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h064",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h066",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h067",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h069",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h071",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h072",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h073",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h074",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h075",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h076",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h078",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h079",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h081",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h082",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h083",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h084",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h085",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h086",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h089",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h091",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h093",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h094",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h095",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h097",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h098",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h099",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h100",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   }
+  ]
+ },
+ {
+  "marks": [
+   {
+    "id": "h003",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h004",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h005",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h008",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h010",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h011",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h012",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h013",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h014",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h017",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h019",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h023",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h028",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h029",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h030",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h031",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h032",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h033",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h035",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h036",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h037",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h040",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h042",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h043",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h045",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h046",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h047",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h049",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h050",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h051",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h053",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h054",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h055",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h056",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h058",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h060",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h061",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h064",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h066",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h067",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h069",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h071",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h072",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h073",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h074",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h075",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h076",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h078",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h079",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h081",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h082",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h083",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h084",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h085",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h086",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h089",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h091",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h093",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h094",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h095",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h097",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h098",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h099",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h100",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   }
+  ]
+ },
+ {
+  "marks": [
+   {
+    "id": "h003",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h004",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h005",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h008",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h010",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h011",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h012",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h013",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h014",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h017",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h019",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h023",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h028",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h029",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h030",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h031",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h032",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h033",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h035",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h036",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h037",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h040",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h042",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h043",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h045",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h046",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h047",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h049",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h050",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h051",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h053",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h054",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h055",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h056",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h058",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h060",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h061",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h064",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h066",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h067",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h069",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h071",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h072",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h073",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h074",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h075",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h076",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h078",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h079",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h081",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h082",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h083",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "N",
+    "dev6_blames_o3": "Y"
+   },
+   {
+    "id": "h084",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h085",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h086",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h089",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h091",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h093",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h094",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "Y",
+    "dev6_names_c4": "Y",
+    "dev6_blames_o3": "N"
+   },
+   {
+    "id": "h095",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h097",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h098",
+    "blames_citations_labels_or_evidence_ids": "Y",
+    "c3_confirmation_after_failed": "N",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h099",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   },
+   {
+    "id": "h100",
+    "blames_citations_labels_or_evidence_ids": "N",
+    "c3_confirmation_after_failed": "Y",
+    "c5_report_inconsistency": "N",
+    "dev6_names_c4": "",
+    "dev6_blames_o3": ""
+   }
+  ]
+ }
+]
