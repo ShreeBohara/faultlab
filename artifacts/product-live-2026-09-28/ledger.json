@@ -132,8 +132,17 @@
    "charged_rounded_up": 6.73,
    "token_priced_estimate": "about 0.9",
    "carried_after": 923.53
+  },
+  {
+   "stage": "diagnosis probe (request-only, pre-registered, 140 Mechanic calls on the five rebuilt v2d-v2g diagnosis requests; CONTROL vs GUIDE and repair sub-probe)",
+   "campaign": "probe ledger artifacts/product-live-2026-09-30/diagnosis-probe/probe-ledger.sqlite3",
+   "calls": 142,
+   "charged_exact": 7.07728,
+   "charged_rounded_up": 7.08,
+   "token_priced_estimate": 1.894135,
+   "carried_after": 930.61
   }
  ],
- "carried_total": 923.53,
+ "carried_total": 930.61,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

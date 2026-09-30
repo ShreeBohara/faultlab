@@ -1,0 +1,15 @@
+{
+ "status": "COMPLETED",
+ "delivered_answers": 140,
+ "failed_calls": 0,
+ "ledger": {
+  "charged_calls": 142,
+  "charged_dollar_upper_bound": 7.07728,
+  "measured_input_tokens": 1351980,
+  "measured_output_tokens": 31071
+ },
+ "stop_reason": null
+}
+repeats: 0 of 14 request keys got one distinct answer (temperature 0); see scoring.json repeats
+Add ledger.charged_dollar_upper_bound (the conservative figure) and estimated_actual_dollars_from_reported_tokens to the project ledger's carried total; the probe's own ledger (probe-ledger.sqlite3) is in no product campaign ledger or dashboard total.
+exit 0

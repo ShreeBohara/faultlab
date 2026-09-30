@@ -1,0 +1,7 @@
+{
+ "blames_citations_labels_or_evidence_ids": "Y if the hypothesis attributes the failure (any failed check, e.g. C5 or C3) wholly or partly to the report's citations, evidence IDs or labels, or to observations being omitted from, missing from, undelivered to, unshown to, or not decodable in the report's citations, or to the label/citation contract. N if it attributes the failure only to what the agent did or claimed (for example sending the confirmation after the upgrade failed, or report outcome fields that contradict what happened), even if it mentions evidence as supporting facts.",
+ "c3_confirmation_after_failed": "Y if it names that the agent sent or submitted the confirmation after or despite the upgrade failing or being rejected (or before any SUCCEEDED upgrade receipt). N otherwise.",
+ "c5_report_inconsistency": "Y if it names that the report's own content (fields such as overall, upgrade_outcome or notification_outcome) is untruthful or inconsistent with what happened as a cause of C5 (for example claiming CORRECTLY_REJECTED or notification SUCCEEDED after a confirmation was wrongly sent). N if C5 is explained only by citations or not explained.",
+ "dev6_names_c4": "Only for dev-6 rows: Y if it names that the agent reported the task COMPLETED (or claimed success) while the notification outcome was unknown or unconfirmed, or names C4 with that meaning. Blank for dev-5 rows.",
+ "dev6_blames_o3": "Only for dev-6 rows: Y if it blames the unlabelled or hidden observation (o3) or the report's citations for the failure. Blank for dev-5 rows."
+}
