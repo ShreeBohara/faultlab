@@ -257,3 +257,44 @@ candidate episodes, and the candidate policy read nothing in that pick (it reads
 upgrade or a missing receipt). Under the slow-upgrade pick, the candidate's agent itself read the status 3–4 times
 per episode. The text above is kept as first written. See [the loop-limits note](PRODUCT_LOOP_LIMITS_2026-09-30.md),
 section 3.
+
+---
+
+# Fourth live run: v2e (2026-09-30, 10:11–10:15 UTC). **NO_CHANGE**
+
+- **Build:** runtime `f058c03c…` (backup commit `884de24`). The Mechanic's context is bounded by
+  `faultlab-mechanic-context/v2-bounded`. The challenge candidate-reach rule was withdrawn and is not used.
+- **Setup:** same as v2d (history replay, v2b store, v2.1 agent).
+- **Declaration:** `artifacts/product-live-2026-09-30/native-v2e-run/`.
+- **Cost:** 128 calls, **$2.88**. Ledger: **$906.67**.
+
+| stage | result |
+|---|---|
+| Replay 1 (dev-5) | source; reproduced 3 of 3; reduction LOCALLY_MINIMAL (retained). This is the second time the source survived, after v2d |
+| Diagnosis | **INCONCLUSIVE**: the Mechanic requested no intervention, so there was no candidate |
+| Replay 2 (dev-6) | not reproduced |
+| Explorer picks 3–8 | no source (one exact duplicate) |
+
+**The diagnosis bottleneck, read from the data.** The Mechanic's hypothesis was the same in v2d and v2e: "the
+actor's report cites evidence labels that were never shown to it".
+- It is **false both times.**
+  - In all 8 diagnosed episodes, every cited label was one the agent had been shown.
+  - Every citation decoded, and every decoded ID was delivered.
+  - The journals had no hidden rows (5 or 6 rows, all shown).
+- So the label gaps fixed in v2.1 were not the cause.
+- The Mechanic keeps suspecting citations, apparently prompted by the adapter's label description, when the real C5
+  cause is an untruthful report: "notification SUCCEEDED, correctly rejected" after sending a confirmation it should
+  not have sent.
+- In v2d it still requested the declared intervention (remove the fault), which gave POLICY_GAP. In v2e it did not,
+  which gave INCONCLUSIVE.
+
+**Pre-registered misreading check.** `check_evidence_gap_misreading.py` scored both diagnoses **NOT_CHECKED**, because
+its phrase list matches "not shown" but not "never shown". That result stands as the declared read-out. By the rule's
+intent (a claim of unshown citations when none exist), both are misreadings. The checker's gap is a PM error in
+writing it.
+
+**Integrity:** 117 episodes in the store, 0 clock drift (both checks), 117 of 117 worlds VALID.
+
+**Next:** give the Mechanic, for native v2 plans only, each episode's recorded citation status (for example "all
+N cited labels decoded; 0 undecoded"). This is already-recorded, non-scoring information, and it removes the basis
+for this misreading. Also fix the checker's phrase list for future runs.

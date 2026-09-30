@@ -1,0 +1,57 @@
+{
+ "title": "v2e: history-replay Learn campaign on native adapter v2.1 with bounded Mechanic context",
+ "declared_at_utc": "2026-09-30T10:11:20+00:00",
+ "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+ "plan_sha256": "9cc72fac7fb9d1a26904a202bf0f9e07874e48e4c64b1cd3e355d1f3fa2753fc",
+ "misreading_check_sha256": "70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033",
+ "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+ "plan_hash": "c1455182bdd6d25eb2618f1c699e8887d04dc0942a977e967a3b82e36a3d9272",
+ "configuration_hash": "11d4732b4d863cfafd948965fb99c23f60aca3833ba058257bb9c315d696b6bc",
+ "agent_registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+ "agent_inputs": {
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "identities": {
+  "algorithm_hash": "a08a8d6186419dc288485db1509021d87ead43e785c5cd5b8dd5d64b4bb2ec8a",
+  "runtime_hash": "f058c03c53b6442cd1c3d308d46007af8b755af0478595d57b964261aa17677a",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "source_commit": "884de24 (backup/part2-2026-09-22), runtime f058c03c",
+ "protocols_in_plan": [
+  "faultlab-discovery/v4-history-replay",
+  "faultlab-evidence-retry/v2",
+  "faultlab-mechanic-context/v2-bounded",
+  "faultlab-transport-retry/v2-lab-backoff"
+ ],
+ "history": {
+  "status": "AVAILABLE",
+  "record_cutoff": 3022,
+  "episode_ids_hash": "841b11c9ac44a9df09af6c570efd0072ad096546b8c75228186f4dd1201ecd14",
+  "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27"
+ },
+ "frozen_replay_rows": [
+  {
+   "replay": 1,
+   "history_row": 5,
+   "development_case_id": "dev-5",
+   "recipe": [
+    "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+   ]
+  },
+  {
+   "replay": 2,
+   "history_row": 6,
+   "development_case_id": "dev-6",
+   "recipe": [
+    "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+   ]
+  }
+ ],
+ "bounds": "PLAN.md: ledger ceiling 4936 requests / about 106.87 dollars; before any counterexample 144 requests / 3.47 dollars; 10 hours; 3 operator evidence retries",
+ "prices": "native-v2b-run/price-check.json (2026-09-30, unchanged)",
+ "ledger_before_dollars": 903.79
+}
