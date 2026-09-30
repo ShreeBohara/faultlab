@@ -390,7 +390,7 @@ beside a pending upgrade still runs) and `faultlab-evidence-retry/v3`
 
 | stage | result |
 |---|---|
-| Replay 1 (dev-5, C3) | reproduced 3 of 3 → reduced → **diagnosis INCONCLUSIVE**: the Mechanic itself proposed INCONCLUSIVE and requested no intervention |
+| Replay 1 (dev-5, C3) | reproduced 3 of 3 → reduced → **diagnosis INCONCLUSIVE**. *Corrected 2026-09-30 after the diagnosis analysis:* the Mechanic proposed CONTRACT_EVIDENCE_GAP and **did request the declared intervention**, twice, but both answers had a 614-character hypothesis over the 600-character limit and were rejected (`string_too_long`); with no valid answer, fixed code ran no intervention and recorded INCONCLUSIVE as a code default. The first version of this row wrongly said the Mechanic itself proposed INCONCLUSIVE and requested nothing |
 | Replay 2 (dev-6, C4) | reproduced 3 of 3 → **reduced**. This is the first C4 source to survive reduction → **POLICY_GAP** → candidate `…382aa951` → source validation **SOURCE_FLAKY**: the unchanged agent failed C4 only 2 of 3, and the candidate had 1 violation → incomplete |
 | Explorer picks 3–8 | slow upgrades (8, 9 and 10 ticks), a failed order read, and confirmation-send failures ×4 and ×5. Two C4 sources reproduced only 2 of 3 |
 
@@ -415,6 +415,6 @@ beside a pending upgrade still runs) and `faultlab-evidence-retry/v3`
 
 - The source is fully reliable: 4 of 4 runs reproduced and reduced it.
 - **The diagnosis Mechanic is now the binding step.**
-  - Its proposed kind was CONTRACT_EVIDENCE_GAP (or INCONCLUSIVE) in all 4 runs.
-  - Whether it also requested the declared intervention, which is what yields POLICY_GAP, varied 2 of 4.
+  - Its proposed kind was CONTRACT_EVIDENCE_GAP in 4 of 4 raw answers. *(Corrected: the first version said "or INCONCLUSIVE" and "requested 2 of 4".)*
+  - It requested the declared intervention in 3 of 4 raw answers (v2d, v2f, v2g), and the product accepted 2 of 4. v2e declined (a model choice); v2g's valid request was lost to the 600-character hypothesis limit (a formatting failure). See `artifacts/analysis-diagnosis-2026-09-30/`.
   - Its hypotheses repeatedly blame citations or evidence IDs that the recorded data show were fine.
