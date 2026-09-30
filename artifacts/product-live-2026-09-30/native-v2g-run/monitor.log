@@ -1,0 +1,16 @@
+16:22:47 state=RUNNING used_calls=0 charged=0.0 selections=0 counterexamples=0 policy=policy-v0
+16:23:17 state=REPRODUCING used_calls=28 charged=0.5851999999999998 selections=1 counterexamples=1 policy=policy-v0
+16:23:47 state=REDUCING used_calls=53 charged=1.1077 selections=1 counterexamples=1 policy=policy-v0
+16:24:17 state=REDUCING used_calls=82 charged=1.7137999999999975 selections=1 counterexamples=1 policy=policy-v0
+16:24:47 state=REPRODUCING used_calls=92 charged=1.980679999999997 selections=2 counterexamples=2 policy=policy-v0
+16:25:17 state=REDUCING used_calls=119 charged=2.5449800000000007 selections=2 counterexamples=2 policy=policy-v0
+16:25:47 state=REDUCING used_calls=150 charged=3.192880000000005 selections=2 counterexamples=2 policy=policy-v0
+16:26:17 state=DIAGNOSING used_calls=156 charged=3.347220000000006 selections=2 counterexamples=2 policy=policy-v0
+16:26:47 state=DIAGNOSING used_calls=185 charged=3.95332000000001 selections=2 counterexamples=2 policy=policy-v0
+16:27:17 state=CANDIDATE_VALIDATION used_calls=213 charged=4.567460000000014 selections=2 counterexamples=2 policy=policy-v0
+16:27:47 state=CANDIDATE_VALIDATION used_calls=221 charged=4.734660000000015 selections=2 counterexamples=2 policy=policy-v0
+16:28:17 state=RUNNING used_calls=235 charged=5.143020000000015 selections=4 counterexamples=2 policy=policy-v0
+16:28:47 state=SELECTING used_calls=256 charged=5.6687400000000165 selections=6 counterexamples=2 policy=policy-v0
+16:29:17 state=RUNNING used_calls=288 charged=6.366480000000021 selections=8 counterexamples=3 policy=policy-v0
+16:29:47 state=NO_CHANGE used_calls=305 charged=6.721780000000023 selections=8 counterexamples=4 policy=policy-v0
+FINAL NO_CHANGE No verified strict improvement within declared development bounds; all outcomes retained state=NO_CHANGE used_calls=305 charged=6.721780000000023 selections=8 counterexamples=4 policy=policy-v0 operator_retries=0 states=['RUNNING', 'REPRODUCING', 'REDUCING', 'REPRODUCING', 'REDUCING', 'DIAGNOSING', 'CANDIDATE_VALIDATION', 'RUNNING', 'SELECTING', 'RUNNING', 'NO_CHANGE']

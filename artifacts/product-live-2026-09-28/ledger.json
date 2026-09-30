@@ -123,8 +123,17 @@
    "charged_rounded_up": 10.13,
    "token_priced_estimate": "about 1.3",
    "carried_after": 916.8
+  },
+  {
+   "stage": "v2g: history-replay Learn on native v2.1 with history fireability + evidence retry v3: dev-5 source reproduced/reduced, diagnosis INCONCLUSIVE; dev-6 C4 source reproduced/reduced (first), POLICY_GAP, candidate SOURCE_FLAKY (incumbent 2/3) with 1 candidate violation; Explorer picks 2 non-reproducing C4 sources; no fireability refusal needed; 0 evidence waits; NO_CHANGE",
+   "campaign": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+   "calls": 305,
+   "charged_exact": 6.72178,
+   "charged_rounded_up": 6.73,
+   "token_priced_estimate": "about 0.9",
+   "carried_after": 923.53
   }
  ],
- "carried_total": 916.8,
+ "carried_total": 923.53,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

@@ -1,0 +1,39 @@
+{
+  "schema_version": "faultlab/v1",
+  "registration_id": "smolagents-1.26.0-adapter-v2-d9cfcb2a0f883499",
+  "name": "Hugging Face smolagents ToolCallingAgent - adapter v2 (short evidence labels, strict final report turn)",
+  "version": "1.26.0",
+  "provenance_class": "external",
+  "source_origin": "https://github.com/huggingface/smolagents",
+  "source_owner": "Hugging Face and smolagents contributors",
+  "source_revision": "12c1bc820eca50ace6f80a21d90426d41d74f845",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "license": "Apache-2.0",
+  "permission_ref": "Apache-2.0 public source; reviewed pinned release",
+  "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+  "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+  "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+  "capability_hash": "8e8e04afb34f894316b2e7cc129fba02a405f066d442bd799f7fc2fbdc652289",
+  "reset_profile_id": "fresh-orders-v1",
+  "oracle_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+  "policy_hooks": [
+    "after_upgrade_response",
+    "before_confirmation",
+    "after_notification_response",
+    "before_final_report"
+  ],
+  "model": "deepseek-ai/DeepSeek-V3.1",
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "configuration_hash": "d9cfcb2a0f88349948bc61bc0b137c905993452231c4634919b0a2e4a24add25",
+  "dependency_lock_hash": "dc19e8608e601200380593bcfef7d5bd1cca2546b2252370403734deb5a902fb",
+  "budget_compatible": true,
+  "dry_run_status": "PASSED",
+  "limitations": [
+    "Registration checks reviewed installed source and local contract mappings only; it performs no provider-access check or behavior measurement.",
+    "Only ToolCallingAgent and four synthetic order tools are supported.",
+    "Native reasoning and prompt template are preserved; a typed text transport maps one model-selected tool per turn.",
+    "Adapter v2 (protocol v2.1) shows each observation it hands to the agent under a short label obs-1, obs-2, ..., numbered in the order the agent first sees them; an observation the agent never sees (the first attempt of a write the broker retried, or a non-blocking policy step's read) gets no label. Cited labels the agent had been shown are decoded back to the real IDs before validation; any other token is kept as written.",
+    "Adapter v2 offers only final_answer on the final turn and asks the provider for structured output of the native final_answer action; an invalid output is not repaired.",
+    "Adapter v1 and adapter v2 are separate agents: their results, histories and policies are never pooled."
+  ]
+}

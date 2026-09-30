@@ -1,0 +1,110 @@
+{
+ "title": "v2g: history-replay Learn on native adapter v2.1 with history fireability and evidence retry v3",
+ "declared_at_utc": "2026-09-30T16:22:30+00:00",
+ "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+ "plan_sha256": "0831633c18e2c30ee90fd96c5cae51406c8608c4357cfe2d9ca5077fc8e62988",
+ "misreading_check_v2_sha256": "11920882f8c7e9885242e455b7c37e3e8f8649d3bb1c86b927d6da5c07be3b7b",
+ "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+ "plan_hash": "60899c53944d32192c107fffd8bfbdd8c6b94939169ba5db2a94a9e1c8445905",
+ "configuration_hash": "d9cfcb2a0f88349948bc61bc0b137c905993452231c4634919b0a2e4a24add25",
+ "agent_registration_id": "smolagents-1.26.0-adapter-v2-d9cfcb2a0f883499",
+ "agent_inputs": {
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "identities": {
+  "algorithm_hash": "7a56afed3dfe4d3236a4b01fe08bafe915c810d7a6ad653971bea0e911401a13",
+  "runtime_hash": "49958e716f0b08aacb9db5d6ddf99620451f949a901aa35cca979918c1df6b6e",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "source_commit": "661e2d0 (backup/part2-2026-09-22), runtime 49958e71",
+ "protocols_in_plan": [
+  "faultlab-explorer-selection/v3-history-fireability",
+  "faultlab-evidence-retry/v3",
+  "faultlab-mechanic-evidence/v2-native-citation-status",
+  "faultlab-mechanic-context/v2-bounded",
+  "faultlab-transport-retry/v2-lab-backoff",
+  "faultlab-discovery/v4-history-replay"
+ ],
+ "history": {
+  "status": "AVAILABLE",
+  "record_cutoff": 6748,
+  "episode_ids_hash": "9d5f04a3dcd26db287bc7f7c4545c30828f09809f321dac65cdd643d0f019251",
+  "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e"
+ },
+ "frozen_replay_rows": [
+  {
+   "replay": 1,
+   "history_row": 5,
+   "development_case_id": "dev-5"
+  },
+  {
+   "replay": 2,
+   "history_row": 6,
+   "development_case_id": "dev-6"
+  }
+ ],
+ "frozen_fireability_table": [
+  {
+   "kind": "F1",
+   "target_service": "orders",
+   "target_tool": "update_order",
+   "verified_episodes": 4,
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "status": "ALLOWED"
+  },
+  {
+   "kind": "F2",
+   "target_service": "orders",
+   "target_tool": "update_order",
+   "verified_episodes": 10,
+   "fired_episodes": 10,
+   "fired_share": "10/10",
+   "status": "ALLOWED"
+  },
+  {
+   "kind": "F3",
+   "target_service": "orders",
+   "target_tool": "get_order",
+   "verified_episodes": 4,
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "status": "ALLOWED"
+  },
+  {
+   "kind": "F4",
+   "target_service": "notifications",
+   "target_tool": "send_confirmation",
+   "verified_episodes": 4,
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "status": "ALLOWED"
+  },
+  {
+   "kind": "F4",
+   "target_service": "orders",
+   "target_tool": "get_operation_status",
+   "verified_episodes": 4,
+   "fired_episodes": 0,
+   "fired_share": "0/4",
+   "status": "REFUSED"
+  },
+  {
+   "kind": "F4",
+   "target_service": "orders",
+   "target_tool": "get_order",
+   "verified_episodes": 1,
+   "fired_episodes": 1,
+   "fired_share": "1/1",
+   "status": "ALLOWED_FEWER_THAN_3"
+  }
+ ],
+ "bounds": "PLAN.md: ledger ceiling 4936 requests / about 106.87 dollars; before any counterexample 144 requests / 3.47 dollars; 10 hours; 3 operator evidence retries",
+ "prices": "native-v2b-run/price-check.json (2026-09-30, unchanged)",
+ "ledger_before_dollars": 916.8,
+ "fireability_rule_text": "Before any episode runs, FaultLab checks each Explorer pick (a discovery slot's pick, including the fixed fallback after an invalid answer, and each challenge pick) against this plan's frozen history fireability table. The table was computed when the plan was saved, from exactly the verified episodes of the plan's frozen agent history (this agent, the starting policy, development discovery episodes only): for each fault kind, service and tool, how many verified episodes scheduled a fault there and in how many of them every such fault fired. A target with at least 3 verified episodes and a fire"
+}

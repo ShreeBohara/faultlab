@@ -376,3 +376,45 @@ store the orders status-read F4 target is 0 of 4, so the lone status-read pick i
 beside a pending upgrade still runs) and `faultlab-evidence-retry/v3`
 (fix 2: 24 automatic retries per campaign instead of 6). See
 [PRODUCT_HISTORY_FIREABILITY_2026-09-30.md](PRODUCT_HISTORY_FIREABILITY_2026-09-30.md).
+
+---
+
+# Sixth live run: v2g (2026-09-30, 16:22–16:30 UTC). **NO_CHANGE**
+
+- **Build:** runtime `49958e71…` (backup commit `661e2d0`), which adds:
+  - `faultlab-explorer-selection/v3-history-fireability`. Its frozen table has the lone orders status-read target
+    REFUSED (fired 0 of 4 in this agent's starting-policy history) and every other target ALLOWED;
+  - `faultlab-evidence-retry/v3`.
+- **Setup:** otherwise as v2f.
+- **Cost:** 305 calls, **$6.73**. Ledger: **$923.53**.
+
+| stage | result |
+|---|---|
+| Replay 1 (dev-5, C3) | reproduced 3 of 3 → reduced → **diagnosis INCONCLUSIVE**: the Mechanic itself proposed INCONCLUSIVE and requested no intervention |
+| Replay 2 (dev-6, C4) | reproduced 3 of 3 → **reduced**. This is the first C4 source to survive reduction → **POLICY_GAP** → candidate `…382aa951` → source validation **SOURCE_FLAKY**: the unchanged agent failed C4 only 2 of 3, and the candidate had 1 violation → incomplete |
+| Explorer picks 3–8 | slow upgrades (8, 9 and 10 ticks), a failed order read, and confirmation-send failures ×4 and ×5. Two C4 sources reproduced only 2 of 3 |
+
+**Other read-outs:**
+- **Fireability rule:** no pick needed refusing; the Explorer did not choose the refused target this time. So the
+  rule was not exercised, and no challenge was reached.
+- **Evidence waits:** 0.
+- **Misreading checker v2 (pre-registered):** NOT_CHECKED for both diagnoses.
+  - The Mechanic's dev-5 hypothesis again blamed the report's evidence IDs ("omit the unshown first write attempt"),
+    a citation theory the recorded data do not support. The checker's claim shapes did not match this wording.
+  - So by the checker it is not a scored misreading. By its intent it is.
+- **Integrity:** 254 episodes in the store, 0 clock drift, 254 of 254 worlds VALID.
+
+## The pattern across v2d–v2g (four history-replay runs on the same agent)
+
+| run | dev-5 source | diagnosis | furthest stage |
+|---|---|---|---|
+| v2d | reproduced, reduced | POLICY_GAP | challenge: 0 failed checks, INCONCLUSIVE, then ERROR (Mechanic input limit, since fixed) |
+| v2e | reproduced, reduced | INCONCLUSIVE | none |
+| v2f | reproduced, reduced | POLICY_GAP | 2 candidates, each a full challenge with 0 failed checks, INCONCLUSIVE (unfireable pick, since addressed) |
+| v2g | reproduced, reduced | INCONCLUSIVE | none (dev-6 candidate: SOURCE_FLAKY) |
+
+- The source is fully reliable: 4 of 4 runs reproduced and reduced it.
+- **The diagnosis Mechanic is now the binding step.**
+  - Its proposed kind was CONTRACT_EVIDENCE_GAP (or INCONCLUSIVE) in all 4 runs.
+  - Whether it also requested the declared intervention, which is what yields POLICY_GAP, varied 2 of 4.
+  - Its hypotheses repeatedly blame citations or evidence IDs that the recorded data show were fine.
