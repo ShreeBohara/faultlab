@@ -1,0 +1,224 @@
+{
+ "max_rowid": 8583,
+ "count_records": 8583,
+ "campaign_plans": [
+  {
+   "rowid": 6,
+   "campaign_id": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+   "mode": "baseline",
+   "agent": "smolagents-v2",
+   "discovery_protocol": null,
+   "history_record_cutoff": null,
+   "history_summary_hash": null,
+   "verified_episodes": null,
+   "keys_of_interest": []
+  },
+  {
+   "rowid": 933,
+   "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+   "mode": "learn",
+   "agent": "smolagents-v2",
+   "discovery_protocol": "faultlab-discovery/v3-history",
+   "history_record_cutoff": 930,
+   "history_summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+   "verified_episodes": 18,
+   "keys_of_interest": []
+  },
+  {
+   "rowid": 1540,
+   "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+   "mode": "learn",
+   "agent": "smolagents-v2",
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "history_record_cutoff": 1537,
+   "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+   "verified_episodes": 25,
+   "keys_of_interest": []
+  },
+  {
+   "rowid": 3025,
+   "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+   "mode": "learn",
+   "agent": "smolagents-v2",
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "history_record_cutoff": 3022,
+   "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+   "verified_episodes": 25,
+   "keys_of_interest": [
+    "mechanic_context"
+   ]
+  },
+  {
+   "rowid": 3774,
+   "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+   "mode": "learn",
+   "agent": "smolagents-v2",
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "history_record_cutoff": 3771,
+   "history_summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+   "verified_episodes": 30,
+   "keys_of_interest": [
+    "mechanic_context",
+    "mechanic_evidence"
+   ]
+  },
+  {
+   "rowid": 6751,
+   "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+   "mode": "learn",
+   "agent": "smolagents-v2",
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "history_record_cutoff": 6748,
+   "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+   "verified_episodes": 30,
+   "keys_of_interest": [
+    "explorer_selection",
+    "mechanic_context",
+    "mechanic_evidence"
+   ]
+  }
+ ],
+ "plans_at_or_below_3022": [
+  "campaign-c8063a1166834051b08ae5317ff6f9c2",
+  "campaign-077b8434e14c4c73a334692223694e63",
+  "campaign-ea66672d7a904bd8a011d6922790c963"
+ ],
+ "plans_at_or_below_6748": [
+  "campaign-c8063a1166834051b08ae5317ff6f9c2",
+  "campaign-077b8434e14c4c73a334692223694e63",
+  "campaign-ea66672d7a904bd8a011d6922790c963",
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "campaign-53db74766f4d4635b94a0de89e492577"
+ ],
+ "plans_at_or_below_8583": [
+  "campaign-c8063a1166834051b08ae5317ff6f9c2",
+  "campaign-077b8434e14c4c73a334692223694e63",
+  "campaign-ea66672d7a904bd8a011d6922790c963",
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+  "campaign-53db74766f4d4635b94a0de89e492577",
+  "campaign-d8d1e8cc0ea34feb92dbd8c22c264530"
+ ],
+ "campaigns": [
+  {
+   "rowid": 4,
+   "id": "campaign-c8063a1166834051b08ae5317ff6f9c2"
+  },
+  {
+   "rowid": 931,
+   "id": "campaign-077b8434e14c4c73a334692223694e63"
+  },
+  {
+   "rowid": 1538,
+   "id": "campaign-ea66672d7a904bd8a011d6922790c963"
+  },
+  {
+   "rowid": 3023,
+   "id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa"
+  },
+  {
+   "rowid": 3772,
+   "id": "campaign-53db74766f4d4635b94a0de89e492577"
+  },
+  {
+   "rowid": 6749,
+   "id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530"
+  }
+ ],
+ "selections_upto_6748": {
+  "all": 31,
+  "model_picks_with_fault_spec": 26
+ },
+ "selections_upto_8583": {
+  "all": 39,
+  "model_picks_with_fault_spec": 32
+ },
+ "v2d_records_above_3022": [],
+ "v2d_max_rowid_with_campaign_id": 3020,
+ "mutable_records_upto_6748_by_kind": [
+  {
+   "kind": "telemetry_outbox",
+   "c": 1122
+  },
+  {
+   "kind": "trace_calls",
+   "c": 1105
+  },
+  {
+   "kind": "journals",
+   "c": 377
+  },
+  {
+   "kind": "episodes",
+   "c": 204
+  },
+  {
+   "kind": "ingestions",
+   "c": 180
+  },
+  {
+   "kind": "evidence",
+   "c": 179
+  },
+  {
+   "kind": "evaluations",
+   "c": 14
+  },
+  {
+   "kind": "evidence_waits",
+   "c": 12
+  },
+  {
+   "kind": "evidence_retries",
+   "c": 11
+  },
+  {
+   "kind": "counterexamples",
+   "c": 7
+  },
+  {
+   "kind": "budgets",
+   "c": 5
+  },
+  {
+   "kind": "campaigns",
+   "c": 5
+  },
+  {
+   "kind": "policies",
+   "c": 5
+  },
+  {
+   "kind": "reductions",
+   "c": 5
+  },
+  {
+   "kind": "regression_datasets",
+   "c": 5
+  },
+  {
+   "kind": "retained_recipes",
+   "c": 5
+  },
+  {
+   "kind": "candidate_qualifications",
+   "c": 3
+  },
+  {
+   "kind": "sponsor_publication_deferrals",
+   "c": 2
+  },
+  {
+   "kind": "baseline_studies",
+   "c": 1
+  },
+  {
+   "kind": "execution_errors",
+   "c": 1
+  }
+ ],
+ "v2d_matching_challenge_evaluations_rowids": [
+  2367,
+  2552,
+  2802
+ ]
+}

@@ -1,0 +1,6 @@
+== B1b agent history ignores its cutoff everywhere (episode list AND record lookups): CAUGHT (exit 1; 1 failed, 19 passed in 22.29s; -x stops at first failure)
+    E       AssertionError: assert (6748, '1e009...fce81985881d') == (6748, 'd5818...d80cec026a0e')
+    E         
+    E         At index 1 diff: '1e00915b4b06fa4fcc42cc5d8d113507603a56726ecb315311c4fce81985881d' != 'd581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e'
+    E         Use -v to get more diff
+baseline after restores: 136 passed in 41.96s

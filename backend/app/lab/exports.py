@@ -102,6 +102,12 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
         from app.lab.loop_limits import CHALLENGE_REACH_RULE
         result['challenge_selection_rule']={'protocol':declared['challenge_selection']['protocol'],'rule':CHALLENGE_REACH_RULE,
             'refused_selection_ids':[s['selection_id'] for s in selections if (s.get('challenge_reach') or {}).get('status')=='REFUSED_UNREACHED']}
+    if declared.get('mechanic_diagnosis') is not None:
+        # faultlab-mechanic-diagnosis/v1-repair-and-record: every diagnosis's record (why an intervention did or did not
+        # run), with every Mechanic attempt embedded by its id, including a first attempt that shares its request id with
+        # a later one (mechanic_outputs above keeps its exact rule; older recordings keep their exact keys).
+        from app.lab.diagnosis_protocol import campaign_records
+        result['diagnosis_requests']=campaign_records(store,campaign_id)
     if declared.get('explorer_selection') is not None:
         # faultlab-explorer-selection/v3-history-fireability: the frozen table (in run_plan), every pick decision (also on
         # its selection, field fireability) and any discovery slot left without a request (older recordings keep their keys).

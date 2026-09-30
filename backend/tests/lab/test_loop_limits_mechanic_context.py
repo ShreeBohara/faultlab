@@ -262,33 +262,41 @@ async def test_the_bound_is_exactly_what_the_mechanic_admits(tmp_path, monkeypat
 
 SAVED_STORE = Path('/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3')
 V2D = 'campaign-ea66672d7a904bd8a011d6922790c963'
+# Live runs keep adding to this store. The rebuild reads only records at or below the record cutoff at which live run v2e's
+# plan froze its history (campaign-37e66b6c..., discovery.history.record_cutoff): the store exactly as live run v2d left it.
+# A record written later always gets a higher row number, so, for example, a later campaign's challenge of an identical
+# candidate (the challenge trials are matched by candidate and incumbent hash, not by campaign) cannot join the request.
+V2D_SNAPSHOT_CUTOFF = 3022
 
 
 def rebuild_v2d_request(store):
-    """The learning loop's proposal_context for campaign ea66672d's second candidate request, from saved records only."""
+    """The learning loop's proposal_context for campaign ea66672d's second candidate request, from saved records only
+    (every list read at V2D_SNAPSHOT_CUTOFF)."""
     from app.contracts.models import Campaign, ChallengeResult, Counterexample, DiagnosticResult, EvidenceBundle, FaultSpec, PolicyVersion, ReductionResult
     from app.lab.diagnosis import reduction_context, runtime_contract, trial_outcomes
     from app.lab.learning import discovery_session
     get = lambda kind, ident, cls: cls.model_validate_json(canonical_json(store.get_record(kind, ident)))
+    upto = lambda kind: [payload for _, payload in store.records_upto(kind, V2D_SNAPSHOT_CUTOFF)]
+    assert store.record_rowid('campaigns', V2D) <= V2D_SNAPSHOT_CUTOFF
     evidence = lambda ids: [EvidenceBundle.model_validate_json(canonical_json(store.get_record('evidence', e))) for e in ids]
     trials = lambda ids: [get('trials', e, TrialResult) for e in ids]
     campaign = store.get_model('campaigns', V2D, Campaign); incumbent = get('policies', 'policy-v0', PolicyVersion)
     identity, _ = discovery_session(store, campaign, incumbent)
     purposes = {}
-    for row in store.list_records('episodes'):
+    for row in upto('episodes'):
         if row['campaign_id'] == V2D: purposes.setdefault(row['experiment_purpose'], []).append(row['episode_id'])
-    counter = Counterexample.model_validate_json(canonical_json(next(r for r in store.list_records('counterexamples') if r['campaign_id'] == V2D)))
+    counter = Counterexample.model_validate_json(canonical_json(next(r for r in upto('counterexamples') if r['campaign_id'] == V2D)))
     reduced = trials(purposes['reduction'])
     reduction = reduction_context(get('reductions', counter.counterexample_id, ReductionResult), reduced,
                                   evidence([t.episode_id for t in reduced if t.lifecycle == 'COMPLETED']))
-    diagnostic = get('diagnostics', next(r for r in store.list_records('diagnostic_campaigns') if r['campaign_id'] == V2D)['diagnostic_id'], DiagnosticResult)
-    qualification = next(r for r in store.list_records('candidate_qualifications') if r['campaign_id'] == V2D)
+    diagnostic = get('diagnostics', next(r for r in upto('diagnostic_campaigns') if r['campaign_id'] == V2D)['diagnostic_id'], DiagnosticResult)
+    qualification = next(r for r in upto('candidate_qualifications') if r['campaign_id'] == V2D)
     record = {k: qualification[k] for k in ('candidate_version', 'candidate_hash', 'candidate', 'qualification_ref')}
     batch = store.get_record('evaluations', qualification['source_validation_ref'])
     retest = evidence([t['episode_id'] for t in batch['trials'] if t['lifecycle'] == 'COMPLETED'])
     challenge = get('challenges', qualification['challenge_ref'], ChallengeResult)
     by_id = {}
-    for raw in store.list_records('evaluations'):
+    for raw in upto('evaluations'):
         if raw['purpose'] == 'challenge' and (raw['candidate_hash'], raw['incumbent_hash']) == (challenge.candidate_hash, challenge.incumbent_hash):
             for t in raw['trials']: by_id[t['episode_id']] = TrialResult.model_validate_json(canonical_json(t))
     challenge_trials = list(by_id.values())

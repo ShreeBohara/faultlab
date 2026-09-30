@@ -1,0 +1,91 @@
+Verifier-2 notes for COMMIT_LIST.txt (2026-09-30). This list covers the WHOLE diagnosis-rules round (builder, two $0
+reviews, fixer, first verifier) PLUS the follow-up (PM decision F4 and pinned saved-store tests) and its independent
+review. $0, offline. Nothing committed; HEAD, index and refs unchanged (git-state-start.txt = git-state-end.txt).
+
+This list SUPERSEDES verify/COMMIT_LIST.txt, which is stale: 8 of its 21 product lines changed in the follow-up, and it
+does not list the two re-pinned committed test files or the followup/, followup-review/ and verify-2/ evidence.
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, relative to the
+faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-diagnosis-rules-2026-09-30/verify-2/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and whether
+it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = 626bae4afba9e160397e3f55b0ce9f5663e48d48. The checked-out
+branch is main at cbbf957, so `git status` against HEAD shows many unrelated entries. Commit on top of 626bae4 (branch
+backup/part2-2026-09-22), NOT on cbbf957.
+
+PRODUCT FILES: 23 (modified 15, new 8, deleted 0, mode changes 0). The 8 new files are not git-ignored.
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md                                          (follow-up changed it again)
+  backend/app/agents/mechanic.py                             (unchanged since the first verifier)
+  backend/app/lab/exports.py, backend/app/lab/learning.py    (unchanged since the first verifier; learning.py: the
+                                                              POLICY_GAP gate line is byte-identical, now line 261)
+  backend/app/lab/run_plans.py                               (follow-up: DiagnosisGuidePlan.checks_note, bound by FIXED_TEXT)
+  backend/tests/lab/test_discovery_v4_review_fixes.py, backend/tests/lab/test_evidence_wait.py (unchanged since verifier 1)
+  backend/tests/lab/test_history_fireability.py              (follow-up: saved-store tests pinned at record row 6748)
+  backend/tests/lab/test_loop_limits_mechanic_context.py     (follow-up: v2d rebuild reads bounded at record row 3022)
+  frontend/src/components/CampaignPlan.tsx, DiagnosticPanel.tsx, LoopLimits.tsx, RunSetup.tsx, frontend/src/runPlans.ts
+                                                             (unchanged since the first verifier)
+  frontend/src/loopLimits.ts                                 (follow-up: checks_note in the type, validator and one-line text)
+NEW (not in the tip, not ignored):
+  backend/app/lab/diagnosis_guide.py (follow-up: CHECKS_NOTE), backend/app/lab/diagnosis_protocol.py,
+  backend/tests/experiments/test_diagnosis_probe.py (follow-up: +608), backend/tests/lab/test_diagnosis_rules.py
+  (follow-up: T1/T3/T9 and the saved-plan read pinned at row 8583), backend/tests/lab/test_diagnosis_rules_loop.py,
+  docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md (follow-up: sections 3, 5, 6, 8, 9, 11), frontend/tests/diagnosis-rules.test.tsx
+  (follow-up), scripts/experiments/diagnosis_probe.py (harness sha256 b1eb7cda..., unchanged by the follow-up)
+The 23 product sha256 values equal the fixer's follow-up end state (followup/files-changed-by-followup.txt for the 10 it
+changed; verify/COMMIT_LIST.txt for the 13 it did not) and did not change during this verification
+(tree-vs-backup-start.txt, -after-suite.txt and -end.txt are identical apart from their header line).
+
+EVIDENCE FILES: every other line, all under artifacts/product-diagnosis-rules-2026-09-30/ (git-ignored, as the whole
+artifacts/ folder is: needs `git add -f`): builder/, review-integrity/, review-product/, fixer/, probe-plan/ (the
+builder's, superseded), probe-inputs/ (the five rebuilt diagnosis requests and SHA256SUMS; the new backend tests and the
+probe harness read them, so they must be force-added WITH the product files), verify/ (the first verifier, including its
+now-stale COMMIT_LIST.txt/.json kept as a record), followup/ (63 files + SHA256SUMS.followup.txt; followup/probe-plan/
+holds the CURRENT probe plan 91ca47e4... and declaration template), followup-review/ (36 files + its SHA256SUMS), and
+verify-2/ (this stage). Per-folder counts at pass 1: builder 36, fixer 37, followup 64, followup-review 37, probe-inputs 6,
+probe-plan 4, review-integrity 17, review-product 35, verify 96, verify-2 62 (the final pass adds this stage's later
+files). The exact count is in COMMIT_LIST.json.
+
+METHOD (commit_list/commit_list.py; copied from verify/commit_list/commit_list.py; changes marked V2: the list's own
+self-exclusion now names verify-2/, and any symlink, any file named checks.py and any dist/ folder are excluded outright)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index in the session scratchpad,
+outside the Desktop, deleted by the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and
+executable bit) with the working file; every non-ignored working file not in the tip is NEW; the git-ignored evidence
+folder is walked directly. Protected paths (backend/app/referee/checks.py, audit/promotion.json, audit/final-audit.json,
+artifacts/heldout2/) are never read or hashed by the script (only size and mtime: 'protected_not_read' in the .json).
+checks.py equality with the tip comes from the repo's gate_freeze.py (verify-2/gate_freeze/compare.txt).
+Passes: pass 1 (commit_list/commit_list_pass1.txt, after the test suite) and the final pass that wrote COMMIT_LIST.txt.
+
+EXCLUDED
+  * Nothing inside the evidence folder needed excluding ('excluded_evidence' in the .json is empty): no file over 5 MB
+    (largest 489,856 bytes: verify-2/probe-dry-run/plan-out/requests.json and followup/probe-plan/requests.json), no
+    cache, no SQLite file, no symlink, no tree copy, no checks.py copy, no promotion.json/final-audit/heldout2/.env name.
+  * verify-2/COMMIT_LIST.txt and verify-2/COMMIT_LIST.json themselves (a file cannot contain its own hash).
+  * Written after the final pass, so not in the list: verify-2/commit_list/secret_scan_final.txt and
+    verify-2/commit_list/shasum-check.txt.
+  * Outside the repo and never listed: this stage's scratch folder /Users/shree/FaultLab_Scratch/verify-2 (deleted;
+    scratch-deleted.txt). /Users/shree/FaultLab_Scratch/inv-a is not this verifier's and was left untouched.
+  * Not in the list and not to be committed: caches, node_modules, .venv, .env, frontend/dist, sqlite files.
+
+CONFLICT COPIES
+commit_list/conflict_scan.py (copied unchanged from verify/) over the whole faultlab tree (names only; skips .git,
+node_modules, .venv, caches; prunes artifacts/heldout2): 0 conflict-like names outside artifacts/. In this round's folder
+the only hits are the two scans' own files (verify/ and verify-2/ conflict_scan.py and conflict-scan.txt). The other hits
+are older folders under artifacts/ from earlier rounds, not part of this list. No Desktop conflict copy is listed.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py (copied unchanged from verify/) over every file in the list. Pass 1: 417 files, 1 hit: the
+first verifier's self-test output (verify/commit_list/secret_scan_selftest.txt), which quotes, masked, the repo's own
+dummy test key "dummy-..." from backend/tests/test_providers.py (value "dummy-private-key"). Not a credential. The final
+result is in commit_list/secret_scan_final.txt.
+
+GIT ADD, IN SHORT
+  git add <the 23 product paths>                  (none is ignored)
+  git add -f artifacts/product-diagnosis-rules-2026-09-30/   (every evidence line; the whole folder is git-ignored; this
+                                                  also adds the 4 files the list cannot hash: verify-2/COMMIT_LIST.txt,
+                                                  COMMIT_LIST.json, commit_list/secret_scan_final.txt, shasum-check.txt)
+Then check: shasum -a 256 -c artifacts/product-diagnosis-rules-2026-09-30/verify-2/COMMIT_LIST.txt (from the faultlab root).

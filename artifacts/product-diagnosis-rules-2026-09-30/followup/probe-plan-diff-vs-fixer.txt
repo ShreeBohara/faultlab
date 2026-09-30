@@ -1,0 +1,14 @@
+same    v2d-dev5/CONTROL
+CHANGED v2d-dev5/GUIDE | other keys identical: True | guide keys changed: ['checks_note'] | checks_note: Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.
+same    v2e-dev5/CONTROL
+CHANGED v2e-dev5/GUIDE | other keys identical: True | guide keys changed: ['checks_note'] | checks_note: Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.
+same    v2f-dev5/CONTROL
+CHANGED v2f-dev5/GUIDE | other keys identical: True | guide keys changed: ['checks_note'] | checks_note: Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.
+same    v2f-dev5/REPAIR_RULE1
+same    v2f-dev5/REPAIR_TODAY
+same    v2g-dev5/CONTROL
+CHANGED v2g-dev5/GUIDE | other keys identical: True | guide keys changed: ['checks_note'] | checks_note: Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.
+same    v2g-dev5/REPAIR_RULE1
+same    v2g-dev5/REPAIR_TODAY
+same    v2g-dev6/CONTROL
+CHANGED v2g-dev6/GUIDE | other keys identical: True | guide keys changed: ['checks_note'] | checks_note: Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.

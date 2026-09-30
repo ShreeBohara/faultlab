@@ -30,6 +30,12 @@ from app.lab.citation_status import (AGENTS as CITATION_STATUS_AGENTS, APPLIES_T
     ROW_FIELDS as CITATION_STATUS_ROW_FIELDS, declaration as mechanic_evidence_declaration)
 from app.lab.fireability import (DISCOVERY_PROTOCOLS as FIREABILITY_PROTOCOLS, REFUSED as FIREABILITY_REFUSED,
     declaration as explorer_selection_declaration, refused_text as fireability_refused_text, row_status as fireability_row_status)
+from app.lab.diagnosis_protocol import (APPLIES_TO as DIAGNOSIS_RECORD_APPLIES_TO, KIND_SOURCES as DIAGNOSIS_KIND_SOURCES,
+    PROPOSAL_STATUSES as DIAGNOSIS_PROPOSAL_STATUSES, RECORD_KIND as DIAGNOSIS_RECORD_KIND, REPAIR_INSTRUCTION as DIAGNOSIS_REPAIR_INSTRUCTION,
+    REPAIR_SENTENCE as DIAGNOSIS_REPAIR_SENTENCE, RULE as DIAGNOSIS_RECORD_RULE, STRING_TOO_LONG_FIELDS as DIAGNOSIS_STRING_TOO_LONG_FIELDS,
+    declaration as mechanic_diagnosis_declaration, semantics_hash as diagnosis_semantics_hash)
+from app.lab.diagnosis_guide import (APPLIES_TO as GUIDE_APPLIES_TO, DIAGNOSIS_GUIDE_OFFERED, FIXED_TEXT as GUIDE_FIXED_TEXT,
+    declaration as diagnosis_guide_declaration)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -439,6 +445,71 @@ class ExplorerSelectionPlan(StrictModel):
         return self
 
 
+class MechanicDiagnosisPlan(StrictModel):
+    """The diagnosis repair-and-record rule (app.lab.diagnosis_protocol, faultlab-mechanic-diagnosis/v1-repair-and-record),
+    frozen into every new Learn plan. The protocol id binds its text: every fixed sentence and list must be exactly v1's."""
+    protocol: Literal['faultlab-mechanic-diagnosis/v1-repair-and-record']
+    applies_to: list[Literal['mechanic_diagnosis']] = Field(min_length=1, max_length=1)
+    repair_instruction: str = Field(min_length=1, max_length=800)
+    repair_sentence: str = Field(min_length=1, max_length=400)
+    string_too_long_fields: list[str] = Field(min_length=2, max_length=2)
+    hypothesis_max_characters: Literal[600]
+    record_kind: Literal['diagnosis_requests']
+    proposal_statuses: list[str] = Field(min_length=3, max_length=3)
+    kind_sources: list[str] = Field(min_length=2, max_length=2)
+    rule: str = Field(min_length=1, max_length=2000)
+    first_turn_changed: Literal[False]
+    model_text_edited: Literal[False]
+    record_written_before_gate: Literal[True]
+    reads_scoring: Literal[False]
+    verdict_code_changed: Literal[False]
+    semantics_hash: Digest
+
+    @model_validator(mode='after')
+    def exact_text(self):
+        if (self.applies_to != list(DIAGNOSIS_RECORD_APPLIES_TO) or self.repair_instruction != DIAGNOSIS_REPAIR_INSTRUCTION
+                or self.repair_sentence != DIAGNOSIS_REPAIR_SENTENCE or self.string_too_long_fields != list(DIAGNOSIS_STRING_TOO_LONG_FIELDS)
+                or self.record_kind != DIAGNOSIS_RECORD_KIND or self.proposal_statuses != list(DIAGNOSIS_PROPOSAL_STATUSES)
+                or self.kind_sources != list(DIAGNOSIS_KIND_SOURCES) or self.rule != DIAGNOSIS_RECORD_RULE
+                or self.semantics_hash != diagnosis_semantics_hash()):
+            raise ValueError('Inconsistent diagnosis repair-and-record declaration')
+        return self
+
+
+class DiagnosisGuidePlan(StrictModel):
+    """The diagnosis guide block (app.lab.diagnosis_guide, faultlab-diagnosis-guide/v1-kinds-and-checks). Built but NOT
+    offered (diagnosis_guide.DIAGNOSIS_GUIDE_OFFERED is False): no new plan freezes it, but a plan that declares it is
+    validated here and, at Start, must equal the installed declaration (the frozen C1-C8 text and hash included)."""
+    protocol: Literal['faultlab-diagnosis-guide/v1-kinds-and-checks']
+    applies_to: list[Literal['mechanic_diagnosis']] = Field(min_length=1, max_length=1)
+    block: Literal['diagnosis_guide']
+    checks_source: Literal['app.agents.explorer.PUBLIC_INVARIANTS']
+    checks: dict[Literal['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8'], str]
+    checks_hash: Digest
+    task_source: Literal['plan.task_text']
+    reads_episodes: Literal[False]
+    reads_scoring: Literal[False]
+    compacted: Literal[False]
+    system_prompt_changed: Literal[False]
+    verdict_code_changed: Literal[False]
+    interprets_checks: Literal[False]
+    meaning: str = Field(min_length=1, max_length=800)
+    kinds: dict[Literal['POLICY_GAP', 'CONTRACT_EVIDENCE_GAP', 'INCONCLUSIVE'], str]
+    checks_note: str = Field(min_length=1, max_length=800)
+    contract_note: str = Field(min_length=1, max_length=800)
+    use: str = Field(min_length=1, max_length=800)
+    hypothesis_length: str = Field(min_length=1, max_length=800)
+    rule: str = Field(min_length=1, max_length=2000)
+
+    @model_validator(mode='after')
+    def exact_text(self):
+        if (self.applies_to != list(GUIDE_APPLIES_TO) or len(self.checks) != 8 or len(self.kinds) != 3
+                or self.checks_hash != content_hash(self.checks)
+                or any(getattr(self, key) != value for key, value in GUIDE_FIXED_TEXT.items())):
+            raise ValueError('Inconsistent diagnosis guide declaration')
+        return self
+
+
 class SavedRunPlan(StrictModel):
     schema_version: Literal['faultlab-run-plan/v1']
     campaign_id: Id
@@ -475,12 +546,18 @@ class SavedRunPlan(StrictModel):
     # Learn plans with discovery v3-history or v4-history-replay only, every new one (September 30, after live run v2f).
     # Absent (not null) in every other plan and in every plan saved before it, so those plans keep their exact bytes.
     explorer_selection: ExplorerSelectionPlan | None = None
+    # Learn only, every new Learn plan (September 30, after the diagnosis analysis). Absent (not null) in every plan saved
+    # before it and in every baseline/compare plan, so those plans keep their exact bytes and today's behaviour.
+    mechanic_diagnosis: MechanicDiagnosisPlan | None = None
+    # Learn only. Built but not offered (diagnosis_guide.DIAGNOSIS_GUIDE_OFFERED): no plan saved by this build declares it.
+    diagnosis_guide: DiagnosisGuidePlan | None = None
     plan_hash: Digest
 
     @model_serializer(mode='wrap')
     def _omit_absent_loop_limits(self, handler):
         data = handler(self)
-        for key in ('mechanic_context', 'challenge_selection', 'mechanic_evidence', 'explorer_selection'):
+        for key in ('mechanic_context', 'challenge_selection', 'mechanic_evidence', 'explorer_selection', 'mechanic_diagnosis',
+                    'diagnosis_guide'):
             if data.get(key) is None:
                 data.pop(key, None)
         return data
@@ -630,7 +707,12 @@ def build_run_options(settings, store=None):
                   'mechanic_evidence': mechanic_evidence_declaration(),
                   # Frozen, with its table computed from the frozen history, only into a new Learn plan whose discovery
                   # protocol is v3 · agent history or v4 · history replay (its declaration names them).
-                  'explorer_selection': explorer_selection_declaration()},
+                  'explorer_selection': explorer_selection_declaration(),
+                  # The diagnosis repair-and-record rule every new Learn plan freezes, for every agent (app.lab.diagnosis_protocol).
+                  'mechanic_diagnosis': mechanic_diagnosis_declaration(),
+                  # The diagnosis guide (app.lab.diagnosis_guide) is offered only after its pre-registered probe passes and a
+                  # reviewed change sets DIAGNOSIS_GUIDE_OFFERED; until then this key is absent.
+                  **({'diagnosis_guide': diagnosis_guide_declaration()} if DIAGNOSIS_GUIDE_OFFERED else {})},
         'compare': comparison, 'agents': agents,
         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
@@ -779,6 +861,11 @@ def prepare_run_plan(store, settings, request):
         if discovery['protocol'] in FIREABILITY_PROTOCOLS:
             from app.lab import fireability
             plan['explorer_selection'] = fireability.plan_block(store, discovery['history'])
+        # Diagnosis repair-and-record (app.lab.diagnosis_protocol), every agent: the diagnosis repair turn states the length
+        # limit and each diagnosis gets a diagnosis_requests record. The diagnosis guide is frozen only once it is offered.
+        plan['mechanic_diagnosis'] = mechanic_diagnosis_declaration()
+        if DIAGNOSIS_GUIDE_OFFERED:
+            plan['diagnosis_guide'] = diagnosis_guide_declaration()
     # Rule v2 (lab-role backoff) for every new Learn plan: only Learn runs Explorer and Mechanic requests.
     # Baseline and compare plans make agent requests only, so they keep rule v1 exactly as before.
     actor_calls = configuration['episode_budget']['actor_calls']
@@ -825,6 +912,8 @@ def _bindings(store, campaign, plan, *, first_start=False):
         raise StoreConflict('Only a Learn plan declares the Mechanic request-size and challenge-pick rules')
     if plan.get('mechanic_evidence') is not None and (campaign.mode != 'learn' or plan['agent'] not in CITATION_STATUS_AGENTS):
         raise StoreConflict('Only a Learn plan of native adapter v2 declares the native citation-status block')
+    if (plan.get('mechanic_diagnosis') is not None or plan.get('diagnosis_guide') is not None) and campaign.mode != 'learn':
+        raise StoreConflict('Only a Learn plan declares the diagnosis repair-and-record rule or the diagnosis guide')
     selection_rule = plan.get('explorer_selection')
     if selection_rule is not None:
         frozen = (discovery or {}).get('history')
@@ -1000,6 +1089,12 @@ def validate_run_plan(store, settings, campaign):
     if selection_rule is not None and {key: value for key, value in selection_rule.items()
                                        if key not in ('table', 'table_hash')} != explorer_selection_declaration():
         raise StoreConflict('The installed Explorer selection rule (history fireability) differs from the saved plan')
+    # The diagnosis rules: a Learn plan saved before them declares neither and keeps today's requests and records; a
+    # declared one must be exactly the installed rule (for the guide, its frozen C1-C8 text and hash included).
+    if plan.get('mechanic_diagnosis') is not None and plan['mechanic_diagnosis'] != mechanic_diagnosis_declaration():
+        raise StoreConflict('The installed diagnosis repair-and-record rule differs from the saved plan')
+    if plan.get('diagnosis_guide') is not None and plan['diagnosis_guide'] != diagnosis_guide_declaration():
+        raise StoreConflict('The installed diagnosis guide (its text or the C1-C8 meanings and their hash) differs from the saved plan')
     problem = withdrawn_rule_problem(plan)
     if problem is not None:
         raise StoreConflict(problem)

@@ -1,9 +1,9 @@
 // The two Learn-loop rules (backend app/lab/loop_limits.py): shown in the Learn setup form (the rules offered), the saved
 // plan, the challenge panel (each checked pick, only for a plan that declares the withdrawn challenge-pick rule) and the
 // diagnosis panel (each Mechanic request-size record).
-import { CHALLENGE_SELECTION_V2, MECHANIC_CONTEXT_V2, REACH_STATUS_LABELS, challengeSelectionText, contextRecordLabel, contextRecordText, mechanicContextText,
-  mechanicEvidenceText, reachDecisionText, type ChallengeReachDecision, type ChallengeSelectionDeclaration, type MechanicContextDeclaration, type MechanicContextRecord,
-  type MechanicEvidenceDeclaration } from '../loopLimits'
+import { CHALLENGE_SELECTION_V2, MECHANIC_CONTEXT_V2, REACH_STATUS_LABELS, challengeSelectionText, contextRecordLabel, contextRecordText, diagnosisGuideText, mechanicContextText,
+  mechanicDiagnosisText, mechanicEvidenceText, reachDecisionText, type ChallengeReachDecision, type ChallengeSelectionDeclaration, type DiagnosisGuideDeclaration,
+  type MechanicContextDeclaration, type MechanicContextRecord, type MechanicDiagnosisDeclaration, type MechanicEvidenceDeclaration } from '../loopLimits'
 import type { AgentKind, DiscoveryDeclaration } from '../runPlans'
 import { DECISION_LABELS, EXPLORER_SELECTION_V3, FIREABILITY_PROTOCOLS, ROW_STATUS_LABELS, decisionText, explorerSelectionText, targetText,
   type ExplorerFireability, type ExplorerSelectionDeclaration, type ExplorerSelectionPlan } from '../historyFireability'
@@ -11,22 +11,27 @@ import { Field, Json } from './common'
 
 function StatusBadge({ value, text }: { value: string; text: string }) { return <span className={`badge badge-${value.toLowerCase()}`}>{text}</span> }
 
+const RULE_COUNT = ['', 'this rule', 'these two rules', 'these three rules', 'these four rules']
+
 /** The rules a new Learn plan will freeze, as the backend offers them (only the offered ones; nothing is said about others).
- * The native citation-status rule is frozen only for native adapter v2, so it is shown only when that agent is chosen. */
-export function OfferedLoopLimits({ mechanicContext, challengeSelection, mechanicEvidence, agent }: { mechanicContext?: MechanicContextDeclaration; challengeSelection?: ChallengeSelectionDeclaration; mechanicEvidence?: MechanicEvidenceDeclaration; agent?: AgentKind }) {
-  const count = (mechanicContext ? 1 : 0) + (challengeSelection ? 1 : 0)
+ * The native citation-status rule is frozen only for native adapter v2, so it is shown only when that agent is chosen.
+ * The diagnosis repair-and-record rule is frozen for every agent; the diagnosis guide only if a backend offers it. */
+export function OfferedLoopLimits({ mechanicContext, challengeSelection, mechanicEvidence, mechanicDiagnosis, diagnosisGuide, agent }: { mechanicContext?: MechanicContextDeclaration; challengeSelection?: ChallengeSelectionDeclaration; mechanicEvidence?: MechanicEvidenceDeclaration; mechanicDiagnosis?: MechanicDiagnosisDeclaration; diagnosisGuide?: DiagnosisGuideDeclaration; agent?: AgentKind }) {
+  const count = (mechanicContext ? 1 : 0) + (challengeSelection ? 1 : 0) + (mechanicDiagnosis ? 1 : 0) + (diagnosisGuide ? 1 : 0)
   const citation = mechanicEvidence && agent !== undefined && (mechanicEvidence.agents as string[]).includes(agent) ? mechanicEvidence : undefined
   if (!count && !citation) return null
-  return <>{!!count && <><p className="muted">{count === 1 ? 'Every new Learn plan also freezes this rule:' : 'Every new Learn plan also freezes these two rules:'}</p>
-    <dl className="facts compact">{mechanicContext && <Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field>}{challengeSelection && <Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>}</dl></>}
+  return <>{!!count && <><p className="muted">{`Every new Learn plan also freezes ${RULE_COUNT[count]}:`}</p>
+    <dl className="facts compact">{mechanicContext && <Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field>}{challengeSelection && <Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>}{mechanicDiagnosis && <Field name="Diagnosis repair and record">{mechanicDiagnosisText(mechanicDiagnosis)}</Field>}{diagnosisGuide && <Field name="Diagnosis guide">{diagnosisGuideText(diagnosisGuide)}</Field>}</dl></>}
     {citation && <><p className="muted">A new Learn plan for native adapter v2 also freezes:</p><dl className="facts compact"><Field name="Native citation status">{mechanicEvidenceText(citation)}</Field></dl></>}</>
 }
 
-export function LoopLimitFacts({ mechanicContext, challengeSelection, mechanicEvidence, agent }: { mechanicContext: MechanicContextDeclaration | null | undefined; challengeSelection: ChallengeSelectionDeclaration | null | undefined; mechanicEvidence?: MechanicEvidenceDeclaration | null; agent?: AgentKind }) {
-  // Native citation status applies to native adapter v2 only; other agents' plans say nothing about it.
+export function LoopLimitFacts({ mechanicContext, challengeSelection, mechanicEvidence, mechanicDiagnosis, diagnosisGuide, agent }: { mechanicContext: MechanicContextDeclaration | null | undefined; challengeSelection: ChallengeSelectionDeclaration | null | undefined; mechanicEvidence?: MechanicEvidenceDeclaration | null; mechanicDiagnosis?: MechanicDiagnosisDeclaration | null; diagnosisGuide?: DiagnosisGuideDeclaration | null; agent?: AgentKind }) {
+  // Native citation status applies to native adapter v2 only; other agents' plans say nothing about it. The diagnosis repair-and-
+  // record rule applies to every agent, so every Learn plan says whether it declares it. The diagnosis guide is not offered, so
+  // only a plan that declares it mentions it.
   const native = agent === 'smolagents-v2'
-  return <><dl className="facts compact"><Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field><Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>{native && <Field name="Native citation status">{mechanicEvidenceText(mechanicEvidence)}</Field>}</dl>
-    {(mechanicContext || challengeSelection || (native && mechanicEvidence)) && <details><summary>Exact rule text</summary>{mechanicContext && <p className="muted">{mechanicContext.protocol}: {mechanicContext.rule}</p>}{challengeSelection && <p className="muted">{challengeSelection.protocol}: {challengeSelection.rule}</p>}{native && mechanicEvidence && <p className="muted">{mechanicEvidence.protocol}: {mechanicEvidence.rule}</p>}</details>}</>
+  return <><dl className="facts compact"><Field name="Mechanic request size">{mechanicContextText(mechanicContext)}</Field><Field name="Challenge picks">{challengeSelectionText(challengeSelection)}</Field>{native && <Field name="Native citation status">{mechanicEvidenceText(mechanicEvidence)}</Field>}<Field name="Diagnosis repair and record">{mechanicDiagnosisText(mechanicDiagnosis)}</Field>{diagnosisGuide && <Field name="Diagnosis guide">{diagnosisGuideText(diagnosisGuide)}</Field>}</dl>
+    {(mechanicContext || challengeSelection || (native && mechanicEvidence) || mechanicDiagnosis || diagnosisGuide) && <details><summary>Exact rule text</summary>{mechanicContext && <p className="muted">{mechanicContext.protocol}: {mechanicContext.rule}</p>}{challengeSelection && <p className="muted">{challengeSelection.protocol}: {challengeSelection.rule}</p>}{native && mechanicEvidence && <p className="muted">{mechanicEvidence.protocol}: {mechanicEvidence.rule}</p>}{mechanicDiagnosis && <p className="muted">{mechanicDiagnosis.protocol}: {mechanicDiagnosis.rule}</p>}{diagnosisGuide && <p className="muted">{diagnosisGuide.protocol}: {diagnosisGuide.rule}</p>}</details>}</>
 }
 
 /** History fireability offered for a new Learn plan: only when the chosen discovery protocol freezes it. */

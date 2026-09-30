@@ -1,0 +1,299 @@
+diagnosis probe dry run: plan 9d5d3bd6f4351b4dcaa2840e1546b323d20bc3f0b93ffe1305d942a5f6466cc5
+harness sha256 fb73a584466bb543e2684a1739fadccd5208e3d4a6696da231833704a46fe2c3
+model deepseek-ai/DeepSeek-V4-Pro-0813; settings from saved plan 60899c53944d (campaign campaign-d8d1e8cc0ea34feb92dbd8c22c264530)
+calls: 100 first-turn + 40 repair = 140
+input tokens per request (frozen tokenizer):
+  v2d-dev5/CONTROL           8990  x10
+  v2d-dev5/GUIDE             9559  x10
+  v2e-dev5/CONTROL           9088  x10
+  v2e-dev5/GUIDE             9657  x10
+  v2f-dev5/CONTROL           9639  x10
+  v2f-dev5/GUIDE            10208  x10
+  v2f-dev5/REPAIR_RULE1     10077  x10
+  v2f-dev5/REPAIR_TODAY     10030  x10
+  v2g-dev5/CONTROL           9794  x10
+  v2g-dev5/GUIDE            10363  x10
+  v2g-dev5/REPAIR_RULE1     10200  x10
+  v2g-dev5/REPAIR_TODAY     10153  x10
+  v2g-dev6/CONTROL           9352  x10
+  v2g-dev6/GUIDE             9921  x10
+maximum charge: 140 x $0.04984 = $6.9776 (hard cap $8.00); tighter bound with these inputs and 2,000 output tokens each: $2.9039
+network calls: 0
+diagnosis probe dry run: plan 9d5d3bd6f4351b4dcaa2840e1546b323d20bc3f0b93ffe1305d942a5f6466cc5
+harness sha256 fb73a584466bb543e2684a1739fadccd5208e3d4a6696da231833704a46fe2c3
+model deepseek-ai/DeepSeek-V4-Pro-0813; settings from saved plan 60899c53944d (campaign campaign-d8d1e8cc0ea34feb92dbd8c22c264530)
+calls: 100 first-turn + 40 repair = 140
+input tokens per request (frozen tokenizer):
+  v2d-dev5/CONTROL           8990  x10
+  v2d-dev5/GUIDE             9559  x10
+  v2e-dev5/CONTROL           9088  x10
+  v2e-dev5/GUIDE             9657  x10
+  v2f-dev5/CONTROL           9639  x10
+  v2f-dev5/GUIDE            10208  x10
+  v2f-dev5/REPAIR_RULE1     10077  x10
+  v2f-dev5/REPAIR_TODAY     10030  x10
+  v2g-dev5/CONTROL           9794  x10
+  v2g-dev5/GUIDE            10363  x10
+  v2g-dev5/REPAIR_RULE1     10200  x10
+  v2g-dev5/REPAIR_TODAY     10153  x10
+  v2g-dev6/CONTROL           9352  x10
+  v2g-dev6/GUIDE             9921  x10
+maximum charge: 140 x $0.04984 = $6.9776 (hard cap $8.00); tighter bound with these inputs and 2,000 output tokens each: $2.9039
+network calls: 0
+{
+ "status": "COMPLETED",
+ "delivered_answers": 140,
+ "failed_calls": 0,
+ "ledger": {
+  "charged_calls": 140,
+  "charged_dollar_upper_bound": 6.9776,
+  "measured_input_tokens": 1260000,
+  "measured_output_tokens": 7000
+ },
+ "stop_reason": null
+}
+{
+ "status": "COMPLETED",
+ "delivered_answers": 0,
+ "failed_calls": 140,
+ "ledger": {
+  "charged_calls": 160,
+  "charged_dollar_upper_bound": 7.9744,
+  "measured_input_tokens": 0,
+  "measured_output_tokens": 0
+ },
+ "stop_reason": null
+}
+{
+ "status": "STOPPED",
+ "delivered_answers": 1,
+ "failed_calls": 0,
+ "ledger": {
+  "charged_calls": 1,
+  "charged_dollar_upper_bound": 0.04984,
+  "measured_input_tokens": 1,
+  "measured_output_tokens": 1
+ },
+ "stop_reason": "SERVED_MODEL_DIFFERS"
+}
+{
+ "status": "COMPLETED",
+ "delivered_answers": 0,
+ "failed_calls": 140,
+ "ledger": {
+  "charged_calls": 140,
+  "charged_dollar_upper_bound": 6.9776,
+  "measured_input_tokens": 0,
+  "measured_output_tokens": 0
+ },
+ "stop_reason": null
+}
+{
+ "cap_7_all_failing": {
+  "exit": 0,
+  "ledger": {
+   "charged_calls": 140,
+   "charged_dollar_upper_bound": 6.9776,
+   "measured_input_tokens": 0,
+   "measured_output_tokens": 0
+  },
+  "provider_calls": 140,
+  "retry_calls_allowed_by_cap": 0
+ },
+ "dry_run": {
+  "exit": 0,
+  "provider_built": false,
+  "wrote": []
+ },
+ "dry_run_flag": {
+  "exit": 0,
+  "provider_built": false,
+  "wrote": []
+ },
+ "guard_violations": [],
+ "harness_sha256": "fb73a584466bb543e2684a1739fadccd5208e3d4a6696da231833704a46fe2c3",
+ "plan_hash": "9d5d3bd6f4351b4dcaa2840e1546b323d20bc3f0b93ffe1305d942a5f6466cc5",
+ "refusals": {
+  "cap_6": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "cap_9": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "cap_bool": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "cap_string": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "no_approver": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "no_declaration": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "no_out": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "no_outcomes": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "non_empty_out": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "other_folder": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "other_harness": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "other_model": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "other_plan": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "precondition_false": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "sha_without_file": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  },
+  "wrong_sha": {
+   "exit": 2,
+   "out_created": false,
+   "provider_built": false
+  }
+ },
+ "repo_files_changed_by_harness": [],
+ "scratch_deleted": true,
+ "scripted_runs": {
+  "boom": {
+   "charged_within_cap": true,
+   "error": "ValueError: unexpected",
+   "exit": null,
+   "files": [
+    "answers.jsonl",
+    "manifest.json",
+    "plan.json",
+    "probe-ledger.sqlite3",
+    "probe-ledger.sqlite3-shm",
+    "probe-ledger.sqlite3-wal",
+    "requests.json"
+   ],
+   "ledger": {
+    "charged_calls": 1,
+    "charged_dollar_upper_bound": 0.04984,
+    "measured_input_tokens": 0,
+    "measured_output_tokens": 0
+   },
+   "provider_calls": 1,
+   "status": "ABORTED"
+  },
+  "connection": {
+   "charged_within_cap": true,
+   "error": null,
+   "exit": 0,
+   "files": [
+    "answers.jsonl",
+    "manifest.json",
+    "plan.json",
+    "probe-ledger.sqlite3",
+    "probe-ledger.sqlite3-shm",
+    "probe-ledger.sqlite3-wal",
+    "requests.json",
+    "review-blinded.csv",
+    "review-key.json",
+    "scoring.json"
+   ],
+   "ledger": {
+    "charged_calls": 160,
+    "charged_dollar_upper_bound": 7.9744,
+    "measured_input_tokens": 0,
+    "measured_output_tokens": 0
+   },
+   "provider_calls": 160,
+   "status": "COMPLETED"
+  },
+  "ok": {
+   "charged_within_cap": true,
+   "error": null,
+   "exit": 0,
+   "files": [
+    "answers.jsonl",
+    "manifest.json",
+    "plan.json",
+    "probe-ledger.sqlite3",
+    "probe-ledger.sqlite3-shm",
+    "probe-ledger.sqlite3-wal",
+    "requests.json",
+    "review-blinded.csv",
+    "review-key.json",
+    "scoring.json"
+   ],
+   "ledger": {
+    "charged_calls": 140,
+    "charged_dollar_upper_bound": 6.9776,
+    "measured_input_tokens": 1260000,
+    "measured_output_tokens": 7000
+   },
+   "provider_calls": 140,
+   "status": "COMPLETED"
+  },
+  "other_model": {
+   "charged_within_cap": true,
+   "error": null,
+   "exit": 1,
+   "files": [
+    "answers.jsonl",
+    "manifest.json",
+    "plan.json",
+    "probe-ledger.sqlite3",
+    "probe-ledger.sqlite3-shm",
+    "probe-ledger.sqlite3-wal",
+    "requests.json",
+    "review-blinded.csv",
+    "review-key.json",
+    "scoring.json"
+   ],
+   "ledger": {
+    "charged_calls": 1,
+    "charged_dollar_upper_bound": 0.04984,
+    "measured_input_tokens": 1,
+    "measured_output_tokens": 1
+   },
+   "provider_calls": 1,
+   "status": "STOPPED"
+  }
+ }
+}

@@ -1,0 +1,34 @@
+== A1 C6 sentence restored in CHECKS_NOTE: CAUGHT (exit 1; 1 failed, 12 passed in 1.01s; -x stops at first failure)
+    E       assert (9621 - 8990) == 608
+    E        +  where 9621 = input_token_bound([{'role': 'system', 'content': 'You are FaultLab Mechanic proposing a falsifiable diagnosis, not assigning a verdict. ...t is submitted, the episode violates
+    FAILED tests/lab/test_diagnosis_rules.py::test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2d-dev5]
+== A2 block() leaves out checks_note: CAUGHT (exit 1; 1 failed, 12 passed in 0.97s; -x stops at first failure)
+    E       assert (9559 - 8990) == 608
+    E        +  where 9559 = input_token_bound([{'role': 'system', 'content': 'You are FaultLab Mechanic proposing a falsifiable diagnosis, not assigning a verdict. ...t is submitted, the episode violates
+    FAILED tests/lab/test_diagnosis_rules.py::test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2d-dev5]
+== A3 FIXED_TEXT stops binding checks_note: CAUGHT (exit 1; 1 failed, 50 passed in 4.92s; -x stops at first failure)
+    E           Failed: DID NOT RAISE ValidationError
+    FAILED tests/lab/test_diagnosis_rules.py::test_T1_the_declarations_are_exact
+== A4 guide offered: CAUGHT (exit 1; 1 failed, 49 passed in 2.60s; -x stops at first failure)
+    E       assert ('diagnosis_guide' not in {'manifest_hash': 'c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1', 'search_space': {'maximum_primit... uses up the campaign's candidate requ
+    FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2
+== B1 agent history reads episodes past its record cutoff: NOT CAUGHT (exit 0; 109 passed in 36.26s; -x stops at first failure)
+== B2 fireability fired-share bar 1/2 -> 0 (nothing refused): CAUGHT (exit 1; 1 failed in 1.52s; -x stops at first failure)
+    E       AssertionError: assert {'kind': 'F4'...odes': 3, ...} == {'kind': 'F4'...odes': 3, ...}
+    E         
+    E         Omitting 6 identical items, use -vv to show
+    E         Differing items:
+== B3 v2d rebuild helper: the test module reads evaluations past its cutoff: NOT CAUGHT (exit 0; 109 passed in 34.81s; -x stops at first failure)
+baseline after restores: 136 passed in 41.65s
+
+VERIFIER-2 READING (see also mutations-B1b.log):
+* A1-A4 (checks_note text, block, FIXED_TEXT binding, offering the guide): all caught.
+* B1 NOT caught, and it is an equivalent mutation on this data, not a test gap: every episode above row 6748 belongs to
+  live run v2g, whose campaign record is row 6749 (> 6748), so the history's other cutoff checks (_at_or_before on the
+  campaign and evidence records) still drop them (store-facts.txt). B1b removes both cutoff checks and is caught by the
+  pinned record_cutoff/summary-hash assertion (6748, 1e00915b... != d581867c...).
+* B2 (nothing refused): caught.
+* B3 (test-side: the v2d helper reads evaluations past its cutoff) is not observable on today's store, because no later
+  evaluation matches v2d's candidate and incumbent hashes; controls.log shows the unpinned helper failing on the grown
+  store (34444 == 33223) and the pinned one passing. Expected; not a defect.
+* The scratch file was restored after every mutation and its sha256 checked; the baseline passes 136 of 136 afterwards.

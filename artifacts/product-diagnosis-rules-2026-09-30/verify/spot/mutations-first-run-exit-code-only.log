@@ -1,0 +1,16 @@
+UNMUTATED backend: exit 1: 10 failed, 87 passed in 16.20s
+UNMUTATED frontend: exit 0: Tests  5 passed (5)
+CAUGHT: B1 repair turn under-counts the answer length by one: exit 1: 17 failed, 80 passed in 16.08s (restored True)
+CAUGHT: B2 the declared repair turn drops the appended sentence: exit 1: 15 failed, 82 passed in 16.05s (restored True)
+CAUGHT: B3 the rule-off Mechanic also sends the limit fields (flag-off bytes change): exit 1: 13 failed, 84 passed in 16.13s (restored True)
+CAUGHT: B4 run options offer the guide although it is not offered: exit 1: 10 failed, 87 passed in 16.14s (restored True)
+CAUGHT: B5 a code-default kind is recorded as the model's: exit 1: 12 failed, 85 passed in 16.28s (restored True)
+CAUGHT: B6 early_end is never recorded: exit 1: 16 failed, 81 passed in 16.21s (restored True)
+CAUGHT: B7 Start no longer compares a declared Rule 1 with the installed one: exit 1: 10 failed, 87 passed in 16.10s (restored True)
+CAUGHT: B8 the export embeds only the last attempt: exit 1: 10 failed, 87 passed in 16.01s (restored True)
+CAUGHT: P1 the probe premise also counts CONTROL rows only the person flagged: exit 1: 10 failed, 87 passed in 16.28s (restored True)
+CAUGHT: P2 the probe accepts a used output folder: exit 1: 10 failed, 87 passed in 16.35s (restored True)
+CAUGHT: P3 the probe sends before it charges the ledger: exit 1: 12 failed, 85 passed in 16.44s (restored True)
+CAUGHT: P4 the P4 decision counts an over-600 answer as within the limit: exit 1: 10 failed, 87 passed in 16.41s (restored True)
+CAUGHT: F1 the frontend accepts a Rule 1 declaration that says the first turn changed: exit 1: ⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯ (restored True)
+13 of 13 mutations caught

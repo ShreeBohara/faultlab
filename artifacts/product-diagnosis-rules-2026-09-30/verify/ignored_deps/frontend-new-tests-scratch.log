@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  13:07:23
+   Duration  896ms (transform 178ms, setup 0ms, import 287ms, tests 125ms, environment 417ms)
+

@@ -1,0 +1,13 @@
+draft note        : "Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. C6 is the check of the report's citations: where C6 passed, that report's citations met it. Explain each failed check from its own meaning."
+product note      : "Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning."
+product == draft with the C6 sentence (and its trailing space) removed: True
+C6 sentence fragments in product module: {'citations met it': False, 'where C6 passed': False, 'C6 is the check': False}
+check ids C1-C8 in the product note: []
+MEANING equal to draft: True
+KINDS equal to draft: True
+CONTRACT_NOTE equal to draft: True
+USE equal to draft: True
+HYPOTHESIS_LENGTH equal to draft LENGTH: True
+DIAGNOSIS_GUIDE_OFFERED: False
+product RULE mentions a note on reading checks: False
+draft RULE mentions a note on reading checks: False

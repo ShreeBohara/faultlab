@@ -1,0 +1,9 @@
+E               AssertionError: assert ('REFUSED_LOW_FIRED_SHARE' == 'ALLOWED'
+>           assert (result.status, result.failed_checks, len(result.schedule_hashes), episodes) == ('COUNTEREXAMPLE_FOUND', ['C4'], 1, 6)
+E           AssertionError: assert ('PASSED_OBSERVED', [], 4, 24) == ('COUNTEREXAM... ['C4'], 1, 6)
+E       AssertionError: assert [(0, 1, 'SKIP...', 'ALLOWED')] == [(0, 1, 'SELE...', 'ALLOWED')]
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_a_pick_is_refused_only_when_every_fault_targets_a_refused_row
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_the_rule_no_longer_hides_a_counterexample_on_the_guardrails_status_read
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_a_discovery_pick_beside_a_pending_upgrade_runs_and_a_lone_one_is_still_refused
+3 failed, 8 passed in 13.24s
+restored OK

@@ -1,0 +1,29 @@
+{
+ "campaign_state": "COMPLETED",
+ "diagnosis_turns_sent": [
+  2,
+  4
+ ],
+ "diagnostics": [
+  {
+   "kind": "POLICY_GAP",
+   "proposed_kind": "POLICY_GAP"
+  }
+ ],
+ "episode_counts": {
+  "challenge": 24,
+  "discovery": 1,
+  "intervention": 6,
+  "promotion": 36,
+  "reduction": 12,
+  "reproduction": 3,
+  "source_validation": 6
+ },
+ "interventions": [
+  "SUPPORTED"
+ ],
+ "records": [],
+ "repair_user_messages": [
+  "{\"instruction\":\"Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution.\",\"validation_errors\":[{\"location\":[\"hypothesis\"],\"type\":\"string_too_long\"}]}"
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "per_campaign": {
+  "campaign-077b8434e14c4c73a334692223694e63": {
+   "discovery_allowed": 5,
+   "discovery_refused": 3,
+   "challenge_allowed": 0,
+   "challenge_refused": 0
+  },
+  "campaign-ea66672d7a904bd8a011d6922790c963": {
+   "discovery_allowed": 0,
+   "discovery_refused": 0,
+   "challenge_allowed": 2,
+   "challenge_refused": 1
+  },
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa": {
+   "discovery_allowed": 3,
+   "discovery_refused": 3,
+   "challenge_allowed": 0,
+   "challenge_refused": 0
+  },
+  "campaign-53db74766f4d4635b94a0de89e492577": {
+   "discovery_allowed": 0,
+   "discovery_refused": 1,
+   "challenge_allowed": 6,
+   "challenge_refused": 2
+  },
+  "campaign-d8d1e8cc0ea34feb92dbd8c22c264530": {
+   "discovery_allowed": 6,
+   "discovery_refused": 0,
+   "challenge_allowed": 0,
+   "challenge_refused": 0
+  }
+ },
+ "plan_times": {
+  "campaign-c8063a1166834051b08ae5317ff6f9c2": null,
+  "campaign-077b8434e14c4c73a334692223694e63": null,
+  "campaign-ea66672d7a904bd8a011d6922790c963": null,
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa": null,
+  "campaign-53db74766f4d4635b94a0de89e492577": null,
+  "campaign-d8d1e8cc0ea34feb92dbd8c22c264530": null
+ },
+ "totals": {
+  "discovery_allowed": 14,
+  "discovery_refused": 7,
+  "challenge_allowed": 8,
+  "challenge_refused": 3
+ },
+ "totals_without_v2g": {
+  "discovery_allowed": 8,
+  "discovery_refused": 7,
+  "challenge_allowed": 8,
+  "challenge_refused": 3
+ },
+ "v2g_campaign": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+ "store_sha256_unchanged": true
+}

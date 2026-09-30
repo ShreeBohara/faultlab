@@ -1,0 +1,2 @@
+[saved_plans_check] {"stores": 11, "plans": 21, "plans_or_stores_failing": 13, "all_stores_unchanged": true, "stores_with_nonempty_wal": [], "scratch_deleted": true}
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

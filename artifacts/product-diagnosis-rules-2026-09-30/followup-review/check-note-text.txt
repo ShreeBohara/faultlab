@@ -1,0 +1,20 @@
+draft sentences: 3
+  [0] "Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning."
+  [1] "C6 is the check of the report's citations: where C6 passed, that report's citations met it."
+  [2] 'Explain each failed check from its own meaning.'
+C6 sentences in draft: 1
+product note: "Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning."
+product == draft minus C6 sentence: True
+product contains "C6": False | contains "citation": False
+product note mentions any check id C1-C8: False
+product sentences: 2
+MEANING equal to draft: True
+KINDS equal to draft: True
+CONTRACT_NOTE equal to draft: True
+USE equal to draft: True
+HYPOTHESIS_LENGTH == draft LENGTH: True
+RULE equal to draft RULE: False
+draft RULE mentions note on checks: False
+product RULE mentions note on checks: False
+DIAGNOSIS_GUIDE_OFFERED = False
+C6 sentence text anywhere in product module: False

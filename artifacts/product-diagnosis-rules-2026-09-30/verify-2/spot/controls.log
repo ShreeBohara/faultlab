@@ -1,0 +1,61 @@
+== orig_fire_6748: tree=checkpoint test=test_history_fireability.py store=lab-upto-6748.sqlite3 -k 'saved_store or saved_stores'
+3 passed, 19 deselected in 2.57s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== orig_fire_today: tree=checkpoint test=test_history_fireability.py store=lab.sqlite3 -k 'saved_store or saved_stores'
+E       assert 36 == 30
+E       assert 14 == 8
+FAILED tests/lab/test_zv2_orig_fire_today.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_zv2_orig_fire_today.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+2 failed, 1 passed, 19 deselected in 5.10s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== orig_v2d_3022: tree=checkpoint test=test_loop_limits_mechanic_context.py store=lab-upto-3022.sqlite3 -k 'refused_v2d_request'
+1 passed, 21 deselected in 3.02s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== orig_v2d_today: tree=checkpoint test=test_loop_limits_mechanic_context.py store=lab.sqlite3 -k 'refused_v2d_request'
+1 passed, 21 deselected in 0.51s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== orig_v2d_grown: tree=checkpoint test=test_loop_limits_mechanic_context.py store=lab-grown.sqlite3 -k 'refused_v2d_request'
+E               assert 34444 == 33223
+FAILED tests/lab/test_zv2_orig_v2d_grown.py::test_the_refused_v2d_request_rebuilds_exactly_and_fits_after_compaction_with_its_omission_statement
+1 failed, 21 deselected in 0.44s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== orig_fire_grown: tree=checkpoint test=test_history_fireability.py store=lab-grown.sqlite3 -k 'saved_store or saved_stores'
+E       assert 36 == 30
+E       assert (6, 14) == (3, 7)
+FAILED tests/lab/test_zv2_orig_fire_grown.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_zv2_orig_fire_grown.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+2 failed, 1 passed, 19 deselected in 2.54s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_fire_today: tree=current test=test_history_fireability.py store=lab.sqlite3 -k 'saved_store or saved_stores'
+3 passed, 19 deselected in 2.51s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_fire_grown: tree=current test=test_history_fireability.py store=lab-grown.sqlite3 -k 'saved_store or saved_stores'
+3 passed, 19 deselected in 2.53s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_fire_6748: tree=current test=test_history_fireability.py store=lab-upto-6748.sqlite3 -k 'saved_store or saved_stores'
+E       TypeError: 'NoneType' object is not subscriptable
+FAILED tests/lab/test_zv2_pin_fire_6748.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+1 failed, 2 passed, 19 deselected in 2.53s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_v2d_grown: tree=current test=test_loop_limits_mechanic_context.py store=lab-grown.sqlite3 -k 'refused_v2d_request'
+1 passed, 21 deselected in 0.49s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_v2d_3022: tree=current test=test_loop_limits_mechanic_context.py store=lab-upto-3022.sqlite3 -k 'refused_v2d_request'
+1 passed, 21 deselected in 0.46s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_T1_today: tree=current test=test_diagnosis_rules.py store=lab.sqlite3 -k 'every_saved_native_v2b_plan'
+1 passed, 64 deselected in 0.32s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+== pin_T1_grown: tree=current test=test_diagnosis_rules.py store=lab-grown.sqlite3 -k 'every_saved_native_v2b_plan'
+1 passed, 64 deselected in 0.31s
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0
+
+NOTE on pin_fire_6748 (verifier-2, expected, not a defect): re-run alone, the one failure is at
+  assert v2g['discovery']['history'] == history ...   ->   TypeError: 'NoneType' object is not subscriptable
+because the pinned test compares its plan with live run v2g's SAVED plan (campaign_plans row 6751), and a store truncated
+at row 6748 does not contain that row. Every assertion before that line (the pinned 'now' read, record_cutoff 6748 and
+summary hash d581867c, 30 episodes, the composition, the table, the refused-target sentence, Start) passed on the
+truncated store. The other two pinned fireability tests passed on it.
+SUMMARY: original 626bae4 tests pass on the store as it stood at the pinned rows (6748: 3/3; 3022: 1/1) and fail on
+today's store (36 == 30, 14 == 8) and on the grown store (fireability 2 fail; v2d 34444 == 33223). The pinned tests pass
+on today's store and on the grown store (fireability 3/3, v2d 1/1, T1 1/1).

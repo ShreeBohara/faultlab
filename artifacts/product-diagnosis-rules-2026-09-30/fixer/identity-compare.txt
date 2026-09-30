@@ -1,0 +1,21 @@
+identity: builder (after) -> fixer (after)
+CHANGED algorithm_hash: e4c47b4e00bbd1e9737a44fd50246a67dba742c4b8ee524f13cb4cf85653f0b2 -> 743a15201671d2c0c35baa4edef3d296057e285efd4fb7507ef4899b6d964b97
+CHANGED example_configuration_hash[smolagents-toolcalling-v1, deepseek-ai/DeepSeek-V3.1, default caps]: 1fdb094919f5b38afbf51915bec1bde2d869356213dbb2d5df30f550646658ff -> d6093d50e82213e439e0d5844e224bf595054ca6c6f662057e63a0043db0d7b8
+CHANGED example_configuration_hash[smolagents-toolcalling-v2, deepseek-ai/DeepSeek-V3.1, default caps]: cc1c07bf5a60d17f1928b44fb36ae5a8ecdd7dd39879c941b2f17c9db55b82b6 -> 5aff13a6a2d1cfdafba9335804b96b86e530d289cbd0b14604416b1f4dbc27b3
+CHANGED mechanic_diagnosis_v1_declaration_hash: 729441f0013562f4a0fe695c909ff15cf582b52aa0f35f2c3322b9bec3ef73d7 -> 998744f82bb09dbd49852fc293015d393263ae1369a33e5a0a5dc5b4a45dfeca
+CHANGED mechanic_diagnosis_v1_semantics_hash: 577b0c80313d74eebbb8bea8a38318d5b4b819fbcd30f1dceef5f52fc81b0d1a -> c4dd868c03b88bd6270e99f09289bc6d09102e8e1f565deb43a05ef9ee3934da
+CHANGED runtime_hash: e3551ead0715fbbb65e24d1756f181b93acf237c9bdbe7849d266a1dc023a5a9 -> c80d86323bc82624ab22000edb37ce46d09f2e621d04ca8928903471749aa493
+unchanged: 34 of 40 keys
+gate freeze, builder after -> fixer: 124 values compared; 3 changed:
+  fingerprints/algorithm_hash
+  fingerprints/runtime_hash
+  fingerprints/tree_lab
+gate freeze, 626bae4 baseline (builder before) -> fixer: 124 values compared; 8 changed:
+  files/backend/app/agents/mechanic.py
+  fingerprints/algorithm_hash
+  fingerprints/runtime_hash
+  fingerprints/source_hash
+  fingerprints/tree_lab
+  functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256
+  functions/backend/app/agents/mechanic.py::Mechanic/lines
+  functions/backend/app/agents/mechanic.py::Mechanic/text_sha256

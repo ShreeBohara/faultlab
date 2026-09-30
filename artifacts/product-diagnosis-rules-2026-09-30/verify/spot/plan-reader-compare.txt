@@ -1,0 +1,6 @@
+plans: checkpoint 21 work 21 | identical per-plan results: 21 of 21
+raw plan_hash valid in all: True
+plans whose read equals the raw row: 8
+plans whose read adds only null keys and changes nothing (both trees): 20
+keys added (null) by the read of older plans: ['discovery', 'evidence_retry', 'transport_retry']
+any read adds mechanic_diagnosis or diagnosis_guide: False

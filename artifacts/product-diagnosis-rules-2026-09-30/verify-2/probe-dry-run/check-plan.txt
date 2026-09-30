@@ -1,0 +1,40 @@
+PASS plan_hash self-consistent
+PASS plan_hash is 91ca47e4...
+PASS template plan_hash equals plan
+PASS template harness sha equals plan
+plan diagnosis_guide field: {"declaration_hash": "def60594d4677b89c2450079896a3f8c0433f50dbbc51693beeb934b5130c789", "offered": false, "protocol": "faultlab-diagnosis-guide/v1-kinds-and-checks"}
+PASS plan declares the installed Rule 2 declaration hash
+PASS Rule 2 declaration hash is def60594...
+PASS schedule has 140 calls
+PASS 14 request keys
+PASS C6 sentence absent from requests.json
+PASS v2d-dev5/CONTROL: byte-identical to the pre-follow-up plan
+PASS v2d-dev5/GUIDE: adds only diagnosis_guide, all other keys and messages identical
+PASS v2d-dev5/GUIDE: block == product dg.block(task) and checks_note == CHECKS_NOTE
+PASS v2e-dev5/CONTROL: byte-identical to the pre-follow-up plan
+PASS v2e-dev5/GUIDE: adds only diagnosis_guide, all other keys and messages identical
+PASS v2e-dev5/GUIDE: block == product dg.block(task) and checks_note == CHECKS_NOTE
+PASS v2f-dev5/CONTROL: byte-identical to the pre-follow-up plan
+PASS v2f-dev5/GUIDE: adds only diagnosis_guide, all other keys and messages identical
+PASS v2f-dev5/GUIDE: block == product dg.block(task) and checks_note == CHECKS_NOTE
+PASS v2f-dev5/REPAIR_RULE1: byte-identical to the pre-follow-up plan
+PASS v2f-dev5/REPAIR_TODAY: byte-identical to the pre-follow-up plan
+PASS v2g-dev5/CONTROL: byte-identical to the pre-follow-up plan
+PASS v2g-dev5/GUIDE: adds only diagnosis_guide, all other keys and messages identical
+PASS v2g-dev5/GUIDE: block == product dg.block(task) and checks_note == CHECKS_NOTE
+PASS v2g-dev5/REPAIR_RULE1: byte-identical to the pre-follow-up plan
+PASS v2g-dev5/REPAIR_TODAY: byte-identical to the pre-follow-up plan
+PASS v2g-dev6/CONTROL: byte-identical to the pre-follow-up plan
+PASS v2g-dev6/GUIDE: adds only diagnosis_guide, all other keys and messages identical
+PASS v2g-dev6/GUIDE: block == product dg.block(task) and checks_note == CHECKS_NOTE
+per-request token entries: 
+PASS v2d-dev5/GUIDE: GUIDE - CONTROL = 608 tokens (got 608)
+PASS v2e-dev5/GUIDE: GUIDE - CONTROL = 608 tokens (got 608)
+PASS v2f-dev5/GUIDE: GUIDE - CONTROL = 608 tokens (got 608)
+PASS v2g-dev5/GUIDE: GUIDE - CONTROL = 608 tokens (got 608)
+PASS v2g-dev6/GUIDE: GUIDE - CONTROL = 608 tokens (got 608)
+top-level plan keys that differ from the pre-follow-up plan: ['charge', 'diagnosis_guide', 'plan_hash', 'requests']
+charge: {"hard_spend_cap_dollars": 8.0, "max_charge_dollars": 6.9776, "path": "app.providers.runtime.RuntimeProvider + app.lab.budgets.CampaignLedger (admitted before sending)", "per_call_dollar_upper_bound": 0.04984, "planned_calls": 140, "retry_rule": "app.agents.transport_retry v1: at most one blind retry per call, only after a connection error, a timeout or HTTP 503, charged before it is sent from the cap left after the planned calls are reserved", "tighter_bound_dollars": 2.906461}
+sampling temperature: None
+33 of 33 checks passed
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

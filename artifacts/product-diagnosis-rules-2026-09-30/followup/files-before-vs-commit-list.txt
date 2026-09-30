@@ -1,0 +1,14 @@
+matches-commit-list backend/app/lab/diagnosis_guide.py
+matches-commit-list backend/app/lab/run_plans.py
+matches-commit-list backend/tests/lab/test_diagnosis_rules.py
+matches-commit-list backend/tests/experiments/test_diagnosis_probe.py
+not-in-commit-list backend/tests/lab/test_history_fireability.py
+not-in-commit-list backend/tests/lab/test_loop_limits_mechanic_context.py
+not-in-commit-list backend/tests/lab/test_citation_status.py
+not-in-commit-list backend/tests/lab/citation_status_saved.py
+matches-commit-list frontend/src/loopLimits.ts
+matches-commit-list frontend/tests/diagnosis-rules.test.tsx
+matches-commit-list docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md
+matches-commit-list CURRENT_STATUS.md
+matches-commit-list scripts/experiments/diagnosis_probe.py
+matches-commit-list backend/tests/lab/test_diagnosis_rules_loop.py

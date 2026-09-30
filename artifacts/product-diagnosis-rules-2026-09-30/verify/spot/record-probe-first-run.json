@@ -1,0 +1,431 @@
+{
+ "passed": 64,
+ "failed": [
+  [
+   "untriggered: fresh trials 1",
+   false,
+   "2"
+  ],
+  [
+   "untriggered: pairs 0, early_end INVALID_OR_UNTRIGGERED_TRIAL",
+   false,
+   "{\"intervention_id\": \"intervention-957574e15c56cabb4812af85\", \"result\": \"INCONCLUSIVE\", \"trial_pairs\": 1, \"limitations\": [\"INVALID_OR_UNTRIGGERED_TRIAL\"], \"early_end\": \"INVALID_OR_UNTRIGGERED_TRIAL\"}"
+  ],
+  [
+   "untriggered: statement names the early end",
+   false,
+   "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 1 of 3 trial pairs; it ended early: a trial was invalid or its fault did not fire (INVALID_OR_UNTRIGGERED_TRIAL); 2 fresh intervention trial(s) ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  ],
+  [
+   "untriggered: statement says whether a fresh trial ran",
+   false,
+   "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 1 of 3 trial pairs; it ended early: a trial was invalid or its fault did not fire (INVALID_OR_UNTRIGGERED_TRIAL); 2 fresh intervention trial(s) ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  ]
+ ],
+ "checks": [
+  [
+   "preflight: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "preflight: stored record equals returned record",
+   true
+  ],
+  [
+   "preflight: fresh trials 0",
+   true
+  ],
+  [
+   "preflight: intervention_ran is False",
+   true
+  ],
+  [
+   "preflight: experiment recorded",
+   true
+  ],
+  [
+   "preflight: pairs 0, early_end PREFLIGHT_REJECTED",
+   true
+  ],
+  [
+   "preflight: statement names the early end",
+   true
+  ],
+  [
+   "preflight: statement says whether a fresh trial ran",
+   true
+  ],
+  [
+   "preflight: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "stop_first: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "stop_first: stored record equals returned record",
+   true
+  ],
+  [
+   "stop_first: fresh trials 0",
+   true
+  ],
+  [
+   "stop_first: intervention_ran is False",
+   true
+  ],
+  [
+   "stop_first: experiment recorded",
+   true
+  ],
+  [
+   "stop_first: pairs 0, early_end STOPPED",
+   true
+  ],
+  [
+   "stop_first: statement names the early end",
+   true
+  ],
+  [
+   "stop_first: statement says whether a fresh trial ran",
+   true
+  ],
+  [
+   "stop_first: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "callback_error: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "callback_error: stored record equals returned record",
+   true
+  ],
+  [
+   "callback_error: fresh trials 0",
+   true
+  ],
+  [
+   "callback_error: intervention_ran is False",
+   true
+  ],
+  [
+   "callback_error: experiment recorded",
+   true
+  ],
+  [
+   "callback_error: pairs 0, early_end CALLBACK_ERROR:TimeoutError",
+   true
+  ],
+  [
+   "callback_error: statement names the early end",
+   true
+  ],
+  [
+   "callback_error: statement says whether a fresh trial ran",
+   true
+  ],
+  [
+   "callback_error: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "invalid_result: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "invalid_result: stored record equals returned record",
+   true
+  ],
+  [
+   "invalid_result: fresh trials 0",
+   true
+  ],
+  [
+   "invalid_result: intervention_ran is False",
+   true
+  ],
+  [
+   "invalid_result: experiment recorded",
+   true
+  ],
+  [
+   "invalid_result: pairs 0, early_end INVALID_CALLBACK_RESULT",
+   true
+  ],
+  [
+   "invalid_result: statement names the early end",
+   true
+  ],
+  [
+   "invalid_result: statement says whether a fresh trial ran",
+   true
+  ],
+  [
+   "invalid_result: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "untriggered: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "untriggered: stored record equals returned record",
+   true
+  ],
+  [
+   "untriggered: fresh trials 1",
+   false
+  ],
+  [
+   "untriggered: intervention_ran is True",
+   true
+  ],
+  [
+   "untriggered: experiment recorded",
+   true
+  ],
+  [
+   "untriggered: pairs 0, early_end INVALID_OR_UNTRIGGERED_TRIAL",
+   false
+  ],
+  [
+   "untriggered: statement names the early end",
+   false
+  ],
+  [
+   "untriggered: statement says whether a fresh trial ran",
+   false
+  ],
+  [
+   "untriggered: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "stop_mid_pair: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "stop_mid_pair: stored record equals returned record",
+   true
+  ],
+  [
+   "stop_mid_pair: fresh trials 1",
+   true
+  ],
+  [
+   "stop_mid_pair: intervention_ran is True",
+   true
+  ],
+  [
+   "stop_mid_pair: experiment recorded",
+   true
+  ],
+  [
+   "stop_mid_pair: pairs 0, early_end STOPPED",
+   true
+  ],
+  [
+   "stop_mid_pair: statement names the early end",
+   true
+  ],
+  [
+   "stop_mid_pair: statement says whether a fresh trial ran",
+   true
+  ],
+  [
+   "stop_mid_pair: verdict INCONCLUSIVE",
+   true
+  ],
+  [
+   "full: rule changes no kind/result/trials",
+   true
+  ],
+  [
+   "full: stored record equals returned record",
+   true
+  ],
+  [
+   "full: fresh trials 6",
+   true
+  ],
+  [
+   "full: intervention_ran is True",
+   true
+  ],
+  [
+   "full: experiment recorded",
+   true
+  ],
+  [
+   "full: pairs 3, early_end None",
+   true
+  ],
+  [
+   "full: SUPPORTED, POLICY_GAP, no early end in statement",
+   true
+  ],
+  [
+   "invalid: rule changes no kind/result",
+   true
+  ],
+  [
+   "invalid: INVALID_OUTPUT, code_default, 2 attempts, nothing ran",
+   true
+  ],
+  [
+   "invalid: repair errors state 600 and 614",
+   true
+  ],
+  [
+   "invalid: statement",
+   true
+  ],
+  [
+   "decline: VALID_NO_REQUEST, model, nothing ran",
+   true
+  ],
+  [
+   "refusal: no attempt state",
+   true
+  ],
+  [
+   "refusal: trials without experiment",
+   true
+  ]
+ ],
+ "table": [
+  {
+   "ending": "preflight",
+   "intervention_ran": false,
+   "experiment_recorded": true,
+   "fresh_trials": 0,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0,
+    "limitations": [
+     "PREFLIGHT_REJECTED"
+    ],
+    "early_end": "PREFLIGHT_REJECTED"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 0 of 3 trial pairs; it ended early: preflight rejected its recipes before any trial (PREFLIGHT_REJECTED); no fresh trial ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "stop_first",
+   "intervention_ran": false,
+   "experiment_recorded": true,
+   "fresh_trials": 0,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0,
+    "limitations": [
+     "STOPPED"
+    ],
+    "early_end": "STOPPED"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 0 of 3 trial pairs; it ended early: a Stop request stopped it (STOPPED); no fresh trial ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "callback_error",
+   "intervention_ran": false,
+   "experiment_recorded": true,
+   "fresh_trials": 0,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0,
+    "limitations": [
+     "CALLBACK_ERROR:TimeoutError"
+    ],
+    "early_end": "CALLBACK_ERROR:TimeoutError"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 0 of 3 trial pairs; it ended early: a trial could not run (CALLBACK_ERROR:TimeoutError); no fresh trial ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "invalid_result",
+   "intervention_ran": false,
+   "experiment_recorded": true,
+   "fresh_trials": 0,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0,
+    "limitations": [
+     "INVALID_CALLBACK_RESULT"
+    ],
+    "early_end": "INVALID_CALLBACK_RESULT"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 0 of 3 trial pairs; it ended early: a trial returned an invalid result (INVALID_CALLBACK_RESULT); no fresh trial ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "untriggered",
+   "intervention_ran": true,
+   "experiment_recorded": true,
+   "fresh_trials": 2,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 1,
+    "limitations": [
+     "INVALID_OR_UNTRIGGERED_TRIAL"
+    ],
+    "early_end": "INVALID_OR_UNTRIGGERED_TRIAL"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 1 of 3 trial pairs; it ended early: a trial was invalid or its fault did not fire (INVALID_OR_UNTRIGGERED_TRIAL); 2 fresh intervention trial(s) ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "stop_mid_pair",
+   "intervention_ran": true,
+   "experiment_recorded": true,
+   "fresh_trials": 1,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0,
+    "limitations": [
+     "STOPPED"
+    ],
+    "early_end": "STOPPED"
+   },
+   "verdict": "INCONCLUSIVE",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 INCONCLUSIVE after 0 of 3 trial pairs; it ended early: a Stop request stopped it (STOPPED); 1 fresh intervention trial(s) ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "full",
+   "intervention_ran": true,
+   "experiment_recorded": true,
+   "fresh_trials": 6,
+   "row": {
+    "intervention_id": "intervention-957574e15c56cabb4812af85",
+    "result": "SUPPORTED",
+    "trial_pairs": 3,
+    "limitations": [
+     "Three paired observations test only the declared schedule change; no universal causal claim."
+    ],
+    "early_end": null
+   },
+   "verdict": "POLICY_GAP",
+   "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-957574e15c56cabb4812af85 (remove_primitive:0). Intervention result: intervention-957574e15c56cabb4812af85 SUPPORTED after 3 of 3 trial pairs; 6 fresh intervention trial(s) ran. Fixed code recorded POLICY_GAP; the recorded proposed_kind POLICY_GAP is the model's."
+  },
+  {
+   "ending": "invalid_output",
+   "record": {
+    "proposal_status": "INVALID_OUTPUT",
+    "recorded_proposed_kind": "INCONCLUSIVE",
+    "recorded_proposed_kind_source": "code_default",
+    "intervention_ran": false,
+    "intervention_experiment_recorded": false,
+    "statement": "None of the Mechanic's 2 answer(s) passed validation (hypothesis string_too_long (614 of at most 600 characters); hypothesis string_too_long (614 of at most 600 characters)), so no intervention ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind INCONCLUSIVE is a code default, not the model's. Its last answer, unvalidated, named proposed_kind 'CONTRACT_EVIDENCE_GAP' and requested 'intervention-957574e15c56cabb4812af85'."
+   }
+  }
+ ]
+}

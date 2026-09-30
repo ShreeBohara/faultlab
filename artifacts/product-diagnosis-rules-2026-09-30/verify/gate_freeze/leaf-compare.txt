@@ -1,0 +1,19 @@
+leaf values compared: 124 changed: 8
+  CHANGED /files/backend/app/agents/mechanic.py
+  CHANGED /fingerprints/algorithm_hash
+  CHANGED /fingerprints/runtime_hash
+  CHANGED /fingerprints/source_hash
+  CHANGED /fingerprints/tree_lab
+  CHANGED /functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256
+  CHANGED /functions/backend/app/agents/mechanic.py::Mechanic/lines
+  CHANGED /functions/backend/app/agents/mechanic.py::Mechanic/text_sha256
+   same /files/backend/app/referee/checks.py
+   same /fingerprints/scorer_hash
+   same /fingerprints/tree_referee
+   same /functions/backend/app/referee/checks.py::score/ast_sha256
+   same /functions/backend/app/referee/checks.py::score/lines
+   same /functions/backend/app/referee/checks.py::score/text_sha256
+   same /functions/backend/app/referee/checks.py::scorer_hash/ast_sha256
+   same /functions/backend/app/referee/checks.py::scorer_hash/lines
+   same /functions/backend/app/referee/checks.py::scorer_hash/text_sha256
+fixer after.json leaves: 124 differ from verifier current: []

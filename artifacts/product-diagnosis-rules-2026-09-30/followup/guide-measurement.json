@@ -1,0 +1,46 @@
+{
+ "checks_note": "Each episode's checks row gives the fixed checks by check_id and category; the checks field gives each check's public meaning. Explain each failed check from its own meaning.",
+ "checks_note_equals_draft_minus_c6_sentence": true,
+ "block_equals_draft_block_minus_c6_sentence": true,
+ "declaration_hash": "def60594d4677b89c2450079896a3f8c0433f50dbbc51693beeb934b5130c789",
+ "declaration_sha256_canonical": "def60594d4677b89c2450079896a3f8c0433f50dbbc51693beeb934b5130c789",
+ "block_sha256_canonical": "dedf43f2d162296a2af114f90264aeaa6825ab609d7ba8a5be3388952c66b51c",
+ "offered": false,
+ "rows": [
+  {
+   "request": "v2d-dev5",
+   "first_turn_tokens": 8990,
+   "with_guide": 9598,
+   "guide_delta": 608,
+   "prototype_delta": 631
+  },
+  {
+   "request": "v2e-dev5",
+   "first_turn_tokens": 9088,
+   "with_guide": 9696,
+   "guide_delta": 608,
+   "prototype_delta": 631
+  },
+  {
+   "request": "v2f-dev5",
+   "first_turn_tokens": 9639,
+   "with_guide": 10247,
+   "guide_delta": 608,
+   "prototype_delta": 631
+  },
+  {
+   "request": "v2g-dev5",
+   "first_turn_tokens": 9794,
+   "with_guide": 10402,
+   "guide_delta": 608,
+   "prototype_delta": 631
+  },
+  {
+   "request": "v2g-dev6",
+   "first_turn_tokens": 9352,
+   "with_guide": 9960,
+   "guide_delta": 608,
+   "prototype_delta": 631
+  }
+ ]
+}

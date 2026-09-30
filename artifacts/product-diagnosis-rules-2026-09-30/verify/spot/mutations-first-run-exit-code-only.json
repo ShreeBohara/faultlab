@@ -1,0 +1,230 @@
+[
+ {
+  "mutation": "UNMUTATED backend",
+  "exit": 1,
+  "summary": "10 failed, 87 passed in 16.20s",
+  "seconds": 16.9
+ },
+ {
+  "mutation": "UNMUTATED frontend",
+  "exit": 0,
+  "summary": "Tests  5 passed (5)",
+  "seconds": 1.3
+ },
+ {
+  "mutation": "B1 repair turn under-counts the answer length by one",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "17 failed, 80 passed in 16.08s",
+  "seconds": 16.8,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2g-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2f-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_600_character_limit_is_unchanged_and_text_is_never_shortened[True]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_output-INVALID_OUTPUT-code_default-2]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_then_valid-VALID_REQUESTED-model-2]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2"
+  ]
+ },
+ {
+  "mutation": "B2 the declared repair turn drops the appended sentence",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "15 failed, 82 passed in 16.05s",
+  "seconds": 16.6,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2g-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2f-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_the_declarations_are_exact",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed"
+  ]
+ },
+ {
+  "mutation": "B3 the rule-off Mechanic also sends the limit fields (flag-off bytes change)",
+  "file": "backend/app/agents/mechanic.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "13 failed, 84 passed in 16.13s",
+  "seconds": 16.7,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T2_flag_off_sends_the_saved_bytes_and_flag_on_changes_only_the_repair_turn[v2f-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T2_flag_off_sends_the_saved_bytes_and_flag_on_changes_only_the_repair_turn[v2g-dev5]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T4_the_600_character_limit_is_unchanged_and_text_is_never_shortened[False]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed"
+  ]
+ },
+ {
+  "mutation": "B4 run options offer the guide although it is not offered",
+  "file": "backend/app/lab/run_plans.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.14s",
+  "seconds": 16.8,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "B5 a code-default kind is recorded as the model's",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "12 failed, 85 passed in 16.28s",
+  "seconds": 16.9,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_output-INVALID_OUTPUT-code_default-2]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour"
+  ]
+ },
+ {
+  "mutation": "B6 early_end is never recorded",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "16 failed, 81 passed in 16.21s",
+  "seconds": 16.8,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-PREFLIGHT_REJECTED]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-PREFLIGHT_REJECTED]",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one"
+  ]
+ },
+ {
+  "mutation": "B7 Start no longer compares a declared Rule 1 with the installed one",
+  "file": "backend/app/lab/run_plans.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.10s",
+  "seconds": 16.8,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "B8 the export embeds only the last attempt",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.01s",
+  "seconds": 16.6,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "P1 the probe premise also counts CONTROL rows only the person flagged",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.28s",
+  "seconds": 17.0,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "P2 the probe accepts a used output folder",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.35s",
+  "seconds": 16.9,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "P3 the probe sends before it charges the ledger",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "12 failed, 85 passed in 16.44s",
+  "seconds": 17.2,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "P4 the P4 decision counts an over-600 answer as within the limit",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "caught": true,
+  "summary": "10 failed, 87 passed in 16.41s",
+  "seconds": 17.1,
+  "restored": true,
+  "failing_tests": [
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide"
+  ]
+ },
+ {
+  "mutation": "F1 the frontend accepts a Rule 1 declaration that says the first turn changed",
+  "file": "frontend/src/loopLimits.ts",
+  "exit": 1,
+  "caught": true,
+  "summary": "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+  "seconds": 1.3,
+  "restored": true,
+  "failing_tests": [
+   " FAIL  tests/diagnosis-rules.test.tsx > accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else"
+  ]
+ }
+]

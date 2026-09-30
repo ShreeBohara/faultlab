@@ -1,0 +1,209 @@
+{
+ "passed": 40,
+ "total": 40,
+ "failed": [],
+ "checks": [
+  [
+   "plan: 140 calls, $6.9776 max, cap $8",
+   true,
+   "{'path': 'app.providers.runtime.RuntimeProvider + app.lab.budgets.CampaignLedger (admitted before sending)', 'per_call_dollar_upper_bound': 0.04984, 'planned_calls': 140, 'max_charge_dollars': 6.9776, 'hard_spend_cap_dollars': 8.0, 'tighter_bound_dollars': 2.903906, 'retry_rule': 'app.agents.transport_retry v1: at most one blind retry per call, only after a connection error, a timeout or HTTP 503,"
+  ],
+  [
+   "plan: temperature 0 frozen from the saved plan",
+   true,
+   ""
+  ],
+  [
+   "plan: guide not offered in the plan record",
+   true,
+   ""
+  ],
+  [
+   "template: carries exactly PRE_REGISTERED_OUTCOMES incl. repeats and decision rule",
+   true,
+   ""
+  ],
+  [
+   "template: P4 defines worse; P1 counts person-only GUIDE rows",
+   true,
+   ""
+  ],
+  [
+   "template: preconditions include clock_drift_checked, all False",
+   true,
+   ""
+  ],
+  [
+   "refused: no declaration",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: wrong sha256",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: empty approver",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: clock drift not checked",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: clock drift missing",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: temperature 0.7",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: temperature False (a bool, not a number)",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: empty repeats_reading",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: altered P4 text",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: outcomes missing decision rule",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: $9 cap",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: other plan hash",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: other out folder",
+   true,
+   "rc=2 sentinel=0"
+  ],
+  [
+   "refused: used output folder",
+   true,
+   "rc=2"
+  ],
+  [
+   "scripted: completed, 140 calls sent, provider closed",
+   true,
+   "COMPLETED"
+  ],
+  [
+   "scripted: ledger charged 140 calls, $6.9776",
+   true,
+   "{'charged_calls': 140, 'charged_dollar_upper_bound': 6.9776, 'measured_input_tokens': 140000, 'measured_output_tokens': 7000}"
+  ],
+  [
+   "scripted: manifest project-ledger note",
+   true,
+   "Add ledger.charged_dollar_upper_bound (the conservative figure) and estimated_actual_dollars_from_reported_tokens to the project ledger's carried total; the probe's own ledger (probe-ledger.sqlite3) is in no product campaign ledger or dashboard total."
+  ],
+  [
+   "scripted: answers.jsonl has model_id, no served_model",
+   true,
+   ""
+  ],
+  [
+   "scripted: review file columns exactly REVIEW_COLUMNS, no arm/checker/hint column",
+   true,
+   "['blinded_id', 'request', 'hypothesis', 'human_blames_citations_labels_or_evidence_ids', 'human_c3_confirmation_after_failed', 'human_c5_report_inconsistency', 'human_dev6_names_c4', 'human_dev6_blames_o3']"
+  ],
+  [
+   "scripted: review file has the 100 delivered first-turn rows",
+   true,
+   ""
+  ],
+  [
+   "scripted: repeats 14 of 14 keys one distinct answer, temperature 0",
+   true,
+   "14"
+  ],
+  [
+   "scripted: P1 pending a person, P4 PASS (all valid, short)",
+   true,
+   "('PENDING_HUMAN_CONFIRMATION', 'PASS')"
+  ],
+  [
+   "scripted: only the named files (plus the ledger's SQLite side files) under --out",
+   true,
+   "{'answers.jsonl': 104370, 'manifest.json': 1168, 'plan.json': 30334, 'probe-ledger.sqlite3': 53248, 'probe-ledger.sqlite3-shm': 32768, 'probe-ledger.sqlite3-wal': 0, 'requests.json': 488881, 'review-blinded.csv': 10083, 'review-key.json': 8445, 'scoring.json': 155115}"
+  ],
+  [
+   "model id differs: STOPPED after 3 answers",
+   true,
+   "(1, 'STOPPED', 'MODEL_ID_DIFFERS', 3)"
+  ],
+  [
+   "P1: GUIDE 2 confirmed + 3 person-only = 5 -> FAIL",
+   true,
+   "FAIL"
+  ],
+  [
+   "P1: GUIDE 2 confirmed + 2 person-only = 4 -> PASS",
+   true,
+   "PASS"
+  ],
+  [
+   "P1: GUIDE 10 checker matches the person denies -> PASS",
+   true,
+   "PASS"
+  ],
+  [
+   "P1: CONTROL 19 confirmed -> UNINFORMATIVE",
+   true,
+   "UNINFORMATIVE"
+  ],
+  [
+   "P1: CONTROL person-only Y does not lift the premise -> UNINFORMATIVE",
+   true,
+   "UNINFORMATIVE"
+  ],
+  [
+   "P1: one GUIDE row not reviewed -> PENDING",
+   true,
+   "PENDING_HUMAN_CONFIRMATION"
+  ],
+  [
+   "P4: 18 vs 20 -> PASS but worse in total",
+   true,
+   "PASS"
+  ],
+  [
+   "P4: 20 vs 20 -> PASS, not worse",
+   true,
+   ""
+  ],
+  [
+   "P4: 8 of 10 on one setup -> FAIL (bar is 9 of 10 on EACH setup), not worse than today (18 vs 10)",
+   true,
+   "FAIL"
+  ],
+  [
+   "scratch folder deleted",
+   true,
+   ""
+  ]
+ ],
+ "sentinel_provider_builds": 0,
+ "harness_printed_tail": "REFUSED: --execute-live needs --declaration FILE and --declaration-sha256 HEX\nREFUSED: The declaration's sha256 differs from --declaration-sha256\nREFUSED: The declaration names no approver\nREFUSED: The declaration does not confirm the preconditions (ledger checked, dashboard closed, no other paid run, clock drift checked)\nREFUSED: The declaration does not confirm the preconditions (ledger checked, dashboard closed, no other paid run, clock drift checked)\nREFUSED: The declaration must name the temperature the harness sends (0, frozen from the saved plan)\nREFUSED: The declaration must name the temperature the harness sends (0, frozen from the saved plan)\nREFUSED: The declaration does not say how repeated answers will be read (sampling.repeats_reading)\nREFUSED: The declaration does not state exactly this harness's pre-registered outcomes P1-P4, the repeats report and the decision rule (copy them from the template)\nREFUSED: The declaration does not state exactly this harness's pre-registered outcomes P1-P4, the repeats report and the decision rule (copy them from the template)\nREFUSED: The spend cap must be positive and at most $8.00\nREFUSED: The declaration names another harness, plan or model\nREFUSED: The declaration names another output folder\nREFUSED: The output folder is not empty; a probe run is never repeated into it\n{\n \"status\": \"COMPLETED\",\n \"delivered_answers\": 140,\n \"failed_calls\": 0,\n \"ledger\": {\n  \"charged_calls\": 140,\n  \"charged_dollar_upper_bound\": 6.9776,\n  \"measured_input_tokens\": 140000,\n  \"measured_output_tokens\": 7000\n },\n \"stop_reason\": null\n}\nrepeats: 14 of 14 request keys got one distinct answer (temperature 0); see scoring.json repeats\nAdd ledger.charged_dollar_upper_bound (the conservative figure) and estimated_actual_dollars_from_reported_tokens to the project ledger's carried total; the probe's own ledger (probe-ledger.sqlite3) is in no product campaign ledger or dashboard total.\n{\n \"status\": \"STOPPED\",\n \"delivered_answers\": 3,\n \"failed_calls\": 0,\n \"ledger\": {\n  \"charged_calls\": 3,\n  \"charged_dollar_upper_bound\": 0.14952,\n  \"measured_input_tokens\": 3000,\n  \"measured_output_tokens\": 150\n },\n \"stop_reason\": \"MODEL_ID_DIFFERS\"\n}\nrepeats: 3 of 14 request keys got one distinct answer (temperature 0); see scoring.json repeats\nAdd ledger.charged_dollar_upper_bound (the conservative figure) and estimated_actual_dollars_from_reported_tokens to the project ledger's carried total; the probe's own ledger (probe-ledger.sqlite3) is in no product campaign ledger or dashboard total.\n"
+}

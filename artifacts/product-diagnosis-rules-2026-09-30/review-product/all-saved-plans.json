@@ -1,0 +1,258 @@
+{
+ "stores": [
+  {
+   "all_ok": true,
+   "failures": [],
+   "plans": 0,
+   "sha256_after": "a1e1178150a1630c31367e26c11b8e08ed9f447edd6bd2c6a801fad999b02b85",
+   "sha256_before": "a1e1178150a1630c31367e26c11b8e08ed9f447edd6bd2c6a801fad999b02b85",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-a301846e8722418eaafc71923c6e1819",
+     "declares_a_rule": false,
+     "mode": "learn",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 1,
+   "sha256_after": "ba248906547c84dded687505f4b690d7b2ea0e804b138d9dd5b7f278011201c3",
+   "sha256_before": "ba248906547c84dded687505f4b690d7b2ea0e804b138d9dd5b7f278011201c3",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-28/discovery-v2/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "smolagents",
+     "campaign_id": "campaign-e5b0165883ee4dcfab262e1c8f3d595b",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 1,
+   "sha256_after": "58fa14af6b6b98a83ebf245fdfc104b116d43cf3ee613ae62c5c152012a2d28b",
+   "sha256_before": "58fa14af6b6b98a83ebf245fdfc104b116d43cf3ee613ae62c5c152012a2d28b",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-17d60a9e97524a4a94858b14eabe8279",
+     "declares_a_rule": false,
+     "mode": "learn",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 1,
+   "sha256_after": "5f6634d186856cc89730451291b017edd0c1eef4c9773e4671a7f80f1a7dc85e",
+   "sha256_before": "5f6634d186856cc89730451291b017edd0c1eef4c9773e4671a7f80f1a7dc85e",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-29/discovery-v2b/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "smolagents",
+     "campaign_id": "campaign-7ee35abedd204d2895b180bbd75e66dc",
+     "declares_a_rule": false,
+     "mode": "learn",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 1,
+   "sha256_after": "13079c35f41a8299b7783f604305460e9ae8b595f50679960607d1bd8aab567f",
+   "sha256_before": "13079c35f41a8299b7783f604305460e9ae8b595f50679960607d1bd8aab567f",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "smolagents",
+     "campaign_id": "campaign-aaceaf2fa0554540adb1008d286e2f7d",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "smolagents",
+     "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+     "declares_a_rule": false,
+     "mode": "learn",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 2,
+   "sha256_after": "e1b43edcf29b98bdf6981d4359ca259c678c9cc76d8536982471f8ba369ef753",
+   "sha256_before": "e1b43edcf29b98bdf6981d4359ca259c678c9cc76d8536982471f8ba369ef753",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": true,
+   "failures": [],
+   "plans": 2,
+   "sha256_after": "5ccb18426775a7a3feceb1b3cc5b72044d01e7c0734faa6fee76bbcab7465ccb",
+   "sha256_before": "5ccb18426775a7a3feceb1b3cc5b72044d01e7c0734faa6fee76bbcab7465ccb",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": true,
+   "failures": [],
+   "plans": 6,
+   "sha256_after": "8aa9aa273a8a508e96a9c822b3f9fcb640c77e0259da43fea73b0ac4512d4fcb",
+   "sha256_before": "8aa9aa273a8a508e96a9c822b3f9fcb640c77e0259da43fea73b0ac4512d4fcb",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": true,
+   "failures": [],
+   "plans": 0,
+   "sha256_after": "469d6f6fbd4c1237dd4b433e1d8a3511bb5d22e747e5a96d01cb4118730a755e",
+   "sha256_before": "469d6f6fbd4c1237dd4b433e1d8a3511bb5d22e747e5a96d01cb4118730a755e",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-27/product-durability/offline-01/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-85a1e48f1b7d4392bdd5e3d5876374bd",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 1,
+   "sha256_after": "884a6ea673e02a945f43d044414d851ffbdde75dd0dde946b9153ae0bbdcbd85",
+   "sha256_before": "884a6ea673e02a945f43d044414d851ffbdde75dd0dde946b9153ae0bbdcbd85",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  },
+  {
+   "all_ok": false,
+   "failures": [
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-d91beb8a7fb0446eb260fe00db610f33",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-2b87959635fb472c8a2d3539dacf6c11",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-8e44ece2c1804fd18452a5f84278e12c",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-e13e71a70847486f9b4aee621a144f9f",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-34b2eed890d643009e28edec9e45521e",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    },
+    {
+     "agent": "reference",
+     "campaign_id": "campaign-6aa3bbf0b989496e928be0ffd45ae717",
+     "declares_a_rule": false,
+     "mode": "baseline",
+     "plan_hash_ok": true,
+     "reads_byte_for_byte": false,
+     "recording_identical_old_vs_new": true,
+     "reserializes": false
+    }
+   ],
+   "plans": 6,
+   "sha256_after": "dcb4021a71b20312bbae3f5d266f1009bd768cb3233c0621f155f7d122f6a548",
+   "sha256_before": "dcb4021a71b20312bbae3f5d266f1009bd768cb3233c0621f155f7d122f6a548",
+   "store": "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "unchanged": true,
+   "wal_bytes": 0
+  }
+ ],
+ "summary": {
+  "all_ok": false,
+  "all_unchanged": true,
+  "errors": [],
+  "plans": 21,
+  "stores": 11
+ }
+}

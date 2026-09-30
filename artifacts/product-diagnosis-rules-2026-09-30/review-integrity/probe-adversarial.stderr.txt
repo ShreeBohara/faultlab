@@ -1,0 +1,16 @@
+REFUSED: --execute-live needs --declaration FILE and --declaration-sha256 HEX
+REFUSED: --execute-live needs --out
+REFUSED: The declaration's sha256 differs from --declaration-sha256
+REFUSED: --execute-live needs --declaration FILE and --declaration-sha256 HEX
+REFUSED: The spend cap must be positive and at most $8.00
+REFUSED: 140 planned calls exceed the $6.00 cap at the per-call bound
+REFUSED: The spend cap must be positive and at most $8.00
+REFUSED: The spend cap must be positive and at most $8.00
+REFUSED: The declaration names another harness, plan or model
+REFUSED: The declaration names another harness, plan or model
+REFUSED: The declaration names another harness, plan or model
+REFUSED: The declaration names no approver
+REFUSED: The declaration does not confirm the preconditions (ledger checked, dashboard closed, no other paid run)
+REFUSED: The declaration does not state the pre-registered outcomes P1-P4 and the decision rule
+REFUSED: The declaration names another output folder
+REFUSED: The output folder is not empty; a probe run is never repeated into it

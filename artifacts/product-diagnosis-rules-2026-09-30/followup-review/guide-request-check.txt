@@ -1,0 +1,18 @@
+product declaration content_hash: def60594d4677b89c2450079896a3f8c0433f50dbbc51693beeb934b5130c789
+product block sha256 (canonical_json of block(task)): dedf43f2d162296a2af114f90264aeaa6825ab609d7ba8a5be3388952c66b51c
+DIAGNOSIS_GUIDE_OFFERED: False | interprets_checks: False
+v2d-dev5/CONTROL has diagnosis_guide: False
+v2d-dev5/GUIDE checks_note == CHECKS_NOTE: True | C6 sentence present: False | block == product block(task): True
+v2e-dev5/CONTROL has diagnosis_guide: False
+v2e-dev5/GUIDE checks_note == CHECKS_NOTE: True | C6 sentence present: False | block == product block(task): True
+v2f-dev5/CONTROL has diagnosis_guide: False
+v2f-dev5/GUIDE checks_note == CHECKS_NOTE: True | C6 sentence present: False | block == product block(task): True
+v2f-dev5/REPAIR_RULE1 has diagnosis_guide: False
+v2f-dev5/REPAIR_TODAY has diagnosis_guide: False
+v2g-dev5/CONTROL has diagnosis_guide: False
+v2g-dev5/GUIDE checks_note == CHECKS_NOTE: True | C6 sentence present: False | block == product block(task): True
+v2g-dev5/REPAIR_RULE1 has diagnosis_guide: False
+v2g-dev5/REPAIR_TODAY has diagnosis_guide: False
+v2g-dev6/CONTROL has diagnosis_guide: False
+v2g-dev6/GUIDE checks_note == CHECKS_NOTE: True | C6 sentence present: False | block == product block(task): True
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0

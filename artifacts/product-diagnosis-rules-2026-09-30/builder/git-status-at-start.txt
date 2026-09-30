@@ -1,0 +1,338 @@
+ M .env.example
+ M AGENTS.md
+ M CONTINUE_HERE.md
+ M README.md
+ M backend/app/__init__.py
+ M backend/app/adapters/business_tools.py
+ M backend/app/adapters/decorator.py
+ M backend/app/adapters/prototype.py
+ M backend/app/agents/actor.py
+ M backend/app/agents/explorer.py
+ M backend/app/agents/mechanic.py
+ M backend/app/agents/prompts/explorer.md
+ M backend/app/agents/prompts/mechanic.md
+ M backend/app/cli/client.py
+ M backend/app/cli/freeze.py
+ M backend/app/cli/regressions.py
+ M backend/app/cli/sponsors.py
+ M backend/app/cli/studies.py
+ M backend/app/config.py
+ M backend/app/contracts/models.py
+ M backend/app/contracts/tokens.py
+ M backend/app/integrations/external_agent.py
+ M backend/app/integrations/portability.py
+ M backend/app/integrations/registry.py
+ M backend/app/integrations/regression_runner.py
+ M backend/app/lab/api.py
+ M backend/app/lab/audit.py
+ M backend/app/lab/baseline_study.py
+ M backend/app/lab/budgets.py
+ M backend/app/lab/challenge.py
+ M backend/app/lab/configuration.py
+ M backend/app/lab/coordinator.py
+ M backend/app/lab/diagnosis.py
+ M backend/app/lab/evaluation.py
+ M backend/app/lab/evidence.py
+ M backend/app/lab/learning.py
+ M backend/app/lab/policies.py
+ M backend/app/lab/policy_interpreter.py
+ M backend/app/lab/portability.py
+ M backend/app/lab/promotion.py
+ M backend/app/lab/provider_failures.py
+ M backend/app/lab/regression_executions.py
+ M backend/app/lab/regressions.py
+ M backend/app/lab/reproduction.py
+ M backend/app/lab/runner.py
+ M backend/app/lab/search_benchmark.py
+ M backend/app/lab/storage.py
+ M backend/app/lab/tracing.py
+ M backend/app/main.py
+ M backend/app/providers/runtime.py
+ M backend/app/simulator/control.py
+ M backend/app/telemetry/safety.py
+ M backend/app/telemetry/tracing.py
+ M backend/app/telemetry/worker.py
+ M backend/tests/adapters/test_prototype_contract.py
+ M backend/tests/agents/test_prompt_evidence.py
+ M backend/tests/agents/test_roles.py
+ M backend/tests/conftest.py
+ M backend/tests/integration/test_freeze_cli.py
+ M backend/tests/integrations/test_agent_contract.py
+ M backend/tests/integrations/test_portability.py
+ M backend/tests/integrations/test_regression_runner.py
+ M backend/tests/lab/test_baseline_study.py
+ M backend/tests/lab/test_budgets.py
+ M backend/tests/lab/test_convergence.py
+ M backend/tests/lab/test_counterexample_loop.py
+ M backend/tests/lab/test_diagnosis_context.py
+ M backend/tests/lab/test_evidence.py
+ M backend/tests/lab/test_runner.py
+ M backend/tests/lab/test_storage.py
+ M backend/tests/providers/test_runtime.py
+ M backend/tests/referee/test_invariants.py
+ M backend/tests/simulator/conftest.py
+ M backend/tests/simulator/test_faults_http.py
+ M backend/tests/telemetry/test_lifecycle.py
+ M backend/tests/test_config.py
+ M contracts/Episode.schema.json
+ M contracts/EvaluationBatch.schema.json
+ M contracts/Provenance.schema.json
+ M contracts/RegressionBundle.schema.json
+ M contracts/RegressionCase.schema.json
+ M contracts/TrialResult.schema.json
+ M contracts/manifest.json
+ M contracts/wire-types.ts
+ M docs/AGENT_HANDOFF_2026-09-13.md
+ M docs/HANDOFF_CLAUDE_2026-09-13.md
+ M docs/external-agent-setup.md
+ M docs/limitations.md
+ M docs/regression-runner.md
+ M docs/setup.md
+ M docs/user-guide.md
+ M frontend/src/api.ts
+ M frontend/src/components/AriaEvidenceForm.tsx
+ M frontend/src/components/ChallengePanel.tsx
+ M frontend/src/components/CounterexamplePanel.tsx
+ M frontend/src/components/DiagnosticPanel.tsx
+ M frontend/src/components/EvidenceScreen.tsx
+ M frontend/src/components/OutcomeMatrix.tsx
+ M frontend/src/components/PolicyPanel.tsx
+ M frontend/src/components/RegressionControls.tsx
+ M frontend/src/components/RunControls.tsx
+ M frontend/src/components/RunSummary.tsx
+ M frontend/src/components/SponsorEvidence.tsx
+ M frontend/src/components/common.tsx
+ M frontend/src/experiments.ts
+ M frontend/src/styles.css
+ M frontend/src/useResource.ts
+ M frontend/tests/api-contract.test.ts
+ M frontend/tests/evidence-screen.browser.ts
+ M frontend/tests/evidence-screen.test.ts
+ M frontend/tests/fixtures.ts
+ M frontend/tests/playwright.config.ts
+ M frontend/tests/polling.test.ts
+ M frontend/tsconfig.json
+ M frontend/vite.config.ts
+ M scripts/capture-dashboard.mjs
+ M scripts/start-backend.sh
+ M scripts/start-live-backend.sh
+ M scripts/start-simulator.sh
+ M scripts/test.sh
+?? .github/
+?? CLAUDE.md
+?? CURRENT_STATUS.md
+?? NEW_CHAT_PROMPT.md
+?? backend/app/agents/progress.py
+?? backend/app/agents/prompts/challenger_candidate_reach_v2.md
+?? backend/app/agents/prompts/completion.md
+?? backend/app/agents/prompts/explorer_discovery_v2.md
+?? backend/app/agents/prompts/explorer_discovery_v3_history.md
+?? backend/app/agents/prompts/explorer_discovery_v4_history_replay.md
+?? backend/app/agents/transport_retry.py
+?? backend/app/cli/stores.py
+?? backend/app/contracts/task_text.py
+?? backend/app/integrations/external_agent_v2.py
+?? backend/app/lab/agent_history.py
+?? backend/app/lab/bundle_imports.py
+?? backend/app/lab/citation_status.py
+?? backend/app/lab/completion_study.py
+?? backend/app/lab/context_study.py
+?? backend/app/lab/dashboard.py
+?? backend/app/lab/discovery_protocol.py
+?? backend/app/lab/evidence_wait.py
+?? backend/app/lab/exports.py
+?? backend/app/lab/fireability.py
+?? backend/app/lab/heldout_check.py
+?? backend/app/lab/history_replay.py
+?? backend/app/lab/loop_limits.py
+?? backend/app/lab/operator_actions.py
+?? backend/app/lab/ownership.py
+?? backend/app/lab/policy_status.py
+?? backend/app/lab/reachability.py
+?? backend/app/lab/readiness.py
+?? backend/app/lab/run_plans.py
+?? backend/app/local.py
+?? backend/app/ports.py
+?? backend/tests/adapters/test_connect_freeze.py
+?? backend/tests/agents/test_actor_citation_boundary.py
+?? backend/tests/agents/test_actor_final_report.py
+?? backend/tests/agents/test_actor_outputs.py
+?? backend/tests/agents/test_actor_progress.py
+?? backend/tests/agents/test_actor_service_retry.py
+?? backend/tests/agents/test_explorer_discovery_v2.py
+?? backend/tests/agents/test_explorer_search.py
+?? backend/tests/agents/test_lab_backoff_review_fixes.py
+?? backend/tests/agents/test_lab_role_backoff.py
+?? backend/tests/agents/test_report_hook_closure.py
+?? backend/tests/agents/test_role_transport_retry.py
+?? backend/tests/contracts/test_task_text.py
+?? backend/tests/experiments/
+?? backend/tests/fixtures/
+?? backend/tests/integration/test_archive_and_read_isolation.py
+?? backend/tests/integration/test_campaign_history.py
+?? backend/tests/integration/test_cli_operator_api.py
+?? backend/tests/integration/test_cli_store_ownership.py
+?? backend/tests/integration/test_native_adapter_v2_api.py
+?? backend/tests/integration/test_reachability_faithfulness.py
+?? backend/tests/integration/test_readiness.py
+?? backend/tests/integration/test_repeatability_plan.py
+?? backend/tests/integration/test_run_plan_api.py
+?? backend/tests/integrations/test_native_adapter_v1_golden.py
+?? backend/tests/integrations/test_native_adapter_v2.py
+?? backend/tests/integrations/test_native_dotenv_isolation.py
+?? backend/tests/integrations/test_smolagents_import_boundary.py
+?? backend/tests/lab/citation_status_saved.py
+?? backend/tests/lab/original_loop_fixture.py
+?? backend/tests/lab/test_actor_context_selection.py
+?? backend/tests/lab/test_agent_history.py
+?? backend/tests/lab/test_auxiliary_recovery.py
+?? backend/tests/lab/test_bundle_import_boundaries.py
+?? backend/tests/lab/test_bundle_import_review_fixes.py
+?? backend/tests/lab/test_bundle_imports.py
+?? backend/tests/lab/test_campaign_transport_retry.py
+?? backend/tests/lab/test_citation_status.py
+?? backend/tests/lab/test_completion_evidence_reread.py
+?? backend/tests/lab/test_completion_manifests.py
+?? backend/tests/lab/test_completion_study.py
+?? backend/tests/lab/test_configuration.py
+?? backend/tests/lab/test_context_study.py
+?? backend/tests/lab/test_coordinator_stop.py
+?? backend/tests/lab/test_dashboard_reads.py
+?? backend/tests/lab/test_discovery_search_flow.py
+?? backend/tests/lab/test_discovery_v2_flow.py
+?? backend/tests/lab/test_discovery_v3_baseline_history.py
+?? backend/tests/lab/test_discovery_v3_flow.py
+?? backend/tests/lab/test_discovery_v4_replay.py
+?? backend/tests/lab/test_discovery_v4_review_fixes.py
+?? backend/tests/lab/test_evidence_retry_v3.py
+?? backend/tests/lab/test_evidence_wait.py
+?? backend/tests/lab/test_execution_lifecycle.py
+?? backend/tests/lab/test_heldout_check.py
+?? backend/tests/lab/test_heldout_world_integrity.py
+?? backend/tests/lab/test_history_fireability.py
+?? backend/tests/lab/test_history_fireability_review_fixes.py
+?? backend/tests/lab/test_incident_exports.py
+?? backend/tests/lab/test_lab_backoff_campaign.py
+?? backend/tests/lab/test_learning_qualification.py
+?? backend/tests/lab/test_loop_limits_challenge_reach.py
+?? backend/tests/lab/test_loop_limits_mechanic_context.py
+?? backend/tests/lab/test_loop_limits_plans.py
+?? backend/tests/lab/test_native_adapter_v2_product.py
+?? backend/tests/lab/test_native_baseline_study_planned.py
+?? backend/tests/lab/test_native_provider_integrity.py
+?? backend/tests/lab/test_native_transport_retry.py
+?? backend/tests/lab/test_native_v2_label_views.py
+?? backend/tests/lab/test_original_loop_integration.py
+?? backend/tests/lab/test_ownership.py
+?? backend/tests/lab/test_planned_agent_execution.py
+?? backend/tests/lab/test_policy_status.py
+?? backend/tests/lab/test_portability_independence.py
+?? backend/tests/lab/test_reachability.py
+?? backend/tests/lab/test_retained_candidate_failures.py
+?? backend/tests/lab/test_run_plans.py
+?? backend/tests/lab/test_schedule_identity_v2.py
+?? backend/tests/lab/test_transport_retry_plans.py
+?? backend/tests/providers/test_native_final_answer_contract.py
+?? backend/tests/simulator/test_entry_point.py
+?? backend/tests/telemetry/test_report_deadline.py
+?? backend/tests/telemetry/test_sdk_error_reporting.py
+?? backend/tests/test_env_guard.py
+?? backend/tests/test_local.py
+?? backend/tests/test_local_ports.py
+?? backend/tests/world/audit/
+?? backend/tests/world/test_clock_integrity.py
+?? docs/DISCOVERY_V2_2026-09-28.md
+?? docs/DISCOVERY_V3_HISTORY_2026-09-29.md
+?? docs/DISCOVERY_V4_HISTORY_REPLAY_2026-09-30.md
+?? docs/PRODUCT_CORE_REVIEW_2026-09-27.md
+?? docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-28.md
+?? docs/PRODUCT_DISCOVERY_V2_RUN_2026-09-29.md
+?? docs/PRODUCT_DURABILITY_REVIEW_2026-09-27.md
+?? docs/PRODUCT_HISTORY_FIREABILITY_2026-09-30.md
+?? docs/PRODUCT_IMPORT_REVIEW_2026-09-27.md
+?? docs/PRODUCT_LOOP_LIMITS_2026-09-30.md
+?? docs/PRODUCT_LOOP_RESULTS_2026-09-27.md
+?? docs/PRODUCT_LOOP_RUN_2026-09-27.md
+?? docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md
+?? docs/PRODUCT_NATIVE_LEARN_RUN_2026-09-29.md
+?? docs/PRODUCT_NATIVE_LEARN_V3_RUN_2026-09-29.md
+?? docs/PRODUCT_NATIVE_PROBE_2026-09-28.md
+?? docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md
+?? docs/PRODUCT_ONBOARDING_REVIEW_2026-09-27.md
+?? docs/PRODUCT_TRANSPORT_RETRY_2026-09-29.md
+?? docs/local-operation.md
+?? docs/offline-ci.md
+?? docs/part2/
+?? frontend/local-ports.ts
+?? frontend/src/bundleImports.ts
+?? frontend/src/completion.ts
+?? frontend/src/components/BundleImports.tsx
+?? frontend/src/components/CampaignHistory.tsx
+?? frontend/src/components/CampaignPlan.tsx
+?? frontend/src/components/CompletionStudyPanel.tsx
+?? frontend/src/components/ContextStudyPanel.tsx
+?? frontend/src/components/DiscoveryProtocol.tsx
+?? frontend/src/components/EvidenceWaitNotice.tsx
+?? frontend/src/components/ImportedTrialEvidence.tsx
+?? frontend/src/components/LoopLimits.tsx
+?? frontend/src/components/PolicyStatusPanel.tsx
+?? frontend/src/components/PromotionComparison.tsx
+?? frontend/src/components/RecordingDownload.tsx
+?? frontend/src/components/RegressionExecutionHistory.tsx
+?? frontend/src/components/RunReadiness.tsx
+?? frontend/src/components/RunSetup.tsx
+?? frontend/src/components/SearchAttemptsPanel.tsx
+?? frontend/src/components/TaskText.tsx
+?? frontend/src/contextStudy.ts
+?? frontend/src/evidenceWait.ts
+?? frontend/src/historyFireability.ts
+?? frontend/src/loopLimits.ts
+?? frontend/src/policyStatus.ts
+?? frontend/src/runPlans.ts
+?? frontend/src/searchAttempts.ts
+?? frontend/src/taskText.ts
+?? frontend/src/useImportHistory.ts
+?? frontend/tests/browser-isolation.ts
+?? frontend/tests/bundle-imports.test.tsx
+?? frontend/tests/campaign-history.test.tsx
+?? frontend/tests/citation-status.test.tsx
+?? frontend/tests/completion-study.test.tsx
+?? frontend/tests/context-study.test.tsx
+?? frontend/tests/dashboard-reliability.test.ts
+?? frontend/tests/discovery-v2.test.tsx
+?? frontend/tests/discovery-v3.browser.ts
+?? frontend/tests/discovery-v3.test.tsx
+?? frontend/tests/discovery-v4.browser.ts
+?? frontend/tests/discovery-v4.test.tsx
+?? frontend/tests/evidence-wait.browser.ts
+?? frontend/tests/evidence-wait.test.tsx
+?? frontend/tests/fixtures/
+?? frontend/tests/history-fireability-fixes.test.tsx
+?? frontend/tests/history-fireability.test.tsx
+?? frontend/tests/import-fixtures.ts
+?? frontend/tests/imports.browser.ts
+?? frontend/tests/local-ports.test.ts
+?? frontend/tests/loop-limits.browser.ts
+?? frontend/tests/loop-limits.test.tsx
+?? frontend/tests/native-adapter-v2.test.tsx
+?? frontend/tests/network-isolation.browser.ts
+?? frontend/tests/onboarding.browser.ts
+?? frontend/tests/outcome-matrix.test.ts
+?? frontend/tests/policy-status.test.tsx
+?? frontend/tests/promotion-comparison.test.tsx
+?? frontend/tests/regression-controls.test.ts
+?? frontend/tests/run-fixtures.ts
+?? frontend/tests/run-plans.test.ts
+?? frontend/tests/run-readiness.test.tsx
+?? frontend/tests/search-attempts.test.tsx
+?? frontend/tests/task-text.test.tsx
+?? frontend/tests/transport-backoff.test.tsx
+?? frontend/tests/transport-retry.test.tsx
+?? memory/
+?? scripts/experiments/
+?? scripts/lib/
+?? scripts/run-completion-study.sh
+?? scripts/run-context-study.sh
+?? scripts/start-local.sh
+?? scripts/tests/
+?? taskpacks/

@@ -1,0 +1,473 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/backend
+configfile: pytest.ini
+plugins: langsmith-0.12.4, anyio-4.15.1
+collected 97 items
+
+tests/lab/test_diagnosis_rules.py ...................................... [ 39%]
+...........F.FFFFF.F.......                                              [ 67%]
+tests/lab/test_diagnosis_rules_loop.py ..FFF                             [ 72%]
+tests/experiments/test_diagnosis_probe.py ...........................    [100%]
+
+=================================== FAILURES ===================================
+____ test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2 ____
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b4c8b30>
+
+    def test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2(owner):
+>       options = build_run_options(owner.settings, owner.store)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:519: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_______________ test_T1_only_learn_plans_may_declare_either_rule _______________
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b094da0>
+
+    def test_T1_only_learn_plans_may_declare_either_rule(owner):
+        registration = register_agent(owner.store, owner.settings, 'reference')
+        for key, value in (('mechanic_diagnosis', diagnosis_protocol.declaration()), ('diagnosis_guide', diagnosis_guide.declaration())):
+>           baseline = prepare_run_plan(owner.store, owner.settings, request(owner, registration, mode='baseline', development_case_id='dev-1'))
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:560: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_ test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b574740>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b746330>
+
+    def test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed(owner, monkeypatch):
+>       campaign = _create_unchecked(owner, monkeypatch, diagnosis_guide=diagnosis_guide.declaration())
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:578: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_diagnosis_rules.py:570: in _create_unchecked
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+______ test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one ______
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b5ce330>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b575010>
+
+    def test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one(owner, monkeypatch):
+        from app.lab import run_plans
+>       campaign = learn_campaign(owner, None, 'reference')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:597: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_ test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b5cf140>
+
+    def test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour(owner):
+        registration = register_agent(owner.store, owner.settings, 'smolagents-v2')
+>       prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration))
+                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:612: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+__ test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide ___
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b4cb3b0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b4c81d0>
+
+    def test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide(owner, monkeypatch):
+        from app.lab import run_plans
+        monkeypatch.setattr(run_plans, 'DIAGNOSIS_GUIDE_OFFERED', True)
+>       assert build_run_options(owner.settings, owner.store)['learn']['diagnosis_guide'] == diagnosis_guide.declaration()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:627: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_ test_T7_the_export_embeds_every_attempt_by_id_only_for_plans_that_declare_rule_1 _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b8eb920>
+
+    def test_T7_the_export_embeds_every_attempt_by_id_only_for_plans_that_declare_rule_1(owner):
+        from app.lab.exports import development_recording
+>       campaign = learn_campaign(owner, None, 'reference')
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules.py:677: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_ test_T8_the_offline_fixture_campaign_follows_the_same_path_with_rule_1_plus_one_record_per_diagnosis _
+
+tmp_path = PosixPath('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/pytest-tmp-deps/test_T8_the_offline_fixture_ca0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b45fb00>
+
+    @pytest.mark.anyio
+    @pytest.mark.localhost_http
+    async def test_T8_the_offline_fixture_campaign_follows_the_same_path_with_rule_1_plus_one_record_per_diagnosis(tmp_path, monkeypatch):
+        from original_loop_fixture import exercise
+        before = await exercise(tmp_path / 'before', 'accepted')
+        declare(monkeypatch, guide=False)
+        import app.lab.coordinator  # noqa: F401  (the loop reads the rule through the patched module attribute)
+        records = []
+        original = diagnosis_protocol.record
+        def keep(store, *args, **kwargs):
+            value = original(store, *args, **kwargs); records.append(value); return value
+        monkeypatch.setattr(diagnosis_protocol, 'record', keep)
+        after = await exercise(tmp_path / 'after', 'accepted')
+        assert _counts(after) == _counts(before)
+>       assert after['campaign']['state'] == 'COMPLETED' and after['episode_counts']['intervention'] == 6
+E       AssertionError: assert ('ERROR' == 'COMPLETED'
+E         
+E         - COMPLETED
+E         + ERROR)
+
+tests/lab/test_diagnosis_rules_loop.py:110: AssertionError
+_ test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[discovery] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10c40ebd0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10be78bf0>
+waiting = 'discovery'
+
+    @pytest.mark.parametrize('waiting', ['discovery', 'intervention'])
+    def test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits(owner, monkeypatch, waiting):
+        """Review finding LOW-4: the two evidence-wait harnesses switch Rule 1 off (their Diagnostician is a double), so Rule 1
+        was never run together with an evidence wait. Here the real coordinator runs a planned Learn campaign (Rule 1 frozen in
+        its plan, evidence retry v3) through _execute with the REAL Diagnostician and the REAL Mechanic's diagnosis request (a
+        scripted provider: a 614-character first answer, then a valid repair). One Weave read fails first, before the diagnosis
+        (a discovery episode) or after it (an intervention episode); the product's automatic retry clears it. The campaign must
+        end NO_CHANGE, not ERROR, with exactly one diagnosis_requests record per diagnostic."""
+        import asyncio
+        import app.lab.learning as learning
+        from app.agents.mechanic import Mechanic as RealMechanic
+        from app.lab.diagnosis import Diagnostician as RealDiagnostician
+        from app.lab.run_plans import read_run_plan
+        from app.providers.runtime import RuntimeGeneration
+        from test_evidence_wait import harness, purpose_is, waits
+        from test_loop_limits_mechanic_context import bundle
+        real_rule = diagnosis_protocol.campaign_rule
+>       campaign, weave, runner, ledger = harness(owner, monkeypatch, purpose_is(waiting, first_only=True), mode='gain')
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules_loop.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_evidence_wait.py:111: in harness
+    campaign = (learn_campaign(owner, DISCOVERY_V1) if planned else
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+_ test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[intervention] _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b2d3890>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c40d040>
+waiting = 'intervention'
+
+    @pytest.mark.parametrize('waiting', ['discovery', 'intervention'])
+    def test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits(owner, monkeypatch, waiting):
+        """Review finding LOW-4: the two evidence-wait harnesses switch Rule 1 off (their Diagnostician is a double), so Rule 1
+        was never run together with an evidence wait. Here the real coordinator runs a planned Learn campaign (Rule 1 frozen in
+        its plan, evidence retry v3) through _execute with the REAL Diagnostician and the REAL Mechanic's diagnosis request (a
+        scripted provider: a 614-character first answer, then a valid repair). One Weave read fails first, before the diagnosis
+        (a discovery episode) or after it (an intervention episode); the product's automatic retry clears it. The campaign must
+        end NO_CHANGE, not ERROR, with exactly one diagnosis_requests record per diagnostic."""
+        import asyncio
+        import app.lab.learning as learning
+        from app.agents.mechanic import Mechanic as RealMechanic
+        from app.lab.diagnosis import Diagnostician as RealDiagnostician
+        from app.lab.run_plans import read_run_plan
+        from app.providers.runtime import RuntimeGeneration
+        from test_evidence_wait import harness, purpose_is, waits[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 11
+
+        from test_loop_limits_mechanic_context import bundle
+        real_rule = diagnosis_protocol.campaign_rule
+>       campaign, weave, runner, ledger = harness(owner, monkeypatch, purpose_is(waiting, first_only=True), mode='gain')
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_diagnosis_rules_loop.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/lab/test_evidence_wait.py:111: in harness
+    campaign = (learn_campaign(owner, DISCOVERY_V1) if planned else
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:55: in learn_campaign
+    prepared = prepare_run_plan(owner.store, owner.settings, request(owner, registration, discovery_protocol=protocol))
+                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/lab/test_discovery_v2_flow.py:46: in request
+    options = build_run_options(owner.settings, owner.store)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/run_plans.py:639: in build_run_options
+    development, comparison = _manifests()
+                              ^^^^^^^^^^^^
+app/lab/run_plans.py:600: in _manifests
+    promotion = load_manifest('promotion')
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/referee/manifests.py:15: in load_manifest
+    value=json.loads(path.read_text())
+                     ^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1027: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../../.pyenv/versions/3.12.8/lib/python3.12/pathlib.py:1013: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+event = 'open'
+args = ('/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json', 'r', 16777216)
+
+    def _hook(event, args):
+        if event == 'open' and args and isinstance(args[0], (str, bytes, os.PathLike)) and _protected(args[0]):
+            REFUSED_OPEN.append(os.fsdecode(args[0]))
+>           raise PermissionError(f'verifier guard: protected path refused: {args[0]!r}')
+E           PermissionError: verifier guard: protected path refused: '/Users/shree/FaultLab_Scratch/verify-diagnosis-rules/tree/audit/promotion.json'
+
+../../../../Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py:30: PermissionError
+=========================== short test summary info ============================
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour
+FAILED tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide
+FAILED tests/lab/test_diagnosis_rules.py::test_T7_the_export_embeds_every_attempt_by_id_only_for_plans_that_declare_rule_1
+FAILED tests/lab/test_diagnosis_rules_loop.py::test_T8_the_offline_fixture_campaign_follows_the_same_path_with_rule_1_plus_one_record_per_diagnosis
+FAILED tests/lab/test_diagnosis_rules_loop.py::test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[discovery]
+FAILED tests/lab/test_diagnosis_rules_loop.py::test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[intervention]
+======================== 10 failed, 87 passed in 16.51s ========================

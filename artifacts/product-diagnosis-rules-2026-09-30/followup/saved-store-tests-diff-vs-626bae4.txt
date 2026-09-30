@@ -1,0 +1,161 @@
+=== diff 626bae4:backend/tests/lab/test_history_fireability.py -> working tree
+--- 626bae4:backend/tests/lab/test_history_fireability.py
++++ backend/tests/lab/test_history_fireability.py
+@@ -10,12 +10,15 @@
+ Records are seeded with the product's shapes (test_agent_history.Seeder); the learning loop and the challenge run with
+ the scripted Explorer and fake Actor runner of test_discovery_v2_flow.py and test_evaluation.py. The saved-store tests
+ read a scratch copy of /Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3 (opened mode=ro&immutable=1 for the
+-copy; the original is never written) and are skipped where it is absent. No provider, W&B, model, simulator port or
+-network call is made; scripted answers are fixture text, not model evidence.
++copy; the original is never written) at a pinned, recorded snapshot (SNAPSHOT_CUTOFF below: the record cutoff live run
++v2g's own plan froze), so later live runs cannot change their expected numbers; they are skipped where the store is
++absent. No provider, W&B, model, simulator port or network call is made; scripted answers are fixture text, not model
++evidence.
+ """
+ import asyncio
+ import json
+ from pathlib import Path
++from unittest import mock
+ 
+ import httpx
+ import pytest
+@@ -516,9 +519,19 @@
+     assert 'explorer_selection_rule' not in development_recording(owner.store, campaign.campaign_id)
+ 
+ 
+-# ---------------------------------------------------------------- the saved native-v2b store (scratch copy)
++# ---------------------------------------------------------------- the saved native-v2b store (scratch copy, pinned snapshot)
+ SAVED = Path('/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3')
+ needs_store = pytest.mark.skipif(not SAVED.exists(), reason='Needs the saved native-v2b store (live runs v2c-v2f); absent on this machine')
++# Live runs keep adding to this store: run v2g, after these tests were written, added 6 verified discovery episodes and 6
++# discovery picks (36 instead of 30 episodes; 14 instead of 8 allowed discovery picks). So the tests read the store at a
++# fixed, recorded snapshot: the record cutoff at which live run v2g's own saved plan froze its agent history, which is the
++# store exactly as live runs v2b-v2f left it. A record written later always gets a higher row number (LabStore
++# max_record_rowid), so a read at or below the cutoff never admits it. The new plan below must reproduce v2g's frozen
++# history byte for byte (its summary hash is pinned too), so an edit to an older record would fail here loudly instead of
++# silently changing the expected numbers.
++SNAPSHOT_PLAN = 'campaign-d8d1e8cc0ea34feb92dbd8c22c264530'        # live run v2g
++SNAPSHOT_CUTOFF = 6748
++SNAPSHOT_SUMMARY_HASH = 'd581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e'
+ 
+ 
+ @pytest.fixture
+@@ -538,12 +551,28 @@
+ 
+ 
+ def saved_v4_plan(owner):
++    """A new discovery v4 Learn plan for the native v2 agent, its agent history frozen at the pinned snapshot.
++
++    The product freezes a plan's history at the store's current record cutoff (agent_history.snapshot reads
++    store.max_record_rowid once); here that one read returns SNAPSHOT_CUTOFF, so this is exactly the plan this build would
++    have made just before live run v2g. Its replay list and fireability table are functions of that history, and Start
++    (validate_run_plan) recomputes all three at the plan's own cutoff, as for any plan."""
+     registration = register_agent(owner.store, owner.settings, 'smolagents-v2')
+-    prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, discovery_protocol=DISCOVERY_V4))
++    with mock.patch.object(owner.store, 'max_record_rowid', return_value=SNAPSHOT_CUTOFF) as now:
++        prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, discovery_protocol=DISCOVERY_V4))
++    assert now.call_count == 1                          # the history's record cutoff is the only "now" the plan reads
+     campaign = owner.create(prepared.campaign_request, run_plan=prepared)
+-    return campaign, read_run_plan(owner.store, campaign)['plan']
++    plan = read_run_plan(owner.store, campaign)['plan']
++    history = plan['discovery']['history']
++    assert (history['record_cutoff'], history['summary_hash']) == (SNAPSHOT_CUTOFF, SNAPSHOT_SUMMARY_HASH)
++    return campaign, plan
+ 
+ 
++def snapshot_rows(store, kind):
++    """The saved store's records of one kind as they were at the pinned snapshot, in row order."""
++    return [payload for _, payload in store.records_upto(kind, SNAPSHOT_CUTOFF)]
++
++
+ V2B_TABLE = [('F1', 'orders', 'update_order', 4, 4, 'ALLOWED'), ('F2', 'orders', 'update_order', 10, 10, 'ALLOWED'),
+              ('F3', 'orders', 'get_order', 4, 4, 'ALLOWED'), ('F4', 'notifications', 'send_confirmation', 4, 4, 'ALLOWED'),
+              ('F4', 'orders', 'get_operation_status', 4, 0, 'REFUSED'), ('F4', 'orders', 'get_order', 1, 1, 'ALLOWED_FEWER_THAN_3')]
+@@ -560,9 +589,14 @@
+             for r in table['rows']] == V2B_TABLE
+     assert table['refused_targets'] == ['F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3)']
+     assert validate_run_plan(saved_owner.store, saved_owner.settings, saved_owner.get(campaign.campaign_id))['plan_hash'] == plan['plan_hash']
+-    # Every saved plan in the store (v2b-v2f) still reads byte for byte, without the block.
+-    for saved in saved_owner.store.list_records('campaign_plans'):
+-        if saved['campaign_id'] == campaign.campaign_id: continue
++    # The snapshot is the one live run v2g froze: this plan's history, replay list and table equal its saved plan's.
++    v2g = saved_owner.store.get_record('campaign_plans', SNAPSHOT_PLAN)
++    assert v2g['discovery']['history'] == history and v2g['discovery']['replay'] == plan['discovery']['replay']
++    assert v2g['explorer_selection']['table'] == table
++    # Every plan saved in the store before the rule (v2b-v2f: the five at the snapshot) still reads byte for byte, without the block.
++    before = snapshot_rows(saved_owner.store, 'campaign_plans')
++    assert len(before) == 5 and campaign.campaign_id not in {saved['campaign_id'] for saved in before}
++    for saved in before:
+         assert 'explorer_selection' not in saved
+         assert SavedRunPlan.model_validate(saved).model_dump(mode='json') == saved
+         assert read_run_plan(saved_owner.store, saved['campaign_id'])['status'] == 'PLANNED'
+@@ -570,13 +604,14 @@
+ 
+ @needs_store
+ def test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed(saved_owner):
+-    """Every Explorer pick the saved store recorded (discovery in v2c/v2e/v2f, challenge in v2d/v2f), checked against the new
+-    plan's table: exactly the picks whose every fault is on the orders status read are refused (fixer: a pick is refused
+-    only when every fault targets a REFUSED row; every saved status-read pick is a lone one, so the counts are unchanged)."""
++    """Every Explorer pick the saved store recorded at the snapshot (discovery in v2c/v2e/v2f, challenge in v2d/v2f), checked
++    against the new plan's table: exactly the picks whose every fault is on the orders status read are refused (fixer: a
++    pick is refused only when every fault targets a REFUSED row; every saved status-read pick is a lone one, so the counts
++    are unchanged). Picks a later live run added (v2g's and after) are above the snapshot's cutoff and are not read."""
+     _, plan = saved_v4_plan(saved_owner)
+     session = fireability.Session(plan['explorer_selection'], discovery_requests_max=8)
+     decided = []
+-    for selection in saved_owner.store.list_records('selections'):
++    for selection in snapshot_rows(saved_owner.store, 'selections'):
+         spec_ = (selection.get('output') or {}).get('fault_spec')
+         if spec_ is None or selection.get('provenance') == 'history_replay':
+             continue
+=== diff 626bae4:backend/tests/lab/test_loop_limits_mechanic_context.py -> working tree
+--- 626bae4:backend/tests/lab/test_loop_limits_mechanic_context.py
++++ backend/tests/lab/test_loop_limits_mechanic_context.py
+@@ -262,33 +262,41 @@
+ 
+ SAVED_STORE = Path('/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3')
+ V2D = 'campaign-ea66672d7a904bd8a011d6922790c963'
++# Live runs keep adding to this store. The rebuild reads only records at or below the record cutoff at which live run v2e's
++# plan froze its history (campaign-37e66b6c..., discovery.history.record_cutoff): the store exactly as live run v2d left it.
++# A record written later always gets a higher row number, so, for example, a later campaign's challenge of an identical
++# candidate (the challenge trials are matched by candidate and incumbent hash, not by campaign) cannot join the request.
++V2D_SNAPSHOT_CUTOFF = 3022
+ 
+ 
+ def rebuild_v2d_request(store):
+-    """The learning loop's proposal_context for campaign ea66672d's second candidate request, from saved records only."""
++    """The learning loop's proposal_context for campaign ea66672d's second candidate request, from saved records only
++    (every list read at V2D_SNAPSHOT_CUTOFF)."""
+     from app.contracts.models import Campaign, ChallengeResult, Counterexample, DiagnosticResult, EvidenceBundle, FaultSpec, PolicyVersion, ReductionResult
+     from app.lab.diagnosis import reduction_context, runtime_contract, trial_outcomes
+     from app.lab.learning import discovery_session
+     get = lambda kind, ident, cls: cls.model_validate_json(canonical_json(store.get_record(kind, ident)))
++    upto = lambda kind: [payload for _, payload in store.records_upto(kind, V2D_SNAPSHOT_CUTOFF)]
++    assert store.record_rowid('campaigns', V2D) <= V2D_SNAPSHOT_CUTOFF
+     evidence = lambda ids: [EvidenceBundle.model_validate_json(canonical_json(store.get_record('evidence', e))) for e in ids]
+     trials = lambda ids: [get('trials', e, TrialResult) for e in ids]
+     campaign = store.get_model('campaigns', V2D, Campaign); incumbent = get('policies', 'policy-v0', PolicyVersion)
+     identity, _ = discovery_session(store, campaign, incumbent)
+     purposes = {}
+-    for row in store.list_records('episodes'):
++    for row in upto('episodes'):
+         if row['campaign_id'] == V2D: purposes.setdefault(row['experiment_purpose'], []).append(row['episode_id'])
+-    counter = Counterexample.model_validate_json(canonical_json(next(r for r in store.list_records('counterexamples') if r['campaign_id'] == V2D)))
++    counter = Counterexample.model_validate_json(canonical_json(next(r for r in upto('counterexamples') if r['campaign_id'] == V2D)))
+     reduced = trials(purposes['reduction'])
+     reduction = reduction_context(get('reductions', counter.counterexample_id, ReductionResult), reduced,
+                                   evidence([t.episode_id for t in reduced if t.lifecycle == 'COMPLETED']))
+-    diagnostic = get('diagnostics', next(r for r in store.list_records('diagnostic_campaigns') if r['campaign_id'] == V2D)['diagnostic_id'], DiagnosticResult)
+-    qualification = next(r for r in store.list_records('candidate_qualifications') if r['campaign_id'] == V2D)
++    diagnostic = get('diagnostics', next(r for r in upto('diagnostic_campaigns') if r['campaign_id'] == V2D)['diagnostic_id'], DiagnosticResult)
++    qualification = next(r for r in upto('candidate_qualifications') if r['campaign_id'] == V2D)
+     record = {k: qualification[k] for k in ('candidate_version', 'candidate_hash', 'candidate', 'qualification_ref')}
+     batch = store.get_record('evaluations', qualification['source_validation_ref'])
+     retest = evidence([t['episode_id'] for t in batch['trials'] if t['lifecycle'] == 'COMPLETED'])
+     challenge = get('challenges', qualification['challenge_ref'], ChallengeResult)
+     by_id = {}
+-    for raw in store.list_records('evaluations'):
++    for raw in upto('evaluations'):
+         if raw['purpose'] == 'challenge' and (raw['candidate_hash'], raw['incumbent_hash']) == (challenge.candidate_hash, challenge.incumbent_hash):
+             for t in raw['trials']: by_id[t['episode_id']] = TrialResult.model_validate_json(canonical_json(t))
+     challenge_trials = list(by_id.values())

@@ -1,0 +1,2 @@
+[probe_harness_probe] 40 of 40 checks passed; sentinel provider builds 0
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

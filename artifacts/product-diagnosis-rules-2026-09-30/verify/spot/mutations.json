@@ -1,0 +1,227 @@
+[
+ {
+  "mutation": "UNMUTATED backend",
+  "exit": 1,
+  "summary": "10 failed, 87 passed in 16.49s",
+  "seconds": 17.2,
+  "failing": [
+   "tests/lab/test_diagnosis_rules.py::test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+   "tests/lab/test_diagnosis_rules.py::test_T1_a_synthetic_plan_declaring_the_guide_starts_only_while_its_frozen_text_and_hash_are_installed",
+   "tests/lab/test_diagnosis_rules.py::test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2",
+   "tests/lab/test_diagnosis_rules.py::test_T1_flipping_the_reviewed_constant_is_the_only_way_to_offer_the_guide",
+   "tests/lab/test_diagnosis_rules.py::test_T1_only_learn_plans_may_declare_either_rule",
+   "tests/lab/test_diagnosis_rules.py::test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one",
+   "tests/lab/test_diagnosis_rules.py::test_T7_the_export_embeds_every_attempt_by_id_only_for_plans_that_declare_rule_1",
+   "tests/lab/test_diagnosis_rules_loop.py::test_T8_the_offline_fixture_campaign_follows_the_same_path_with_rule_1_plus_one_record_per_diagnosis",
+   "tests/lab/test_diagnosis_rules_loop.py::test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[discovery]",
+   "tests/lab/test_diagnosis_rules_loop.py::test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[intervention]"
+  ]
+ },
+ {
+  "mutation": "UNMUTATED frontend",
+  "exit": 0,
+  "summary": "Tests  5 passed (5)",
+  "seconds": 1.4,
+  "failing": []
+ },
+ {
+  "mutation": "UNMUTATED verifier harness probe",
+  "passed": 39,
+  "total": 39,
+  "failed": []
+ },
+ {
+  "mutation": "UNMUTATED verifier campaign_records check",
+  "result": "[\"m0\", \"m1\"]"
+ },
+ {
+  "mutation": "B1 repair turn under-counts the answer length by one",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "17 failed, 80 passed in 16.70s",
+  "seconds": 17.4,
+  "restored": true,
+  "new_failures": [
+   "tests/experiments/test_diagnosis_probe.py::test_every_request_is_the_saved_bytes_or_exactly_one_declared_change",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_600_character_limit_is_unchanged_and_text_is_never_shortened[True]",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2f-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2g-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_output-INVALID_OUTPUT-code_default-2]",
+   "tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_then_valid-VALID_REQUESTED-model-2]",
+   "tests/lab/test_diagnosis_rules.py::test_T9_the_integrity_prototypes_statuses_and_repair_messages_are_what_the_product_now_records_and_sends"
+  ]
+ },
+ {
+  "mutation": "B2 the declared repair turn drops the appended sentence",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "15 failed, 82 passed in 16.87s",
+  "seconds": 17.6,
+  "restored": true,
+  "new_failures": [
+   "tests/experiments/test_diagnosis_probe.py::test_every_request_is_the_saved_bytes_or_exactly_one_declared_change",
+   "tests/lab/test_diagnosis_rules.py::test_T1_the_declarations_are_exact",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2f-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_rule_1_repair_turn_states_the_limit_and_the_answers_length[v2g-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T9_the_integrity_prototypes_statuses_and_repair_messages_are_what_the_product_now_records_and_sends"
+  ]
+ },
+ {
+  "mutation": "B3 the rule-off Mechanic also sends the limit fields (flag-off bytes change)",
+  "file": "backend/app/agents/mechanic.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "13 failed, 84 passed in 16.64s",
+  "seconds": 17.4,
+  "restored": true,
+  "new_failures": [
+   "tests/lab/test_diagnosis_rules.py::test_T2_flag_off_sends_the_saved_bytes_and_flag_on_changes_only_the_repair_turn[v2f-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T2_flag_off_sends_the_saved_bytes_and_flag_on_changes_only_the_repair_turn[v2g-dev5]",
+   "tests/lab/test_diagnosis_rules.py::test_T4_the_600_character_limit_is_unchanged_and_text_is_never_shortened[False]"
+  ]
+ },
+ {
+  "mutation": "B4 run options offer the guide although it is not offered",
+  "file": "backend/app/lab/run_plans.py",
+  "exit": 1,
+  "verdict": "UNDECIDABLE-IN-SCRATCH",
+  "summary": "10 failed, 87 passed in 17.07s",
+  "seconds": 17.8,
+  "restored": true,
+  "new_failures": []
+ },
+ {
+  "mutation": "B5 a code-default kind is recorded as the model's",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "12 failed, 85 passed in 16.78s",
+  "seconds": 17.5,
+  "restored": true,
+  "new_failures": [
+   "tests/lab/test_diagnosis_rules.py::test_T5_the_record_says_requested_declined_or_invalid_and_lists_every_attempt[invalid_output-INVALID_OUTPUT-code_default-2]",
+   "tests/lab/test_diagnosis_rules.py::test_T9_the_integrity_prototypes_statuses_and_repair_messages_are_what_the_product_now_records_and_sends"
+  ]
+ },
+ {
+  "mutation": "B6 early_end is never recorded",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "16 failed, 81 passed in 16.74s",
+  "seconds": 17.5,
+  "restored": true,
+  "new_failures": [
+   "tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-PREFLIGHT_REJECTED]",
+   "tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-PREFLIGHT_REJECTED]",
+   "tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[callback_error-0-0-CALLBACK_ERROR:RuntimeError-a",
+   "tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[preflight-0-0-PREFLIGHT_REJECTED-preflight",
+   "tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[stop_after_one_pair-2-1-STOPPED-stopped]",
+   "tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[stop_before_any_trial-0-0-STOPPED-stopped]"
+  ]
+ },
+ {
+  "mutation": "B7 Start no longer compares a declared Rule 1 with the installed one",
+  "file": "backend/app/lab/run_plans.py",
+  "exit": 1,
+  "verdict": "UNDECIDABLE-IN-SCRATCH",
+  "summary": "10 failed, 87 passed in 16.65s",
+  "seconds": 17.4,
+  "restored": true,
+  "new_failures": []
+ },
+ {
+  "mutation": "B8 the export embeds only the last attempt",
+  "file": "backend/app/lab/diagnosis_protocol.py",
+  "exit": 1,
+  "verdict": "UNDECIDABLE-IN-SCRATCH",
+  "summary": "10 failed, 87 passed in 16.41s",
+  "seconds": 17.2,
+  "restored": true,
+  "new_failures": [],
+  "verifier_campaign_records_check": "[\"m1\"]"
+ },
+ {
+  "mutation": "P1 the probe premise also counts CONTROL rows only the person flagged",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "verdict": "UNDECIDABLE-IN-SCRATCH",
+  "summary": "10 failed, 87 passed in 16.08s",
+  "seconds": 16.7,
+  "restored": true,
+  "new_failures": [],
+  "verifier_harness_probe": {
+   "passed": 38,
+   "total": 39,
+   "failed": [
+    "P1: CONTROL person-only Y does not lift the premise -> UNINFORMATIVE"
+   ]
+  }
+ },
+ {
+  "mutation": "P2 the probe accepts a used output folder (both checks removed)",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "11 failed, 86 passed in 17.30s",
+  "seconds": 17.9,
+  "restored": true,
+  "new_failures": [
+   "tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_wrong_declaration_sha256_or_a_used_output_folder"
+  ],
+  "verifier_harness_probe": {
+   "error": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+   "stderr_tail": "_probe.py\", line 873, in main\n    provider = provider_factory()\n               ^^^^^^^^^^^^^^^^^^\n  File \"/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe_harness_probe.py\", line 39, in sentinel\n    SENTINEL_CALLS.append(1); raise AssertionError('verifier sentinel: a provider was built')\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: verifier sentinel: a provider was built\n[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0\n"
+  }
+ },
+ {
+  "mutation": "P3 the probe sends before it charges the ledger",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "12 failed, 85 passed in 16.48s",
+  "seconds": 17.2,
+  "restored": true,
+  "new_failures": [
+   "tests/experiments/test_diagnosis_probe.py::test_a_scripted_live_run_charges_every_call_through_the_ledger_writes_only_under_out_and_scores",
+   "tests/experiments/test_diagnosis_probe.py::test_the_cap_holds_when_every_call_fails_and_retries_come_only_from_the_rest_of_the_cap"
+  ],
+  "verifier_harness_probe": {
+   "passed": 38,
+   "total": 39,
+   "failed": [
+    "scripted: ledger charged 140 calls, $6.9776"
+   ]
+  }
+ },
+ {
+  "mutation": "P4 the P4 pass bar drops from 9 of 10 to 8 of 10",
+  "file": "scripts/experiments/diagnosis_probe.py",
+  "exit": 1,
+  "verdict": "UNDECIDABLE-IN-SCRATCH",
+  "summary": "10 failed, 87 passed in 16.27s",
+  "seconds": 16.9,
+  "restored": true,
+  "new_failures": [],
+  "verifier_harness_probe": {
+   "passed": 39,
+   "total": 39,
+   "failed": []
+  }
+ },
+ {
+  "mutation": "F1 the frontend accepts a Rule 1 declaration that says the first turn changed",
+  "file": "frontend/src/loopLimits.ts",
+  "exit": 1,
+  "verdict": "CAUGHT",
+  "summary": "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+  "seconds": 1.4,
+  "restored": true,
+  "new_failures": [
+   "FAIL  tests/diagnosis-rules.test.tsx > accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else",
+   "\u00d7 accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else 5ms"
+  ]
+ }
+]

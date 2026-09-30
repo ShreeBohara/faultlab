@@ -1,7 +1,8 @@
 import { object, request } from './api'
 import type { AgentRegistration, Campaign, CampaignBudget, EpisodeBudget, FaultSpec } from './generated/contracts'
 import { validateContract } from './generated/validate'
-import { challengeSelectionDeclaration, mechanicContextDeclaration, mechanicEvidenceDeclaration, type ChallengeSelectionDeclaration, type MechanicContextDeclaration, type MechanicEvidenceDeclaration } from './loopLimits'
+import { challengeSelectionDeclaration, diagnosisGuideDeclaration, mechanicContextDeclaration, mechanicDiagnosisDeclaration, mechanicEvidenceDeclaration, type ChallengeSelectionDeclaration,
+  type DiagnosisGuideDeclaration, type MechanicContextDeclaration, type MechanicDiagnosisDeclaration, type MechanicEvidenceDeclaration } from './loopLimits'
 import { FIREABILITY_PROTOCOLS, explorerSelectionDeclaration, type ExplorerSelectionDeclaration, type ExplorerSelectionPlan } from './historyFireability'
 
 export const TASK_DEFINITION = 'orders.upgrade_then_confirm/v1' as const
@@ -76,6 +77,10 @@ export type RunOptions = {
   learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[]; transport_retry?: TransportRetryDeclarationV2; mechanic_context?: MechanicContextDeclaration; challenge_selection?: ChallengeSelectionDeclaration
     /** Frozen only into a new Learn plan of native adapter v2; absent from older backends. */
     mechanic_evidence?: MechanicEvidenceDeclaration
+    /** Diagnosis repair and record: frozen into every new Learn plan, every agent; absent from older backends. */
+    mechanic_diagnosis?: MechanicDiagnosisDeclaration
+    /** Diagnosis guide: built but not offered by today's backend (absent); checked if a later backend offers it. */
+    diagnosis_guide?: DiagnosisGuideDeclaration
     /** History fireability: frozen, with its table, only into a new Learn plan with discovery v3 · agent history or v4 · history
      * replay (the declaration names them); offered here without a table. Absent from older backends. */
     explorer_selection?: ExplorerSelectionDeclaration }
@@ -92,6 +97,10 @@ export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: str
   mechanic_context?: MechanicContextDeclaration | null; challenge_selection?: ChallengeSelectionDeclaration | null
   /** A native adapter v2 Learn plan only; absent from every other plan and from every plan saved before the rule. */
   mechanic_evidence?: MechanicEvidenceDeclaration | null
+  /** Learn only, every agent; absent from every baseline or compare plan and from every Learn plan saved before the rule. */
+  mechanic_diagnosis?: MechanicDiagnosisDeclaration | null
+  /** Learn only; no plan saved by today's backend declares it (built, not offered). */
+  diagnosis_guide?: DiagnosisGuideDeclaration | null
   /** A Learn plan with discovery v3 · agent history or v4 · history replay only, every new one; absent from every other plan
    * and from every plan saved before the rule. */
   explorer_selection?: ExplorerSelectionPlan | null; plan_hash: string }
@@ -268,6 +277,8 @@ export function validateRunOptions(value: unknown): RunOptions {
   if (value.learn.mechanic_context !== undefined && !mechanicContextDeclaration(value.learn.mechanic_context)) return malformed('Learn Mechanic request-size rule')
   if (value.learn.challenge_selection !== undefined && !challengeSelectionDeclaration(value.learn.challenge_selection)) return malformed('Learn challenge-pick rule')
   if (value.learn.mechanic_evidence !== undefined && !mechanicEvidenceDeclaration(value.learn.mechanic_evidence)) return malformed('Learn native citation-status rule')
+  if (value.learn.mechanic_diagnosis !== undefined && !mechanicDiagnosisDeclaration(value.learn.mechanic_diagnosis)) return malformed('Learn diagnosis repair-and-record rule')
+  if (value.learn.diagnosis_guide !== undefined && !diagnosisGuideDeclaration(value.learn.diagnosis_guide)) return malformed('Learn diagnosis guide')
   if (value.learn.explorer_selection !== undefined && !explorerSelectionDeclaration(value.learn.explorer_selection)) return malformed('Learn history fireability rule')
   // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
   if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
@@ -310,6 +321,9 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
   if (!(plan.challenge_selection === undefined || plan.challenge_selection === null || (plan.mode === 'learn' && challengeSelectionDeclaration(plan.challenge_selection)))) return malformed('campaign plan challenge-pick rule')
   // Native citation status: only a Learn plan of native adapter v2 declares it, exactly as frozen.
   if (!(plan.mechanic_evidence === undefined || plan.mechanic_evidence === null || (plan.mode === 'learn' && plan.agent === 'smolagents-v2' && mechanicEvidenceDeclaration(plan.mechanic_evidence)))) return malformed('campaign plan native citation-status rule')
+  // The diagnosis rules: only a Learn plan declares them (any agent), exactly as frozen; older plans have neither.
+  if (!(plan.mechanic_diagnosis === undefined || plan.mechanic_diagnosis === null || (plan.mode === 'learn' && mechanicDiagnosisDeclaration(plan.mechanic_diagnosis)))) return malformed('campaign plan diagnosis repair-and-record rule')
+  if (!(plan.diagnosis_guide === undefined || plan.diagnosis_guide === null || (plan.mode === 'learn' && diagnosisGuideDeclaration(plan.diagnosis_guide)))) return malformed('campaign plan diagnosis guide')
   if (plan.discovery !== undefined && plan.discovery !== null) {
     // Only Learn declares a discovery protocol; the pre-check (v2, v3 with pre-check) models only the reference Actor.
     if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery, true) || (preChecked(plan.discovery.protocol) && plan.agent !== 'reference')

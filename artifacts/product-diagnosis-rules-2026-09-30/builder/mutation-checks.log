@@ -1,0 +1,17 @@
+unmutated copy: exit 0: 83 passed in 37.00s
+CAUGHT: 1a dropped: the flag-on diagnosis repair turn sends today's message: 1 failed, 6 passed in 0.90s
+CAUGHT: flag-off errors carry the limit too (golden bytes broken): 1 failed, 2 passed in 0.66s
+CAUGHT: the record calls a declined answer VALID_REQUESTED: 1 failed, 20 passed in 1.88s
+CAUGHT: the record labels a code default as the model's: 1 failed, 21 passed in 1.86s
+CAUGHT: the record is written after the POLICY_GAP gate: 1 failed, 48 passed in 2.25s
+CAUGHT: the guide is offered: 1 failed, 49 passed in 2.47s
+CAUGHT: the interpretive C6 note comes back: 1 failed, 12 passed in 1.00s
+CAUGHT: the guide sits inside the size rule (not counted): 1 failed, 60 passed in 9.55s
+CAUGHT: older plans re-serialize with a null key: 1 failed, 49 passed in 4.43s
+CAUGHT: Start does not compare the declared guide with the installed one: 1 failed, 52 passed in 5.76s
+CAUGHT: the export drops the rejected first attempt: 1 failed, 57 passed in 8.75s
+CAUGHT: the probe sends without charging the ledger first: 1 failed, 78 passed in 33.48s
+CAUGHT: the probe runs live without a declaration: 1 failed, 68 passed in 31.93s
+CAUGHT: the probe cap is $9: 1 failed, 63 passed in 30.18s
+scratch deleted: True
+14 of 14 mutations caught; unmutated exit 0

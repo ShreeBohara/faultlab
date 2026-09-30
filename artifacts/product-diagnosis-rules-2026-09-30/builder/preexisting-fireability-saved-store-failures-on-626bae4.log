@@ -1,0 +1,6 @@
+E       assert 36 == 30
+E       assert 14 == 8
+E        +  where 14 = sum(<generator object test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed.<locals>.<genexpr> at 0x10d00be00>)
+FAILED tests/lab/test_history_fireability.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_history_fireability.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+2 failed, 1 passed, 19 deselected in 2.60s

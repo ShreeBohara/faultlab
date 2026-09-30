@@ -125,6 +125,11 @@ def test_the_unchanged_loop_ends_discovery_when_a_replay_source_uses_up_the_cand
     """What the sentence describes, through the real loop: two replays are listed, the first replay's source reaches the
     candidate stage and its Mechanic uses all 4 candidate requests, so replay 2 and every Explorer slot never run."""
     import app.lab.learning as learning
+    # The Diagnostician below is a stage double that never sends a Mechanic diagnosis request, so the diagnosis
+    # repair-and-record rule that every new Learn plan declares (app.lab.diagnosis_protocol) has no attempts to record and
+    # would refuse to write a false record; it is switched off for this double (its tests: test_diagnosis_rules*.py).
+    from app.lab import diagnosis_protocol
+    monkeypatch.setattr(diagnosis_protocol, 'campaign_rule', lambda store, campaign: None)
     seeder = dev5_owner(owner)
     for _ in range(3):
         seeder.episode(case('dev-3'), failed=('C5',))           # a second 3/3 row: the list holds dev-3, then dev-5

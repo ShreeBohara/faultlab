@@ -1,0 +1,17 @@
+records table: CREATE TABLE records(kind TEXT NOT NULL,id TEXT NOT NULL,payload TEXT NOT NULL,immutable INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(kind,id))
+max rowid, count: (8583, 8583)
+plan row 6 campaign-c8063a1166834051b08ae5317ff6f9c2 mode=baseline protocol=None cutoff=None summary=None episodes=None keys_new=[]
+plan row 933 campaign-077b8434e14c4c73a334692223694e63 mode=learn protocol=faultlab-discovery/v3-history cutoff=930 summary=3fba1b77 episodes=18 keys_new=[]
+plan row 1540 campaign-ea66672d7a904bd8a011d6922790c963 mode=learn protocol=faultlab-discovery/v4-history-replay cutoff=1537 summary=d45adfde episodes=25 keys_new=[]
+plan row 3025 campaign-37e66b6c3a544a4d9bde4161db6bf0aa mode=learn protocol=faultlab-discovery/v4-history-replay cutoff=3022 summary=d45adfde episodes=25 keys_new=[]
+plan row 3774 campaign-53db74766f4d4635b94a0de89e492577 mode=learn protocol=faultlab-discovery/v4-history-replay cutoff=3771 summary=0d56adcd episodes=30 keys_new=[]
+plan row 6751 campaign-d8d1e8cc0ea34feb92dbd8c22c264530 mode=learn protocol=faultlab-discovery/v4-history-replay cutoff=6748 summary=d581867c episodes=30 keys_new=['explorer_selection']
+plans at or below 6748: 5 | at or below 8583: 6
+v2d campaign row: (1538,)
+rows mentioning v2d: max 3020 count 623
+selections total 39 | at or below 6748: 31
+selections above 6748: [6754, 7228, 8136, 8180, 8224, 8268, 8300, 8443]
+rows above 6748 by kind: {'budgets': 1, 'bundle_files': 2, 'bundles': 2, 'campaign_plans': 1, 'campaign_proposals': 3, 'campaign_provenance': 1, 'campaign_registrations': 1, 'campaigns': 1, 'candidate_qualifications': 1, 'counterexample_recipes': 4, 'counterexamples': 4, 'diagnostic_campaigns': 2, 'diagnostics': 2, 'episode_executions': 50, 'episodes': 50, 'evaluations': 1, 'evidence': 44, 'ingestions': 44, 'interventions': 1, 'journals': 97, 'mechanic_outputs': 6, 'observations': 269, 'policies': 2, 'private_episode_inputs': 50, 'private_snapshots': 50, 'private_world_integrity': 50, 'proposals': 2, 'provider_failures': 2, 'reductions': 2, 'regression_datasets': 2, 'regressions': 2, 'retained_recipes': 2, 'selections': 8, 'source_validation_results': 1, 'sponsor_publication_deferrals': 1, 'telemetry_evaluations': 1, 'telemetry_outbox': 342, 'telemetry_predictions': 6, 'telemetry_summaries': 1, 'tool_calls': 241, 'trace_calls': 339, 'trace_registrations': 44, 'trials': 50, 'verdicts': 50}
+gaps in rowid: False
+v2g campaign row (6749,)
+{'campaign-d8d1e8cc0ea34feb92dbd8c22c264530': (50, [('development', 'discovery'), ('development', 'intervention'), ('development', 'reduction'), ('development', 'reproduction'), ('development', 'source_validation')])}

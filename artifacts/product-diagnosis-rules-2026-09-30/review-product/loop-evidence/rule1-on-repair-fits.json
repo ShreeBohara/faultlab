@@ -1,0 +1,119 @@
+{
+ "campaign_state": "COMPLETED",
+ "diagnosis_turns_sent": [
+  2,
+  4
+ ],
+ "diagnostics": [
+  {
+   "kind": "POLICY_GAP",
+   "proposed_kind": "POLICY_GAP"
+  }
+ ],
+ "episode_counts": {
+  "challenge": 24,
+  "discovery": 1,
+  "intervention": 6,
+  "promotion": 36,
+  "reduction": 12,
+  "reproduction": 3,
+  "source_validation": 6
+ },
+ "interventions": [
+  "SUPPORTED"
+ ],
+ "records": [
+  {
+   "attempts": [
+    {
+     "attempt": 0,
+     "output_ref": "mechanic-c071cc77abde4341972321753c0f67ff",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ]
+    },
+    {
+     "attempt": 1,
+     "output_ref": "mechanic-2043ce3245274c00949d2e26071ebf3e",
+     "validation_errors": []
+    }
+   ],
+   "campaign_id": "campaign-1794814115de4c58bb1cdc77e042630a",
+   "counterexample_id": "counterexample-23f95cf115f44328b1acd69fb804d17a",
+   "diagnostic_id": "diagnostic-bb658d779bab469d994db1c61732309e",
+   "first_turn_hash": "a20b5c1fbe87e7353a8b5d8a64676a77c80598a9d9f2bb9be6ba5bb80c3ed8d6",
+   "fresh_intervention_trials": 6,
+   "intervention_ran": true,
+   "interventions": [
+    {
+     "intervention_id": "intervention-1703ac45fcca3850d95bd207",
+     "limitations": [
+      "Three paired observations test only the declared schedule change; no universal causal claim."
+     ],
+     "result": "SUPPORTED",
+     "trial_pairs": 3
+    }
+   ],
+   "last_raw_unvalidated": {
+    "parsed_json_object": true,
+    "proposed_kind": "POLICY_GAP",
+    "requested_intervention_id": "intervention-1703ac45fcca3850d95bd207",
+    "validated": false
+   },
+   "options": [
+    {
+     "change": "remove_primitive:0",
+     "intervention_id": "intervention-1703ac45fcca3850d95bd207",
+     "observed_treatment_trials": {
+      "episode_ids": [
+       "episode-fac7d5e2821549efa86fc060c24d8d78",
+       "episode-981deb8091ee4f299bbfba285d9b56db",
+       "episode-485ded1158ed497ba1856c2a6e8be181"
+      ],
+      "fresh_trials": 3,
+      "target_violations": 0,
+      "valid_trials": 3
+     }
+    },
+    {
+     "change": "lower_parameter:0:completion_delay_ticks:1",
+     "intervention_id": "intervention-b8072b32644e949d121f9865",
+     "observed_treatment_trials": {
+      "episode_ids": [
+       "episode-b4b885cf850246b8b3f11b5ef4395825",
+       "episode-f44729236082447da211f7eb5b9744af",
+       "episode-278c36934110455f9a0f0a6940009b4a"
+      ],
+      "fresh_trials": 3,
+      "target_violations": 0,
+      "valid_trials": 3
+     }
+    }
+   ],
+   "output_refs": [
+    "mechanic-c071cc77abde4341972321753c0f67ff",
+    "mechanic-2043ce3245274c00949d2e26071ebf3e"
+   ],
+   "proposal_status": "VALID_REQUESTED",
+   "protocol": "faultlab-mechanic-diagnosis/v1-repair-and-record",
+   "recorded_proposed_kind": "POLICY_GAP",
+   "recorded_proposed_kind_source": "model",
+   "request_id": "mechanic-request-4f5f8d9643db483889271b3a0d006eec",
+   "requested_change": "remove_primitive:0",
+   "requested_intervention_id": "intervention-1703ac45fcca3850d95bd207",
+   "statement": "The Mechanic gave a valid answer on attempt 2 of 2 and requested intervention-1703ac45fcca3850d95bd207 (remove_primitive:0). Intervention result: intervention-1703ac45fcca3850d95bd207 SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind POLICY_GAP is the model's.",
+   "target_invariant": "C3",
+   "verdict": "POLICY_GAP"
+  }
+ ],
+ "repair_user_messages": [
+  "{\"instruction\":\"Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.\",\"validation_errors\":[{\"location\":[\"hypothesis\"],\"max_characters\":600,\"type\":\"string_too_long\",\"your_characters\":614}]}"
+ ]
+}

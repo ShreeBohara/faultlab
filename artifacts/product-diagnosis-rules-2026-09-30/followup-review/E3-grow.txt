@@ -1,0 +1,2 @@
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+grown: max rowid 8586 | new rows [(8584, 'evaluations', 'batch-233350f973c54057a193788b060fe023-grown'), (8585, 'selections', 'selection-13867ab8e778445982bd3d8b46c8c8a9-grown'), (8586, 'campaign_plans', 'campaign-00000000000000000000000000grown')]

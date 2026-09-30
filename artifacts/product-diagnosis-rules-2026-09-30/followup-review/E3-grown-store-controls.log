@@ -1,0 +1,27 @@
+E3: grown copy of today store (3 synthetic records above row 8583; grow_store.py)
+== PINNED(current) test_zpin_fire_grown [-k saved_store]
+3 passed, 19 deselected in 3.14s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== PINNED(current) test_zpin_v2d_grown [-k refused_v2d_request]
+1 passed, 21 deselected in 0.48s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== PINNED(current) test_zpin_t1_grown [-k every_saved_native_v2b]
+1 passed, 64 deselected in 0.29s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== UNPINNED(626bae4) test_zorig_fire_grown [-k saved_store]
+E       assert 36 == 30
+E           assert True == False
+FAILED tests/lab/test_zorig_fire_grown.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_zorig_fire_grown.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+2 failed, 1 passed, 19 deselected in 2.97s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== UNPINNED(626bae4) test_zorig_v2d_grown [-k refused_v2d_request]
+FAILED tests/lab/test_zorig_v2d_grown.py::test_the_refused_v2d_request_rebuilds_exactly_and_fits_after_compaction_with_its_omission_statement
+1 failed, 21 deselected in 0.23s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+tests/lab/test_zorig_v2d_grown.py:328: in test_the_refused_v2d_request_rebuilds_exactly_and_fits_after_compaction_with_its_omission_statement
+tests/lab/test_zorig_v2d_grown.py:306: in rebuild_v2d_request
+tests/lab/test_zorig_v2d_grown.py:273: in <lambda>
+E   pydantic_core._pydantic_core.ValidationError: 1 validation error for EvidenceBundle
+E     Input should be an object [type=model_type, input_value=None, input_type=NoneType]
+E       For further information visit https://errors.pydantic.dev/2.13/v/model_type

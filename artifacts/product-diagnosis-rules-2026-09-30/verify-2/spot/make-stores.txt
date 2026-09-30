@@ -1,0 +1,6 @@
+upto 6748: removed records 1835, events 708, ingestion_keys 44, episode_registry 50, pointers 1; max row now 6748
+upto 3022: removed records 5561, events 2107, ingestion_keys 150, episode_registry 159, pointers 3; max row now 3022
+G1: copied evaluation at row 2367 (6 trials) and 6 evidence records
+G2: copied 31 selections
+G3: later plan campaign-00000000000000000000000000000abc
+grown: rows (8584,) max row 8622

@@ -1,0 +1,17 @@
+E1: the ORIGINAL 626bae4 test files (unpinned; sha256 thf 9a447e69..., tll 374718d8...), only the SAVED path changed where noted, run in the reviewer scratch tree with rguard+rstub
+== test_zorig_fire_at6748 [-k saved_store] on store-truncated-at-6748
+3 passed, 19 deselected in 2.87s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== test_zorig_fire_today [-k saved_store] on todays-saved-store(8583)
+E       assert 36 == 30
+E       assert 14 == 8
+FAILED tests/lab/test_zorig_fire_today.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_zorig_fire_today.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+2 failed, 1 passed, 19 deselected in 2.94s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== test_zorig_v2d_at3022 [-k refused_v2d_request] on store-truncated-at-3022
+1 passed, 21 deselected in 0.43s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0
+== test_zorig_v2d_today [-k refused_v2d_request] on todays-saved-store(8583)
+1 passed, 21 deselected in 0.47s
+[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0

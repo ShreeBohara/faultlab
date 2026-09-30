@@ -1,0 +1,104 @@
+Independent verifier notes for COMMIT_LIST.txt (2026-09-30, diagnosis rules round: builder, two $0 reviews, fixer,
+verifier). $0, offline. Nothing committed; HEAD, index and refs unchanged (git-state-start.txt = git-state-end.txt).
+
+WHAT THE LIST IS
+COMMIT_LIST.txt holds only '<sha256>  <path>' lines (sha256 of the working-tree bytes), sorted by path, relative to the
+faultlab root. Check it from the faultlab root with:
+  shasum -a 256 -c artifacts/product-diagnosis-rules-2026-09-30/verify/COMMIT_LIST.txt
+COMMIT_LIST.json (same folder) gives each path's status (MODIFIED / NEW), its backup-tip sha256 when modified, and whether
+it is git-ignored (then it needs `git add -f`). No path is DELETED and no file changed only its executable bit.
+
+BASE
+Compared with the tip of local branch backup/part2-2026-09-22 = 626bae4afba9e160397e3f55b0ce9f5663e48d48 (as the task
+said). The checked-out branch is main at cbbf957, so `git status` against HEAD shows hundreds of entries. Commit on top of
+626bae4 (branch backup/part2-2026-09-22), NOT on cbbf957. Compare with `git show 626bae4:<file>` or use this list.
+
+COUNTS
+PRODUCT FILES: 21 (modified 13, new 8, deleted 0, mode changes 0). The 8 new files are not git-ignored.
+EVIDENCE FILES: every other line, all under artifacts/product-diagnosis-rules-2026-09-30/ (git-ignored, as the whole
+artifacts/ folder is: needs `git add -f`): builder/, review-integrity/, review-product/, fixer/ (incl. fixer/probe-plan/),
+probe-plan/ (the builder's, superseded but kept as a record), probe-inputs/ (the five rebuilt diagnosis requests and
+SHA256SUMS, 32-72 KB each: INCLUDED, as asked; the new backend tests and the probe harness read them, so they must be
+force-added with the product files) and verify/. The exact evidence count is in COMMIT_LIST.json.
+
+MODIFIED (tracked in the tip, bytes differ):
+  CURRENT_STATUS.md,
+  backend/app/agents/mechanic.py (builder: the declared repair turn and attempt state, all behind `recording`; changes the
+    reference Actor SOURCE tree hash 7f78de28 -> eaffac74; actor.py, reference.py and every prompt file are byte-identical),
+  backend/app/lab/exports.py, learning.py (11 added lines only; the POLICY_GAP gate line is byte-identical, now at line
+    261), run_plans.py,
+  backend/tests/lab/test_discovery_v4_review_fixes.py, backend/tests/lab/test_evidence_wait.py (their stage-double
+    Diagnostician harnesses switch Rule 1 off),
+  frontend/src/components/CampaignPlan.tsx, DiagnosticPanel.tsx, LoopLimits.tsx, RunSetup.tsx, frontend/src/loopLimits.ts,
+  runPlans.ts
+NEW (not in the tip, not ignored):
+  backend/app/lab/diagnosis_guide.py, backend/app/lab/diagnosis_protocol.py, backend/tests/experiments/test_diagnosis_probe.py,
+  backend/tests/lab/test_diagnosis_rules.py, backend/tests/lab/test_diagnosis_rules_loop.py,
+  docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md, frontend/tests/diagnosis-rules.test.tsx, scripts/experiments/diagnosis_probe.py
+The 21 product sha256 values equal the fixer's recorded end state (fixer/files-changed-by-fixer.txt for its 14 files;
+review-integrity/reviewed-files-sha256.txt for the builder files the fixer did not touch) and did not change during this
+verification (tree-vs-backup-start.txt, -at-suite-start.txt, -after-suite.txt, -before-list.txt and -end.txt are
+identical apart from their REF header line).
+
+METHOD (commit_list/commit_list.py; copied from the fireability verifier with only TIP, EVID and the docstring changed)
+No checkout, no commit, no stash; the real .git/index is never written (a throwaway index outside the Desktop, deleted by
+the script; GIT_OPTIONAL_LOCKS=0). Every path tracked in the tip was byte-compared (and executable bit) with the working
+file; every non-ignored working file not in the tip is NEW; the git-ignored evidence folder is walked directly.
+Protected paths (backend/app/referee/checks.py, audit/promotion.json, audit/final-audit.json, artifacts/heldout2/) are never
+read or hashed by the script (only size and mtime, 'protected_not_read' in the .json); checks.py equality with the tip is
+established by the repo's gate_freeze.py (verify/gate_freeze/compare.txt and leaf-compare.txt: checks.py file, score and
+scorer_hash functions, scorer_hash and tree_referee all equal).
+Passes: pass 1 (commit_list/commit_list_pass1.txt, after the test suite) and the final pass that wrote COMMIT_LIST.txt.
+The 21 product lines are byte-identical in both.
+
+EXCLUDED
+  * Nothing inside the evidence folder needed excluding: no file over 5 MB (largest: verify/probe-dry-run/plan-out/
+    requests.json and fixer/probe-plan/requests.json, 488,881 bytes each), no caches (__pycache__, .pytest_cache,
+    .DS_Store, *.pyc), no SQLite file, no symlink, no tree copy, no copy of checks.py, promotion.json, final-audit*,
+    heldout2 or any .env name ('excluded_evidence' in the .json is empty).
+  * verify/COMMIT_LIST.txt and verify/COMMIT_LIST.json themselves (a file cannot contain its own hash).
+  * Files written after the final pass are not in the list: verify/commit_list/secret_scan_final.txt and
+    verify/commit_list/shasum-check.txt.
+  * Outside the repo and never listed: the verifier's scratch folder /Users/shree/FaultLab_Scratch/verify-diagnosis-rules
+    (a git-archive checkpoint of 626bae4 made with audit/promotion.json and audit/final-audit.json EXCLUDED from the
+    archive, so they were never extracted; a scratch test tree = checkpoint + the 21 files + probe-inputs + a private copy
+    of frontend/node_modules; pytest temp); deleted (scratch-deleted.txt). /Users/shree/FaultLab_Scratch/inv-a is not the
+    verifier's and was left untouched.
+  * Not in the list and not to be committed: caches, node_modules, .venv, .env, frontend/dist, sqlite files.
+
+CONFLICT COPIES
+commit_list/conflict_scan.py (copied unchanged from the fireability verifier) over the whole faultlab tree (names only;
+skips .git, node_modules, .venv, caches, and prunes artifacts/heldout2): 0 conflict-like names outside artifacts/. Inside
+this round's folder the only hits are the scan's own two files (conflict_scan.py, conflict-scan.txt). Other hits are older
+folders under artifacts/ from earlier rounds, not part of this list.
+
+CREDENTIAL SCAN
+commit_list/secret_scan.py (copied from the fireability verifier; only its docstring's provenance clause changed) is run
+over every file in the final list after it is written; result in commit_list/secret_scan_final.txt. Pass 1: 229 files
+scanned, 0 hits (commit_list/secret_scan_pass1.txt). Self-test (commit_list/secret_scan_selftest.txt): it flags the known
+dummy keys in backend/tests/test_providers.py (masked).
+
+DEPENDENCIES OF THE NEW TESTS (verify/ignored_deps/)
+The 97 new backend tests, run in the scratch tree with every opened path recorded: besides tracked files of the tip and the
+21 product files, they read 5 git-ignored files, the probe-input copies (artifacts/product-diagnosis-rules-2026-09-30/
+probe-inputs/*.json), which are in this list and must be force-added; and 9 git-ignored-but-TRACKED artifacts already in
+626bae4 (artifacts/analysis-diagnosis-2026-09-30/..., artifacts/product-live-2026-09-30/native-v2*-run/export.json). The one
+saved-store test is skipped where /Users/shree/FaultLab_Runs is absent. 10 of the 97 (every test that builds a run plan)
+need audit/promotion.json, a TRACKED file of the tip that the verifier may not copy, so they could not run in the scratch
+tree; they pass in the real tree (full-test-sh.log). The 5 new frontend tests pass in the scratch tree.
+
+EVIDENCE MAP (verify/)
+  git_state.sh, git-state-start/-after-suite/-end.txt; tree_vs_backup.py, tree-vs-backup-*.txt; vguard.py (network and
+  protected-path guard);
+  saved-stores-sha256-start/-after-suite/-end.txt (649 files under /Users/shree/FaultLab_Runs, identical);
+  run_suite_with_monitor.sh, full-test-sh.start/.end/.log, net-monitor.log (scripts/test.sh once, lsof monitor);
+  identity/ (product identity functions on the 626bae4 checkpoint and the working tree; compare.txt; compare-with-fixer.txt;
+  end-check.txt); gate_freeze/ (the repo's gate_freeze.py on both trees; compare.txt; leaf-compare.txt; current-end.json);
+  protected/ (git blob identity of named files and folders vs 626bae4);
+  probe-dry-run/ (the verifier's dry run under the guard and its written plan, byte-identical to fixer/probe-plan/);
+  spot/ (record_probe: 7 intervention endings and the record, flag off vs on; probe_harness_probe: refusals, a scripted
+  run, MODEL_ID_DIFFERS, P1/P4 counting; saved_plans_check and plan_reader_dump: every saved plan in 11 stores, both trees;
+  fireability_failures_origin: where the two pre-existing test failures come from; mutations: 13 verifier negative
+  controls, mutations-summary.txt; frontend-tsc-nocache.log);
+  ignored_deps/ (the new tests in the scratch tree with every opened path classified);
+  commit_list/ (list script, pass 1, conflict and credential scans); scratch-deleted.txt.

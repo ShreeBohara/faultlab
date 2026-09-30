@@ -1,0 +1,9 @@
+124 values compared; 8 changed:
+files/backend/app/agents/mechanic.py
+fingerprints/algorithm_hash
+fingerprints/runtime_hash
+fingerprints/source_hash
+fingerprints/tree_lab
+functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256
+functions/backend/app/agents/mechanic.py::Mechanic/lines
+functions/backend/app/agents/mechanic.py::Mechanic/text_sha256

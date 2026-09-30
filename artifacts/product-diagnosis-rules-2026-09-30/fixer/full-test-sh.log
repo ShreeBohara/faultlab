@@ -1,0 +1,340 @@
+
+==> backend
+============================= test session starts ==============================
+platform darwin -- Python 3.12.8, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend
+configfile: pytest.ini
+testpaths: tests
+plugins: langsmith-0.12.4, anyio-4.15.1
+collected 3315 items
+
+tests/adapters/test_connect_freeze.py ....                               [  0%]
+tests/adapters/test_prototype_contract.py ......................         [  0%]
+tests/agents/test_actor_citation_boundary.py .....                       [  0%]
+tests/agents/test_actor_final_report.py ...............                  [  1%]
+tests/agents/test_actor_format.py ..                                     [  1%]
+tests/agents/test_actor_outputs.py ..                                    [  1%]
+tests/agents/test_actor_progress.py ......................               [  2%]
+tests/agents/test_actor_service_retry.py ............................... [  3%]
+.....                                                                    [  3%]
+tests/agents/test_explorer_discovery_v2.py ....                          [  3%]
+tests/agents/test_explorer_search.py ...................                 [  3%]
+tests/agents/test_lab_backoff_review_fixes.py ............               [  4%]
+tests/agents/test_lab_role_backoff.py ............................       [  5%]
+tests/agents/test_prompt_evidence.py .....                               [  5%]
+tests/agents/test_report_hook_closure.py ............................... [  6%]
+.                                                                        [  6%]
+tests/agents/test_role_transport_retry.py .............................. [  7%]
+..............................                                           [  8%]
+tests/agents/test_roles.py ..........                                    [  8%]
+tests/contracts/test_task_text.py ..................................     [  9%]
+tests/contracts/test_token_admission.py ...................              [  9%]
+tests/contracts/test_wire_schemas.py .........                           [ 10%]
+tests/experiments/test_check_evidence_gap_misreading_v2.py ............. [ 10%]
+....................                                                     [ 11%]
+tests/experiments/test_check_reachability_caller.py .........            [ 11%]
+tests/experiments/test_check_reachability_caller_live_only.py .          [ 11%]
+tests/experiments/test_diagnosis_probe.py ...........................    [ 12%]
+tests/experiments/test_lapse_probe.py ........sssssss................... [ 13%]
+..................................sssssss.sss.....ss.s                   [ 15%]
+tests/experiments/test_make_heldout_partition.py ....................... [ 15%]
+..................                                                       [ 16%]
+tests/experiments/test_phase20_prep.py ..................                [ 16%]
+tests/experiments/test_report_narrow_probe.py ...sssssss................ [ 17%]
+............................................s......................      [ 19%]
+tests/experiments/test_report_word_probe.py .ssssssss................... [ 20%]
+.........................................................s....ss.......s [ 22%]
+....s..s.....                                                            [ 23%]
+tests/experiments/test_run_dev_probe.py ..........s..........s.s........ [ 23%]
+......................sssssssssssssssssssssssssss                        [ 25%]
+tests/experiments/test_run_full_loop.py ................................ [ 26%]
+....                                                                     [ 26%]
+tests/experiments/test_run_full_loop_fixed_n.py ........................ [ 27%]
+........................................................................ [ 29%]
+..................                                                       [ 29%]
+tests/experiments/test_run_gap_probe.py ...............s........ss...... [ 30%]
+..........sssssssssssssssssssssssssssssssssssssss................s..     [ 33%]
+tests/experiments/test_run_heldout2_check.py ........................... [ 33%]
+........................................................................ [ 35%]
+.....................................                                    [ 37%]
+tests/experiments/test_run_heldout_check.py ................             [ 37%]
+tests/experiments/test_run_upgrade_loop.py ............................. [ 38%]
+........................................................................ [ 40%]
+.......................                                                  [ 41%]
+tests/experiments/test_slot2_hidden_probe.py ...sssss...s............... [ 42%]
+........................................................................ [ 44%]
+.........................ssssssssss...                                   [ 45%]
+tests/experiments/test_slot2_probe.py ssssssss.s........................ [ 46%]
+...............................s...........s....sssssss..                [ 48%]
+tests/experiments/test_upgrade_mechanic_probe.py ....ssssssssssssssssss. [ 48%]
+.........................s........ssssssss.ssss.......                   [ 50%]
+tests/integration/test_archive_and_read_isolation.py .....               [ 50%]
+tests/integration/test_baseline_cli.py ...                               [ 50%]
+tests/integration/test_campaign_history.py ....                          [ 50%]
+tests/integration/test_cli_operator_api.py .................             [ 51%]
+tests/integration/test_cli_store_ownership.py .....................      [ 52%]
+tests/integration/test_controls.py ...                                   [ 52%]
+tests/integration/test_correlated_readback.py ..                         [ 52%]
+tests/integration/test_demo_cli.py .                                     [ 52%]
+tests/integration/test_diagnostic_evidence.py .                          [ 52%]
+tests/integration/test_evidence_projection.py .                          [ 52%]
+tests/integration/test_fault_campaign.py .                               [ 52%]
+tests/integration/test_foundation.py ...                                 [ 52%]
+tests/integration/test_freeze_cli.py ......                              [ 52%]
+tests/integration/test_native_adapter_v2_api.py .....                    [ 52%]
+tests/integration/test_policy_restart.py ....                            [ 52%]
+tests/integration/test_prototype_weave_path.py ..                        [ 52%]
+tests/integration/test_reachability_faithfulness.py .............        [ 53%]
+tests/integration/test_readiness.py .......                              [ 53%]
+tests/integration/test_regression_execution.py ..                        [ 53%]
+tests/integration/test_repeatability_plan.py .............               [ 53%]
+tests/integration/test_run_plan_api.py .............                     [ 54%]
+tests/integration/test_sponsor_acceptance.py .                           [ 54%]
+tests/integration/test_stop_inflight.py .                                [ 54%]
+tests/integrations/test_agent_contract.py ..................             [ 54%]
+tests/integrations/test_native_adapter_v1_golden.py ....                 [ 55%]
+tests/integrations/test_native_adapter_v2.py ........................... [ 55%]
+............                                                             [ 56%]
+tests/integrations/test_native_dotenv_isolation.py ....                  [ 56%]
+tests/integrations/test_portability.py .........                         [ 56%]
+tests/integrations/test_regression_runner.py .......................     [ 57%]
+tests/integrations/test_smolagents_import_boundary.py ..........         [ 57%]
+tests/lab/test_actor_context_selection.py .....................          [ 58%]
+tests/lab/test_agent_history.py ................                         [ 58%]
+tests/lab/test_auxiliary_recovery.py ................................    [ 59%]
+tests/lab/test_baseline_study.py .......                                 [ 59%]
+tests/lab/test_budgets.py ..................                             [ 60%]
+tests/lab/test_bundle_import_boundaries.py ............................. [ 61%]
+...                                                                      [ 61%]
+tests/lab/test_bundle_import_review_fixes.py ........................... [ 62%]
+....................                                                     [ 62%]
+tests/lab/test_bundle_imports.py ....................................... [ 64%]
+.......                                                                  [ 64%]
+tests/lab/test_campaign_transport_retry.py ....                          [ 64%]
+tests/lab/test_challenge.py ...                                          [ 64%]
+tests/lab/test_citation_status.py ..................                     [ 65%]
+tests/lab/test_completion_evidence_reread.py ..................          [ 65%]
+tests/lab/test_completion_manifests.py .............................     [ 66%]
+tests/lab/test_completion_study.py ..................................... [ 67%]
+..                                                                       [ 67%]
+tests/lab/test_configuration.py ..................                       [ 68%]
+tests/lab/test_context_study.py .........                                [ 68%]
+tests/lab/test_convergence.py ............                               [ 68%]
+tests/lab/test_coordinator_stop.py ......                                [ 68%]
+tests/lab/test_counterexample_loop.py .....                              [ 69%]
+tests/lab/test_dashboard_reads.py .....                                  [ 69%]
+tests/lab/test_diagnosis_context.py .............                        [ 69%]
+tests/lab/test_diagnosis_rules.py ...................................... [ 70%]
+...........................                                              [ 71%]
+tests/lab/test_diagnosis_rules_loop.py .....                             [ 71%]
+tests/lab/test_discovery_search_flow.py .                                [ 71%]
+tests/lab/test_discovery_v2_flow.py ............                         [ 72%]
+tests/lab/test_discovery_v3_baseline_history.py .                        [ 72%]
+tests/lab/test_discovery_v3_flow.py ...............                      [ 72%]
+tests/lab/test_discovery_v4_replay.py .......................            [ 73%]
+tests/lab/test_discovery_v4_review_fixes.py .....                        [ 73%]
+tests/lab/test_evaluation.py ....                                        [ 73%]
+tests/lab/test_evidence.py ...........                                   [ 73%]
+tests/lab/test_evidence_retry_v3.py .....                                [ 74%]
+tests/lab/test_evidence_wait.py ........................                 [ 74%]
+tests/lab/test_execution_lifecycle.py ..........                         [ 75%]
+tests/lab/test_heldout_check.py ........................................ [ 76%]
+....................................                                     [ 77%]
+tests/lab/test_heldout_world_integrity.py ....................           [ 78%]
+tests/lab/test_history_fireability.py ...................FF.             [ 78%]
+tests/lab/test_history_fireability_review_fixes.py ...........           [ 79%]
+tests/lab/test_incident_exports.py .......                               [ 79%]
+tests/lab/test_lab_backoff_campaign.py ...........                       [ 79%]
+tests/lab/test_learning_qualification.py ..........                      [ 79%]
+tests/lab/test_loop_limits_challenge_reach.py ..........                 [ 80%]
+tests/lab/test_loop_limits_mechanic_context.py ......................    [ 80%]
+tests/lab/test_loop_limits_plans.py .......                              [ 81%]
+tests/lab/test_native_adapter_v2_product.py ................             [ 81%]
+tests/lab/test_native_baseline_study_planned.py ....                     [ 81%]
+tests/lab/test_native_provider_integrity.py ............                 [ 81%]
+tests/lab/test_native_transport_retry.py ........                        [ 82%]
+tests/lab/test_native_v2_label_views.py ....                             [ 82%]
+tests/lab/test_original_loop_integration.py .....                        [ 82%]
+tests/lab/test_ownership.py .................                            [ 83%]
+tests/lab/test_planned_agent_execution.py .............................. [ 83%]
+.                                                                        [ 83%]
+tests/lab/test_policy_interpreter.py ........                            [ 84%]
+tests/lab/test_policy_status.py ........................................ [ 85%]
+......                                                                   [ 85%]
+tests/lab/test_portability_independence.py ..                            [ 85%]
+tests/lab/test_reachability.py ......................................... [ 86%]
+.................................                                        [ 87%]
+tests/lab/test_regression_bundle.py ...                                  [ 87%]
+tests/lab/test_reproduction.py .                                         [ 87%]
+tests/lab/test_retained_candidate_failures.py ..........                 [ 88%]
+tests/lab/test_run_plans.py .....................................        [ 89%]
+tests/lab/test_runner.py ....                                            [ 89%]
+tests/lab/test_schedule_identity_v2.py ..............                    [ 89%]
+tests/lab/test_search_benchmark.py ...                                   [ 90%]
+tests/lab/test_storage.py .......                                        [ 90%]
+tests/lab/test_transport_retry_plans.py ....                             [ 90%]
+tests/providers/test_native_final_answer_contract.py .......             [ 90%]
+tests/providers/test_runtime.py ......................                   [ 91%]
+tests/referee/test_diagnostics.py ....                                   [ 91%]
+tests/referee/test_invariants.py ..............                          [ 91%]
+tests/referee/test_reducer.py .....                                      [ 91%]
+tests/simulator/test_business_contract.py ...........                    [ 92%]
+tests/simulator/test_capabilities.py ..                                  [ 92%]
+tests/simulator/test_entry_point.py .....                                [ 92%]
+tests/simulator/test_faults_http.py .......                              [ 92%]
+tests/telemetry/test_aria_bridge.py ............                         [ 93%]
+tests/telemetry/test_datasets.py ........                                [ 93%]
+tests/telemetry/test_evaluations.py ........                             [ 93%]
+tests/telemetry/test_lifecycle.py ...............................        [ 94%]
+tests/telemetry/test_report_deadline.py .............                    [ 94%]
+tests/telemetry/test_sdk_error_reporting.py .....                        [ 95%]
+tests/telemetry/test_weave_reader.py .............                       [ 95%]
+tests/test_config.py ...............................                     [ 96%]
+tests/test_env_guard.py ......                                           [ 96%]
+tests/test_health.py .                                                   [ 96%]
+tests/test_local.py ...                                                  [ 96%]
+tests/test_local_ports.py .............................................. [ 98%]
+...                                                                      [ 98%]
+tests/test_providers.py ............................                     [ 98%]
+tests/test_role_models.py ....                                           [ 99%]
+tests/world/audit/test_regression_persisted_facts.py ................    [ 99%]
+tests/world/test_audit_freeze.py ...                                     [ 99%]
+tests/world/test_clock_integrity.py ........                             [ 99%]
+tests/world/test_partitions.py .                                         [ 99%]
+tests/world/test_study_manifests.py ..                                   [100%]
+
+=================================== FAILURES ===================================
+__ test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target ___
+
+saved_owner = <app.lab.coordinator.LabCoordinator object at 0x112381d60>
+
+    @needs_store
+    def test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target(saved_owner):
+        campaign, plan = saved_v4_plan(saved_owner)
+        history, table = plan['discovery']['history'], plan['explorer_selection']['table']
+>       assert history['summary']['verified_episodes'] == table['verified_episodes'] == 30
+E       assert 36 == 30
+
+tests/lab/test_history_fireability.py:556: AssertionError
+_ test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed _
+
+saved_owner = <app.lab.coordinator.LabCoordinator object at 0x113e46270>
+
+    @needs_store
+    def test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed(saved_owner):
+        """Every Explorer pick the saved store recorded (discovery in v2c/v2e/v2f, challenge in v2d/v2f), checked against the new
+        plan's table: exactly the picks whose every fault is on the orders status read are refused (fixer: a pick is refused
+        only when every fault targets a REFUSED row; every saved status-read pick is a lone one, so the counts are unchanged)."""
+        _, plan = saved_v4_plan(saved_owner)
+        session = fireability.Session(plan['explorer_selection'], discovery_requests_max=8)
+        decided = []
+        for selection in saved_owner.store.list_records('selections'):
+            spec_ = (selection.get('output') or {}).get('fault_spec')
+            if spec_ is None or selection.get('provenance') == 'history_replay':
+                continue
+            pick = ExplorerOutput.model_validate({'fault_spec': spec_, 'hypothesis': 'saved pick'})
+            context = {'selection_index': 0, 'proposal_index': 0, 'slot_request': 1}
+            decision, kept = fireability.decide(session, context, pick, None, challenge=bool(selection['challenge']), provenance='model')
+            on_status = [p['target_tool'] == 'get_operation_status' and p['target_service'] == 'orders' for p in spec_['primitives']]
+            status_read = all(on_status)
+            assert (decision['status'] == 'REFUSED_LOW_FIRED_SHARE') == status_read and (kept is None) == status_read
+            assert any(on_status) == status_read   # no saved pick mixes the status read with another target
+            decided.append((bool(selection['challenge']), status_read))
+        challenge_refused = sum(1 for challenge_, refused in decided if challenge_ and refused)
+        discovery_refused = sum(1 for challenge_, refused in decided if not challenge_ and refused)
+        assert (challenge_refused, discovery_refused) == (3, 7)
+        assert sum(1 for challenge_, refused in decided if challenge_ and not refused) == 8
+>       assert sum(1 for challenge_, refused in decided if not challenge_ and not refused) == 8
+E       assert 14 == 8
+E        +  where 14 = sum(<generator object test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed.<locals>.<genexpr> at 0x114f32400>)
+
+tests/lab/test_history_fireability.py:595: AssertionError
+=============================== warnings summary ===============================
+../.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+tests/lab/test_ownership.py::test_fork_child_does_not_unlock_parent_or_retain_its_lease
+  /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/backend/tests/lab/test_ownership.py:230: DeprecationWarning: This process (pid=74770) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/lab/test_history_fireability.py::test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target
+FAILED tests/lab/test_history_fireability.py::test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed
+===== 2 failed, 3133 passed, 180 skipped, 2 warnings in 1172.48s (0:19:32) =====
+
+==> frontend
+
+> faultlab-frontend@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/frontend
+
+
+ Test Files  29 passed (29)
+      Tests  373 passed (373)
+   Start at  12:40:12
+   Duration  5.08s (transform 3.37s, setup 0ms, import 9.64s, tests 17.40s, environment 17.97s)
+
+
+==> build
+
+> faultlab-frontend@0.1.0 build
+> tsc -b && vite build
+
+vite v8.3.0 building client environment for production...
+transforming...
+✓ 139 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.48 kB │ gzip:   0.31 kB
+dist/assets/index-wGIqGx6V.css   28.76 kB │ gzip:   6.52 kB
+dist/assets/index-ConD1jdd.js   617.26 kB │ gzip: 151.08 kB
+
+✓ built in 100ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+==> browser
+
+> faultlab-frontend@0.1.0 test:browser
+> playwright test --config tests/playwright.config.ts
+
+
+Running 20 tests using 1 worker
+
+  ✓   1 tests/discovery-v3.browser.ts:12:1 › native v3 plan shows the frozen agent history before Start and the recording carries it (1.2s)
+  ✓   2 tests/discovery-v4.browser.ts:10:1 › native v4 plan shows the frozen replay list before Start and the recording carries it (811ms)
+  ✓   3 tests/evidence-screen.browser.ts:4:1 › saved evidence reload, exact trial drilldown and playback produce only reads (1.9s)
+  ✓   4 tests/evidence-screen.browser.ts:23:1 › creation is separate from Start and duplicate clicks cannot enqueue extra starts (688ms)
+  ✓   5 tests/evidence-screen.browser.ts:44:1 › malformed response stays visible and keyboard access works at narrow width (410ms)
+  ✓   6 tests/evidence-screen.browser.ts:53:1 › history is read-only and Stop follows only the selected active campaign (1.6s)
+  ✓   7 tests/evidence-screen.browser.ts:83:1 › readiness distinguishes backend health from simulator access and rechecks without writes (719ms)
+  ✓   8 tests/evidence-screen.browser.ts:107:1 › saved regression execution history opens interrupted evidence without typing IDs or dispatching work (772ms)
+  -   9 tests/evidence-screen.browser.ts:135:1 › actual local offline smoke creates fresh world and survives reload
+  ✓  10 tests/evidence-screen.browser.ts:159:1 › an absent remembered campaign pauses once and recovers through explicit retry or saved history (713ms)
+  ✓  11 tests/evidence-screen.browser.ts:192:1 › archive browsing shows its location, verified source evidence and disabled mutations while downloads and playback work (948ms)
+  ✓  12 tests/evidence-wait.browser.ts:9:1 › a waiting campaign shows automatic retries, then needs operator, and retries only on request (3.7s)
+  ✓  13 tests/imports.browser.ts:10:1 › a downloaded ZIP is saved only on explicit Save, reviewed as unverified history and reopened after reload without execution (986ms)
+  ✓  14 tests/imports.browser.ts:52:1 › archive mode keeps saved imports readable while upload and fresh execution stay disabled (427ms)
+  ✓  15 tests/imports.browser.ts:74:1 › review shows the bundled task beside a confirmed billable run, a refused upload stays in view with a review open, and phone width keeps outcomes visible (699ms)
+  ✓  16 tests/imports.browser.ts:124:1 › cancelling an unadmitted request keeps "nothing ran" on screen after the review rereads its detail (2.6s)
+  ✓  17 tests/loop-limits.browser.ts:21:1 › a new Learn plan shows the Mechanic rule before Start, says no challenge-pick rule is declared, and shows its records (785ms)
+  ✓  18 tests/network-isolation.browser.ts:20:1 › the test browser resolves no outside host name and opens no outside connection (5.8s)
+  ✓  19 tests/onboarding.browser.ts:7:1 › offline public-case preview saves an idle frozen plan before an explicit Start (3.0s)
+  ✓  20 tests/onboarding.browser.ts:58:1 › native source registration is explicit and NO_CHANGE recording retains its frozen identity after reload (1.2s)
+
+  1 skipped
+  19 passed (30.7s)
+
+Offline check summary:
+  FAILED  backend (exit 1, 1174 s)
+  PASSED  frontend (6 s)
+  PASSED  build (0 s)
+  PASSED  browser (31 s)
+At least one stage failed; see its output above.

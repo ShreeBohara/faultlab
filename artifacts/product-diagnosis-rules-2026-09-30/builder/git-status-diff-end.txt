@@ -1,0 +1,8 @@
+140a141,142
+> ?? backend/app/lab/diagnosis_guide.py
+> ?? backend/app/lab/diagnosis_protocol.py
+200a203,204
+> ?? backend/tests/lab/test_diagnosis_rules.py
+> ?? backend/tests/lab/test_diagnosis_rules_loop.py
+247a252
+> ?? docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md

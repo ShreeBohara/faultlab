@@ -1,0 +1,2 @@
+[record_probe] 68 of 68 checks passed
+[verifier guard] refused outbound connects: 0; refused lookups: 0; refused protected opens: 0

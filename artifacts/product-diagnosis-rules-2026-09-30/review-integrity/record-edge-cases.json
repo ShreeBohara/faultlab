@@ -1,0 +1,55 @@
+{
+ "guard_violations": [],
+ "preflight_rejected": {
+  "fresh_intervention_trials": 0,
+  "intervention_ran": true,
+  "interventions": [
+   {
+    "intervention_id": "intervention-c0c512833ba7fefe071a2a28",
+    "limitations": [
+     "PREFLIGHT_REJECTED"
+    ],
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0
+   }
+  ],
+  "proposal_status": "VALID_REQUESTED",
+  "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-c0c512833ba7fefe071a2a28 (remove_primitive:0). Intervention result: intervention-c0c512833ba7fefe071a2a28 INCONCLUSIVE. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's.",
+  "verdict": "INCONCLUSIVE"
+ },
+ "scratch_deleted": true,
+ "stopped_before_trials": {
+  "fresh_intervention_trials": 0,
+  "intervention_ran": true,
+  "interventions": [
+   {
+    "intervention_id": "intervention-c0c512833ba7fefe071a2a28",
+    "limitations": [
+     "STOPPED"
+    ],
+    "result": "INCONCLUSIVE",
+    "trial_pairs": 0
+   }
+  ],
+  "proposal_status": "VALID_REQUESTED",
+  "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-c0c512833ba7fefe071a2a28 (remove_primitive:0). Intervention result: intervention-c0c512833ba7fefe071a2a28 INCONCLUSIVE. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind POLICY_GAP is the model's.",
+  "verdict": "INCONCLUSIVE"
+ },
+ "supported": {
+  "fresh_intervention_trials": 6,
+  "intervention_ran": true,
+  "interventions": [
+   {
+    "intervention_id": "intervention-c0c512833ba7fefe071a2a28",
+    "limitations": [
+     "Three paired observations test only the declared schedule change; no universal causal claim."
+    ],
+    "result": "SUPPORTED",
+    "trial_pairs": 3
+   }
+  ],
+  "proposal_status": "VALID_REQUESTED",
+  "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-c0c512833ba7fefe071a2a28 (remove_primitive:0). Intervention result: intervention-c0c512833ba7fefe071a2a28 SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind POLICY_GAP is the model's.",
+  "verdict": "POLICY_GAP"
+ }
+}

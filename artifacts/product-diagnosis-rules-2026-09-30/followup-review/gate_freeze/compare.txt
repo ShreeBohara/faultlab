@@ -1,0 +1,10 @@
+== vs verified round (verify/gate_freeze/current-end.json)
+  files: 20/20 identical; changed: []
+  fingerprints: 10/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'tree_lab']
+  functions: 30/30 identical; changed: []
+  checks.py file entry identical: True
+== vs 626bae4 checkpoint (verify/gate_freeze/checkpoint.json)
+  files: 19/20 identical; changed: ['backend/app/agents/mechanic.py']
+  fingerprints: 9/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'source_hash', 'tree_lab']
+  functions: 29/30 identical; changed: ['backend/app/agents/mechanic.py::Mechanic']
+  checks.py file entry identical: True

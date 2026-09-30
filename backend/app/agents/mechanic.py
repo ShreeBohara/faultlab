@@ -9,6 +9,8 @@ from app.contracts.models import MechanicOutput,DiagnosticProposal,canonical_jso
 PROMPTS=Path(__file__).with_name('prompts')
 # The request kind recorded with a transport retry, by prompt (mechanic.md is the policy proposal).
 REQUEST_KINDS={'diagnosis.md':'mechanic_diagnosis','mechanic.md':'mechanic_proposal','completion.md':'mechanic_completion'}
+# The format-repair instruction every Mechanic repair turn sends (the literal in _generate; a test checks the two are equal).
+FORMAT_REPAIR_INSTRUCTION='Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution.'
 
 class Mechanic:
     def __init__(self,provider,store,ledger):
@@ -17,10 +19,20 @@ class Mechanic:
         # The Learn campaign's rule-v2 lab-role backoff (app.agents.transport_retry.LabBackoff), set by the
         # learning loop when its plan declares it. None keeps rule v1's single blind retry.
         self.lab_retry=None
+        # faultlab-mechanic-diagnosis/v1-repair-and-record (app.lab.diagnosis_protocol), set by the learning loop when its
+        # plan declares it. None keeps every request byte for byte. When set, only a diagnosis request changes: its format-
+        # repair turn states the length limit, and last_diagnosis keeps its attempts (request id, output ids, errors).
+        self.diagnosis_protocol=None
+        self.last_diagnosis=None
     async def _generate(self,prompt,context,adapter,*,reservation=None,allow_format_repair=True,validate_result=None):
         context={**context,'output_schema':adapter.json_schema()}
         messages=[{'role':'system','content':(PROMPTS/prompt).read_text()},{'role':'user','content':canonical_json(context)}]
         raws=[]; request_id=new_id('mechanic-request'); request_kind=REQUEST_KINDS[prompt]  # before any charge
+        recording=self.diagnosis_protocol is not None and prompt=='diagnosis.md'
+        if recording:
+            from app.lab import diagnosis_protocol
+            from app.contracts.models import content_hash
+            self.last_diagnosis={'request_id':request_id,'first_turn_hash':content_hash(messages),'output_refs':[],'validation_errors':[]}
         role_model=getattr(self.provider,'role_model',None)
         expected=(role_model('mechanic') if callable(role_model) else None) or (self.metadata or {}).get('model_id',context.get('model_id','openai/gpt-oss-120b'))
         for attempt in range(2 if allow_format_repair else 1):
@@ -62,14 +74,22 @@ class Mechanic:
             ref=new_id('mechanic')
             metadata=self.metadata or {}
             self.store.put_record('mechanic_outputs',ref,{'raw':generation.content,'role':'mechanic','prompt':prompt,'attempt':attempt,'model_id':generation.model_id,'request_id':request_id,'campaign_id':metadata.get('campaign_id') or context.get('campaign_id'),'episode_id':metadata.get('episode_id'),'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {})},immutable=True)
+            if recording: self.last_diagnosis['output_refs'].append(ref)
             try:
                 result=adapter.validate_json(generation.content)
                 errors=validate_result(result) if validate_result else []
             except ValidationError as error:
-                errors=[{'location':list(issue['loc']),'type':issue['type']}
-                        for issue in error.errors(include_input=False,include_context=False,include_url=False)]
+                if recording:
+                    errors=diagnosis_protocol.repair_errors(error)  # today's errors, plus the limit and length for string_too_long
+                else:
+                    errors=[{'location':list(issue['loc']),'type':issue['type']}
+                            for issue in error.errors(include_input=False,include_context=False,include_url=False)]
+            if recording: self.last_diagnosis['validation_errors'].append(errors)
             if not errors: return ref,result,raws
-            if attempt==0 and allow_format_repair:
+            if attempt==0 and allow_format_repair and recording:
+                # The declared diagnosis repair turn: today's errors plus the limit and length, today's instruction plus one sentence.
+                messages.extend([{'role':'assistant','content':generation.content},{'role':'user','content':diagnosis_protocol.repair_message(errors)}])
+            elif attempt==0 and allow_format_repair:
                 messages.extend([{'role':'assistant','content':generation.content},{'role':'user','content':canonical_json({'validation_errors':errors,'instruction':'Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution.'})}])
         return ref,None,raws
     async def diagnose(self,context,*,reservation=None):

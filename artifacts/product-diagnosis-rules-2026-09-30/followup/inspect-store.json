@@ -1,0 +1,664 @@
+{
+ "campaigns": [
+  {
+   "campaign_id": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+   "created_at": "2026-09-30T03:13:58.354036Z",
+   "mode": "baseline",
+   "rowid": 4,
+   "state": "COMPLETED"
+  },
+  {
+   "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+   "created_at": "2026-09-30T03:19:21.991786Z",
+   "mode": "learn",
+   "rowid": 931,
+   "state": "NO_CHANGE"
+  },
+  {
+   "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+   "created_at": "2026-09-30T06:30:53.178009Z",
+   "mode": "learn",
+   "rowid": 1538,
+   "state": "ERROR"
+  },
+  {
+   "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+   "created_at": "2026-09-30T10:11:20.532142Z",
+   "mode": "learn",
+   "rowid": 3023,
+   "state": "NO_CHANGE"
+  },
+  {
+   "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+   "created_at": "2026-09-30T12:32:02.376457Z",
+   "mode": "learn",
+   "rowid": 3772,
+   "state": "STOPPED"
+  },
+  {
+   "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+   "created_at": "2026-09-30T16:22:30.474651Z",
+   "mode": "learn",
+   "rowid": 6749,
+   "state": "NO_CHANGE"
+  }
+ ],
+ "episode_rowids_by_campaign": {
+  "campaign-077b8434e14c4c73a334692223694e63": [
+   939,
+   1506,
+   16
+  ],
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa": [
+   3029,
+   3740,
+   22
+  ],
+  "campaign-53db74766f4d4635b94a0de89e492577": [
+   3778,
+   6721,
+   87
+  ],
+  "campaign-c8063a1166834051b08ae5317ff6f9c2": [
+   12,
+   890,
+   36
+  ],
+  "campaign-d8d1e8cc0ea34feb92dbd8c22c264530": [
+   6755,
+   8548,
+   50
+  ],
+  "campaign-ea66672d7a904bd8a011d6922790c963": [
+   1544,
+   2935,
+   43
+  ]
+ },
+ "max_record_rowid": 8583,
+ "plans": [
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+   "campaign_rowid": 4,
+   "discovery_protocol": null,
+   "explorer_selection": false,
+   "history_composition": null,
+   "history_summary_hash": null,
+   "history_verified": null,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "baseline",
+   "record_cutoff": null,
+   "rowid": 6,
+   "table_rows": [],
+   "table_verified": null
+  },
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+   "campaign_rowid": 931,
+   "discovery_protocol": "faultlab-discovery/v3-history",
+   "explorer_selection": false,
+   "history_composition": {
+    "baseline_studies": 1,
+    "baseline_study_episodes": 18,
+    "learn_campaigns": 0,
+    "learn_discovery_episodes": 0
+   },
+   "history_summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+   "history_verified": 18,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "learn",
+   "record_cutoff": 930,
+   "rowid": 933,
+   "table_rows": [],
+   "table_verified": null
+  },
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+   "campaign_rowid": 1538,
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "explorer_selection": false,
+   "history_composition": {
+    "baseline_studies": 1,
+    "baseline_study_episodes": 18,
+    "learn_campaigns": 1,
+    "learn_discovery_episodes": 7
+   },
+   "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+   "history_verified": 25,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "learn",
+   "record_cutoff": 1537,
+   "rowid": 1540,
+   "table_rows": [],
+   "table_verified": null
+  },
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+   "campaign_rowid": 3023,
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "explorer_selection": false,
+   "history_composition": {
+    "baseline_studies": 1,
+    "baseline_study_episodes": 18,
+    "learn_campaigns": 1,
+    "learn_discovery_episodes": 7
+   },
+   "history_summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+   "history_verified": 25,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mechanic_context",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "learn",
+   "record_cutoff": 3022,
+   "rowid": 3025,
+   "table_rows": [],
+   "table_verified": null
+  },
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+   "campaign_rowid": 3772,
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "explorer_selection": false,
+   "history_composition": {
+    "baseline_studies": 1,
+    "baseline_study_episodes": 18,
+    "learn_campaigns": 2,
+    "learn_discovery_episodes": 12
+   },
+   "history_summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+   "history_verified": 30,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mechanic_context",
+    "mechanic_evidence",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "learn",
+   "record_cutoff": 3771,
+   "rowid": 3774,
+   "table_rows": [],
+   "table_verified": null
+  },
+  {
+   "agent": "smolagents-v2",
+   "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+   "campaign_rowid": 6749,
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "explorer_selection": true,
+   "history_composition": {
+    "baseline_studies": 1,
+    "baseline_study_episodes": 18,
+    "learn_campaigns": 2,
+    "learn_discovery_episodes": 12
+   },
+   "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+   "history_verified": 30,
+   "keys": [
+    "agent",
+    "agent_registration_id",
+    "campaign_id",
+    "caps",
+    "config_profile_id",
+    "configuration_hash",
+    "discovery",
+    "episode_budget",
+    "evidence_retry",
+    "explorer_selection",
+    "initial_policy_hash",
+    "initial_policy_version",
+    "mechanic_context",
+    "mechanic_evidence",
+    "mode",
+    "order_id",
+    "plan_hash",
+    "schema_version",
+    "selection",
+    "setup_hash",
+    "source_mode",
+    "task_definition_id",
+    "task_text",
+    "transport_retry"
+   ],
+   "mode": "learn",
+   "record_cutoff": 6748,
+   "rowid": 6751,
+   "table_rows": [
+    [
+     "F1",
+     "orders",
+     "update_order",
+     4,
+     4,
+     "ALLOWED"
+    ],
+    [
+     "F2",
+     "orders",
+     "update_order",
+     10,
+     10,
+     "ALLOWED"
+    ],
+    [
+     "F3",
+     "orders",
+     "get_order",
+     4,
+     4,
+     "ALLOWED"
+    ],
+    [
+     "F4",
+     "notifications",
+     "send_confirmation",
+     4,
+     4,
+     "ALLOWED"
+    ],
+    [
+     "F4",
+     "orders",
+     "get_operation_status",
+     4,
+     0,
+     "REFUSED"
+    ],
+    [
+     "F4",
+     "orders",
+     "get_order",
+     1,
+     1,
+     "ALLOWED_FEWER_THAN_3"
+    ]
+   ],
+   "table_verified": 30
+  }
+ ],
+ "selections": [
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 938
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1076
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1121
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1161
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1205
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1476
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1505
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 1534
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 1543
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 2366
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 2551
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 2801
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 3028
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 3479
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3617
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3646
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3675
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3678
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3707
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 3739
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 3777
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 4622
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 4837
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 5014
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 5165
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 5599
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 5856
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 6041
+  },
+  {
+   "campaign_id": null,
+   "challenge": true,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 6192
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 6443
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 6720
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 6754
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "history_replay",
+   "rowid": 7228
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8136
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8180
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8224
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8268
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8300
+  },
+  {
+   "campaign_id": null,
+   "challenge": false,
+   "has_spec": true,
+   "provenance": "model",
+   "rowid": 8443
+  }
+ ]
+}

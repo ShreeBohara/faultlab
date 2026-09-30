@@ -1,0 +1,10 @@
+# gate_freeze/checkpoint.json vs gate_freeze/current.json: 124 leaves, 8 differ
+DIFF files/backend/app/agents/mechanic.py 0b4606b3d03bd445130e -> f1f57204d98fc498d85c
+DIFF fingerprints/algorithm_hash 7a56afed3dfe4d3236a4 -> 0b34473c4db55d9c82fd
+DIFF fingerprints/runtime_hash 49958e716f0b08aacb9d -> 1abba8a6810b6bd6b47d
+DIFF fingerprints/source_hash 7f78de2861a1e74e01d5 -> eaffac74c1039320236c
+DIFF fingerprints/tree_lab 020aa5e81b991cb895ae -> d452dd81c7279235b741
+DIFF functions/backend/app/agents/mechanic.py::Mechanic/ast_sha256 d17477edb0dd1be10a7a -> 8cae4e3a63c20f14038c
+DIFF functions/backend/app/agents/mechanic.py::Mechanic/lines 13-91 -> 15-111
+DIFF functions/backend/app/agents/mechanic.py::Mechanic/text_sha256 70d726f88d85f5a29a7b -> f0a00d0573ae8bced0cf
+checks.py leaves: {'files/backend/app/referee/checks.py': True, 'functions/backend/app/referee/checks.py::score/ast_sha256': True, 'functions/backend/app/referee/checks.py::score/lines': True, 'functions/backend/app/referee/checks.py::score/text_sha256': True, 'functions/backend/app/referee/checks.py::scorer_hash/ast_sha256': True, 'functions/backend/app/referee/checks.py::scorer_hash/lines': True, 'functions/backend/app/referee/checks.py::scorer_hash/text_sha256': True}

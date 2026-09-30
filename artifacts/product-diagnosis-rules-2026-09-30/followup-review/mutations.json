@@ -1,0 +1,346 @@
+[
+ {
+  "id": "CONTROL-before",
+  "result": {
+   "exit": 0,
+   "summary": "116 passed in 53.80s",
+   "failed": [],
+   "first_errors": [],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B1",
+  "what": "store reads ignore the record cutoff (history leak)",
+  "file": "app/lab/storage.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "2 failed, 4 passed in 3.97s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed"
+   ],
+   "first_errors": [
+    "E       AssertionError: assert (7 == 5)",
+    "E       assert 14 == 8"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B2",
+  "what": "Start re-checks the frozen history at today's row instead of the plan's cutoff",
+  "file": "app/lab/agent_history.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "3 failed, 3 passed in 3.84s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned"
+   ],
+   "first_errors": [],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B3",
+  "what": "history drops baseline-study episodes",
+  "file": "app/lab/agent_history.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "3 failed, 3 passed in 3.68s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned"
+   ],
+   "first_errors": [
+    "E       AssertionError: assert (6748, 'a0c69...993272b7c702') == (6748, 'd5818...d80cec026a0e')",
+    "E       AssertionError: assert (6748, 'a0c69...993272b7c702') == (6748, 'd5818...d80cec026a0e')",
+    "E       AssertionError: assert (6748, 'a0c69...993272b7c702') == (6748, 'd5818...d80cec026a0e')"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B4",
+  "what": "history counts a fired fault twice",
+  "file": "app/lab/agent_history.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "3 failed, 3 passed in 3.82s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned"
+   ],
+   "first_errors": [
+    "E       AssertionError: assert (6748, '0889e...9620bf618207') == (6748, 'd5818...d80cec026a0e')",
+    "E       AssertionError: assert (6748, '0889e...9620bf618207') == (6748, 'd5818...d80cec026a0e')",
+    "E       AssertionError: assert (6748, '0889e...9620bf618207') == (6748, 'd5818...d80cec026a0e')"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B5",
+  "what": "challenge picks are never refused",
+  "file": "app/lab/fireability.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "1 failed, 5 passed in 3.90s",
+   "failed": [
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed"
+   ],
+   "first_errors": [
+    "E           AssertionError: assert (('ALLOWED' == 'REFUSED_LOW_FIRED_SHARE'"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B6",
+  "what": "a pick is refused when ANY fault targets a REFUSED row (mixed-pick rule inverted)",
+  "file": "app/lab/fireability.py",
+  "tests_run": 7,
+  "caught": false,
+  "result": {
+   "exit": 0,
+   "summary": "25 passed in 33.67s",
+   "failed": [],
+   "first_errors": [],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B7",
+  "what": "replay list capped at 1 instead of 3",
+  "file": "app/lab/history_replay.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "3 failed, 3 passed in 3.54s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned"
+   ],
+   "first_errors": [
+    "E       pydantic_core._pydantic_core.ValidationError: 1 validation error for SavedRunPlan",
+    "E       pydantic_core._pydantic_core.ValidationError: 1 validation error for SavedRunPlan",
+    "E       pydantic_core._pydantic_core.ValidationError: 1 validation error for SavedRunPlan"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B8",
+  "what": "format-repair reserve 4000 -> 3000 (size-rule target +1000)",
+  "file": "app/lab/loop_limits.py",
+  "tests_run": 6,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "5 failed, 1 passed in 3.57s",
+   "failed": [
+    "test_T1_every_saved_native_v2b_plan_rereads_with_its_plan_hash_and_no_new_keys",
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned",
+    "test_the_refused_v2d_request_rebuilds_exactly_and_fits_after_compaction_with_its_omission_statement"
+   ],
+   "first_errors": [
+    "E       pydantic_core._pydantic_core.ValidationError: 2 validation errors for SavedRunPlan",
+    "E       pydantic_core._pydantic_core.ValidationError: 2 validation errors for SavedRunPlan",
+    "E       pydantic_core._pydantic_core.ValidationError: 2 validation errors for SavedRunPlan",
+    "E               assert [33611, 28056] == [33611, 28056, 21101]"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "B9",
+  "what": "snapshot reads \"now\" twice (brittleness probe for the one-read assertion)",
+  "file": "app/lab/agent_history.py",
+  "tests_run": 3,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "3 failed in 2.52s",
+   "failed": [
+    "test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target",
+    "test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed",
+    "test_through_the_real_loop_on_the_saved_store_a_status_pick_is_refused_and_replanned"
+   ],
+   "first_errors": [
+    "E       AssertionError: assert 2 == 1",
+    "E       AssertionError: assert 2 == 1",
+    "E       AssertionError: assert 2 == 1"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A1",
+  "what": "checks_note loses its final period",
+  "file": "app/lab/diagnosis_guide.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "8 failed, 84 passed in 20.93s",
+   "failed": [
+    "test_every_request_is_the_saved_bytes_or_exactly_one_declared_change",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2d-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2e-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2f-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev6]",
+    "test_T3_the_guide_interprets_no_check_and_names_no_episode",
+    "test_T9_the_minimal_designs_prototype_still_measures_631_tokens_and_its_saved_hashes"
+   ],
+   "first_errors": [
+    "E       assert (9597 - 8990) == 608",
+    "E       assert (9695 - 9088) == 608",
+    "E       assert (10246 - 9639) == 608",
+    "E       assert (10401 - 9794) == 608"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A2",
+  "what": "the C6 sentence is put back into checks_note",
+  "file": "app/lab/diagnosis_guide.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "9 failed, 83 passed in 20.37s",
+   "failed": [
+    "test_every_request_is_the_saved_bytes_or_exactly_one_declared_change",
+    "test_T1_the_declarations_are_exact",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2d-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2e-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2f-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev6]",
+    "test_T3_the_guide_interprets_no_check_and_names_no_episode",
+    "test_T9_the_minimal_designs_prototype_still_measures_631_tokens_and_its_saved_hashes"
+   ],
+   "first_errors": [
+    "E       assert (9621 - 8990) == 608",
+    "E       assert (9719 - 9088) == 608",
+    "E       assert (10270 - 9639) == 608",
+    "E       assert (10425 - 9794) == 608"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A3",
+  "what": "Rule 2 offered (DIAGNOSIS_GUIDE_OFFERED = True)",
+  "file": "app/lab/diagnosis_guide.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "2 failed, 90 passed in 17.44s",
+   "failed": [
+    "test_T1_a_learn_plan_saved_before_the_rules_keeps_its_bytes_and_todays_behaviour",
+    "test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2"
+   ],
+   "first_errors": [
+    "E       assert ('diagnosis_guide' not in {'manifest_hash': 'c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1', 'search_space': {'maximum_primit.",
+    "E       AssertionError: assert not ({'diagnosis_guide', 'mechanic_diagnosis'} & {'agent', 'agent_registration_id', 'campaign_id', 'caps', 'config_profile_id', '"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A4",
+  "what": "the block sends no checks_note (declaration keeps it)",
+  "file": "app/lab/diagnosis_guide.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "8 failed, 84 passed in 20.26s",
+   "failed": [
+    "test_every_request_is_the_saved_bytes_or_exactly_one_declared_change",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2d-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2e-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2f-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev5]",
+    "test_T3_the_guide_adds_exactly_one_key_and_the_same_number_of_tokens_to_every_first_turn[v2g-dev6]",
+    "test_T3_the_guide_interprets_no_check_and_names_no_episode",
+    "test_T9_the_minimal_designs_prototype_still_measures_631_tokens_and_its_saved_hashes"
+   ],
+   "first_errors": [
+    "E       assert (9559 - 8990) == 608",
+    "E       assert (9657 - 9088) == 608",
+    "E       assert (10208 - 9639) == 608",
+    "E       assert (10363 - 9794) == 608"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A5",
+  "what": "the plan model accepts interprets_checks=True",
+  "file": "app/lab/run_plans.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "1 failed, 91 passed in 20.78s",
+   "failed": [
+    "test_T1_the_declarations_are_exact"
+   ],
+   "first_errors": [
+    "E           Failed: DID NOT RAISE ValidationError"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "A6",
+  "what": "Start stops binding the note word for word (FIXED_TEXT without checks_note)",
+  "file": "app/lab/diagnosis_guide.py",
+  "tests_run": 2,
+  "caught": true,
+  "result": {
+   "exit": 1,
+   "summary": "1 failed, 91 passed in 20.24s",
+   "failed": [
+    "test_T1_the_declarations_are_exact"
+   ],
+   "first_errors": [
+    "E           Failed: DID NOT RAISE ValidationError"
+   ],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ },
+ {
+  "id": "CONTROL-after",
+  "result": {
+   "exit": 0,
+   "summary": "116 passed in 51.87s",
+   "failed": [],
+   "first_errors": [],
+   "guard": "[reviewer guard] refused outbound: 0; refused lookups: 0; refused protected opens: 0; loopback connects: 0"
+  }
+ }
+]

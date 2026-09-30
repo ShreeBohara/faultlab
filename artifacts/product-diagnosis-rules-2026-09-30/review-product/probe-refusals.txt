@@ -1,0 +1,30 @@
+--- no --out
+REFUSED: --execute-live needs --out
+[review_run_guarded] exit status 2
+--- no declaration
+REFUSED: --execute-live needs --declaration FILE and --declaration-sha256 HEX
+[review_run_guarded] exit status 2
+--- template (placeholder folder) with its own sha
+REFUSED: The declaration names another output folder
+[review_run_guarded] exit status 2
+--- wrong sha
+REFUSED: The declaration's sha256 differs from --declaration-sha256
+[review_run_guarded] exit status 2
+--- good-but-9-dollars
+REFUSED: The spend cap must be positive and at most $8.00
+[review_run_guarded] exit status 2
+--- wrong-plan
+REFUSED: The declaration names another harness, plan or model
+[review_run_guarded] exit status 2
+--- no-approver
+REFUSED: The declaration names no approver
+[review_run_guarded] exit status 2
+--- dashboard-open
+REFUSED: The declaration does not confirm the preconditions (ledger checked, dashboard closed, no other paid run)
+[review_run_guarded] exit status 2
+--- cap-below-planned
+REFUSED: 140 planned calls exceed the $6.00 cap at the per-call bound
+[review_run_guarded] exit status 2
+--- other-folder
+REFUSED: The declaration names another output folder
+[review_run_guarded] exit status 2

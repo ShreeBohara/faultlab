@@ -10,11 +10,16 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run.
-**Newest build: `49958e71…`** (September 30, after v2f: history fireability for Explorer picks,
+**Newest build: `1abba8a6…`** (September 30, after the diagnosis analysis: the diagnosis repair-and-record rule
+`faultlab-mechanic-diagnosis/v1-repair-and-record` in every new Learn plan, and the diagnosis guide
+`faultlab-diagnosis-guide/v1-kinds-and-checks` built but **not offered**, plus the pre-registered probe harness,
+**not run**; builder, two $0 reviews, fixer and verifier, then a $0 follow-up (the PM's F4 decision on the guide text and
+pinned saved-store tests), all offline; **not yet committed, not run live**; the verified `c80d8632…` and the builder's
+unreviewed `e3551ead…` are superseded; *Current work*, first paragraph). Before it, current code was **`49958e71…`** (September 30, after v2f: history fireability for Explorer picks,
 `faultlab-explorer-selection/v3-history-fireability`, changed after review so that a pick is refused only when every one
 of its faults is on a refused target, and evidence retry v3, 24 automatic retries per campaign; builder, two $0 reviews
-and fixer, all offline; **committed locally, not run live**; the rule change was signed off by Claude as PM (delegated) with its residual bias stated; *Current work*,
-first paragraph; the builder's unreviewed `07b8ccc4…` is superseded). Before it,
+and fixer, all offline; committed locally as `661e2d0` and **run live once, v2g**, row below; the rule change was signed off by Claude as PM (delegated) with its residual bias stated; *Current work*,
+the paragraph after the newest build; the builder's unreviewed `07b8ccc4…` is superseded). Before it,
 current code was **`95042e4d…`** (September 30, after v2e: native citation status in Mechanic and challenge Explorer
 requests, `faultlab-mechanic-evidence/v2-native-citation-status`, native adapter v2 Learn plans only; builder, two $0
 reviews and fixer, all offline; committed locally as `47b8f69` and **run live once, v2f**, row below; *Current work*,
@@ -61,8 +66,92 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Newest build (September 30, after live run v2f; builder, two $0 reviews and fixer, all offline): history fireability
-for Explorer picks, and evidence retry v3. Not yet committed, not run live.** Runtime
+**Newest build (September 30, after the diagnosis analysis; builder, two $0 reviews and fixer, all offline): diagnosis
+repair-and-record (Rule 1), a diagnosis guide built but not offered (Rule 2), and the pre-registered request-only probe
+harness; verified READY_WITH_NOTES, then a $0 follow-up. Not yet committed, not run live; the probe has not been run.**
+Runtime `1abba8a6810b6bd6b47dd5887c6305052ca87d48660977fb6277a3ff81462b2f` (algorithm `0b34473c…`; the follow-up changed
+only `diagnosis_guide.py` and one field of `run_plans.py` in `backend/app`), built on `49958e71`
+(= `backup/part2-2026-09-22` at `626bae4`); superseded: the verified `c80d8632…` (algorithm `743a1520…`) and the
+builder's unreviewed `e3551ead…` (algorithm `e4c47b4e…`). Design and PM decision:
+[`artifacts/analysis-diagnosis-2026-09-30/RECOMMENDATION.md`](artifacts/analysis-diagnosis-2026-09-30/RECOMMENDATION.md);
+what was built, tests, the fixer's changes and limits: [diagnosis rules note](docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md).
+Evidence: `artifacts/product-diagnosis-rules-2026-09-30/` (`builder/`, `review-integrity/`, `review-product/`, `fixer/`,
+`verify/`, `followup/`, `probe-inputs/`; current probe plan and declaration template in `followup/probe-plan/`; the
+builder's `probe-plan/` and `fixer/probe-plan/` are superseded).
+* **Why:** across v2d-v2g the dev-5 source reproduced and reduced 4/4 but the diagnosis gave POLICY_GAP 2/4. v2e
+  declined on a citation theory; v2g requested the right intervention twice but its 614-character hypothesis failed the
+  600-character limit both times, the repair message never named the limit, and INCONCLUSIVE was stored as a code default
+  that no record distinguished from a model choice.
+* **Rule 1, `faultlab-mechanic-diagnosis/v1-repair-and-record`** (plan field `mechanic_diagnosis`), frozen into **every
+  new Learn plan, every agent**, and offered in run options:
+  * a diagnosis request's one format-repair turn gives each `string_too_long` error `max_characters` and
+    `your_characters` (v2g: 600 and 614) and appends one sentence to today's unchanged instruction (+47 tokens); the first
+    turn, the model's text (never truncated), the 600 limit and candidate requests are unchanged;
+  * after every diagnosis, before the POLICY_GAP gate, an immutable `diagnosis_requests/<diagnostic_id>` record:
+    `VALID_REQUESTED` / `VALID_NO_REQUEST` / `INVALID_OUTPUT`, proposed_kind source `model` / `code_default`, every attempt
+    by id with its errors, the options with their change strings, the requested id, whether the requested intervention ran
+    **any fresh trial** (`intervention_ran`; fixer) and, if it ended before its three pairs, why (`early_end`, also in
+    the record's sentence); the export of such a plan lists `diagnosis_requests` with every attempt embedded by id (v2f's
+    attempt 0 included). The dashboard shows the rule in the Learn setup form and the saved plan (fixer), but not the
+    record itself (follow-up; only the recording carries it).
+    Replayed on the five saved diagnoses it says VALID_REQUESTED, VALID_NO_REQUEST, VALID_REQUESTED (attempt 0 rejected at
+    743), INVALID_OUTPUT/code_default, VALID_REQUESTED.
+* **Rule 2, `faultlab-diagnosis-guide/v1-kinds-and-checks`** (plan field `diagnosis_guide`): **built and tested, not
+  offered** (`DIAGNOSIS_GUIDE_OFFERED = False` in `backend/app/lab/diagnosis_guide.py`; run options do not list it and no
+  new plan freezes it). The block gives the task text, the C1-C8 public meanings verbatim (hash frozen), the kind
+  definitions, the runtime-contract note, how the output is used and the length limit (+608 tokens); per the PM decisions
+  the draft's interpretive C6 sentence is dropped and its two neutral `checks_note` sentences are kept word for word
+  (review finding F4, follow-up); Rule 2 declaration `def60594…`. A plan that declares it is validated exactly and Start
+  refuses it if its frozen text or C1-C8 hash differs from the installed one. Flip the constant only after the probe's P1
+  and P2 pass.
+* **Probe harness** `scripts/experiments/diagnosis_probe.py` (RECOMMENDATION.md section 7): dry run by default; 100
+  first-turn calls (CONTROL/GUIDE, K=10, interleaved) + 40 repair calls = 140; maximum charge 140 × $0.04984 = $6.9776
+  (cap $8), tighter bound $2.90; every call admitted and charged through `RuntimeProvider` and a `CampaignLedger` before it
+  is sent; `--execute-live` refuses without a declaration whose sha256 is given, and (fixer) the declaration must carry the
+  harness's exact scoring rules, the frozen temperature, how repeated answers will be read, and a clock-drift check.
+  **Read before declaring it (PM decisions, doc section 5):** the frozen temperature is 0 and the declaration cannot change
+  it, so K=10 repeats may be identical (scoring now reports distinct answers per request key). The `checks_note` scope
+  (review finding F4) is decided: the two neutral sentences are back, GUIDE is +608 tokens. Plan hash `91ca47e4…`
+  (`followup/probe-plan/`; tighter bound $2.9065, maximum $6.9776), harness `b1eb7cda…` (unchanged); after a run, add its
+  charge to the carried total by hand (its ledger is its own).
+* **Unchanged:** `referee/` (checks.py not opened), `lab/diagnosis.py`, `prompts/diagnosis.md`, `contracts/models.py`,
+  `citation_status.py`, the `learning.py` gate line, reproduction/reduction/assess_pairs/source validation/challenge/
+  promotion, the reference Actor prompt; service `3ce5bcd2…`, contract `6f9d7783…`, interpreter `6da0714a…`, scorer
+  `19de811c…`, native v2.1 prompt `fff397c9…`; every saved plan (6/6 native-v2b plans byte for byte; 6/6 recordings
+  byte-identical under the old and new exports.py). `gate_freeze.py`: only `mechanic.py` (the declared change) and the
+  source fingerprints changed. The reference Actor source hash changed (`7f78de28…` → `eaffac74…`; `mechanic.py` is in the
+  agents tree), so **register every agent again before a live run**.
+* **Checks ($0):** 83 new tests from the builder, 97 backend and 5 frontend after the fixer (T1-T9 of the memo, the loop's
+  wrapper order, Rule 1 through two evidence waits with the real Diagnostician and Mechanic, the probe harness with a
+  scripted provider, cap enforcement and refusal without a declaration); two existing test harnesses whose Diagnostician
+  is a stage double switch Rule 1 off (the record needs a real Mechanic call). The builder's one `scripts/test.sh` run
+  **exited 1**: backend 2 failed, 3,119 passed, 180 skipped (`builder/full-test-sh.log`). The two failures are
+  `test_history_fireability` saved-store tests that pin the store's history before v2g was saved (30 → 36 verified
+  episodes); that file was unchanged from `626bae4`. The fixer's and the verifier's runs had the same 2 failures
+  (`fixer/full-test-sh.log`, `verify/full-test-sh.log`); the follow-up pinned those tests (below).
+* **Reviews and fixer ($0):** no HIGH finding. Fixed with failing-then-passing tests: `intervention_ran` now means a fresh
+  trial ran (it was true for an experiment that preflight rejected or a Stop ended before any trial); P1 counts GUIDE
+  hypotheses a person flags but the checker misses against the GUIDE bar, and the review file hides the checker's output;
+  scoring reports repeats; the declaration carries P4's "worse", the full decision rule, the temperature and a clock-drift
+  check; `served_model` renamed `model_id`; the dashboard shows Rule 1 and no longer calls a code-default kind the model's;
+  a record refusal names its diagnosis. 17 of 17 reverted fixes are caught by a test (`fixer/mutation-checks.log`).
+  Deferred: showing the `diagnosis_requests` record in the dashboard.
+* **Follow-up ($0, `followup/`):** the PM's F4 decision applied (guide block, plan validator, dashboard validator, T3/T9,
+  probe test, doc; new probe plan `91ca47e4…`). The saved-store tests now read the native-v2b store at fixed, recorded
+  snapshots, so later live runs cannot change their expected numbers: the three `test_history_fireability` tests at record
+  cutoff 6748 (where live run v2g's own plan froze its history; the rebuilt plan equals v2g's frozen history, replay list
+  and table, and the old numbers 30 / 3,7 / 8 / 8 hold), the diagnosis-rules T1 test at the store's reviewed end (row 8583,
+  its six plans), and the v2d request rebuild (used by two tests) at 3022 (the store as v2d left it). Controls: on a copy
+  grown by a synthetic later run the pinned tests pass and the unpinned versions fail; 11 of 11 product mutations are
+  caught. The follow-up's one `scripts/test.sh` run **exited 0** (`followup/full-test-sh.log`): backend 3,135 passed,
+  180 skipped; frontend 373 passed; build and browser (19 passed, 1 skipped) passed; no non-loopback connection. Runtime
+  `1abba8a6…`; Rule 2 still not offered.
+* **Next:** with owner/PM approval and a declaration, the probe (decide the temperature question first); Rule 1 ships
+  unless P4 shows the new message is worse; Rule 2 only if P1 and P2 pass. Register every agent again before any live
+  run.
+
+**Build before this one (September 30, after live run v2f; builder, two $0 reviews and fixer, all offline): history
+fireability for Explorer picks, and evidence retry v3. Committed locally as `661e2d0`; run live once (v2g).** Runtime
 `49958e716f0b08aacb9db5d6ddf99620451f949a901aa35cca979918c1df6b6e` (algorithm `7a56afed…`), built on `95042e4d`
 (= `backup/part2-2026-09-22` at `432e54b`); the builder's unreviewed `07b8ccc4…` is superseded. Design, measurements,
 limits, the review findings and the fixer's table: [history fireability note](docs/PRODUCT_HISTORY_FIREABILITY_2026-09-30.md)

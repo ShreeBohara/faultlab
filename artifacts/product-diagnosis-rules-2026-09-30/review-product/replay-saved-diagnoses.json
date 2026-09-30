@@ -1,0 +1,413 @@
+{
+ "diagnoses": {
+  "v2d-dev5": {
+   "checks": {
+    "attempt_count_equals_saved": true,
+    "kind_source_consistent": true,
+    "requested_id_ran_equals_saved_interventions": true,
+    "status_as_memo_predicted": true,
+    "verdict_equals_saved": true
+   },
+   "record": {
+    "attempt_errors": [
+     []
+    ],
+    "intervention_ran": true,
+    "last_raw_unvalidated": {
+     "parsed_json_object": true,
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-7b8a13a6ed07a7ba054e44e8",
+     "validated": false
+    },
+    "options": [
+     [
+      "intervention-7b8a13a6ed07a7ba054e44e8",
+      "remove_primitive:0"
+     ]
+    ],
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "recorded_proposed_kind_source": "model",
+    "requested_change": "remove_primitive:0",
+    "requested_intervention_id": "intervention-7b8a13a6ed07a7ba054e44e8",
+    "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-7b8a13a6ed07a7ba054e44e8 (remove_primitive:0). Intervention result: intervention-7b8a13a6ed07a7ba054e44e8 SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind CONTRACT_EVIDENCE_GAP is the model's.",
+    "verdict": "POLICY_GAP"
+   },
+   "record_first_turn_hash_is_saved_first_turn": true,
+   "rule_off_first_turn_equals_saved": true,
+   "rule_off_turns": 1,
+   "rule_off_valid": true,
+   "rule_on_first_turn_equals_saved": true,
+   "rule_on_turns": 1,
+   "rule_on_valid": true,
+   "saved_attempt_numbers": [
+    0
+   ],
+   "saved_attempts": 1,
+   "saved_hypothesis_lengths": [
+    443
+   ],
+   "saved_intervention_change_field": [
+    "removes_violation"
+   ],
+   "saved_intervention_results": [
+    "SUPPORTED"
+   ],
+   "saved_kind": "POLICY_GAP",
+   "saved_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "saved_request_ids": [
+    "mechanic-request-dc4241571bac4f8fb6de6140060c6aed"
+   ]
+  },
+  "v2e-dev5": {
+   "checks": {
+    "attempt_count_equals_saved": true,
+    "kind_source_consistent": true,
+    "requested_id_ran_equals_saved_interventions": true,
+    "status_as_memo_predicted": true,
+    "verdict_equals_saved": true
+   },
+   "record": {
+    "attempt_errors": [
+     []
+    ],
+    "intervention_ran": false,
+    "last_raw_unvalidated": {
+     "parsed_json_object": true,
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": null,
+     "validated": false
+    },
+    "options": [
+     [
+      "intervention-e91961428eedb56e8fa30e3b",
+      "remove_primitive:0"
+     ]
+    ],
+    "proposal_status": "VALID_NO_REQUEST",
+    "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "recorded_proposed_kind_source": "model",
+    "requested_change": null,
+    "requested_intervention_id": null,
+    "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested no intervention (null), so none ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind CONTRACT_EVIDENCE_GAP is the model's.",
+    "verdict": "INCONCLUSIVE"
+   },
+   "record_first_turn_hash_is_saved_first_turn": true,
+   "rule_off_first_turn_equals_saved": true,
+   "rule_off_turns": 1,
+   "rule_off_valid": true,
+   "rule_on_first_turn_equals_saved": true,
+   "rule_on_turns": 1,
+   "rule_on_valid": true,
+   "saved_attempt_numbers": [
+    0
+   ],
+   "saved_attempts": 1,
+   "saved_hypothesis_lengths": [
+    405
+   ],
+   "saved_intervention_change_field": [],
+   "saved_intervention_results": [],
+   "saved_kind": "INCONCLUSIVE",
+   "saved_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "saved_request_ids": [
+    "mechanic-request-803b1c270eba4c9da62e2dcf1756cb69"
+   ]
+  },
+  "v2f-dev5": {
+   "checks": {
+    "attempt_count_equals_saved": true,
+    "kind_source_consistent": true,
+    "requested_id_ran_equals_saved_interventions": true,
+    "status_as_memo_predicted": true,
+    "verdict_equals_saved": true
+   },
+   "record": {
+    "attempt_errors": [
+     [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 743
+      }
+     ],
+     []
+    ],
+    "intervention_ran": true,
+    "last_raw_unvalidated": {
+     "parsed_json_object": true,
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070",
+     "validated": false
+    },
+    "options": [
+     [
+      "intervention-eb9f974e4d0e1b0e60ab2070",
+      "remove_primitive:0"
+     ]
+    ],
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "recorded_proposed_kind_source": "model",
+    "requested_change": "remove_primitive:0",
+    "requested_intervention_id": "intervention-eb9f974e4d0e1b0e60ab2070",
+    "statement": "The Mechanic gave a valid answer on attempt 2 of 2 and requested intervention-eb9f974e4d0e1b0e60ab2070 (remove_primitive:0). Intervention result: intervention-eb9f974e4d0e1b0e60ab2070 SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind CONTRACT_EVIDENCE_GAP is the model's.",
+    "verdict": "POLICY_GAP"
+   },
+   "record_first_turn_hash_is_saved_first_turn": true,
+   "rule_off_first_turn_equals_saved": true,
+   "rule_off_repair_equals_saved": true,
+   "rule_off_repair_first_three_messages_equal_saved": true,
+   "rule_off_turns": 2,
+   "rule_off_valid": true,
+   "rule_on_first_turn_equals_saved": true,
+   "rule_on_repair_equals_saved": false,
+   "rule_on_repair_first_three_messages_equal_saved": true,
+   "rule_on_repair_message": {
+    "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.",
+    "validation_errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "max_characters": 600,
+      "type": "string_too_long",
+      "your_characters": 743
+     }
+    ]
+   },
+   "rule_on_turns": 2,
+   "rule_on_valid": true,
+   "saved_attempt_numbers": [
+    0,
+    1
+   ],
+   "saved_attempt_raws_byte_identical": false,
+   "saved_attempts": 2,
+   "saved_hypothesis_lengths": [
+    743,
+    428
+   ],
+   "saved_intervention_change_field": [
+    "removes_violation"
+   ],
+   "saved_intervention_results": [
+    "SUPPORTED"
+   ],
+   "saved_kind": "POLICY_GAP",
+   "saved_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "saved_request_ids": [
+    "mechanic-request-89b0aa51bc184af0a7eefe64d82a3b47"
+   ]
+  },
+  "v2g-dev5": {
+   "checks": {
+    "attempt_count_equals_saved": true,
+    "kind_source_consistent": true,
+    "requested_id_ran_equals_saved_interventions": true,
+    "status_as_memo_predicted": true,
+    "verdict_equals_saved": true
+   },
+   "record": {
+    "attempt_errors": [
+     [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ],
+     [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ]
+    ],
+    "intervention_ran": false,
+    "last_raw_unvalidated": {
+     "parsed_json_object": true,
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-828103e0598f48f8675994a5",
+     "validated": false
+    },
+    "options": [
+     [
+      "intervention-828103e0598f48f8675994a5",
+      "remove_primitive:0"
+     ]
+    ],
+    "proposal_status": "INVALID_OUTPUT",
+    "recorded_proposed_kind": "INCONCLUSIVE",
+    "recorded_proposed_kind_source": "code_default",
+    "requested_change": null,
+    "requested_intervention_id": null,
+    "statement": "None of the Mechanic's 2 answer(s) passed validation (hypothesis string_too_long (614 of at most 600 characters); hypothesis string_too_long (614 of at most 600 characters)), so no intervention ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind INCONCLUSIVE is a code default, not the model's. Its last answer, unvalidated, named proposed_kind 'CONTRACT_EVIDENCE_GAP' and requested 'intervention-828103e0598f48f8675994a5'.",
+    "verdict": "INCONCLUSIVE"
+   },
+   "record_first_turn_hash_is_saved_first_turn": true,
+   "rule_off_first_turn_equals_saved": true,
+   "rule_off_repair_equals_saved": true,
+   "rule_off_repair_first_three_messages_equal_saved": true,
+   "rule_off_turns": 2,
+   "rule_off_valid": false,
+   "rule_on_first_turn_equals_saved": true,
+   "rule_on_repair_equals_saved": false,
+   "rule_on_repair_first_three_messages_equal_saved": true,
+   "rule_on_repair_message": {
+    "instruction": "Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.",
+    "validation_errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "max_characters": 600,
+      "type": "string_too_long",
+      "your_characters": 614
+     }
+    ]
+   },
+   "rule_on_turns": 2,
+   "rule_on_valid": false,
+   "saved_attempt_numbers": [
+    0,
+    1
+   ],
+   "saved_attempt_raws_byte_identical": true,
+   "saved_attempts": 2,
+   "saved_hypothesis_lengths": [
+    614,
+    614
+   ],
+   "saved_intervention_change_field": [],
+   "saved_intervention_results": [],
+   "saved_kind": "INCONCLUSIVE",
+   "saved_proposed_kind": "INCONCLUSIVE",
+   "saved_request_ids": [
+    "mechanic-request-e93fda592ce146e49dadeae69be4651e"
+   ]
+  },
+  "v2g-dev6": {
+   "checks": {
+    "attempt_count_equals_saved": true,
+    "kind_source_consistent": true,
+    "requested_id_ran_equals_saved_interventions": true,
+    "status_as_memo_predicted": true,
+    "verdict_equals_saved": true
+   },
+   "record": {
+    "attempt_errors": [
+     []
+    ],
+    "intervention_ran": true,
+    "last_raw_unvalidated": {
+     "parsed_json_object": true,
+     "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+     "requested_intervention_id": "intervention-1fa1cf42ff627b60cfa631dd",
+     "validated": false
+    },
+    "options": [
+     [
+      "intervention-1fa1cf42ff627b60cfa631dd",
+      "remove_primitive:0"
+     ],
+     [
+      "intervention-0d584dee803efd13b29ae014",
+      "lower_parameter:0:failure_count:1"
+     ]
+    ],
+    "proposal_status": "VALID_REQUESTED",
+    "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+    "recorded_proposed_kind_source": "model",
+    "requested_change": "remove_primitive:0",
+    "requested_intervention_id": "intervention-1fa1cf42ff627b60cfa631dd",
+    "statement": "The Mechanic gave a valid answer on attempt 1 of 1 and requested intervention-1fa1cf42ff627b60cfa631dd (remove_primitive:0). Intervention result: intervention-1fa1cf42ff627b60cfa631dd SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind CONTRACT_EVIDENCE_GAP is the model's.",
+    "verdict": "POLICY_GAP"
+   },
+   "record_first_turn_hash_is_saved_first_turn": true,
+   "rule_off_first_turn_equals_saved": true,
+   "rule_off_turns": 1,
+   "rule_off_valid": true,
+   "rule_on_first_turn_equals_saved": true,
+   "rule_on_turns": 1,
+   "rule_on_valid": true,
+   "saved_attempt_numbers": [
+    0
+   ],
+   "saved_attempts": 1,
+   "saved_hypothesis_lengths": [
+    295
+   ],
+   "saved_intervention_change_field": [
+    "removes_violation"
+   ],
+   "saved_intervention_results": [
+    "SUPPORTED"
+   ],
+   "saved_kind": "POLICY_GAP",
+   "saved_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "saved_request_ids": [
+    "mechanic-request-084f1d9b4c61477784ba9a0ec7156fd9"
+   ]
+  }
+ },
+ "probe_inputs_equal_inv_a": {
+  "v2d-dev5": true,
+  "v2e-dev5": true,
+  "v2f-dev5": true,
+  "v2g-dev5": true,
+  "v2g-dev6": true
+ },
+ "saved_store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "saved_store_unchanged": true,
+ "scratch_copy_deleted": true,
+ "sha256_after": "8aa9aa273a8a508e96a9c822b3f9fcb640c77e0259da43fea73b0ac4512d4fcb",
+ "sha256_before": "8aa9aa273a8a508e96a9c822b3f9fcb640c77e0259da43fea73b0ac4512d4fcb",
+ "summary": {
+  "v2d-dev5": [
+   "VALID_REQUESTED",
+   "model",
+   1,
+   true,
+   true
+  ],
+  "v2e-dev5": [
+   "VALID_NO_REQUEST",
+   "model",
+   1,
+   true,
+   true
+  ],
+  "v2f-dev5": [
+   "VALID_REQUESTED",
+   "model",
+   2,
+   true,
+   true
+  ],
+  "v2g-dev5": [
+   "INVALID_OUTPUT",
+   "code_default",
+   2,
+   true,
+   true
+  ],
+  "v2g-dev6": [
+   "VALID_REQUESTED",
+   "model",
+   1,
+   true,
+   true
+  ]
+ }
+}

@@ -1,0 +1,3 @@
+2026-09-30T20:18:33Z
+deleted /Users/shree/FaultLab_Scratch/verify-diagnosis-rules (checkpoint of 626bae4 without the two audit JSONs, scratch test tree, node_modules copy, pytest temp); exists now: no
+left untouched: /Users/shree/FaultLab_Scratch/inv-a (not the verifier's)

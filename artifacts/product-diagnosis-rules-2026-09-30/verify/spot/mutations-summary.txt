@@ -1,0 +1,37 @@
+Verifier's own negative controls (spot/mutations.py, log spot/mutations.log, detail spot/mutations.json). $0, offline,
+scratch tree outside the Desktop, every file restored byte for byte (restored True for all 13).
+
+Baseline: the scratch tree has no audit/promotion.json (the verifier may not copy it), so the 10 new backend tests that
+build a run plan (T1 x6, T7, T8, the LOW-4 loop test x2; all in test_diagnosis_rules.py / test_diagnosis_rules_loop.py)
+fail in the UNMUTATED scratch tree. They pass in the real tree (verify/full-test-sh.log). None of the 27 probe tests is
+among them. The first run judged "caught" by exit code, which was wrong for this baseline; it is kept as
+mutations-first-run-exit-code-only.log/.json and is superseded.
+
+Correct reading of the second run (a mutation is caught when a test OUTSIDE the unmutated failing set fails):
+  CAUGHT by the repo's tests (8):
+    B1 repair turn under-counts the answer length by one            (7 new failures)
+    B2 the declared repair turn drops the appended sentence          (5)
+    B3 the rule-off Mechanic also sends the limit fields             (3; flag-off golden bytes)
+    B5 a code-default kind is recorded as the model's                (2)
+    B6 early_end is never recorded                                   (6)
+    P2 the probe accepts a used output folder (both checks removed)  (1)
+    P3 the probe sends before it charges the ledger                  (2)
+    F1 the frontend accepts a Rule 1 declaration with first_turn_changed true (1 frontend test)
+  NOT DECIDABLE in the scratch tree (3): the catching tests are among the 10 that need audit/promotion.json.
+    B4 run options offer the guide          - by reading: test_T1_every_new_learn_plan_freezes_rule_1_and_no_plan_freezes_rule_2
+                                              asserts 'diagnosis_guide' not in options['learn'].
+    B7 Start no longer compares Rule 1       - by reading: test_T1_start_refuses_a_plan_whose_rule_1_is_not_the_installed_one
+                                              expects StoreConflict('installed diagnosis repair-and-record rule differs').
+    B8 the export embeds only the last attempt - the verifier's direct check of diagnosis_protocol.campaign_records on a
+                                              seeded scratch store catches it (["m1"] instead of ["m0", "m1"]); by reading,
+                                              test_T7 asserts both attempts.
+  NOT CAUGHT by the repo's tests (2; the probe tests all ran, so these are real coverage gaps, not scratch artefacts):
+    P1 the probe's CONTROL premise also counts rows only the person flagged (makes UNINFORMATIVE -> PASS/FAIL easier to
+       leave). No repo test pins that the CONTROL premise counts checker-confirmed rows only. The verifier's own
+       probe_harness_probe.py check 'P1: CONTROL person-only Y does not lift the premise -> UNINFORMATIVE' catches it.
+    P4 the P4 pass bar drops from 9 of 10 to 8 of 10. No repo test pins the 9-of-10 bar (the scripted run is 10 of 10) or
+       the 'worse' comparison. The verifier added a synthetic check (8 of 10 on one setup -> FAIL) to
+       probe_harness_probe.py; on the Desktop code it passes (40/40, spot/probe-harness-probe.json) and on the scratch tree
+       with this mutation it fails (39/40, spot/probe-harness-probe-on-P4-mutation.json).
+  The code itself is correct for both (read, and confirmed by the verifier's synthetic checks); what is missing is a repo
+  test. Low severity: the probe has not run, and scoring can be re-run with --score after a fix.

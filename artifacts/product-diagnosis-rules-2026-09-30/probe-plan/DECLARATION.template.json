@@ -1,0 +1,21 @@
+{
+ "approved_by": "",
+ "harness_sha256": "fb73a584466bb543e2684a1739fadccd5208e3d4a6696da231833704a46fe2c3",
+ "model": "deepseek-ai/DeepSeek-V4-Pro-0813",
+ "output_folder": "<the --out folder, resolved>",
+ "plan_hash": "9d5d3bd6f4351b4dcaa2840e1546b323d20bc3f0b93ffe1305d942a5f6466cc5",
+ "pre_registered_outcomes": {
+  "P1": "dev-5 first-turn hypotheses blaming citations, labels or evidence ids (checker v2 claim match confirmed by a person): pass if GUIDE <= 4 of 40 and CONTROL >= 20 of 40; CONTROL < 20 of 40 is UNINFORMATIVE.",
+  "P2": "dev-5 first-attempt validity in GUIDE not lower than CONTROL by more than 5 of 40; over-600 count not higher by more than 5 of 40.",
+  "P3": "counts and a one-sided Fisher test, no pass bar: valid non-null requests; C3 and C5 naming by the written rubric; dev-6 naming C4 rather than o3.",
+  "P4": "repair turns returning a valid answer with a hypothesis of at most 600 characters: pass if at least 9 of 10 on each setup with the Rule 1 message; today's message measured as the baseline.",
+  "decision_rule": "Rule 1 ships unless P4 shows the new message is worse than today's; Rule 2 ships only if P1 and P2 pass."
+ },
+ "preconditions": {
+  "dashboard_closed": false,
+  "ledger_checked": false,
+  "no_other_paid_run": false
+ },
+ "schema_version": "faultlab-diagnosis-probe-declaration/v1",
+ "spend_cap_dollars": 8.0
+}

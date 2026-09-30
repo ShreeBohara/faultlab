@@ -1,0 +1,56 @@
+REF backup/part2-2026-09-22 = 626bae4afba9e160397e3f55b0ce9f5663e48d48
+IDENTICAL 15c815abd122fdbd216e12719a61fa0de5b6832a backend/app/referee/__init__.py
+IDENTICAL 9ffa3b83048184047d5ada3940b26acc1aa9471a backend/app/referee/diagnostics.py
+IDENTICAL 7a09fda151f70015b6ee059d967f1ac8b2dc22e1 backend/app/referee/reducer.py
+IDENTICAL bbec82d87fe7f91ddc4a282f920a6cd07272521c backend/app/referee/freeze.py
+IDENTICAL 3e34ba3d90c3b338452b1436cf62fa9da585e82a backend/app/referee/manifests.py
+IDENTICAL 169c29d4291c510c34653ee91a19f700579226b7 backend/app/referee/observer.py
+IDENTICAL 6a9779b8f3263bdfdf8acc0e65c73460369a4ea1 backend/app/lab/diagnosis.py
+IDENTICAL fd1640cfbd15f4ff849b8666ee155b5d4c176165 backend/app/agents/prompts/diagnosis.md
+IDENTICAL 7e742b2457b94637e2ccb66a6894ff8149b5369d backend/app/contracts/models.py
+IDENTICAL 7326c0ea39496d68493bee75326ae5cfa62101f9 backend/app/lab/challenge.py
+IDENTICAL e636aeb4ccbce0ad3c388250ebd6679884fcb629 backend/app/lab/promotion.py
+IDENTICAL 9349b106d6caaf715b4c2573eeb2a0f57a420193 backend/app/lab/evaluation.py
+IDENTICAL f596d9060471e7b850b07952fa0cbfeabd5a8816 backend/app/lab/completion_study.py
+IDENTICAL b74dcd5474bd834d5b5cd1254f831d8d221f1e93 backend/app/lab/reproduction.py
+IDENTICAL 2edac78210c19b0bc6919dd9378d1930e6ce45c8 backend/app/lab/reachability.py
+IDENTICAL 646fc8d16c8812002497fed296260e0a12655195 backend/app/lab/citation_status.py
+IDENTICAL ba670c9c8523616143f08aa3f3537ced038bf31c backend/app/lab/loop_limits.py
+IDENTICAL 49ff3011fe748cf2f7bcdd261ecff7fb988a6359 backend/app/lab/evidence_wait.py
+IDENTICAL fd410236c62b45ad1d7e26098b8ea0e2439a988c backend/app/lab/fireability.py
+IDENTICAL aac13067abbf2171a814d01e59f8b6ddb661ef64 backend/app/lab/policies.py
+IDENTICAL c2287655fec7c1c9cbd729e8fed716436330e3f7 backend/app/lab/policy_interpreter.py
+IDENTICAL 09326a7c29c8f69a0751798dbe35a4d551b7effd backend/app/lab/configuration.py
+IDENTICAL 83d797cd728a622d29ac1d59443f98eea5089537 backend/app/lab/storage.py
+IDENTICAL 718943ed358121de220a0e05de988884c908ddcd backend/app/lab/runner.py
+IDENTICAL d14babdf684837d2324c16f5b2e1abeab2e6b3f5 backend/app/lab/evidence.py
+IDENTICAL e0de987be0d7e04d75480bd99e6b500123b3fa60 backend/app/lab/discovery_protocol.py
+IDENTICAL 167e1f292d824d43012a215b7351ba64420f1d70 backend/app/lab/coordinator.py
+IDENTICAL d3088ce40cfd8a012638b7235e81c915239ad1fd backend/app/lab/api.py
+IDENTICAL 997b691d5a6df625941346c96b7560754120fbbe backend/app/agents/actor.py
+IDENTICAL 0a4dfa46f42e66f7227bcbb2ba9c714aea7d7842 backend/app/agents/reference.py
+IDENTICAL 2dff4ea82af04cacc215288fefafbce8524785cb backend/app/agents/explorer.py
+IDENTICAL 3e8b4c531fa733a79860363e808dea546958453a backend/app/agents/transport_retry.py
+IDENTICAL 606dd9dbb2f6097958e4e01914745bd7b27f9b34 backend/app/agents/prompts/actor.md
+IDENTICAL 07ae1b5a1232728e7bc0253a8e5e7b9d46099d66 backend/app/agents/prompts/mechanic.md
+IDENTICAL a2feeb0aad49e8ed9b833bdfd103a6cca7f2ea49 backend/app/integrations/external_agent.py
+IDENTICAL 3aab9348ff36e3058db36b090db82d556dd72165 backend/app/integrations/external_agent_v2.py
+IDENTICAL 521c9ab82982e20d970505eb7aa922636ea43596 backend/app/integrations/registry.py
+IDENTICAL 178af3c6a3067a3b35493aa984ea501f078ad745 backend/app/providers/runtime.py
+IDENTICAL 1b8cb2ac98721593208da66e827bce9370b2c0dd backend/app/contracts/tokens.py
+IDENTICAL e2980809692372fc34f5a3e0f5b77bf7345ea03f backend/tests/integrations/test_native_adapter_v1_golden.py
+IDENTICAL 671e4f921658e3c4150cf7c9affe1083903ffc10 scripts/test.sh
+IDENTICAL 9e647eb66eda184aeeab342969d0491756dd665e scripts/experiments/gate_freeze.py
+IDENTICAL 15eecce94dd64a61c279716d03ef3a512e235d1d backend/tests/lab/test_history_fireability.py
+DIFFERENT backup=dd4ce44eb6450d43d5426da40917594b4da0fd94 work=3e7dddc8d42af9852f5c187d8833c8f32fd719bd backend/app/agents/mechanic.py
+DIFFERENT backup=d25dacd8d2eaf956deda60b3e8649014b9c5af9e work=161251e7992ef38e561045d6cf95643f83d9d728 backend/app/lab/learning.py
+DIFFERENT backup=3e385ea02d1ecffe08a9a1b50e6e0a8c91d7a5b5 work=d186cf363a11aacfb1f111c99d08e320fbd0f4ef backend/app/lab/run_plans.py
+DIFFERENT backup=663c9362adeb0fa4c5a4585a70f21577a9b74650 work=3c669b2b4b5879231d871548bdcdd5d5c9db6260 backend/app/lab/exports.py
+DIR backend/app/referee: 6 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/simulator: 8 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR contracts: 100 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/contracts: 5 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/integrations: 7 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/telemetry: 9 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/agents/prompts: 10 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup
+DIR backend/app/providers: 6 backup files compared (checks.py excluded), 0 differ, 0 working files absent from the backup

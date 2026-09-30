@@ -1,0 +1,113 @@
+{
+ "campaign_state": "NO_CHANGE",
+ "diagnosis_turns_sent": [
+  2,
+  4
+ ],
+ "diagnostics": [
+  {
+   "kind": "INCONCLUSIVE",
+   "proposed_kind": "INCONCLUSIVE"
+  }
+ ],
+ "episode_counts": {
+  "discovery": 1,
+  "reduction": 12,
+  "reproduction": 3
+ },
+ "interventions": [],
+ "records": [
+  {
+   "attempts": [
+    {
+     "attempt": 0,
+     "output_ref": "mechanic-a60dd49632d04c60af79f6b6c7e72996",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ]
+    },
+    {
+     "attempt": 1,
+     "output_ref": "mechanic-f9dc7b4e47174e659326d98a20e689c6",
+     "validation_errors": [
+      {
+       "location": [
+        "hypothesis"
+       ],
+       "max_characters": 600,
+       "type": "string_too_long",
+       "your_characters": 614
+      }
+     ]
+    }
+   ],
+   "campaign_id": "campaign-ff62dcb665dc44a6837f84aee1b5a277",
+   "counterexample_id": "counterexample-9be6bc6c5abf4a819dbaedd838bd0058",
+   "diagnostic_id": "diagnostic-9491f9d501dd4cc18731309364fac5bd",
+   "first_turn_hash": "7ed7428a03acfa193786ddf9dd17ebbdc3c7454634e679749e766a0b3636c95a",
+   "fresh_intervention_trials": 0,
+   "intervention_ran": false,
+   "interventions": [],
+   "last_raw_unvalidated": {
+    "parsed_json_object": true,
+    "proposed_kind": "POLICY_GAP",
+    "requested_intervention_id": "intervention-41edcea2f8d076c8d30fe5c3",
+    "validated": false
+   },
+   "options": [
+    {
+     "change": "remove_primitive:0",
+     "intervention_id": "intervention-41edcea2f8d076c8d30fe5c3",
+     "observed_treatment_trials": {
+      "episode_ids": [
+       "episode-d37638e82062413fb5a6ae1b91f2a4c0",
+       "episode-21ad09d314704dd89273cb5a1a7e735d",
+       "episode-954989726ba9473195fe784f63e36382"
+      ],
+      "fresh_trials": 3,
+      "target_violations": 0,
+      "valid_trials": 3
+     }
+    },
+    {
+     "change": "lower_parameter:0:completion_delay_ticks:1",
+     "intervention_id": "intervention-51453dd5a0dfa3004d11a1c0",
+     "observed_treatment_trials": {
+      "episode_ids": [
+       "episode-d78e50c74413497586d9fcfb15c9f74b",
+       "episode-ed86ee02b2b94953b3bc3cb14d4a9771",
+       "episode-8eee2d93443f4f239d80edbea30b8dc0"
+      ],
+      "fresh_trials": 3,
+      "target_violations": 0,
+      "valid_trials": 3
+     }
+    }
+   ],
+   "output_refs": [
+    "mechanic-a60dd49632d04c60af79f6b6c7e72996",
+    "mechanic-f9dc7b4e47174e659326d98a20e689c6"
+   ],
+   "proposal_status": "INVALID_OUTPUT",
+   "protocol": "faultlab-mechanic-diagnosis/v1-repair-and-record",
+   "recorded_proposed_kind": "INCONCLUSIVE",
+   "recorded_proposed_kind_source": "code_default",
+   "request_id": "mechanic-request-36b18c96b7ac4846a08d12e8a824993d",
+   "requested_change": null,
+   "requested_intervention_id": null,
+   "statement": "None of the Mechanic's 2 answer(s) passed validation (hypothesis string_too_long (614 of at most 600 characters); hypothesis string_too_long (614 of at most 600 characters)), so no intervention ran. Fixed code recorded INCONCLUSIVE; the recorded proposed_kind INCONCLUSIVE is a code default, not the model's. Its last answer, unvalidated, named proposed_kind 'POLICY_GAP' and requested 'intervention-41edcea2f8d076c8d30fe5c3'.",
+   "target_invariant": "C3",
+   "verdict": "INCONCLUSIVE"
+  }
+ ],
+ "repair_user_messages": [
+  "{\"instruction\":\"Your response failed output_schema or its supplied evidence/choice bindings. Correct formatting only. Copy cited IDs exactly from the supplied allowed lists; cite only the evidence needed. Do not add authority, a new hypothesis, or a replacement canned solution. A string_too_long error gives max_characters and your_characters: rewrite that same field in at most max_characters characters, keeping its meaning and adding no new claim.\",\"validation_errors\":[{\"location\":[\"hypothesis\"],\"max_characters\":600,\"type\":\"string_too_long\",\"your_characters\":614}]}"
+ ]
+}

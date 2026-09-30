@@ -101,6 +101,11 @@ def candidate():
 def harness(owner, monkeypatch, fail_when, *, planned=True, broken_retries=0, mode='tie', candidate_fails=True):
     """A Learn campaign whose stages are doubles, except the evidence path, ledger, plan and coordinator."""
     import app.lab.learning as learning
+    # The Diagnostician below is a stage double that never sends a Mechanic diagnosis request, so the diagnosis
+    # repair-and-record rule that every new Learn plan declares (app.lab.diagnosis_protocol) has no attempts to record and
+    # would refuse to write a false record; it is switched off for this double (its tests: test_diagnosis_rules*.py).
+    from app.lab import diagnosis_protocol
+    monkeypatch.setattr(diagnosis_protocol, 'campaign_rule', lambda store, campaign: None)
     monkeypatch.setattr(evidence_wait, 'clock', lambda: time.monotonic() * 1000)  # 30 s declared = 30 ms here
     monkeypatch.setattr(evidence_wait, 'POLL_SECONDS', 0.005)
     campaign = (learn_campaign(owner, DISCOVERY_V1) if planned else

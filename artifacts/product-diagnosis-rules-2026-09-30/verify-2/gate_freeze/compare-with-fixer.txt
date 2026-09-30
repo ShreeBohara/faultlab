@@ -1,0 +1,2 @@
+# ../followup/gate_freeze/current.json vs gate_freeze/current.json: 124 leaves, 0 differ
+checks.py leaves: {'files/backend/app/referee/checks.py': True, 'functions/backend/app/referee/checks.py::score/ast_sha256': True, 'functions/backend/app/referee/checks.py::score/lines': True, 'functions/backend/app/referee/checks.py::score/text_sha256': True, 'functions/backend/app/referee/checks.py::scorer_hash/ast_sha256': True, 'functions/backend/app/referee/checks.py::scorer_hash/lines': True, 'functions/backend/app/referee/checks.py::scorer_hash/text_sha256': True}

@@ -1,0 +1,38 @@
+Verifier identity (verify/identity/current.json) vs fixer identity-after.json: every fixer 64-hex value looked up among verifier values
+NOT-IN-VERIFIER-SET actor_final_report_response_format_hash 0576de04398fe472 -> None
+NOT-IN-VERIFIER-SET actor_response_protocol_hash 4e6455acf31e4b45 -> None
+FOUND   algorithm_hash 743a15201671d2c0 -> algorithm_hash
+FOUND   capability_hash 8e8e04afb34f8943 -> capability_hash
+FOUND   challenge_selection_v2_declaration_hash 802e395439b1fcdc -> challenge_selection_v2_declaration_hash
+FOUND   contract_hash 6f9d778323a4efc2 -> contract_hash
+FOUND   diagnosis_guide_v1_declaration_hash 36ca790f0a6d4e1c -> diagnosis_guide_v1_declaration_hash
+FOUND   evidence_retry_new_plan_declaration_hash b76d6d5cf4b3ded9 -> evidence_retry_v3_declaration_hash
+FOUND   evidence_retry_v2_declaration_hash 3d84989305183a30 -> evidence_retry_v2_declaration_hash
+FOUND   example_configuration_hash[smolagents-toolcalling-v1, deepseek-ai/DeepSeek-V3.1, default caps] d6093d50e82213e4 -> example_configuration_hash[smolagents-toolcalling-v1]
+FOUND   example_configuration_hash[smolagents-toolcalling-v2, deepseek-ai/DeepSeek-V3.1, default caps] 5aff13a6a2d1cfda -> example_configuration_hash[smolagents-toolcalling-v2]
+FOUND   explorer_selection_v3_rule_declaration_hash ae56a27a18183562 -> explorer_selection_v3_declaration_hash
+FOUND   interpreter_hash 6da0714adef40c02 -> interpreter_hash
+NOT-IN-VERIFIER-SET json_object_response_format_hash 376bde7986cc2f8f -> None
+FOUND   mechanic_context_v2_declaration_hash 11bf9e323ec88e9b -> mechanic_context_v2_declaration_hash
+FOUND   mechanic_diagnosis_v1_declaration_hash 998744f82bb09dbd -> mechanic_diagnosis_v1_declaration_hash
+FOUND   mechanic_diagnosis_v1_semantics_hash c4dd868c03b88bd6 -> mechanic_diagnosis_v1_semantics_hash
+FOUND   mechanic_evidence_v2_native_citation_status_declaration_hash b84f55db3c3f5220 -> citation_status_declaration_hash
+NOT-IN-VERIFIER-SET native_final_answer_response_format_hash e5ce062b45e7e177 -> None
+FOUND   native_source_hash 2867b3fbb466903d -> native_source_hash
+FOUND   native_v1_adapter_hash 6f3032648ad8d1ca -> native_v1_adapter_hash
+FOUND   native_v1_prompt_hash 2251542869cf3e0f -> native_v1_prompt_hash
+FOUND   native_v2_adapter_hash dfd41b338723780d -> native_v2_adapter_hash
+FOUND   native_v2_adapter_protocol_hash 0136604791ce5b3a -> native_v2_adapter_protocol_hash
+FOUND   native_v2_prompt_hash fff397c9282b10c1 -> native_v2_prompt_hash
+FOUND   public_invariants_hash e792e8f04c67e9d4 -> public_invariants_hash
+FOUND   reference_actor_prompt_hash 12eabe7f41028c05 -> reference_actor_prompt_hash
+FOUND   reference_adapter_hash 0cd810b7ffc7e922 -> reference_adapter_hash
+FOUND   reference_source_hash eaffac74c1039320 -> reference_source_hash
+FOUND   runtime_hash c80d86323bc82624 -> runtime_hash
+FOUND   scorer_hash 19de811c96473eb4 -> scorer_hash
+FOUND   service_hash 3ce5bcd25af4b37e -> service_hash
+FOUND   transport_retry_v1_declaration_hash 9dcc73322c2cd946 -> transport_retry_v1_declaration_hash
+FOUND   transport_retry_v2_declaration_hash 8c49085c6303cb53 -> transport_retry_v2_declaration_hash
+FOUND   v2_memory_text_hash 6cbe23d4640b6fc1 -> v2_memory_text_hash
+FOUND   v2_memory_with_citation_pointer_text_hash 75241be81cd30ae6 -> v2_memory_with_citation_pointer_text_hash
+36 fixer hash values; 32 equal a verifier value; 4 are keys the verifier did not compute: ['actor_final_report_response_format_hash', 'actor_response_protocol_hash', 'json_object_response_format_hash', 'native_final_answer_response_format_hash']

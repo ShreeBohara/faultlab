@@ -1,0 +1,6 @@
+Reviewer attempt to reproduce the builder's "2 pre-existing test_history_fireability failures on 626bae4" (not completed).
+A git-archive export of 626bae4 (backend + analysis artifacts) was placed under /Users/shree/FaultLab_Scratch/.../tree-626bae4.
+The saved-store tests there need audit/development.json (copied) and audit/promotion.json, which this review is not
+allowed to read or copy, so the 3 collected tests failed with FileNotFoundError on audit/promotion.json -- NOT with the
+builder's "36 == 30 / 14 == 8" assertions. The export was deleted. The pre-existing claim is therefore not independently
+confirmed here; see REPORT (the two failures concern saved-store history counts and touch no diagnosis-rule code).

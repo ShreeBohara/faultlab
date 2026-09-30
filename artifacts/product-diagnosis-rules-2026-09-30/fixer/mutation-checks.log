@@ -1,0 +1,124 @@
+FIXER: FAILING-THEN-PASSING TESTS AND NEGATIVE CONTROLS (September 30, 2026; $0, offline; pytest's conftest network block, vitest with fetch stubbed)
+
+=== 1. Before any fix: the fixer's new and changed tests against the builder's product code (they must fail) ===
+BEFORE ANY FIX (2026-09-30T18:55:18Z): the fixer's new and changed tests against the builder's product code
+        the GUIDE bar once a person flags it; before this fix it was only 'descriptive' and P1 passed."""
+FAILED tests/lab/test_diagnosis_rules.py::test_T5_a_record_is_never_written_from_state_that_does_not_describe_the_diagnosis
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-null-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-null-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-null-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-null-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-invalid_output-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-invalid_output-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-invalid_output-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-invalid_output-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-null-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-null-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-null-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-null-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-valid_request-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-invalid_output-SUPPORTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-invalid_output-INCONCLUSIVE]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-invalid_output-CONTRADICTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[False-invalid_output-PREFLIGHT_REJECTED]
+FAILED tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[preflight-0-0-PREFLIGHT_REJECTED-rejected by preflight]
+FAILED tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[stop_before_any_trial-0-0-STOPPED-stopped]
+FAILED tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[callback_error-0-0-CALLBACK_ERROR:RuntimeError-a trial could not run]
+FAILED tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[stop_after_one_pair-2-1-STOPPED-stopped]
+FAILED tests/lab/test_diagnosis_rules.py::test_fix_intervention_ran_means_a_fresh_trial_ran_and_the_statement_names_an_early_end[full-6-3-None-None]
+FAILED tests/experiments/test_diagnosis_probe.py::test_the_dry_run_builds_140_requests_and_prints_the_maximum_charge_without_writing
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change0-another harness, plan or model]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change1-another harness, plan or model]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change2-at most $8.00]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change3-exceed the $5.00 cap]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change4-names no approver]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change5-preconditions]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change6-pre-registered outcomes]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change7-another output folder]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change8-clock drift checked]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change9-how repeated answers will be read]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change10-temperature the harness sends]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change11-pre-registered outcomes]
+FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_wrong_declaration_sha256_or_a_used_output_folder
+FAILED tests/experiments/test_diagnosis_probe.py::test_a_scripted_live_run_charges_every_call_through_the_ledger_writes_only_under_out_and_scores
+FAILED tests/experiments/test_diagnosis_probe.py::test_fix_p1_counts_person_flagged_guide_hypotheses_the_checker_misses_against_the_guide_bar
+FAILED tests/experiments/test_diagnosis_probe.py::test_fix_scoring_reports_distinct_answers_per_request_key
+FAILED tests/experiments/test_diagnosis_probe.py::test_fix_the_declaration_carries_the_full_pre_registration_and_the_sampling_facts
+48 failed, 49 passed in 34.52s
+
+BEFORE ANY FIX: frontend tests/diagnosis-rules.test.tsx against the builder's frontend
+   × accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else 4ms
+   × checks a plan that declares the diagnosis guide (built, not offered) and refuses it outside Learn or with any flag changed 1ms
+   × shows the rule in a saved Learn plan, says plainly when an older plan has none, and shows the guide only when declared 81ms
+   × tells the operator in the Learn setup form that every new Learn plan freezes the rule, for any agent 24ms
+   × labels the recorded proposed kind as recorded, not as the model's, since a code default is stored when no answer is valid 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/diagnosis-rules.test.tsx > accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else
+AssertionError: expected [Function] to throw an error
+ FAIL  tests/diagnosis-rules.test.tsx > checks a plan that declares the diagnosis guide (built, not offered) and refuses it outside Learn or with any flag changed
+AssertionError: expected [Function] to throw an error
+ FAIL  tests/diagnosis-rules.test.tsx > shows the rule in a saved Learn plan, says plainly when an older plan has none, and shows the guide only when declared
+TestingLibraryElementError: Unable to find an element with the text: Diagnosis repair and record. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+ FAIL  tests/diagnosis-rules.test.tsx > tells the operator in the Learn setup form that every new Learn plan freezes the rule, for any agent
+TestingLibraryElementError: Unable to find an element with the text: Every new Learn plan also freezes these two rules:. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+ FAIL  tests/diagnosis-rules.test.tsx > labels the recorded proposed kind as recorded, not as the model's, since a code default is stored when no answer is valid
+AssertionError: expected <dt></dt> to be null
+ Test Files  1 failed (1)
+      Tests  5 failed (5)
+
+Note: the two new evidence-wait loop tests (review finding LOW-4) PASSED before the fix: that finding was missing coverage, and Rule 1 already worked with evidence waits. LOW-4's failing-then-passing part is the refusal message naming the diagnosis (test_T5_a_record_is_never_written...). Many probe-test failures above come from the shared declaration helper, which now needs the new sampling and clock-drift fields.
+
+=== 2. After the fixes (final code) ===
+AFTER THE FIXES (2026-09-30T19:12:34Z), final code: the new and changed tests plus the related suites
+239 passed in 100.50s (0:01:40)
+
+frontend (vitest, all unit tests):
+ Test Files  29 passed (29)
+      Tests  373 passed (373)
+
+=== 3. Negative controls: each fix reverted on its own in a scratch copy outside the Desktop (mutation_checks.py) ===
+UNREVERTED backend: exit 0: 97 passed in 39.99s
+UNREVERTED frontend: exit 0: Tests  5 passed (5)
+CAUGHT: [MEDIUM-1/F3] intervention_ran is again "an experiment was recorded": 1 failed, 31 passed in 2.09s
+    first failure: FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-PREFLIGHT_REJECTED]
+CAUGHT: [MEDIUM-1/F3] the statement no longer names why an intervention ended early: 1 failed, 31 passed in 2.11s
+    first failure: FAILED tests/lab/test_diagnosis_rules.py::test_T6_the_rule_changes_no_kind_intervention_reservation_or_trial[True-valid_request-PREFLIGHT_REJECTED]
+CAUGHT: [LOW-4] a refused record no longer names the diagnosis: 1 failed, 23 passed in 1.96s
+    first failure: FAILED tests/lab/test_diagnosis_rules.py::test_T5_a_record_is_never_written_from_state_that_does_not_describe_the_diagnosis
+CAUGHT: [LOW-4] trials without an experiment are recorded instead of refused: 1 failed, 23 passed in 1.94s
+    first failure: FAILED tests/lab/test_diagnosis_rules.py::test_T5_a_record_is_never_written_from_state_that_does_not_describe_the_diagnosis
+CAUGHT: [LOW-4] the loop skips the record when a diagnosis ran (the new evidence-wait loop test must see it): 1 failed, 3 deselected in 1.21s
+    first failure: FAILED tests/lab/test_diagnosis_rules_loop.py::test_fix_rule_1_records_every_diagnosis_of_the_real_mechanic_through_evidence_waits[discovery]
+CAUGHT: [MEDIUM-2/F5c] P1 counts only checker-confirmed GUIDE rows (person-only flags are descriptive again): 1 failed, 94 passed in 38.12s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_fix_p1_counts_person_flagged_guide_hypotheses_the_checker_misses_against_the_guide_bar
+CAUGHT: [MEDIUM-2] the review file shows the checker's matches to the person again: 1 failed, 89 passed in 35.57s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_a_scripted_live_run_charges_every_call_through_the_ledger_writes_only_under_out_and_scores
+CAUGHT: [MEDIUM-3/F1] scoring no longer reports distinct answers per request key: 1 failed, 89 passed in 35.67s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_a_scripted_live_run_charges_every_call_through_the_ledger_writes_only_under_out_and_scores
+CAUGHT: [MEDIUM-3/F1] the declaration may name another temperature than the harness sends: 1 failed, 86 passed in 35.10s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change10-temperature the harness sends]
+CAUGHT: [F5a/b] the declaration may carry any non-empty outcome text again: 1 failed, 87 passed in 35.11s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change11-pre-registered outcomes]
+CAUGHT: [F5b] the pre-registered decision rule loses its last two clauses: 1 failed, 96 passed in 39.58s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_fix_the_declaration_carries_the_full_pre_registration_and_the_sampling_facts
+CAUGHT: [LOW-3] the clock-drift precondition is not required: 1 failed, 84 passed in 34.79s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_execute_live_refuses_a_declaration_that_does_not_bind_this_plan[change8-clock drift checked]
+CAUGHT: [LOW-3] answers call the echoed requested model a served model again: 1 failed, 89 passed in 35.66s
+    first failure: FAILED tests/experiments/test_diagnosis_probe.py::test_a_scripted_live_run_charges_every_call_through_the_ledger_writes_only_under_out_and_scores
+CAUGHT: [F2/LOW-2] a saved plan no longer checks the repair-and-record rule: Tests  1 failed | 4 passed (5)
+    first failure: FAIL  tests/diagnosis-rules.test.tsx > accepts the repair-and-record rule exactly as frozen, only in a Learn plan, for every agent, and refuses anything else
+CAUGHT: [F2/LOW-2] the saved plan no longer shows the rule: Tests  1 failed | 4 passed (5)
+    first failure: FAIL  tests/diagnosis-rules.test.tsx > shows the rule in a saved Learn plan, says plainly when an older plan has none, and shows the guide only when declared
+CAUGHT: [F2/LOW-2] the Learn setup form no longer shows the offered rule: Tests  1 failed | 4 passed (5)
+    first failure: FAIL  tests/diagnosis-rules.test.tsx > tells the operator in the Learn setup form that every new Learn plan freezes the rule, for any agent
+CAUGHT: [F2] the diagnosis panel calls a code-default kind the model's again: Tests  1 failed | 4 passed (5)
+    first failure: FAIL  tests/diagnosis-rules.test.tsx > labels the recorded proposed kind as recorded, not as the model's, since a code default is stored when no answer is valid
+scratch deleted: True
+17 of 17 reverted fixes caught; the unreverted copy passes

@@ -1,0 +1,2920 @@
+{
+ "candidates_checked": 3189,
+ "differences": {
+  "CURRENT_STATUS.md": {
+   "sha256": "b8179aa6471ace841fdeb54e5fc9713903a50dcffb7207f6d57461a0642881dd",
+   "status": "MODIFIED",
+   "tip_sha256": "3807aef57288d73c029cf01aa373d6ff39069e742d8a17d60c7406ea75f012c1"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/REPORT.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e00eef493dcd45a696448cd37c6065ad8cab6710fb206603a7357bedc922bfe0",
+   "size": 18061,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/compare_identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c8a4c32f301dbcf8d0d5035d9aa24ea0ea552af08b72f3310bb147d977adc305",
+   "size": 1431,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "90558fcfd34885c27755ab14ca01a181b52979bf1b50551a1a08350cd399b64b",
+   "size": 28,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "75b48b2a8ce11abaf166816e5606eb6f646af872e32b7cafa7667453ed2942af",
+   "size": 24826,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d8e0ec376e038cc34232a3b25d11dc35ce2523e8cc0d1497d85487e503855d83",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/after.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "97437044dbaa6ebcff93839552b6bad2aae2a9d467e04e5990d9e669db3ddb8e",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/before.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d1be5fe91f12656ef7801efa1af4f8e8eb958f22b7e9a629408545831854c61",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1b3d47f589954466a1299dce859582df0299d31e1c02d10d6c09ed980f87ecb1",
+   "size": 352,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/git-head-at-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b0d5a3019eb9a5a09a1c7cfdca037dd38065679e44b2f070a3c5d3944c2dc0cd",
+   "size": 82,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/git-head-at-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b0d5a3019eb9a5a09a1c7cfdca037dd38065679e44b2f070a3c5d3944c2dc0cd",
+   "size": 82,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/git-status-at-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "45759d49b9c1e48f671529698aecaba5571e8edf430fd29c714d5cdbb909af0a",
+   "size": 13766,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/git-status-diff-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "62cc57dc27f600ccb48f6685d22b37be90c61686a6f2cd7416e4ee435d405ac6",
+   "size": 262,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa4d4c43804633552177de9c768050eb1ebc0939fd22336632d6aa386039ce9a",
+   "size": 4040,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity-before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4b0d7e8b8c397567512e8634b713a45a7811a57b83ddc049c85c9843a6916586",
+   "size": 3630,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity-before.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f0414fe5dfd0f639e69751d10b1974bc99ccc6f26cff03a38d7193aa65affaad",
+   "size": 1553,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6cb5b641cbea6328e728291e0defb5b13eebfa0fa17c38243381b63b66d49382",
+   "size": 3061,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "040afe4d2194ccdc43c0249f77ef25fbba9645c4f171dd6ef4d27355f0e835b3",
+   "size": 1285,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "81220880b915a989abb6ae50b942221a5964c5e1417171e05375db724706a037",
+   "size": 7755,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/preexisting-fireability-saved-store-failures-on-626bae4.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e85d81d94bc05ae1dce7ad9c81ecb477b3901ba351af9f6bb1293692d7b3a085",
+   "size": 505,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "832d0597c30b700321eaf7706a0c539e5b091fac1b4f32da3bea2dd12c28fe9f",
+   "size": 1305,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/protected-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d2b26d0311b8fd987c6a74ed580a26104bb1fac69aeb0e21d099c4dc2d594106",
+   "size": 1714,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/protected-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c9e16e7c786b58ef6441b1f6ea209a054565102076f52680722cfb4284f29b",
+   "size": 1714,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/run_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "72b62f2ba5815d893ee643e41118592c94ee40f99980ea2f7c5cbf5708d358b7",
+   "size": 631,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved-store-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "31c28707a4cc066860d7435675486bcff51bfb91bf1b9a5b686c9923a7914572",
+   "size": 13173,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved-store-check.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved-store-sha256-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved-store-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved-store-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/builder/saved_store_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a10d24daf89752b06e680a81f2cedd15818c4f0a0548fc79916260533511ec81",
+   "size": 11550,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/REPORT.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7d5ed47e60a805d926563d3335ab7bb77227044f59d244a11967789e304c3617",
+   "size": 13011,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/after-fix-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "110d2d751c6762731845fcbbed20b0dea377a0afac3ad5d1e31dae4a80718e83",
+   "size": 228,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/before-fix-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "71662ca231aa44fe51d0cf6ea1e5a2dd438d4376f4206dc88cfe1a64b0d52901",
+   "size": 9549,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/compare_identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cab436a13ae6bffbd4e810e76c8eec4f9368877ad69722aff06a591fc56e439b",
+   "size": 1845,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/files-before-fixer-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9ce5add75086b720113110741be3865014d1b1ad9f3383745c0c9af102a158a5",
+   "size": 1374,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/files-changed-by-fixer.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "add53b30b41f76c4a5be39bef05b6eae6d3fec47a9d6cd71fc68a261cf96ac82",
+   "size": 2514,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/finished-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7d80aad1676d0264119dbf45a0933d16ca5166ba6b97da90703dab4152109a87",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aac300193d48472bd143ba28c23311ba1731391d40fbaaf506bd74d3eacdb91d",
+   "size": 28,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa2bd638a3d70bd5fa3eff512ed511e346a56371891ce000be233fccde7bdc6d",
+   "size": 24826,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "76115a746f08358bc5bc0ee0b4dc22756720d086c3f4e19a4991f42bd2ec8082",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/gate_freeze/after.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/gate_freeze/after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ced15297c927096b5551e3603e2d328a117e18c67b106cfde22cfc68f38c55ed",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/git-state-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c452b5033449c2bba96db80eb9406179cb30ccc5a4b3d71dd8143b2dc17ea456",
+   "size": 86,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "01c5394d1a7549d4cc88e3866199037f85d1e99ac8422d111a374d8aaefe53ea",
+   "size": 100,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/git-status-diff.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "921b0aa7ce8338472a93b06043e60f5ec1c98c40ab7873f521aa16e4a76b05d2",
+   "size": 53,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/git-status-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9cb5330d90fdf1b8dc7e366c1649b70faf1c8f06f2b940ba00ff09187c4e19f3",
+   "size": 14029,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/git-status-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d2a5f697384ecb1afb82a7f46d9bf50d3216a6f8c16b65c9c9ee9466f2912830",
+   "size": 13986,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4fc17c200e382295036aa892b199615978ae9409c3816bf0db8bd1a2538a4c0f",
+   "size": 4040,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "87909b4598404eac14381104bb34359c1b057f43e9cebf2ef73181f91ef82a9e",
+   "size": 1790,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "155d0a05a18b5ca20f84dc13cefbc3c9d088225a658f4cfc9bce290a4da395c2",
+   "size": 3059,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1850a46225e4bb20cef76053c699fd8308f02df6624b59ac4b8ef1a50b39e435",
+   "size": 15470,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cd35154d2fa9eefc19e7d7156a7e2187056514373315e556ad51268d270d4aa1",
+   "size": 9255,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "71d3f1abd04ad74ea17872423607716ca04d961d74f2db16b09754e1a8d1ca64",
+   "size": 1560,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/probe-plan/DECLARATION.template.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8aa507686867611eff83e2edfcc42f945c93cc700ae79c807a82c1486a370827",
+   "size": 2631,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/probe-plan/SHA256SUMS.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "425c86466060c5624f2dc88ca5a84c099d5081c3c586f4876b778b17b8e34ae3",
+   "size": 248,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/probe-plan/plan.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "515237f9ab7c589c622b1afb7a8ccf2bb588efb62556621a0f987aff6e0c5900",
+   "size": 30334,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/probe-plan/requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c8e383919c73ad23d3b273abfe5f9ab3ba6491b8face941d310a38e41b41d2c1",
+   "size": 488881,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/protected-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ac9d8a132659116454affe9dcc2f56a048406f81531cb423defb7cdc9f1cc9c1",
+   "size": 2146,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/run_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0437d57333baff5a5948f0efcf9ce17e5f6be8ee5b608187135282ba1279bf5f",
+   "size": 629,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/saved-store-sha256-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d3db83bdffb690eddf719bbb7ec9a10ca64fadb009f8568663e4b26f0894f72",
+   "size": 108864,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d3db83bdffb690eddf719bbb7ec9a10ca64fadb009f8568663e4b26f0894f72",
+   "size": 108864,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/fixer/started-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a4f7230afc56aaa4e7e4c91c5e7be9436b7db39b3a7a9ee72321ab1bfd848a4e",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/B6-review-fixes-coverage.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8c49d2f713b06d491fca55da50d214e43144f5b9b7ad31e58ee08770f811fbf7",
+   "size": 859,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/E1-original-tests-at-snapshot.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "320e1b8e9d0338d398403f4a5d3b75fa93b35cffe0036b091cf1ff597c5ac3b9",
+   "size": 1336,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/E3-grow.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ade4e157a37d15d63ee3ba2018cf6f422169b4357b3665146f7c1729cdcfe015",
+   "size": 356,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/E3-grown-store-controls.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8a7a84b29880d0d30fd3d2fbaa7451d1583d30edd2d02f56d78fc925db691cd7",
+   "size": 2065,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/SHA256SUMS.followup-review.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9d600f1c933562d51aa9fbd2ca50149a440a8e68207760dcc0b4373760f77901",
+   "size": 3126,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/baseline-scratch-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b6d0c798e1376b01eadcf730ea1c4d13e40aaee7b66d35b8c90a8caffa3e1f8b",
+   "size": 138,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/check-note-text.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "253e4747c29b663ecceb8e55a14d17e44474b89e95b61826be20648c4a3b566a",
+   "size": 1051,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/check_note_text.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26499ec9daa1bfd66d3a118590519735c5e8faf7dd33ce71fad51e5274f01720",
+   "size": 2230,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/finished-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa1422f6d1024df0f9b6b68e52de6615e25865df60dcd539697c8dfd86a2adfb",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "53f0dff8f32d9f47e03d905ec197d9570292b3140fef1bfce45d919cb52ce655",
+   "size": 625,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/gate_freeze/now.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e75ee140e3680287a854c6f35ad04d958fe5663f3c8d682e25e1935b61f2fd9e",
+   "size": 107,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/gate_freeze/now.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aeccff653fed02c404fe82e9ab4fbd026c59b39a7d3122592a6927b948269432",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8d451c264c732eeea02ef77e91d945ee4d5bf17beeaa33953c0ca441a2fc1f88",
+   "size": 1018,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/git-state-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d1b7b145d98aa292b2c98d9d3f6c0aece5c085b936284d65c9094ec0a19fc5bd",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e899ab72c8bcf606178131aa892eeae96bf5638700e2c48f0153bd881a86e359",
+   "size": 184,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/grow_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fe110ff335b69d2a8d89a1a60b4c12c3e2f112a2e3b6aa25cd41f59c47d70523",
+   "size": 3622,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/guide-request-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fe0662aea08d98a8a0cafd7a1e684090ae19b6ca1b63f49c7827ab87293f6d7d",
+   "size": 1369,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/identity-now.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "516c416a98d1ca3194f83266faefd06ab35f50149e2f6b9e672dafbe010f6752",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/identity-now.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e75ee140e3680287a854c6f35ad04d958fe5663f3c8d682e25e1935b61f2fd9e",
+   "size": 107,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ec2e682cea5d37eabc2ed254cdd3b9d3e8ed519099fa53ab061ff6144321b499",
+   "size": 6538,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/inspect-store.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9baebed544fe3552e94172fd448438e0fff359ef14077b8155d0a832e6639c96",
+   "size": 5013,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/inspect-store.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/inspect_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b2bdb269b52c49b8a5abed746cddc44fb746454c79185a9412fc34e6eb48992c",
+   "size": 3961,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/mutations.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "70d469e3378032c7853c35d47c7f38e5083c95a78e6408d64511a2711c99c46f",
+   "size": 13751,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ddbf9997749281a1c32be395d4044d1e4b25a9be98c5f3c7e7cf8153e744d89b",
+   "size": 7343,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "59bb8f8dec625ec0685e26bad9479ba06c99fc6f500a1379a57408db52b6616b",
+   "size": 8105,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/rguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1c908fd2a6a5f4f61cfb9ab4e4a3347a2dd463fbc28cdbaa28b154811dbb1dd7",
+   "size": 5009,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/rstub.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "13544f2c04c15fdf6af3ecac2140321b1d19e6439a4627c935239529be7dd1ae",
+   "size": 1785,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/scratch-deleted.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "91636b95053f04f021aa374593684aa9cf22c90b12d23ddd220c0cbef467782d",
+   "size": 119,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/scratch-failures-promotion-refused.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fb654255a9066fa9d77d3d709682a63d404f59a7c4975a397dbcafeff3a2e550",
+   "size": 3403,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/started-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "da6da85285c19502597137dc71151489a5fdb0a51b99740cbf176367731093ad",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "176a2e9787c826db0619e8dde0d6fb60cff9134de939ee1022d3032f53c86321",
+   "size": 2692,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "176a2e9787c826db0619e8dde0d6fb60cff9134de939ee1022d3032f53c86321",
+   "size": 2692,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/truncate-store.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "24dfe2960120aeb72ba3a35aadd0624b01c9d1657fcaa176f01eb918db398cbb",
+   "size": 905,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup-review/truncate_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "74c315505ddbc955ba8f85666d7006d061d73d08aa8c1277974661916a5d4a4d",
+   "size": 1507,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/SHA256SUMS.followup.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1c8bd7945ccd4e2523e1422b47e4d9c021a6ddc7c3a0ee047c7ec1bf86975368",
+   "size": 5802,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/byte-identity.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "82e1bb9173a458cf54b1dc5289bad30e17c453ce6b1fa004aadee7506d791490",
+   "size": 5257,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/byte_identity.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "92bd940a793588bc202c214693e19ae051a04ab6134eed0cbeee4e96246ef8db",
+   "size": 3391,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/code-sha256-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4b10cc6f980c72761868535ff1b895e28021495c095604f979642e8c8dd9bc34",
+   "size": 1287,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/compare_identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5283a7434d7cfde5a573a6428a4e13fa426099127a8c05fb5e9150606c9cdb23",
+   "size": 1307,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/fguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8e529520a90bde6e88bf20e1015267980c8ac63457551f6213ec8e8d77749136",
+   "size": 3660,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/files-before-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d84555fd1f778f4a10f53c5b32620be56218bb616f4aa9b548ad3d756452fea",
+   "size": 1480,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/files-before-vs-commit-list.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e1d297ca56378533499b432367d88134da49597dfe41417e204fac8cd0fad881",
+   "size": 832,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/files-changed-by-followup.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7f2984c19ab1b134d7482db72eaa10964f7bfe9a990b15a931ccc48873091037",
+   "size": 2140,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/finished-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4309d57f0c8a8b9903a18942b0d65a812caf1f6252b8c922663bce3e5e49c121",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b8ea169707afb6902eaeac278d7e80cbed2fd61ff5e21f971feee860d12d00",
+   "size": 63,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b38bc56946cc81a4a5a493619dce192c6d682a07a7ab8e1128abc78e5010a4d1",
+   "size": 21203,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "99c03c225efc8eebcc6ce2a9267ff23386d2502e54a43340fff4fa881451cfd9",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/gate_freeze/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cd4a7e2f776d2e83978bd163edbbc17a05c29cc136516add306271c0c4c2772a",
+   "size": 736,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "819cb1e507f750b562078ee43f13b044ed5efee484a13ae9c82c79851053a1c2",
+   "size": 2005,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/gate_freeze/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a027398ee59a3fe6c7184f3b74dacc7740603f83ced59bdf85f69c929c8e31e9",
+   "size": 120,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/gate_freeze/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aeccff653fed02c404fe82e9ab4fbd026c59b39a7d3122592a6927b948269432",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a70f5f5904c1cdd547e9e57b5139b6f5863795ca97b8a684c9c6a1cd5097a21a",
+   "size": 1011,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/git-state-after-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "262491f80f6c2899c28c3fc3dfba1fbe7aabcf2613821aac492cb88569917952",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/git-state-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bf6e240a9b2d7cf54e2c779e0032e05aaa7d645ffbca007d4806ba30ae240d0d",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/git-state-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "716a4a299d683a94361e8aec59b573225b236110657f0cbc3b6c50baa5f13808",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ac30650496a7f8a7cfcdd97c69d34353a62f390010408d248f3c504e120f070c",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/git_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "1a2b76911e468195ddf97521a91ed8169a6a6a86eb44a0c82e95a8c7fd04378d",
+   "size": 789,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/grow_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5e86333e9b746ad68f5d93c8bc770b915f549a0ce8b6be9e1336af57561644b7",
+   "size": 5278,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/guide-measurement.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "be7ba36e3df2e64097125d2c35adac94d564f21962f06bede7e35853ca5430ff",
+   "size": 1308,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/guide-measurement.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a027398ee59a3fe6c7184f3b74dacc7740603f83ced59bdf85f69c929c8e31e9",
+   "size": 120,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "516c416a98d1ca3194f83266faefd06ab35f50149e2f6b9e672dafbe010f6752",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a027398ee59a3fe6c7184f3b74dacc7740603f83ced59bdf85f69c929c8e31e9",
+   "size": 120,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d3c8d861822172b239557e045260289655f146acc44566f228fe13b82420d978",
+   "size": 9362,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "516c416a98d1ca3194f83266faefd06ab35f50149e2f6b9e672dafbe010f6752",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity-end.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a027398ee59a3fe6c7184f3b74dacc7740603f83ced59bdf85f69c929c8e31e9",
+   "size": 120,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aa82875b6555d0259eeac64d9559e693ba6f5b24f842fa665f5a87e98b4e929a",
+   "size": 6545,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/inspect-store.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2b9195404b6b6e366541fca3d4dca45896797184ed74b4720424ff8c7e11576f",
+   "size": 13260,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/inspect-store.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a027398ee59a3fe6c7184f3b74dacc7740603f83ced59bdf85f69c929c8e31e9",
+   "size": 120,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/inspect_store.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ea214b2d5dde52db29f5916f215d9a06b3984836e721d588df1c22fba7d5a97a",
+   "size": 3247,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/measure_guide.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9730e1e3b267286061ed6151104662bed4e0dd12e3f4c12a3eec326253d1d130",
+   "size": 2573,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation-checks-first-run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e8ae99fdc75699234f6661efd9b0c4979d855ae8576966ab41a70a8470414423",
+   "size": 8684,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation-checks-fourth-run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6b6bea6f5fec7924648ad3a7489f079729a99ad35a020f95307b317caa103138",
+   "size": 12510,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation-checks-second-run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "515ab2d2155ad93604156e63c31fdd754cca40fce69fce73a3e07994c82b9403",
+   "size": 12361,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation-checks-third-run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "34bcc4701132fa5f772a52f91f85a0ecb5bd30b478c10b14635e8a66e5baa462",
+   "size": 12434,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "849044619ce86740d5c8b2511a7a94ee7b0e2e87b359de34a6964e7d40fb7dbc",
+   "size": 12552,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "209ad30447ff01848089561501e233815954ff31c2eef7821f53f9bb1346f67b",
+   "size": 14835,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/net-monitor.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/part-a-frontend-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bef4c9d832d6bd810803f24dbd37c84ec620ad6902b9e38a228ac7c2358cf118",
+   "size": 248,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/part-a-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9a22b34f4d709c220bfc67042e1bfb7f8621eff7903217832ca9e2d3bbe30b70",
+   "size": 180,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/peek_shapes.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c9a8d93252b8f72930349fc7370e001b2c937d2146b1d264719519916b64d3a8",
+   "size": 1901,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e5ef96542249aa1b81d4db6ed9576d22335df67c5cc68315496a8691ebd85f15",
+   "size": 1644,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-plan-diff-vs-fixer.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "360b0c4076465cf262b0c3096157ba6db1cf5aceeed3f2e7666a4bacc535bc06",
+   "size": 1645,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-plan/DECLARATION.template.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d9245c8ddb458b041fb040180562d20621f1c4950349313b47a0ed334e46c140",
+   "size": 2631,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-plan/SHA256SUMS.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "03daebd132355c83e2141d27374298574ab4176e41229ee3baa2f69eb84c09ba",
+   "size": 248,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-plan/plan.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "83f338ccee2407f4f4d709ef57e78aeeee9990b48d38af5e49cf298f2edda0e7",
+   "size": 30334,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/probe-plan/requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fb84bfdcdc845ece00a60f95b32f26e7798e3b1ed580ecf46822d46bbddda9c0",
+   "size": 489856,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/run_dry.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b1a7408004653cfc8ada4cd27183909a800eb84bb3290599645f43be868eea67",
+   "size": 1010,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/run_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d7f2afbfee0be60510a37377317b47a1e2fe16c0ec407bc7fa60724d052452a2",
+   "size": 561,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/run_suite_with_monitor.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "2d185914a7284b544f94469411c0412cd483c6fca1991d2cddd79952fb3977b3",
+   "size": 1277,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-store-test-files-vs-626bae4-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b3f15d31f6ab26faf33090d02419fcbfa772ba6bc635702541b6a0e588335f38",
+   "size": 424,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-store-tests-diff-vs-626bae4.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bd4be24652848467e0e982ee43bd25ee993dd345caa613c7befdbe1330c90020",
+   "size": 12201,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-stores-capability-files-not-opened-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6f8df1cbeda9f65949c7af75a78cc30511ec18f7a63adab41d8fc6071b978ba1",
+   "size": 1090,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-stores-capability-files-not-opened-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6f8df1cbeda9f65949c7af75a78cc30511ec18f7a63adab41d8fc6071b978ba1",
+   "size": 1090,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-stores-sha256-after-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-stores-sha256-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/scratch-deleted.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f32e0279422380df6a29036e910ec4d9854ba7be0585e21a77686507a4202341",
+   "size": 93,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/followup/started-at.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2e8bcb37aa491cf423bc829a31094592fc0e028f9287cf6db1e025c7a222bf06",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/SHA256SUMS": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8651e6e222f54ca9cd82b605d5698ab830106c45af4eecc2e2af0028f853a6ad",
+   "size": 490,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2d-dev5-diagnosis-request.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7cb9ac8c3338d49b59cde38b8cc58747e18a3073a56426b78b8a48228296d03d",
+   "size": 32057,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2e-dev5-diagnosis-request.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "905228fbdda067b467a8e1b0e9bf2807854c44720b4e4d1362eb718c53e6f655",
+   "size": 32377,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2f-dev5-diagnosis-request.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4ab16a7e3665209fd015255c47a955e17a708e62c6fc3791f7f259fb72011672",
+   "size": 70027,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2g-dev5-diagnosis-request.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "098c2cda59979cd60e7f86b4dc41cc4382b787886e9e817447756167ac97e13b",
+   "size": 71440,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2g-dev6-diagnosis-request.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d76f2e4ad3f7ce7918b5a9b05cebfb62849281902a60962ca6fd530514fe287e",
+   "size": 33156,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-plan/DECLARATION.template.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f86d13c89f2d5fbab48de440455a2d2832f28a601fa3aa3589aa6641ab2d3c62",
+   "size": 1361,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-plan/SHA256SUMS.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "919d2a84572b1f22813cae61e438d53b82f4194634ced855093dcb9b7db36c8c",
+   "size": 392,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-plan/plan.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ca034f79aad840e912bf8790926f651ad21944a81422049adff293c877a077d4",
+   "size": 30334,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/probe-plan/requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c8e383919c73ad23d3b273abfe5f9ab3ba6491b8face941d310a38e41b41d2c1",
+   "size": 488881,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/REPORT.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d73679c3e0d46ea3c7ba982abe964b900f90d6cddb3e30f85541c5efd06f7318",
+   "size": 18470,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/gate-freeze-now.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/gate-freeze-now.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "97437044dbaa6ebcff93839552b6bad2aae2a9d467e04e5990d9e669db3ddb8e",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/git-state.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "864d0bb476efdb1fdd16bb76f846f5cdcbe92e6a36fe2567c266cab04a7ac11f",
+   "size": 125,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/identity-now.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa4d4c43804633552177de9c768050eb1ebc0939fd22336632d6aa386039ce9a",
+   "size": 4040,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/identity-now.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/probe-adversarial-output.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "960c629686e7c5c116b534c3db196fe1692529189ae43c4a7cc7edcae8cc0590",
+   "size": 7410,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/probe-adversarial.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5275813b2e99a10d953cc9d2130aed6be6ec72b779003063f228a29b6fd5b19e",
+   "size": 1075,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/probe_adversarial.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5fd1615033f026ddcab6f330a1f7507b9c8cb8020e0b3339e3a18a3e9f15a1b9",
+   "size": 10060,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/record-edge-cases.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a6019cb350dc1274042bc491d9c76363f963e822d2e1029a23aee17549cd33f7",
+   "size": 2105,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/record-edge-cases.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/record_edge_cases.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "85590c35a3aedf5a3278634046d176d2912929d96ff9fbceb9bd72df10f041e4",
+   "size": 4237,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/rerun-new-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "596971422141bbdf00d3ae9302dbaeb95c68f464c84f5e17325ffecb763b2873",
+   "size": 180,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/reviewed-files-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "63c187ede088cc04dad43b6100b0a9e8e649e7906c5b140dd2f5e69818b45214",
+   "size": 1443,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9736ffc2388d2f04b6be0cb578c57188a97ce19324656f3358636b50198e10e4",
+   "size": 634,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "507ad4bdff63b3ab7fa97b2fe9c0edb96b46bed7a7029718de98a4df1bd867f4",
+   "size": 89635,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-integrity/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "00c8b1ea151c0b4369e68e31429e38a7c56bedec790c37f01ff4368261721fe0",
+   "size": 89635,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/REPORT.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3c41fd73774e02d75f5219edf4c2fb6a35a7dc30aa159e695c55a21bffcff1c8",
+   "size": 20620,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/all-saved-plans.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "de15bcc375987db552af46c62813356db57bd8d6c62bc6d0ba715a7ae2e19019",
+   "size": 7943,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/all-saved-plans.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c63f00a24a98a00e782526805d8cd2e9624d8df3558558447d4e3b63f96aa3dd",
+   "size": 81,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/conftest.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "021e862be667691768aeb1b36205f9f43104783010cb2188464ef964b3ab7920",
+   "size": 1212,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/pytest.ini": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "80d46d4647b6788a2faf2fa5a6da2c4eaa4c85602dbecf41f6b5c52d80dcfdcf",
+   "size": 105,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/test_r1_scripted_learn_campaign.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1e90132313f73d07e38fb8da0c7401fc4bc54c4883a1928f78ad6a40bc1bcb01",
+   "size": 9135,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/test_r1b_planned_export_api.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4f25a8aff4e506205128c851bd588dd6c910bf48e8812728e6767c24b71f1ebc",
+   "size": 12169,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/test_r4_probe_harness.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "65a56d74522f6c2b6a9395d66709835e2f529845a310508099f0a92eef4f4ed1",
+   "size": 7341,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/checks/test_r5_record_edge_cases.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "30330c078a6465c0271fc1fee839f0cf74f6ba30242e1e9fa347b7f456436f1a",
+   "size": 7706,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/guide-block-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0fdedc38e3a305b78408983d5ca6d2fdc503973e3b9180713aaf2aab4ccafcaa",
+   "size": 4761,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/guide-block-check.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c63f00a24a98a00e782526805d8cd2e9624d8df3558558447d4e3b63f96aa3dd",
+   "size": 81,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/identity-review.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3fab885b868e8f305fbd7fda5dd0921a3fa79a12d440a17c01af569823e334bd",
+   "size": 4594,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/identity-review.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c63f00a24a98a00e782526805d8cd2e9624d8df3558558447d4e3b63f96aa3dd",
+   "size": 81,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/loop-evidence/planned-export-api.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b5555c3cf79867d6cae770f8d5dca9f378d36639049cca0d2ea25681cab597d9",
+   "size": 3453,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/loop-evidence/rule1-off-repair-fits.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ea929f13d43175c9d0ed4eec331f2f1fca4f2925d8bba1c5d79a1cfa68d29697",
+   "size": 789,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/loop-evidence/rule1-on-overrun-twice.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5671328b31e7d5021de694adfbc1a70d45d4170f32875dbd52ce9138e25fe6a7",
+   "size": 3968,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/loop-evidence/rule1-on-repair-fits.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d130060502301813e499926db3431e756c06646e10734c5232ef7379791a65b1",
+   "size": 4053,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/old-vs-new-plan-reader.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3eba964743c8ad0a9a61191c3460d7529237476017ee36641cd294189bbd60cf",
+   "size": 4432,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/old-vs-new-plan-reader.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c63f00a24a98a00e782526805d8cd2e9624d8df3558558447d4e3b63f96aa3dd",
+   "size": 81,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/preexisting-fireability-on-626bae4-export.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "68da8ebb87df859e1cf9a9d2bef61e5ce69d028a236bba9ab886f42a88d9e5b7",
+   "size": 723,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "10eeb4bdae59a0a8cce257b88629cbb17b024d96af692fccd721a03077096335",
+   "size": 1199,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/probe-refusals.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "231c9ef9570bc1d70f0240c3fd22c42a284428c0e7a3bade7362aa950040f4aa",
+   "size": 1194,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/pytest-related.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e6ce2626e9e6e3a788ea4c63a4114a54b019b630d3ec4657c0167222bf6ee082",
+   "size": 663,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/pytest-review-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a810b549059ecb0a6059164e4c5d66fd5578703905d03e85d56ebedce8b728f9",
+   "size": 1720,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/replay-saved-diagnoses.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "78a6f4307433b038c7c9fefba31870f6fd213ee4cd5474e32df67d6a33b54980",
+   "size": 12828,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/replay-saved-diagnoses.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c63f00a24a98a00e782526805d8cd2e9624d8df3558558447d4e3b63f96aa3dd",
+   "size": 81,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_all_saved_plans.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cad4e675e191af29955366492b1a1ee81483c0139dd68043f48ea37e601e99c7",
+   "size": 5249,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7cf2f23c8ccae641fcd717ca98c26f0cec0c789e81390b3ef1d9540489339c9a",
+   "size": 3012,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_guide_block.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0bb8fb8b4e5ed8ce1cc4f4a4259145d6435b9981a9778eff6def94e3152b0c1c",
+   "size": 5542,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fbc809e72f93c1ab53796c3fc2b076953688c00eb7e5aaee97abacaa3593302c",
+   "size": 2207,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_old_vs_new_plan_reader.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "92c02a394119dbbd4eecaf82b5729304cf3f4e8918bff7b8c04def665568e9eb",
+   "size": 2797,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_replay_saved_diagnoses.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9ba8a51dd93a25d8c1c88b99ad1aa91d1e11c4a68f8cc7109df0403f1ec966c2",
+   "size": 8996,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/review_run_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4dccc7f3134d6775b27b278c53a7209d2ebc60007c11e488196b43b15758c839",
+   "size": 692,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/saved-store-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/review-product/saved-store-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d49a66b5142da9c71cb111344ee4c7b92e674ad2827a0b0fb7666e246681361d",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/check-note.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "63c89c6d3fd6a7299ad0e5d25aded2ad7952cc4589c0b9f591b7ce62aced99d2",
+   "size": 1023,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/check_note.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f3760aac1302470b0c9d072e445b6fe264e7c6511c5e71e8147c46864c4ad72a",
+   "size": 1866,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/code-sha256-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ef22111c8b6c30302b245c15d69d2e0c0ff63a3244bd452794628b48c5446fb6",
+   "size": 2391,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/commit_list/commit_list.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "705f3f4ee3f234ae1e3302be7a2b3daff8eedea82c51217b09dd2c77dae0790f",
+   "size": 8416,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/commit_list/conflict_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c2bf2dabe8376dcffb4508aad13be9542fb861a355459fa1ddb0072c1e223b",
+   "size": 1260,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/commit_list/secret_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ded16acfb07c7b0ddc529fca52d56613f95d1e78b0f0f42005aba8699fe09db8",
+   "size": 2222,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "07b49e08ad2f8595fb49d4c25fc955ef6729dafee1fbd974c8debc072a8c7f87",
+   "size": 63,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e65a67322dcbf65ac2b299b1eb1e56f756be17db9ada5e7a7e45a54026464e9e",
+   "size": 21203,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4f8ab0c347b8607191b6c225d0a1a038c6d00c1a1fc3bf411e11e9addf5905a0",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/checkpoint.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/checkpoint.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d1be5fe91f12656ef7801efa1af4f8e8eb958f22b7e9a629408545831854c61",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/compare-with-fixer.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "54377d9d378153445087ef6140f6981b8c8c38c3f1bc459262edf86e2c3ad2fe",
+   "size": 565,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6530ef1e91911c4c8f5308e0700f4fb083e76694bad6b36cdb9eca26b38b8310",
+   "size": 732,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ffd939652a8ce3f79fcc6f9c1b098fea6121e3f9f88dba5c013d873157becf91",
+   "size": 1247,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "aeccff653fed02c404fe82e9ab4fbd026c59b39a7d3122592a6927b948269432",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e0c8d8fbe038f3a2b720eabe5b3945a8739b6f1c11b166b45dfc4629e39f4c21",
+   "size": 962,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/git-state-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "78215c4cd6b88d2fb0329e53ce9476fccf3c528a27441b1eae3efcc9edc63105",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/git-state-before-test-sh.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "783f9bf662f74ddb2825923ef01dab509f8073124ec10818f24c22eb357863f0",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "27cf1a36c216382a42c966c2aeabbde0489dd70fd34c7578c1604d2cbfac6098",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/git_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "abc17d57c0e24d95812ea24b6defacb924cbeb6007feb8c71ed2ec10fd471750",
+   "size": 749,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f04b36170fcc3a6abe08eb7a6f07b765d58e4160031fddf503db7a581345dabc",
+   "size": 5344,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "11a074eef413642bba3600e40232583822e55c9028f17fc0afc70b0d402769f2",
+   "size": 809,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a6461eec9f7e246e8ed4143f34eb73af57e6459573ae03dfe499b5341a7be302",
+   "size": 5768,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/current-end.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/current-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "516c416a98d1ca3194f83266faefd06ab35f50149e2f6b9e672dafbe010f6752",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "516c416a98d1ca3194f83266faefd06ab35f50149e2f6b9e672dafbe010f6752",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/end-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "eddbd17b29b94f59f17aff1ae6fd0967803161b9a51df2e103843387e4dbfc29",
+   "size": 78,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/identity/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6f6ad378eb54f65a06a096607cda391e9e9b69aa8b25936d7a872626881c6053",
+   "size": 6493,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/net-monitor.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/check-plan.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "eb8622ae76d1670a22c2574482b997288fcdc656fd53ab8ff7bbec1b5f9f4ba8",
+   "size": 3049,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/check_plan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d4a67980836c5327254bd462fbfbc78be403e7b16cb53d41ea346b908eceacb8",
+   "size": 3916,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/plan-out/DECLARATION.template.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d9245c8ddb458b041fb040180562d20621f1c4950349313b47a0ed334e46c140",
+   "size": 2631,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/plan-out/plan.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "83f338ccee2407f4f4d709ef57e78aeeee9990b48d38af5e49cf298f2edda0e7",
+   "size": 30334,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/plan-out/requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fb84bfdcdc845ece00a60f95b32f26e7798e3b1ed580ecf46822d46bbddda9c0",
+   "size": 489856,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d4331624bfc2be6d3381e4a88d15e013910b274692fb3111b9e19099b018fab1",
+   "size": 1630,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/probe-dry-run/run_dry.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a8e0f8c342b1b95a5244ebbcd80caa2dc6682a32011d1ba36c1a205c716c5b94",
+   "size": 943,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/protected/byte-identity.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "859f9b8763f8c2df31b5bf3ea89faf340942b6db3f234ae1ed846e77dfdc3a9f",
+   "size": 5713,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/protected/byte_identity.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1fa6387f1c6d7c9a1a392d39e1400d0907e4aa3749b6e6e8bc996a1957d50981",
+   "size": 3637,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/run_suite_with_monitor.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "d501622732585b88391018b21fb83e24d338f7b2029c2d22f1907da0890677e1",
+   "size": 1222,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/saved-stores-capability-files-not-opened-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "88ee65bb07c6e42ce82071986665212ec3bf972c2217ed7415ca490ba5bc5b9c",
+   "size": 1129,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/saved-stores-capability-files-not-opened-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "88ee65bb07c6e42ce82071986665212ec3bf972c2217ed7415ca490ba5bc5b9c",
+   "size": 1129,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/saved-stores-sha256-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3fea05877903fd97d335799a7d3df7020bab12bf839fcfd64c15caab3d0cfe0",
+   "size": 107312,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/saved_stores_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "a93903bd42a2a217982d36a39b91666c8aab3db64a8de875a957ad14026375f4",
+   "size": 994,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/scratch-deleted.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7841da44a92394161f79bb117c1e2536da77c6fbf6af61b1a5a065b8f612afdb",
+   "size": 464,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/controls.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8b2b54d8977af3f4fa0ec24b4d26fc81267efe215532395a53f9bae05754071b",
+   "size": 5174,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/make-stores.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "86c9bfd8907cb3716b14deac545179019462dabe7b33b9229599836290d8b95b",
+   "size": 414,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/make_stores.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "65ee627c76431609adca01f928218d5e809e120320108d9868c1e37c7d1587a4",
+   "size": 5047,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/mutations-B1b.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7923040a6c2a2330e0fdb1e6b0173f239fe4be8513697d01207211d953a8e53e",
+   "size": 527,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "20c2dfe2ff7aeb9cf041b31da0ae48a49a16640b968817edfb66fe1948c4d518",
+   "size": 3369,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a80ffe6ceb0400c356aaf40417c941cd2a9ea1177f89eb519f324b4a6e4da053",
+   "size": 4295,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/run_controls.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "1b847fe3f2e19124ab1b125ba911937fc93055f50ce015546689d4e2170dd5b8",
+   "size": 3083,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/store-facts.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7d098f5b8b3085d4275d842eaffbc060cf986ffc71851aa0e440510d19a81bcb",
+   "size": 2654,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/store_facts.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73760db375cc92fe807f9363d7ba91cd9f209eec19185a6e2382576f3e8ccbba",
+   "size": 2139,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/spot/vplug.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7307e1a2ff011b569279dd410990e741695f1484f164dceaef6daf39832cc5f2",
+   "size": 2033,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/tree-vs-backup-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "176a2e9787c826db0619e8dde0d6fb60cff9134de939ee1022d3032f53c86321",
+   "size": 2692,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "176a2e9787c826db0619e8dde0d6fb60cff9134de939ee1022d3032f53c86321",
+   "size": 2692,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/tree_vs_backup.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9045f82ab2e5f777ceb92d973d4e0d40ca6aba3e304e4612dbf4d1f18028864b",
+   "size": 2440,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify-2/vguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae45119cb9d60e64c6664c41c86225a7536185e3621ac317fd9eca1feca397a4",
+   "size": 3166,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/COMMIT_LIST.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4c4f46f3b5f1ebed7a655518a34198102923d6be8636b4e93a93c8bf6a987f48",
+   "size": 64289,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/COMMIT_LIST.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "99b8a9de22721572f933285d244b2e6a6e7d2cea99d7dc186b5e3e84dd77a10c",
+   "size": 34600,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/COMMIT_LIST_NOTES.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bd603f10d1a286c1d4de45ca1b745caf772fdd0e8ffa57fc28769340ee7f9455",
+   "size": 8919,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/REPORT.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "461cdaf414add89fb59b489d52aa05af7b73e2cab5a5b183ed6c7c633420c2d1",
+   "size": 14529,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/commit_list.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "59db26f3f89cdda3c1d69cdecfe2cb428ecc00c4fe8cd4232e5d5c3331c930ba",
+   "size": 7978,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/commit_list_pass1.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "faa9b42ecaf9da0214bd08dd23288ad75e86d7e52992f8476c4897a6a3348228",
+   "size": 32562,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/commit_list_pass1.txt.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "00375986f3900506bc847511553d2afec93786a1d0fca80d690e3735c4e461f3",
+   "size": 60591,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/conflict-scan.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "60fb159adc9e8cc4ecfd091888356bfb2c436ecc56dbfcfd24d6d7f8dcdfb40e",
+   "size": 4923,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/conflict_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c2bf2dabe8376dcffb4508aad13be9542fb861a355459fa1ddb0072c1e223b",
+   "size": 1260,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/secret_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ded16acfb07c7b0ddc529fca52d56613f95d1e78b0f0f42005aba8699fe09db8",
+   "size": 2222,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/secret_scan_final.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "40caba8225f22958bed5f6254d7f9da2f8f69ac7b0d907a54c5c847b34496412",
+   "size": 203,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/secret_scan_pass1.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa8f99a741d144c7dca958f10df3969fcc62cd6da6a61fe2a1712ad35b31e84d",
+   "size": 39,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/secret_scan_selftest.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3cb24cc75d96d70e99ed789dbcde3afa374882e95402467da01f4ee8a4a21fc",
+   "size": 216,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/commit_list/shasum-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5c0bf0b0e69c89d3f7b5e890ecbd040d08e2b9b97e08de1de70334bee91d9143",
+   "size": 19534,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e9b380f9a02ed27285db83c6ba7c71e1bd469651b89c8522cc4c93da3afd5358",
+   "size": 63,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c5e9984bfcd095fd6426a5e3d6aca4416949eed181d400ee345d9c7d89b6c520",
+   "size": 24826,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3ca1cfa423fa2116d0ab13e62fde44745cf287f08afb1713b80e05696ac7a5d6",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/checkpoint.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/checkpoint.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d1be5fe91f12656ef7801efa1af4f8e8eb958f22b7e9a629408545831854c61",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cd4a7e2f776d2e83978bd163edbbc17a05c29cc136516add306271c0c4c2772a",
+   "size": 736,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3f639b97339483e3192da8b9e13212803b0e786dd1272abf34afc19f7053bbd",
+   "size": 1221,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/current-end.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/current-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ced15297c927096b5551e3603e2d328a117e18c67b106cfde22cfc68f38c55ed",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ced15297c927096b5551e3603e2d328a117e18c67b106cfde22cfc68f38c55ed",
+   "size": 10849,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/leaf-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "df740f7bb8cea38dde1d1b7ed6bb1b925ef2d9ccd304a8ef3243e8e48cbbb6d6",
+   "size": 1033,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c2b2b6bc845535fc7617f2f0486bcfcd5934ef56d515de5df7dca4f2fabab8a8",
+   "size": 908,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/git-state-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7eeb15563ea18c2e7ae465bce694a2575ab801a757d4f311389654e7245391d8",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/git-state-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4f161b101097ee6589968f043efc5a9c947f6614b8dc80d14c03b322108f132d",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bbdf98e80d0f3afdd5b2511523b2ff67254df0bdb9c8e38b8a43c52fd8ac6b8e",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/git_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "abc17d57c0e24d95812ea24b6defacb924cbeb6007feb8c71ed2ec10fd471750",
+   "size": 749,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ff933b92229ce1652c136b7919e87198459a3323e2a3c11191927b80af851e97",
+   "size": 5358,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/compare-with-fixer.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "51737cb2f7a2d4c9c332345dd6e70e1e8a33671df29db16ed6030d6dada01dde",
+   "size": 3542,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5283a7434d7cfde5a573a6428a4e13fa426099127a8c05fb5e9150606c9cdb23",
+   "size": 1307,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4a1dba3bc14a916d8b26f2d826fa9278b272d2b0ce8c66ae7ad0227d00ee4037",
+   "size": 9247,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/current-end.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/current-end.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "486307fe4bd56ed7d59bb3f71b99603a3da22ba0eac8271ccee8c9b73ac50896",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "486307fe4bd56ed7d59bb3f71b99603a3da22ba0eac8271ccee8c9b73ac50896",
+   "size": 5462,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/end-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fcc9e8992a0c687c20797f00b4e6497a0d05d299ef18371715be6ebf15e6b27d",
+   "size": 64,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/identity/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ff25d85f068a2af4202ab03f9d73dd67b82b51aa9d1145e7406d6b25d94e1143",
+   "size": 6429,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/backend-new-tests-scratch.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "28b695dc3413d8f4b8fbe391020e409afc0dd1ee463c11c557df5b585134702b",
+   "size": 29500,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/backend-opens-classified.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7cb0eb447b741d4504145eb9d4c4013dff214503e6fd75c38ff1bba96aa8b485",
+   "size": 3604,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/classify_opens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "74d03cfc056e7384cc11d949f01f5d8d31952e904ad7f4b9301eef26875f92dd",
+   "size": 4063,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/frontend-new-tests-scratch.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3ef18d9693a59a60e964fbab8f7643112a8be344c547b0335d660978ee494264",
+   "size": 253,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/opens-raw.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "439d2315a6e19fdf1562d0278519c3b4fad68e03c273bc8c23aba9b20b486dbf",
+   "size": 195966,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/ignored_deps/vopens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7fcbe934769e32fbd3a1c34dbc0f67e3ba763226bd54d68d706f0e348eb1eeba",
+   "size": 680,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/net-monitor.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/probe-dry-run/plan-out/DECLARATION.template.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8aa507686867611eff83e2edfcc42f945c93cc700ae79c807a82c1486a370827",
+   "size": 2631,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/probe-dry-run/plan-out/plan.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "515237f9ab7c589c622b1afb7a8ccf2bb588efb62556621a0f987aff6e0c5900",
+   "size": 30334,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/probe-dry-run/plan-out/requests.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c8e383919c73ad23d3b273abfe5f9ab3ba6491b8face941d310a38e41b41d2c1",
+   "size": 488881,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/probe-dry-run/probe-dry-run.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fcc3d1442492aa017c3c09da1b40c7c787bfc62edf4c2263a27f0865cf14a984",
+   "size": 1628,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/probe-dry-run/run_dry.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "45bbb091b358a0197ff99a1709543383004d0061b87137be3166f5d4adde3022",
+   "size": 895,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/protected/byte-identity.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "68145be32a5da83aef501723584ea10ed5c174da0ad9a1c743c8b53770d1212d",
+   "size": 5204,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/protected/byte_identity.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bf7b256acfbc42e5e21eb8dbfbeec83718574526268d95ab4cf78b1e26d8b146",
+   "size": 3310,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/run_suite_with_monitor.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2c865f986d71f8cb9409fb73eeab006a4e01ab218fa40bf908407aa675af5a9c",
+   "size": 1196,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/saved-stores-sha256-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d3db83bdffb690eddf719bbb7ec9a10ca64fadb009f8568663e4b26f0894f72",
+   "size": 108864,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/saved-stores-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d3db83bdffb690eddf719bbb7ec9a10ca64fadb009f8568663e4b26f0894f72",
+   "size": 108864,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d3db83bdffb690eddf719bbb7ec9a10ca64fadb009f8568663e4b26f0894f72",
+   "size": 108864,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/scratch-deleted.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9275933bef7821a6f87b042f2f37286f6e880b32aef6c77edca44d3488d73f78",
+   "size": 274,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/fireability-failures-origin.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8db9525906fc4680c178ee51ca31fb61079bb4c118e567f647fdfb5476aca040",
+   "size": 1516,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/fireability-failures-origin.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/fireability_failures_origin.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8ba4989d32fa4c30244302f418ab71c273d537c70a09ac1788a20302eeab826d",
+   "size": 2763,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/frontend-tsc-nocache.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8e39cf7a610b51abbfdea4ec2744c10cc7e77fae24d3747720dfe2a49a945f75",
+   "size": 184,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations-first-run-exit-code-only.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5a90d8c60cb58f0d459e986990287687e261d19e4c672038fcbbdb488a88efff",
+   "size": 13000,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations-first-run-exit-code-only.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bc9b41cb1aa43a2cb09631785d4c6a114d16b208bcd44a325187329dc0daf1ad",
+   "size": 1732,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations-summary.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a6513810ebe152a1dba6f3e08bcdbe0e88942b5a54092babae776e684c87e0dd",
+   "size": 3566,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0f7cdc6dd036db53410faff1b49dee3299dea8e165ca69c10d8d5412942a2b51",
+   "size": 10524,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "111875e5395c79a489504c2805d98da8ca42226b2f8d5cf570e1870372ba4c8e",
+   "size": 6160,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a5b1719ba048c58bff70b0973344405b4d90c772e49d4789db86d80187888362",
+   "size": 11707,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan-reader-checkpoint.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26847f33b82f10ac39ceb39a0c2610eb2f17812da4b28b9d295106c27a9e5526",
+   "size": 11379,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan-reader-checkpoint.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan-reader-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e20d855034128a15ac75f1fbbfb6d3a81f5c763228d1fe6fe3d0d3efa1ccf47a",
+   "size": 370,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan-reader-work.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "97330e4668b4111ecda3a72a9b88724dfc90f428587a6ea2365c775391b0336f",
+   "size": 11368,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan-reader-work.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/plan_reader_dump.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c4fe952bda957400b38312893b7dc4fbadeb897f2065f48f3ab6035cdb201b",
+   "size": 3044,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe-harness-probe-first-run.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6ef010fefc72e2c523ffe2070ae7576807aacf54a61563973fd471ab57a24b1b",
+   "size": 7393,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe-harness-probe-on-P4-mutation.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d6a0c59b7d9ed21a3ff74f19158b82ff19d1ff6c0d28036a9ee3894c754a644f",
+   "size": 7494,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe-harness-probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f2172f1dc985f34aef2aadfb4f2f6d20b08ac261453bbb7caf9850522d01ce9f",
+   "size": 7360,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe-harness-probe.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f89a1611eabd59b877b7a734351abae2617444676afb9533d1fd766a5ca712f1",
+   "size": 167,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/probe_harness_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3511064b9b08e8335bbbec34dddd1bee61a08cbe113a58bb2120ed0ccb252676",
+   "size": 14788,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/record-probe-first-run.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba5771464781f196f943957dba723aa1b278bd5e1cb0a043f8c7a03584ab224f",
+   "size": 12219,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/record-probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fb4061ff79dfa3698f54c59ad60d09fa13319750e43cc93bcf1676ede143a21f",
+   "size": 10809,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/record-probe.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2416c23c8145d1d8983f000d07f85c3d25c2a1437ed1b4af9de6b66e26b20355",
+   "size": 132,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/record_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "39334869268b721c2e71355cd10153d212980889b8e24d13beb4ed43e46ccf15",
+   "size": 13317,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/saved-plans-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "545e0fc3cd8209c2a8c847cfeea8c01f05fa0bdd8d820c0b249bcad54e1c275c",
+   "size": 6579,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/saved-plans-check.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "117058ba98b1ea9f19eb0bf1f0f7b62b7492c0aee4d54c0ed7049102f1c57858",
+   "size": 260,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/spot/saved_plans_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "66e1a4e376b78eaccf66caa3508093c3850e395783d1c6189b47d162919f38b9",
+   "size": 4620,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree-vs-backup-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9aa670d985799ff74571755dfa8041a7f973cabb713fa962fac12f8997e2f3cf",
+   "size": 2445,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree-vs-backup-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9aa670d985799ff74571755dfa8041a7f973cabb713fa962fac12f8997e2f3cf",
+   "size": 2445,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree-vs-backup-before-list.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9aa670d985799ff74571755dfa8041a7f973cabb713fa962fac12f8997e2f3cf",
+   "size": 2445,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9aa670d985799ff74571755dfa8041a7f973cabb713fa962fac12f8997e2f3cf",
+   "size": 2445,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9aa670d985799ff74571755dfa8041a7f973cabb713fa962fac12f8997e2f3cf",
+   "size": 2445,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/tree_vs_backup.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9045f82ab2e5f777ceb92d973d4e0d40ca6aba3e304e4612dbf4d1f18028864b",
+   "size": 2440,
+   "status": "NEW"
+  },
+  "artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae45119cb9d60e64c6664c41c86225a7536185e3621ac317fd9eca1feca397a4",
+   "size": 3166,
+   "status": "NEW"
+  },
+  "backend/app/agents/mechanic.py": {
+   "sha256": "f1f57204d98fc498d85c90bdf7804132798cc600172864fc194e94063e8552cb",
+   "status": "MODIFIED",
+   "tip_sha256": "0b4606b3d03bd445130ee3b78407621b27b60b1746eb26c72fd6a142557512b3"
+  },
+  "backend/app/lab/diagnosis_guide.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "e30c2de2839f14041f12b71e7cbb8a2f581bb618a210582d407c73060d0779e2",
+   "size": 9365,
+   "status": "NEW"
+  },
+  "backend/app/lab/diagnosis_protocol.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "0b38dae9d0f1026a84233b690d06e6287bce087dd27333d0b8e750a1e51aee23",
+   "size": 18180,
+   "status": "NEW"
+  },
+  "backend/app/lab/exports.py": {
+   "sha256": "8a7a182f21196da6ed0e2f8a900008b94f4dfc959232639b118e4f32dc725f01",
+   "status": "MODIFIED",
+   "tip_sha256": "f31bb00e3006cba3a067347c1bb76116f960c09abd5deeccaa153a648004a980"
+  },
+  "backend/app/lab/learning.py": {
+   "sha256": "66d0176f26fc1d47fa606447ed9c63719b89e271651cab191acfdffb5069c991",
+   "status": "MODIFIED",
+   "tip_sha256": "f4b3d85fe2ba2ad2ac5a01c09a6c835dd0a5657551e58bd0a3dfa34574684198"
+  },
+  "backend/app/lab/run_plans.py": {
+   "sha256": "364f97aa4be07c4d8a5e65e44f3e8929e71e2315c7125b969fba34b53583fa56",
+   "status": "MODIFIED",
+   "tip_sha256": "0c27e02e699e11ad5d83dae4d4160e109615cd5bddbd4b40fdb06fd1566f588f"
+  },
+  "backend/tests/experiments/test_diagnosis_probe.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "112db6b81bf682df869b521a631badad80ae931d05520b828c6b2f12848e4f79",
+   "size": 23914,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_diagnosis_rules.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "ea5e9c69f5c4f968ebb1eec97134a325559d9192655fc2e52c3c6dbc71584ec6",
+   "size": 58819,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_diagnosis_rules_loop.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "0ec0bc8103173682b4a5f716dddc60773811857ab093b73ac7fe977bc35343df",
+   "size": 12882,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_discovery_v4_review_fixes.py": {
+   "sha256": "b5c596b9cddfff1be16f03998a840ccdedfdd046b8b8a0245bb76a0a5c2a7dd6",
+   "status": "MODIFIED",
+   "tip_sha256": "6d6b90406909bcde0968311d0000956d3e94a978da76342c361a5524beefa572"
+  },
+  "backend/tests/lab/test_evidence_wait.py": {
+   "sha256": "b4e0112ce1f7c537d1adf74f254724f74cc9a2f0e87fb2e9218726bfeaa5cb85",
+   "status": "MODIFIED",
+   "tip_sha256": "8b74b03b1f94163552df98443601163b8615b9c104864c9ac9debbefa63ca51c"
+  },
+  "backend/tests/lab/test_history_fireability.py": {
+   "sha256": "341dd4ec3d2f36c2277d4dfd23c9fbce94b29bfc27321645b9979ceffaad3963",
+   "status": "MODIFIED",
+   "tip_sha256": "9a447e69bfccd4ab20f6f50aff9ec4b98b0bb23056e58e416c15e38b4fbea01f"
+  },
+  "backend/tests/lab/test_loop_limits_mechanic_context.py": {
+   "sha256": "254512106c5286361881ba7ac49124314a719302f38809b00b21f48add1cb669",
+   "status": "MODIFIED",
+   "tip_sha256": "374718d84e972901308330a659a268eff5a6200fb7362836a600593cdbb4ed0c"
+  },
+  "docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "59a93344531188a68e5d6b7417ff73a9165635eb1be6aaab213019b0af076387",
+   "size": 42831,
+   "status": "NEW"
+  },
+  "frontend/src/components/CampaignPlan.tsx": {
+   "sha256": "b4f404b6c49f94ec9eb642f1a22cdc1ca2e6caf9439ec5c7bda533d569b1d059",
+   "status": "MODIFIED",
+   "tip_sha256": "76dab3d275d2546a3e36cc99cfaa3daf8ff326a2bb193541e12a98d081432aba"
+  },
+  "frontend/src/components/DiagnosticPanel.tsx": {
+   "sha256": "46b165d8836a263835db9f56cc33e9524fb3a73d8b813b150cdc13867c32f23e",
+   "status": "MODIFIED",
+   "tip_sha256": "f870061a48b43791298d4a8a0b03a22e9eb07ec83c42bae12a35952afbea31bd"
+  },
+  "frontend/src/components/LoopLimits.tsx": {
+   "sha256": "1ec3af4584268bce45db4a0105621a9a94d3e8c70aad419e566d5047f7fab02b",
+   "status": "MODIFIED",
+   "tip_sha256": "1414633c72821162e1dda9e2bd0d4e22c26c09b70fd4da4172d7704a6e639b8f"
+  },
+  "frontend/src/components/RunSetup.tsx": {
+   "sha256": "33547e8c102a9288fbe0091b5d3b937ca8ee6b2a241fd86f38f9b455b4f270a1",
+   "status": "MODIFIED",
+   "tip_sha256": "ea0d28618c7b83a89732be74c390f332f678c1c6421dae3e05d494bccc38b253"
+  },
+  "frontend/src/loopLimits.ts": {
+   "sha256": "b574eb70e7b2580f73a9fa5794f26095f1d155b35a82c1ac562bf82a45765e4a",
+   "status": "MODIFIED",
+   "tip_sha256": "1e6770425b3aee9c90b3260d8cb72b156b610324ded210e65f92b471ac51fec1"
+  },
+  "frontend/src/runPlans.ts": {
+   "sha256": "31eff1c5f980b8c9538687b8cc6540ac30eb6b02b34a85785b4d66b770d949f7",
+   "status": "MODIFIED",
+   "tip_sha256": "f22f5060bccf8f83cc9e9f47d46a1329b2e4a310e66cc2dfaf2ccb57fc965ba0"
+  },
+  "frontend/tests/diagnosis-rules.test.tsx": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "6e0442759de4a84d9898e53bd59442af7f5688594e3939cce4884b263bf33442",
+   "size": 12297,
+   "status": "NEW"
+  },
+  "scripts/experiments/diagnosis_probe.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "b1eb7cdaf1490a459c26d36d0b8c16a5a585c663fee671f6ba90bb05e56b86ff",
+   "size": 57676,
+   "status": "NEW"
+  }
+ },
+ "excluded_evidence": [],
+ "protected_not_read": [
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/final-audit.json",
+   "size": 5771
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/promotion.json",
+   "size": 3996
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:30Z",
+   "path": "backend/app/referee/checks.py",
+   "size": 7809
+  }
+ ],
+ "tip": "626bae4afba9e160397e3f55b0ce9f5663e48d48",
+ "tip_files": 2787
+}

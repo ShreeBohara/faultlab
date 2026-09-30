@@ -1,0 +1,38 @@
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/design-minimal/__pycache__/proposed_diagnosis_guide.cpython-312.pyc NOT TRACKED
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/design-minimal/guide-measurement.json tracked in 626bae4
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/design-minimal/proposed_diagnosis_guide.py tracked in 626bae4
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/designer-integrity/prototype-results.json tracked in 626bae4
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/designer-integrity/prototype_declared_semantics.py tracked in 626bae4
+artifacts path opened: artifacts/analysis-diagnosis-2026-09-30/inv-a/mechanic-outputs.json tracked in 626bae4
+artifacts path opened: artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2d-dev5-diagnosis-request.json probe-input copy (commit list)
+artifacts path opened: artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2e-dev5-diagnosis-request.json probe-input copy (commit list)
+artifacts path opened: artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2f-dev5-diagnosis-request.json probe-input copy (commit list)
+artifacts path opened: artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2g-dev5-diagnosis-request.json probe-input copy (commit list)
+artifacts path opened: artifacts/product-diagnosis-rules-2026-09-30/probe-inputs/v2g-dev6-diagnosis-request.json probe-input copy (commit list)
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2d-run/export.json tracked in 626bae4
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2e-run/export.json tracked in 626bae4
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2f-run/export.json tracked in 626bae4
+artifacts path opened: artifacts/product-live-2026-09-30/native-v2g-run/export.json tracked in 626bae4
+.venv (environment): 909
+REAL REPO (Desktop) path: 1
+device: 1
+name that does not exist in the scratch tree (relative name opened through a dir_fd, e.g. shutil.rmtree of pytest temp folders, resolved against the cwd by the hook): 101
+python install / system: 194
+scratch tree: one of the 21 changed/added product files: 11
+scratch tree: probe-input copy (git-ignored; in the commit list, needs git add -f): 5
+scratch tree: tracked file of the backup tip: 219
+temp (pytest tmp_path etc.): 7
+verifier scratch (outside the tree): 94
+opened tree files that match a .gitignore pattern (tracked or added): 9
+   artifacts/analysis-diagnosis-2026-09-30/design-minimal/guide-measurement.json (tracked in 626bae4)
+   artifacts/analysis-diagnosis-2026-09-30/design-minimal/proposed_diagnosis_guide.py (tracked in 626bae4)
+   artifacts/analysis-diagnosis-2026-09-30/designer-integrity/prototype-results.json (tracked in 626bae4)
+   artifacts/analysis-diagnosis-2026-09-30/designer-integrity/prototype_declared_semantics.py (tracked in 626bae4)
+   artifacts/analysis-diagnosis-2026-09-30/inv-a/mechanic-outputs.json (tracked in 626bae4)
+   artifacts/product-live-2026-09-30/native-v2d-run/export.json (tracked in 626bae4)
+   artifacts/product-live-2026-09-30/native-v2e-run/export.json (tracked in 626bae4)
+   artifacts/product-live-2026-09-30/native-v2f-run/export.json (tracked in 626bae4)
+   artifacts/product-live-2026-09-30/native-v2g-run/export.json (tracked in 626bae4)
+scratch-tree paths neither tracked nor added (would they be ignored?):
+paths outside the scratch tree, .venv, temp and python install:
+   /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-diagnosis-rules-2026-09-30/verify/vguard.py

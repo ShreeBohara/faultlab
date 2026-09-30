@@ -1,0 +1,132 @@
+{
+ "plans": 21,
+ "all_identical": true,
+ "rows": [
+  {
+   "store": "2026-09-28/discovery-v2/lab.sqlite3",
+   "campaign_id": "campaign-a301846e8722418eaafc71923c6e1819",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-28/native-probe/lab.sqlite3",
+   "campaign_id": "campaign-e5b0165883ee4dcfab262e1c8f3d595b",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-29/discovery-v2b/lab.sqlite3",
+   "campaign_id": "campaign-17d60a9e97524a4a94858b14eabe8279",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-29/native-learn/lab.sqlite3",
+   "campaign_id": "campaign-7ee35abedd204d2895b180bbd75e66dc",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-29/native-learn-v3/lab.sqlite3",
+   "campaign_id": "campaign-aaceaf2fa0554540adb1008d286e2f7d",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-29/native-learn-v3/lab.sqlite3",
+   "campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2/lab.sqlite3",
+   "campaign_id": "campaign-1f350c6d8861419f9e2d246e104fb6ab",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2/lab.sqlite3",
+   "campaign_id": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-30/native-v2b/lab.sqlite3",
+   "campaign_id": "campaign-d8d1e8cc0ea34feb92dbd8c22c264530",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3",
+   "campaign_id": "campaign-85a1e48f1b7d4392bdd5e3d5876374bd",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-d91beb8a7fb0446eb260fe00db610f33",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-2b87959635fb472c8a2d3539dacf6c11",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-8e44ece2c1804fd18452a5f84278e12c",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-e13e71a70847486f9b4aee621a144f9f",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-34b2eed890d643009e28edec9e45521e",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  },
+  {
+   "store": "2026-09-27/product-onboarding/offline-01/lab.sqlite3",
+   "campaign_id": "campaign-6aa3bbf0b989496e928be0ffd45ae717",
+   "read_identical_old_vs_new": true,
+   "serialize_identical_old_vs_new": true
+  }
+ ]
+}

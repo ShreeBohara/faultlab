@@ -1,0 +1,111 @@
+{
+ "diagnostic_endpoint_mentions_proposal_status": false,
+ "diagnostic_status": 200,
+ "frontend_files_mentioning_diagnosis_requests": [],
+ "frontend_files_mentioning_mechanic_diagnosis": [
+  "frontend/src/loopLimits.ts"
+ ],
+ "matrix_mentions_diagnosis_requests": false,
+ "matrix_status": 200,
+ "record": {
+  "attempts": [
+   {
+    "attempt": 0,
+    "output_ref": "mechanic-f5402432e87541ee8541626ce7fa0cbf",
+    "validation_errors": [
+     {
+      "location": [
+       "hypothesis"
+      ],
+      "max_characters": 600,
+      "type": "string_too_long",
+      "your_characters": 743
+     }
+    ]
+   },
+   {
+    "attempt": 1,
+    "output_ref": "mechanic-88af7853fb8d4dc2b21067d86438b2c4",
+    "validation_errors": []
+   }
+  ],
+  "campaign_id": "campaign-0cdd39f51ccb451aa90f4c4e06c1bd67",
+  "counterexample_id": "counterexample-review",
+  "diagnostic_id": "diagnostic-0b3d2e4e1ab149a2baaacc99c09d8d88",
+  "first_turn_hash": "18d57512d1fc998b1fae7833be613c1afb1ed882d0df709a49bf738eeb19db5e",
+  "fresh_intervention_trials": 6,
+  "intervention_ran": true,
+  "interventions": [
+   {
+    "intervention_id": "intervention-18b5b8cd9a935f2b49513ea9",
+    "limitations": [
+     "Three paired observations test only the declared schedule change; no universal causal claim."
+    ],
+    "result": "SUPPORTED",
+    "trial_pairs": 3
+   }
+  ],
+  "last_raw_unvalidated": {
+   "parsed_json_object": true,
+   "proposed_kind": "CONTRACT_EVIDENCE_GAP",
+   "requested_intervention_id": "intervention-18b5b8cd9a935f2b49513ea9",
+   "validated": false
+  },
+  "options": [
+   {
+    "change": "remove_primitive:0",
+    "intervention_id": "intervention-18b5b8cd9a935f2b49513ea9",
+    "observed_treatment_trials": null
+   },
+   {
+    "change": "lower_parameter:0:completion_delay_ticks:1",
+    "intervention_id": "intervention-350c5986234cf437d8ed4a51",
+    "observed_treatment_trials": null
+   },
+   {
+    "change": "lower_parameter:0:completion_delay_ticks:2",
+    "intervention_id": "intervention-2aa52b2cdd8d76b1a4f7f65d",
+    "observed_treatment_trials": null
+   }
+  ],
+  "output_refs": [
+   "mechanic-f5402432e87541ee8541626ce7fa0cbf",
+   "mechanic-88af7853fb8d4dc2b21067d86438b2c4"
+  ],
+  "proposal_status": "VALID_REQUESTED",
+  "protocol": "faultlab-mechanic-diagnosis/v1-repair-and-record",
+  "recorded_proposed_kind": "CONTRACT_EVIDENCE_GAP",
+  "recorded_proposed_kind_source": "model",
+  "request_id": "mechanic-request-c209f4209ac14d3e94125d9b13a392e0",
+  "requested_change": "remove_primitive:0",
+  "requested_intervention_id": "intervention-18b5b8cd9a935f2b49513ea9",
+  "statement": "The Mechanic gave a valid answer on attempt 2 of 2 and requested intervention-18b5b8cd9a935f2b49513ea9 (remove_primitive:0). Intervention result: intervention-18b5b8cd9a935f2b49513ea9 SUPPORTED. Fixed code recorded POLICY_GAP; the recorded proposed_kind CONTRACT_EVIDENCE_GAP is the model's.",
+  "target_invariant": "C3",
+  "verdict": "POLICY_GAP"
+ },
+ "recording_has_diagnosis_requests": true,
+ "recording_row_keys": [
+  "attempt_outputs",
+  "attempts",
+  "campaign_id",
+  "counterexample_id",
+  "diagnostic_id",
+  "first_turn_hash",
+  "fresh_intervention_trials",
+  "intervention_ran",
+  "interventions",
+  "last_raw_unvalidated",
+  "options",
+  "output_refs",
+  "proposal_status",
+  "protocol",
+  "recorded_proposed_kind",
+  "recorded_proposed_kind_source",
+  "request_id",
+  "requested_change",
+  "requested_intervention_id",
+  "statement",
+  "target_invariant",
+  "verdict"
+ ]
+}

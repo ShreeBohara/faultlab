@@ -1,0 +1,11 @@
+top-level keys: ['files', 'fingerprints', 'functions', 'schema_version']
+files: 19/20 identical
+   CHANGED backend/app/agents/mechanic.py: "0b4606b3d03bd445130ee3b78407621b27b60b1746eb26c72fd6a142557512b3" -> "f1f57204d98fc498d85c90bdf7804132798cc600172864fc194e94063e8552cb"
+fingerprints: 9/13 identical
+   CHANGED algorithm_hash: "7a56afed3dfe4d3236a4b01fe08bafe915c810d7a6ad653971bea0e911401a13" -> "743a15201671d2c0c35baa4edef3d296057e285efd4fb7507ef4899b6d964b97"
+   CHANGED runtime_hash: "49958e716f0b08aacb9db5d6ddf99620451f949a901aa35cca979918c1df6b6e" -> "c80d86323bc82624ab22000edb37ce46d09f2e621d04ca8928903471749aa493"
+   CHANGED source_hash: "7f78de2861a1e74e01d50c543e102edd9cb36e8bf2e4bb6bb36f445133588117" -> "eaffac74c1039320236c8767a146ab07f9908de1a5c23e2f3581ca26f88fd189"
+   CHANGED tree_lab: "020aa5e81b991cb895ae1875da738ed3592001eecb0b90418f511aa6511c25ba" -> "9b1ae1c42a5a43a6a01c02c731e2838ff09e611abbf79f4e4accae36b3a64b37"
+functions: 29/30 identical
+   CHANGED backend/app/agents/mechanic.py::Mechanic: {"ast_sha256": "d17477edb0dd1be10a7a7bab5a3559685a561e17b11c2de02da2a5ec32020080 -> {"ast_sha256": "8cae4e3a63c20f14038c948a4bb151c380c9ecedb3020c892a7682a1d014d651
+schema_version: identical

@@ -15,6 +15,8 @@ from app.lab import evidence_wait
 from app.lab import loop_limits
 from app.lab import citation_status
 from app.lab import fireability
+from app.lab import diagnosis_protocol
+from app.lab import diagnosis_guide
 from app.contracts.tokens import ModelInputLimit
 
 def source_validation_assessment(batch,target_invariant):
@@ -163,6 +165,12 @@ async def run_learning_cycle(coordinator,campaign,runner):
         # gets the adapter's recorded per-episode citation outcome (app.lab.citation_status). None: today's requests exactly.
         citation_rule=citation_status.campaign_rule(store,campaign)
         challenge_explorer=explorer if citation_rule is None else citation_status.CitationStatusExplorer(explorer,store)
+        # Diagnosis repair-and-record (faultlab-mechanic-diagnosis/v1-repair-and-record; every new Learn plan): a diagnosis
+        # request's format-repair turn states the length limit, and each diagnosis gets a diagnosis_requests record before
+        # the POLICY_GAP gate (app.lab.diagnosis_protocol). The diagnosis guide (faultlab-diagnosis-guide/v1-kinds-and-checks)
+        # is built but not offered; only a plan that declares it adds its block (app.lab.diagnosis_guide). None: today exactly.
+        diagnosis_rule=diagnosis_protocol.campaign_rule(store,campaign); mechanic.diagnosis_protocol=diagnosis_rule
+        guide_rule=diagnosis_guide.campaign_rule(store,campaign)
         # History fireability (faultlab-explorer-selection/v3-history-fireability; new discovery v3-history and v4 Learn plans
         # only): its frozen table was re-verified with the history above (run_plans.verify_plan_history). Discovery and
         # challenge picks on a target the table marks REFUSED are refused before any episode, with one re-plan each, inside
@@ -242,10 +250,13 @@ async def run_learning_cycle(coordinator,campaign,runner):
             coordinator.transition(id,'DIAGNOSING')
             diagnosis_mechanic=mechanic if context_rule is None else loop_limits.BoundedMechanic(mechanic,store,campaign_id=id,counterexample=counter)
             if citation_rule is not None: diagnosis_mechanic=citation_status.CitationStatusMechanic(diagnosis_mechanic,store)  # block first, then the size rule counts it
+            if guide_rule is not None: diagnosis_mechanic=diagnosis_guide.DiagnosisGuideMechanic(diagnosis_mechanic,task_text=current.task_text,rule=guide_rule)
+            if diagnosis_rule is not None: diagnosis_mechanic=diagnosis_protocol.RecordingDiagnosisMechanic(diagnosis_mechanic,mechanic)  # outermost
             try:
                 diagnostic,interventions=await execute_phase(getattr(runner,'trace',None),'run_intervention',mechanic.metadata,{'source_episode_id':source.episode_id},lambda: Diagnostician(store,runner,ledger,diagnosis_mechanic).run(current,counter,retained,incumbent,reproduction_trials,evidence=source_evidence+reproduced_evidence,reduction=reduction_summary,fixture_id=fixture,stop=stop))
             except loop_limits.MechanicContextUnfit:
                 continue  # Recorded (mechanic_context_records); nothing was sent. This source gets no diagnosis or candidate.
+            if diagnosis_rule is not None: diagnosis_protocol.record(store,current,counter,diagnostic,interventions,diagnosis_mechanic)  # before the gate
             intervention_evidence=await evidence_for([t for t in interventions.trials if t.lifecycle=='COMPLETED'])
             if diagnostic.kind!='POLICY_GAP': continue
             source_context=repair_context_id(current,incumbent,retained,fixture,counter.target_invariant,identity)

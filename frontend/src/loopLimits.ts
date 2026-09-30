@@ -9,6 +9,11 @@ export const MECHANIC_CONTEXT_V2 = 'faultlab-mechanic-context/v2-bounded' as con
 export const CHALLENGE_SELECTION_V2 = 'faultlab-challenge-selection/v2-candidate-reach' as const
 /** Native citation status (backend app/lab/citation_status.py), frozen into every new Learn plan of native adapter v2 only. */
 export const MECHANIC_EVIDENCE_V2 = 'faultlab-mechanic-evidence/v2-native-citation-status' as const
+/** Diagnosis repair and record (backend app/lab/diagnosis_protocol.py), frozen into every new Learn plan, every agent. */
+export const MECHANIC_DIAGNOSIS_V1 = 'faultlab-mechanic-diagnosis/v1-repair-and-record' as const
+/** Diagnosis guide (backend app/lab/diagnosis_guide.py): built but not offered; a plan that declares it is checked and shown. */
+export const DIAGNOSIS_GUIDE_V1 = 'faultlab-diagnosis-guide/v1-kinds-and-checks' as const
+export const DIAGNOSIS_PROPOSAL_STATUSES = ['VALID_REQUESTED', 'VALID_NO_REQUEST', 'INVALID_OUTPUT'] as const
 export const COMPACTION_STAGES = ['IDENTICAL_CLEAN_ROWS', 'ONE_CLEAN_EPISODE_PER_OUTCOME_GROUP', 'NO_CLEAN_EPISODE_ROWS'] as const
 export type CompactionStage = typeof COMPACTION_STAGES[number]
 
@@ -16,6 +21,10 @@ export type CompactionStage = typeof COMPACTION_STAGES[number]
 export type MechanicContextDeclaration = { protocol: typeof MECHANIC_CONTEXT_V2; applies_to: ['mechanic_diagnosis', 'mechanic_proposal']; input_token_limit: 32000; format_repair_reserve_tokens: 4000; compaction_target_tokens: 28000; stages: CompactionStage[]; always_kept: string[]; when_unfit: 'END_SOURCE_CANDIDATE_SEARCH'; unsent_request_uses_candidate_request: false; requests_over_limit_sent: 0; rule: string }
 /** The native citation-status rule exactly as the backend freezes it (citation_status.declaration()). */
 export type MechanicEvidenceDeclaration = { protocol: typeof MECHANIC_EVIDENCE_V2; agents: ['smolagents-v2']; applies_to: ['mechanic_diagnosis', 'mechanic_proposal', 'explorer_challenge']; block: 'native_citation_status'; row_fields: ['episode_id', 'cited', 'decoded', 'undecoded']; source_event: 'report_submitted'; source_protocol: string; reads_scoring: false; compacted: false; discovery_requests_changed: false; meaning: string; memory_pointer: string; rule: string }
+/** The diagnosis repair-and-record rule exactly as the backend freezes it (diagnosis_protocol.declaration()). */
+export type MechanicDiagnosisDeclaration = { protocol: typeof MECHANIC_DIAGNOSIS_V1; applies_to: ['mechanic_diagnosis']; repair_instruction: string; repair_sentence: string; string_too_long_fields: ['max_characters', 'your_characters']; hypothesis_max_characters: 600; record_kind: 'diagnosis_requests'; proposal_statuses: typeof DIAGNOSIS_PROPOSAL_STATUSES[number][]; kind_sources: ['model', 'code_default']; rule: string; first_turn_changed: false; model_text_edited: false; record_written_before_gate: true; reads_scoring: false; verdict_code_changed: false; semantics_hash: string }
+/** The diagnosis guide exactly as the backend would freeze it (diagnosis_guide.declaration()); today's backend does not offer it. */
+export type DiagnosisGuideDeclaration = { protocol: typeof DIAGNOSIS_GUIDE_V1; applies_to: ['mechanic_diagnosis']; block: 'diagnosis_guide'; checks_source: 'app.agents.explorer.PUBLIC_INVARIANTS'; checks: Record<string, string>; checks_hash: string; task_source: 'plan.task_text'; reads_episodes: false; reads_scoring: false; compacted: false; system_prompt_changed: false; verdict_code_changed: false; interprets_checks: false; meaning: string; kinds: Record<string, string>; checks_note: string; contract_note: string; use: string; hypothesis_length: string; rule: string }
 /** The challenge-pick rule exactly as the backend freezes it (challenge_selection_declaration()). */
 export type ChallengeSelectionDeclaration = { protocol: typeof CHALLENGE_SELECTION_V2; basis: 'candidate_arm_source_validation_agent_calls'; caller_counted: 'actor'; target: 'tool_and_service'; replans_per_refused_pick: 1; explorer_requests_per_challenge: 8; refused_pick_runs_episodes: false; challenge_rules_changed: false; rule: string }
 
@@ -43,6 +52,23 @@ export function mechanicEvidenceDeclaration(value: unknown): value is MechanicEv
     && same(value.row_fields, ['episode_id', 'cited', 'decoded', 'undecoded']) && value.source_event === 'report_submitted' && text(value.source_protocol)
     && value.reads_scoring === false && value.compacted === false && value.discovery_requests_changed === false
     && text(value.meaning) && text(value.memory_pointer) && text(value.rule)
+}
+const digest = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
+const textMap = (value: unknown, keys: readonly string[]) => object(value) && same(Object.keys(value).sort(), [...keys].sort()) && keys.every(key => text(value[key]))
+export function mechanicDiagnosisDeclaration(value: unknown): value is MechanicDiagnosisDeclaration {
+  return object(value) && value.protocol === MECHANIC_DIAGNOSIS_V1 && same(value.applies_to, ['mechanic_diagnosis'])
+    && text(value.repair_instruction) && text(value.repair_sentence) && same(value.string_too_long_fields, ['max_characters', 'your_characters'])
+    && value.hypothesis_max_characters === 600 && value.record_kind === 'diagnosis_requests' && same(value.proposal_statuses, DIAGNOSIS_PROPOSAL_STATUSES)
+    && same(value.kind_sources, ['model', 'code_default']) && text(value.rule) && value.first_turn_changed === false && value.model_text_edited === false
+    && value.record_written_before_gate === true && value.reads_scoring === false && value.verdict_code_changed === false && digest(value.semantics_hash)
+}
+export function diagnosisGuideDeclaration(value: unknown): value is DiagnosisGuideDeclaration {
+  return object(value) && value.protocol === DIAGNOSIS_GUIDE_V1 && same(value.applies_to, ['mechanic_diagnosis']) && value.block === 'diagnosis_guide'
+    && value.checks_source === 'app.agents.explorer.PUBLIC_INVARIANTS' && textMap(value.checks, ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8'])
+    && digest(value.checks_hash) && value.task_source === 'plan.task_text' && value.reads_episodes === false && value.reads_scoring === false
+    && value.compacted === false && value.system_prompt_changed === false && value.verdict_code_changed === false && value.interprets_checks === false
+    && textMap(value.kinds, ['POLICY_GAP', 'CONTRACT_EVIDENCE_GAP', 'INCONCLUSIVE']) && text(value.meaning) && text(value.checks_note)
+    && text(value.contract_note) && text(value.use) && text(value.hypothesis_length) && text(value.rule)
 }
 export function challengeSelectionDeclaration(value: unknown): value is ChallengeSelectionDeclaration {
   return object(value) && value.protocol === CHALLENGE_SELECTION_V2 && value.basis === 'candidate_arm_source_validation_agent_calls'
@@ -84,6 +110,15 @@ export function mechanicContextText(rule: MechanicContextDeclaration | null | un
 export function mechanicEvidenceText(rule: MechanicEvidenceDeclaration | null | undefined): string {
   if (!rule) return 'Not declared: this native adapter v2 plan was saved before the rule. Its Mechanic and challenge requests carry no per-episode citation status, as before.'
   return 'Each Mechanic diagnosis or candidate request and each challenge Explorer request gets, per episode, what the adapter recorded when the agent submitted its report: tokens cited, how many decoded to delivered evidence, and any token not decoded · read only from the report_submitted event, nothing from scoring · never compacted · discovery requests unchanged'
+}
+/** The saved plan's diagnosis repair-and-record rule in one line (null or absent: a Learn plan saved before it). */
+export function mechanicDiagnosisText(rule: MechanicDiagnosisDeclaration | null | undefined): string {
+  if (!rule) return 'Not declared: this plan was saved before the diagnosis repair-and-record rule. A too-long diagnosis answer\'s repair turn does not state the limit, and no diagnosis_requests record is written, as before.'
+  return `A diagnosis answer too long for the schema gets one repair turn that states max_characters ${rule.hypothesis_max_characters} and its own length (the text is never cut) · after every diagnosis, before the POLICY_GAP gate, a record says whether the Mechanic requested an intervention, declined or gave no valid answer, whether the recorded kind is the model's or a code default, every attempt by id and whether the intervention ran any fresh trial · the verdict code and every gate are unchanged`
+}
+/** A declared diagnosis guide in one line (built but not offered; only a plan that declares it shows this). */
+export function diagnosisGuideText(rule: DiagnosisGuideDeclaration): string {
+  return `Each diagnosis request gets one fixed block: the task text, the public meaning of checks ${Object.keys(rule.checks).sort().join(', ')} verbatim with a short note on reading them, what each proposed kind means, how the answer is used and the length limit · it interprets no check and reads nothing from any episode or scoring · never compacted`
 }
 /** The saved plan's challenge-pick rule in one line (null or absent: not declared, which is every new plan too). */
 export function challengeSelectionText(rule: ChallengeSelectionDeclaration | null | undefined): string {

@@ -1,0 +1,4 @@
+2026-09-30T22:20:03Z
+deleted /Users/shree/FaultLab_Scratch/verify-2 (626bae4 checkpoint without audit/promotion.json, audit/final-audit.json, heldout2 and .env names; scratch current tree = checkpoint + the 23 changed product files + probe-inputs and two tracked artifact folders; store copies: lab.sqlite3 copy, lab-upto-6748, lab-upto-3022, lab-grown; plugin folder); exists now: no
+left untouched: /Users/shree/FaultLab_Scratch/inv-a (not the verifier's)
+inv-a
