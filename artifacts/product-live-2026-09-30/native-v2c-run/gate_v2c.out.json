@@ -1,0 +1,15 @@
+{
+ "v2 (first build) baseline+learn": {
+  "agent_episodes": 53,
+  "c5": 29,
+  "c5_without_submitted_report": 0,
+  "c5_without_c3_or_c4": 0
+ },
+ "v2.1 baseline (v2b probe, NO_GO)": {
+  "agent_episodes": 18,
+  "c5": 6,
+  "c5_without_submitted_report": 0,
+  "c5_without_c3_or_c4": 0
+ },
+ "gate": "PASS"
+}

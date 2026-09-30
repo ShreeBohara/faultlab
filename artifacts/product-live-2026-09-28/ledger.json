@@ -78,8 +78,26 @@
    "charged_rounded_up": 4.4,
    "token_priced_estimate": 0.44,
    "carried_after": 893.86
+  },
+  {
+   "stage": "native adapter v2.1 live (v2b): step 1 baseline study, declared rule NO_GO (C5 3 of 15 outside dev-5; all C5 were untruthful reports with C3/C4, none missing)",
+   "campaign": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+   "calls": 101,
+   "charged_exact": 2.1109,
+   "charged_rounded_up": 2.12,
+   "token_priced_estimate": 0.22,
+   "carried_after": 895.98
+  },
+  {
+   "stage": "v2c: v3-history Learn campaign on native adapter v2.1 (separate declared experiment after v2b NO_GO; corrected report gate PASS): NO_CHANGE, 8 selections, 2 C4 sources (0/3 not reproduced; FLAKY); Explorer never picked the dev-5 rejected upgrade",
+   "campaign": "campaign-077b8434e14c4c73a334692223694e63",
+   "calls": 113,
+   "charged_exact": 2.59322,
+   "charged_rounded_up": 2.6,
+   "token_priced_estimate": 0.29,
+   "carried_after": 898.58
   }
  ],
- "carried_total": 893.86,
+ "carried_total": 898.58,
  "updated_at_utc": "2026-09-29T16:07:05+00:00"
 }

@@ -1,0 +1,36 @@
+{
+ "step": "v2c: v3-history Learn campaign on native adapter v2.1 (separate declared experiment after v2b NO_GO)",
+ "declared_at_utc": "2026-09-30T03:19:22+00:00",
+ "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+ "plan_hash": "bbd7698c2e018d1bec2e00d71ec5877fe199f4308c3e1b034b686b3695e6e343",
+ "configuration_hash": "3b1fa31a84aa2a65b6452188b97a587206367e3f6ae126f6768579001be7d4a4",
+ "discovery": {
+  "protocol": "faultlab-discovery/v3-history",
+  "status": "AVAILABLE",
+  "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+  "record_cutoff": 930,
+  "episode_ids_hash": "42275f728f4920f640419721f754b088a2830c90c7feae2665e892aa7e3f124c",
+  "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9"
+ },
+ "corrected_gate": {
+  "v2 (first build) baseline+learn": {
+   "agent_episodes": 53,
+   "c5": 29,
+   "c5_without_submitted_report": 0,
+   "c5_without_c3_or_c4": 0
+  },
+  "v2.1 baseline (v2b probe, NO_GO)": {
+   "agent_episodes": 18,
+   "c5": 6,
+   "c5_without_submitted_report": 0,
+   "c5_without_c3_or_c4": 0
+  },
+  "gate": "PASS"
+ },
+ "v2b_probe": "NO_GO",
+ "plan_sha256": "d3ff11c90ce20e4363fc48af8539b1d272cce5270cb313e22df7a744fdc517d5",
+ "gate_script_sha256": "e10a6d0e71ceb9b67dc8a050f2810deaa7a1520d020b0dea9c1769888749da67",
+ "misreading_check_sha256": "70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033",
+ "bounds": "PLAN.md: ledger ceiling 4936 requests / about 106.87 dollars; discovery before any counterexample 144 requests / 3.47 dollars; 10 hours; 3 operator evidence retries",
+ "ledger_before_dollars": 895.98
+}

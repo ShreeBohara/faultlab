@@ -1,0 +1,41 @@
+{
+ "title": "Native adapter v2.1 live: step 1 baseline study (probe), step 2 v3-history Learn campaign only on GO",
+ "declared_at_utc": "2026-09-30T03:13:58+00:00",
+ "declared_by": "Claude (Opus 5.5) as PM, delegated by the project owner",
+ "plan": "PLAN.md sha256 e759d9ea6f5a82cbf405b1c025967b5b5a7e4c34fd2c697b0125b8bf2687f015; compute_go.py sha256 5145f28c762a672ed719e573be7329a41fd5ced7dd91f34c73f44dae3e67df1a; check_evidence_gap_misreading.py sha256 70c4eeda2fa148920f5e5a3efd5215aa0f359fe911ea1f70b5b09737c61d2033",
+ "store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "baseline_campaign_id": "campaign-c8063a1166834051b08ae5317ff6f9c2",
+ "agent_registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+ "agent_inputs": {
+  "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+  "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+  "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e",
+  "adapter_hash": "dfd41b338723780ddbaf770cb03eb2e7c5d28d06653dfc6f365225f99eefb77a",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "identities": {
+  "algorithm_hash": "b2575eb257ebe9a1a519a7c3b8ca92994edb62e4581321e6dd2460647441beef",
+  "runtime_hash": "4553ebe7db2f9e3efda6f8761e987c6f1ea58dce12d3fde2dfbc8812ebb7c057",
+  "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
+ },
+ "source_commit": "78878bb (backup/part2-2026-09-22), runtime 4553ebe7",
+ "step1": {
+  "max_calls": 288,
+  "conservative_max_dollars": 6.02,
+  "expected_dollars_conservative": 2.1,
+  "stop_rules": "any LAB_ERROR/INTERRUPTED, any B1 control deviation, INCOMPLETE, > 288 calls, 45 minutes"
+ },
+ "decision_rule": "GO iff COMPLETED, 0 lab errors, 0 B1 deviations, dev-5 C3 >= 2 of 3, C5 <= 2 of 15 outside dev-5 (compute_go.py)",
+ "step2_bounds": {
+  "campaign_requests_max": 4936,
+  "campaign_conservative_ceiling_dollars": 106.87,
+  "discovery_requests_max_before_counterexample": 144,
+  "discovery_conservative_max_dollars": 3.47,
+  "max_hours": 10,
+  "operator_evidence_retries_max": 3,
+  "lab_role_transport_retries": "faultlab-transport-retry/v2-lab-backoff (5/20/60 s, cap 12)"
+ },
+ "post_run_checks": "clock drift (both), world integrity, evidence, check_evidence_gap_misreading.py on the Learn export",
+ "prices": "price-check.json (2026-09-30, unchanged)",
+ "ledger_before_dollars": 893.86
+}

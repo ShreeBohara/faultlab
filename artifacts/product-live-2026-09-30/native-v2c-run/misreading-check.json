@@ -1,0 +1,10 @@
+{
+ "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+ "diagnostics": [],
+ "rule": "A diagnosis is CHECKED when the Mechanic's proposed_kind is CONTRACT_EVIDENCE_GAP and its saved hypothesis claims an\n  undelivered or unshown citation (case-insensitive match of CLAIM below). The episodes it read are the counterexample's\n  source episode and the diagnosis's fresh reproduction episodes. For each episode read, the data show an undelivered\n  citation when (a) a report evidence ID is not one of that episode's recorded observation IDs, or (b) the adapter\n  recorded a cited token it did not decode (v2.1 `cited_tokens_not_decoded`; the first v2 build's `cited_unshown_labels`).\n  A CHECKED diagnosis is a MISREADING when no episode it read shows an undelivered citation, and SUPPORTED otherwise.\n  Diagnoses that do not make that claim are NOT_CHECKED (listed, never scored).",
+ "summary": {
+  "MISREADING": 0,
+  "NOT_CHECKED": 0,
+  "SUPPORTED": 0
+ }
+}

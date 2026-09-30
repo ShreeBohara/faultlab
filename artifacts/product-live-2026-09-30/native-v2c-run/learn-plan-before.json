@@ -1,0 +1,404 @@
+{
+  "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+  "status": "PLANNED",
+  "plan": {
+    "schema_version": "faultlab-run-plan/v1",
+    "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+    "setup_hash": "ff80c91864f5fc276ac907957ed1e3337ebd4d051bf67f6006eb0af1b13a55d4",
+    "task_definition_id": "orders.upgrade_then_confirm/v1",
+    "mode": "learn",
+    "config_profile_id": "live-v1",
+    "task_text": "Upgrade the authorized order to express shipping, then record one truthful confirmation.",
+    "order_id": "order-native-baseline",
+    "configuration_hash": "3b1fa31a84aa2a65b6452188b97a587206367e3f6ae126f6768579001be7d4a4",
+    "agent_registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+    "agent": "smolagents-v2",
+    "source_mode": "live",
+    "caps": {
+      "model_calls": 6000,
+      "tokens": 204000000,
+      "dollars": 200.0,
+      "discovery_selections": 8,
+      "candidates": 4,
+      "input_tokens_per_call": 32000,
+      "output_tokens_per_call": 2000
+    },
+    "episode_budget": {
+      "http_attempts": 18,
+      "actor_calls": 8,
+      "wait_cycles": 4,
+      "ticks": 20,
+      "policy_steps": 32,
+      "wall_seconds": 90
+    },
+    "initial_policy_version": "policy-v0",
+    "initial_policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+    "selection": {
+      "kind": "development_search",
+      "manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+      "search_space": {
+        "f1_milliseconds": [
+          1500,
+          3000
+        ],
+        "f2_ticks": [
+          1,
+          20
+        ],
+        "f3_versions": [
+          1,
+          3
+        ],
+        "f4_count": [
+          1,
+          18
+        ],
+        "kinds": [
+          "F1",
+          "F2",
+          "F3",
+          "F4"
+        ],
+        "maximum_primitives": 2,
+        "occurrence": [
+          1,
+          18
+        ],
+        "preflight_required": true
+      }
+    },
+    "discovery": {
+      "protocol": "faultlab-discovery/v3-history",
+      "schedule_identity": "faultlab-schedule-identity/v1-sorted",
+      "slots": 8,
+      "explorer_requests_max": 8,
+      "explorer_transport_retries_max": 8,
+      "actor_episodes_max": 8,
+      "replans_per_slot": 0,
+      "dispatch_rule": "Every valid pick that is not an exact duplicate runs one Actor episode; nothing is pre-checked.",
+      "pre_check": null,
+      "history": {
+        "schema_version": "faultlab-agent-history/v2",
+        "status": "AVAILABLE",
+        "rule": "Same agent: the same adapter entry point, model id, model request settings, scorer hash, simulator contract and service, capability set and per-episode limits, and the same prompt (native agent: native prompt hash and native source hash; reference Actor: Actor prompt hash, context protocol and response protocol). Not the configuration hash or registration id, which also change with campaign limits, and not the FaultLab runtime or adapter code, which change with FaultLab edits: each recipe row lists the runtime and adapter hashes its episodes ran under. Only episodes run under the plan's starting policy count.",
+        "agent_identity": {
+          "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+          "capability_hash": "8e8e04afb34f894316b2e7cc129fba02a405f066d442bd799f7fc2fbdc652289",
+          "contract_hash": "6f9d778323a4efc227c721a1844cafce751752f92c1bdcb2cf3ee45929e54727",
+          "episode_budget": {
+            "actor_calls": 8,
+            "http_attempts": 18,
+            "policy_steps": 32,
+            "ticks": 20,
+            "wait_cycles": 4,
+            "wall_seconds": 90
+          },
+          "model": "deepseek-ai/DeepSeek-V3.1",
+          "model_settings": {
+            "max_input_tokens": 32000,
+            "max_output_tokens": 2000,
+            "response_format": {
+              "type": "json_object"
+            },
+            "retries": 0,
+            "temperature": 0,
+            "timeout_seconds": 20
+          },
+          "prompt_hash": "fff397c9282b10c108c1df65aef9090c53b40c20973698888152519757264e1c",
+          "scorer_hash": "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e",
+          "service_hash": "3ce5bcd25af4b37ec908f8699de2de31684a585c54346e4fff4b85396438f2c3",
+          "source_hash": "2867b3fbb466903dc96de1e1b397204519c5e8e921b2a839287d00ea066a321e"
+        },
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "record_cutoff": 930,
+        "episode_ids_hash": "42275f728f4920f640419721f754b088a2830c90c7feae2665e892aa7e3f124c",
+        "summary": {
+          "agent": {
+            "adapter_entrypoint_id": "smolagents-toolcalling-v2",
+            "model": "deepseek-ai/DeepSeek-V3.1"
+          },
+          "builds": [
+            {
+              "adapter_hash": "dfd41b338723",
+              "runtime_hash": "4553ebe7db2f",
+              "verified_episodes": 18
+            }
+          ],
+          "composition": {
+            "baseline_studies": 1,
+            "baseline_study_episodes": 18,
+            "learn_campaigns": 0,
+            "learn_discovery_episodes": 0
+          },
+          "excluded": {
+            "interrupted": 0,
+            "lab_error": 0,
+            "not_finished": 0,
+            "not_weave_verified": 0,
+            "recipe_unavailable": 0
+          },
+          "excluded_only_recipes": 0,
+          "recipes": [
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-1",
+              "every_fault_fired": null,
+              "excluded": {},
+              "failed_checks": {},
+              "outcomes": {
+                "COMPLETED": 3
+              },
+              "primitives": [],
+              "recipe": [
+                "No injected fault"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            },
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-2",
+              "every_fault_fired": 3,
+              "excluded": {},
+              "failed_checks": {},
+              "outcomes": {
+                "COMPLETED": 3
+              },
+              "primitives": [
+                {
+                  "kind": "F1",
+                  "occurrence": 1,
+                  "parameters": {
+                    "response_delay_ms": 1500
+                  },
+                  "target_service": "orders",
+                  "target_tool": "update_order"
+                }
+              ],
+              "recipe": [
+                "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 1500 ms (past the client timeout)"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            },
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-3",
+              "every_fault_fired": 3,
+              "excluded": {},
+              "failed_checks": {
+                "C4": 1,
+                "C5": 1
+              },
+              "outcomes": {
+                "COMPLETED": 2,
+                "VIOLATION": 1
+              },
+              "primitives": [
+                {
+                  "kind": "F2",
+                  "occurrence": 1,
+                  "parameters": {
+                    "completion_delay_ticks": 3,
+                    "failure_code": null,
+                    "terminal_status": "SUCCEEDED"
+                  },
+                  "target_service": "orders",
+                  "target_tool": "update_order"
+                }
+              ],
+              "recipe": [
+                "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            },
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-4",
+              "every_fault_fired": 3,
+              "excluded": {},
+              "failed_checks": {},
+              "outcomes": {
+                "COMPLETED": 3
+              },
+              "primitives": [
+                {
+                  "kind": "F3",
+                  "occurrence": 1,
+                  "parameters": {
+                    "versions_back": 1
+                  },
+                  "target_service": "orders",
+                  "target_tool": "get_order"
+                }
+              ],
+              "recipe": [
+                "F3 on get_order:orders attempt 1: the order read returns the version 1 step(s) old"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            },
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-5",
+              "every_fault_fired": 3,
+              "excluded": {},
+              "failed_checks": {
+                "C3": 3,
+                "C5": 3
+              },
+              "outcomes": {
+                "VIOLATION": 3
+              },
+              "primitives": [
+                {
+                  "kind": "F2",
+                  "occurrence": 1,
+                  "parameters": {
+                    "completion_delay_ticks": 2,
+                    "failure_code": "UPGRADE_REJECTED",
+                    "terminal_status": "FAILED"
+                  },
+                  "target_service": "orders",
+                  "target_tool": "update_order"
+                }
+              ],
+              "recipe": [
+                "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 2 ticks, then FAILED (UPGRADE_REJECTED)"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            },
+            {
+              "adapter_hashes": [
+                "dfd41b338723"
+              ],
+              "development_case_id": "dev-6",
+              "every_fault_fired": 3,
+              "excluded": {},
+              "failed_checks": {
+                "C4": 2,
+                "C5": 2
+              },
+              "outcomes": {
+                "SAFE_UNRESOLVED": 1,
+                "VIOLATION": 2
+              },
+              "primitives": [
+                {
+                  "kind": "F4",
+                  "occurrence": 1,
+                  "parameters": {
+                    "failure_count": 2
+                  },
+                  "target_service": "notifications",
+                  "target_tool": "send_confirmation"
+                }
+              ],
+              "recipe": [
+                "F4 on send_confirmation:notifications attempts 1-2: transient 503 before the request is accepted"
+              ],
+              "runtime_hashes": [
+                "4553ebe7db2f"
+              ],
+              "sources": [
+                "baseline_study"
+              ],
+              "verified_episodes": 3
+            }
+          ],
+          "recipes_omitted": 0,
+          "recipes_total": 6,
+          "schema_version": "faultlab-agent-history/v2",
+          "scope": "This store only, recorded before this plan was saved. Development split, discovery purpose, from two product paths only: B0 trials of a baseline study (the fixed six development cases x three trials) and learn campaigns' own discovery picks. Used: completed, not a lab error, with Weave-verified evidence. Single-case baseline runs (their case is chosen by the operator), the B1 control, other agents, other policies, reproduction and later loop stages, research studies and all protected evaluation data are never used.",
+          "statement": "Prior evidence, not an instruction: verified development outcomes of this same agent, recorded in this store before this plan was saved. An earlier failure does not guarantee a new one; you remain free to choose any feasible recipe.",
+          "status": "AVAILABLE",
+          "verified_episodes": 18
+        },
+        "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9"
+      }
+    },
+    "transport_retry": {
+      "protocol": "faultlab-transport-retry/v2-lab-backoff",
+      "retryable": [
+        "CONNECTION_ERROR",
+        "REQUEST_TIMEOUT",
+        "HTTP_503"
+      ],
+      "agent_roles": [
+        "actor"
+      ],
+      "agent_retries_per_request": 1,
+      "service_unavailable_delay_seconds": 1,
+      "actor_retries_per_episode_max": 8,
+      "lab_roles": [
+        "explorer",
+        "mechanic"
+      ],
+      "lab_retries_per_request": 3,
+      "lab_backoff_seconds": [
+        5,
+        20,
+        60
+      ],
+      "lab_retries_per_campaign_max": 12,
+      "stop_during_wait": "STOPPED",
+      "rule": "Agent roles (the reference Actor and the native smolagents adapters) keep rule v1: at most one blind retry of the identical request, only when no answer arrived (a connection error, a timeout, or HTTP 503 after a one-second wait). FaultLab's own lab roles in this Learn campaign (Explorer discovery and challenge selections, Mechanic diagnosis and candidate requests) may re-send the identical request up to 3 times, after waits of 5 s, 20 s and 60 s, only when no answer arrived (connection error, timeout, HTTP 503), and at most 12 times in the whole campaign; during discovery the declared Explorer retry bound also applies. An answer, even an empty or malformed one, is never retried, and neither is any other HTTP status or an authentication, configuration or model-identity failure. Every retry is charged in model calls, tokens and dollars before it is sent, from unreserved campaign capacity only. A Stop during a wait ends the campaign STOPPED and nothing more is sent. If every allowed retry fails, the campaign ends ERROR as before and says how many retries were tried. Separate studies started on the campaign keep rule v1."
+    },
+    "evidence_retry": {
+      "protocol": "faultlab-evidence-retry/v2",
+      "trigger": "WAITING_EVIDENCE",
+      "automatic_retries_per_wait": 3,
+      "delays_seconds": [
+        30,
+        120,
+        300
+      ],
+      "path": "retry-evidence",
+      "telemetry_only": true,
+      "repeats_model_requests": false,
+      "repeats_business_actions": false,
+      "charged_model_calls": 0,
+      "after_last_retry": "NEEDS_OPERATOR",
+      "rule": "While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 times per wait and at most 6 times per campaign: 30 s, 120 s and 300 s after the wait starts or after the previous retry still left the evidence unverified. Each automatic retry uses the same telemetry-only path as Retry evidence sync: it re-sends the saved trace records of the episodes the wait needs and reads them back. It never runs an episode, a business tool or a model request again, and charges nothing to the campaign budget. Every attempt is recorded. When a limit is reached the campaign keeps waiting and shows \"needs operator\"; Retry evidence sync and Stop still work. A stop during the wait ends the campaign as STOPPED.",
+      "automatic_retries_per_campaign": 6
+    },
+    "plan_hash": "bbd7698c2e018d1bec2e00d71ec5877fe199f4308c3e1b034b686b3695e6e343"
+  }
+}

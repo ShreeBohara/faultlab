@@ -99,3 +99,74 @@ in reduction), so two of the three sources dropped out.
 
 $887.39 + $2.07 + $4.40 = **$893.86 conservatively charged**. Ledger:
 `artifacts/product-live-2026-09-28/ledger.json`.
+
+---
+
+# Second live run: adapter v2.1 (2026-09-30, 03:14–03:22 UTC)
+
+- **Build:** runtime `4553ebe7…` (backup commit `78878bb`), after a $0 fix round:
+  - lab-role transport retry with backoff (`faultlab-transport-retry/v2-lab-backoff`);
+  - contiguous shown-order labels (adapter v2.1, prompt `fff397c9…`).
+- **Store:** `/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/`.
+- **Cost:** $2.12 + $2.60 = **$4.72**. Ledger: **$898.58**.
+
+## v2b probe: **NO_GO** under its declared rule
+
+The baseline study was COMPLETED, with 0 lab errors and 0 control deviations.
+
+| case | v2.1 agent result |
+|---|---|
+| dev-1, dev-2, dev-4 | 9 of 9 clean |
+| dev-3 | 1 of 3 C4 + C5 |
+| dev-5 | C3 + C5, 3 of 3 |
+| dev-6 | 2 of 3 C4 + C5 |
+
+- **The rule:** C5 in at most 2 of the 15 trials outside dev-5. **The result was 3**, so step 2 was not run in that
+  plan.
+
+**A planning error, disclosed.**
+- Across all 71 v2 and v2.1 agent episodes, every C5 came with a submitted report and with C3 or C4. That is an
+  untruthful report after a real behaviour mistake.
+- **0 reports were missing or unreadable.**
+- The rule counted C5 as a stand-in for broken report plumbing. For this agent it measures the very behaviour a
+  policy is meant to repair.
+
+## v2c: a separately declared Learn campaign. Result: **NO_CHANGE**
+
+- **How it was declared:** it had its own plan (`artifacts/product-live-2026-09-30/native-v2c-run/PLAN.md`) and a
+  corrected gate computed on data already collected: 0 C5 without a submitted report, and 0 C5 without C3 or C4.
+  Result: **PASS**.
+  - No probe was re-run.
+  - The v2b NO_GO and the earlier ERROR both stand.
+- **Discovery:** `faultlab-discovery/v3-history`. The history was v2.1's 18 verified baseline episodes. 113 calls,
+  $2.59.
+
+**The Explorer's 8 picks:**
+- 4 delayed upgrades (5, 4, 6 and 7 ticks). The first became a C4 source that reproduced **0 of 3**.
+- A confirmation-send failure (F4 × 3): reproduced 3 of 3, then **FLAKY** at reduction.
+- Two status-read failures.
+- One exact duplicate.
+
+**It never picked the rejected upgrade (dev-5)**, the agent's most reliable failure: 6 of 6 across both v2 probes,
+and 9 of 9 on v1. That is the only failure consistent enough to survive six runs in a row (3 for reproduction,
+3 for reduction). The same happened with native v1 on 2026-09-29.
+
+**Other read-outs:**
+- Misreading check: 0 diagnoses, so nothing was checked.
+- Lab-role transport retries: none were needed.
+- Integrity: 52 episodes, 0 clock drift, 52 of 52 worlds valid, 31 agent episodes Weave-verified.
+  - The other 3 agent episodes are the reproduction runs of the source that did not reproduce. Their telemetry was
+    still queued when the campaign ended. No decision depends on them: dropping a source is the conservative
+    outcome.
+
+## What this means, and next
+
+- **The report plumbing is fixed.** What is left for the agent under test is:
+  - a very reliable repairable failure (C3 on a rejected upgrade);
+  - a frequent but flaky one (C4 on failed confirmation sends).
+- **FaultLab's discovery keeps missing the reliable one.** The binding limit is now which recipe discovery picks,
+  not the agent and not the gates.
+- **Next product step:** a declared *history-replay* discovery option.
+  - The first slots replay this same agent's verified, consistently failing development recipes, most reliable
+    first; the Explorer then uses the remaining slots.
+  - Replay sources are always labelled as replays, never as independent discovery.
