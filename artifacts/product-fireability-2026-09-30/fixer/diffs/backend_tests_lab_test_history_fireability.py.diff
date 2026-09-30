@@ -1,0 +1,49 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/backend/tests/lab/test_history_fireability.py b/backend/tests/lab/test_history_fireability.py
+index f40caac..15eecce 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/backend/tests/lab/test_history_fireability.py
++++ b/backend/tests/lab/test_history_fireability.py
+@@ -458,9 +458,11 @@ async def test_challenge_picks_on_other_targets_run_exactly_as_without_the_rule(
+ 
+ 
+ @pytest.mark.anyio
+-async def test_the_rule_never_reads_candidate_or_challenge_episodes(tmp_path):
+-    """Candidate-independence: the Session holds only the frozen table. Filling the store with candidate and challenge
+-    episodes whose status reads all fired changes no decision (the table cannot see them; see also the first test)."""
++async def test_challenge_decisions_come_only_from_the_sessions_frozen_block(tmp_path):
++    """The Session holds only the frozen table: filling the store with candidate and challenge episodes whose status reads
++    all fired changes no challenge decision. (Renamed by the fixer, review LOW-2: this does not show that the TABLE never
++    reads such episodes; the first test and test_history_fireability_review_fixes.py
++    test_a_plan_saved_after_fired_candidate_and_challenge_episodes_freezes_the_same_table do, through the product path.)"""
+     answers = [raw(STATUS), raw(DELAYED(1)), raw(DELAYED(2)), raw(DELAYED(3)), raw(DELAYED(4))]
+     c, campaign, ledger, candidate, runner = setup(tmp_path)
+     for index in range(12):
+@@ -569,7 +571,8 @@ def test_a_new_v4_plan_on_the_saved_store_refuses_the_lone_status_read_target(sa
+ @needs_store
+ def test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_allowed(saved_owner):
+     """Every Explorer pick the saved store recorded (discovery in v2c/v2e/v2f, challenge in v2d/v2f), checked against the new
+-    plan's table: exactly the picks with a fault on the orders status read are refused."""
++    plan's table: exactly the picks whose every fault is on the orders status read are refused (fixer: a pick is refused
++    only when every fault targets a REFUSED row; every saved status-read pick is a lone one, so the counts are unchanged)."""
+     _, plan = saved_v4_plan(saved_owner)
+     session = fireability.Session(plan['explorer_selection'], discovery_requests_max=8)
+     decided = []
+@@ -580,13 +583,16 @@ def test_the_saved_stores_status_read_picks_are_refused_and_its_other_picks_are_
+         pick = ExplorerOutput.model_validate({'fault_spec': spec_, 'hypothesis': 'saved pick'})
+         context = {'selection_index': 0, 'proposal_index': 0, 'slot_request': 1}
+         decision, kept = fireability.decide(session, context, pick, None, challenge=bool(selection['challenge']), provenance='model')
+-        status_read = any(p['target_tool'] == 'get_operation_status' and p['target_service'] == 'orders' for p in spec_['primitives'])
++        on_status = [p['target_tool'] == 'get_operation_status' and p['target_service'] == 'orders' for p in spec_['primitives']]
++        status_read = all(on_status)
+         assert (decision['status'] == 'REFUSED_LOW_FIRED_SHARE') == status_read and (kept is None) == status_read
++        assert any(on_status) == status_read   # no saved pick mixes the status read with another target
+         decided.append((bool(selection['challenge']), status_read))
+     challenge_refused = sum(1 for challenge_, refused in decided if challenge_ and refused)
+     discovery_refused = sum(1 for challenge_, refused in decided if not challenge_ and refused)
+-    assert challenge_refused == 3 and discovery_refused >= 1
+-    assert sum(1 for challenge_, refused in decided if challenge_ and not refused) >= 8
++    assert (challenge_refused, discovery_refused) == (3, 7)
++    assert sum(1 for challenge_, refused in decided if challenge_ and not refused) == 8
++    assert sum(1 for challenge_, refused in decided if not challenge_ and not refused) == 8
+ 
+ 
+ @needs_store

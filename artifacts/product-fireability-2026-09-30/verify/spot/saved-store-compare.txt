@@ -1,0 +1,10 @@
+table rows equal to fixer: True
+table hash verifier ee7cfed0712c5cee8bd4f44fb96a19a2a243519c829c413f1079d3c6ed3b1f60 | fixer ee7cfed0712c5cee8bd4f44fb96a19a2a243519c829c413f1079d3c6ed3b1f60 | equal: True
+table equal apart from nothing: True
+pick decisions equal (by selection id): True
+summary {'challenge_checked': 11, 'challenge_refused': 3, 'discovery_checked': 15, 'discovery_refused': 7}
+totals {'candidate': {'episodes': 9, 'fired': 1}, 'policy_v0_all_purposes': {'episodes': 14, 'fired': 2}} | equal to fixer: True
+history episodes behind refused row equal: True
+saved picks that mix the orders status read with another target: 0
+saved picks with two faults: 0 []
+saved store unchanged: True | scratch removed: True

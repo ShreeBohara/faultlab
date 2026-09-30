@@ -1,0 +1,14 @@
+/Users/shree/FaultLab_Runs/2026-09-27/product-durability/offline-01/lab.sqlite3 | unchanged True | 2 history computations, 2 equal | []
+/Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/offline-01/lab.sqlite3 | unchanged True | 3 history computations, 3 equal | []
+/Users/shree/FaultLab_Runs/2026-09-28/discovery-v2/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-29/discovery-v2b/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3 | unchanged True | 1 history computations, 1 equal | []
+/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3 | unchanged True | 2 history computations, 2 equal | [('campaign-a2fbffe3', 'VERIFIED', 'VERIFIED')]
+/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3 | unchanged True | 2 history computations, 2 equal | [('campaign-b05ac280', 'VERIFIED', 'VERIFIED')]
+/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3 | unchanged True | 20 history computations, 20 equal | [('campaign-077b8434', 'VERIFIED', 'VERIFIED'), ('campaign-ea66672d', 'VERIFIED', 'VERIFIED'), ('campaign-37e66b6c', 'VERIFIED', 'VERIFIED'), ('campaign-53db7476', 'VERIFIED', 'VERIFIED')]
+TOTAL {'history_computations': 35, 'equal': 35, 'used_episodes_match': 35, 'saved_plan_verifications_agree': 6}
+[fixer guard] refused outbound connections: 0; loopback connects: 0
+exit 0

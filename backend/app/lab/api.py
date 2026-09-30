@@ -338,6 +338,17 @@ def create_router(get_coordinator, *, get_settings=None):
             result['challenge_reach']=loop_limits.campaign_challenge_reach(c().store,id)
         if plan is not None and plan.get('mechanic_context') is not None:
             result['mechanic_context']=loop_limits.campaign_mechanic_context(c().store,id)
+        # History fireability (app.lab.fireability): only a campaign whose plan declares it gets this block, so every other
+        # response keeps its exact fields. Discovery refusals come before any counterexample, so the plan is read here too,
+        # but only when its saved record names the rule: the dashboard polls this, and every other campaign's plan is then
+        # never validated on each poll (review finding F3).
+        if not counters and 'explorer_selection' in (c().store.get_record('campaign_plans',id) or {}):
+            from app.lab.run_plans import read_run_plan
+            try: plan=read_run_plan(c().store,campaign)['plan']
+            except Exception: plan=None
+        if plan is not None and plan.get('explorer_selection') is not None:
+            from app.lab import fireability
+            result['explorer_fireability']=fireability.campaign_summary(c().store,id,plan['explorer_selection'])
         return result
     @router.get('/campaigns/{id}/search-attempts')
     @guarded
@@ -359,7 +370,9 @@ def create_router(get_coordinator, *, get_settings=None):
                 'error':row.get('error'),'transport_retries':row.get('transport_retries',[]),
                 **({'matches_history_row':row['matches_history_row']} if 'matches_history_row' in row else {}),
                 # Discovery v4 only: a replay slot's record (no Explorer request) names the history row it replayed.
-                **({'history_replay':row['history_replay']} if 'history_replay' in row else {})})
+                **({'history_replay':row['history_replay']} if 'history_replay' in row else {}),
+                # History fireability only: this pick's check against the plan's frozen table (with the table rows).
+                **({'fireability':row['fireability']} if 'fireability' in row else {})})
         return selected
     @router.get('/campaigns/{id}/regressions')
     @guarded

@@ -1,0 +1,17 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/api.py b/backend/app/lab/api.py
+index 3db8330..d3088ce 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/api.py
++++ b/backend/app/lab/api.py
+@@ -339,8 +339,10 @@ def create_router(get_coordinator, *, get_settings=None):
+         if plan is not None and plan.get('mechanic_context') is not None:
+             result['mechanic_context']=loop_limits.campaign_mechanic_context(c().store,id)
+         # History fireability (app.lab.fireability): only a campaign whose plan declares it gets this block, so every other
+-        # response keeps its exact fields. Discovery refusals come before any counterexample, so the plan is read here too.
+-        if not counters:
++        # response keeps its exact fields. Discovery refusals come before any counterexample, so the plan is read here too,
++        # but only when its saved record names the rule: the dashboard polls this, and every other campaign's plan is then
++        # never validated on each poll (review finding F3).
++        if not counters and 'explorer_selection' in (c().store.get_record('campaign_plans',id) or {}):
+             from app.lab.run_plans import read_run_plan
+             try: plan=read_run_plan(c().store,campaign)['plan']
+             except Exception: plan=None

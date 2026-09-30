@@ -3,14 +3,15 @@ import { validateContract, validateList } from './generated/validate'
 import type { Counterexample, FaultSpec, ReductionResult, DiagnosticResult, InterventionExperiment, ChallengeResult } from './generated/contracts'
 import { historyReplaySlot, historyRowMatch, type HistoryReplaySlot, type HistoryRowMatch } from './runPlans'
 import { validateChallengeReach, validateMechanicContext, type ChallengeReachDecision, type MechanicContextRecord } from './loopLimits'
+import { validateExplorerFireability, type ExplorerFireability } from './historyFireability'
 /** matches_history_row: discovery v3/v4 only (absent otherwise); the frozen history row this source's recipe re-tries, or null.
  * history_replay: discovery v4 only (absent otherwise); the history replay slot that found this source, or null (an Explorer pick). */
 export type ExperimentRecord = { counterexample: Counterexample; source_recipe: FaultSpec | null; retained_recipe: FaultSpec | null; reduction: ReductionResult | null; diagnostics: DiagnosticResult[]; interventions: InterventionExperiment[]; challenges: ChallengeResult[]; matches_history_row?: HistoryRowMatch | null; history_replay?: HistoryReplaySlot | null }
 export type EvidenceReference = { episode_id: string; source: string; root_call_id: string | null; child_call_ids: string[]; source_project: string | null; root_call_url?: string | null; trace_url?: string | null }
 // The experiments endpoint returns stored ingestion progress, not full WeaveIngestion records.
 export type EvidenceIngestion = { episode_id: string; state: 'PENDING' | 'FETCHING' | 'INGESTED' | 'RETRYABLE_ERROR' | 'REJECTED'; status: 'weave_pending' | 'weave_verified' | 'weave_error'; execution_epoch: number; error_code: string | null }
-/** challenge_reach and mechanic_context: only for a campaign whose plan declares the rule (absent otherwise). */
-export type Experiments = { counterexamples: ExperimentRecord[]; evidence: EvidenceReference[]; ingestions: EvidenceIngestion[]; portability_ids: string[]; challenge_reach?: ChallengeReachDecision[]; mechanic_context?: MechanicContextRecord[] }
+/** challenge_reach, mechanic_context and explorer_fireability: only for a campaign whose plan declares the rule (absent otherwise). */
+export type Experiments = { counterexamples: ExperimentRecord[]; evidence: EvidenceReference[]; ingestions: EvidenceIngestion[]; portability_ids: string[]; challenge_reach?: ChallengeReachDecision[]; mechanic_context?: MechanicContextRecord[]; explorer_fireability?: ExplorerFireability }
 function validateIngestions(value: unknown): EvidenceIngestion[] {
   if (!Array.isArray(value)) throw new Error('Malformed ingestion progress response.')
   return value.map(v => {
@@ -38,6 +39,7 @@ export function validateExperiments(value: unknown): Experiments {
   for (const e of value.evidence) if (!object(e) || typeof e.episode_id !== 'string' || !['weave_verified', 'local_only'].includes(String(e.source)) || !(e.root_call_id === null || typeof e.root_call_id === 'string') || !Array.isArray(e.child_call_ids) || !e.child_call_ids.every(c => typeof c === 'string') || !(e.source_project === null || typeof e.source_project === 'string')) throw new Error('Malformed evidence reference.')
   return { counterexamples, evidence: value.evidence as EvidenceReference[], ingestions: validateIngestions(value.ingestions), portability_ids: value.portability_ids as string[],
     ...(value.challenge_reach === undefined ? {} : { challenge_reach: validateChallengeReach(value.challenge_reach) }),
-    ...(value.mechanic_context === undefined ? {} : { mechanic_context: validateMechanicContext(value.mechanic_context) }) }
+    ...(value.mechanic_context === undefined ? {} : { mechanic_context: validateMechanicContext(value.mechanic_context) }),
+    ...(value.explorer_fireability === undefined ? {} : { explorer_fireability: validateExplorerFireability(value.explorer_fireability) }) }
 }
 export const getExperiments = (id: string) => request(`/campaigns/${encodeURIComponent(id)}/experiments`, validateExperiments)

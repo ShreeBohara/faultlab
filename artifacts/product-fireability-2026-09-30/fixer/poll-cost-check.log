@@ -1,0 +1,15 @@
+{
+ "selections": 31,
+ "selection_json_bytes": 1009386,
+ "campaigns": 5,
+ "builder_full_scan": {
+  "median_ms_per_poll": 4.54,
+  "max_ms": 13.54
+ },
+ "fixed_campaign_scoped": {
+  "median_ms_per_poll": 0.87,
+  "max_ms": 1.11
+ }
+}
+scratch copy removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

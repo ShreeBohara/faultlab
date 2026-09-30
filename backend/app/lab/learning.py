@@ -14,6 +14,7 @@ from app.lab.tracing import execute_phase,execute_sync_phase
 from app.lab import evidence_wait
 from app.lab import loop_limits
 from app.lab import citation_status
+from app.lab import fireability
 from app.contracts.tokens import ModelInputLimit
 
 def source_validation_assessment(batch,target_invariant):
@@ -162,6 +163,16 @@ async def run_learning_cycle(coordinator,campaign,runner):
         # gets the adapter's recorded per-episode citation outcome (app.lab.citation_status). None: today's requests exactly.
         citation_rule=citation_status.campaign_rule(store,campaign)
         challenge_explorer=explorer if citation_rule is None else citation_status.CitationStatusExplorer(explorer,store)
+        # History fireability (faultlab-explorer-selection/v3-history-fireability; new discovery v3-history and v4 Learn plans
+        # only): its frozen table was re-verified with the history above (run_plans.verify_plan_history). Discovery and
+        # challenge picks on a target the table marks REFUSED are refused before any episode, with one re-plan each, inside
+        # the existing Explorer requests. None: today's requests exactly.
+        fire_rule=fireability.campaign_rule(store,campaign)
+        fire=None
+        if fire_rule is not None:
+            from app.lab.discovery_protocol import campaign_discovery
+            fire=fireability.Session(fire_rule,discovery_requests_max=campaign_discovery(store,campaign)['explorer_requests_max'])
+            explorer.fireability=fire
         for selection_index in range(campaign.caps.discovery_selections):
             if stop(): return
             coordinator.transition(id,'SELECTING')
@@ -182,6 +193,10 @@ async def run_learning_cycle(coordinator,campaign,runner):
                 selection_ref,output=record_replay(store,slot_context,replays[selection_index],protocol=frozen_history['discovery_protocol'],
                                                    identity=identity,summary=frozen_history['agent_history'],
                                                    episode_id=planned_episode_id,replays_total=len(replays))
+            elif v2 is None and fire is not None:
+                # One request, one re-plan if the rule refused its pick, within the plan's declared discovery requests.
+                selection_ref,output=await fireability.discovery_slot(explorer,store,fire,slot_context,fallback=fallback,
+                                                                      discovery_history=frozen_history,stop=stop)
             elif v2 is None:
                 selection_ref,output=await explorer.select(slot_context,fallback=fallback,discovery_history=frozen_history)
             else:

@@ -367,3 +367,12 @@ items are built. See the [citation-status note](PRODUCT_MECHANIC_CITATION_STATUS
 1. The challenge Explorer should avoid fault schedules that never fired in **this agent's own recorded history under
    the starting policy**. This is candidate-independent, unlike the rule withdrawn after review.
 2. Raise the per-campaign automatic evidence-retry cap for long campaigns.
+
+**Follow-up (September 30, $0, offline; built, reviewed twice and fixed; not yet committed or run live).** Both fixes
+are built: `faultlab-explorer-selection/v3-history-fireability` (fix 1: new v3-history and v4 plans freeze a per-target
+table from the frozen same-agent history; a target with at least 3 verified episodes and a fired share below 1/2 is
+refused, and a discovery or challenge pick is refused only when every one of its faults is on a refused target; in this
+store the orders status-read F4 target is 0 of 4, so the lone status-read pick is refused while a status-read failure
+beside a pending upgrade still runs) and `faultlab-evidence-retry/v3`
+(fix 2: 24 automatic retries per campaign instead of 6). See
+[PRODUCT_HISTORY_FIREABILITY_2026-09-30.md](PRODUCT_HISTORY_FIREABILITY_2026-09-30.md).

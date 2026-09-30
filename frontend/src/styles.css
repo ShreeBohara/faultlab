@@ -398,6 +398,11 @@ td { padding: 14px 12px; border-bottom: 1px solid var(--line); font-size: 11px; 
 td strong { font-size: 11px; font-weight: 500; }
 .episode-select { display: block; font: 9px var(--mono); margin-top: 6px; }
 td .hash { max-width: 190px; }
+/* History fireability: a short four-column table inside the saved plan; it keeps its own width, not the wide default. */
+table.fireability-table { min-width: 0; }
+table.fireability-table td { padding: 6px 12px; }
+/* The REFUSED row of the frozen table stands out from the allowed rows (review finding F4). */
+table.fireability-table tr.fireability-refused td { background: var(--amber-surface); color: var(--amber); }
 .selected-row { background: var(--accent-surface); }
 .section-caption { display: flex; justify-content: space-between; gap: 20px; padding: 30px 0 15px; color: var(--accent); font-size: 9px; }
 .section-caption span:last-child { color: var(--muted); font-family: var(--sans); letter-spacing: 0; font-size: 12px; }

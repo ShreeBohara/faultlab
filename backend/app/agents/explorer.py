@@ -235,6 +235,10 @@ class Explorer:
         # The plan's declared challenge-selection rule (app.lab.loop_limits, v2-candidate-reach), set by the learning
         # loop. None (every plan saved before it, and every non-Learn use) keeps today's challenge requests exactly.
         self.challenge_reach=None
+        # The plan's history fireability rule (app.lab.fireability, faultlab-explorer-selection/v3-history-fireability): a
+        # fireability.Session set by the learning loop for new discovery v3-history and v4 Learn plans only. None (every
+        # other plan, and every non-Learn use) keeps today's discovery and challenge requests and records exactly.
+        self.fireability=None
     async def select(self,context,*,reservation=None,challenge=False,fallback=None,discovery_v2=None,discovery_history=None):
         # The selector benchmark and active challenge have separately declared
         # duplicate/repetition rules. Do not silently change those protocols.
@@ -268,6 +272,12 @@ class Explorer:
             reach_session=loop_limits.challenge_session(self,context)
             reach=loop_limits.candidate_reach(self.store,context.get('campaign_id'),context.get('candidate_hash'))
             context={**context,**loop_limits.request_context(reach,reach_session)}
+        # History fireability: the rule and its frozen table join discovery requests (v1 dispatch with a frozen history)
+        # and challenge requests; a challenge re-plan is also told why its previous pick was refused.
+        fire=self.fireability if (challenge or (discovery and v2 is None and history is not None)) else None
+        if fire is not None:
+            from app.lab import fireability
+            context={**context,**fireability.request_context(fire,context,challenge=challenge)}
         # Supply the reviewed wire contract, not a sample solution or a repaired
         # recipe. Discovery and challenge use the same exact field names.
         context={**context,'output_schema':ExplorerOutput.model_json_schema(),
@@ -300,7 +310,7 @@ class Explorer:
         def record(error,failure_id):
             return record_transport_retry(self.store,error,role='explorer',failure_id=failure_id,metadata=self.metadata or context,
                 request={'kind':'explorer_selection','challenge':challenge,'selection_index':span_inputs['selection_index'],
-                         'slot_request':context.get('slot_request') if v2 is not None else None})
+                         'slot_request':context.get('slot_request') if v2 is not None or fire is not None else None})
         lab=self.lab_retry
         if lab is None:
             generation,retries=await complete_with_one_retry(send,failed=failed,admit=admit,record=record)
@@ -316,7 +326,7 @@ class Explorer:
             def record_backoff(error,failure_id,attempt,delay):
                 return record_transport_retry(self.store,error,role='explorer',failure_id=failure_id,metadata=self.metadata or context,
                     request={'kind':'explorer_selection','challenge':challenge,'selection_index':span_inputs['selection_index'],
-                             'slot_request':context.get('slot_request') if v2 is not None else None,
+                             'slot_request':context.get('slot_request') if v2 is not None or fire is not None else None,
                              'phase':'discovery' if discovery else 'challenge' if challenge else 'other'},
                     backoff={'attempt':attempt,'delay':delay,'campaign_retry_number':lab.used})  # counted just before
             generation,retries=await complete_with_backoff(send,failed=failed,admit=admit_backoff,record=record_backoff,
@@ -338,11 +348,16 @@ class Explorer:
         if history is not None and selected is not None:
             from app.lab.agent_history import history_row_match
             history_match=history_row_match(history['agent_history'],selected.fault_spec)
-        decision=None; precheck_error=None; reach_decision=None
+        decision=None; precheck_error=None; reach_decision=None; fire_decision=None
+        pick_source='model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot'
         if reach_rule is not None:
             # Refuse a pick with a fault target the agent never called in the candidate arm's source validation: no pair
             # runs (the Challenger receives no pick), and the refusal is saved on this selection record.
             reach_decision,selected=loop_limits.decide(reach,reach_session,context,selected,error)
+        if fire is not None and challenge:
+            # History fireability: refuse a challenge pick with a fault on a target the frozen history shows seldom fires;
+            # no pair runs (the Challenger receives no pick), and the refusal is saved with its table row.
+            fire_decision,selected=fireability.decide(fire,context,selected,error,challenge=True,provenance=pick_source)
         if discovery:
             identity=v2.identity if v2 is not None else schedule_identity
             digest=identity(selected.fault_spec) if selected else None
@@ -372,7 +387,17 @@ class Explorer:
                     if not label['all_forced']:
                         decision.update(status='SKIPPED_UNREACHABLE',reason='NOT_ALL_FAULTS_FORCED',refused_fault_spec=refused_spec)
                         selected=None  # No Actor episode and no substitute fault for this request.
-        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {}),**({'matches_history_row':history_match} if history is not None else {}),**({'challenge_reach':reach_decision} if reach_decision is not None else {})},immutable=True)
+            elif fire is not None and selected is not None:
+                # History fireability (v1 dispatch with a frozen history): after the unchanged duplicate rule, refuse a pick
+                # with a fault on a target the frozen history shows seldom fires. No Actor episode; the slot may re-plan once.
+                fire_decision,selected=fireability.decide(fire,context,selected,error,challenge=False,provenance=pick_source)
+                if selected is None:
+                    decision.update(status=fireability.DISCOVERY_STATUS,reason=fireability.DISCOVERY_REASON,
+                                    refused_fault_spec=fire_decision['refused_fault_spec'])
+            if fire is not None and fire_decision is None:
+                fire_decision=fireability.not_checked(fire,context,provenance=pick_source,reason=decision['reason'])
+        self.store.put_record('selections',selection_id,{'selection_id':selection_id,'context':context,'raw':generation.content,'model_id':generation.model_id,'challenge':challenge,'valid':parsed is not None,'error':error,'provenance':'model' if parsed else 'fixed_invalid_output_fallback' if fallback else 'invalid_slot','output':parsed.model_dump(mode='json') if parsed else None,'selected_output':selected.model_dump(mode='json') if selected else None,'search_decision':decision,'usage':request_usage(generation,retries),**({'transport_retries':retries} if retries else {}),**({'matches_history_row':history_match} if history is not None else {}),**({'challenge_reach':reach_decision} if reach_decision is not None else {}),**({'fireability':fire_decision} if fire_decision is not None else {})},immutable=True)
         if reach_decision is not None: loop_limits.after_pick(reach_session,selection_id,reach_decision)
+        if fire_decision is not None: fireability.after_pick(fire,selection_id,fire_decision,challenge=challenge)
         if precheck_error is not None: raise precheck_error
         return selection_id,selected

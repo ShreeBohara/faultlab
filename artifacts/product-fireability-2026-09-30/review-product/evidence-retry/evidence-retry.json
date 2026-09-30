@@ -1,0 +1,180 @@
+{
+ "S1_v3_one_retry_per_wait": {
+  "actor_episodes": 8,
+  "automatic_attempts_per_wait": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "automatic_retries_total": 8,
+  "campaign_max_on_waits": [
+   24
+  ],
+  "declared_seconds_of_automatic_retries": 240,
+  "evidence_wait_api": {
+   "automatic_retries_total": 8,
+   "declared_cap": 24,
+   "needs_operator": false
+  },
+  "final_state": "NO_CHANGE",
+  "limit_reached": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "plan_evidence_retry": {
+   "automatic_retries_per_campaign": 24,
+   "automatic_retries_per_wait": 3,
+   "delays_seconds": [
+    30,
+    120,
+    300
+   ],
+   "protocol": "faultlab-evidence-retry/v3"
+  },
+  "reason_before_stop": "No verified strict improvement within declared development bounds; all outcomes retained",
+  "start_plan_check_accepts": true,
+  "state_before_stop": "NO_CHANGE",
+  "wait_statuses": [
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED"
+  ],
+  "waits": 8
+ },
+ "S2_v2_one_retry_per_wait": {
+  "actor_episodes": 7,
+  "automatic_attempts_per_wait": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   0
+  ],
+  "automatic_retries_total": 6,
+  "campaign_max_on_waits": [
+   6
+  ],
+  "declared_seconds_of_automatic_retries": 180,
+  "evidence_wait_api": {
+   "automatic_retries_total": 6,
+   "declared_cap": 6,
+   "needs_operator": true
+  },
+  "final_state": "STOPPED",
+  "limit_reached": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   "PER_CAMPAIGN"
+  ],
+  "plan_evidence_retry": {
+   "automatic_retries_per_campaign": 6,
+   "automatic_retries_per_wait": 3,
+   "delays_seconds": [
+    30,
+    120,
+    300
+   ],
+   "protocol": "faultlab-evidence-retry/v2"
+  },
+  "reason_before_stop": "Needs operator: Weave evidence for 1 episode is still unverified and this campaign has used all 6 of its automatic telemetry retries (0 of 3 in this wait) (last ingestion result: TRANSPORT). The campaign keeps waiting. P",
+  "start_plan_check_accepts": true,
+  "state_before_stop": "WAITING_EVIDENCE",
+  "wait_statuses": [
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "NEEDS_OPERATOR"
+  ],
+  "waits": 7
+ },
+ "S3_v3_three_retries_per_wait": {
+  "actor_episodes": 8,
+  "automatic_attempts_per_wait": [
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3,
+   3
+  ],
+  "automatic_retries_total": 24,
+  "campaign_max_on_waits": [
+   24
+  ],
+  "declared_seconds_of_automatic_retries": 3600,
+  "evidence_wait_api": {
+   "automatic_retries_total": 24,
+   "declared_cap": 24,
+   "needs_operator": false
+  },
+  "final_state": "NO_CHANGE",
+  "limit_reached": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "plan_evidence_retry": {
+   "automatic_retries_per_campaign": 24,
+   "automatic_retries_per_wait": 3,
+   "delays_seconds": [
+    30,
+    120,
+    300
+   ],
+   "protocol": "faultlab-evidence-retry/v3"
+  },
+  "reason_before_stop": "No verified strict improvement within declared development bounds; all outcomes retained",
+  "start_plan_check_accepts": true,
+  "state_before_stop": "NO_CHANGE",
+  "wait_statuses": [
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED",
+   "RESOLVED"
+  ],
+  "waits": 8
+ },
+ "guard": {
+  "loopback_connections": 0,
+  "promotion_manifest_opens_by_product_code": 12,
+  "refused_outbound_connections": 0,
+  "refused_protected_file_opens": 0
+ },
+ "scratch_removed": true
+}

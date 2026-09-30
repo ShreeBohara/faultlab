@@ -2,6 +2,7 @@ import { object, request } from './api'
 import type { AgentRegistration, Campaign, CampaignBudget, EpisodeBudget, FaultSpec } from './generated/contracts'
 import { validateContract } from './generated/validate'
 import { challengeSelectionDeclaration, mechanicContextDeclaration, mechanicEvidenceDeclaration, type ChallengeSelectionDeclaration, type MechanicContextDeclaration, type MechanicEvidenceDeclaration } from './loopLimits'
+import { FIREABILITY_PROTOCOLS, explorerSelectionDeclaration, type ExplorerSelectionDeclaration, type ExplorerSelectionPlan } from './historyFireability'
 
 export const TASK_DEFINITION = 'orders.upgrade_then_confirm/v1' as const
 /** 'smolagents' is native adapter v1 (unchanged); 'smolagents-v2' is the declared native adapter v2. */
@@ -57,10 +58,12 @@ export type TransportRetryDeclaration = TransportRetryDeclarationV1 | TransportR
 export const TRANSPORT_RETRY_V2 = 'faultlab-transport-retry/v2-lab-backoff'
 export const isLabBackoff = (value: TransportRetryDeclaration | null | undefined): value is TransportRetryDeclarationV2 => value?.protocol === TRANSPORT_RETRY_V2
 /** The automatic evidence retry rule frozen into a Learn plan (backend app/lab/evidence_wait.py): telemetry only, bounded per wait
- * and (v2) per campaign. v1 had no campaign limit; it was never run live, and Start refuses a saved v1 plan. */
+ * and (v2, v3) per campaign. v3 (24 per campaign) is frozen into every new Learn plan since September 30; a saved v2 plan (6 per
+ * campaign) still starts and keeps its cap. v1 had no campaign limit; it was never run live, and Start refuses a saved v1 plan. */
 type EvidenceRetryBase = { trigger: 'WAITING_EVIDENCE'; automatic_retries_per_wait: 3; delays_seconds: [30, 120, 300]; path: 'retry-evidence'; telemetry_only: true; repeats_model_requests: false; repeats_business_actions: false; charged_model_calls: 0; after_last_retry: 'NEEDS_OPERATOR'; rule: string }
 export type EvidenceRetryDeclaration = (EvidenceRetryBase & { protocol: 'faultlab-evidence-retry/v1'; automatic_retries_per_campaign?: undefined })
   | (EvidenceRetryBase & { protocol: 'faultlab-evidence-retry/v2'; automatic_retries_per_campaign: 6 })
+  | (EvidenceRetryBase & { protocol: 'faultlab-evidence-retry/v3'; automatic_retries_per_campaign: 24 })
 export type DiscoveryOption = { protocol_id: DiscoveryProtocolId; default: boolean; label: string; description: string; supported_agents: AgentKind[]; unsupported_reason?: string; declaration: DiscoveryDeclaration }
 export type RunAgent = { agent: AgentKind; label: string; status: 'READY' | 'UNAVAILABLE'; reason_code: string; message: string; configuration_hash: string | null; proposed_registration_id: string | null; registered: boolean; registration_id: string | null; model: string; source_conformance: 'VERIFIED' | 'UNAVAILABLE'; provider_access: 'not_checked'; behavior_verified: false; compare_available: boolean; accepted_policy_version: string | null; limitations: string[] }
 export type RunOptions = {
@@ -72,7 +75,10 @@ export type RunOptions = {
    * mechanic_context and challenge_selection: the two loop-limit rules every new Learn plan freezes; absent from older backends. */
   learn: { manifest_hash: string; search_space: SearchSpace; selection_limit: number; discovery_protocols?: DiscoveryOption[]; transport_retry?: TransportRetryDeclarationV2; mechanic_context?: MechanicContextDeclaration; challenge_selection?: ChallengeSelectionDeclaration
     /** Frozen only into a new Learn plan of native adapter v2; absent from older backends. */
-    mechanic_evidence?: MechanicEvidenceDeclaration }
+    mechanic_evidence?: MechanicEvidenceDeclaration
+    /** History fireability: frozen, with its table, only into a new Learn plan with discovery v3 · agent history or v4 · history
+     * replay (the declaration names them); offered here without a table. Absent from older backends. */
+    explorer_selection?: ExplorerSelectionDeclaration }
   compare: { partition: 'promotion'; manifest_hash: string; case_count: number; trials_per_case: number }
   agents: RunAgent[]; offline: { agent: 'reference'; configuration_hash: string; registration_required: false }
   caps: RunCaps; episode_budget: Required<EpisodeBudget>; models: { actor: string; explorer: string; mechanic: string }; provider_calls: 0
@@ -85,7 +91,10 @@ export type RunPlan = { schema_version: 'faultlab-run-plan/v1'; campaign_id: str
   /** Learn only; absent from every plan saved before these rules and from every baseline or compare plan. */
   mechanic_context?: MechanicContextDeclaration | null; challenge_selection?: ChallengeSelectionDeclaration | null
   /** A native adapter v2 Learn plan only; absent from every other plan and from every plan saved before the rule. */
-  mechanic_evidence?: MechanicEvidenceDeclaration | null; plan_hash: string }
+  mechanic_evidence?: MechanicEvidenceDeclaration | null
+  /** A Learn plan with discovery v3 · agent history or v4 · history replay only, every new one; absent from every other plan
+   * and from every plan saved before the rule. */
+  explorer_selection?: ExplorerSelectionPlan | null; plan_hash: string }
 export type CampaignPlan = { campaign_id: string; status: 'PLANNED'; plan: RunPlan } | { campaign_id: string; status: 'LEGACY'; plan: null }
 export type PlannedCampaignRequest = { expected_store_identity: string; expected_setup_hash: string; task_definition_id: typeof TASK_DEFINITION; agent_registration_id?: string; mode: RunMode; config_profile_id: RunProfile; task_text: string; order_id: string; development_case_id?: string; discovery_protocol?: DiscoveryProtocolId }
 
@@ -206,7 +215,8 @@ export function transportRetryV2(value: unknown, actorCalls: number): value is T
 /** The declared automatic evidence retry rule, exactly as the backend freezes it into a Learn plan. */
 export function evidenceRetry(value: unknown): value is EvidenceRetryDeclaration {
   if (!object(value)) return false
-  const limit = value.protocol === 'faultlab-evidence-retry/v2' ? value.automatic_retries_per_campaign === 6
+  const limit = value.protocol === 'faultlab-evidence-retry/v3' ? value.automatic_retries_per_campaign === 24
+    : value.protocol === 'faultlab-evidence-retry/v2' ? value.automatic_retries_per_campaign === 6
     : value.protocol === 'faultlab-evidence-retry/v1' && !('automatic_retries_per_campaign' in value)
   return limit && value.trigger === 'WAITING_EVIDENCE' && value.automatic_retries_per_wait === 3
     && Array.isArray(value.delays_seconds) && value.delays_seconds.length === 3 && [30, 120, 300].every((delay, index) => (value.delays_seconds as unknown[])[index] === delay)
@@ -258,6 +268,7 @@ export function validateRunOptions(value: unknown): RunOptions {
   if (value.learn.mechanic_context !== undefined && !mechanicContextDeclaration(value.learn.mechanic_context)) return malformed('Learn Mechanic request-size rule')
   if (value.learn.challenge_selection !== undefined && !challengeSelectionDeclaration(value.learn.challenge_selection)) return malformed('Learn challenge-pick rule')
   if (value.learn.mechanic_evidence !== undefined && !mechanicEvidenceDeclaration(value.learn.mechanic_evidence)) return malformed('Learn native citation-status rule')
+  if (value.learn.explorer_selection !== undefined && !explorerSelectionDeclaration(value.learn.explorer_selection)) return malformed('Learn history fireability rule')
   // The reference Actor and native adapter v1 are always offered; native adapter v2 is offered by current backends.
   if (!Array.isArray(value.agents) || ![2, 3].includes(value.agents.length) || new Set(value.agents.map(a => object(a) && a.agent)).size !== value.agents.length
     || !['reference', 'smolagents'].every(kind => (value.agents as unknown[]).some(a => object(a) && a.agent === kind))) return malformed('reviewed agents')
@@ -303,6 +314,16 @@ export function validateCampaignPlan(value: unknown, campaignId: string): Campai
     // Only Learn declares a discovery protocol; the pre-check (v2, v3 with pre-check) models only the reference Actor.
     if (plan.mode !== 'learn' || !discoveryDeclaration(plan.discovery, true) || (preChecked(plan.discovery.protocol) && plan.agent !== 'reference')
       || (plan.discovery.history && plan.discovery.history.policy_hash !== plan.initial_policy_hash)) return malformed('campaign plan discovery protocol')
+  }
+  // History fireability: only a Learn plan with discovery v3 · agent history or v4 declares it, and its table was frozen from that
+  // plan's own frozen history (same summary, episode set and cutoff). The backend recomputes both before Start.
+  if (!(plan.explorer_selection === undefined || plan.explorer_selection === null)) {
+    const discovery = plan.discovery as DiscoveryDeclaration | null | undefined, history = discovery?.history
+    const declared = plan.explorer_selection
+    if (plan.mode !== 'learn' || !discovery || !(FIREABILITY_PROTOCOLS as readonly string[]).includes(discovery.protocol) || !history
+      || !explorerSelectionDeclaration(declared, true) || !('table' in declared) || declared.table.history_summary_hash !== history.summary_hash
+      || declared.table.history_episode_ids_hash !== history.episode_ids_hash || declared.table.record_cutoff !== history.record_cutoff
+      || declared.table.verified_episodes !== history.summary.verified_episodes) return malformed('campaign plan history fireability rule')
   }
   return value as CampaignPlan
 }

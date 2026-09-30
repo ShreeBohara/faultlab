@@ -1,0 +1,5 @@
+gate_freeze (scripts/experiments/gate_freeze.py, identical blob 9e647eb on both; promotion/final-audit dropped from FILES)
+backup tree = git archive backup/part2-2026-09-22 (432e54b) subset in /Users/shree/FaultLab_Scratch (deleted after)
+files 20/20 identical; changed: []
+fingerprints 9/13 identical; changed: algorithm_hash, runtime_hash, source_hash, tree_lab
+functions 30/30 identical; changed: []

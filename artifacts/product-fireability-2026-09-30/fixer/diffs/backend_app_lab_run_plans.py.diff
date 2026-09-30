@@ -1,0 +1,13 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/run_plans.py b/backend/app/lab/run_plans.py
+index ce66e04..3e385ea 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/run_plans.py
++++ b/backend/app/lab/run_plans.py
+@@ -418,6 +418,8 @@ class ExplorerSelectionPlan(StrictModel):
+     discovery_protocols: list[Literal['faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay']] = Field(min_length=2, max_length=2)
+     basis: Literal['frozen_agent_history_verified_episodes']
+     target: Literal['fault_kind_service_tool']
++    # Fixer (review finding MEDIUM-1): a pick is refused only when every one of its faults targets a REFUSED row.
++    pick_refused_when: Literal['every_fault_on_a_refused_target']
+     min_verified_episodes: Literal[3]
+     min_fired_share: Literal['1/2']
+     replans_per_refused_pick: Literal[1]

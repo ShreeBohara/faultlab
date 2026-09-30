@@ -1,0 +1,197 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/fireability.py b/backend/app/lab/fireability.py
+index 994e300..fd41023 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/fireability.py
++++ b/backend/app/lab/fireability.py
+@@ -22,9 +22,13 @@ recomputed at the history's record cutoff before Start and before the first Expl
+ (AGENT_HISTORY_CHANGED).
+ 
+ The rule. Before any episode runs, every Explorer pick (a discovery slot's pick, including the fixed fallback after an
+-invalid answer, or a challenge pick) is checked: it is refused if any of its faults targets a (kind, service, tool) with
+-at least 3 verified history episodes and a fired share below 1/2. No episode runs; the refusal is recorded on the
+-selection record with the table row. The Explorer gets one re-plan for that slot, told why; a refused re-plan gets none.
++invalid answer, or a challenge pick) is checked. A (kind, service, tool) with at least 3 verified history episodes and a
++fired share below 1/2 is REFUSED, and a pick is refused only if EVERY one of its faults targets a REFUSED row. No episode
++runs; the refusal is recorded on the selection record with the table rows. The Explorer gets one re-plan for that slot,
++told why; a refused re-plan gets none. A pick with at least one fault on a target that is not REFUSED runs exactly as
++before: the history cannot say whether that other fault makes the REFUSED target reached (fixer, after both $0 reviews,
++finding MEDIUM-1: the builder's "any fault" form also refused a status-read failure DURING A PENDING UPGRADE, discovery
++family A4, which fires in both arms, and in native-v2b that read is the step every generated guardrail adds).
+ Every request is charged and bounded as today: a challenge re-plan is one of the challenge's existing 8 Explorer
+ requests (app/lab/challenge.py is unchanged); a discovery re-plan is one of the plan's declared ``explorer_requests_max``
+ discovery requests (a v4 replay slot uses none), so under v3-history a re-plan can leave a later slot without a request,
+@@ -41,9 +45,12 @@ review-integrity/REPORT.md).
+ 
+ What it does not change. Gates, the referee, the simulator, the C1-C8 contracts, challenge.py (4 schedules, 3 fresh
+ pairs each, every pair must fire, any candidate violation is a counterexample), evaluation, promotion, reproduction,
+-reduction, diagnosis and the verdict logic. Known limit, stated in the plan: the table is per target, not per recipe, so
+-a fault on a refused target is refused even inside a recipe where another fault would make it fire (for example a
+-pending upgrade before the status read); and a refused pick cannot expose a candidate violation it might have shown.
++reduction, diagnosis and the verdict logic. Known limits, stated in the plan: a pick made only of faults on REFUSED
++targets is never run, so a candidate mistake that only such a pick could show (for example a repair that newly reads a
++REFUSED target on every run and mishandles its failure) is tested only if the Explorer pairs that target with a fault on
++another target; the table is candidate-independent but not neutral, because repairs add calls where the starting policy
++seldom reached, which is where rows are REFUSED; and a REFUSED row changes only when a later plan's history holds new
++verified episodes on that target (under this rule those can come only from mixed picks, never from a lone one).
+ """
+ from __future__ import annotations
+ 
+@@ -56,6 +63,8 @@ TABLE_SCHEMA = 'faultlab-history-fireability/v1'
+ # The discovery protocols whose new plans freeze the rule (a frozen same-agent history and v1 dispatch).
+ DISCOVERY_PROTOCOLS = ('faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay')
+ APPLIES_TO = ('explorer_discovery', 'explorer_challenge')
++# A pick is refused only when every one of its faults targets a REFUSED row (fixer; review finding MEDIUM-1).
++PICK_REFUSED_WHEN = 'every_fault_on_a_refused_target'
+ MIN_VERIFIED_EPISODES = 3
+ MIN_FIRED_SHARE = Fraction(1, 2)
+ MIN_FIRED_SHARE_TEXT = '1/2'
+@@ -76,38 +85,50 @@ PICK_STATUSES = (PICK_ALLOWED, PICK_REFUSED, PICK_INVALID, PICK_DUPLICATE)
+ DISCOVERY_STATUS = 'SKIPPED_UNFIREABLE'
+ DISCOVERY_REASON = 'HISTORY_FIRED_SHARE_BELOW_HALF'
+ 
+-RULE = ('Before any episode runs, FaultLab checks every fault of each Explorer pick (a discovery slot\'s pick, including '
+-        'the fixed fallback after an invalid answer, and each challenge pick) against this plan\'s frozen history '
+-        'fireability table. The table was computed when the plan was saved, from exactly the verified episodes of the '
+-        'plan\'s frozen agent history (this agent, the starting policy, development discovery episodes only): for each '
+-        'fault kind, service and tool, how many verified episodes scheduled a fault there and in how many of them every '
+-        'such fault fired. A pick is refused if any of its faults targets a kind, service and tool with at least 3 verified '
+-        'episodes and a fired share below 1/2: no episode runs, and the refusal is recorded with the table row. The '
+-        'Explorer then gets one re-plan for that slot, told why; a refused re-plan gets none. Every request, re-plans '
+-        'included, is charged and bounded as before: a challenge re-plan is one of the challenge\'s 8 Explorer requests, '
+-        'and a discovery re-plan is one of the plan\'s declared discovery Explorer requests, so a re-plan can leave a later '
+-        'discovery slot without a request (that slot is recorded). Targets with fewer than 3 verified episodes, and '
+-        'targets not in the table, are allowed. Discovery\'s duplicate rule applies first, unchanged. The table never uses '
+-        'candidate, challenge, source-validation, reproduction, reduction or intervention episodes, other agents or '
+-        'protected data, and it is the same for every candidate. Nothing else changes: a challenge still needs 4 schedules '
+-        'with 3 fresh pairs each, every pair must fire its faults, and any candidate violation is a counterexample. The '
+-        'table is per target, not per recipe, so a fault on a refused target is refused even when another fault in the '
+-        'same pick might make it fire.')
++RULE = ('Before any episode runs, FaultLab checks each Explorer pick (a discovery slot\'s pick, including the fixed '
++        'fallback after an invalid answer, and each challenge pick) against this plan\'s frozen history fireability table. '
++        'The table was computed when the plan was saved, from exactly the verified episodes of the plan\'s frozen agent '
++        'history (this agent, the starting policy, development discovery episodes only): for each fault kind, service and '
++        'tool, how many verified episodes scheduled a fault there and in how many of them every such fault fired. A target '
++        'with at least 3 verified episodes and a fired share below 1/2 is REFUSED. A pick is refused only if every one of '
++        'its faults targets a REFUSED target: no episode runs, and the refusal is recorded with the table rows. A pick with '
++        'at least one fault on a target that is not REFUSED runs as before, because the history cannot show whether that '
++        'other fault makes the REFUSED target reached (for example a pending upgrade before a status read); its pairs '
++        'still count only if every fault fires in both arms. The Explorer then gets one re-plan for a refused pick, told '
++        'why; a refused re-plan gets none. Every request, re-plans included, is charged and bounded as before: a challenge '
++        're-plan is one of the challenge\'s 8 Explorer requests, and a discovery re-plan is one of the plan\'s declared '
++        'discovery Explorer requests, so a re-plan can leave a later discovery slot without a request (that slot is '
++        'recorded). Targets with fewer than 3 verified episodes, and targets not in the table, are never REFUSED. '
++        'Discovery\'s duplicate rule applies first, unchanged. The table never uses candidate, challenge, '
++        'source-validation, reproduction, reduction or intervention episodes, other agents or protected data, and it is '
++        'the same for every candidate. It is not neutral: a repair can add calls to a target the starting policy seldom '
++        'reached, and a pick made only of faults on REFUSED targets never runs, so a mistake only such a pick could show '
++        'is tested only when a REFUSED target is paired with a fault on another target. Nothing else changes: a challenge '
++        'still needs 4 schedules with 3 fresh pairs each, every pair must fire its faults, and any candidate violation is a '
++        'counterexample.')
+ MEANING = ('Prior evidence from this plan\'s frozen agent history, not about any candidate: for each fault target (kind, '
+            'service, tool), verified_episodes is how many verified episodes of this agent under the starting policy '
+            'scheduled a fault there, and fired_episodes is how many of them fired every such fault. REFUSED marks a target '
+-           'with at least 3 verified episodes and a fired share below 1/2: a pick with a fault on it is refused before any '
+-           'episode runs. ALLOWED_FEWER_THAN_3 and targets not listed are allowed.')
+-REPLAN_INSTRUCTION = ('Your previous pick was refused before any episode ran, because a fault in it targets a kind, '
++           'with at least 3 verified episodes and a fired share below 1/2: a pick whose every fault is on a REFUSED target '
++           'is refused before any episode runs; a pick with at least one fault on another target runs. '
++           'ALLOWED_FEWER_THAN_3 and targets not listed are never REFUSED.')
++REPLAN_INSTRUCTION = ('Your previous pick was refused before any episode ran, because every fault in it targets a kind, '
+                       'service and tool that history_fireability marks REFUSED. This request is its one re-plan: choose a '
+-                      'pick with no fault on a REFUSED target.')
++                      'pick with at least one fault on a target that is not REFUSED. A REFUSED target may appear beside such '
++                      'a fault, but a pair counts only if every fault in the pick fires in both arms, so include it only '
++                      'where another fault in the same pick makes the agent reach it.')
++# Sent in every request under the rule (review finding F2): the Explorer's instructions say that every valid pick runs or
++# that every valid schedule is tested; under this plan that is qualified. The system prompts stay byte-identical.
++EXPLORER_NOTE = ('This rule takes precedence over the statements in your instructions that every valid pick runs one Actor '
++                 'episode or that every valid schedule is tested: under this plan a pick whose every fault targets a '
++                 'REFUSED row runs nothing, and its request still counts as one of your Explorer requests.')
+ 
+ 
+ def declaration():
+     """The rule as the run options offer it (no table; the plan freezes the table when it is saved)."""
+     return {'protocol': EXPLORER_SELECTION_V3, 'applies_to': list(APPLIES_TO), 'discovery_protocols': list(DISCOVERY_PROTOCOLS),
+             'basis': 'frozen_agent_history_verified_episodes', 'target': 'fault_kind_service_tool',
+-            'min_verified_episodes': MIN_VERIFIED_EPISODES, 'min_fired_share': MIN_FIRED_SHARE_TEXT,
++            'pick_refused_when': PICK_REFUSED_WHEN, 'min_verified_episodes': MIN_VERIFIED_EPISODES, 'min_fired_share': MIN_FIRED_SHARE_TEXT,
+             'replans_per_refused_pick': 1, 'explorer_request_budget_changed': False, 'refused_pick_runs_episodes': False,
+             'candidate_dependent': False, 'challenge_rules_changed': False, 'rule': RULE}
+ 
+@@ -133,6 +154,12 @@ def refused_text(row):
+             f'(below {MIN_FIRED_SHARE_TEXT} of at least {MIN_VERIFIED_EPISODES})')
+ 
+ 
++def refused_beside_text(row):
++    """A REFUSED target inside an allowed pick (the pick also has a fault on a target that is not REFUSED)."""
++    return (f'{target_text(row)} is REFUSED (fired in {row["fired_episodes"]} of {row["verified_episodes"]} verified history '
++            'episodes)')
++
++
+ def compute_table(store, history):
+     """The fireability table of one frozen history block, from exactly the episodes that history uses.
+ 
+@@ -233,7 +260,7 @@ def request_context(session, context, *, challenge):
+     else:
+         state = None
+         refused = [dict(item) for item in session.discovery_refused]
+-    block = {'rule': RULE, 'meaning': MEANING, 'min_verified_episodes': MIN_VERIFIED_EPISODES,
++    block = {'rule': RULE, 'meaning': MEANING, 'note': EXPLORER_NOTE, 'min_verified_episodes': MIN_VERIFIED_EPISODES,
+              'min_fired_share': MIN_FIRED_SHARE_TEXT, 'verified_history_episodes': session.table['verified_episodes'],
+              'rows': [dict(row) for row in session.table['rows']], 'refused_targets': list(session.table['refused_targets']),
+              'refused_picks': refused}
+@@ -289,8 +316,13 @@ def decide(session, context, selected, error, *, challenge, provenance):
+         return decision, None
+     decision['targets'] = check_targets(session, selected.fault_spec)
+     refused = [item['table_row'] for item in decision['targets'] if item['status'] == REFUSED]
+-    if not refused:
++    if len(refused) < len(decision['targets']):
++        # At least one fault targets a row that is not REFUSED: the pick runs (a REFUSED target beside it is only named).
+         decision['status'] = PICK_ALLOWED
++        if refused:
++            decision['reason'] = ('Allowed: ' + '; '.join(refused_beside_text(row) for row in refused) + '. This pick also '
++                                  'has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count '
++                                  'only if every fault fires in both arms.')
+         return decision, selected
+     named = '; '.join(refused_text(row) for row in refused)
+     decision.update(status=PICK_REFUSED, refused_targets=refused, refused_fault_spec=selected.fault_spec.model_dump(mode='json'),
+@@ -368,14 +400,28 @@ async def discovery_slot(explorer, store, session, slot_context, *, fallback, di
+ 
+ # ----------------------------------------------------------------------------------------------- dashboard and recording
+ 
++def _campaign_rows(store, kind, campaign_id):
++    """This campaign's records of one kind whose top-level campaign_id matches, filtered in SQLite (never every payload)."""
++    return [payload for _, payload in store.records_upto(kind, store.max_record_rowid(), where={'campaign_id': campaign_id})]
++
++
+ def campaign_decisions(store, campaign_id):
+-    """Every pick decision recorded under the rule for this campaign (discovery and challenge), in record order."""
++    """Every pick decision recorded under the rule for this campaign (discovery and challenge), in record order.
++
++    The dashboard polls this (GET .../experiments), so it reads only this campaign's records: SQLite extracts three small
++    fields from each selection row and only the matching selections and this campaign's challenges are parsed (review
++    finding F3; Phase 18/19: parsing every record on the event loop during a poll froze the lab loop).
++    """
++    challenge_ids = [row['challenge_id'] for row in _campaign_rows(store, 'challenge_campaigns', campaign_id)]
+     challenge_of = {}
+-    for challenge in store.list_records('challenges'):
++    for challenge in store.get_records('challenges', challenge_ids):
+         for ref in challenge.get('selection_refs', []):
+             challenge_of[ref] = challenge['challenge_id']
++    fields = store.record_fields_upto('selections', store.max_record_rowid(),
++                                      ('selection_id', 'context.campaign_id', 'fireability.status'))
++    ids = [row['selection_id'] for _, row in fields if row['context.campaign_id'] == campaign_id and row['fireability.status'] is not None]
+     rows = []
+-    for selection in store.list_records('selections'):
++    for selection in store.get_records('selections', ids):
+         decision = selection.get('fireability')
+         if decision is None or (selection.get('context') or {}).get('campaign_id') != campaign_id:
+             continue
+@@ -388,7 +434,7 @@ def campaign_decisions(store, campaign_id):
+ def campaign_summary(store, campaign_id, block):
+     """The rule's saved outcome for one campaign (API and recording): the frozen table, every pick decision, unrequested slots."""
+     decisions = campaign_decisions(store, campaign_id)
+-    slots = [row for row in store.list_records('explorer_selection_slots') if row.get('campaign_id') == campaign_id]
++    slots = _campaign_rows(store, 'explorer_selection_slots', campaign_id)
+     return {'protocol': block['protocol'], 'table_hash': block['table_hash'], 'refused_targets': list(block['table']['refused_targets']),
+             'picks_checked': sum(row['status'] in (PICK_ALLOWED, PICK_REFUSED) for row in decisions),
+             'picks_refused': sum(row['status'] == PICK_REFUSED for row in decisions),

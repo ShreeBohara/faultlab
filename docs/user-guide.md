@@ -91,6 +91,37 @@ agent is chosen, and the saved plan shows it under "Native citation status".
 - **What is unchanged.** Discovery requests, and every other agent's plans. A native adapter v2 plan saved before the
   rule reads "Not declared" ([details](PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md)).
 
+**History fireability (September 30, built offline, reviewed twice at $0 and fixed; not yet committed or run live).** A new Learn plan with
+discovery **v3 · agent history** or **v4 · history replay first** also freezes
+`faultlab-explorer-selection/v3-history-fireability`. The Learn setup form shows it when one of those two protocols is
+chosen, and the saved plan shows it under "History fireability" with its frozen table.
+
+- **Why.** In live runs v2d and v2f every challenge of a candidate that passed source validation ended INCONCLUSIVE on
+  one pick: a lone F4 fault on the orders status read. With a healthy upgrade neither arm reads the status, so the fault
+  seldom fires and the pair does not count. Discovery picks spent slots on the same target.
+- **The table.** When you create the campaign, FaultLab counts, from exactly the verified episodes of the plan's frozen
+  agent history (this agent, the starting policy, development discovery episodes only), for each fault kind, service and
+  tool: how many verified episodes scheduled a fault there, and in how many of them it fired. Candidate, challenge,
+  reproduction and other later-stage episodes, other agents and protected data are never counted, so the table is the
+  same for every candidate. Start and the check before the first Explorer request recompute it and refuse a change.
+- **The rule.** A target with at least 3 verified history episodes that fired in fewer than half of them is marked
+  REFUSED (highlighted in the saved plan's table). Before any episode runs, a discovery or challenge pick whose **every**
+  fault is on a REFUSED target is refused. A pick with a fault on any other target runs as before, even beside a REFUSED
+  target: for example a pending upgrade plus a status-read failure, which does fire. The refusal is shown in the
+  fault-search panel (discovery) or the **Adversarial challenge** panel (challenge), with the table row. The Explorer gets
+  one re-plan for that slot, inside the Explorer requests the plan already declares: a challenge still has 8, and discovery
+  keeps its declared number, so under v3 · agent history a re-plan can leave the last discovery slot without a request
+  (the fault-search panel then says so, and the saved plan's selection budget reads "one re-plan per pick refused by
+  history fireability"). Targets with fewer than 3 verified episodes are never refused.
+- **Limits.** The table is the same for every candidate, but it is not neutral. In the native-v2b store the one refused
+  target is the orders status read, which is exactly the step every generated guardrail adds. A pick made only of faults on
+  refused targets never runs, so a candidate mistake only such a pick could show is tested only if the Explorer pairs the
+  target with another fault. A passed challenge has tested the guardrail's status step failing only if one of its listed
+  picks faulted that read; the **Adversarial challenge** panel lists the refused targets and every checked pick. Nothing
+  else changes: a challenge still needs 4 schedules with 3 fresh pairs each, every pair must fire, and any candidate
+  violation is a counterexample ([details](PRODUCT_HISTORY_FIREABILITY_2026-09-30.md)).
+- **Older plans.** A v3 or v4 plan saved before the rule reads "Not declared" and runs every valid pick, as before.
+
 Use **Download campaign recording** to save the plan, configuration, registration and public
 development evidence, including failed attempts and `NO_CHANGE` runs. The JSON download makes no
 provider call. Protected trials and private simulator state are excluded. This recording is an
@@ -381,7 +412,7 @@ You do not need to click through these stages. The backend advances automaticall
 
 **Frontend.** Watch **Fault × policy ledger**. Click an episode ID to open its original observations, report and **Fixed Referee verdict** in **Evidence timeline**. Use **Reproduce & reduce**, **Tested diagnosis** and **Adversarial challenge** to inspect the evidence behind a proposal. After selecting an older episode, reload the campaign with **Load recording** to follow its latest episode again.
 
-**If the state is WAITING_EVIDENCE.** A Learn plan saved since September 29 declares an automatic evidence retry (rule `faultlab-evidence-retry/v2`). FaultLab retries the saved evidence by itself: at most 3 times per wait (30 s, 120 s and 300 s apart) and at most 6 times per campaign. These retries are telemetry only: no episode, business call or model request is repeated, and nothing is charged. When a limit is reached, the Run desk shows **Needs operator**. Its **Retry evidence sync now** button retries only the episodes that wait needs, blocked episode first. Older plans keep manual retry only: use **Retry evidence sync** for the campaign. Once the evidence is verified, the already-authorized learning loop may resume and make further model calls. **Stop** works at any time and ends the campaign as STOPPED. The terminal wait command returns at this state; continue watching the dashboard.
+**If the state is WAITING_EVIDENCE.** A Learn plan saved since September 29 declares an automatic evidence retry. FaultLab retries the saved evidence by itself: at most 3 times per wait (30 s, 120 s and 300 s apart), and at most 24 times per campaign under rule `faultlab-evidence-retry/v3` (every new Learn plan since September 30; live run v2f used up the earlier cap of 6 in 10 waits). A plan saved under rule `faultlab-evidence-retry/v2` keeps its cap of 6; the saved plan and the Run desk show the plan's own cap. These retries are telemetry only: no episode, business call or model request is repeated, and nothing is charged. When a limit is reached, the Run desk shows **Needs operator**. Its **Retry evidence sync now** button retries only the episodes that wait needs, blocked episode first. Older plans keep manual retry only: use **Retry evidence sync** for the campaign. Once the evidence is verified, the already-authorized learning loop may resume and make further model calls. **Stop** works at any time and ends the campaign as STOPPED. The terminal wait command returns at this state; continue watching the dashboard.
 
 **If you need to stop.** Load the active campaign and click **Stop**. This prevents new work and preserves evidence. An already-dispatched request may have committed. **Recorded playback** changes how you view the record; it does not stop a running campaign.
 

@@ -1,0 +1,82 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/historyFireability.ts b/frontend/src/historyFireability.ts
+index ded7674..3dc4166 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/historyFireability.ts
++++ b/frontend/src/historyFireability.ts
+@@ -1,6 +1,7 @@
+ // History fireability (backend app/lab/fireability.py, faultlab-explorer-selection/v3-history-fireability). Frozen, with a
+ // per-target table computed from the plan's frozen agent history, into every new Learn plan whose discovery protocol is
+-// v3 · agent history or v4 · history replay. Shown in the Learn setup form (the rule offered for those protocols), the saved
++// v3 · agent history or v4 · history replay. A pick is refused only when EVERY one of its faults targets a REFUSED row
++// (fixer, review finding MEDIUM-1); a pick with a fault on any other target runs, even beside a REFUSED target. Shown in the Learn setup form (the rule offered for those protocols), the saved
+ // plan (the rule and its table), the fault-search panel (each discovery pick's check, and any slot left without a request)
+ // and the challenge panel (each challenge pick's check). Plans saved before it declare none and keep today's behaviour.
+ import { object } from './api'
+@@ -12,7 +13,7 @@ export type FireabilityRowStatus = 'REFUSED' | 'ALLOWED' | 'ALLOWED_FEWER_THAN_3
+ /** One target of the frozen table: verified history episodes that scheduled a fault there, and how many fired every such fault. */
+ export type FireabilityRow = { kind: 'F1' | 'F2' | 'F3' | 'F4'; target_service: string; target_tool: string; verified_episodes: number; fired_episodes: number; fired_share: string; status: FireabilityRowStatus }
+ export type FireabilityTable = { schema_version: 'faultlab-history-fireability/v1'; meaning: string; history_summary_hash: string; history_episode_ids_hash: string; record_cutoff: number; verified_episodes: number; rows: FireabilityRow[]; refused_targets: string[] }
+-type RuleFields = { protocol: typeof EXPLORER_SELECTION_V3; applies_to: ['explorer_discovery', 'explorer_challenge']; discovery_protocols: ['faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay']; basis: 'frozen_agent_history_verified_episodes'; target: 'fault_kind_service_tool'; min_verified_episodes: 3; min_fired_share: '1/2'; replans_per_refused_pick: 1; explorer_request_budget_changed: false; refused_pick_runs_episodes: false; candidate_dependent: false; challenge_rules_changed: false; rule: string }
++type RuleFields = { protocol: typeof EXPLORER_SELECTION_V3; applies_to: ['explorer_discovery', 'explorer_challenge']; discovery_protocols: ['faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay']; basis: 'frozen_agent_history_verified_episodes'; target: 'fault_kind_service_tool'; pick_refused_when: 'every_fault_on_a_refused_target'; min_verified_episodes: 3; min_fired_share: '1/2'; replans_per_refused_pick: 1; explorer_request_budget_changed: false; refused_pick_runs_episodes: false; candidate_dependent: false; challenge_rules_changed: false; rule: string }
+ /** The rule as the run options offer it (no table: the table is computed from the history when a plan is saved). */
+ export type ExplorerSelectionDeclaration = RuleFields
+ /** The rule and its frozen table, as a saved plan carries it. */
+@@ -39,6 +40,7 @@ export const refusedText = (row: FireabilityRow) => `${targetText(row)}: fired i
+ function rule(value: unknown): value is RuleFields {
+   return object(value) && value.protocol === EXPLORER_SELECTION_V3 && same(value.applies_to, ['explorer_discovery', 'explorer_challenge'])
+     && same(value.discovery_protocols, FIREABILITY_PROTOCOLS) && value.basis === 'frozen_agent_history_verified_episodes' && value.target === 'fault_kind_service_tool'
++    && value.pick_refused_when === 'every_fault_on_a_refused_target'
+     && value.min_verified_episodes === 3 && value.min_fired_share === '1/2' && value.replans_per_refused_pick === 1 && value.explorer_request_budget_changed === false
+     && value.refused_pick_runs_episodes === false && value.candidate_dependent === false && value.challenge_rules_changed === false && text(value.rule)
+ }
+@@ -69,17 +71,22 @@ function target(value: unknown): value is TargetCheck {
+   return object(value) && text(value.kind) && text(value.target_service) && text(value.target_tool) && (value.table_row === null || row(value.table_row))
+     && (value.table_row === null ? value.status === 'NOT_IN_HISTORY' : value.status === (value.table_row as FireabilityRow).status)
+ }
+-/** One saved pick decision: a refusal always names a REFUSED table row and why; an allowed pick never has one. */
++/** One saved pick decision: a refusal has every target REFUSED and names those rows and why; an allowed pick has at least one
++ * target that is not REFUSED (a REFUSED target beside it is named only in its targets and reason) and lists no refused rows. */
+ export function fireabilityDecision(value: unknown): value is FireabilityDecision {
+   if (!object(value) || value.protocol !== EXPLORER_SELECTION_V3 || !['discovery', 'challenge'].includes(String(value.purpose)) || !digest(value.table_hash)
+     || ![1, 2].includes(value.slot_request as number) || !(value.replan_of === null || text(value.replan_of)) || (value.slot_request === 2) !== text(value.replan_of) || !text(value.pick)
+     || !['ALLOWED', 'REFUSED_LOW_FIRED_SHARE', 'INVALID_OUTPUT', 'NOT_CHECKED_DUPLICATE'].includes(String(value.status))
+     || !(value.request_index === null || count(value.request_index)) || !Array.isArray(value.targets) || !value.targets.every(target)
+     || !Array.isArray(value.refused_targets) || !value.refused_targets.every(row) || !(value.reason === null || typeof value.reason === 'string')) return false
+-  const refusedRows = (value.targets as TargetCheck[]).filter(item => item.status === 'REFUSED').length
+-  if (value.status === 'REFUSED_LOW_FIRED_SHARE') return refusedRows > 0 && (value.refused_targets as FireabilityRow[]).length === refusedRows && object(value.refused_fault_spec) && text(value.reason)
+-  // Only an allowed pick was checked target by target; a duplicate or an invalid answer has nothing checked.
+-  return refusedRows === 0 && (value.refused_targets as unknown[]).length === 0 && value.refused_fault_spec === null && (value.status === 'ALLOWED' || (value.targets as unknown[]).length === 0)
++  const targets = value.targets as TargetCheck[]
++  const refusedRows = targets.filter(item => item.status === 'REFUSED').length
++  if (value.status === 'REFUSED_LOW_FIRED_SHARE') return refusedRows > 0 && refusedRows === targets.length && (value.refused_targets as FireabilityRow[]).length === refusedRows && object(value.refused_fault_spec) && text(value.reason)
++  if ((value.refused_targets as unknown[]).length !== 0 || value.refused_fault_spec !== null) return false
++  // An allowed pick was checked target by target and has at least one target that is not REFUSED (a REFUSED target beside
++  // it comes with its reason); a duplicate or an invalid answer has nothing checked.
++  if (value.status === 'ALLOWED') return targets.length > 0 && refusedRows < targets.length && (refusedRows === 0 || text(value.reason))
++  return targets.length === 0
+ }
+ function unrequested(value: unknown): value is UnrequestedSlot {
+   return object(value) && text(value.record_id) && value.protocol === EXPLORER_SELECTION_V3 && count(value.selection_index) && value.status === 'NO_EXPLORER_REQUEST'
+@@ -105,16 +112,20 @@ export function validateExplorerFireability(value: unknown): ExplorerFireability
+ /** The rule in one line (a v3-history or v4 plan saved before it: plainly not declared). */
+ export function explorerSelectionText(declared: ExplorerSelectionDeclaration | null | undefined): string {
+   if (!declared) return 'Not declared: this plan was saved before the history fireability rule. Every valid Explorer pick runs, as before.'
+-  return `Before any episode, a discovery or challenge pick with a fault on a target that fired in fewer than ${declared.min_fired_share} of at least ${declared.min_verified_episodes} verified episodes of this agent's frozen history is refused · ${declared.replans_per_refused_pick} re-plan per refused pick, inside the Explorer requests already declared (charged as before) · the table comes only from the frozen history, never from a candidate, and is the same for every candidate · the challenge itself is unchanged`
++  return `Before any episode, a discovery or challenge pick whose every fault targets a target that fired in fewer than ${declared.min_fired_share} of at least ${declared.min_verified_episodes} verified episodes of this agent's frozen history is refused; a pick with a fault on any other target runs, even beside such a target · ${declared.replans_per_refused_pick} re-plan per refused pick, inside the Explorer requests already declared (charged as before) · the table comes only from the frozen history, never from a candidate, and is the same for every candidate · the challenge itself is unchanged`
+ }
+ export const ROW_STATUS_LABELS: Record<FireabilityRowStatus, string> = { REFUSED: 'Refused', ALLOWED: 'Allowed', ALLOWED_FEWER_THAN_3: 'Allowed (fewer than 3 episodes)' }
+ export const DECISION_LABELS: Record<FireabilityDecisionStatus, string> = {
+   ALLOWED: 'Allowed', REFUSED_LOW_FIRED_SHARE: 'Refused: seldom fired', INVALID_OUTPUT: 'Invalid output', NOT_CHECKED_DUPLICATE: 'Duplicate (not checked)',
+ }
+-/** What one pick decision means, in plain words. */
++/** What one pick decision means, in plain words. The backend's reasons already start with "Refused before…" or "Allowed:". */
+ export function decisionText(decision: FireabilityDecision): string {
+   const replan = decision.slot_request === 2 ? ' (re-plan)' : ''
+-  if (decision.status === 'REFUSED_LOW_FIRED_SHARE') return `Refused${replan}: ${decision.reason ?? 'a fault targets a target that seldom fired in the frozen history.'}`
++  if (decision.status === 'REFUSED_LOW_FIRED_SHARE') {
++    const reason = decision.reason ?? 'Refused before any episode ran: every fault targets a target that seldom fired in the frozen history.'
++    return decision.slot_request === 2 ? `Re-plan. ${reason}` : reason
++  }
++  if (decision.status === 'ALLOWED' && decision.reason) return decision.slot_request === 2 ? `Re-plan. ${decision.reason}` : decision.reason
+   if (decision.status === 'INVALID_OUTPUT') return `Invalid answer${replan}: nothing to check, nothing ran.`
+   if (decision.status === 'NOT_CHECKED_DUPLICATE') return `Declined as a duplicate${replan} before this rule ran (discovery's unchanged duplicate rule).`
+   const unlisted = decision.targets.filter(item => item.status === 'NOT_IN_HISTORY').length

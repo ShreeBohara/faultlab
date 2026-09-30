@@ -1,0 +1,388 @@
+{
+  "backup_module": "/Users/shree/FaultLab_Scratch/builder/backup_src/agent_history_backup.py",
+  "stores": {
+    "/Users/shree/FaultLab_Runs/2026-09-27/product-durability/offline-01/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 23,
+          "equal": true,
+          "registration_id": "orders-v1-0ab09da652004dc5",
+          "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        },
+        {
+          "cutoff": 23,
+          "equal": true,
+          "registration_id": "orders-v1-6d2adc4630a02501",
+          "summary_hash": "e047a4e17597d6c13120df66e6d5133f6c4acaa63b4c0a066567e08c17058d50",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-27/product-loop/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 228,
+          "equal": true,
+          "registration_id": "orders-v1-18e5efb1d72ccef5",
+          "summary_hash": "fb36e1d229b2e103fa0246186a6769bf4f07350ec828a538ecb5e0d421070dd6",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 7
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/final-runtime-01/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 29,
+          "equal": true,
+          "registration_id": "internal-smoke-19e35da5b2cbdecb",
+          "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-27/product-onboarding/offline-01/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 138,
+          "equal": true,
+          "registration_id": "orders-v1-f3f15a0c9360e73c",
+          "summary_hash": "e047a4e17597d6c13120df66e6d5133f6c4acaa63b4c0a066567e08c17058d50",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        },
+        {
+          "cutoff": 138,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-6bd9b6c0e28f70d0",
+          "summary_hash": "b38bb032da630e38f1ab35537baa71966bfd1a6ae9e17c37b2348b25576f3a1f",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        },
+        {
+          "cutoff": 138,
+          "equal": true,
+          "registration_id": "internal-smoke-f6293858b511d0ac",
+          "summary_hash": "f32d346d097aa5d7341ec33487cb8373a5d6d4ab3c71c4fe77f28dddc4ab4b9d",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 0
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-28/discovery-v2/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 217,
+          "equal": true,
+          "registration_id": "orders-v1-2933cfa94ec09858",
+          "summary_hash": "8b54046309380db35294522c6a28d3085a3792290a6286ff359e58e68fe3c8ec",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 5
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-28/native-probe/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 935,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-d72de2e095c6ce4f",
+          "summary_hash": "d67f43e565a436d9304a2e67b27e9dafa5e26978a5d9103fae53f14d16fa52a4",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-29/discovery-v2b/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 317,
+          "equal": true,
+          "registration_id": "orders-v1-4c46925cb3fec22c",
+          "summary_hash": "4a61561d3034972aa5fe54d63f2235d117e0152529357c23264218038860320c",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 8
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-29/native-learn-v3/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 963,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-19a1127cdc8406d8",
+          "summary_hash": "8781d32f769bd18c476de1533523ea8c9da85331ea49a2bf031274edcbbc94b8",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 4923,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-19a1127cdc8406d8",
+          "summary_hash": "ffc609cacbb5ff19e8f494481d6314ff70cb356670b49c0c0ca614be85e59114",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 22
+        },
+        {
+          "plan_campaign_id": "campaign-a2fbffe307f9434b9a753516cdb0afa8",
+          "protocol": "faultlab-discovery/v3-history",
+          "record_cutoff": 963,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-29/native-learn/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 1771,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-819f4d1fa0add89b",
+          "summary_hash": "3947b992ff656c7120a4e7b8b5693eb4955e3f090d3d085d43e4b7c70f1871a3",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 8
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-30/native-v2/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 923,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4",
+          "summary_hash": "0a86839ff0bebfafe8082b085cee33303e6bedf5992c8cd634d0f07a6855144d",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 2196,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-e5bfdfc21e5c56a4",
+          "summary_hash": "9954933da5417acfaf589487eb3c215ba015d83269163215336941fea4a587c0",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 23
+        },
+        {
+          "plan_campaign_id": "campaign-b05ac2809c844a2f9d5211a006c372f4",
+          "protocol": "faultlab-discovery/v3-history",
+          "record_cutoff": 923,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        }
+      ],
+      "store_files_unchanged": true
+    },
+    "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3": {
+      "rows": [
+        {
+          "cutoff": 930,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+          "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 1537,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3022,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3771,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+          "summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 6746,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-3b1fa31a84aa2a65",
+          "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 930,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+          "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 1537,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3022,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3771,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+          "summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 6746,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-4e071e46da94e438",
+          "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 930,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+          "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 1537,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3022,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3771,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+          "summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 6746,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-11d4732b4d863cfa",
+          "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 930,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-b8cefccea047c53e",
+          "summary_hash": "3fba1b774aa2f83e5a113103b6f558b37eeab803cfa54473ec564c523f1d6af9",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 18
+        },
+        {
+          "cutoff": 1537,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-b8cefccea047c53e",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3022,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-b8cefccea047c53e",
+          "summary_hash": "d45adfdeef3c71f0c5bd942aa87e59a8791b5448a8458d88c3d2e3c16da1ea27",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 25
+        },
+        {
+          "cutoff": 3771,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-b8cefccea047c53e",
+          "summary_hash": "0d56adcd02842ed44756ef2c205e7bed670d4c00b684e8e5f2259538b7f554b5",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "cutoff": 6746,
+          "equal": true,
+          "registration_id": "smolagents-1.26.0-adapter-v2-b8cefccea047c53e",
+          "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+          "used_episodes_match_episode_ids_hash": true,
+          "verified_episodes": 30
+        },
+        {
+          "plan_campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+          "protocol": "faultlab-discovery/v3-history",
+          "record_cutoff": 930,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        },
+        {
+          "plan_campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "record_cutoff": 1537,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        },
+        {
+          "plan_campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "record_cutoff": 3022,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        },
+        {
+          "plan_campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+          "protocol": "faultlab-discovery/v4-history-replay",
+          "record_cutoff": 3771,
+          "verify_backup": "VERIFIED",
+          "verify_new": "VERIFIED"
+        }
+      ],
+      "store_files_unchanged": true
+    }
+  },
+  "totals": {
+    "equal": 35,
+    "history_computations": 35,
+    "saved_plan_verifications_agree": 6,
+    "used_episodes_match": 35
+  }
+}

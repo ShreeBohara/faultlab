@@ -1,0 +1,29 @@
+Dashboard text captured by the product reviewer (built frontend/dist + this build's API over a scratch copy of the
+native-v2b store, served on 127.0.0.1:8799 by review_dashboard_server.py; nothing started, nothing created).
+
+1. Saved plan, new v4 plan (campaign-d6164e56...), "History fireability" section:
+   "Before any episode, a discovery or challenge pick with a fault on a target that fired in fewer than 1/2 of at least 3
+   verified episodes of this agent's frozen history is refused · 1 re-plan per refused pick, inside the Explorer requests
+   already declared (charged as before) · ..."  Frozen table · 30 verified history episodes (row 6748 cutoff) · 1 target
+   refused; rows F1 update_order 4/4 Allowed, F2 update_order 10/10 Allowed, F3 get_order 4/4 Allowed,
+   F4 send_confirmation 4/4 Allowed, F4 get_operation_status (orders) 0/4 Refused, F4 get_order 1/1 Allowed (fewer than 3).
+   Directly below, same plan, "Selection budget": "8 slots · at most 8 Explorer requests · ... · at most 8 Actor episodes ·
+   no re-plans", and the dispatch text: "... every valid Explorer pick that is not an exact duplicate (the replays
+   included) runs one Actor episode; nothing is pre-checked."   (screenshots 01, 02)
+   "Automatic evidence retries: Up to 3 per evidence wait and 24 per campaign (after 30 s, 120 s, 300 s) ..." The id
+   faultlab-evidence-retry/v3 is not in the visible text (only the cap and the rule text).
+2. Learn setup form, discovery v4 chosen: "A new Learn plan with this discovery protocol also freezes this rule ...
+   HISTORY FIREABILITY ... 1 re-plan per refused pick ..." and, directly below, "Current plan preview · DISCOVERY v4 ·
+   history replay first · 8 slots · at most 8 Explorer requests · ... · no re-plans". With v1 chosen the rule is not shown.
+   (screenshot 03)
+3. Fault search panel, scripted campaign B1 (campaign-5b242f4e...): counts 8 responses, 2 replays, 5 selected, 1 duplicate,
+   4 "Refused by history fireability"; the unrequested slot: "Selection 8 · no Explorer request, no Actor trial: ... all 8
+   were used, including re-plans after picks the history fireability rule refused."; per pick: "History fireability:
+   Refused: Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 ..." (screenshots 04, 05)
+4. Adversarial challenge panel, scripted campaign A1 (campaign-306e35ec...): "5 challenge picks checked, 1 refused before any
+   pair ran." Request 1 Refused (status read), request 2 "Allowed (re-plan)", requests 3-5 Allowed. (screenshot 06)
+   The challenge card itself is not shown because the review harness's reproduction double saves no counterexample
+   record (harness limit, not a product defect).
+5. Old saved v2f plan (campaign-53db7476...): "HISTORY FIREABILITY  Not declared: this plan was saved before the history
+   fireability rule. Every valid Explorer pick runs, as before." and "Automatic evidence retries: Up to 3 per evidence wait
+   and 6 per campaign". No "Malformed" message anywhere; the only console errors were two 404s on unrelated resources.

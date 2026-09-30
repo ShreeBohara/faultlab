@@ -236,17 +236,14 @@ def _row(recipe, case_id):
             'excluded': {}, 'runtime_hashes': [], 'adapter_hashes': []}
 
 
-def compute_history(store, *, identity, policy_hash, cutoff):
-    """The history block for one agent identity and starting policy, at a fixed record cutoff."""
-    from app.lab.challenge import schedule_identity_v2
-    if not isinstance(cutoff, int) or cutoff < 0:
-        raise ValueError('A history record cutoff is a non-negative row number')
-    known, replayed = _public_recipes(store, cutoff)
-    # A row is named after a development case when its schedule matches the case's, whatever the seed.
-    case_of = {schedule_identity_v2(recipe): case_id for recipe, case_id in known.values() if case_id}
-    cache = {}; rows = {}; order = []; used_ids = []; builds = {}
-    contributors = {source: set() for source in SOURCES}; contributed = {source: 0 for source in SOURCES}
-    excluded = {key: 0 for key in EXCLUSION_KEYS}
+def _in_scope(store, *, identity, policy_hash, cutoff, known, replayed, cache):
+    """Every in-scope episode of the history, in store order: (episode, source, recipe entry or None, exclusion or None).
+
+    The one place the history's eligibility is decided. compute_history() and used_episodes() (the discovery v3/v4
+    history fireability table, app.lab.fireability) both read it, so the two can never disagree about which episodes
+    count. A None entry means the recipe is in no public record ('recipe_unavailable'); otherwise the exclusion key is
+    None for a used episode, or one of EXCLUSION_KEYS.
+    """
     candidates = store.records_upto('episodes', cutoff, where={'split': 'development', 'experiment_purpose': 'discovery'})
     for _, episode in candidates:
         # The SQL filter is repeated here: nothing outside the development discovery scope is ever read further.
@@ -265,9 +262,44 @@ def compute_history(store, *, identity, policy_hash, cutoff):
             continue
         entry = known.get(episode.get('scenario_hash'))
         if entry is None:
+            yield episode, source, None, 'recipe_unavailable'
+            continue
+        _, reason = _classify(store, episode, cutoff)
+        yield episode, source, entry, reason
+
+
+def used_episodes(store, *, identity, policy_hash, cutoff):
+    """[(episode, public recipe)] of every episode the history uses (verified, in scope), in store order.
+
+    Exactly the episodes compute_history() counts as verified (same generator, same exclusions); their ids hash to the
+    history's episode_ids_hash.
+    """
+    if not isinstance(cutoff, int) or cutoff < 0:
+        raise ValueError('A history record cutoff is a non-negative row number')
+    known, replayed = _public_recipes(store, cutoff)
+    return [(episode, entry[0]) for episode, _, entry, reason in
+            _in_scope(store, identity=identity, policy_hash=policy_hash, cutoff=cutoff, known=known, replayed=replayed, cache={})
+            if entry is not None and reason is None]
+
+
+def compute_history(store, *, identity, policy_hash, cutoff):
+    """The history block for one agent identity and starting policy, at a fixed record cutoff."""
+    from app.lab.challenge import schedule_identity_v2
+    if not isinstance(cutoff, int) or cutoff < 0:
+        raise ValueError('A history record cutoff is a non-negative row number')
+    known, replayed = _public_recipes(store, cutoff)
+    # A row is named after a development case when its schedule matches the case's, whatever the seed.
+    case_of = {schedule_identity_v2(recipe): case_id for recipe, case_id in known.values() if case_id}
+    cache = {}; rows = {}; order = []; used_ids = []; builds = {}
+    contributors = {source: set() for source in SOURCES}; contributed = {source: 0 for source in SOURCES}
+    excluded = {key: 0 for key in EXCLUSION_KEYS}
+    for episode, source, entry, reason in _in_scope(store, identity=identity, policy_hash=policy_hash, cutoff=cutoff,
+                                                    known=known, replayed=replayed, cache=cache):
+        verdict = episode.get('verdict') or {}
+        if entry is None:
             excluded['recipe_unavailable'] += 1
             continue
-        used, reason = _classify(store, episode, cutoff)
+        used = reason is None
         recipe = entry[0]
         key = schedule_identity_v2(recipe)
         if key not in rows:

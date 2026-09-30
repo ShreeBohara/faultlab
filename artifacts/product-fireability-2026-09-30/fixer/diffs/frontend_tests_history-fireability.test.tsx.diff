@@ -1,0 +1,22 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/history-fireability.test.tsx b/frontend/tests/history-fireability.test.tsx
+index 62637e0..47642e2 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/history-fireability.test.tsx
++++ b/frontend/tests/history-fireability.test.tsx
+@@ -22,7 +22,7 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals() })
+ /** As the backend offers it (app/lab/fireability.py declaration()). */
+ const offered: ExplorerSelectionDeclaration = { protocol: EXPLORER_SELECTION_V3, applies_to: ['explorer_discovery', 'explorer_challenge'],
+   discovery_protocols: ['faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay'], basis: 'frozen_agent_history_verified_episodes', target: 'fault_kind_service_tool',
+-  min_verified_episodes: 3, min_fired_share: '1/2', replans_per_refused_pick: 1, explorer_request_budget_changed: false, refused_pick_runs_episodes: false,
++  pick_refused_when: 'every_fault_on_a_refused_target', min_verified_episodes: 3, min_fired_share: '1/2', replans_per_refused_pick: 1, explorer_request_budget_changed: false, refused_pick_runs_episodes: false,
+   candidate_dependent: false, challenge_rules_changed: false, rule: 'Before any episode runs, FaultLab checks every fault of each Explorer pick against this plan\'s frozen history fireability table.' }
+ const row = (kind: FireabilityRow['kind'], service: string, tool: string, verified: number, fired: number): FireabilityRow =>
+   ({ kind, target_service: service, target_tool: tool, verified_episodes: verified, fired_episodes: fired, fired_share: `${fired}/${verified}`, status: rowStatus(verified, fired) })
+@@ -165,6 +165,7 @@ it('validates the experiments block and lists each challenge pick\'s check in th
+   render(h(ChallengePanel, { records: [], onEpisode: vi.fn(), fireability: experiments.explorer_fireability }))
+   const region = screen.getByRole('region', { name: 'Challenge picks checked for history fireability' })
+   expect(within(region).getByText(/^1 challenge pick checked, 1 refused before any pair ran\./)).toBeTruthy()
+-  expect(within(region).getByText(/^Explorer request 1: Refused: Refused before any episode ran: F4 on get_operation_status \(orders\): fired in 0 of 3/)).toBeTruthy()
++  // Fixer (review F4): the backend's reason already starts "Refused before any episode ran", so it is no longer prefixed "Refused: ".
++  expect(within(region).getByText(/^Explorer request 1: Refused before any episode ran: F4 on get_operation_status \(orders\): fired in 0 of 3/)).toBeTruthy()
+   expect(within(region).getByText('Refused: seldom fired')).toBeTruthy()
+ })

@@ -1,0 +1,23 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/evidence-wait.test.tsx b/frontend/tests/evidence-wait.test.tsx
+index 3803019..b7cfec2 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/evidence-wait.test.tsx
++++ b/frontend/tests/evidence-wait.test.tsx
+@@ -52,15 +52,16 @@ it('accepts the declared evidence retry in a Learn plan, or none for an older pl
+ })
+ 
+ it('shows the frozen evidence retry rule in a saved Learn plan, says when an older plan declared none, and shows nothing for other modes', () => {
++  // Fixer (review F4): the plan names the rule id beside its cap (the exact text is still pinned).
+   render(h(CampaignPlan, { campaign, resource: { data: envelope(learnPlan()), error: null, loading: false } }))
+   const region = screen.getByRole('region', { name: 'Saved campaign plan' })
+   expect(within(region).getByText('Automatic evidence retries').nextElementSibling!.textContent).toBe(
+-    'Up to 3 per evidence wait and 6 per campaign (after 30 s, 120 s, 300 s) · telemetry only: no episode, business action or model request is repeated, nothing is charged · then “needs operator”')
++    'Up to 3 per evidence wait and 6 per campaign under rule faultlab-evidence-retry/v2 (after 30 s, 120 s, 300 s) · telemetry only: no episode, business action or model request is repeated, nothing is charged · then “needs operator”')
+   expect(within(region).getByText(evidenceRetryRule.rule)).toBeTruthy()
+   cleanup()
+   render(h(CampaignPlan, { campaign, resource: { data: envelope(learnPlan({ evidence_retry: evidenceRetryRuleV1 })), error: null, loading: false } }))
+   expect(screen.getByText('Automatic evidence retries').nextElementSibling!.textContent).toBe(
+-    'Up to 3 per evidence wait (no campaign limit: an earlier rule that Start now refuses) (after 30 s, 120 s, 300 s) · telemetry only: no episode, business action or model request is repeated, nothing is charged · then “needs operator”')
++    'Up to 3 per evidence wait (no campaign limit: an earlier rule that Start now refuses) under rule faultlab-evidence-retry/v1 (after 30 s, 120 s, 300 s) · telemetry only: no episode, business action or model request is repeated, nothing is charged · then “needs operator”')
+   cleanup()
+   render(h(CampaignPlan, { campaign, resource: { data: envelope(learnPlan({ evidence_retry: null })), error: null, loading: false } }))
+   expect(screen.getByText('Automatic evidence retries').nextElementSibling!.textContent).toBe('Not declared: this plan was saved before automatic evidence retries were declared. Only manual Retry evidence sync applies.')

@@ -1,0 +1,4 @@
+files: 20/20 identical; changed: []
+fingerprints: 9/13 identical; changed: ['algorithm_hash', 'runtime_hash', 'source_hash', 'tree_lab']
+functions: 30/30 identical; changed: []
+(before.json = this tree before any change = backup 432e54b, runtime 95042e4d; after.json = this builder tree)

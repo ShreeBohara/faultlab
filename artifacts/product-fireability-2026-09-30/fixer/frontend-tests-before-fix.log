@@ -1,0 +1,130 @@
+Fixer: the new frontend tests run against the UNFIXED frontend (builder's code).
+2026-09-30T15:08:41Z
+
+ RUN  v4.1.11 /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/frontend
+
+ ❯ tests/history-fireability-fixes.test.tsx (6 tests | 6 failed) 134ms
+   × declares that a pick is refused only when every fault targets a REFUSED row, and validates decisions that way 5ms
+   × says what an allowed pick beside a REFUSED target and a refused pick mean, without "Refused: Refused" 1ms
+   × under the rule, the saved plan's discovery budget and dispatch say that a refused pick gets one re-plan 0ms
+   × marks the REFUSED row of the frozen table and names the evidence retry rule beside its cap 94ms
+   × the setup preview under v4 with the rule offered does not say "no re-plans" 32ms
+   × the challenge panel lists an allowed pick beside a REFUSED target and says which targets never ran alone 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > declares that a pick is refused only when every fault targets a REFUSED row, and validates decisions that way
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/history-fireability-fixes.test.tsx:52:140
+     50|   expect(validateRunOptions(options)).toEqual(options)
+     51|   for (const bad of [{ ...offered, pick_refused_when: 'any_fault_on_a_…
+     52|     expect(() => validateRunOptions({ ...options, learn: { ...options.…
+       |                                                                                                                                            ^
+     53|   expect(check(learnPlan(savedV4, { explorer_selection: frozen })).sta…
+     54|   expect(explorerSelectionText(frozen)).toContain('whose every fault t…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > says what an allowed pick beside a REFUSED target and a refused pick mean, without "Refused: Refused"
+AssertionError: expected 'Refused: Refused before any episode r…' to be 'Refused before any episode ran: F4 on…' // Object.is equality
+
+Expected: "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 3 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests)."
+Received: "Refused: Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 3 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests)."
+
+ ❯ tests/history-fireability-fixes.test.tsx:63:37
+     61|
+     62| it('says what an allowed pick beside a REFUSED target and a refused pi…
+     63|   expect(decisionText(refusedLone)).toBe(refusedLone.reason)
+       |                                     ^
+     64|   expect(decisionText(refusedLone)).not.toMatch(/Refused: Refused/)
+     65|   expect(decisionText({ ...refusedLone, slot_request: 2, replan_of: 's…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > under the rule, the saved plan's discovery budget and dispatch say that a refused pick gets one re-plan
+AssertionError: expected '8 slots · at most 8 Explorer requests…' not to match /no re-plans/
+
+- Expected:
+/no re-plans/
+
++ Received:
+"8 slots · at most 8 Explorer requests · at most 8 charged Explorer transport retries during discovery (one per request with no answer) · at most 8 Actor episodes · no re-plans"
+
+ ❯ tests/history-fireability-fixes.test.tsx:72:52
+     70| it('under the rule, the saved plan\'s discovery budget and dispatch sa…
+     71|   expect(discoveryBudget(savedV4)).toMatch(/no re-plans$/)            …
+     72|   expect(discoveryBudget(savedV4, null, true)).not.toMatch(/no re-plan…
+       |                                                    ^
+     73|   expect(discoveryBudget(savedV4, null, true)).toMatch(/one re-plan pe…
+     74|   render(h(CampaignPlan, { campaign, resource: resource(learnPlan(save…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > marks the REFUSED row of the frozen table and names the evidence retry rule beside its cap
+AssertionError: expected '' to be 'fireability-refused' // Object.is equality
+
+- Expected
++ Received
+
+- fireability-refused
+
+ ❯ tests/history-fireability-fixes.test.tsx:88:29
+     86|   const table = screen.getByRole('table', { name: 'History fireability…
+     87|   const refused = within(table).getByText('F4 on get_operation_status …
+     88|   expect(refused.className).toBe('fireability-refused')
+       |                             ^
+     89|   expect(within(table).getByText('F2 on update_order (orders)').closes…
+     90|   expect(screen.getByText(/^Up to 3 per evidence wait and 24 per campa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > the setup preview under v4 with the rule offered does not say "no re-plans"
+AssertionError: expected <dd></dd> to be null
+
+- Expected:
+null
+
++ Received:
+<dd>
+  v4 · history replay first
+   · 
+  8 slots · at most 8 Explorer requests · at most 8 charged Explorer transport retries during discovery (one per request with no answer) · at most 8 Actor episodes · no re-plans
+</dd>
+
+ ❯ tests/history-fireability-fixes.test.tsx:108:54
+    106|   fireEvent.change(screen.getByLabelText('Discovery protocol'), { targ…
+    107|   const preview = screen.getByRole('region', { name: 'Current plan pre…
+    108|   expect(within(preview).queryByText(/no re-plans/)).toBeNull()
+       |                                                      ^
+    109|   expect(within(preview).getByText(/one re-plan per pick refused by hi…
+    110|   expect(screen.queryAllByText(/no re-plans/)).toEqual([])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/history-fireability-fixes.test.tsx > the challenge panel lists an allowed pick beside a REFUSED target and says which targets never ran alone
+Error: Malformed history fireability records.
+ ❯ validateExplorerFireability src/historyFireability.ts:94:60
+     92|     || !value.slots_without_request.every(unrequested)) throw new Erro…
+     93|   for (const item of value.decisions as unknown[]) {
+     94|     if (!object(item) || !fireabilityDecision(item)) throw new Error('…
+       |                                                            ^
+     95|     const listed = item as Record<string, unknown>
+     96|     if (!text(listed.selection_id) || !(listed.challenge_id === null |…
+ ❯ validateExperiments src/experiments.ts:43:81
+ ❯ tests/history-fireability-fixes.test.tsx:120:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  08:08:41
+   Duration  943ms (transform 184ms, setup 0ms, import 297ms, tests 134ms, environment 443ms)
+

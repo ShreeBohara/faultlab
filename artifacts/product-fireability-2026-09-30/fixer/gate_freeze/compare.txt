@@ -1,0 +1,4 @@
+files: 20/20 identical to backup 432e54b; changed: [] | vs builder final: changed []
+fingerprints: 9/13 identical to backup 432e54b; changed: ['algorithm_hash', 'runtime_hash', 'source_hash', 'tree_lab'] | vs builder final: changed ['algorithm_hash', 'runtime_hash', 'tree_lab']
+functions: 30/30 identical to backup 432e54b; changed: [] | vs builder final: changed []
+(before.json = backup 432e54b, runtime 95042e4d, from the builder folder; final.json = builder tree 07b8ccc4; after-fix.json = this fixer tree)

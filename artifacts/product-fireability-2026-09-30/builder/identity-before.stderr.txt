@@ -1,0 +1,1 @@
+[fixer guard] refused outbound connections: 0; loopback connects: 0

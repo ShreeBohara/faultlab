@@ -9,9 +9,13 @@ The rule, frozen into every new Learn plan as ``evidence_retry`` (``declaration(
 
 * At most ``AUTOMATIC_RETRIES_PER_WAIT`` (3) automatic retries per evidence wait. A wait is one
   blocked episode; it ends when that episode's evidence is verified or the campaign stops.
-* At most ``AUTOMATIC_RETRIES_PER_CAMPAIGN`` (6) automatic retries in the whole campaign (protocol v2,
-  after a review found a flaky six-episode batch could otherwise take 18 retries and 45 declared
-  minutes without ever showing "needs operator").
+* At most ``AUTOMATIC_RETRIES_PER_CAMPAIGN`` (24) automatic retries in the whole campaign under protocol v3
+  (``faultlab-evidence-retry/v3``, every new Learn plan since September 30, 2026). Protocol v2 (a cap of 6, added
+  after a review found a flaky six-episode batch could otherwise take 18 retries and 45 declared minutes without ever
+  showing "needs operator") stays exactly as it was for every plan that declares it (``declaration_v2()``). Why 24:
+  in live run v2f (docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md) 10 evidence waits used up v2's 6 retries, and the PM
+  stopped the campaign early; the per-wait rule and delays are unchanged, so each wait still ends in "needs operator"
+  after at most 3 retries (about 7.5 declared minutes), and 24 covers 8 such waits.
 * Retry k starts ``DELAYS_SECONDS[k-1]`` (30 s, 120 s, 300 s) after the wait began, or after the
   previous retry's re-read still found no verified evidence.
 * Each automatic retry is the existing telemetry-only Retry evidence path
@@ -38,18 +42,29 @@ import time
 from app.contracts.models import new_id, utc_now
 from app.lab.budgets import StopRequested
 
-EVIDENCE_RETRY_PROTOCOL = 'faultlab-evidence-retry/v2'  # v1 (never run live) had no campaign limit
+# v3 (September 30, 2026) is frozen into every new Learn plan; v2 plans keep v2 exactly (declaration_v2()), and v1
+# (never run live, no campaign limit) still reads but Start refuses it.
+EVIDENCE_RETRY_PROTOCOL = 'faultlab-evidence-retry/v3'
+EVIDENCE_RETRY_PROTOCOL_V2 = 'faultlab-evidence-retry/v2'
 AUTOMATIC_RETRIES_PER_WAIT = 3
-AUTOMATIC_RETRIES_PER_CAMPAIGN = 6
+AUTOMATIC_RETRIES_PER_CAMPAIGN = 24
+AUTOMATIC_RETRIES_PER_CAMPAIGN_V2 = 6
 DELAYS_SECONDS = (30, 120, 300)
 POLL_SECONDS = .5
-RULE = ('While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 '
-        'times per wait and at most 6 times per campaign: 30 s, 120 s and 300 s after the wait starts or after the '
-        'previous retry still left the evidence unverified. Each automatic retry uses the same telemetry-only path as Retry evidence sync: it '
-        're-sends the saved trace records of the episodes the wait needs and reads them back. It never runs an '
-        'episode, a business tool or a model request again, and charges nothing to the campaign budget. Every attempt '
-        'is recorded. When a limit is reached the campaign keeps waiting and shows "needs operator"; Retry evidence sync '
-        'and Stop still work. A stop during the wait ends the campaign as STOPPED.')
+
+
+def _rule_text(per_campaign):
+    return ('While a Learn campaign waits for verified Weave evidence, FaultLab retries the evidence by itself at most 3 '
+            f'times per wait and at most {per_campaign} times per campaign: 30 s, 120 s and 300 s after the wait starts or after the '
+            'previous retry still left the evidence unverified. Each automatic retry uses the same telemetry-only path as Retry evidence sync: it '
+            're-sends the saved trace records of the episodes the wait needs and reads them back. It never runs an '
+            'episode, a business tool or a model request again, and charges nothing to the campaign budget. Every attempt '
+            'is recorded. When a limit is reached the campaign keeps waiting and shows "needs operator"; Retry evidence sync '
+            'and Stop still work. A stop during the wait ends the campaign as STOPPED.')
+
+
+RULE = _rule_text(AUTOMATIC_RETRIES_PER_CAMPAIGN)
+RULE_V2 = _rule_text(AUTOMATIC_RETRIES_PER_CAMPAIGN_V2)  # byte for byte the v2 rule text every v2 plan froze
 OPEN_STATUSES = ('WAITING', 'AUTOMATIC_RETRY_SCHEDULED', 'AUTOMATIC_RETRY_RUNNING', 'READING_EVIDENCE',
                  'NEEDS_OPERATOR', 'MANUAL_RETRY_ONLY')
 FINISHED_RETRY = ('COMPLETED', 'TIMED_OUT', 'PENDING', 'INTERRUPTED')
@@ -57,14 +72,31 @@ MAX_SAVED_READS = 20
 clock = time.monotonic  # Tests may replace the clock; the schedule never uses wall time.
 
 
-def declaration():
-    """The rule as frozen into a reviewed Learn plan (run_plans.EvidenceRetryPlan)."""
-    return {'protocol': EVIDENCE_RETRY_PROTOCOL, 'trigger': 'WAITING_EVIDENCE',
+def _declaration(protocol, per_campaign, rule):
+    return {'protocol': protocol, 'trigger': 'WAITING_EVIDENCE',
             'automatic_retries_per_wait': AUTOMATIC_RETRIES_PER_WAIT,
-            'automatic_retries_per_campaign': AUTOMATIC_RETRIES_PER_CAMPAIGN, 'delays_seconds': list(DELAYS_SECONDS),
+            'automatic_retries_per_campaign': per_campaign, 'delays_seconds': list(DELAYS_SECONDS),
             'path': 'retry-evidence', 'telemetry_only': True, 'repeats_model_requests': False,
             'repeats_business_actions': False, 'charged_model_calls': 0, 'after_last_retry': 'NEEDS_OPERATOR',
-            'rule': RULE}
+            'rule': rule}
+
+
+def declaration():
+    """The rule every new Learn plan freezes (v3: 3 per wait, 24 per campaign; run_plans.EvidenceRetryPlanV3)."""
+    return _declaration(EVIDENCE_RETRY_PROTOCOL, AUTOMATIC_RETRIES_PER_CAMPAIGN, RULE)
+
+
+def declaration_v2():
+    """Rule v2 exactly as every Learn plan saved before v3 froze it (3 per wait, 6 per campaign; run_plans.EvidenceRetryPlan).
+
+    Start accepts a saved v2 plan, and its campaign keeps the cap of 6: EvidenceWait reads the cap from the plan.
+    """
+    return _declaration(EVIDENCE_RETRY_PROTOCOL_V2, AUTOMATIC_RETRIES_PER_CAMPAIGN_V2, RULE_V2)
+
+
+def installed_declarations():
+    """Every automatic evidence retry rule a saved plan may declare and still start: v3 (new plans) and v2."""
+    return (declaration(), declaration_v2())
 
 
 def campaign_rule(store, campaign):

@@ -1,0 +1,46 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/docs/user-guide.md b/docs/user-guide.md
+index 08d05a5..acf8b46 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/docs/user-guide.md
++++ b/docs/user-guide.md
+@@ -91,7 +91,7 @@ agent is chosen, and the saved plan shows it under "Native citation status".
+ - **What is unchanged.** Discovery requests, and every other agent's plans. A native adapter v2 plan saved before the
+   rule reads "Not declared" ([details](PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md)).
+ 
+-**History fireability (September 30, built offline; not yet reviewed, committed or run live).** A new Learn plan with
++**History fireability (September 30, built offline, reviewed twice at $0 and fixed; not yet committed or run live).** A new Learn plan with
+ discovery **v3 · agent history** or **v4 · history replay first** also freezes
+ `faultlab-explorer-selection/v3-history-fireability`. The Learn setup form shows it when one of those two protocols is
+ chosen, and the saved plan shows it under "History fireability" with its frozen table.
+@@ -104,16 +104,22 @@ chosen, and the saved plan shows it under "History fireability" with its frozen
+   tool: how many verified episodes scheduled a fault there, and in how many of them it fired. Candidate, challenge,
+   reproduction and other later-stage episodes, other agents and protected data are never counted, so the table is the
+   same for every candidate. Start and the check before the first Explorer request recompute it and refuse a change.
+-- **The rule.** Before any episode runs, a discovery or challenge pick with a fault on a target that has at least 3
+-  verified history episodes and fired in fewer than half of them is refused. The refusal is shown in the fault-search
+-  panel (discovery) or the **Adversarial challenge** panel (challenge), with the table row. The Explorer gets one re-plan
+-  for that slot, inside the Explorer requests the plan already declares: a challenge still has 8, and discovery keeps its
+-  declared number, so under v3 · agent history a re-plan can leave the last discovery slot without a request (the
+-  fault-search panel then says so). Targets with fewer than 3 verified episodes are allowed.
+-- **Limits.** The table is per target, not per recipe: a fault on a refused target is refused even when another fault in
+-  the same pick (for example a delayed upgrade) might make it fire. A refused pick cannot show a candidate violation it
+-  might have found. Nothing else changes: a challenge still needs 4 schedules with 3 fresh pairs each, every pair must
+-  fire, and any candidate violation is a counterexample ([details](PRODUCT_HISTORY_FIREABILITY_2026-09-30.md)).
++- **The rule.** A target with at least 3 verified history episodes that fired in fewer than half of them is marked
++  REFUSED (highlighted in the saved plan's table). Before any episode runs, a discovery or challenge pick whose **every**
++  fault is on a REFUSED target is refused. A pick with a fault on any other target runs as before, even beside a REFUSED
++  target: for example a pending upgrade plus a status-read failure, which does fire. The refusal is shown in the
++  fault-search panel (discovery) or the **Adversarial challenge** panel (challenge), with the table row. The Explorer gets
++  one re-plan for that slot, inside the Explorer requests the plan already declares: a challenge still has 8, and discovery
++  keeps its declared number, so under v3 · agent history a re-plan can leave the last discovery slot without a request
++  (the fault-search panel then says so, and the saved plan's selection budget reads "one re-plan per pick refused by
++  history fireability"). Targets with fewer than 3 verified episodes are never refused.
++- **Limits.** The table is the same for every candidate, but it is not neutral. In the native-v2b store the one refused
++  target is the orders status read, which is exactly the step every generated guardrail adds. A pick made only of faults on
++  refused targets never runs, so a candidate mistake only such a pick could show is tested only if the Explorer pairs the
++  target with another fault. A passed challenge has tested the guardrail's status step failing only if one of its listed
++  picks faulted that read; the **Adversarial challenge** panel lists the refused targets and every checked pick. Nothing
++  else changes: a challenge still needs 4 schedules with 3 fresh pairs each, every pair must fire, and any candidate
++  violation is a counterexample ([details](PRODUCT_HISTORY_FIREABILITY_2026-09-30.md)).
+ - **Older plans.** A v3 or v4 plan saved before the rule reads "Not declared" and runs every valid pick, as before.
+ 
+ Use **Download campaign recording** to save the plan, configuration, registration and public

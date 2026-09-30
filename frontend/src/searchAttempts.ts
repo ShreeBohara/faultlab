@@ -2,10 +2,11 @@ import { object, request } from './api'
 import { validateContract } from './generated/validate'
 import type { ExplorerOutput, FaultSpec, Usage } from './generated/contracts'
 import { historyReplaySlot, historyRowMatch, type HistoryReplaySlot, type HistoryRowMatch } from './runPlans'
+import { fireabilityDecision, type FireabilityDecision } from './historyFireability'
 
 export type FaultLabel = { index: number; fault: string; kind: string; target: string; attempt: number; agent_attempts_seen: number; rule: string | null; verdict: 'FORCED' | 'NOT_FORCED' | 'IMPOSSIBLE'; reason_code: string; explanation: string }
 export type Reachability = { labeller: string; all_forced: boolean; recipe: string[]; faults: FaultLabel[]; agent_path: string[]; agent_business_calls: number; fixture_id: string; caller_model: Record<string, unknown> }
-export type SearchDecisionStatus = 'SELECTED' | 'SKIPPED_DUPLICATE' | 'INVALID_OUTPUT' | 'SKIPPED_UNREACHABLE' | 'PRECHECK_FAILED'
+export type SearchDecisionStatus = 'SELECTED' | 'SKIPPED_DUPLICATE' | 'INVALID_OUTPUT' | 'SKIPPED_UNREACHABLE' | 'PRECHECK_FAILED' | 'SKIPPED_UNFIREABLE'
 export type SearchAttempt = {
   selection_ref: string; campaign_id: string; selection_index: number; configuration_hash: string; policy_hash: string
   search_decision: {
@@ -16,6 +17,9 @@ export type SearchAttempt = {
     /** Discovery v4 replay slots only: the replayed history row, as the Explorer later sees it in its search ledger. */
     history_replay?: { replay: number; history_row: number; development_case_id: string | null }
   }
+  /** History fireability only (a plan that declares faultlab-explorer-selection/v3-history-fireability): this pick's check
+   * against the plan's frozen table. A refused pick's decision is SKIPPED_UNFIREABLE and ran no Actor trial. */
+  fireability?: FireabilityDecision
   selected_output: ExplorerOutput | null; output: ExplorerOutput | null; raw_response: string; usage: Usage; provenance: string; error: string | null
   /** Charged blind retries of this request after it received no answer: at most one under rule v1; under rule v2
    * (lab-role backoff) up to three, attempts 1-3 after waits of 5 s, 20 s and 60 s. */
@@ -46,6 +50,18 @@ const references = (value: unknown): value is string[] => Array.isArray(value) &
 const malformed = (): never => { throw new Error('Malformed search attempts or campaign identity. The last verified data is retained.') }
 const V1_STATUSES = ['SELECTED', 'SKIPPED_DUPLICATE', 'INVALID_OUTPUT']
 const V2_STATUSES = [...V1_STATUSES, 'SKIPPED_UNREACHABLE', 'PRECHECK_FAILED']
+/** v1 dispatch under the history fireability rule: v1's statuses plus a refusal by the rule. */
+const FIREABILITY_STATUSES = [...V1_STATUSES, 'SKIPPED_UNFIREABLE']
+
+/** A discovery pick's fireability check agrees with its search decision: the rule refused it exactly when the decision says so. */
+function validateFireability(row: Record<string, unknown>, decision: Record<string, unknown>) {
+  const check = row.fireability
+  if (!fireabilityDecision(check) || check.purpose !== 'discovery' || check.request_index !== row.selection_index) return malformed()
+  const refused = check.status === 'REFUSED_LOW_FIRED_SHARE'
+  if (refused !== (decision.status === 'SKIPPED_UNFIREABLE') || (refused && (decision.reason !== 'HISTORY_FIRED_SHARE_BELOW_HALF' || !object(decision.refused_fault_spec)))
+    || (check.status === 'NOT_CHECKED_DUPLICATE') !== (decision.status === 'SKIPPED_DUPLICATE') || (check.status === 'ALLOWED') !== (decision.status === 'SELECTED')) return malformed()
+  if (refused) validateContract<FaultSpec>('FaultSpec', decision.refused_fault_spec)
+}
 
 function reachability(value: unknown): value is Reachability {
   if (!object(value) || !nonempty(value.labeller) || typeof value.all_forced !== 'boolean' || !Array.isArray(value.faults) || !value.faults.length
@@ -90,11 +106,13 @@ export function validateSearchAttempts(value: unknown, campaignId: string): Sear
       || !(row.matches_history_row === undefined || historyRowMatch(row.matches_history_row))) return malformed()
     const decision = row.search_decision
     const v2 = decision.discovery_protocol !== undefined
-    if (!(v2 ? V2_STATUSES : V1_STATUSES).includes(String(decision.status))
+    const fire = row.fireability !== undefined
+    if (!(v2 ? V2_STATUSES : fire ? FIREABILITY_STATUSES : V1_STATUSES).includes(String(decision.status))
       || !(decision.schedule_hash === null || hash(decision.schedule_hash))
       || !(decision.reason === null || typeof decision.reason === 'string')
       || !references(decision.prior_selection_refs) || !references(decision.prior_episode_refs)) return malformed()
     if (v2) validateV2(decision)
+    if (fire) { if (v2) return malformed(); validateFireability(row, decision) }
     const selected_output = row.selected_output === null ? null : validateContract<ExplorerOutput>('ExplorerOutput', row.selected_output)
     const output = row.output === null ? null : validateContract<ExplorerOutput>('ExplorerOutput', row.output)
     if ((decision.status === 'SELECTED') !== !!selected_output || (decision.status !== 'INVALID_OUTPUT' && !decision.schedule_hash)) return malformed()

@@ -1,0 +1,13 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/styles.css b/frontend/src/styles.css
+index 693289c..8385e53 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/styles.css
++++ b/frontend/src/styles.css
+@@ -401,6 +401,8 @@ td .hash { max-width: 190px; }
+ /* History fireability: a short four-column table inside the saved plan; it keeps its own width, not the wide default. */
+ table.fireability-table { min-width: 0; }
+ table.fireability-table td { padding: 6px 12px; }
++/* The REFUSED row of the frozen table stands out from the allowed rows (review finding F4). */
++table.fireability-table tr.fireability-refused td { background: var(--amber-surface); color: var(--amber); }
+ .selected-row { background: var(--accent-surface); }
+ .section-caption { display: flex; justify-content: space-between; gap: 20px; padding: 30px 0 15px; color: var(--accent); font-size: 9px; }
+ .section-caption span:last-child { color: var(--muted); font-family: var(--sans); letter-spacing: 0; font-size: 12px; }

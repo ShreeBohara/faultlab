@@ -61,7 +61,7 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
     known={p.get('request_id') for p in mechanic}
     mechanic.extend(m for m in store.list_records('mechanic_outputs') if m.get('campaign_id')==campaign_id and (not m.get('request_id') or m['request_id'] not in known))
     selections=[]
-    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row','history_replay','challenge_reach')
+    fields=('selection_id','raw','model_id','challenge','valid','error','provenance','output','selected_output','search_decision','usage','transport_retries','matches_history_row','history_replay','challenge_reach','fireability')
     for selection in store.list_records('selections'):
         if selection.get('context',{}).get('campaign_id')==campaign_id:
             selections.append({k:selection[k] for k in fields if k in selection})
@@ -102,6 +102,11 @@ def development_recording(store,campaign_id,*,episode_ids=None,secrets=()):
         from app.lab.loop_limits import CHALLENGE_REACH_RULE
         result['challenge_selection_rule']={'protocol':declared['challenge_selection']['protocol'],'rule':CHALLENGE_REACH_RULE,
             'refused_selection_ids':[s['selection_id'] for s in selections if (s.get('challenge_reach') or {}).get('status')=='REFUSED_UNREACHED']}
+    if declared.get('explorer_selection') is not None:
+        # faultlab-explorer-selection/v3-history-fireability: the frozen table (in run_plan), every pick decision (also on
+        # its selection, field fireability) and any discovery slot left without a request (older recordings keep their keys).
+        from app.lab.fireability import RULE as FIREABILITY_RULE,campaign_summary
+        result['explorer_selection_rule']={'rule':FIREABILITY_RULE,**campaign_summary(store,campaign_id,declared['explorer_selection'])}
     history=(((saved_plan or {}).get('plan') or {}).get('discovery') or {}).get('history')
     if history is not None:
         # Discovery v3: which reproduced sources re-try a recipe row the Explorer was shown (derived from the

@@ -1,0 +1,123 @@
+{
+ "table_rows": [
+  {
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "kind": "F1",
+   "status": "ALLOWED",
+   "target_service": "orders",
+   "target_tool": "update_order",
+   "verified_episodes": 4
+  },
+  {
+   "fired_episodes": 10,
+   "fired_share": "10/10",
+   "kind": "F2",
+   "status": "ALLOWED",
+   "target_service": "orders",
+   "target_tool": "update_order",
+   "verified_episodes": 10
+  },
+  {
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "kind": "F3",
+   "status": "ALLOWED",
+   "target_service": "orders",
+   "target_tool": "get_order",
+   "verified_episodes": 4
+  },
+  {
+   "fired_episodes": 4,
+   "fired_share": "4/4",
+   "kind": "F4",
+   "status": "ALLOWED",
+   "target_service": "notifications",
+   "target_tool": "send_confirmation",
+   "verified_episodes": 4
+  },
+  {
+   "fired_episodes": 0,
+   "fired_share": "0/4",
+   "kind": "F4",
+   "status": "REFUSED",
+   "target_service": "orders",
+   "target_tool": "get_operation_status",
+   "verified_episodes": 4
+  },
+  {
+   "fired_episodes": 1,
+   "fired_share": "1/1",
+   "kind": "F4",
+   "status": "ALLOWED_FEWER_THAN_3",
+   "target_service": "orders",
+   "target_tool": "get_order",
+   "verified_episodes": 1
+  }
+ ],
+ "table_hash": "8e791c772a3b2d5603692b180b7be2aca50662cb0a3fc6bc9e4d56277157011e",
+ "A_combined_pending_upgrade_plus_status_read": [
+  {
+   "rule_declared": false,
+   "status": "COUNTEREXAMPLE_FOUND",
+   "reason": "Candidate violation returned as development feedback",
+   "failed_checks": [
+    "C4"
+   ],
+   "schedules_run": 1,
+   "episodes_run": 6,
+   "explorer_requests": 1,
+   "pick_statuses": [
+    "no rule"
+   ]
+  },
+  {
+   "rule_declared": true,
+   "status": "PASSED_OBSERVED",
+   "reason": "No candidate violation observed in four schedules \u00d7 three pairs",
+   "failed_checks": [],
+   "schedules_run": 4,
+   "episodes_run": 24,
+   "explorer_requests": 5,
+   "pick_statuses": [
+    "REFUSED_LOW_FIRED_SHARE",
+    "ALLOWED",
+    "ALLOWED",
+    "ALLOWED",
+    "ALLOWED"
+   ]
+  }
+ ],
+ "B_lone_status_read": [
+  {
+   "rule_declared": false,
+   "status": "INCONCLUSIVE",
+   "reason": "Incomplete or untriggered challenge pair",
+   "failed_checks": [],
+   "schedules_run": 1,
+   "episodes_run": 6,
+   "explorer_requests": 1,
+   "pick_statuses": [
+    "no rule"
+   ]
+  },
+  {
+   "rule_declared": true,
+   "status": "PASSED_OBSERVED",
+   "reason": "No candidate violation observed in four schedules \u00d7 three pairs",
+   "failed_checks": [],
+   "schedules_run": 4,
+   "episodes_run": 24,
+   "explorer_requests": 5,
+   "pick_statuses": [
+    "REFUSED_LOW_FIRED_SHARE",
+    "ALLOWED",
+    "ALLOWED",
+    "ALLOWED",
+    "ALLOWED"
+   ]
+  }
+ ],
+ "scratch_removed": true
+}
+[fixer guard] refused outbound connections: 0; loopback connects: 0

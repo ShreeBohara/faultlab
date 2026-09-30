@@ -26,7 +26,7 @@ from app.lab.coordinator import LabCoordinator
 from app.lab.discovery_protocol import DISCOVERY_V1
 from app.lab.evidence import WaitingEvidence
 from app.lab.exports import development_recording
-from app.lab.run_plans import EvidenceRetryPlan, prepare_run_plan, read_run_plan, validate_run_plan
+from app.lab.run_plans import EvidenceRetryPlan, EvidenceRetryPlanV3, prepare_run_plan, read_run_plan, validate_run_plan
 from app.lab.operator_actions import register_agent
 from app.lab.storage import StoreConflict
 from app.main import create_app
@@ -214,7 +214,8 @@ def test_learn_plans_declare_the_rule_and_other_plans_do_not(owner):
     plan = read_run_plan(owner.store, campaign.campaign_id)['plan']
     assert plan['evidence_retry'] == evidence_wait.declaration()
     assert plan['evidence_retry']['delays_seconds'] == [30, 120, 300] and plan['evidence_retry']['automatic_retries_per_wait'] == 3
-    assert plan['evidence_retry']['protocol'] == 'faultlab-evidence-retry/v2' and plan['evidence_retry']['automatic_retries_per_campaign'] == 6
+    # Rule v3 (September 30) in every new Learn plan: the same per-wait rule, at most 24 per campaign (v2 plans keep 6).
+    assert plan['evidence_retry']['protocol'] == 'faultlab-evidence-retry/v3' and plan['evidence_retry']['automatic_retries_per_campaign'] == 24
     assert plan['evidence_retry']['repeats_model_requests'] is False and plan['evidence_retry']['charged_model_calls'] == 0
     assert 'telemetry-only' in plan['evidence_retry']['rule'] and 'needs operator' in plan['evidence_retry']['rule']
     assert evidence_wait.campaign_rule(owner.store, owner.get(campaign.campaign_id)) == evidence_wait.declaration()
@@ -227,13 +228,17 @@ def test_learn_plans_declare_the_rule_and_other_plans_do_not(owner):
 
 
 def test_declaration_is_exact_and_a_different_installed_rule_refuses_the_saved_plan(owner, monkeypatch):
-    EvidenceRetryPlan.model_validate(evidence_wait.declaration())
-    for change in ({'automatic_retries_per_wait': 4}, {'delays_seconds': [30, 120]}, {'delays_seconds': [10, 120, 300]},
-                   {'repeats_model_requests': True}, {'repeats_business_actions': True}, {'charged_model_calls': 1},
-                   {'telemetry_only': False}, {'after_last_retry': 'STOP'}, {'protocol': 'faultlab-evidence-retry/v3'},
-                   {'automatic_retries_per_campaign': 7}, {'automatic_retries_per_campaign': None}):
-        with pytest.raises(ValidationError):
-            EvidenceRetryPlan.model_validate({**evidence_wait.declaration(), **change})
+    # Rule v2 (plans saved before v3) and rule v3 (every new Learn plan) are each exact; neither accepts the other's cap.
+    EvidenceRetryPlan.model_validate(evidence_wait.declaration_v2())
+    EvidenceRetryPlanV3.model_validate(evidence_wait.declaration())
+    for model, rule, other_cap in ((EvidenceRetryPlan, evidence_wait.declaration_v2(), 24), (EvidenceRetryPlanV3, evidence_wait.declaration(), 6)):
+        for change in ({'automatic_retries_per_wait': 4}, {'delays_seconds': [30, 120]}, {'delays_seconds': [10, 120, 300]},
+                       {'repeats_model_requests': True}, {'repeats_business_actions': True}, {'charged_model_calls': 1},
+                       {'telemetry_only': False}, {'after_last_retry': 'STOP'}, {'protocol': 'faultlab-evidence-retry/v4'},
+                       {'automatic_retries_per_campaign': 7}, {'automatic_retries_per_campaign': None},
+                       {'automatic_retries_per_campaign': other_cap}):
+            with pytest.raises(ValidationError):
+                model.model_validate({**rule, **change})
     campaign = learn_campaign(owner, DISCOVERY_V1)
     from app.lab import run_plans
     monkeypatch.setattr(run_plans, 'evidence_retry_declaration', lambda: {**evidence_wait.declaration(), 'rule': 'another rule'})
@@ -657,8 +662,14 @@ def test_a_running_automatic_retry_job_ends_at_its_next_step_after_a_stop(owner,
 
 def test_the_campaign_limit_ends_automatic_retries_for_a_flaky_batch(owner, monkeypatch):
     # Probe 06: the limit was per wait only, so a flaky six-episode batch took 18 automatic retries and 45 declared
-    # minutes and never showed "needs operator". Rule v2 also allows at most 6 automatic retries per campaign.
+    # minutes and never showed "needs operator". Rule v2 also allows at most 6 automatic retries per campaign. Every new
+    # Learn plan now declares rule v3 (24 per campaign; tests/lab/test_evidence_retry_v3.py); a plan saved under rule v2
+    # still starts and keeps its cap of 6, which is what this campaign's plan declares.
+    from app.lab import run_plans
+    monkeypatch.setattr(run_plans, 'evidence_retry_declaration', evidence_wait.declaration_v2)  # a plan saved before v3
     campaign, weave, runner, ledger = harness(owner, monkeypatch, purpose_is('source_validation'), mode='gain', candidate_fails=False)
+    monkeypatch.setattr(run_plans, 'evidence_retry_declaration', evidence_wait.declaration)      # today's installed rule
+    assert read_run_plan(owner.store, campaign.campaign_id)['plan']['evidence_retry'] == evidence_wait.declaration_v2()
     ident = campaign.campaign_id
     first_listed = {}
     async def services():

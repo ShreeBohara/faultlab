@@ -1,0 +1,12 @@
+.venv (environment): 933
+REAL REPO (Desktop) path: 1
+device: 1
+name that does not exist in the scratch tree (relative name opened through a dir_fd, e.g. shutil.rmtree of pytest temp folders, resolved against the cwd by the hook): 131
+python install / system: 71
+scratch tree: one of the 33 changed/added files: 13
+scratch tree: tracked file of the backup tip: 206
+temp (pytest tmp_path etc.): 130
+opened tree files that match a .gitignore pattern (tracked or added): 0
+scratch-tree paths neither tracked nor added (would they be ignored?):
+paths outside the scratch tree, .venv, temp and python install:
+   /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/artifacts/product-fireability-2026-09-30/verify/ignored_deps/opens-raw.txt

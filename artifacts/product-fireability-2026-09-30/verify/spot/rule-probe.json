@@ -1,0 +1,707 @@
+{
+ "ok": true,
+ "passed": 36,
+ "total": 36,
+ "checks": [
+  {
+   "check": "synthetic block validates against the saved-plan model",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "two REFUSED rows in the synthetic table",
+   "ok": true,
+   "detail": "[[\"update_order\", \"ALLOWED\"], [\"send_confirmation\", \"REFUSED\"], [\"get_operation_status\", \"REFUSED\"]]"
+  },
+  {
+   "check": "challenge: lone status read (v2d/v2f pick) -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).\""
+  },
+  {
+   "check": "challenge: pending upgrade + status read (integrity scenario A) -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "challenge: status read + pending upgrade (order reversed) -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "challenge: two faults, both on REFUSED targets -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3); F4 on send_confirmation (notifications): fired in 2 of 5 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).\""
+  },
+  {
+   "check": "challenge: two faults on the same REFUSED target -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).\""
+  },
+  {
+   "check": "challenge: REFUSED target + target not in the table -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "challenge: allowed target only -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason=None"
+  },
+  {
+   "check": "challenge: not-in-table target only -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason=None"
+  },
+  {
+   "check": "discovery: lone status read (v2d/v2f pick) -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).\""
+  },
+  {
+   "check": "discovery: pending upgrade + status read (integrity scenario A) -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "discovery: status read + pending upgrade (order reversed) -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "discovery: two faults, both on REFUSED targets -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3); F4 on send_confirmation (notifications): fired in 2 of 5 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).\""
+  },
+  {
+   "check": "discovery: two faults on the same REFUSED target -> REFUSED_LOW_FIRED_SHARE",
+   "ok": true,
+   "detail": "got REFUSED_LOW_FIRED_SHARE; reason=\"Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).\""
+  },
+  {
+   "check": "discovery: REFUSED target + target not in the table -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason='Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.'"
+  },
+  {
+   "check": "discovery: allowed target only -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason=None"
+  },
+  {
+   "check": "discovery: not-in-table target only -> ALLOWED",
+   "ok": true,
+   "detail": "got ALLOWED; reason=None"
+  },
+  {
+   "check": "invalid output -> INVALID_OUTPUT, no pick",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "first challenge request is slot_request 1 and carries the rule, table, note",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "after a refusal the next challenge request is its re-plan",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "a refused re-plan gets no further re-plan",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "a second challenge in the same Session starts clean",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "declaration names pick_refused_when = every_fault_on_a_refused_target",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "declaration hash",
+   "ok": true,
+   "detail": "ae56a27a18183562f187dedb0f3b08983b0a8da5bd05963a99c85249f3c36aeb"
+  },
+  {
+   "check": "saved-plan model refuses pick_refused_when='any_fault_on_a_refused_target'",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "saved-plan model refuses pick_refused_when='every'",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "saved-plan model refuses pick_refused_when=None",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "saved-plan model refuses a block without pick_refused_when (the builder's shape)",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "fireability.verify refuses a frozen block whose rule is not the installed one",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "RULE fits the model (<= 2400 chars)",
+   "ok": true,
+   "detail": "2225"
+  },
+  {
+   "check": "MEANING fits the model (<= 800 chars)",
+   "ok": true,
+   "detail": "587"
+  },
+  {
+   "check": "RULE states the every-fault form",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "RULE says the table is not neutral",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "MEANING states the every-fault form",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "check": "the builder's any-fault sentence is gone",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "decisions": {
+  "challenge: lone status read (v2d/v2f pick)": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "challenge: pending upgrade + status read (integrity scenario A)": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "challenge: status read + pending upgrade (order reversed)": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "challenge: two faults, both on REFUSED targets": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3); F4 on send_confirmation (notifications): fired in 2 of 5 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "notifications",
+     "target_tool": "send_confirmation",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "notifications",
+      "target_tool": "send_confirmation",
+      "verified_episodes": 5,
+      "fired_episodes": 2,
+      "fired_share": "2/5",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "notifications",
+     "target_tool": "send_confirmation",
+     "verified_episodes": 5,
+     "fired_episodes": 2,
+     "fired_share": "2/5",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "challenge: two faults on the same REFUSED target": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request in this challenge is its one re-plan (one of the challenge's 8 Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "challenge: REFUSED target + target not in the table": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F1",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": null,
+     "status": "NOT_IN_HISTORY"
+    }
+   ],
+   "refused_targets": []
+  },
+  "challenge: allowed target only": {
+   "status": "ALLOWED",
+   "reason": null,
+   "targets": [
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "challenge: not-in-table target only": {
+   "status": "ALLOWED",
+   "reason": null,
+   "targets": [
+    {
+     "kind": "F1",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": null,
+     "status": "NOT_IN_HISTORY"
+    }
+   ],
+   "refused_targets": []
+  },
+  "discovery: lone status read (v2d/v2f pick)": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "discovery: pending upgrade + status read (integrity scenario A)": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "discovery: status read + pending upgrade (order reversed)": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "discovery: two faults, both on REFUSED targets": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3); F4 on send_confirmation (notifications): fired in 2 of 5 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "notifications",
+     "target_tool": "send_confirmation",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "notifications",
+      "target_tool": "send_confirmation",
+      "verified_episodes": 5,
+      "fired_episodes": 2,
+      "fired_share": "2/5",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F4",
+     "target_service": "notifications",
+     "target_tool": "send_confirmation",
+     "verified_episodes": 5,
+     "fired_episodes": 2,
+     "fired_share": "2/5",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "discovery: two faults on the same REFUSED target": {
+   "status": "REFUSED_LOW_FIRED_SHARE",
+   "reason": "Refused before any episode ran: F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3). The next request is this slot's one re-plan (it is one of the plan's 8 declared discovery Explorer requests).",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    }
+   ],
+   "refused_targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "verified_episodes": 4,
+     "fired_episodes": 0,
+     "fired_share": "0/4",
+     "status": "REFUSED"
+    }
+   ]
+  },
+  "discovery: REFUSED target + target not in the table": {
+   "status": "ALLOWED",
+   "reason": "Allowed: F4 on get_operation_status (orders) is REFUSED (fired in 0 of 4 verified history episodes). This pick also has a fault on a target that is not REFUSED, so it runs beside it; its pairs still count only if every fault fires in both arms.",
+   "targets": [
+    {
+     "kind": "F4",
+     "target_service": "orders",
+     "target_tool": "get_operation_status",
+     "table_row": {
+      "kind": "F4",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4,
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "status": "REFUSED"
+     },
+     "status": "REFUSED"
+    },
+    {
+     "kind": "F1",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": null,
+     "status": "NOT_IN_HISTORY"
+    }
+   ],
+   "refused_targets": []
+  },
+  "discovery: allowed target only": {
+   "status": "ALLOWED",
+   "reason": null,
+   "targets": [
+    {
+     "kind": "F2",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": {
+      "kind": "F2",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10,
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "status": "ALLOWED"
+     },
+     "status": "ALLOWED"
+    }
+   ],
+   "refused_targets": []
+  },
+  "discovery: not-in-table target only": {
+   "status": "ALLOWED",
+   "reason": null,
+   "targets": [
+    {
+     "kind": "F1",
+     "target_service": "orders",
+     "target_tool": "update_order",
+     "table_row": null,
+     "status": "NOT_IN_HISTORY"
+    }
+   ],
+   "refused_targets": []
+  }
+ }
+}

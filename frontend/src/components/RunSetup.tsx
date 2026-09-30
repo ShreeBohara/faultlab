@@ -3,7 +3,7 @@ import type { Campaign } from '../generated/contracts'
 import type { ConfigStatus, ReadinessStatus } from '../api'
 import { isNativeAgent, runApi, type AgentKind, type DiscoveryProtocolId, type RunMode, type RunProfile } from '../runPlans'
 import { DiscoveryProtocolFacts, discoveryBudget } from './DiscoveryProtocol'
-import { OfferedLoopLimits } from './LoopLimits'
+import { OfferedExplorerSelection, OfferedLoopLimits } from './LoopLimits'
 import { useResource, type Resource } from '../useResource'
 import { Field, ResourceNote } from './common'
 import { TASK_TEXT_MAX_CHARACTERS, taskCharacters, taskTextProblem } from '../taskText'
@@ -29,6 +29,9 @@ export function RunSetup({ config, replay, readiness, onCampaign }: { config?: C
   const discoveryOptions = value?.learn.discovery_protocols ?? []
   const discovery = discoveryOptions.find(item => item.protocol_id === discoveryId)
   const discoverySupported = !discovery || discovery.supported_agents.includes(agentKind)
+  // A new Learn plan with this discovery protocol will freeze the offered history fireability rule (its refused picks get one
+  // re-plan each), so the budget text must not say "no re-plans" (review finding F2).
+  const fireabilityOffered = !!discovery && !!value?.learn.explorer_selection && (value.learn.explorer_selection.discovery_protocols as readonly string[]).includes(discovery.protocol_id)
   const readOnly = config?.data_store?.read_only === true || value?.data_store.read_only === true
   const storeChanged = !!value && !!config?.data_store && value.data_store.identity !== config.data_store.identity
   const blocked = readOnly || replay || !!config?.active_campaign_id || !!busy || !!options.error || options.loading || storeChanged
@@ -68,16 +71,17 @@ export function RunSetup({ config, replay, readiness, onCampaign }: { config?: C
       {mode === 'learn' && <p className="muted">Explorer selects from the fixed public development search space: {value.learn.search_space.kinds.join(', ')}, up to {value.learn.search_space.maximum_primitives} faults per recipe and {value.learn.selection_limit} selections. Reproduction, diagnosis, repair and challenge run only when their evidence gates qualify.</p>}
       {mode === 'learn' && !!discoveryOptions.length && <>
         <div className="setup-field"><label htmlFor={`${fieldId}-discovery`}>Discovery protocol</label><select id={`${fieldId}-discovery`} value={discoveryId} disabled={!!busy} onChange={event => { setDiscoveryId(event.target.value as DiscoveryProtocolId); setError(null); setMessage(null) }}>{discoveryOptions.map(item => <option key={item.protocol_id} value={item.protocol_id} disabled={!item.supported_agents.includes(agentKind)}>{item.label}{item.default ? ' (default)' : ''}</option>)}</select></div>
-        {discovery && <><p className="muted">{discovery.description}</p><DiscoveryProtocolFacts declaration={discovery.declaration} transportRetry={value.learn.transport_retry} /></>}
+        {discovery && <><p className="muted">{discovery.description}</p><DiscoveryProtocolFacts declaration={discovery.declaration} transportRetry={value.learn.transport_retry} fireability={fireabilityOffered} /></>}
         {!discoverySupported && <p className="notice">{discovery?.unsupported_reason ?? 'This discovery protocol does not support the selected agent.'}</p>}
         <OfferedLoopLimits mechanicContext={value.learn.mechanic_context} challengeSelection={value.learn.challenge_selection} mechanicEvidence={value.learn.mechanic_evidence} agent={live ? agentKind : undefined} />
+        <OfferedExplorerSelection rule={value.learn.explorer_selection} protocol={discovery?.protocol_id} />
       </>}
       {mode === 'compare' && <p className="muted">Compare the compatible accepted policy with the empty baseline using the fixed protected comparison: {value.compare.case_count} cases × {value.compare.trials_per_case} paired trials. Protected cases are not shown or used as development choices.</p>}
       <section className="plan-preview" aria-label="Current plan preview"><h3>Current plan preview</h3><dl className="facts compact">
         <Field name="Execution">{live ? 'Live provider execution' : 'Offline handwritten reference · B1'}</Field><Field name="Agent">{live ? agent?.label : 'Handwritten reference smoke'}</Field>
         <Field name="Task">{value.task.label}</Field><Field name="Mode / case">{mode === 'baseline' ? developmentCase?.label : mode === 'learn' ? 'Original learning workflow' : 'Accepted-policy comparison'}</Field>
         <Field name="Initial policy">{mode === 'compare' ? agent?.accepted_policy_version : mode === 'learn' ? agent?.accepted_policy_version ?? 'policy-v0' : 'policy-v0'}</Field>
-        {mode === 'learn' && discovery && <Field name="Discovery">{discovery.label} · {discoveryBudget(discovery.declaration, value.learn.transport_retry)}</Field>}
+        {mode === 'learn' && discovery && <Field name="Discovery">{discovery.label} · {discoveryBudget(discovery.declaration, value.learn.transport_retry, fireabilityOffered)}</Field>}
         <Field name="Campaign limits">{value.caps.model_calls} model requests · {value.caps.tokens.toLocaleString()} tokens · ${value.caps.dollars.toFixed(2)}</Field>
         <Field name="Per-episode limits">{value.episode_budget.actor_calls} actor turns · {value.episode_budget.http_attempts} HTTP attempts · {value.episode_budget.wall_seconds} seconds</Field>
       </dl><p className="muted">{live ? 'Live execution can make bounded, billable provider calls. These are caps, not a predicted bill.' : 'Expected provider calls and model cost: zero.'} Creating the campaign saves an idle plan. Review that frozen plan before pressing Start.</p></section>

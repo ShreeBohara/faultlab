@@ -1,0 +1,23 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/LoopLimits.tsx b/frontend/src/components/LoopLimits.tsx
+index f596b5e..44ddba2 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/LoopLimits.tsx
++++ b/frontend/src/components/LoopLimits.tsx
+@@ -43,7 +43,7 @@ export function ExplorerSelectionFacts({ rule, discovery }: { rule: ExplorerSele
+     {rule && <>
+       <p className="muted">Frozen table · {rule.table.verified_episodes} verified history episode{rule.table.verified_episodes === 1 ? '' : 's'} (the frozen agent history's own, row {rule.table.record_cutoff} cutoff) · {rule.table.refused_targets.length ? `${rule.table.refused_targets.length} target${rule.table.refused_targets.length === 1 ? '' : 's'} refused` : 'no target refused'}</p>
+       {rule.table.rows.length ? <div className="table-scroll"><table className="fireability-table" aria-label="History fireability table"><thead><tr><th>Target</th><th>Verified episodes</th><th>Fired</th><th>Status</th></tr></thead>
+-        <tbody>{rule.table.rows.map(row => <tr key={`${row.kind}-${row.target_service}-${row.target_tool}`}><td>{targetText(row)}</td><td>{row.verified_episodes}</td><td>{row.fired_share}</td><td>{ROW_STATUS_LABELS[row.status]}</td></tr>)}</tbody></table></div>
++        <tbody>{rule.table.rows.map(row => <tr key={`${row.kind}-${row.target_service}-${row.target_tool}`} className={row.status === 'REFUSED' ? 'fireability-refused' : ''}><td>{targetText(row)}</td><td>{row.verified_episodes}</td><td>{row.fired_share}</td><td>{row.status === 'REFUSED' ? <strong>{ROW_STATUS_LABELS[row.status]}</strong> : ROW_STATUS_LABELS[row.status]}</td></tr>)}</tbody></table></div>
+         : <p className="muted">The frozen history has no verified episode with a scheduled fault, so no target can be refused.</p>}
+       <details><summary>Exact rule text</summary><p className="muted">{rule.protocol}: {rule.rule}</p><p className="muted">{rule.table.meaning}</p></details>
+     </>}
+@@ -56,7 +56,8 @@ export function ChallengeFireabilityList({ summary }: { summary?: ExplorerFireab
+   const rows = summary.decisions.filter(row => row.purpose === 'challenge')
+   const refused = rows.filter(row => row.status === 'REFUSED_LOW_FIRED_SHARE').length
+   return <section className="loop-limit" aria-label="Challenge picks checked for history fireability"><h3>Challenge picks · history fireability</h3>
+-    <p className="muted">{rows.length ? `${rows.length} challenge pick${rows.length === 1 ? '' : 's'} checked, ${refused} refused before any pair ran.` : 'No challenge pick has been checked yet.'} Rule {EXPLORER_SELECTION_V3}: a fault on a target that fired in fewer than half of at least 3 verified episodes of the frozen history is refused; one re-plan follows, inside the challenge's 8 Explorer requests. The table is the same for every candidate.</p>
++    <p className="muted">{rows.length ? `${rows.length} challenge pick${rows.length === 1 ? '' : 's'} checked, ${refused} refused before any pair ran.` : 'No challenge pick has been checked yet.'} Rule {EXPLORER_SELECTION_V3}: a pick whose every fault is on a target that fired in fewer than half of at least 3 verified episodes of the frozen history is refused; one re-plan follows, inside the challenge's 8 Explorer requests. A pick with a fault on any other target runs, even beside such a target. The table is the same for every candidate.</p>
++    {!!summary.refused_targets.length && <p className="muted">Refused on their own in this campaign: {summary.refused_targets.join('; ')}. A pick made only of faults on them never runs, so a passed challenge has tested one of these targets failing only if a pick below paired it with a fault on another target.</p>}
+     {rows.map(row => <div className="attempt" key={row.selection_id}><div className="split-heading"><span>Explorer request {row.request_index === null ? '?' : row.request_index + 1}: {decisionText(row)}</span><StatusBadge value={row.status} text={DECISION_LABELS[row.status]} /></div>
+       {row.recipe && <p className="muted">Pick: {row.recipe.join(' + ')}</p>}
+     </div>)}

@@ -1,0 +1,726 @@
+{
+ "A_old_plans": {
+  "campaign-077b8434e14c4c73a334692223694e63": {
+   "discovery_protocol": "faultlab-discovery/v3-history",
+   "evidence_retry_protocol": "faultlab-evidence-retry/v2",
+   "has_block": false,
+   "mode": "learn",
+   "model_roundtrip_identical": true,
+   "read_status": "PLANNED",
+   "same_record": true
+  },
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa": {
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "evidence_retry_protocol": "faultlab-evidence-retry/v2",
+   "has_block": false,
+   "mode": "learn",
+   "model_roundtrip_identical": true,
+   "read_status": "PLANNED",
+   "same_record": true
+  },
+  "campaign-53db74766f4d4635b94a0de89e492577": {
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "evidence_retry_protocol": "faultlab-evidence-retry/v2",
+   "has_block": false,
+   "mode": "learn",
+   "model_roundtrip_identical": true,
+   "read_status": "PLANNED",
+   "same_record": true
+  },
+  "campaign-c8063a1166834051b08ae5317ff6f9c2": {
+   "discovery_protocol": null,
+   "evidence_retry_protocol": null,
+   "has_block": false,
+   "mode": "baseline",
+   "model_roundtrip_identical": true,
+   "read_status": "PLANNED",
+   "same_record": true
+  },
+  "campaign-ea66672d7a904bd8a011d6922790c963": {
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "evidence_retry_protocol": "faultlab-evidence-retry/v2",
+   "has_block": false,
+   "mode": "learn",
+   "model_roundtrip_identical": true,
+   "read_status": "PLANNED",
+   "same_record": true
+  }
+ },
+ "A_plans": {
+  "v1": {
+   "campaign_id": "campaign-30ad7f427fcb40f2a0b03cf233cbfe18",
+   "discovery_protocol": "faultlab-discovery/v1",
+   "evidence_retry": {
+    "automatic_retries_per_campaign": 24,
+    "automatic_retries_per_wait": 3,
+    "protocol": "faultlab-evidence-retry/v3"
+   },
+   "has_explorer_selection": false,
+   "history_summary_hash": null,
+   "history_verified_episodes": null,
+   "table": null,
+   "table_hash": null
+  },
+  "v3_history": {
+   "campaign_id": "campaign-c7aa90f1274b4ea996f538562d602b89",
+   "discovery_protocol": "faultlab-discovery/v3-history",
+   "evidence_retry": {
+    "automatic_retries_per_campaign": 24,
+    "automatic_retries_per_wait": 3,
+    "protocol": "faultlab-evidence-retry/v3"
+   },
+   "has_explorer_selection": true,
+   "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+   "history_verified_episodes": 30,
+   "table": {
+    "history_episode_ids_hash": "9d5f04a3dcd26db287bc7f7c4545c30828f09809f321dac65cdd643d0f019251",
+    "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+    "meaning": "Prior evidence from this plan's frozen agent history, not about any candidate: for each fault target (kind, service, tool), verified_episodes is how many verified episodes of this agent under the starting policy scheduled a fault there, and fired_episodes is how many of them fired every such fault. REFUSED marks a target with at least 3 verified episodes and a fired share below 1/2: a pick with a fault on it is refused before any episode runs. ALLOWED_FEWER_THAN_3 and targets not listed are allowed.",
+    "record_cutoff": 6752,
+    "refused_targets": [
+     "F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3)"
+    ],
+    "rows": [
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F1",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "kind": "F2",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10
+     },
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F3",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "get_order",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F4",
+      "status": "ALLOWED",
+      "target_service": "notifications",
+      "target_tool": "send_confirmation",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "kind": "F4",
+      "status": "REFUSED",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 1,
+      "fired_share": "1/1",
+      "kind": "F4",
+      "status": "ALLOWED_FEWER_THAN_3",
+      "target_service": "orders",
+      "target_tool": "get_order",
+      "verified_episodes": 1
+     }
+    ],
+    "schema_version": "faultlab-history-fireability/v1",
+    "verified_episodes": 30
+   },
+   "table_hash": "577794cf6e07706da75de0324f35d0d52289d99936e9f0bdeb4984d23edcea32"
+  },
+  "v4": {
+   "campaign_id": "campaign-d6164e562efc4977b1073fc3c4236239",
+   "discovery_protocol": "faultlab-discovery/v4-history-replay",
+   "evidence_retry": {
+    "automatic_retries_per_campaign": 24,
+    "automatic_retries_per_wait": 3,
+    "protocol": "faultlab-evidence-retry/v3"
+   },
+   "has_explorer_selection": true,
+   "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+   "history_verified_episodes": 30,
+   "table": {
+    "history_episode_ids_hash": "9d5f04a3dcd26db287bc7f7c4545c30828f09809f321dac65cdd643d0f019251",
+    "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+    "meaning": "Prior evidence from this plan's frozen agent history, not about any candidate: for each fault target (kind, service, tool), verified_episodes is how many verified episodes of this agent under the starting policy scheduled a fault there, and fired_episodes is how many of them fired every such fault. REFUSED marks a target with at least 3 verified episodes and a fired share below 1/2: a pick with a fault on it is refused before any episode runs. ALLOWED_FEWER_THAN_3 and targets not listed are allowed.",
+    "record_cutoff": 6748,
+    "refused_targets": [
+     "F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3)"
+    ],
+    "rows": [
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F1",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 10,
+      "fired_share": "10/10",
+      "kind": "F2",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "update_order",
+      "verified_episodes": 10
+     },
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F3",
+      "status": "ALLOWED",
+      "target_service": "orders",
+      "target_tool": "get_order",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 4,
+      "fired_share": "4/4",
+      "kind": "F4",
+      "status": "ALLOWED",
+      "target_service": "notifications",
+      "target_tool": "send_confirmation",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 0,
+      "fired_share": "0/4",
+      "kind": "F4",
+      "status": "REFUSED",
+      "target_service": "orders",
+      "target_tool": "get_operation_status",
+      "verified_episodes": 4
+     },
+     {
+      "fired_episodes": 1,
+      "fired_share": "1/1",
+      "kind": "F4",
+      "status": "ALLOWED_FEWER_THAN_3",
+      "target_service": "orders",
+      "target_tool": "get_order",
+      "verified_episodes": 1
+     }
+    ],
+    "schema_version": "faultlab-history-fireability/v1",
+    "verified_episodes": 30
+   },
+   "table_hash": "8e791c772a3b2d5603692b180b7be2aca50662cb0a3fc6bc9e4d56277157011e"
+  }
+ },
+ "A_refused_targets_v4": [
+  "F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3)"
+ ],
+ "A_table_hash_recomputes": true,
+ "A_table_rows_v4": [
+  [
+   "F1",
+   "orders",
+   "update_order",
+   4,
+   4,
+   "ALLOWED"
+  ],
+  [
+   "F2",
+   "orders",
+   "update_order",
+   10,
+   10,
+   "ALLOWED"
+  ],
+  [
+   "F3",
+   "orders",
+   "get_order",
+   4,
+   4,
+   "ALLOWED"
+  ],
+  [
+   "F4",
+   "notifications",
+   "send_confirmation",
+   4,
+   4,
+   "ALLOWED"
+  ],
+  [
+   "F4",
+   "orders",
+   "get_operation_status",
+   4,
+   0,
+   "REFUSED"
+  ],
+  [
+   "F4",
+   "orders",
+   "get_order",
+   1,
+   1,
+   "ALLOWED_FEWER_THAN_3"
+  ]
+ ],
+ "A_v3_and_v4_same_table": false,
+ "B_campaigns": {
+  "A0_plan_without_rule": {
+   "campaign_id": "campaign-b59483c5715246ebb17ac5fa07478ead",
+   "challenge_picks": [
+    {
+     "fireability": null,
+     "proposal_index": 0,
+     "ran": true,
+     "recipe": [
+      "F4 orders.get_operation_status"
+     ],
+     "slot_request": null
+    }
+   ],
+   "challenge_replan_context": [
+    {
+     "has_slot_feedback": false,
+     "proposal_index": 0,
+     "replan_of": null,
+     "slot_request": null
+    }
+   ],
+   "challenge_requests": 1,
+   "challenge_requests_with_rule_keys": 0,
+   "challenge_system_prompts_identical": true,
+   "challenges": [
+    {
+     "failed_checks": [],
+     "pairs": 3,
+     "schedules": 1,
+     "selection_requests": 1,
+     "status": "INCONCLUSIVE",
+     "stopping_reason": "Incomplete or untriggered challenge pair"
+    }
+   ],
+   "ledger_used_calls": 2,
+   "mechanic_calls": 4,
+   "native_citation_status_in_challenge_requests": 1,
+   "plan_has_rule": false,
+   "start_check_ok": true,
+   "state": "NO_CHANGE",
+   "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained"
+  },
+  "A1_new_plan": {
+   "campaign_id": "campaign-306e35ec254c446ba52657dbf6af9c1a",
+   "challenge_picks": [
+    {
+     "fireability": "REFUSED_LOW_FIRED_SHARE",
+     "proposal_index": 0,
+     "ran": false,
+     "recipe": [
+      "F4 orders.get_operation_status"
+     ],
+     "slot_request": 1
+    },
+    {
+     "fireability": "ALLOWED",
+     "proposal_index": 1,
+     "ran": true,
+     "recipe": [
+      "F2 orders.update_order"
+     ],
+     "slot_request": 2
+    },
+    {
+     "fireability": "ALLOWED",
+     "proposal_index": 2,
+     "ran": true,
+     "recipe": [
+      "F4 notifications.send_confirmation"
+     ],
+     "slot_request": 1
+    },
+    {
+     "fireability": "ALLOWED",
+     "proposal_index": 3,
+     "ran": true,
+     "recipe": [
+      "F1 orders.update_order"
+     ],
+     "slot_request": 1
+    },
+    {
+     "fireability": "ALLOWED",
+     "proposal_index": 4,
+     "ran": true,
+     "recipe": [
+      "F2 orders.update_order"
+     ],
+     "slot_request": 1
+    }
+   ],
+   "challenge_replan_context": [
+    {
+     "has_slot_feedback": false,
+     "proposal_index": 0,
+     "replan_of": null,
+     "slot_request": 1
+    },
+    {
+     "has_slot_feedback": true,
+     "proposal_index": 1,
+     "replan_of": "selection-92ff050a58254acc9178144474a17846",
+     "slot_request": 2
+    },
+    {
+     "has_slot_feedback": false,
+     "proposal_index": 2,
+     "replan_of": null,
+     "slot_request": 1
+    },
+    {
+     "has_slot_feedback": false,
+     "proposal_index": 3,
+     "replan_of": null,
+     "slot_request": 1
+    },
+    {
+     "has_slot_feedback": false,
+     "proposal_index": 4,
+     "replan_of": null,
+     "slot_request": 1
+    }
+   ],
+   "challenge_requests": 5,
+   "challenge_requests_with_rule_keys": 5,
+   "challenge_system_prompts_identical": true,
+   "challenges": [
+    {
+     "failed_checks": [],
+     "pairs": 12,
+     "schedules": 4,
+     "selection_requests": 5,
+     "status": "PASSED_OBSERVED",
+     "stopping_reason": "No candidate violation observed in four schedules \u00d7 three pairs"
+    }
+   ],
+   "ledger_used_calls": 5,
+   "mechanic_calls": 1,
+   "native_citation_status_in_challenge_requests": 5,
+   "plan_has_rule": true,
+   "start_check_ok": true,
+   "state": "ERROR",
+   "terminal_reason": "EXECUTION_ERROR: Execution failed; inspect the saved error class and code location."
+  },
+  "B0_plan_without_rule": {
+   "actor_discovery_episodes": 8,
+   "campaign_id": "campaign-c74df55ba3ca47f087fb8c685ae56f07",
+   "explorer_requests": 6,
+   "ledger_used_calls": 6,
+   "plan_has_rule": false,
+   "requests_with_rule_keys": 0,
+   "requests_with_slot_request_key": 0,
+   "slots": [
+    {
+     "fireability": null,
+     "provenance": "history_replay",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 0,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "history_replay",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 1,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 2,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 3,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 4,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 5,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 6,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 7,
+     "slot_request": null
+    }
+   ],
+   "start_check_ok": true,
+   "state": "NO_CHANGE",
+   "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+   "unrequested_slots": []
+  },
+  "B1_new_plan": {
+   "actor_discovery_episodes": 5,
+   "campaign_id": "campaign-5b242f4ec8174a9b856c3169493e0f98",
+   "explorer_requests": 8,
+   "first_request_rows_equal_plan_table": true,
+   "first_request_rule_text_is_RULE": true,
+   "ledger_used_calls": 8,
+   "plan_has_rule": true,
+   "replan_contexts": [
+    {
+     "replan_of_set": true,
+     "slot": 2,
+     "slot_feedback_status": "SKIPPED_UNFIREABLE"
+    },
+    {
+     "replan_of_set": true,
+     "slot": 4,
+     "slot_feedback_status": "SKIPPED_UNFIREABLE"
+    },
+    {
+     "replan_of_set": true,
+     "slot": 6,
+     "slot_feedback_status": "SKIPPED_UNFIREABLE"
+    }
+   ],
+   "requests_with_rule_keys": 8,
+   "requests_with_slot_request_key": 8,
+   "slots": [
+    {
+     "fireability": null,
+     "provenance": "history_replay",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 0,
+     "slot_request": null
+    },
+    {
+     "fireability": null,
+     "provenance": "history_replay",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 1,
+     "slot_request": null
+    },
+    {
+     "fireability": "REFUSED_LOW_FIRED_SHARE",
+     "provenance": "model",
+     "ran": false,
+     "reason": "HISTORY_FIRED_SHARE_BELOW_HALF",
+     "refused_rows": [
+      "F4 orders.get_operation_status 0/4"
+     ],
+     "search_decision": "SKIPPED_UNFIREABLE",
+     "slot": 2,
+     "slot_request": 1
+    },
+    {
+     "fireability": "ALLOWED",
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 2,
+     "slot_request": 2
+    },
+    {
+     "fireability": "ALLOWED",
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 3,
+     "slot_request": 1
+    },
+    {
+     "fireability": "REFUSED_LOW_FIRED_SHARE",
+     "provenance": "model",
+     "ran": false,
+     "reason": "HISTORY_FIRED_SHARE_BELOW_HALF",
+     "refused_rows": [
+      "F4 orders.get_operation_status 0/4"
+     ],
+     "search_decision": "SKIPPED_UNFIREABLE",
+     "slot": 4,
+     "slot_request": 1
+    },
+    {
+     "fireability": "REFUSED_LOW_FIRED_SHARE",
+     "provenance": "model",
+     "ran": false,
+     "reason": "HISTORY_FIRED_SHARE_BELOW_HALF",
+     "refused_rows": [
+      "F4 orders.get_operation_status 0/4"
+     ],
+     "search_decision": "SKIPPED_UNFIREABLE",
+     "slot": 4,
+     "slot_request": 2
+    },
+    {
+     "fireability": "NOT_CHECKED_DUPLICATE",
+     "provenance": "model",
+     "ran": false,
+     "reason": "DUPLICATE_DISCOVERY_SCHEDULE",
+     "refused_rows": [],
+     "search_decision": "SKIPPED_DUPLICATE",
+     "slot": 5,
+     "slot_request": 1
+    },
+    {
+     "fireability": "REFUSED_LOW_FIRED_SHARE",
+     "provenance": "model",
+     "ran": false,
+     "reason": "HISTORY_FIRED_SHARE_BELOW_HALF",
+     "refused_rows": [
+      "F4 orders.get_operation_status 0/4"
+     ],
+     "search_decision": "SKIPPED_UNFIREABLE",
+     "slot": 6,
+     "slot_request": 1
+    },
+    {
+     "fireability": "ALLOWED",
+     "provenance": "model",
+     "ran": true,
+     "reason": null,
+     "refused_rows": [],
+     "search_decision": "SELECTED",
+     "slot": 6,
+     "slot_request": 2
+    }
+   ],
+   "start_check_ok": true,
+   "state": "NO_CHANGE",
+   "terminal_reason": "No verified strict improvement within declared development bounds; all outcomes retained",
+   "unrequested_slots": [
+    [
+     7,
+     "NO_EXPLORER_REQUEST",
+     8,
+     8
+    ]
+   ]
+  }
+ },
+ "guard": {
+  "loopback_connections": 0,
+  "promotion_manifest_opens_by_product_code": 25,
+  "refused_outbound_connections": 0,
+  "refused_protected_file_opens": 0
+ },
+ "old_campaign_api_status": {
+  "campaign-077b8434e14c4c73a334692223694e63": {
+   "campaign": 200,
+   "evidence_wait": 200,
+   "experiments": 200,
+   "plan": 200,
+   "search_attempts": 200
+  },
+  "campaign-37e66b6c3a544a4d9bde4161db6bf0aa": {
+   "campaign": 200,
+   "evidence_wait": 200,
+   "experiments": 200,
+   "plan": 200,
+   "search_attempts": 200
+  },
+  "campaign-53db74766f4d4635b94a0de89e492577": {
+   "campaign": 200,
+   "evidence_wait": 200,
+   "experiments": 200,
+   "plan": 200,
+   "search_attempts": 200
+  },
+  "campaign-c8063a1166834051b08ae5317ff6f9c2": {
+   "campaign": 200,
+   "evidence_wait": 200,
+   "experiments": 200,
+   "plan": 200,
+   "search_attempts": 200
+  },
+  "campaign-ea66672d7a904bd8a011d6922790c963": {
+   "campaign": 200,
+   "evidence_wait": 200,
+   "experiments": 200,
+   "plan": 200,
+   "search_attempts": 200
+  }
+ },
+ "saved_store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+ "saved_store_sha256_after": {
+  "lab.sqlite3": "cc2da5efd1863c26b51035f16f3252fc22e63b685a0681d1f8285bcbb9729be0",
+  "lab.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+  "lab.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ "saved_store_sha256_before": {
+  "lab.sqlite3": "cc2da5efd1863c26b51035f16f3252fc22e63b685a0681d1f8285bcbb9729be0",
+  "lab.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+  "lab.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+ },
+ "saved_store_unchanged": true,
+ "scratch_copy_kept_for_dashboard_check": "/Users/shree/FaultLab_Scratch/review-product-fireability/lab/lab.sqlite3"
+}

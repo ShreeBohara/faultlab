@@ -1,0 +1,13 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/SearchAttemptsPanel.tsx b/frontend/src/components/SearchAttemptsPanel.tsx
+index 066d9a3..3821437 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/SearchAttemptsPanel.tsx
++++ b/frontend/src/components/SearchAttemptsPanel.tsx
+@@ -83,7 +83,7 @@ export function SearchAttemptsPanel({ campaignId, onEpisode, fireability }: { ca
+     {!!rows?.length && <p className="muted">A different seed or hypothesis alone does not create a new fault schedule. These records cover autonomous discovery, not challenge or selector-comparison studies.</p>}
+     {v2 && <p className="muted">{rows?.some(row => row.search_decision.discovery_protocol === 'faultlab-discovery/v3-history-reachability') ? 'Discovery protocol v3 with the reachability pre-check (v2\'s dispatch, plus the frozen agent history in the saved plan)' : 'Discovery protocol v2'}: before any paid Actor trial, a free replay of the real simulator labels each fault for this agent. Only picks whose every fault is forced run; a refused pick gets one re-plan request in the same slot.</p>}
+     {!!replays.length && <p className="muted">{replaySummaryText(rows ?? [])}</p>}
+-    {fire && <p className="muted">History fireability ({EXPLORER_SELECTION_V3}): before any Actor trial, each pick is checked against the saved plan's frozen table; a pick with a fault on a target that fired in fewer than half of at least 3 verified history episodes is refused, and its slot gets one re-plan inside the plan's declared Explorer requests.</p>}
++    {fire && <p className="muted">History fireability ({EXPLORER_SELECTION_V3}): before any Actor trial, each pick is checked against the saved plan's frozen table; a pick whose every fault is on a target that fired in fewer than half of at least 3 verified history episodes is refused, and its slot gets one re-plan inside the plan's declared Explorer requests. A pick with a fault on any other target runs, even beside such a target.</p>}
+     <UnrequestedSlots summary={fireability} />
+     {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 || row.fireability?.slot_request === 2 ? ' · re-plan' : ''} · {row.history_replay ? `${historyReplayTitle(row.history_replay)} · no Explorer request` : decisionLabel[row.search_decision.status]}</summary>
+       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>

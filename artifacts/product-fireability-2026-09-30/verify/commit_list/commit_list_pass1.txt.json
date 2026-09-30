@@ -1,0 +1,1901 @@
+{
+ "candidates_checked": 2687,
+ "differences": {
+  "CURRENT_STATUS.md": {
+   "sha256": "ecf19e512e5a5f55e82772fbe983712358616eaef21af6391d9dd3f295d86ea7",
+   "status": "MODIFIED",
+   "tip_sha256": "706e822522b78a9f0dc9213e77fac631e280549ae3504bdfbae104f59bbbe5c3"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/api-contract-check.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "429241cc655537d29394bc0e2c6e4d8e77218eb7e2f0c72c61f156d80699faf2",
+   "size": 947,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/api_contract_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cf07f057896fe76c834e912440aeae9753c48bb6782fc9e621d04d16aad2c7ec",
+   "size": 9326,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "af58131b7c422ea1f04828083d94503ad340332d347e159c9a91f6d77c7fc49b",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "507d9ac37f66b8007d896f3553cd621986227abab2cb9fb645bab105aedb018d",
+   "size": 20809,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3afab9803f1fbd604563892cddc4d7a30fdb98d09f6caa478723dfd6bc6e1b73",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/after.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52ad0aed3ba427bedeef5626fa3a0da6de3e73ce08d1c6acd7926d5b75a463b8",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/before.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64fa886862e0b210c891145473ecc982fe3f74646ea37a4be20d2fe664225653",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "84ab044d07295e34ed837aae07b100767f81124c46119416be77b338eb2a6ec9",
+   "size": 288,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/final.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52ad0aed3ba427bedeef5626fa3a0da6de3e73ce08d1c6acd7926d5b75a463b8",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/git-state-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0174ca86c24fdcd0eab2137bc44c0fa19e9f229e4a5e7dd09cd042658a2e8134",
+   "size": 98,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/history-differential.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "42ee2581b5930403a6e49ade8e90e89bc74b559c6f4357e6f4d51b2497999037",
+   "size": 14869,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/history_differential.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7e4ea49137168b59932bf937465d04daa20fe59d338fa488c04968f9cfb5252d",
+   "size": 6208,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-after.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "660ea85d38d3753c63bb334b71b1ae83d043384a9da3f43588227b75effaa52f",
+   "size": 3571,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-after.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-before.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "88d11172a0941d26f179e1603cf3c81716430ffa1e3703801696031e814e090d",
+   "size": 3506,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-before.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "43b1a5cb3144510c99eb16b4353cd358783bcc228e01334604087cbb313a4d9b",
+   "size": 6008,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-final.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "660ea85d38d3753c63bb334b71b1ae83d043384a9da3f43588227b75effaa52f",
+   "size": 3571,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity-final.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ee7f36a397d1ead237d5e19a271ae9b5b71dc22f4feef29e9ddf52662ab886cc",
+   "size": 2176,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/mutation-before-sha256.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f65de8af14d61e2ff1f85d6d104df98014c35781e9c44c4447898dbd40dcefc0",
+   "size": 745,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/mutation-checks-first-run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "45417ecea10d9223a0e8802cbbf6a49caf841abcc3de9916aacc9db69d8f2c7b",
+   "size": 5763,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4a92230840be7b4afc501ecdc9ef5d227dd7938b9fa0ec9e1f6b85c92d98774c",
+   "size": 6153,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ccbb97e6ea5a4a8bcbe0b2210a9593f9a39d0d18ca4c0b0aad7a9cc76e01c381",
+   "size": 9651,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/saved-store-check.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "67390136645efd2c3e20e873ba8759cd0cb94604a11b7d9bf68f9456765233a1",
+   "size": 16436,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/saved-store-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3afb0d933900aa92fcab24c6f65eebe32663d93077cdc071bc4baadb90851a36",
+   "size": 336,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/saved-store-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3afb0d933900aa92fcab24c6f65eebe32663d93077cdc071bc4baadb90851a36",
+   "size": 336,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/saved_store_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "99a894a5531b9cb87e78e063cb739b799582f8905cc7e8e87591f1efc2655718",
+   "size": 11349,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/source-sha256-after-suite-check.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "10c1c736c9c07979f3c1a595c546a78061b5f83d5accf6e239be941736284ba3",
+   "size": 61392,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/source-sha256-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "204954d97d15b613e3b7a8109b8867b759e669ee0182bfcf000c1b08f68ce795",
+   "size": 61392,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/source-unchanged-note.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6d00bf77c4df7534607177b4fac4d5574d371477573b44fd6ca38293806b38a6",
+   "size": 101,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/tree-vs-backup-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba784093243a078d66189026182a5e40f670b03fb7cce444f3671b0403b8211d",
+   "size": 1487,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/tree-vs-backup-before.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "84fbd5b1532f8cb77afdc6f7c3d16efae1fea374c4d2382bd8e4fe2d7742301e",
+   "size": 263,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba784093243a078d66189026182a5e40f670b03fb7cce444f3671b0403b8211d",
+   "size": 1487,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/builder/tree_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6dc0e15183ac3e6aa10a5622789b077006e7f2fc446a86fd0ab8df991aae9ff6",
+   "size": 2639,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/api-contract-check-rerun.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "56ec8cf8e34c54e82466f42d82ccf305994887fdaf5919555fc445e884ace943",
+   "size": 966,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/api_contract_check_rerun.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d17f2beeed8fee44c30814c0af60baae97b420855c227220a03126084da27751",
+   "size": 10158,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/CURRENT_STATUS.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "bd8182fdd35579c7e8cdfc0e2bca5400330efe6f94f42b0e3b8d429f7c0c3375",
+   "size": 117569,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/api.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7c78363b183930b45980fadb74cbbffc3e9d49d09dae1fa4f63e2ddc8a946929",
+   "size": 35615,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/fireability.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1ca1b9f5aca1bfa303147eb3a4ef75a6639fc764e65cc052242fcb0d8f40ba05",
+   "size": 25535,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/backend/app/lab/run_plans.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e5b9183975ba5c6f826285ea1783f64615f88922159b498a49fc7a26350d01f2",
+   "size": 64641,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/backend/tests/lab/test_history_fireability.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "25f1866e87cb7256e7482106fb3d7b6495bce635c9ca463b92a7f39fe43485bb",
+   "size": 42304,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/docs/PRODUCT_HISTORY_FIREABILITY_2026-09-30.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6efe5014a900ce118d10842b8a740eb5dcd48b7312527ddc3e4181d0c14ba6ab",
+   "size": 14467,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "be2bb66d285a265bed1b949075de5139c0165426a6fb29991d3f87eced62144c",
+   "size": 22838,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/docs/user-guide.md": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "eab863aa5d23eb99990355ff6ca518dcb105eb1a1cd142e3de9f666555b29b71",
+   "size": 51478,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/CampaignPlan.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26c5b2236bc034b720e8d0e0b641f544fc25b6f7f77a56a14f3740b3ea5c14a0",
+   "size": 5284,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/DiscoveryProtocol.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "01570bdaf2b85d472daf6058afa59b5850c2b465b8b173b6571a396bef4b291f",
+   "size": 15731,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/LoopLimits.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4c6beb57e2d3410264f13214415c03e5296dae246a0a33f52415b33e2a94263f",
+   "size": 10639,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/RunSetup.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "02dd7e9c2d9670510ab177a61ee40e3beebc9876ba974013e8db0dee34ce1753",
+   "size": 14103,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/SearchAttemptsPanel.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0a028a55efce04bc20c28b0491a2fa4a701966c3ac5d732689d254a64689887e",
+   "size": 12440,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/historyFireability.ts": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ef59cc0e69ef60b3dd84605fb9963f72b1423b20c06c02b035f1882109222f3f",
+   "size": 14055,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/styles.css": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "35c99ea34e20e7324171cb2866796365a385a07906a966a99e601ddb68a6a975",
+   "size": 33868,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/evidence-wait.test.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5a19a6698fadbc8fac4c3a640d463184bb2a317d6d9c5c5d86e1c9c8edf39995",
+   "size": 13839,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/before/frontend/tests/history-fireability.test.tsx": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cedbbe19da10305b14e091e0e605f9db35da59d36aae375ba3d9d8a7bedcf721",
+   "size": 19044,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/demo-rerun-after-fix.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6b0de917964b9e596c0761b9bff9e2f712c32ecb7bb7d48be25b8ab98b906b2b",
+   "size": 2681,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/demo_rerun_after_fix.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fcbe2c08e45648fa75ec3770d0d462356a204363c031635cc3a6a9061d2271dc",
+   "size": 6934,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/CURRENT_STATUS.md.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "25cd0d6e92c03995dd651a35f61d7071a5af483b8561d4d5c05a466cbc6cc945",
+   "size": 13003,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/backend_app_lab_api.py.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a9b3016f562b4fd3bffdea5658e0c3d04a74d53a2d9f6eaffa5e09b2b6d8136b",
+   "size": 1356,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/backend_app_lab_fireability.py.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "591750ec7272dd23efca1f55d124ad7d16743a3c20f078b2aebec99f7d6f86ff",
+   "size": 17183,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/backend_app_lab_run_plans.py.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f27d75eb963146507b6611bf67941fd2517d544d50d16d33fa887a86e7e3889b",
+   "size": 902,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/backend_tests_lab_test_history_fireability.py.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0718b8a9dbd8ba26ca6ba7390ddcd52db8cd0d12fd7ed79ff065dfa2bab31372",
+   "size": 3978,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/docs_PRODUCT_HISTORY_FIREABILITY_2026-09-30.md.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b88d022b0d948010538d9ecf7e17e6e9bc8415cf8db82f5ba632bffe01df24b9",
+   "size": 20980,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/docs_PRODUCT_NATIVE_V2_RUN_2026-09-29.md.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8cd8815b80686b2e999549d585c76c29a0c200a28981598c251334cf92a22ee7",
+   "size": 1900,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/docs_user-guide.md.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6712ab2d44f86058c332875723ff943ded27d0e7f9bc6abc78741fd88663f95d",
+   "size": 4805,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_components_CampaignPlan.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "553715d204b74e81b289bb5d27d0e7d0772281bdadb7b1eeb688409dc79d918e",
+   "size": 4864,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_components_DiscoveryProtocol.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "472ec0872637b598924619c92b5168cc9ad0d8ad825c2b943b060e7c4ac0b42a",
+   "size": 5066,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_components_LoopLimits.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5e474610490341a66d80a43bda3db30c6fe13e90b3b453446f52e6fba412e65d",
+   "size": 4151,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_components_RunSetup.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e55062f6c6347db18e610f16101e8f36c98ae9bd1200c524cd06360481367d32",
+   "size": 5040,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_components_SearchAttemptsPanel.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9c7a92161a5a08f8cae8168f24168075f3cc3b36f2da4c2f634bcd38f59f098f",
+   "size": 2559,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_historyFireability.ts.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e584206ab76b4bc9f85c59803d14479ee66a12a2eb5c139487a97bc75af28e00",
+   "size": 10762,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_src_styles.css.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4b7f88a520ce726188f9088d8ba9070ef8fe40cd427f0eefdeee1714ffc42b3d",
+   "size": 1051,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_tests_evidence-wait.test.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "054cc48615a2dc3bad1c35b499d312571b5f492af6a2b1399a581ccb83812dc1",
+   "size": 2652,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/diffs/frontend_tests_history-fireability.test.tsx.diff": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7ac4268537ce115466f08cc29ca42cb10f69e7df6386d8b9b472377635497e6a",
+   "size": 2686,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/frontend-tests-before-fix.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "68840a3dbf607d8c69c5c81351d34af20c198aa12d92c102ca4f058dfb852d83",
+   "size": 7216,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3b90117e6cd414df142a8fa3b477bd7bc9ef729034ede6b98dd6d5d3f5fa45a5",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8bad279dc58126e075d7bfc59f21a7a787de082b1aa9bd27b13f15abbb7cba0a",
+   "size": 20888,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e6e8185aa33c52d5c51ca2e5c6009d9ce0138aec030da4a32323dfd4d4c5e290",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/gate_freeze/after-fix.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/gate_freeze/after-fix.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d1be5fe91f12656ef7801efa1af4f8e8eb958f22b7e9a629408545831854c61",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ece6cdcb9b033e183efbc25cb8d26f37740415a43eb0e2d8037b511c4db3ed74",
+   "size": 512,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ed95accd4c6e55489786f995035df27f92967f277543c669979e235c781c1b17",
+   "size": 656,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/git-state-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f5749e1a734a31090e20cbfa395b51f6451f4c74421aa204e8f6c5ca3454577e",
+   "size": 25,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-after-fix.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dc694db517dba7b35b12a444a31fc7b06961bf00ce3b425aed8ff006043629c6",
+   "size": 3571,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-after-fix.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-compare-after-fix.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3b6e2a2d68576094c76a6a7f09c57065547544ae8bc647779346e85bed733ba",
+   "size": 3792,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-compare-final.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a3b6e2a2d68576094c76a6a7f09c57065547544ae8bc647779346e85bed733ba",
+   "size": 3792,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-final.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dc694db517dba7b35b12a444a31fc7b06961bf00ce3b425aed8ff006043629c6",
+   "size": 3571,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity-final.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ee7f36a397d1ead237d5e19a271ae9b5b71dc22f4feef29e9ddf52662ab886cc",
+   "size": 2176,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f1e200b32461cdf9cfc6b6943cbb395724dbbd177d686a47569dc43cb6550edc",
+   "size": 780,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/identity_snapshot.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "247c2ffb55f0ba5ee8b7edc8557fdbe571a6d5387e5e696c831717450f990b7d",
+   "size": 3596,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/mutation-checks.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4b893f58143ae07a4c3a348eb38a7395ad690701e94a178a97db1fa6b74e4047",
+   "size": 5752,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/mutation_checks.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b18eec454becab8030dbd3782a7ad05bdf14c8c803fb4afa8d1e47db582cc6a8",
+   "size": 11435,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/poll-cost-check.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1d7e37edda84c03680d9dbeb2051f80a017a447681528e74234b007d696a80cf",
+   "size": 323,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/poll_cost_check.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9e2ad19f85fdefb488a6829b1899d6e1e3c7a6ad5280023ce4bc09f02e313368",
+   "size": 2681,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/run_tests_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d30d100928619b06d4a00a33011c917cc45aa2410fb640a8c13ccbe96863bd7e",
+   "size": 800,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/saved-store-check-after-fix.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9d448a4cc8c2941f2593f8c58e5f61d43d1139ea5c7d539ec6ff810941a3dba9",
+   "size": 16519,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/saved-store-check-after-fix.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/saved-store-sha256-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "09006076a6ddff2ae699e3f3c75afbafd19ba0c3cc57230137739a926c779176",
+   "size": 533,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/saved-store-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "09006076a6ddff2ae699e3f3c75afbafd19ba0c3cc57230137739a926c779176",
+   "size": 533,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/saved_store_check_rerun.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c59e80a1e46ffd07c76ecfcd008612ed65ac4adeb188d8ccc422cb3067b086d3",
+   "size": 11416,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/source-sha256-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a42603f3113e42dfb1dd2cf69ada1aa301580bb8ce093959fcae9092ad9e26f8",
+   "size": 61633,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/source-sha256-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1977b8c4f6e25b2fe4d462678d6076cf74f6b06b07c7ff65565acc9949a4f147",
+   "size": 61633,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/source-sha256-fixer-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "10c1c736c9c07979f3c1a595c546a78061b5f83d5accf6e239be941736284ba3",
+   "size": 61392,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/source-unchanged-note.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c57e46018d11974f74d95f1a70ab71d7839d42ed4e6f41ec06f666f715390c44",
+   "size": 594,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/tests-after-fix-related.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0aed9a492e32185140d010645d9ab6ba88920e12493f1663202c838d3628a345",
+   "size": 1003,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/tests-before-fix.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "14a850a50e17c41a4bece000f668b140d535e9014deef841bd6f82ff9a1af1d2",
+   "size": 11506,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/tree-vs-backup-after-fix.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "57e8dfc2164db2f3fc640a87199f876b50e3bd4dbb0bf7fed302513e52e4a90b",
+   "size": 1708,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/tree-vs-backup-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "57e8dfc2164db2f3fc640a87199f876b50e3bd4dbb0bf7fed302513e52e4a90b",
+   "size": 1708,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/fixer/tree_compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6dc0e15183ac3e6aa10a5622789b077006e7f2fc446a86fd0ab8df991aae9ff6",
+   "size": 2639,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/challenge-picks-and-candidate-status-steps.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "17e8deb7f92713cba05e776714837255fb2f41eb0b679139ca3a25aab5692b7c",
+   "size": 6293,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/demo-fireability-hides-counterexample.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e1f0ba7eae990a8beb2f288fcccaa7312c4193ac6d7cb923416e158e9b4ee257",
+   "size": 2735,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/demo_fireability_hides_counterexample.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5230f3d5b899440e0f5d63a90e12302c9100954a183d12329fe600c42836e010",
+   "size": 6872,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/evidence-retry-backup-declaration.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2ecc65ee223cc9dbcf4bb5a53752d0834bfae4a82bb733c8fbe004cc83118a3c",
+   "size": 1157,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/evidence-retry-now-declarations.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26df947e852a4e56bf85f3ad95b218192c60ae90ec250704851e8e9e9f13c7ae",
+   "size": 2393,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/gate-freeze-backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/gate-freeze-backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64fa886862e0b210c891145473ecc982fe3f74646ea37a4be20d2fe664225653",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/gate-freeze-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "fa937216dbb57c0b89c70e958ef7920348005845b6a75141331677ef98139d58",
+   "size": 403,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/gate-freeze-now.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/gate-freeze-now.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52ad0aed3ba427bedeef5626fa3a0da6de3e73ce08d1c6acd7926d5b75a463b8",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77d65661ea8f0b28b346eacacff1c3e9b6bf09d6df3ce7e3a629b18ad2523977",
+   "size": 2081,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/history-differential-rerun.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a1bdb467e58261140d6964f68ead85e463f2eb2d02ce30b0f48cb459a5394e8f",
+   "size": 14900,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/history-differential-rerun.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "72e2c87753513df237f496bc1910805080ead2804d72c86f9ea7d761d958bcac",
+   "size": 1830,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/review-mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b49a5c101595ea1a17b28d51b05b714a258430a58583ad7e72dd30861ea391f8",
+   "size": 6195,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/review_mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "93808749eee07dce041c47540f8b95a9ff60b8f2cb135683d8d4087cb8cdd105",
+   "size": 11099,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/run_tests_guarded.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3be14bf7e946f1b9bf764199bea3b4725ba1a3663ba1f82ea6dbf7f7acc3bbc1",
+   "size": 823,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-plans-roundtrip-backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9c93294807ac245451c85df018ad173cffda90d68651c160dc149749dbfb1e99",
+   "size": 9094,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-plans-roundtrip-backup.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-plans-roundtrip.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9c93294807ac245451c85df018ad173cffda90d68651c160dc149749dbfb1e99",
+   "size": 9094,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-plans-roundtrip.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-store-sha256-review-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3afb0d933900aa92fcab24c6f65eebe32663d93077cdc071bc4baadb90851a36",
+   "size": 336,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved-store-sha256-review-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3afb0d933900aa92fcab24c6f65eebe32663d93077cdc071bc4baadb90851a36",
+   "size": 336,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/saved_plans_roundtrip.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "1748e78b2b44039f9ff0f6623505d38c2b19089b7f1c13e7eb62b7891b38691c",
+   "size": 2866,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/source-sha256-review-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d07bb1172a9f42c583b326a82c593527c02d91782f889de1abe76799c03eca29",
+   "size": 61296,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/source-sha256-review-mid.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d07bb1172a9f42c583b326a82c593527c02d91782f889de1abe76799c03eca29",
+   "size": 61296,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/status-read-exposure.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "10486cd2571f10ebb4f322477e379d5af50e6bc0eb3645fe95d9fc480455f571",
+   "size": 21797,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/status-read-exposure.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73a5340e3b4866eb7788b198fc307592e13dde5c152f7654194f9f8768ee059a",
+   "size": 68,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/status_read_exposure.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "26981faa38c831617b82980a94081b1e1b16e9b9df8ed899b111d1a867d0e154",
+   "size": 6251,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/targeted-tests.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6b533d5413c99109c731ab5dc1209efe093178581edbb311af0321da6fe9c5be",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/targeted-tests.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a8fc200893995a13746244fdca9f93479d9e1ea5adbf4d56e578f41a890389ca",
+   "size": 969,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/targeted-tests.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "824074c780f243d909fd6001bc795ae7fb42e999679959128b81a266edd60e96",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/tree-vs-backup-review-end.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba784093243a078d66189026182a5e40f670b03fb7cce444f3671b0403b8211d",
+   "size": 1487,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/tree-vs-backup-review-mid.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba784093243a078d66189026182a5e40f670b03fb7cce444f3671b0403b8211d",
+   "size": 1487,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-integrity/tree-vs-backup-review-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ba784093243a078d66189026182a5e40f670b03fb7cce444f3671b0403b8211d",
+   "size": 1487,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/api-differential/backup.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e6be77fb9813b216e98f982cebdc833977506a652d0353319ca71096c8bc7a48",
+   "size": 159,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/api-differential/build.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e6be77fb9813b216e98f982cebdc833977506a652d0353319ca71096c8bc7a48",
+   "size": 159,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/api-differential/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8ca778966ab3e035a2f40d0a395daf300da8afcf8ae6e15f53a98d5ed59cedad",
+   "size": 348,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/01-saved-v4-plan-fireability-table.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73964e2620a31d0fcd2bafd795f0dac866327c0708841a76486575a49f7d95e7",
+   "size": 31093,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/02-saved-v4-plan-discovery-budget-says-no-replans.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "214b50fc19347d49026e213988cb718a560061931b08f3513125fa7751d69ede",
+   "size": 38619,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/03-setup-form-v4-rule-shown-preview-says-no-replans.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ee26075793a0eaf51de8592892a9f60286718ce6b4bc84f2b2edef633854254a",
+   "size": 35919,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/04-fault-search-panel-B1.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b83818ed67d2f14c3999292f1f2a5d8cb1b5e1ae8d203ddc5e5c8de02ae69c48",
+   "size": 47037,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/05-fault-search-refused-pick-detail-B1.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7ccbeb25ef40922b871a8f8982e3e6b7472d3d7c8a288179acaed18328c42c44",
+   "size": 59486,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/06-challenge-panel-A1-refusal-and-replan.jpg": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0eacf01bb1ac534fc54b926b78d6f55cba4b7ba9ed196c3b208c8209c50862c5",
+   "size": 40754,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/dashboard-text.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e71e38fc00677b121710b26abbad38bbe0bfc67c483cd763a7479af695a966ab",
+   "size": 3081,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/dashboard/server.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/evidence-retry/evidence-retry.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "35d9d7867ef5e6c6d376935306b2a3abddedba4abf3208521c2b66b48311296a",
+   "size": 3496,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/evidence-retry/run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "eeed4037659b19b56695ad2e2a3d872e92ceab8589046c3fc2dcf5844c049569",
+   "size": 3497,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/evidence-retry/run.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "792205c51ea1488418b778773dd31d785a351826929e6e442312fd021cb41ffc",
+   "size": 160,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/pytest-related.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "50c62cd82bb595fc4019c1a034c78a342dffe5d229835839fa97e39a34855f74",
+   "size": 272,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/review_api_differential.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e1b2091ff6ee59ba1240b5e0ba6e12fd9d9aad753b72df5b11d7a0c509018216",
+   "size": 5099,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/review_dashboard_server.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f0e86d680431cb4a58024a2d77fd2567a6658fa85523212442666042dd7d51a9",
+   "size": 1591,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/review_evidence_retry.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "169519f52ae8e4ff87272658ea07e3127e48d0e6ce6f15986b4760b5c88968fa",
+   "size": 7062,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/review_guard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae3559c24f17ed884be6378e9b75e61a5d00daf4b77c043de177fa2923a44a69",
+   "size": 3357,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/review_scripted_campaigns.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9e3a490640f2e59167df28aacaf79e64c5d3b201197acd3aca66097c12f3e07b",
+   "size": 25064,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/A0_plan_without_rule-api.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64032836c3c51e4e1c680e54b18d4b1eec96bfaf0262aa5ef6cf2791c65c7d09",
+   "size": 43607,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/A0_plan_without_rule-recording.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0cdb60928f80c698637ee491bd9f9a4944d3ae995edc7743c1f8e60c3e08e009",
+   "size": 78012,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/A1_new_plan-api.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "82d2e4e8bc1f1924c9ebc388e4ff574c8f5c42a74adc34db386fa96944242989",
+   "size": 50319,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/A1_new_plan-recording.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "268056356dd37ea11c031b11f078c2eb5080c4d7ff9168c316eec69a56b0177e",
+   "size": 112051,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/B0_plan_without_rule-api.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ff702005e5c56c8c52c637b08e667e8dea728d5783035259b0234d62cbdd6f04",
+   "size": 54804,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/B0_plan_without_rule-recording.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5bcc7398e64a7f9fbb3ba1cc9dc4f5f16a4fce145c2f68189609cdddb8cfba84",
+   "size": 71330,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/B1_new_plan-api.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8f6853a48e81e7ae9a27009b6ac76fe5b4993a9514b370f5ff3ce33960b41e6d",
+   "size": 87697,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/B1_new_plan-recording.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7d3c2092de67edb532575ec89239088bfa2982f2848f9a86a5d2172c8e3fcd0c",
+   "size": 101475,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/run.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e29d47883958ee37ca57576250737ed88cf91ed91d69557da52bae00fbc38a74",
+   "size": 19534,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/run.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4d50d7a0b7640444efa0d106c5ee58ca258ca8c1a68e0b0dc0e453758001e920",
+   "size": 160,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/review-product/scripted/scripted-campaigns.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "03a273f62073842aac80b7bedb502b1868e95ab9aedcd3af89c31f1e9e9bb068",
+   "size": 19533,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/commit_list/commit_list.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "6928a9ecfd11cf37295e5daddb6e74680f26035a267d61ce3a4dc6153f202598",
+   "size": 7981,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/commit_list/conflict-scan.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "60fae5055597e0b157f8feeb512ff6866eb469c62632dad7369dd5240eef8214",
+   "size": 4740,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/commit_list/conflict_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0c2bf2dabe8376dcffb4508aad13be9542fb861a355459fa1ddb0072c1e223b",
+   "size": 1260,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/commit_list/secret_scan.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8ee8e345dcc5eaeb8d719eeac7026fdc7fce3d83a009cc762ea8f30fcab42568",
+   "size": 2175,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/full-test-sh.end": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3c0244a3ca20b96a988ce9c8d86508aff7d9e210bcde24ea7f8d7a82c7077b5",
+   "size": 63,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/full-test-sh.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "273165df71702533af34ec4d5a3331cd84a240d050e80996bb68964230524ab2",
+   "size": 20883,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/full-test-sh.start": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2f9cc32472f802e311acb23efb6d5650884e0867275ffb6b73bb7bb3c9b2ab8e",
+   "size": 21,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/checkpoint.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/checkpoint.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "64fa886862e0b210c891145473ecc982fe3f74646ea37a4be20d2fe664225653",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cd4a7e2f776d2e83978bd163edbbc17a05c29cc136516add306271c0c4c2772a",
+   "size": 736,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "59f8e41f6885f1582d3f97d56536c0732b0d8efa51039f44400b49aa41f16856",
+   "size": 823,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "2d1be5fe91f12656ef7801efa1af4f8e8eb958f22b7e9a629408545831854c61",
+   "size": 10848,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/gate_freeze/run_gate_freeze.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "c2b2b6bc845535fc7617f2f0486bcfcd5934ef56d515de5df7dca4f2fabab8a8",
+   "size": 908,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/git-state-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "4e0316553b452d22230b503bba407e5865c32d850562e7693f3ebfc500b0a346",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/git-state-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "46912a26f3baba74c3aa14b18bc21a08d0573958301353448d99dca18da0ebf5",
+   "size": 408,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/git_state.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "abc17d57c0e24d95812ea24b6defacb924cbeb6007feb8c71ed2ec10fd471750",
+   "size": 749,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/backup.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/backup.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d9792d1138a0d6a5515cc0487069eda39b7782fbab61d62952fc7bcc44b7ae2e",
+   "size": 3968,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/compare.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "5283a7434d7cfde5a573a6428a4e13fa426099127a8c05fb5e9150606c9cdb23",
+   "size": 1307,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e37e5f2505c6051e758b776ef0071c57205c455e8905c29e3d3e1a7addda1d0e",
+   "size": 6998,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/current.err": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/current.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "d2c315d4cc1826554cc09ef31cc0c6428a530610e7d4edc18f6135625598425f",
+   "size": 4112,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/identity/identity.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "52c22177b480e9e684febf086426f3469b4f89c3a0b0367d45a18c2a40d1857b",
+   "size": 5039,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/backend-new-tests-scratch.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "997a16a0a770e3e4b86e51712105ad512dcf9da2a8e139d4f5a98a7403e05c10",
+   "size": 284,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/backend-opens-classified.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cf87aedb00646f5fbdd836486db2fb2e1e077ad0fd8e1c274fc3d63a559faed1",
+   "size": 735,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/classify_opens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ea5e14bdd628ffd8ab1a09a639f25917d4943ae26ba3b98fae6a54d049dee394",
+   "size": 3475,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/frontend-new-tests-scratch.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "73c1bb61f137e3c02bcaa157edf211c4b0ff8d355667ee859f36f1b98dfaa34d",
+   "size": 251,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/opens-raw.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae8f00f8c01d431035d865feb355c7c5456d47194ec7702785f74a5054c27c8b",
+   "size": 190276,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/ignored_deps/vopens.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "7fcbe934769e32fbd3a1c34dbc0f67e3ba763226bd54d68d706f0e348eb1eeba",
+   "size": 680,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/net-monitor.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/protected/byte-identity.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "3fe936dc05195be02ee92db563eede28c3c76601c6e62a203262af62b2051109",
+   "size": 4453,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/protected/byte_identity.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "b5d81c8cfbae1550953db76456379dcc7055b0fb6194e693fd52bacf3ea9934c",
+   "size": 3128,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/run_suite_with_monitor.sh": {
+   "ignored_needs_force_add": true,
+   "mode": "0o755",
+   "sha256": "5b65e2708c4d004a5d286fe629ae707fa5a164c5fef0725f2609566350f2e328",
+   "size": 1192,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/saved-stores-sha256-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f46b0e51e29fe7fdd57fd0fd7586daf72da530336d274f547e3657835aaa7925",
+   "size": 81169,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/saved-stores-sha256-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "f46b0e51e29fe7fdd57fd0fd7586daf72da530336d274f547e3657835aaa7925",
+   "size": 81169,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/demo-rerun-verifier.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9d6bb3933ba345b2536e9da48f704e7e8a9140c2e327f8ead1b422782c4637ff",
+   "size": 2592,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/demo-rerun-verifier.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/demo_rerun_verifier.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "b3235bd644399706ac8c1535e3db28e42ed22a76a9d12d380238fea369f27e90",
+   "size": 7158,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/frontend-tsc-nocache.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "28d3b9e880a77975493dc7e359144c0295a4f694cfe0af4f928c22307bc5c320",
+   "size": 7,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/history-differential-verifier.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "8a992f3fc17d40fb8928436ea68d71831ed1db510d4eb1f60ae1264787bc9241",
+   "size": 14889,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/history-differential-verifier.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "db28ceaa4b05f03e418ad2575e358b3db43048da2345f0f63f971f7245df0a94",
+   "size": 1849,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/history_differential_verifier.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ffde99fd5cfbbd38053afe3eee38a3a94a47bb6c6a2c70fb1d5a98fe3d6dd5e1",
+   "size": 6531,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/mutations.log": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "cbd5d2a1953f9394a94c14f4dca3b3b66e58569e493b993149544026fa942123",
+   "size": 147,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/mutations.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "71d867fd16047c65690391733e115bc9aa6fc2169c543909cd600c6a96a790f3",
+   "size": 9414,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/rule-probe.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "600cf0471387f1b5d49f5ded8282a7a0932ba53b47fff0d2b74fdbd057cff7ef",
+   "size": 23233,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/rule-probe.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/rule_probe.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "77a3353447056283150a44f35cd3e932555831dd8bad416253a01473d119a92d",
+   "size": 9414,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/saved-store-check-verifier.json": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9d448a4cc8c2941f2593f8c58e5f61d43d1139ea5c7d539ec6ff810941a3dba9",
+   "size": 16519,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/saved-store-check-verifier.stderr.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "dba21a944a28b12e9be2c810c4cbf46e263ab9bf74d16e4d1f31b7d760d9b7e4",
+   "size": 94,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/saved-store-check-verifier.stdout.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "10902a93512510671558fa6410d1d4e9039da5b69fa0e7ac17902ec3f493588c",
+   "size": 2735,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/saved-store-compare.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0fb44948cb9233226c7cfea15a15e10cf60861ed3cd177bc1b7114ca13651bda",
+   "size": 723,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/saved_store_check_verifier.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ad01c789c1e84f6bcb0cae0c45c76ef77deaf1ff1cc51b5923dc183a6daaae2e",
+   "size": 11956,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/spot/vstub.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "a0158a71f01b8d967e78e533e445018172a6a3e12f9a85cf29749a99044780ff",
+   "size": 976,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/tree-vs-backup-after-suite.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0896f4c7a2fe75819c9f969094dcc88cf286d3eddc59da0d1ba121ca1ed60891",
+   "size": 3745,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/tree-vs-backup-at-suite-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0896f4c7a2fe75819c9f969094dcc88cf286d3eddc59da0d1ba121ca1ed60891",
+   "size": 3745,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/tree-vs-backup-start.txt": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "0896f4c7a2fe75819c9f969094dcc88cf286d3eddc59da0d1ba121ca1ed60891",
+   "size": 3745,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/tree_vs_backup.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "9045f82ab2e5f777ceb92d973d4e0d40ca6aba3e304e4612dbf4d1f18028864b",
+   "size": 2440,
+   "status": "NEW"
+  },
+  "artifacts/product-fireability-2026-09-30/verify/vguard.py": {
+   "ignored_needs_force_add": true,
+   "mode": "0o644",
+   "sha256": "ae45119cb9d60e64c6664c41c86225a7536185e3621ac317fd9eca1feca397a4",
+   "size": 3166,
+   "status": "NEW"
+  },
+  "backend/app/agents/explorer.py": {
+   "sha256": "de7ed1d741f7d66e8c600157ea210b29f2414720b710e9e4aa90ac557bc1530a",
+   "status": "MODIFIED",
+   "tip_sha256": "11473f2fb9a33e8d548a2d9dc3e9ed2f07a63d15f8f939f71e763e0fd88ee52f"
+  },
+  "backend/app/lab/agent_history.py": {
+   "sha256": "7a5223bcd9502aefc972fc7b9fa0b5693d21e699ae15c0dcd5f8765f75ccc808",
+   "status": "MODIFIED",
+   "tip_sha256": "b3af0a0610d9a6c47b6cd8ef94a400a81017b9a981107bb1ad4d1267fd65d58a"
+  },
+  "backend/app/lab/api.py": {
+   "sha256": "5d245e393cab9ce081c75b9c81579b39c8984911acb94d53e19b63af987e4f9d",
+   "status": "MODIFIED",
+   "tip_sha256": "1fc2be0b88557904f71cf91e3ca51aff54edd54211caab77f807c55c2b81aa56"
+  },
+  "backend/app/lab/evidence_wait.py": {
+   "sha256": "38fc92cb74d4422587977018e4514c137cf4ab79c664f69bf59b0377448ba4bc",
+   "status": "MODIFIED",
+   "tip_sha256": "5509bcec1b2cf35b8f2dedacda330d258db8ad688ab048a0f1cb3fc230c03f90"
+  },
+  "backend/app/lab/exports.py": {
+   "sha256": "f31bb00e3006cba3a067347c1bb76116f960c09abd5deeccaa153a648004a980",
+   "status": "MODIFIED",
+   "tip_sha256": "403646fac6f42b331c501bae11dbd46486cc5cc47aa7058476e2c52d04c23504"
+  },
+  "backend/app/lab/fireability.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "f658b7756d4e4f7ba687068ac2d97fcd87b629a2a792cde528fc9257e71bfcb6",
+   "size": 29879,
+   "status": "NEW"
+  },
+  "backend/app/lab/learning.py": {
+   "sha256": "f4b3d85fe2ba2ad2ac5a01c09a6c835dd0a5657551e58bd0a3dfa34574684198",
+   "status": "MODIFIED",
+   "tip_sha256": "67725f11125b675b51d0814b1c793f2215f7bdd658500cbea1f5a95ac8423209"
+  },
+  "backend/app/lab/run_plans.py": {
+   "sha256": "0c27e02e699e11ad5d83dae4d4160e109615cd5bddbd4b40fdb06fd1566f588f",
+   "status": "MODIFIED",
+   "tip_sha256": "7f097546ee2e33fecd80983d89c2be8fd0296fdf41fccce5deba3a566d50bcac"
+  },
+  "backend/tests/lab/test_discovery_v3_flow.py": {
+   "sha256": "9176f181e0fe6646c67b8e509853de30ac2c14fdce8216979ced59bdf6875979",
+   "status": "MODIFIED",
+   "tip_sha256": "27fe40436dd6e468e6d0a5d1b94050ff925ccdcd2e46a90af362f40aa027793b"
+  },
+  "backend/tests/lab/test_evidence_retry_v3.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "c61aee501bc630a9240f33f50fd2a4cc0d26efa91fc51a32b5e148abada599c0",
+   "size": 7869,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_evidence_wait.py": {
+   "sha256": "8b74b03b1f94163552df98443601163b8615b9c104864c9ac9debbefa63ca51c",
+   "status": "MODIFIED",
+   "tip_sha256": "96453d8c8016b4620f27da8f07b182c0557f1ce49403fc75283b970768e4d1d0"
+  },
+  "backend/tests/lab/test_history_fireability.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "9a447e69bfccd4ab20f6f50aff9ec4b98b0bb23056e58e416c15e38b4fbea01f",
+   "size": 42912,
+   "status": "NEW"
+  },
+  "backend/tests/lab/test_history_fireability_review_fixes.py": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "b6ff5063c295ab8d47998fca44f3d9ca21def0fa71edfefce9f5902f1ceef58e",
+   "size": 21472,
+   "status": "NEW"
+  },
+  "docs/PRODUCT_HISTORY_FIREABILITY_2026-09-30.md": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "7f03c2b407ead7ddf16c5174998f8ce2f47fc1629797960b41e2eb1b8c413386",
+   "size": 25929,
+   "status": "NEW"
+  },
+  "docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md": {
+   "sha256": "24956b4c66f87d471556607284ba3f61b619d6e0febcb116151410c534704662",
+   "status": "MODIFIED",
+   "tip_sha256": "41f6918a76d24794d66cd512f884e9f0f823fae16cf4c74c0008d1f08aec7b68"
+  },
+  "docs/user-guide.md": {
+   "sha256": "f24b5f9bb6216e39ab38bc3b1c2bd6d9345c8777fd7fcedd35a27a926ea1ade7",
+   "status": "MODIFIED",
+   "tip_sha256": "ee0f19e7b89b64eb52b6e1c340f66a6d89f9550547570c3f6c7ad8c95187aa85"
+  },
+  "frontend/src/components/CampaignPlan.tsx": {
+   "sha256": "76dab3d275d2546a3e36cc99cfaa3daf8ff326a2bb193541e12a98d081432aba",
+   "status": "MODIFIED",
+   "tip_sha256": "e3264da7e5d8ef01848058ecb2a347a8ff60e656ef1442bee0d2b23e0b5773a6"
+  },
+  "frontend/src/components/ChallengePanel.tsx": {
+   "sha256": "93d4538c220c65bab7164b68e8c889a07bd627ae464ab9b57871b797edf9ed37",
+   "status": "MODIFIED",
+   "tip_sha256": "febf8773043a865450d399fc9801a0c50eaee329c1a2994485e73081b7cac155"
+  },
+  "frontend/src/components/DiscoveryProtocol.tsx": {
+   "sha256": "b2fc1d4d13119613f61b86241e1089123976bf32a8c44a53b3ae06a673b794b5",
+   "status": "MODIFIED",
+   "tip_sha256": "01570bdaf2b85d472daf6058afa59b5850c2b465b8b173b6571a396bef4b291f"
+  },
+  "frontend/src/components/EvidenceScreen.tsx": {
+   "sha256": "5b2b4454727a5e26c6aa443d8c7d0290c6b74a4537025da239df09136c717290",
+   "status": "MODIFIED",
+   "tip_sha256": "5fb12ea49ad2ecc16df632096732c897613df4bfefe43b237f3105f9e38e9bb7"
+  },
+  "frontend/src/components/LoopLimits.tsx": {
+   "sha256": "1414633c72821162e1dda9e2bd0d4e22c26c09b70fd4da4172d7704a6e639b8f",
+   "status": "MODIFIED",
+   "tip_sha256": "73ba62f2787e58d7b4550c97a321f6a2afd569268ada91052e0a4dbf5e1599bb"
+  },
+  "frontend/src/components/RunSetup.tsx": {
+   "sha256": "ea0d28618c7b83a89732be74c390f332f678c1c6421dae3e05d494bccc38b253",
+   "status": "MODIFIED",
+   "tip_sha256": "18af30bbe51d0ecd2fc72fb4da4486f84223e46b0516e606fe878eac97522f2a"
+  },
+  "frontend/src/components/SearchAttemptsPanel.tsx": {
+   "sha256": "82445f1efff0865e2cde42da241e952e696cc1fcd367a417d8a5a4aabff987cd",
+   "status": "MODIFIED",
+   "tip_sha256": "6fea3be32d448a49c4443c221272195114019f400492bf2e8fa3e5fe2d191257"
+  },
+  "frontend/src/experiments.ts": {
+   "sha256": "6fd361475fd63b9b421aace5ad792dc815aaf518f6acf9282be276edc490c1a2",
+   "status": "MODIFIED",
+   "tip_sha256": "79a422e2edf238b68a92a8e9c7012e7ab94aa47d5cb19cc4bb8f120e028757b9"
+  },
+  "frontend/src/historyFireability.ts": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "a593e7128214d93053a0da3d1f463ed2a00932c4d89ecbf478fde3f2c15e5217",
+   "size": 15145,
+   "status": "NEW"
+  },
+  "frontend/src/runPlans.ts": {
+   "sha256": "f22f5060bccf8f83cc9e9f47d46a1329b2e4a310e66cc2dfaf2ccb57fc965ba0",
+   "status": "MODIFIED",
+   "tip_sha256": "e1dcd352f38e37f4bd2a012eb1b66dd4c29e209273b22a4a235753668d3abce6"
+  },
+  "frontend/src/searchAttempts.ts": {
+   "sha256": "436ede406ccb08ebdf1af4b30c0043c4dc7ca00f2b98d51e835ab897b87a235a",
+   "status": "MODIFIED",
+   "tip_sha256": "4775fc7513f0448cba6f31f38d2e8e64ec1c1e76df0c66ff1089bff90ec90b8c"
+  },
+  "frontend/src/styles.css": {
+   "sha256": "8cb2bc2f6b9aec32a68cd1de621cac977aea0767aeb8f9ed3979221f6315c504",
+   "status": "MODIFIED",
+   "tip_sha256": "0aa1695aaf78c81da0fd4172810ce460e46b72ab1198f96a3340f17a04bbd3b9"
+  },
+  "frontend/tests/evidence-wait.test.tsx": {
+   "sha256": "72bb013fdee154a4f1226208159582cc8d6fc7c94e19e6d77bbcc79f96e7c1dc",
+   "status": "MODIFIED",
+   "tip_sha256": "5a19a6698fadbc8fac4c3a640d463184bb2a317d6d9c5c5d86e1c9c8edf39995"
+  },
+  "frontend/tests/history-fireability-fixes.test.tsx": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "8b8bf870e845ba197c1766511c6bf1c1d141633ade7e300d9c8ee18387c4c3cc",
+   "size": 13278,
+   "status": "NEW"
+  },
+  "frontend/tests/history-fireability.test.tsx": {
+   "ignored_needs_force_add": false,
+   "mode": "0o644",
+   "sha256": "34e4f43a6d1b06b5de02f6213dafb38622f54f80640d7c4fc2202c740e229e72",
+   "size": 19224,
+   "status": "NEW"
+  },
+  "frontend/tests/run-fixtures.ts": {
+   "sha256": "62113782c8dd85f2f0a457ec93a8d13f513496c6dc3fb8aed64780d34b6db19e",
+   "status": "MODIFIED",
+   "tip_sha256": "ca74e29d86455e427ea20915244adb3c9f116498eaceb80fed0762356e4f800a"
+  }
+ },
+ "excluded_evidence": [
+  [
+   "artifacts/product-fireability-2026-09-30/review-product/api-differential/backup.json",
+   "over 5 MB (7935642 bytes)"
+  ],
+  [
+   "artifacts/product-fireability-2026-09-30/review-product/api-differential/build.json",
+   "over 5 MB (7935625 bytes)"
+  ]
+ ],
+ "protected_not_read": [
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/final-audit.json",
+   "size": 5771
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:01Z",
+   "path": "audit/promotion.json",
+   "size": 3996
+  },
+  {
+   "exists": true,
+   "in_tip": true,
+   "mtime_utc": "2026-09-12T23:20:30Z",
+   "path": "backend/app/referee/checks.py",
+   "size": 7809
+  }
+ ],
+ "tip": "432e54bc717404645c13c4e7b1f402865505af2c",
+ "tip_files": 2439
+}

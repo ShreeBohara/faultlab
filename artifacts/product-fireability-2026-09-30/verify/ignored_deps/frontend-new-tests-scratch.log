@@ -1,0 +1,9 @@
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/verify-fireability/tree/frontend
+
+
+ Test Files  3 passed (3)
+      Tests  18 passed (18)
+   Start at  09:08:15
+   Duration  1.03s (transform 592ms, setup 0ms, import 999ms, tests 502ms, environment 1.34s)
+

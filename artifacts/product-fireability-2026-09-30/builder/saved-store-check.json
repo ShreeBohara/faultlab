@@ -1,0 +1,454 @@
+{
+  "every_stored_completed_episode_with_the_target_by_policy_purpose_arm": {
+    "candidate/challenge/L": {
+      "episodes": 9,
+      "fired": 1
+    },
+    "policy-v0/challenge/B0": {
+      "episodes": 9,
+      "fired": 2
+    },
+    "policy-v0/discovery/B0": {
+      "episodes": 5,
+      "fired": 0
+    }
+  },
+  "history_episodes_behind_refused_row": [
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "episode_id": "episode-2a62f49ff4194e9c8fe925953f2b9538",
+      "outcome": "COMPLETED",
+      "reason": "target_not_reached",
+      "recipe": [
+        "F4 on get_operation_status:orders attempts 1-2: transient 503 before the request is accepted"
+      ],
+      "study_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "triggered": false
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "episode_id": "episode-bdc43add3ef847c7bb6fa59cd9cf8e89",
+      "outcome": "COMPLETED",
+      "reason": "target_not_reached",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "study_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "triggered": false
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "episode_id": "episode-c499804e9118411397105da18787ade4",
+      "outcome": "COMPLETED",
+      "reason": "target_not_reached",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "study_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "triggered": false
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "episode_id": "episode-61928e50aca44a69a5a7a45c8e473fef",
+      "outcome": "COMPLETED",
+      "reason": "target_not_reached",
+      "recipe": [
+        "F4 on get_operation_status:orders attempts 1-2: transient 503 before the request is accepted"
+      ],
+      "study_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "triggered": false
+    }
+  ],
+  "old_plans_have_block": false,
+  "old_plans_without_block": [
+    "campaign-077b8434e14c4c73a334692223694e63",
+    "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+    "campaign-53db74766f4d4635b94a0de89e492577",
+    "campaign-c8063a1166834051b08ae5317ff6f9c2",
+    "campaign-ea66672d7a904bd8a011d6922790c963"
+  ],
+  "saved_picks": [
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 5 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-12619560ed0a4fb5b37664daebb7fb76"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 4 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-1a631148c5d3496688eef3c6499605e5"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 6 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-a01ff73d52b548b6ba3b2d338f5eceaf"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 7 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-b6b85cb08ad743ed9de195695761dca1"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F4 on send_confirmation:notifications attempts 1-3: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-a313a68d7a42450999cbc8cb93b6768a"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempts 1-2: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-13867ab8e778445982bd3d8b46c8c8a9"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-894194030b8c403e9b42d8bb978d1f59"
+    },
+    {
+      "campaign_id": "campaign-077b8434e14c4c73a334692223694e63",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SKIPPED_DUPLICATE",
+      "selection_id": "selection-1b8ad4d2635b4bccbf8ecb29869e28c9"
+    },
+    {
+      "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2500 ms (past the client timeout)"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-8903196f45104e089a49895723c82baa"
+    },
+    {
+      "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 8 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-d45382a71853432a8467d4b6dedc6844"
+    },
+    {
+      "campaign_id": "campaign-ea66672d7a904bd8a011d6922790c963",
+      "challenge": true,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-49a45d29ee514a8784e484863a3ed804"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-36d09ca515044af593efacb392fe8eee"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempts 1-2: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-4e1c554d066342448d6dfb2efc7eba95"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SKIPPED_DUPLICATE",
+      "selection_id": "selection-7e4f845841f24784b986942d05f3f4c2"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F3 on get_order:orders attempt 1: the order read returns the version 1 step(s) old"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-1c1501e1ff1b45989d030ea443d75799"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2200 ms (past the client timeout)"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-d4272e181a7d41e6b55249d441f5254c"
+    },
+    {
+      "campaign_id": "campaign-37e66b6c3a544a4d9bde4161db6bf0aa",
+      "challenge": false,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F4 on get_order:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-d55b30106c104c618367ebe03ff0c1bd"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 3 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-bb270aac32c34393988dcee94ec94ba1"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F1 on update_order:orders attempt 1: the effect commits but the response is delayed 2200 ms (past the client timeout)"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-7c71cd9251b947bab265f7e08e0ac06c"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F3 on get_order:orders attempt 1: the order read returns the version 1 step(s) old"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-992686c9ad2a4da4825d7358bdf123ce"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-6ff309e460f64b59befd96c0125e7448"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F2 on update_order:orders attempt 1: the accepted upgrade stays PENDING for 8 ticks, then SUCCEEDED"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-598a041c47db4e9482b2daf18ea07ad8"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F1 on send_confirmation:notifications attempt 1: the effect commits but the response is delayed 2400 ms (past the client timeout)"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-1eea0e68f6e04bb89a269ac6f4dd6ed0"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "ALLOWED",
+      "recipe": [
+        "F3 on get_order:orders attempt 1: the order read returns the version 1 step(s) old"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-62a24e965ae743659ed603f864498e5a"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": true,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": null,
+      "selection_id": "selection-a0075acf6fa040d1a46c313c6adb52fe"
+    },
+    {
+      "campaign_id": "campaign-53db74766f4d4635b94a0de89e492577",
+      "challenge": false,
+      "decision": "REFUSED_LOW_FIRED_SHARE",
+      "recipe": [
+        "F4 on get_operation_status:orders attempt 1: transient 503 before the request is accepted"
+      ],
+      "recorded_status": "SELECTED",
+      "selection_id": "selection-1f185f9b7e0d416a844e3f5170a27d04"
+    }
+  ],
+  "saved_picks_summary": {
+    "challenge_checked": 11,
+    "challenge_refused": 3,
+    "discovery_checked": 15,
+    "discovery_refused": 7
+  },
+  "saved_store": "/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3",
+  "saved_store_sha256_after": {
+    "lab.sqlite3": "cc2da5efd1863c26b51035f16f3252fc22e63b685a0681d1f8285bcbb9729be0",
+    "lab.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "lab.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "saved_store_sha256_before": {
+    "lab.sqlite3": "cc2da5efd1863c26b51035f16f3252fc22e63b685a0681d1f8285bcbb9729be0",
+    "lab.sqlite3-shm": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+    "lab.sqlite3-wal": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "saved_store_unchanged": true,
+  "scratch_copy_removed": true,
+  "totals": {
+    "candidate": {
+      "episodes": 9,
+      "fired": 1
+    },
+    "policy_v0_all_purposes": {
+      "episodes": 14,
+      "fired": 2
+    }
+  },
+  "v3_history_plan_same_table": true,
+  "v4_plan": {
+    "composition": {
+      "baseline_studies": 1,
+      "baseline_study_episodes": 18,
+      "learn_campaigns": 2,
+      "learn_discovery_episodes": 12
+    },
+    "history_status": "AVAILABLE",
+    "record_cutoff": 6748,
+    "replay_rows": [
+      [
+        5,
+        "dev-5",
+        "3/3"
+      ],
+      [
+        6,
+        "dev-6",
+        "2/3"
+      ]
+    ],
+    "summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+    "table": {
+      "history_episode_ids_hash": "9d5f04a3dcd26db287bc7f7c4545c30828f09809f321dac65cdd643d0f019251",
+      "history_summary_hash": "d581867ce0f5c102314f508a9758eaf9fc9e1cacf589f394a834d80cec026a0e",
+      "meaning": "Prior evidence from this plan's frozen agent history, not about any candidate: for each fault target (kind, service, tool), verified_episodes is how many verified episodes of this agent under the starting policy scheduled a fault there, and fired_episodes is how many of them fired every such fault. REFUSED marks a target with at least 3 verified episodes and a fired share below 1/2: a pick with a fault on it is refused before any episode runs. ALLOWED_FEWER_THAN_3 and targets not listed are allowed.",
+      "record_cutoff": 6748,
+      "refused_targets": [
+        "F4 on get_operation_status (orders): fired in 0 of 4 verified history episodes (below 1/2 of at least 3)"
+      ],
+      "rows": [
+        {
+          "fired_episodes": 4,
+          "fired_share": "4/4",
+          "kind": "F1",
+          "status": "ALLOWED",
+          "target_service": "orders",
+          "target_tool": "update_order",
+          "verified_episodes": 4
+        },
+        {
+          "fired_episodes": 10,
+          "fired_share": "10/10",
+          "kind": "F2",
+          "status": "ALLOWED",
+          "target_service": "orders",
+          "target_tool": "update_order",
+          "verified_episodes": 10
+        },
+        {
+          "fired_episodes": 4,
+          "fired_share": "4/4",
+          "kind": "F3",
+          "status": "ALLOWED",
+          "target_service": "orders",
+          "target_tool": "get_order",
+          "verified_episodes": 4
+        },
+        {
+          "fired_episodes": 4,
+          "fired_share": "4/4",
+          "kind": "F4",
+          "status": "ALLOWED",
+          "target_service": "notifications",
+          "target_tool": "send_confirmation",
+          "verified_episodes": 4
+        },
+        {
+          "fired_episodes": 0,
+          "fired_share": "0/4",
+          "kind": "F4",
+          "status": "REFUSED",
+          "target_service": "orders",
+          "target_tool": "get_operation_status",
+          "verified_episodes": 4
+        },
+        {
+          "fired_episodes": 1,
+          "fired_share": "1/1",
+          "kind": "F4",
+          "status": "ALLOWED_FEWER_THAN_3",
+          "target_service": "orders",
+          "target_tool": "get_order",
+          "verified_episodes": 1
+        }
+      ],
+      "schema_version": "faultlab-history-fireability/v1",
+      "verified_episodes": 30
+    },
+    "table_hash": "8e791c772a3b2d5603692b180b7be2aca50662cb0a3fc6bc9e4d56277157011e",
+    "verified_episodes": 30
+  }
+}

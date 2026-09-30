@@ -17,7 +17,7 @@ from app.contracts.models import (AgentRegistration, Campaign, CampaignBudget,
 from app.agents.transport_retry import (LAB_BACKOFF_SECONDS, LAB_RETRIES_PER_CAMPAIGN_MAX, LAB_RETRIES_PER_REQUEST,
     RETRIES_PER_REQUEST, TRANSPORT_RETRY_PROTOCOL_V2, declaration as transport_retry_declaration,
     declaration_v2 as transport_retry_declaration_v2)
-from app.lab.evidence_wait import declaration as evidence_retry_declaration
+from app.lab.evidence_wait import declaration as evidence_retry_declaration, declaration_v2 as evidence_retry_declaration_v2
 from app.integrations.registry import (AGENT_ENTRYPOINTS, ENTRYPOINT_AGENTS, NATIVE_AGENTS, NATIVE_V2_DISPLAY_NAME,
                                       AgentRegistry)
 from app.lab.configuration import frozen_configuration
@@ -28,6 +28,8 @@ from app.lab.loop_limits import (CHALLENGE_SELECTION_WITHDRAWN, COMPACTION_TARGE
     STAGES as COMPACTION_STAGES, mechanic_context_declaration)
 from app.lab.citation_status import (AGENTS as CITATION_STATUS_AGENTS, APPLIES_TO as CITATION_STATUS_APPLIES_TO,
     ROW_FIELDS as CITATION_STATUS_ROW_FIELDS, declaration as mechanic_evidence_declaration)
+from app.lab.fireability import (DISCOVERY_PROTOCOLS as FIREABILITY_PROTOCOLS, REFUSED as FIREABILITY_REFUSED,
+    declaration as explorer_selection_declaration, refused_text as fireability_refused_text, row_status as fireability_row_status)
 from app.lab.storage import ReadOnlyStore, StoreConflict
 
 PROTOCOL = 'faultlab-run-plan/v1'
@@ -290,13 +292,20 @@ class EvidenceRetryPlanV1(StrictModel):
 
 
 class EvidenceRetryPlan(EvidenceRetryPlanV1):
-    """The frozen automatic evidence retry rule (app.lab.evidence_wait) of a reviewed Learn plan:
-    at most 3 automatic retries per wait and 6 per campaign."""
+    """Rule v2 (app.lab.evidence_wait.declaration_v2): at most 3 automatic retries per wait and 6 per campaign. Every Learn
+    plan saved from September 29 until v3; such a plan still starts and keeps its cap of 6."""
     protocol: Literal['faultlab-evidence-retry/v2']
     automatic_retries_per_campaign: Literal[6]
 
 
-EvidenceRetry = Annotated[Union[EvidenceRetryPlanV1, EvidenceRetryPlan], Field(discriminator='protocol')]
+class EvidenceRetryPlanV3(EvidenceRetryPlanV1):
+    """Rule v3 (app.lab.evidence_wait.declaration), frozen into every new Learn plan since September 30, 2026: the same
+    per-wait rule (3 retries at 30, 120 and 300 s) and at most 24 automatic retries per campaign."""
+    protocol: Literal['faultlab-evidence-retry/v3']
+    automatic_retries_per_campaign: Literal[24]
+
+
+EvidenceRetry = Annotated[Union[EvidenceRetryPlanV1, EvidenceRetryPlan, EvidenceRetryPlanV3], Field(discriminator='protocol')]
 
 
 class MechanicContextPlan(StrictModel):
@@ -362,6 +371,74 @@ class MechanicEvidencePlan(StrictModel):
         return self
 
 
+class FireabilityRow(StrictModel):
+    """One target of the frozen history fireability table (app.lab.fireability)."""
+    kind: Literal['F1', 'F2', 'F3', 'F4']
+    target_service: str = Field(min_length=1, max_length=64)
+    target_tool: str = Field(min_length=1, max_length=64)
+    verified_episodes: int = Field(ge=1)
+    fired_episodes: int = Field(ge=0)
+    fired_share: str = Field(pattern=r'^[0-9]+/[0-9]+$')
+    status: Literal['REFUSED', 'ALLOWED', 'ALLOWED_FEWER_THAN_3']
+
+    @model_validator(mode='after')
+    def counted(self):
+        if (self.fired_episodes > self.verified_episodes or self.fired_share != f'{self.fired_episodes}/{self.verified_episodes}'
+                or self.status != fireability_row_status(self.verified_episodes, self.fired_episodes)):
+            raise ValueError('Inconsistent history fireability row')
+        return self
+
+
+class FireabilityTable(StrictModel):
+    """The table frozen from a plan's frozen agent history (the same verified episodes, bound by their ids hash)."""
+    schema_version: Literal['faultlab-history-fireability/v1']
+    meaning: str = Field(min_length=1, max_length=800)
+    history_summary_hash: Digest
+    history_episode_ids_hash: Digest
+    record_cutoff: int = Field(ge=0)
+    verified_episodes: int = Field(ge=0)
+    rows: list[FireabilityRow] = Field(max_length=200)
+    refused_targets: list[str]
+
+    @model_validator(mode='after')
+    def ordered(self):
+        keys = [(row.kind, row.target_service, row.target_tool) for row in self.rows]
+        if (keys != sorted(set(keys)) or any(row.verified_episodes > self.verified_episodes for row in self.rows)
+                or self.refused_targets != [fireability_refused_text(row.model_dump(mode='json')) for row in self.rows
+                                            if row.status == FIREABILITY_REFUSED]):
+            raise ValueError('Inconsistent history fireability table')
+        return self
+
+
+class ExplorerSelectionPlan(StrictModel):
+    """The history fireability rule (app.lab.fireability, faultlab-explorer-selection/v3-history-fireability) and its frozen
+    table, in a new Learn plan whose discovery protocol is v3 · agent history or v4 · history replay."""
+    protocol: Literal['faultlab-explorer-selection/v3-history-fireability']
+    applies_to: list[Literal['explorer_discovery', 'explorer_challenge']] = Field(min_length=2, max_length=2)
+    discovery_protocols: list[Literal['faultlab-discovery/v3-history', 'faultlab-discovery/v4-history-replay']] = Field(min_length=2, max_length=2)
+    basis: Literal['frozen_agent_history_verified_episodes']
+    target: Literal['fault_kind_service_tool']
+    # Fixer (review finding MEDIUM-1): a pick is refused only when every one of its faults targets a REFUSED row.
+    pick_refused_when: Literal['every_fault_on_a_refused_target']
+    min_verified_episodes: Literal[3]
+    min_fired_share: Literal['1/2']
+    replans_per_refused_pick: Literal[1]
+    explorer_request_budget_changed: Literal[False]
+    refused_pick_runs_episodes: Literal[False]
+    candidate_dependent: Literal[False]
+    challenge_rules_changed: Literal[False]
+    rule: str = Field(min_length=1, max_length=2400)
+    table: FireabilityTable
+    table_hash: Digest
+
+    @model_validator(mode='after')
+    def hashed(self):
+        if (self.applies_to != ['explorer_discovery', 'explorer_challenge'] or self.discovery_protocols != list(FIREABILITY_PROTOCOLS)
+                or self.table_hash != content_hash(self.table.model_dump(mode='json'))):
+            raise ValueError('Inconsistent Explorer selection declaration')
+        return self
+
+
 class SavedRunPlan(StrictModel):
     schema_version: Literal['faultlab-run-plan/v1']
     campaign_id: Id
@@ -395,12 +472,15 @@ class SavedRunPlan(StrictModel):
     # Learn plans of native adapter v2 only, every new one (September 30, after live run v2e). Absent (not null) in every
     # other plan and in every plan saved before it, so those plans keep their exact bytes and today's requests.
     mechanic_evidence: MechanicEvidencePlan | None = None
+    # Learn plans with discovery v3-history or v4-history-replay only, every new one (September 30, after live run v2f).
+    # Absent (not null) in every other plan and in every plan saved before it, so those plans keep their exact bytes.
+    explorer_selection: ExplorerSelectionPlan | None = None
     plan_hash: Digest
 
     @model_serializer(mode='wrap')
     def _omit_absent_loop_limits(self, handler):
         data = handler(self)
-        for key in ('mechanic_context', 'challenge_selection', 'mechanic_evidence'):
+        for key in ('mechanic_context', 'challenge_selection', 'mechanic_evidence', 'explorer_selection'):
             if data.get(key) is None:
                 data.pop(key, None)
         return data
@@ -547,7 +627,10 @@ def build_run_options(settings, store=None):
                   # (v2-candidate-reach) is withdrawn and not offered.
                   'mechanic_context': mechanic_context_declaration(),
                   # Frozen only into a new Learn plan whose agent is native adapter v2 (its declaration names the agent).
-                  'mechanic_evidence': mechanic_evidence_declaration()},
+                  'mechanic_evidence': mechanic_evidence_declaration(),
+                  # Frozen, with its table computed from the frozen history, only into a new Learn plan whose discovery
+                  # protocol is v3 · agent history or v4 · history replay (its declaration names them).
+                  'explorer_selection': explorer_selection_declaration()},
         'compare': comparison, 'agents': agents,
         'offline': {'agent': 'reference', 'configuration_hash': content_hash(offline_configuration), 'registration_required': False},
         'caps': caps.model_dump(mode='json'), 'episode_budget': deepcopy(offline_configuration['episode_budget']),
@@ -691,6 +774,11 @@ def prepare_run_plan(store, settings, request):
         # adapter's recorded per-episode citation outcome (app.lab.citation_status). Other agents' plans do not declare it.
         if agent in CITATION_STATUS_AGENTS:
             plan['mechanic_evidence'] = mechanic_evidence_declaration()
+        # History fireability (app.lab.fireability): discovery v3-history and v4 only. Its table is computed now from the
+        # history just frozen (the same episodes), frozen with its hash, and recomputed before Start and the first request.
+        if discovery['protocol'] in FIREABILITY_PROTOCOLS:
+            from app.lab import fireability
+            plan['explorer_selection'] = fireability.plan_block(store, discovery['history'])
     # Rule v2 (lab-role backoff) for every new Learn plan: only Learn runs Explorer and Mechanic requests.
     # Baseline and compare plans make agent requests only, so they keep rule v1 exactly as before.
     actor_calls = configuration['episode_budget']['actor_calls']
@@ -737,6 +825,16 @@ def _bindings(store, campaign, plan, *, first_start=False):
         raise StoreConflict('Only a Learn plan declares the Mechanic request-size and challenge-pick rules')
     if plan.get('mechanic_evidence') is not None and (campaign.mode != 'learn' or plan['agent'] not in CITATION_STATUS_AGENTS):
         raise StoreConflict('Only a Learn plan of native adapter v2 declares the native citation-status block')
+    selection_rule = plan.get('explorer_selection')
+    if selection_rule is not None:
+        frozen = (discovery or {}).get('history')
+        if campaign.mode != 'learn' or (discovery or {}).get('protocol') not in FIREABILITY_PROTOCOLS or frozen is None:
+            raise StoreConflict('Only a Learn plan with discovery v3 · agent history or v4 · history replay declares the '
+                                'history fireability rule')
+        table = selection_rule['table']
+        if (table['history_summary_hash'] != frozen['summary_hash'] or table['history_episode_ids_hash'] != frozen['episode_ids_hash']
+                or table['record_cutoff'] != frozen['record_cutoff'] or table['verified_episodes'] != frozen['summary']['verified_episodes']):
+            raise StoreConflict('Saved history fireability table was frozen from another agent history')
     offline = campaign.config_profile_id == 'offline-v1'
     if (plan['source_mode'] != ('offline_fixture' if offline else 'live')
             or (offline and (campaign.mode != 'baseline' or plan['agent'] != 'reference'))):
@@ -798,6 +896,11 @@ def verify_plan_history(store, plan):
     if plan['discovery']['protocol'] in REPLAY_PROTOCOLS:
         from app.lab import history_replay
         history_replay.verify(plan['discovery'].get('replay'), history)
+    if plan.get('explorer_selection') is not None:
+        # History fireability: the table is recomputed from the same store at the same cutoff (and the rule must be the
+        # installed one); any difference is HistoryChanged, so no Explorer request is sent.
+        from app.lab import fireability
+        fireability.verify(store, plan['explorer_selection'], history)
     return history
 
 
@@ -820,7 +923,8 @@ def plan_history_check(store, campaign):
         verify_plan_history(store, plan)
     except agent_history.HistoryChanged as error:
         return {**base, 'status': 'CHANGED', 'message': str(error)}
-    return {**base, 'status': 'CURRENT', 'message': f'Unchanged: the store still holds exactly this history at row {history["record_cutoff"]}. Start checks it again.'}
+    table = ' Its frozen history fireability table also still matches.' if plan.get('explorer_selection') is not None else ''
+    return {**base, 'status': 'CURRENT', 'message': f'Unchanged: the store still holds exactly this history at row {history["record_cutoff"]}.{table} Start checks it again.'}
 
 
 def read_run_plan(store, campaign_id):
@@ -880,7 +984,8 @@ def validate_run_plan(store, settings, campaign):
         raise StoreConflict('The installed model transport retry rule differs from the saved plan')
     # A declared automatic evidence retry must be exactly the installed rule. A Learn plan without one
     # (saved before it existed) keeps manual Retry evidence sync only, which is what it declared.
-    if plan.get('evidence_retry') is not None and plan['evidence_retry'] != evidence_retry_declaration():
+    # v3 (every new Learn plan) and v2 (plans saved before v3; each keeps its own cap of 6) are installed; v1 is not.
+    if plan.get('evidence_retry') is not None and plan['evidence_retry'] not in (evidence_retry_declaration(), evidence_retry_declaration_v2()):
         raise StoreConflict('The installed automatic evidence retry rule differs from the saved plan')
     # The loop-limit rules: a Learn plan saved before them declares neither and keeps today's behaviour; a declared
     # Mechanic rule must be exactly the installed one; the withdrawn challenge-pick rule never runs.
@@ -890,6 +995,11 @@ def validate_run_plan(store, settings, campaign):
     # declared one must be exactly the installed rule.
     if plan.get('mechanic_evidence') is not None and plan['mechanic_evidence'] != mechanic_evidence_declaration():
         raise StoreConflict('The installed native citation-status rule differs from the saved plan')
+    # History fireability: the declared rule must be exactly the installed one (its table is re-verified with the history).
+    selection_rule = plan.get('explorer_selection')
+    if selection_rule is not None and {key: value for key, value in selection_rule.items()
+                                       if key not in ('table', 'table_hash')} != explorer_selection_declaration():
+        raise StoreConflict('The installed Explorer selection rule (history fireability) differs from the saved plan')
     problem = withdrawn_rule_problem(plan)
     if problem is not None:
         raise StoreConflict(problem)

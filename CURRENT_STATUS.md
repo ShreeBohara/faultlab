@@ -10,10 +10,16 @@ timings and expected results for a fresh clone, and the port settings.
 ## Latest live results (2026-09-28/29, Claude as PM) — read first
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run.
-**Newest build: `95042e4d…`** (September 30, after v2e: native citation status in Mechanic and challenge Explorer
+**Newest build: `49958e71…`** (September 30, after v2f: history fireability for Explorer picks,
+`faultlab-explorer-selection/v3-history-fireability`, changed after review so that a pick is refused only when every one
+of its faults is on a refused target, and evidence retry v3, 24 automatic retries per campaign; builder, two $0 reviews
+and fixer, all offline; **committed locally, not run live**; the rule change was signed off by Claude as PM (delegated) with its residual bias stated; *Current work*,
+first paragraph; the builder's unreviewed `07b8ccc4…` is superseded). Before it,
+current code was **`95042e4d…`** (September 30, after v2e: native citation status in Mechanic and challenge Explorer
 requests, `faultlab-mechanic-evidence/v2-native-citation-status`, native adapter v2 Learn plans only; builder, two $0
-reviews and fixer, all offline; **not yet committed**, not run live; the builder's unreviewed `c4195af1…` is superseded;
-*Current work*, first paragraph). Before it, current code was
+reviews and fixer, all offline; committed locally as `47b8f69` and **run live once, v2f**, row below; *Current work*,
+the paragraph after the newest build; the header said "not yet committed, not run live" until this build corrected it).
+Before that, current code was
 **`f058c03c…`** (September 30, the Learn-loop limits after v2d: the Mechanic request-size rule, and the challenge-pick
 rule withdrawn after review; committed locally as `884de24` and **run live once, v2e**, row below; *Current work*, the
 paragraph after the newest build). Before that, current code was **`ee2d1df9…`** (September 30: discovery protocol v4, history replay; builder, two $0 reviews and
@@ -54,8 +60,90 @@ native report tick; dotenv credential guard; offline-test network silence.
 “enhance,” not “announce.” The completed Phase 31 write-up/demo is a saved asset, not the end of the
 project. Finishing Claude's experiment program did not establish full product acceptance.
 
-**Newest build (September 30, after live run v2e; builder, two $0 reviews and fixer, all offline): native citation
-status in Mechanic requests. Not yet committed, not run live.** Runtime
+**Newest build (September 30, after live run v2f; builder, two $0 reviews and fixer, all offline): history fireability
+for Explorer picks, and evidence retry v3. Not yet committed, not run live.** Runtime
+`49958e716f0b08aacb9db5d6ddf99620451f949a901aa35cca979918c1df6b6e` (algorithm `7a56afed…`), built on `95042e4d`
+(= `backup/part2-2026-09-22` at `432e54b`); the builder's unreviewed `07b8ccc4…` is superseded. Design, measurements,
+limits, the review findings and the fixer's table: [history fireability note](docs/PRODUCT_HISTORY_FIREABILITY_2026-09-30.md)
+(sections 5 and 8). Evidence: `artifacts/product-fireability-2026-09-30/` (`builder/`, `review-integrity/`,
+`review-product/`, `fixer/`).
+* **Why:** in v2d and v2f every candidate that passed source validation ran a challenge with 0 failed checks and still
+  ended INCONCLUSIVE, because the challenge Explorer picked a lone F4 fault on the orders status read, which seldom
+  fires with a healthy upgrade. Discovery picks in v2c, v2e and v2f spent slots on it too. v2f also used up the 6
+  automatic evidence retries per campaign in 10 waits.
+* **Rule 1, `faultlab-explorer-selection/v3-history-fireability`** (plan field `explorer_selection`), frozen into **new
+  Learn plans with discovery v3-history or v4-history-replay only**:
+  * **The table.** When the plan is saved, FaultLab counts, per fault kind, service and tool, how many verified episodes
+    scheduled a fault there and in how many every such fault fired. It reads exactly the plan's frozen same-agent
+    history episodes: one shared eligibility generator, and the ids must hash to the history's `episode_ids_hash`. It is
+    frozen with its hash and recomputed before Start and before the first Explorer request. A target with at least 3
+    verified episodes and a fired share below 1/2 is REFUSED.
+  * **The rule (changed by the fixer).** A discovery or challenge pick is refused before any episode only when **every
+    one** of its faults is on a REFUSED target. A pick with a fault on any other target runs, even beside a REFUSED
+    target. The refusal is recorded with its table rows, and the Explorer gets one re-plan inside the existing Explorer
+    requests: the challenge's 8, or discovery's declared 8. Under v3-history a re-plan can leave the last discovery slot
+    without a request, and that is recorded. **The builder's version refused a pick if any fault was on a REFUSED
+    target; both reviews showed that this also refused a status-read failure during a pending upgrade, which fires, and
+    that in native-v2b the refused status read is the very step every generated guardrail adds (integrity MEDIUM-1,
+    product F1). The fixer's form departs from the task's wording ("any of its primitives"), so the owner should confirm
+    it before commit.**
+  * **What the Explorer sees.** Each request states the rule, carries the table and says that the rule takes precedence
+    over "every valid pick runs" in its instructions (system prompts unchanged).
+  * **What it never reads.** Candidate, challenge, reproduction or other later-stage episodes, other agents or protected
+    data. The table is the same for every candidate, unlike the withdrawn candidate-reach rule.
+* **Rule 2, `faultlab-evidence-retry/v3`**, in every new Learn plan: the same per-wait rule (3 retries at 30, 120 and
+  300 s) and a cap of 24 per campaign. v2 plans keep 6; Start accepts exactly v2 and v3. The saved plan now names the rule
+  id beside its cap.
+* **On a scratch copy of the saved native-v2b store:**
+  * **The table.** A new v4 plan's table marks F4 on `get_operation_status` (orders) **0 of 4** verified history
+    episodes: REFUSED. The episodes are 2 discovery picks each from v2c and v2e, all `target_not_reached`. Every other
+    target fired in all its verified episodes; F4 on `get_order` has 1 episode and is allowed. A new v3-history plan has
+    the same rows (its cutoff and hash differ).
+  * **The task's numbers.** Over every stored episode, the target fired in 2 of 14 policy-v0 episodes and 1 of 9
+    candidate episodes. The rule reads none of these except the 4 history episodes.
+  * **Saved picks.** 3 of 11 challenge picks and 7 of 15 discovery picks are refused, all of them lone status-read
+    picks; the rest are allowed. The fixer's rule gives the same counts, because no saved pick mixes the status read
+    with another target.
+* **Limits (stated plainly after review):**
+  * the rule is the same for every candidate but **not neutral**: repairs add calls where the starting policy seldom
+    reached, which is where rows are REFUSED; a lone pick on a REFUSED target never runs, so a mistake only that pick
+    could show is tested only if the Explorer pairs the target with another fault;
+  * a PASSED_OBSERVED challenge has tested the guardrail's status step failing only if one of its picks faulted the
+    orders status read; the challenge panel lists the refused targets and every checked pick;
+  * a REFUSED row changes only through mixed discovery picks that run and enter a later history, or through a plan
+    without the rule;
+  * v3's cap of 24 re-admits the "flaky six-episode batch" scenario that v2's cap of 6 was added for (18 retries before
+    it settles).
+* **Other review fixes:** the saved plan and setup preview no longer say "no re-plans" under the rule (F2); the dashboard's
+  experiments poll reads only the campaign's own selection, challenge and slot records, and validates a plan only when it
+  names the rule (F3; Phase 18/19 showed heavy polling can freeze the lab loop); no "Refused: Refused", the REFUSED row
+  is highlighted (F4); doc wording corrected (F5); four new tests close the reviewers' test gaps (LOW-2).
+* **Unchanged:**
+  * gates, the referee, the simulator, C1-C8, `challenge.py`, `evaluation.py`, `promotion.py`, `diagnosis.py`,
+    `explorer.py` (since the builder) and the reference Actor prompt;
+  * service `3ce5bcd2…`, contract `6f9d7783…`, interpreter `6da0714a…` and scorer `19de811c…`;
+  * both native adapters and prompt v2.1 `fff397c9…`;
+  * discovery v1, v2 and v3-history-reachability plans (pinned v1/v2 Explorer message digests still match), and every
+    saved plan (native-v2b's five plans still read byte for byte).
+  `gate_freeze.py` shows 20/20 files and 30/30 functions identical. The reference Actor **source** hash changed with the
+  builder (`fb5e1894…` → `7f78de28…`, a tree hash over `backend/app/agents`, which holds `explorer.py`) and is unchanged
+  by the fixer, so **register every agent again before a live run**.
+* **Checks ($0):**
+  * builder: 22 fireability tests (3 on the saved-store copy), 5 evidence-retry v3 tests, 6 frontend tests;
+  * fixer: 11 new backend tests and 6 new frontend tests; before the fix, 7 of the first 10 backend tests and all 6
+    frontend tests failed on the builder's code; 18 of 18 negative-control mutations caught in a scratch tree;
+  * the integrity review's own counterexample demo, rerun on the fixed code: COUNTEREXAMPLE_FOUND with the rule, as
+    without it;
+  * the one final `scripts/test.sh` is `fixer/full-test-sh.log`, and its counts are in the fixer report.
+* **Next:** (rule change signed off by the PM, delegated; committed locally) register every agent again, then a declared
+  live Learn run (native adapter v2, v4 history replay, `native-v2b` store) with a descriptive read-out: did the
+  challenge Explorer re-plan away from the status read, did a challenge reach 4 complete schedules, how many automatic
+  evidence retries were used, the refused targets and every refused pick with its recipe, and whether any challenge
+  schedule faulted the orders status read (if none did, a pass must not be described as testing the guardrail's status
+  step).
+
+**Build before this one (September 30, after live run v2e; builder, two $0 reviews and fixer, all offline): native
+citation status in Mechanic requests. Committed locally as `47b8f69`; run live once (v2f).** Runtime
 `95042e4d9a67c739387a3841152bd7c23448f89cd5271ca32806552d6f3fc36c` (algorithm `4e5a8f90…`), built on `f058c03c`
 (= `backup/part2-2026-09-22` at `d38c0b8`); the builder's unreviewed `c4195af1…` is superseded. Design, measurements,
 the review findings and the fixer's table: [citation-status note](docs/PRODUCT_MECHANIC_CITATION_STATUS_2026-09-30.md)

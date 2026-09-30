@@ -1,0 +1,164 @@
+Fixer: the new and updated backend tests run against the UNFIXED build (builder's code, before any fixer source edit).
+2026-09-30T15:04:26Z
+FFFFF...FF......................                                         [100%]
+=================================== FAILURES ===================================
+______ test_a_pick_is_refused_only_when_every_fault_targets_a_refused_row ______
+
+    def test_a_pick_is_refused_only_when_every_fault_targets_a_refused_row():
+>       assert fireability.declaration()['pick_refused_when'] == 'every_fault_on_a_refused_target'
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'pick_refused_when'
+
+tests/lab/test_history_fireability_review_fixes.py:57: KeyError
+_ test_the_rule_no_longer_hides_a_counterexample_on_the_guardrails_status_read _
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-1152/test_the_rule_no_longer_hides_0')
+
+    @pytest.mark.anyio
+    async def test_the_rule_no_longer_hides_a_counterexample_on_the_guardrails_status_read(tmp_path):
+        """The integrity review's scenario A: with the builder's rule the combined pick was refused and a C4 counterexample
+        became PASSED_OBSERVED. Now the pick runs, with the rule exactly as without it."""
+        combined = raw(DELAYED(3), STATUS, seed=1)
+        for declared in (False, True):
+            result, selections, episodes = await status_challenge(tmp_path / f'combined-{declared}', combined, declared=declared)
+>           assert (result.status, result.failed_checks, len(result.schedule_hashes), episodes) == ('COUNTEREXAMPLE_FOUND', ['C4'], 1, 6)
+E           AssertionError: assert ('PASSED_OBSERVED', [], 4, 24) == ('COUNTEREXAM... ['C4'], 1, 6)
+E             
+E             At index 0 diff: 'PASSED_OBSERVED' != 'COUNTEREXAMPLE_FOUND'
+E             Use -v to get more diff
+
+tests/lab/test_history_fireability_review_fixes.py:123: AssertionError
+_ test_a_discovery_pick_beside_a_pending_upgrade_runs_and_a_lone_one_is_still_refused _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b3b0470>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b3b1d90>
+
+    def test_a_discovery_pick_beside_a_pending_upgrade_runs_and_a_lone_one_is_still_refused(owner, monkeypatch):
+        status_owner(owner)
+        def answer(slot, number, _context):
+            if slot == 0: return raw(DELAYED(3), STATUS)
+            return raw(STATUS) if number == 1 else raw(DELAYED(9))
+        campaign, ledger, runner, rows = run_learn(owner, DISCOVERY_V3, answer, slots=2, monkeypatch=monkeypatch)
+>       assert fire_status(rows) == [(0, 1, 'SELECTED', 'ALLOWED'), (1, 1, 'SKIPPED_UNFIREABLE', 'REFUSED_LOW_FIRED_SHARE'),
+                                     (1, 2, 'SELECTED', 'ALLOWED')]
+E       AssertionError: assert [(0, 1, 'SKIP...', 'ALLOWED')] == [(0, 1, 'SELE...', 'ALLOWED')]
+E         
+E         At index 0 diff: (0, 1, 'SKIPPED_UNFIREABLE', 'REFUSED_LOW_FIRED_SHARE') != (0, 1, 'SELECTED', 'ALLOWED')
+E         Left contains one more item: (1, 2, 'SELECTED', 'ALLOWED')
+E         Use -v to get more diff
+
+tests/lab/test_history_fireability_review_fixes.py:142: AssertionError
+_ test_saved_plans_declare_the_every_fault_rule_and_the_model_refuses_another __
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b027b60>
+
+    def test_saved_plans_declare_the_every_fault_rule_and_the_model_refuses_another(owner):
+        registration = register_agent(owner.store, owner.settings, 'smolagents-v2')
+        seed_status_history(Seeder(owner, registration))
+        prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, discovery_protocol=DISCOVERY_V4))
+        block = read_run_plan(owner.store, owner.create(prepared.campaign_request, run_plan=prepared))['plan']['explorer_selection']
+>       assert block['pick_refused_when'] == 'every_fault_on_a_refused_target' and 'every one of its faults' in block['rule']
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'pick_refused_when'
+
+tests/lab/test_history_fireability_review_fixes.py:153: KeyError
+________ test_the_request_says_the_rule_qualifies_every_valid_pick_runs ________
+
+tmp_path = PosixPath('/private/var/folders/vf/65jq23rs2vx7wt_9316qjfm00000gn/T/pytest-of-shree/pytest-1152/test_the_request_says_the_rule0')
+
+    @pytest.mark.anyio
+    async def test_the_request_says_the_rule_qualifies_every_valid_pick_runs(tmp_path):
+        answers = [raw(STATUS), raw(DELAYED(1)), raw(DELAYED(2)), raw(DELAYED(3)), raw(DELAYED(4))]
+        result, provider, selections, episodes, ledger = await base.challenge(tmp_path, answers)
+        for context in provider.contexts:
+>           note = context['history_fireability']['note']
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'note'
+
+tests/lab/test_history_fireability_review_fixes.py:166: KeyError
+_ test_the_experiments_poll_reads_only_this_campaigns_selections_challenges_and_slots _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b3bb050>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b3b9820>
+
+    def test_the_experiments_poll_reads_only_this_campaigns_selections_challenges_and_slots(owner, monkeypatch):
+        status_owner(owner)
+        answer = lambda slot, number, _c: raw(STATUS) if (slot, number) == (0, 1) else raw(DELAYED(slot + 1 if number == 1 else 9))
+        campaign, ledger, runner, rows = run_learn(owner, DISCOVERY_V3, answer, monkeypatch=monkeypatch)
+        ident = campaign.campaign_id
+        block = read_run_plan(owner.store, campaign)['plan']['explorer_selection']
+        # A challenge of this campaign (one of its selections) and another campaign's challenge and selection.
+        challenged = rows[1]['selection_id']
+        owner.store.put_record('challenges', 'challenge-this', {'challenge_id': 'challenge-this', 'selection_refs': [challenged]})
+        owner.store.put_record('challenge_campaigns', 'challenge-this', {'campaign_id': ident, 'challenge_id': 'challenge-this'})
+        owner.store.put_record('selections', 'selection-elsewhere', {**rows[0], 'selection_id': 'selection-elsewhere',
+                                                                      'context': {**rows[0]['context'], 'campaign_id': 'campaign-elsewhere'}})
+        owner.store.put_record('challenges', 'challenge-elsewhere', {'challenge_id': 'challenge-elsewhere', 'selection_refs': ['selection-elsewhere']})
+        owner.store.put_record('challenge_campaigns', 'challenge-elsewhere', {'campaign_id': 'campaign-elsewhere', 'challenge_id': 'challenge-elsewhere'})
+        expected = full_scan_summary(owner.store, ident, block)
+        assert [row['challenge_id'] for row in expected['decisions']][:2] == [None, 'challenge-this'] and len(expected['decisions']) == 8
+        real = owner.store.list_records
+        def narrow(kind):
+            assert kind not in ('selections', 'challenges', 'explorer_selection_slots', 'challenge_campaigns'), f'full scan of {kind}'
+            return real(kind)
+        monkeypatch.setattr(owner.store, 'list_records', narrow)
+>       assert fireability.campaign_summary(owner.store, ident, block) == expected
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/lab/test_history_fireability_review_fixes.py:268: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/lab/fireability.py:390: in campaign_summary
+    decisions = campaign_decisions(store, campaign_id)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/lab/fireability.py:374: in campaign_decisions
+    for challenge in store.list_records('challenges'):
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+kind = 'challenges'
+
+    def narrow(kind):
+>       assert kind not in ('selections', 'challenges', 'explorer_selection_slots', 'challenge_campaigns'), f'full scan of {kind}'
+E       AssertionError: full scan of challenges
+E       assert 'challenges' not in ('selections', 'challenges', 'explorer_selection_slots', 'challenge_campaigns')
+
+tests/lab/test_history_fireability_review_fixes.py:265: AssertionError
+_ test_the_experiments_poll_does_not_validate_the_plan_of_a_campaign_without_the_rule _
+
+owner = <app.lab.coordinator.LabCoordinator object at 0x10b3bb500>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b021f70>[fixer] pytest exit 1; refused outbound 0
+
+
+    def test_the_experiments_poll_does_not_validate_the_plan_of_a_campaign_without_the_rule(owner, monkeypatch):
+        registration = register_agent(owner.store, owner.settings, 'reference')
+        prepared = prepare_run_plan(owner.store, owner.settings, plan_request(owner, registration, discovery_protocol=DISCOVERY_V1))
+        campaign = owner.create(prepared.campaign_request, run_plan=prepared)
+        from app.lab import run_plans
+        calls, real = [], run_plans.read_run_plan
+        monkeypatch.setattr(run_plans, 'read_run_plan', lambda *args, **kwargs: calls.append(args) or real(*args, **kwargs))
+        experiments, = api_json(owner, f'/api/campaigns/{campaign.campaign_id}/experiments')
+>       assert set(experiments) == {'counterexamples', 'evidence', 'ingestions', 'portability_ids'} and calls == []
+E       AssertionError: assert ({'counterexam...tability_ids'} == {'counterexam...tability_ids'}
+E         
+E         Use -v to get more diff and [(<app.lab.st...=TzInfo(0))))] == []
+E         
+E         Left contains one more item: (<app.lab.storage.ReadOnlyLabStore object at 0x10b2e7d40>, Campaign(schema_version='faultlab/v1', campaign_id='campaig... 15, 4, 37, 101974, tzinfo=TzInfo(0)), updated_at=datetime.datetime(2026, 9, 30, 15, 4, 37, 101992, tzinfo=TzInfo(0))))
+E         Use -v to get more diff)
+
+tests/lab/test_history_fireability_review_fixes.py:281: AssertionError
+=============================== warnings summary ===============================
+../.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1345
+  /Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py:1345: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; anyio
+    self._mark_plugins_for_rewrite(hook, disable_autoload)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_a_pick_is_refused_only_when_every_fault_targets_a_refused_row
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_the_rule_no_longer_hides_a_counterexample_on_the_guardrails_status_read
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_a_discovery_pick_beside_a_pending_upgrade_runs_and_a_lone_one_is_still_refused
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_saved_plans_declare_the_every_fault_rule_and_the_model_refuses_another
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_the_request_says_the_rule_qualifies_every_valid_pick_runs
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_the_experiments_poll_reads_only_this_campaigns_selections_challenges_and_slots
+FAILED tests/lab/test_history_fireability_review_fixes.py::test_the_experiments_poll_does_not_validate_the_plan_of_a_campaign_without_the_rule
+7 failed, 25 passed, 1 warning in 35.89s
+[fixer guard] refused outbound connections: 0; loopback connects: 0

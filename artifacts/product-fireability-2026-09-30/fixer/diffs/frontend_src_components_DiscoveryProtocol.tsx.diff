@@ -1,0 +1,40 @@
+diff --git a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/DiscoveryProtocol.tsx b/frontend/src/components/DiscoveryProtocol.tsx
+index a727076..cf11c71 100644
+--- a/artifacts/product-fireability-2026-09-30/fixer/before/frontend/src/components/DiscoveryProtocol.tsx
++++ b/frontend/src/components/DiscoveryProtocol.tsx
+@@ -35,8 +35,12 @@ export const LATER_PHASE_RETRIES_V2 = 'The retry bound above covers discovery on
+ /** Discovery v3 before a plan exists: nothing is frozen yet. */
+ export const HISTORY_AT_PLAN_TIME = 'The agent history is read from this store and frozen into the plan when you create the campaign. Review it in the saved plan before pressing Start.'
+ 
+-export const discoveryBudget = (declaration: DiscoveryDeclaration, rule?: TransportRetryDeclaration | null) =>
+-  `${declaration.slots} slots · at most ${declaration.explorer_requests_max} Explorer requests · ${explorerRetries(declaration, rule)} · at most ${declaration.actor_episodes_max} Actor episodes · ${declaration.replans_per_slot ? 'one re-plan per refused slot' : 'no re-plans'}`
++/** fireability: the plan freezes (or, in the setup form, will freeze) the history fireability rule, whose refused picks each get
++ * one re-plan inside the same declared Explorer requests (review finding F2: the frozen discovery block alone says "no re-plans"). */
++export const discoveryBudget = (declaration: DiscoveryDeclaration, rule?: TransportRetryDeclaration | null, fireability = false) =>
++  `${declaration.slots} slots · at most ${declaration.explorer_requests_max} Explorer requests · ${explorerRetries(declaration, rule)} · at most ${declaration.actor_episodes_max} Actor episodes · ${declaration.replans_per_slot ? 'one re-plan per refused slot' : fireability ? `one re-plan per pick refused by history fireability, inside the same ${declaration.explorer_requests_max} Explorer requests` : 'no re-plans'}`
++/** Shown under the discovery dispatch rule when the plan freezes the history fireability rule (review finding F2). */
++export const FIREABILITY_DISPATCH = 'Under this plan\'s history fireability rule, a valid pick whose every fault targets a REFUSED row of the frozen table is refused before its Actor episode, and its slot gets one re-plan inside the same Explorer requests (see History fireability above); every other valid new pick runs as described.'
+ 
+ const tally = (values: Record<string, number>) => Object.entries(values).map(([key, value]) => `${key} ${value}`).join(' · ') || 'none'
+ const EXCLUDED: Record<string, string> = { lab_error: 'lab errors', interrupted: 'interrupted', not_finished: 'not finished', not_weave_verified: 'without verified evidence', recipe_unavailable: 'recipe not in a public record' }
+@@ -129,17 +133,18 @@ export function AgentHistoryFacts({ history, campaign, replayed = false }: { his
+ }
+ 
+ /** The declared discovery protocol and selection budget, in plain words. */
+-export function DiscoveryProtocolFacts({ declaration, campaign, transportRetry }: { declaration: DiscoveryDeclaration; campaign?: { campaign_id: string; state?: string | null }; transportRetry?: TransportRetryDeclaration | null }) {
++export function DiscoveryProtocolFacts({ declaration, campaign, transportRetry, fireability = false }: { declaration: DiscoveryDeclaration; campaign?: { campaign_id: string; state?: string | null }; transportRetry?: TransportRetryDeclaration | null; fireability?: boolean }) {
+   const caller = declaration.pre_check?.caller_model
+   const v3 = declaration.history !== undefined
+   const replayed = declaration.replay !== undefined
+   return <div className="discovery-protocol">
+     <dl className="facts compact">
+       <Field name="Discovery protocol">{discoveryName(declaration)}</Field>
+-      <Field name="Selection budget">{discoveryBudget(declaration, transportRetry)}</Field>
++      <Field name="Selection budget">{discoveryBudget(declaration, transportRetry, fireability)}</Field>
+       <Field name="Schedule identity">{declaration.schedule_identity.endsWith('v2-order-aware') ? 'Order-aware: order counts only for overlapping same-kind faults on one tool' : 'Sorted primitives (seed and order ignored)'}</Field>
+     </dl>
+     <p className="muted">{declaration.dispatch_rule}</p>
++    {fireability && <p className="muted">{FIREABILITY_DISPATCH}</p>}
+     {typeof declaration.explorer_transport_retries_max === 'number' && <p className="muted">{isLabBackoff(transportRetry) ? LATER_PHASE_RETRIES_V2 : LATER_PHASE_RETRIES}</p>}
+     {caller && <details><summary>Pre-check caller model · this agent's limits and typical path</summary><ul className="muted">{caller.facts.map(fact => <li key={fact}>{fact}</li>)}</ul><p className="muted">Caller model <code>{caller.caller_id}</code> describes {caller.validated_against}. The pre-check changes only which picks run; it never changes what the Actor sees or how a trial is scored.</p></details>}
+     {replayed && (declaration.replay ? <HistoryReplayFacts replay={declaration.replay} /> : <p className="muted">{REPLAY_AT_PLAN_TIME}</p>)}

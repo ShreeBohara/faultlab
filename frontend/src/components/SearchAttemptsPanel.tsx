@@ -1,11 +1,13 @@
 import { getSearchAttempts, type SearchAttempt, type TransportRetry } from '../searchAttempts'
 import type { HistoryReplaySlot, HistoryRowMatch } from '../runPlans'
+import { EXPLORER_SELECTION_V3, decisionText, refusedText, type ExplorerFireability } from '../historyFireability'
 import { useResource } from '../useResource'
 import { Empty, EpisodeLinks, Hash, Json, Panel, ResourceNote } from './common'
 
 const decisionLabel = {
   SELECTED: 'Selected for execution', SKIPPED_DUPLICATE: 'Duplicate declined · no Actor trial', INVALID_OUTPUT: 'Invalid output · no Actor trial',
   SKIPPED_UNREACHABLE: 'Refused by the reachability pre-check · no Actor trial', PRECHECK_FAILED: 'Pre-check could not run · no Actor trial',
+  SKIPPED_UNFIREABLE: 'Refused by the history fireability rule · no Actor trial',
 }
 const verdictLabel = { FORCED: 'Forced', NOT_FORCED: 'Not forced', IMPOSSIBLE: 'Impossible' }
 const failureText = (retry: TransportRetry) => retry.code === 'HTTP_ERROR' ? `HTTP ${retry.http_status}` : retry.code.replaceAll('_', ' ').toLowerCase()
@@ -30,6 +32,25 @@ export const replaySummaryText = (rows: SearchAttempt[]) => {
     : `${first}. No Explorer slot is recorded: either discovery has not reached one yet, or it ended after the replays (for example because their sources used up the campaign's candidate requests); the campaign's recorded outcome says which.`
 }
 
+/** History fireability: this pick's check against the plan's frozen table, and its slot's re-plan if the rule refused it. */
+function Fireability({ row, rows }: { row: SearchAttempt; rows: SearchAttempt[] }) {
+  const check = row.fireability
+  if (!check) return null
+  const replan = rows.find(other => other.fireability?.replan_of === row.selection_ref)
+  return <div className="reachability">
+    {check.replan_of && <p>Re-plan request for this slot, after refused selection <code>{check.replan_of}</code>.</p>}
+    {replan && <p>This slot received one re-plan request: <code>{replan.selection_ref}</code> · {decisionLabel[replan.search_decision.status]}.</p>}
+    <p>History fireability: {decisionText(check)}</p>
+    {!!check.refused_targets.length && <ul className="fault-verdicts">{check.refused_targets.map(target => <li key={`${target.kind}-${target.target_service}-${target.target_tool}`}><strong>Refused</strong> · {refusedText(target)}</li>)}</ul>}
+  </div>
+}
+
+/** Discovery slots left without an Explorer request because re-plans used the plan's declared requests (recorded). */
+export function UnrequestedSlots({ summary }: { summary?: ExplorerFireability }) {
+  if (!summary?.slots_without_request.length) return null
+  return <div className="notice" aria-label="Discovery slots without an Explorer request">{summary.slots_without_request.map(slot => <p key={slot.record_id}>Selection {slot.selection_index + 1} · no Explorer request, no Actor trial: {slot.reason}</p>)}</div>
+}
+
 function Reachability({ row, rows }: { row: SearchAttempt; rows: SearchAttempt[] }) {
   const decision = row.search_decision
   if (!decision.discovery_protocol) return null
@@ -46,21 +67,25 @@ function Reachability({ row, rows }: { row: SearchAttempt; rows: SearchAttempt[]
   </div>
 }
 
-export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: string; onEpisode: (id: string) => void }) {
+/** fireability: the campaign's history fireability records (GET …/experiments explorer_fireability), for slots left without a request. */
+export function SearchAttemptsPanel({ campaignId, onEpisode, fireability }: { campaignId: string; onEpisode: (id: string) => void; fireability?: ExplorerFireability }) {
   const resource = useResource(campaignId ? `search-attempts:${campaignId}` : null, () => getSearchAttempts(campaignId), 6000)
   if (!campaignId) return null
   const rows = resource.data
   const v2 = !!rows?.some(row => row.search_decision.discovery_protocol)
   const replays = rows?.filter(row => row.history_replay) ?? []
+  const fire = !!rows?.some(row => row.fireability)
   return <Panel title="Fault search · selection attempts">
     <p className="muted">Explorer responses and executed Actor trials are different counts. A declined duplicate still uses a model request. Only the trial ledger records whether a selected fault actually ran and triggered.</p>
     <ResourceNote resource={resource} />
-    {rows && <div className="stat-strip"><div><strong>{rows.length - replays.length}</strong><span>Recorded selection responses</span></div>{!!replays.length && <div><strong>{replays.length}</strong><span>History replays · no Explorer request</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'SELECTED').length}</strong><span>Selected for execution</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_DUPLICATE').length}</strong><span>Duplicates declined</span></div>{v2 && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNREACHABLE').length}</strong><span>Refused by pre-check</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'INVALID_OUTPUT').length}</strong><span>Invalid selections</span></div></div>}
+    {rows && <div className="stat-strip"><div><strong>{rows.length - replays.length}</strong><span>Recorded selection responses</span></div>{!!replays.length && <div><strong>{replays.length}</strong><span>History replays · no Explorer request</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'SELECTED').length}</strong><span>Selected for execution</span></div><div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_DUPLICATE').length}</strong><span>Duplicates declined</span></div>{v2 && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNREACHABLE').length}</strong><span>Refused by pre-check</span></div>}{fire && <div><strong>{rows.filter(row => row.search_decision.status === 'SKIPPED_UNFIREABLE').length}</strong><span>Refused by history fireability</span></div>}<div><strong>{rows.filter(row => row.search_decision.status === 'INVALID_OUTPUT').length}</strong><span>Invalid selections</span></div></div>}
     {rows?.length === 0 && <Empty>No search-decision records available for this campaign. Older records may contain executed trials without a selection ledger; this does not mean no faults were tested.</Empty>}
     {!!rows?.length && <p className="muted">A different seed or hypothesis alone does not create a new fault schedule. These records cover autonomous discovery, not challenge or selector-comparison studies.</p>}
     {v2 && <p className="muted">{rows?.some(row => row.search_decision.discovery_protocol === 'faultlab-discovery/v3-history-reachability') ? 'Discovery protocol v3 with the reachability pre-check (v2\'s dispatch, plus the frozen agent history in the saved plan)' : 'Discovery protocol v2'}: before any paid Actor trial, a free replay of the real simulator labels each fault for this agent. Only picks whose every fault is forced run; a refused pick gets one re-plan request in the same slot.</p>}
     {!!replays.length && <p className="muted">{replaySummaryText(rows ?? [])}</p>}
-    {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 ? ' · re-plan' : ''} · {row.history_replay ? `${historyReplayTitle(row.history_replay)} · no Explorer request` : decisionLabel[row.search_decision.status]}</summary>
+    {fire && <p className="muted">History fireability ({EXPLORER_SELECTION_V3}): before any Actor trial, each pick is checked against the saved plan's frozen table; a pick whose every fault is on a target that fired in fewer than half of at least 3 verified history episodes is refused, and its slot gets one re-plan inside the plan's declared Explorer requests. A pick with a fault on any other target runs, even beside such a target.</p>}
+    <UnrequestedSlots summary={fireability} />
+    {rows?.map(row => <details className="attempt" key={row.selection_ref}><summary>Selection {row.selection_index + 1}{row.search_decision.slot_request === 2 || row.fireability?.slot_request === 2 ? ' · re-plan' : ''} · {row.history_replay ? `${historyReplayTitle(row.history_replay)} · no Explorer request` : decisionLabel[row.search_decision.status]}</summary>
       <p><code>{row.selection_ref}</code> · {row.provenance.replaceAll('_', ' ')}</p>
       {row.search_decision.reason && <p>Recorded reason: {row.search_decision.reason.replaceAll('_', ' ').toLowerCase()}.</p>}
       {row.transport_retries?.map(retry => <p key={retry.retry_id} className="notice">{retry.protocol === undefined
@@ -71,6 +96,7 @@ export function SearchAttemptsPanel({ campaignId, onEpisode }: { campaignId: str
       <p>Schedule identity: <Hash value={row.search_decision.schedule_hash} /></p>
       {(row.selected_output ?? row.output)?.fault_spec.primitives.map((primitive, index) => <p key={index}>{primitive.kind} · {primitive.target_service}.{primitive.target_tool} · occurrence {primitive.occurrence}</p>)}
       <Reachability row={row} rows={rows} />
+      <Fireability row={row} rows={rows} />
       {!!row.search_decision.prior_selection_refs.length && <p>Earlier selection references: {row.search_decision.prior_selection_refs.join(', ')}</p>}
       {!!row.search_decision.prior_episode_refs.length && <><p>Earlier executed trials for this schedule</p><EpisodeLinks ids={row.search_decision.prior_episode_refs} onSelect={onEpisode} /></>}
       <Json value={row} title="Inspect original response and saved selection decision" />

@@ -1,0 +1,20 @@
+plan-v3-new: explorer_selection=True, evidence_retry=faultlab-evidence-retry/v3/24
+plan-v4-new: explorer_selection=True, evidence_retry=faultlab-evidence-retry/v3/24
+plan-v3-old: explorer_selection=False, evidence_retry=faultlab-evidence-retry/v3/24
+plan-v1: explorer_selection=False, evidence_retry=faultlab-evidence-retry/v3/24
+search-attempts statuses: ['SKIPPED_UNFIREABLE', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED', 'SELECTED']
+experiments keys: ['counterexamples', 'evidence', 'explorer_fireability', 'ingestions', 'portability_ids'] | recording has rule block: True
+
+ RUN  v4.1.11 /Users/shree/FaultLab_Scratch/builder/contract/frontend
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  06:45:53
+   Duration  287ms (transform 130ms, setup 0ms, import 164ms, tests 5ms, environment 0ms)
+
+
+
+vitest exit 0
+scratch removed: True
+[fixer guard] refused outbound connections: 0; loopback connects: 0

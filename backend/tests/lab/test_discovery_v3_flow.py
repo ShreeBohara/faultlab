@@ -59,12 +59,20 @@ def recorded_run(owner, campaign, answer, monkeypatch):
     return ledger, runner, selections
 
 
+# Added to discovery requests only by a plan that declares the history fireability rule (app.lab.fireability): every new
+# v3-history or v4 plan since September 30. v3-history-reachability plans and every older plan never carry them.
+FIREABILITY_KEYS = ('explorer_selection_protocol', 'history_fireability', 'slot_request')
+
+
 def without_history(messages, base):
-    """A v3 request as its base protocol would send it: no agent_history, the base's discovery_protocol."""
+    """A v3 request as its base protocol would send it: no agent_history, the base's discovery_protocol (and, for a new
+    v3-history plan, none of the history fireability rule's keys)."""
     stripped = []
     for system, user in messages:
         context = json.loads(user['content'])
         context.pop('agent_history')
+        if 'explorer_selection_protocol' in context:
+            for key in FIREABILITY_KEYS: context.pop(key)
         if base == DISCOVERY_V1: context.pop('discovery_protocol')
         else: context['discovery_protocol'] = base
         stripped.append([system, {**user, 'content': canonical_json(context)}])
@@ -145,6 +153,14 @@ def test_history_reaches_every_discovery_request_and_changes_nothing_else(tmp_pa
         v3_users = [[{'content': ''}, user] for _, user in without_history(v3_runner.provider.messages, base)]
         assert normalize(v3_users) == normalize(base_users)
         assert 'discovery_protocol' not in json.loads(base_runner.provider.messages[0][1]['content']) or base == DISCOVERY_V2
+        # A new v3-history plan (v1 base) also freezes the history fireability rule and states it in every discovery request;
+        # this history (dev-5 fired 3 of 3) refuses no target, so every decision below is still the base protocol's.
+        declared = plan.get('explorer_selection')
+        assert (declared is not None) == (v3 == DISCOVERY_V3)
+        assert all(('history_fireability' in r) == (v3 == DISCOVERY_V3) for r in requests)
+        if declared is not None:
+            assert declared['table']['refused_targets'] == [] and all(r['history_fireability']['rows'] == declared['table']['rows'] for r in requests)
+            assert all(row['fireability']['status'] in ('ALLOWED', 'NOT_CHECKED_DUPLICATE') for row in v3_selections)
         decisions = lambda selections: normalize([[{'content': canonical_json({k: v for k, v in row['search_decision'].items()
                                                                                 if k != 'discovery_protocol'})}] for row in selections])
         assert decisions(v3_selections) == decisions(base_selections)
