@@ -23,15 +23,18 @@ flowchart TD
   C -->|counterexample| E[Return counterexample evidence to the Mechanic]
   E --> M
   C -->|inconclusive| K
-  C -->|observed pass| P{Fixed promotion predicate accepts?}
+  C -->|observed pass| V[Fresh paired promotion trials]
+  V --> P{Fixed promotion predicate accepts?}
   P -->|not accepted| K
-  P -->|accepted| A[Atomic policy update if the expected parent is current]
+  P -->|accepted| G{Expected parent is still current?}
+  G -->|yes| A[Atomically commit the decision and active policy update]
+  G -->|no| X[Abort stale-parent transaction; active pointer unchanged]
   A --> R[Adapter applies the accepted rule in later runs]
 ```
 
 Source validation compares the incumbent and candidate in fresh worlds under the same retained fault. The incumbent must still fail the target check, and the candidate must remove that failure without introducing another. A challenge counterexample becomes development feedback; an inconclusive challenge cannot qualify a repair.
 
-The independent promotion predicate also requires matching policy identities, complete repeated evidence, healthy-trial completion, no aggregate regression and a strict observed gain. The decision and active-policy update share one transaction, which checks the expected parent before changing the pointer. A proposal is therefore not an accepted repair, and an observed challenge pass is not a general robustness guarantee.
+After an observed challenge pass, a separate fresh paired evaluation supplies the promotion evidence. The independent promotion predicate requires matching policy identities, complete repeated evidence, healthy-trial completion, no aggregate regression and a strict observed gain. The decision and active-policy update share one transaction, which checks the expected parent before changing the pointer. A stale parent aborts the transaction. A proposal is therefore not an accepted repair, and an observed challenge pass is not a general robustness guarantee.
 
 Implementation: [learning orchestration](../backend/app/lab/learning.py), [paired evaluation](../backend/app/lab/evaluation.py), [active challenge](../backend/app/lab/challenge.py) and [promotion predicate and commit](../backend/app/lab/promotion.py).
 
