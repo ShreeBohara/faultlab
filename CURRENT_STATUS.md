@@ -1,15 +1,23 @@
 # FaultLab — current status
 
-Updated **September 30, 2026 (UTC)**. This is the single current status and continuation page.
+Updated **October 8, 2026 (UTC)** (handoff). This is the single current status and continuation page.
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
 **Install and test:** [Setup](docs/setup.md#install-and-test-start-here) has the current commands,
 timings and expected results for a fresh clone, and the port settings.
 
-## BLOCKER (2026-09-30 22:38 UTC): model provider refuses calls
+## HANDOFF (2026-10-08): read [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md) first
 
-W&B Inference returns **HTTP 402 Payment Required** for every call since **2026-09-30 22:38:46 UTC**
+Claude handed the project to another agent on 2026-10-08. The handoff page has the state, the open goal (first ACCEPTED
+policy), next steps, hard rules and how live runs are done. **Provider status from the owner's billing screenshots
+(2026-10-08):** CoreWeave Forge / W&B Academic plan free trial **ends 2026-10-12**; pay-as-you-go not active; inference
+stops at the included $100/month allowance; October usage $0.00 / $100.00. The 402 below is consistent with the
+September allowance being used up. Billing is the owner's job.
+
+## Earlier blocker (2026-09-30 22:38 UTC): model provider refused calls
+
+W&B Inference returned **HTTP 402 Payment Required** for every call from **2026-09-30 22:38:46 UTC**
 (`artifacts/product-live-2026-09-30/diagnosis-probe2/answers.jsonl`). No paid run can succeed until the owner checks W&B
 billing (credit or spending limit). Agents must not touch billing. Carried conservative total **$937.99**
 (ledger `artifacts/product-live-2026-09-28/ledger.json`).

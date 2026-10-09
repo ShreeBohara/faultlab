@@ -1,5 +1,7 @@
 # FaultLab — agent entry point
 
+> **2026-10-08: the project was handed to a new agent. Read [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md) first** (git layout, state, rules, next steps); it wins where this file conflicts.
+
 Read [CURRENT_STATUS.md](CURRENT_STATUS.md) and [AGENTS.md](AGENTS.md), then the
 [September 27 product handoff](memory/context/product-continuation-2026-09-27.md).
 CURRENT_STATUS.md is the single current status; the handoff is a dated context and evidence map.

@@ -1,0 +1,323 @@
+{
+ "results": [
+  {
+   "lens": "facts",
+   "verdict": "Mostly accurate. Three claims are wrong and one omission matters for safety; nothing needed a model call. VERIFIED CORRECT: branch tip c6dc567; main cbbf957, unchanged since 2026-09-14 (reflog). 7120def contains backend/app/lab/diagnosis_guide.py, docs/PRODUCT_DIAGNOSIS_RULES_2026-09-30.md and scripts/experiments/diagnosis_probe.py. The three later commits (1999288, a4a8d52, c6dc567) touch only artifacts, the ledger and CURRENT_STATUS.md. Hashes match verify-2/REPORT.md: runtime 1abba8a6, service 3ce5bcd2, contract 6f9d7783, interpreter 6da0714a, prompt fff397c9. Test counts match verify-2/full-test-sh.log: line 216 '3135 passed, 180 skipped', lines 227-228 '29 files / 373 passed', line 247 'built', lines 283-284 '1 skipped / 19 passed', exit 0. Ledger carried_total = 937.99. Probe 1 matches diagnosis-probe/scoring.json: valid requested 40/40 vs 17/40; person-majority citation blame 0 vs 13+15=28; over 600 characters 0 vs 11; P1 UNINFORMATIVE. Probe 2 delivered 88 of 140. The P1b rule ('CONTROL >= 20 of 40 AND GUIDE <= 4 of 40', plus harness P2) is word-for-word in diagnosis-probe2-decl/DECLARATION.json. Harness b1eb7cda, RUBRIC 0fbe2556 and declared scorer 470fedf7 match by sha256. Rule 1 is always frozen into Learn plans (run_plans.py:712, 866). Rule 2 is gated on DIAGNOSIS_GUIDE_OFFERED = False (diagnosis_guide.py:43; run_plans.py:715, 867). '15 of 16' is at RECOMMENDATION.md:87. dev-5 '15 of 15' holds: 6/6 on the v2 probes plus 9/9 on v1 (doc, v2c section). Other confirmed items: smolagents 1.26.0, agent DeepSeek-V3.1, Mechanic V4-Pro-0813 (v2g registration.json and config-status.json); challenge 4 schedules x 3 pairs (challenge.py:1, 90); promotion 18 pairs plus strict gain (promotion.py:12, 24); assess_pairs is in completion_study.py and is byte-identical per verify-2; checks C1-C8; watcher arguments match v2g's declared stop rules; launcher flags exist (local.py:119-123); clock-drift flags exist; nothing FaultLab-related is running (the only caffeinate belongs to an unrelated Depth50 node server). Every named path exists. Run-table rows v2e and v2g match the doc. The working tree equals the backup tip for every key file checked except CURRENT_STATUS.md, which holds the pending handoff edit.",
+   "findings": [
+    {
+     "claim": "HANDOFF_2026-10-08.md:5-6 \"Nothing has ever been pushed.\"",
+     "problem": "main has been pushed to GitHub many times; only the backup branch has never been pushed.",
+     "evidence": "`git branch -a -vv` shows `main cbbf957 [origin/main]` and `remotes/origin/main cbbf957`. `git reflog show origin/main` lists 'update by push' entries for cbbf957, f6dac8f, 0a0b8f7, 237f511, ec9d162 and more. There is no remote ref for backup/part2-2026-09-22.",
+     "correction": "\"The backup branch has never been pushed (it has no remote ref). main (cbbf957, 2026-09-14) is already on GitHub as origin/main.\"",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "HANDOFF:4 and PROMPT:10 \"all current work is on the local branch backup/part2-2026-09-22. main is old.\"",
+     "problem": "Neither document explains the checkout layout. HEAD is main, and the working tree holds the backup branch's content as uncommitted changes. The commit script's own header forbids checking out the backup branch or committing on main. A new agent that reads 'work is on the backup branch' may run `git checkout backup/...` or `git commit` on main.",
+     "evidence": "`git branch --show-current` = main. `git status --short | wc -l` = 346. `git hash-object` equals the backup-tip blob for diagnosis_guide.py, run_plans.py, mechanic.py, learning.py, AGENTS.md and the ledger. commit_to_backup.sh:5-6: \"Never `git commit` on main. Never check out the backup branch (the working tree holds uncommitted Part 2 work).\" verify-2/REPORT.md section 1: \"HEAD is cbbf957 on main.\"",
+     "correction": "Add to section 5 and to the prompt: \"HEAD stays on main (cbbf957). The working tree holds the backup branch's files as uncommitted changes. Never `git checkout` the backup branch, never `git commit` on main, and never touch the real index. Commit only through commit_to_backup.sh.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:4 \"Everything below is committed on the local branch backup/part2-2026-09-22\" (and section 5 / prompt: commit via artifacts/phase22-2026-09-24/prep/commit_to_backup.sh)",
+     "problem": "The commit script itself is in no commit on any branch. It is git-ignored and exists only on disk. If the Desktop copy is lost, the only approved commit method is lost with it.",
+     "evidence": "`git check-ignore -v` gives `.gitignore:51:artifacts/  artifacts/phase22-2026-09-24/prep/commit_to_backup.sh`. `git log --all -- <script>` is empty. `git cat-file -e backup/part2-2026-09-22:<script>` fails. The file is on disk (2265 bytes, Sep 23).",
+     "correction": "Say the script is untracked and git-ignored, or add it to the handoff commit (the script's update-index --add --cacheinfo path ignores .gitignore).",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "HANDOFF section 6: \"Launch: use the launcher command in any run folder's history, or the transcript notes in CURRENT_STATUS.md.\" Also: \"Examples to copy: artifacts/product-live-2026-09-30/native-v2g-run/\"",
+     "problem": "No 2026-09-30 run folder records the launcher command, including v2g, the named example, and CURRENT_STATUS.md has no launch notes. The only full recipe with the model and pricing exports is in a 2026-09-28 plan.",
+     "evidence": "`grep -rln 'start-local|app.local|caffeinate'` finds nothing in artifacts/product-live-2026-09-30/ and nothing in CURRENT_STATUS.md. The only hits are artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md:200-218 (exports plus `caffeinate -dims ./scripts/start-local.sh --live --no-frontend --data-dir ...`) and plans/native/PLAN.md:189. That export block does not set FAULTLAB_LIVE_ENABLED, which docs/setup.md:296 says is required. It also sets run-specific caps (FAULTLAB_DOLLAR_CAP=200, FAULTLAB_MODEL_CALL_CAP=6000).",
+     "correction": "Point to artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md:200-218 for the exports and launcher. Add FAULTLAB_LIVE_ENABLED=true (docs/setup.md:296). Say that caps and the data dir must be re-declared for each run. v2g's folder is the example only for PLAN, DECLARATION, exports and checks.",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "PROMPT:14 \"Generated guardrails already pass source validation, with zero-violation challenges.\"",
+     "problem": "This reads as if the challenges were passed. Every challenge with 0 failed checks (v2d, and both v2f candidates) ended INCONCLUSIVE because a fault did not fire, so none counted as a pass.",
+     "evidence": "docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md, v2f table: \"0 failed checks ... INCONCLUSIVE\" for both candidates. v2d section: \"The result was INCONCLUSIVE, and the qualification was INCOMPLETE.\"",
+     "correction": "\"Generated guardrails have passed source validation, and their challenges showed 0 failed checks, but every challenge ended INCONCLUSIVE because a fault did not fire. No challenge has passed yet.\"",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "HANDOFF:65 v2f row: \"...a lone status-read fault that rarely fires (fixed by the fireability rule)\"",
+     "problem": "The fireability rule was built (661e2d0) and its only live run (v2g) never exercised it, so 'fixed' is not shown.",
+     "evidence": "Doc, v2g section: \"Fireability rule: no pick needed refusing; the Explorer did not choose the refused target this time. So the rule was not exercised, and no challenge was reached.\" The v2d-v2g pattern table says \"since addressed\".",
+     "correction": "\"(addressed by the fireability rule; built, not yet exercised live)\"",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "HANDOFF:58-59 \"With v2.1, report-format failures went to 0 of 71 episodes\"",
+     "problem": "The 71 episodes cover adapter v2 and v2.1 together, not v2.1 alone.",
+     "evidence": "Doc, v2b section: \"Across all 71 v2 and v2.1 agent episodes, every C5 came with a submitted report and with C3 or C4 ... 0 reports were missing or unreadable.\" The CURRENT_STATUS v2.1 row says \"in 71 v2/v2.1 episodes\".",
+     "correction": "\"Across 71 adapter v2 and v2.1 episodes, 0 reports were missing or unreadable; every remaining failure is a real behaviour mistake.\"",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:63 v2d row: \"challenge INCONCLUSIVE (a fault that never fired)\"",
+     "problem": "The doc's later correction says the lone status-read fault fired in 1 of 6 episodes. The challenge stopped at a pair where it did not fire.",
+     "evidence": "Doc, v2d 'Correction': \"it fired in 1 of 3 incumbent episodes and 0 of 3 candidate episodes\". CURRENT_STATUS v2d row: \"it fired in 1 of 6 episodes\".",
+     "correction": "\"challenge INCONCLUSIVE (a status-read fault that did not fire in a pair)\"",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:30-31 under 'State on 2026-10-08': \"The full suite is green: backend 3,135 passed ...\"",
+     "problem": "The numbers are correct, but they come from the verify-2 run of 2026-09-30, not a run on 2026-10-08. They still apply because no code changed after 7120def.",
+     "evidence": "verify-2/full-test-sh.end = 2026-09-30T22:13:43Z, exit 0. The later commits 1999288, a4a8d52 and c6dc567 touch only artifacts/, the ledger and CURRENT_STATUS.md (`git show --name-only`).",
+     "correction": "\"Last full suite: 2026-09-30 (verify-2), green: ... No code has changed since 7120def.\"",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:37-43 and PROMPT:29-30 billing: \"Pay-as-you-go is not active, and there is no payment method on file ... Calls should work again in October.\"",
+     "problem": "This is taken from screenshots and cannot be checked in the repo. Three gaps: (1) The owner's message today says credits have been added, which neither document mentions. (2) The ledger note says 'Owner added funds 2026-09-28; old $1,000 cap no longer binds', which is never reconciled with 'no payment method on file'. (3) No overall spending ceiling is given to the next agent. 'Calls should work again' is an inference. The ledger's token-priced estimates from 09-28 to 09-30 total only about $11.55, and real September spend before that is unknown.",
+     "evidence": "ledger.json note: \"Owner added funds 2026-09-28 (amount not stated); old $1,000 cap no longer binds.\" The token_priced_estimate values in ledger entries 1-16 total about 11.55. The relayed user request says: \"I think I have added the credits, but of course, I can add more anytime we need.\"",
+     "correction": "Add: \"Owner says credits were added on 2026-10-08 (not yet confirmed by a call). There is no project-wide dollar cap beyond each run's declared bound; ask the owner for one.\" Mark 'calls should work again' as unverified until the cheap test call succeeds.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:89 \"Offering it is one reviewed flip of a constant in backend/app/lab/diagnosis_guide.py\"",
+     "problem": "The flip itself is correct (it gates both run options and plan freezing). But a committed test asserts the flag is False and would fail. The flip also changes the runtime identity, so agents must be registered again.",
+     "evidence": "backend/tests/lab/test_diagnosis_rules.py:529: `assert 'diagnosis_guide' not in options['learn'] and diagnosis_guide.DIAGNOSIS_GUIDE_OFFERED is False`. verify-2 REPORT note 4: when the runtime changes, every agent must be registered again.",
+     "correction": "\"...one reviewed flip of DIAGNOSIS_GUIDE_OFFERED (diagnosis_guide.py:43), plus updating test_diagnosis_rules.py:529, a new runtime hash and re-registering the agent.\"",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:4-5 \"tip c6dc567 plus this handoff commit\"",
+     "problem": "The handoff commit has not been made yet. Both handoff files are untracked, and the working-tree CURRENT_STATUS.md (with the new HANDOFF section) differs from the tip.",
+     "evidence": "`git cat-file -e backup/...:HANDOFF_2026-10-08.md` and the same for HANDOFF_PROMPT fail. CURRENT_STATUS.md working-tree blob 66322a7d vs tip 77207219. The backup reflog's latest entry is c6dc567 at 2026-09-30 15:42.",
+     "correction": "Before handing off, commit HANDOFF_2026-10-08.md, HANDOFF_PROMPT_2026-10-08.md and CURRENT_STATUS.md (ideally with commit_to_backup.sh) through the script, then update the stated tip id.",
+     "severity": "MINOR"
+    }
+   ]
+  },
+  {
+   "lens": "rules",
+   "verdict": "The handoff gets most of the hard rules right. These match the repo docs and the user's memory: never run two agents at once (HANDOFF:149, prompt:27), no push without the owner's OK, never touch billing, the protected files, the gate rules, declarations written with quoted heredocs and $ figures re-read before hashing, closing the dashboard before a paid run and running the clock-drift checks after it, the commit_to_backup.sh helper, and the ledger total of $937.99 (ledger.json carried_total = 937.99). The watcher's final states also match memory (watch_learn_v3.py:16 TERMINAL = {NO_CHANGE, STOPPED, COMPLETED, ERROR}).\n\nProblems found:\n- One false statement: \"Nothing has ever been pushed.\" GitHub main is at cbbf957.\n- One dangerous gap: the files on disk are deliberately checked out on `main`, with 120 modified and 226 untracked files. Neither the handoff nor the prompt warns the next agent not to check out the backup branch, or to reset, clean or stash.\n- One wrong pointer: the launch-recipe reference in \u00a76 points to places that do not contain the recipe.\n- Standing rules left out: the W&B destination (shreetbohara-quinstreet/Faultlab), keeping Aria publishing off, no provider calls during startup or tests, never resetting the ledger when the agent changes, the owner's reporting preferences (no partial-completion claims, observed vs inferred, explain step by step), the rules for keeping claims separate, keeping historical results unchanged and CURRENT_STATUS up to date, and checking exact model prices before a paid run.\n- The handoff commit described in HANDOFF:5 has not been made yet.\n- The prompt sends the next agent to AGENTS.md without saying which of its lines are out of date.",
+   "findings": [
+    {
+     "claim": "HANDOFF_2026-10-08.md:5-6 \"`main` (`cbbf957`) is old and untouched. Nothing has ever been pushed.\" The same line is in user memory faultlab-handoff-2026-10-08.md:15 (\"Nothing was pushed\") and faultlab-claude-handoff.md:10 (\"nothing has been pushed\").",
+     "problem": "This is false. main is on GitHub (origin) at cbbf957, and the repo is public. What is true is that nothing after cbbf957 has been pushed, and the backup branch has never been pushed.",
+     "evidence": "`git for-each-ref refs/remotes` -> `origin cbbf957`, `origin/main cbbf957`. CURRENT_STATUS.md:1107 \"local `main` and GitHub `main` were at `cbbf957` (September 14)\". User memory faultlab-read-only-while-another-agent-builds.md:11: a commit and push were done (`f0a1c1a` on `main`) on 2026-09-13. AGENTS.md:31-32: \"The user made `ShreeBohara/faultlab` public\".",
+     "correction": "Replace it with: \"GitHub `main` (public repo ShreeBohara/faultlab) is at cbbf957 from mid-September. Nothing after it has been pushed, and the backup branch has never been pushed. Anything pushed later becomes public.\" Make the same fix in the two memory files.",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "HANDOFF:4-6 \"Everything below is committed on the local branch `backup/part2-2026-09-22` ... `main` (`cbbf957`) is old\" and prompt:10 \"all current work is on the local branch `backup/part2-2026-09-22`. `main` is old.\"",
+     "problem": "Neither says that the files on disk are deliberately checked out on `main`, with the newer work sitting in the working tree. Neither forbids `git checkout backup/...`, reset, clean, stash or `git add -A`. A new agent will naturally run `git checkout backup/part2-2026-09-22` or tidy what looks like a dirty tree. That would destroy work, or `git clean -fdx` would delete about 4.5 GB of ignored evidence.",
+     "evidence": "`git rev-parse --abbrev-ref HEAD` -> `main` (`cbbf957`). `git status --short` -> 120 `M` and 226 `??`. commit_to_backup.sh:4-6: \"Never `git commit` on main. Never check out the backup branch (the working tree holds uncommitted Part 2 work).\" product-continuation-2026-09-27.md:254: \"Do not reset, clean, check out the backup branch, stage everything or overwrite files.\" CURRENT_STATUS.md:1105: \"Do not reset or stage everything relative to the intentionally old main.\" pitfalls-and-decisions.md item 14 (line 16): \"Never use destructive reset/checkout or stash-away\". CURRENT_STATUS.md:1125: ignored `artifacts/` holds about 4.5 GB.",
+     "correction": "Add to \u00a75 and the prompt: \"The working folder is deliberately on `main` (cbbf957). Its files match the backup branch, so `git status` shows hundreds of changes; that is expected. Never check out the backup branch, and never reset, clean, stash or `git add -A`. Commit only with commit_to_backup.sh. `artifacts/` (about 4.5 GB, git-ignored) and the stores under /Users/shree/FaultLab_Runs/ are not in git. Never delete them.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:153-154 \"Launch: use the launcher command in any run folder's history, or the transcript notes in `CURRENT_STATUS.md`. Export the model, pricing and W&B variables\"",
+     "problem": "Neither place it names contains the launcher or the settings to export. The real recipe, including the W&B entity and project, the pricing values and WANDB_ERROR_REPORTING=false, is in a September 28 plan the handoff never mentions.",
+     "evidence": "`grep -c -E \"start-local|caffeinate|WANDB_ENTITY|FAULTLAB_CONFIRMED_ENTITY\" CURRENT_STATUS.md` -> 0. `grep -rl -E \"start-local|caffeinate\" artifacts/product-live-2026-09-30/native-v2{,b,c,d,e,f,g}-run` -> 0 files. The recipe is in artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md:190-219: `export WANDB_ENTITY=shreetbohara-quinstreet WANDB_PROJECT=Faultlab FAULTLAB_CONFIRMED_ENTITY=shreetbohara-quinstreet`, model and pricing exports with `FAULTLAB_PRICING_VERIFIED=true`, `WANDB_ERROR_REPORTING=false`, then `caffeinate -dims ./scripts/start-local.sh --live --no-frontend --data-dir ...`.",
+     "correction": "Point \u00a76 at artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md \u00a74 (steps 1-2), or copy its non-secret export block into the handoff. Note that prices must be checked again first.",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "The handoff and prompt never state the W&B destination (entity/project).",
+     "problem": "This is a missing standing setting. Without it the next agent cannot run the one cheap provider test (`check-provider.sh --confirm-entity`) or a live run. AGENTS.md:39 tells it to \"Confirm the credited W&B entity with the user\", which the newer docs say not to repeat.",
+     "evidence": "CURRENT_STATUS.md:1029 \"Confirmed W&B destination: `shreetbohara-quinstreet/Faultlab` (capital F).\" product-continuation-2026-09-27.md:212-213: \"Do not ask the owner to reconfirm it without a genuine reason.\" AGENTS.md:60-61 needs `--confirm-entity CONFIRMED_ENTITY`. backend/app/config.py:48 `faultlab_confirmed_entity: str = ''`.",
+     "correction": "Add: \"W&B destination: entity `shreetbohara-quinstreet`, project `Faultlab` (capital F, case-sensitive). Set WANDB_ENTITY, WANDB_PROJECT and FAULTLAB_CONFIRMED_ENTITY to these. It is already confirmed; AGENTS.md:39 is superseded.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Handoff \u00a75 and the prompt do not mention Aria.",
+     "problem": "The owner's standing choice to keep Aria publishing off is missing. Turning it on publishes a Finished W&B run, which triggers extra Aria spending.",
+     "evidence": "backend/app/config.py:44-47: \"without publishing a Finished W&B run that would trigger additional Aria spending\" / `faultlab_aria_publish_enabled: bool = False`. .env.example:19-20 `# Aria remains deferred` / `FAULTLAB_ARIA_PUBLISH_ENABLED=false`. CURRENT_STATUS.md:1031 \"Aria remains deferred\" and :1037 \"Aria is off\". product-continuation-2026-09-27.md:225: \"Aria remains deferred by the owner's earlier choice; do not imply it is verified.\" docs/local-operation.md:39: \"The launcher keeps Aria publication disabled.\"",
+     "correction": "Add to \u00a75: \"Aria: keep FAULTLAB_ARIA_PUBLISH_ENABLED=false (the owner deferred it, and it adds spending). Never claim Aria is verified. TypeSafe has no contract; do not invent one.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Handoff \u00a75 covers paid runs but says nothing about provider calls outside them.",
+     "problem": "A standing rule is missing: startup, tests, health checks, page loads and browsing saved evidence must never call providers, and provider calls must be explicitly requested.",
+     "evidence": "CLAUDE.md:15 \"Startup, saved-evidence browsing and offline checks must not call providers.\" AGENTS.md:40-41 \"Provider calls must be explicitly requested. Startup, page loads, health checks, and tests must work without credentials and must not contact providers.\" memory/START_CLAUDE.md:12 and product-continuation-2026-09-27.md:214 say the same.",
+     "correction": "Add to \u00a75: \"No provider calls except a declared paid run or the one cheap test call the owner asked for. Startup, tests, health checks and browsing saved evidence must stay provider-free.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:33-36 gives the ledger total, and :37-41 gives the W&B billing ($0.00 / $100.00 October usage). Prompt:24-25 says \"Keep the spending ledger\".",
+     "problem": "Neither says the ledger carries on from $937.99 across the switch to a new agent and account. Neither separates the ledger from the provider's monthly usage counter. Neither says how much the new agent may spend without asking (the old $1,000 cap no longer binds, but that is not permission for unbounded unattended spending). A new agent could treat October's $0.00 as a fresh start.",
+     "evidence": "CURRENT_STATUS.md:1075 \"The ledger begins with Phase 2; changing accounts, agents or machines does not reset it.\" product-continuation-2026-09-27.md:221 \"Never reset it when switching agents/accounts.\" CURRENT_STATUS.md budget section: \"do not invent either, reset prior charges or interpret generous resources as permission for unbounded unattended spending.\" ledger.json note: \"old $1,000 cap no longer binds\".",
+     "correction": "Add: \"The ledger keeps running from $937.99 under ChatGPT. Never reset it. W&B's monthly usage counter is a different number. There is no fixed project cap, but every paid run needs declared bounds; ask the owner before anything large.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "How to report: HANDOFF:134 \"Report NO_CHANGE, ERROR and deviations as they are\"; prompt:32-33 \"keep updates short and in plain words. Tell me plainly when something fails or when you were wrong.\"",
+     "problem": "This is only part of the owner's recorded preferences. Missing: no partial-completion claims (never call a stage complete without its saved evidence); lead with the outcome and what is still unproven; keep observed separate from inferred; explain one step at a time with real examples and define terms; check by hand (code, raw model answers, simulator effects, UI), not just with tests.",
+     "evidence": "User memory shree-working-preferences.md:14: \"lead with the outcome and what is still unproven, distinguish model/API failure from a truthful business outcome from an unproven repair, keep failed and NO_CHANGE attempts, and never call a stage complete without its saved evidence.\" explain-slowly-plain-language.md:11,15. product-continuation-2026-09-27.md:11-12: \"They explicitly distrust relying only on the test suite\" and :296-297 \"Report what was observed separately from inference\". NEW_CHAT_PROMPT.md:16 \"Verify manually as well as with tests.\" CLAUDE.md:10.",
+     "correction": "Add a 'How to report' bullet to \u00a75 and the prompt with these points. The key line: \"Never say something works or is done without saved evidence; say what is still unproven.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:26 \"No generated policy has ever reached ACCEPTED. That is the open goal.\" HANDOFF:112 \"This [history-replay Learn campaign] is the best current chance at the first ACCEPTED.\"",
+     "problem": "The rules that keep claims separate are missing. A correct rejection is a working lab, not a failure. Development-qualified or CERTIFIED is not ACCEPTED. An ACCEPTED from a replayed known-failing recipe is not discovery, transfer or held-out safety. Hand-written policies are not learned repairs. An untriggered fault is not a passing test. Calling ACCEPTED 'the open goal' also narrows the owner's broader product direction.",
+     "evidence": "CLAUDE.md:17-18 \"Development qualification, unseen-case results and active policy are different claims. A correct rejection can be a successful lab workflow; it is not a successful learned repair.\" CURRENT_STATUS.md:1371-1375: no forced tool calls; untriggered faults do not count; \"Handwritten reference policies ... are not learned-repair evidence\". Memory faultlab-live-0929.md:62: \"replay sources must always be labelled as replays, never as independent discovery.\" faultlab-accepted-unreachable.md:19: \"labelled 'development-qualified', never ACCEPTED\". native-v2g-run/PLAN.md:30-32: ACCEPTED here would be \"from a replay of a known failing development recipe ... not discovery, transfer or held-out safety.\" CURRENT_STATUS.md:1343-1361: five-part product direction.",
+     "correction": "Add to \u00a75: \"Keep these claims separate: development-qualified/CERTIFIED vs ACCEPTED vs held-out vs transfer; replay vs discovery. Label a replay ACCEPTED as such. A correct REJECTED is a working lab. Never count hand-written policies or untriggered faults.\" Reword :26 as \"the main open milestone\" and list the other open product milestones.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Handoff \u00a75 forbids re-rolling runs but says nothing about historical documents or the status page.",
+     "problem": "Missing: historical result files and verdicts must stay unchanged, with corrections added as new notes; closed studies and partitions must not be reused or rerun; CURRENT_STATUS.md (and memory) must be kept current as work goes on. The earlier prompt said this, and the new prompt drops it.",
+     "evidence": "AGENTS.md:7 \"Historical result files must remain unchanged; add corrections in new notes.\" memory/README.md:13-14 \"Update CURRENT_STATUS.md as work proceeds; keep dated reports and historical verdicts intact.\" product-continuation-2026-09-27.md:295-298. NEW_CHAT_PROMPT.md:18 \"update the status and memory as you work.\" CURRENT_STATUS.md:1348 \"do not reuse a closed partition\". pitfalls item 8 (line 10) \"Do not retry closed studies for a nicer outcome.\"",
+     "correction": "Add: \"Never edit historical results or verdicts; add dated correction notes. Do not reuse closed partitions. Keep CURRENT_STATUS.md current, update the ledger after each run, and record your own handoff notes.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "HANDOFF:135-140, the 'Before a paid run' checklist.",
+     "problem": "It leaves out checking the exact model availability and prices. This matters more now, because the Academic trial ends on 2026-10-12 and the plan or prices may change.",
+     "evidence": "CURRENT_STATUS.md:1037-1039: \"exact-model pricing must be configured before a paid campaign can be admitted.\" product-continuation-2026-09-27.md:216-218: \"verify current exact model availability/pricing ... Existing published prices are dated\". docs/local-operation.md:37-38: \"--live with ... confirmed project, exact model prices and campaign caps\".",
+     "correction": "Add to the checklist: \"Re-check that the models are available and confirm their current per-token prices (list models, $0) before declaring a run's bounds.\"",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Prompt:8 tells ChatGPT to read `AGENTS.md` third, with no caveats.",
+     "problem": "Several AGENTS.md lines are out of date and conflict with newer instructions, and the handoff never says which ones lost.",
+     "evidence": "AGENTS.md:31-33 (repo public; \"no additional visibility confirmation is needed when the user requests a push\"). AGENTS.md:39 (\"Confirm the credited W&B entity with the user\"), against product-continuation:212-213. AGENTS.md:19-25 (old LEAD/WORLD/LOOP/SPONSOR role ownership). AGENTS.md:64-65 (\"Record actual results ... in `docs/setup.md`\"), against CURRENT_STATUS as the single status page. AGENTS.md:14-15 does say the newest rule (no push without OK) wins.",
+     "correction": "Add one line to \u00a75: \"Where AGENTS.md conflicts with this page, this page wins. The W&B entity is already confirmed, there is no push without OK, the role split is historical, and status goes in CURRENT_STATUS.md.\"",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "Handoff \u00a75 has no environment or operating rules.",
+     "problem": "Several standing rules are missing. Use the project `.venv/bin/python` (3.12.8), because the system Python gives different source fingerprints. No sudo, no global git or iCloud setting changes, and ask before system-wide installs. Never put credentials in frontend code or VITE_ variables. No deployment. Do not edit frozen backend files during a run. Confirm before restarting the backend while a campaign is active. If a file cannot be read, check for iCloud 'dataless' placeholders (`ls -lO`) before calling it corrupt.",
+     "evidence": "product-continuation-2026-09-27.md:208 \"The system Python is not equivalent for fingerprints\", :287-290 (dataless). AGENTS.md:34 \"Do not deploy or enable paid overages\", :37 (VITE_), :43-44 (sudo, global Git, system-wide installs). pitfalls item 12 (line 14) \"Do not edit frozen backend files mid-run\". Memory faultlab-read-only-while-another-agent-builds.md:8 \"confirm before restarting the backend while a campaign is active\".",
+     "correction": "Add a short 'Environment' bullet list to \u00a75 with these points.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:141-148, the after-run checks and the commit rule.",
+     "problem": "Three checks from memory are missing. First, run check_ingestion_health.py ($0) before a paid replay run; the script still exists. Second, set WANDB_ERROR_REPORTING=false, which stops Weave Sentry telemetry leaking. Third, run a secret scan before every commit, using the corrected pattern. Since GitHub main is public, the scan matters before any future push.",
+     "evidence": "Memory faultlab-claude-handoff.md:31 \"BEFORE ANY PAID REPLAY RUN run `./.venv/bin/python scripts/experiments/check_ingestion_health.py`\". `ls scripts/experiments` lists check_ingestion_health.py. faultlab-state-0928.md body: \"`WANDB_ERROR_REPORTING=false` stops it\". faultlab-live-0929.md:51 \"Use `(^|[^a-z])sk-`, and gate the commit on the scan result.\"",
+     "correction": "Add these three items to the before-run checklist and the Commits bullet.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:4-5 \"tip `c6dc567` plus this handoff commit\".",
+     "problem": "The handoff commit has not been made yet. Unless it is, ChatGPT starts from a backup branch that has neither the handoff nor the updated status page.",
+     "evidence": "`git log --oneline -1 backup/part2-2026-09-22` -> `c6dc567`. `git cat-file -e backup/part2-2026-09-22:HANDOFF_2026-10-08.md` -> \"exists on disk, but not in 'backup/part2-2026-09-22'\"; the same for HANDOFF_PROMPT_2026-10-08.md. Comparing with `git show backup/...:<f>`: CURRENT_STATUS.md and NEW_CHAT_PROMPT.md DIFFER from the backup tip.",
+     "correction": "Before the owner pastes the prompt, commit HANDOFF_2026-10-08.md, HANDOFF_PROMPT_2026-10-08.md, CURRENT_STATUS.md and NEW_CHAT_PROMPT.md with commit_to_backup.sh, then record the new tip hash in the handoff and in memory.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "The prompt's Rules section (prompt:17-27) compared with handoff \u00a75.",
+     "problem": "The prompt is weaker than the handoff in a few places. It drops \"copy\" and \"overwrite\" from the .env rule (handoff:121), \"Never tune on private, held-out or promotion data\" (handoff:127), and \"Never restart, replace or re-roll a run\" (handoff:133). The risk is low because the prompt says to read the handoff first, but these are the integrity rules that matter most.",
+     "evidence": "prompt:18 \"never print or commit `.env` or credentials\", against HANDOFF:121 \"never print, copy, commit or overwrite\". prompt:23 has no tune-on-private rule, against HANDOFF:127. prompt:24-25 has no re-roll rule, against HANDOFF:133.",
+     "correction": "Add the missing phrases to the prompt's Rules lines; each needs only a few words.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "The entry points that ChatGPT may open first.",
+     "problem": "Only CURRENT_STATUS.md:10 and NEW_CHAT_PROMPT.md:3 point to the new handoff. The other entry points still call the September 27 continuation \"the detailed product handoff\" and never mention HANDOFF_2026-10-08.md. AGENTS.md is the file Codex/ChatGPT agents read by convention.",
+     "evidence": "CLAUDE.md:3-4, CONTINUE_HERE.md:3-5, memory/README.md:3-8, memory/START_CLAUDE.md:3-4 and memory/context/next-phase.md:3-4 all point to `memory/context/product-continuation-2026-09-27.md`. AGENTS.md:5-12 has no mention of the 2026-10-08 handoff.",
+     "correction": "Add one line, \"2026-10-08: read HANDOFF_2026-10-08.md first\", to AGENTS.md, CLAUDE.md and memory/README.md, and commit it with the handoff.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:116 \"Second task `taskpacks/bookings_move_with_hold` phase 2: wiring it into the loop.\"",
+     "problem": "It leaves out the decisions already made for phase 2 and the rules that come with them.",
+     "evidence": "User memory faultlab-second-task.md: PM decisions \"short per-episode hold labels\" and \"hk-dev-6 stays a forced 'place a new hold' case\"; \"keep the order task byte-identical\"; \"Nothing paid until a declared screen of about 48 episodes (about $10, cap $21)\"; the pack's own checker, \"never touching backend/app/referee/checks.py\". Design notes: artifacts/product-install-and-task2-2026-09-29/.",
+     "correction": "Expand the bullet to list these decisions and constraints, plus the design-notes path.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "HANDOFF:42-43 \"So the HTTP 402 ... is consistent with the September allowance being used up. Calls should work again in October.\"",
+     "problem": "\"Should work again\" is a guess, not something observed. The owner prefers evidence over narrative. The test call the handoff requires is the right safeguard, but the sentence reads as settled.",
+     "evidence": "No provider call has been made since 2026-09-30 22:38:46 UTC (CURRENT_STATUS.md:19-21). The claim rests only on the owner's billing screenshots, which HANDOFF:37 cites.",
+     "correction": "Reword to: \"Calls may work again in October (not yet tested). Make one cheap test call first.\"",
+     "severity": "MINOR"
+    }
+   ]
+  },
+  {
+   "lens": "operations",
+   "verdict": "You can follow most of sections 4 and 6 of HANDOFF_2026-10-08.md with only a little lookup. As written, though, the live Learn recipe in section 6 would fail at the first API call. A new agent would also have to guess the launcher environment and the full request bodies, because the handoff points to the wrong places for them.\n\n**Checked and correct:**\n- scripts/start-local.sh passes its arguments to backend/app/local.py. The flags `--data-dir` (required), `--live` and `--no-frontend` exist (local.py:119-123). `--live` forces FAULTLAB_LIVE_ENABLED=true itself (local.py:41).\n- The watch_learn_v3.py usage string matches the handoff's order: `<run_dir> <campaign_id> <store_identity> <max_selections> <disc_max_calls> <disc_max_dollars> <max_hours> <operator_retries>` (lines 10-15). The values `8 144 3.47 10 3` match the v2g PLAN.md bounds. All 8 copies of the watcher are byte-identical (sha ec9e09a4).\n- diagnosis_probe.py has `--write-plan`, `--execute-live`, `--declaration`, `--declaration-sha256`, `--out`, `--score` and `--review` (lines 841-849). The cap is $8 (HARD_SPEND_CAP). Every pinned input still matches today, so the pins will not refuse:\n  - diagnosis.md 5488c7f5\n  - checker 11920882\n  - the 5 request files\n  - the 4 exports\n- RUBRIC.json exists, sha 0fbe2556, the same as declared.\n- commit_to_backup.sh usage is `\"<msg>\" <paths...>` (lines 9-16).\n- Both clock-drift scripts accept `--store`, `--since`, `--worlds`, `--worlds-dir` and `--require-worlds`.\n- The named endpoints exist in backend/app/lab/api.py:\n  - POST /api/agent-registrations (line 507)\n  - POST /api/planned-campaigns (line 154)\n  - POST /api/campaigns/{id}/start (line 210)\n  - stop, budget, search-attempts, experiments, evidence-wait and retry-evidence\n- `faultlab-discovery/v4-history-replay` is an accepted value (run_plans.py:71-73).\n- The store `/Users/shree/FaultLab_Runs/2026-09-30/native-v2b/` exists, with lab.sqlite3 and worlds/. Its identity is a hash of the path, so it is stable: 3c7d9b7a..., as in native-v2g-run/store-identity.txt.\n- Re-registration is genuinely needed. The registration ID embeds the configuration hash, which includes the runtime fingerprint (registry.py:229-233, configuration.py:83). Every v2 run had a different ID: 3b1fa31a, 4e071e46, 11d4732b, b8cefcce, d9cfcb2a.\n- History replay should still work after re-registration. The same-agent key leaves out the runtime and configuration hashes (agent_history.py:9-14, 83-116). Since the v2g source commit 661e2d0, only mechanic, diagnosis, run_plans, exports and learning files changed in backend/app; no adapter or contract file changed. v2g's contract and service hashes (6f9d7783, 3ce5bcd2) equal those in handoff section 2.\n- Nothing is listening on ports 8000, 8001 or 5173. The ledger's carried_total is 937.99.\n\n**What is wrong or missing:**\n- The launcher command and environment variables are not where section 6 says.\n- The registration body in section 6 would be refused with 422.\n- The planned-campaign body is incomplete.\n- No pre-Start history and replay check is stated.\n- The probe needs two-part declarations and a marking procedure that has no script.\n- Clock-drift and git hazards are not stated.\n\nDetails are in the findings.",
+   "findings": [
+    {
+     "claim": "Section 6: 'Launch: use the launcher command in any run folder's history, or the transcript notes in CURRENT_STATUS.md.'",
+     "problem": "Neither place has it. No 2026-09-30 run folder records the launcher command or the exports. The store's launcher-v2*.log files hold only service output. CURRENT_STATUS.md contains none of the launch or API strings.",
+     "evidence": "`grep -n -- \"--data-dir\\|--live\\|agent-registrations\\|planned-campaigns\\|watch_learn\" CURRENT_STATUS.md` returns no matches, and there is no 'start-local' or 'caffeinate' either. `grep -rl \"caffeinate\\|start-local\" artifacts/product-live-2026-09-30` returns no files. /Users/shree/FaultLab_Runs/2026-09-30/native-v2b/launcher-v2g.log begins 'FaultLab local workspace: ... API: http://127.0.0.1:8000', which is output only. The full recipe exists only in artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md:197-260 (also native/PLAN.md and discovery-v2/PLAN.md).",
+     "correction": "Point to artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md section 4, steps 1-8, as the copyable launch and API recipe. Say to substitute agent 'smolagents-v2', discovery 'faultlab-discovery/v4-history-replay' and the v2b data dir. Also tee the launcher output to <store>/launcher-<run>.log, as v2d-v2g did.",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "Section 6: 'POST /api/agent-registrations {\"agent\":\"smolagents-v2\"}'",
+     "problem": "This body is rejected. RegistrationRequest requires expected_store_identity, and StrictModel is extra='forbid' and strict.",
+     "evidence": "backend/app/lab/operator_actions.py:52-55 defines `class RegistrationRequest(StrictModel): expected_store_identity: Digest; agent: Literal['reference','smolagents','smolagents-v2']`. backend/app/contracts/models.py:71-72 sets `ConfigDict(extra='forbid', ..., strict=True)`. require_owner (operator_actions.py:113-117) also compares it with the store. A missing field gives 422 INVALID_REQUEST (api.py error_response).",
+     "correction": "Use `curl -s -X POST http://127.0.0.1:8000/api/agent-registrations -H 'Content-Type: application/json' -d '{\"expected_store_identity\":\"<data_store.identity from GET /api/run-options>\",\"agent\":\"smolagents-v2\"}'`. For this store the identity is 3c7d9b7aefba3e9ae60d8147d93cdb0e58afd60f02e1ebdf604995a2e9d1111d (dashboard.py:9-12 hashes the path). Then GET /api/run-options again and confirm the smolagents-v2 row shows registered:true and a new registration_id.",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "Section 6: 'POST /api/planned-campaigns with mode=learn and discovery_protocol', then 'POST /api/campaigns/{id}/start'",
+     "problem": "The body needs nine fields; the handoff names two. The agent would have to guess the setup hash, task ID, profile, task text, order ID and registration ID. Start and stop also need a JSON body '{}'.",
+     "evidence": "backend/app/lab/run_plans.py:60-86 (RunPlanRequest) requires expected_store_identity, expected_setup_hash, task_definition_id 'orders.upgrade_then_confirm/v1', agent_registration_id, mode, config_profile_id ('live-v1'), task_text, order_id and discovery_protocol. api.py:154-177 refuses on a changed store identity or setup_hash, or an unregistered agent ('Register the current reviewed agent before creating a live campaign'). api.py:210-215 shows start and stop take EmptyRequest, a strict model. v2g's values are in native-v2g-run/learn-campaign.json: task_text 'Upgrade the authorized order to express shipping, then record one truthful confirmation.' and order_id 'order-native-baseline'.",
+     "correction": "Give the full body from 09-28 native-learn/PLAN.md:239-245 with the v2g values. Use expected_setup_hash = setup_hash from GET /api/run-options and agent_registration_id = the new smolagents-v2 registration_id. Use mode 'learn', config_profile_id 'live-v1' and discovery_protocol 'faultlab-discovery/v4-history-replay'. Start with `-d '{}'`.",
+     "severity": "WRONG"
+    },
+    {
+     "claim": "Section 6: 'Export the model, pricing and W&B variables; FAULTLAB_LIVE_ENABLED=true.'",
+     "problem": "The list of variables is not in the handoff, any 09-30 run folder, docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md or CURRENT_STATUS.md. docs/sponsor-setup.md has a table with stale Llama values. Without the exact caps, the campaign uses defaults, for example the $100 per-campaign default in docs/user-guide.md:345, and the declared bounds no longer match. Exporting FAULTLAB_LIVE_ENABLED is redundant, because --live sets it (local.py:41).",
+     "evidence": "The only complete list is artifacts/product-live-2026-09-28/plans/native-learn/PLAN.md:197-209:\n- WANDB_ENTITY=shreetbohara-quinstreet, WANDB_PROJECT=Faultlab, FAULTLAB_CONFIRMED_ENTITY\n- WANDB_MODEL=deepseek-ai/DeepSeek-V3.1; WANDB_EXPLORER_MODEL and WANDB_MECHANIC_MODEL=deepseek-ai/DeepSeek-V4-Pro-0813\n- FAULTLAB_LAB_MODEL= (empty), FAULTLAB_ACTOR_CONTEXT_PROTOCOL\n- FAULTLAB_MODEL_CALL_CAP=6000, FAULTLAB_TOKEN_CAP=204000000, FAULTLAB_DOLLAR_CAP=200\n- input/output dollars per million 0.55/1.65 and reasoning 1.31/3.96, with FAULTLAB_PRICING_MODEL, FAULTLAB_REASONING_PRICING_MODEL and both *_VERIFIED=true\n- WANDB_ERROR_REPORTING=false\nThese match v2g's frozen configuration: native-v2g-run/learn-configuration-before.json has campaign_budget 6000/204000000/200 and pricing 0.55/1.65 and 1.31/3.96. Prices were last checked 2026-09-30T03:13Z (native-v2b-run/price-check.json). docs/sponsor-setup.md:15 shows WANDB_MODEL meta-llama/Llama-3.1-8B-Instruct.",
+     "correction": "List these exports in section 6, or cite native-learn/PLAN.md:197-209 as the source. Tell the agent to re-check W&B prices before the run (09-28 PLAN step P7). Changed prices also change the per-call bounds, the watcher's 144 calls / $3.47 limit and the ledger ceiling.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Section 4.3: discovery v4-history-replay on the native-v2b store, with smolagents-v2 re-registered, is 'the best current chance at the first ACCEPTED'.",
+     "problem": "Re-registration is correct and needed, and the history should carry over. But the handoff states no check, before writing DECLARATION.json, that the frozen plan actually has history and a dev-5 replay row. An empty history would run silently as plain v3 discovery: the Explorer slots run but no row is replayed.",
+     "evidence": "agent_history.py:83-116 builds the same-agent key from adapter entry point, model, scorer, prompt and source hashes plus IDENTITY_FIELDS ('contract_hash','service_hash','capability_hash','model_settings','episode_budget'). It does not use the runtime or configuration hash. history_replay.py:1-30 says an empty list 'runs exactly as v3-history'. v2g's DECLARATION.json recorded history.status AVAILABLE, record_cutoff 6748 and frozen_replay_rows dev-5 (row 5) and dev-6 (row 6). `git diff --stat 661e2d0 backup/part2-2026-09-22 -- backend/` shows only mechanic.py, diagnosis_*.py, exports.py, learning.py, run_plans.py and tests changed.",
+     "correction": "Add a pre-Start check. GET /api/campaigns/{id}/plan should show discovery.protocol faultlab-discovery/v4-history-replay, history.status AVAILABLE, a replay list containing dev-5 and the fireability table. GET /api/campaigns/{id}/plan/history-check should say CURRENT. Record these in DECLARATION.json, as v2g did. If the history is empty, do not start.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Section 4.2: 'A fresh declared probe for Rule 2, with P1b ... Use the harness scripts/experiments/diagnosis_probe.py.'",
+     "problem": "The harness will run only if its declaration carries its own P1 rule and decision rule verbatim. That decision rule is 'Rule 2 ships only if P1 and P2 pass', which is the checker-confirmed P1 that probe 1 found uninformative. P1b cannot replace it. Probe 2 handled this by adding a separate 'probe2_primary' block. The handoff does not say so, nor that --out must be a new, empty, absolute path; diagnosis-probe2/ is already used.",
+     "evidence": "diagnosis_probe.py:432-435: `if outcomes != PRE_REGISTERED_OUTCOMES: raise ProbeRefused(...copy them from the template)`. Lines 444-446 refuse a non-empty output folder. Line 428 requires output_folder == resolved --out. Lines 441-443 require all four preconditions, including clock_drift_checked. diagnosis-probe2-decl/DECLARATION.json carries the harness's P1-P4 text unchanged plus 'probe2_primary': {measure 'P1b', script, script_sha256, rule, marking}.",
+     "correction": "Say to run `--write-plan <dir>` and copy DECLARATION.template.json unchanged. Add a separate primary block, modelled on diagnosis-probe2-decl/DECLARATION.json's probe2_primary, that declares P1b as the decision measure. Use a new --out folder such as artifacts/<topic>/diagnosis-probe3, and confirm the four preconditions.",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "Section 4.2: P1b uses 'blind person-majority marks'.",
+     "problem": "No script builds the blind marking input from review-blinded.csv, defines the markers' prompt, or computes the majority file the scorer needs. In probes 1 and 2 the 'persons' were three Claude subagents run in-session. A ChatGPT agent would have to invent this step.",
+     "evidence": "diagnosis-probe2-decl/DECLARATION.json probe2_primary.marking: 'three independent Claude markers, blind to arm and checker output, frozen rubric ... majority vote'. diagnosis-probe2-decl has marking-input.json ({rows, rubric}), marking-raw.json and marking-majority.json (a list of {id, blames_citations_labels_or_evidence_ids, ..._votes}). `grep -rl majority scripts/experiments/*.py artifacts/analysis-diagnosis-2026-09-30/` finds no script; the only hits are the RESULT.md, DECLARATION.json and probe2_score*.py files.",
+     "correction": "State the marking procedure: who marks (three blind markers, or the owner), the input (review-blinded.csv rows plus RUBRIC.json sha 0fbe2556), and the output format the scorer needs (a JSON list of {id, blames_citations_labels_or_evidence_ids: 'Y'|'N'}, majority of 3). Declare it before any call, or commit a small script that does it.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Section 4.2: 'Use the scorer artifacts/product-live-2026-09-30/diagnosis-probe2-decl/probe2_score.py.'",
+     "problem": "The path is correct, but the script has no usage string or --help; it takes positional arguments only. The file on disk is a post-run bug-fixed version whose sha differs from probe 2's declared sha. The thresholds are fixed at 'of 40', so a partial run is not evaluable.",
+     "evidence": "probe2_score.py:10 reads `out, marks_file = sys.argv[1], sys.argv[2]` and line 25 takes an optional argv[3] result file. Current sha is 36a2497382ae...; DECLARATION.json script_sha256 is 470fedf70b0c... (= probe2_score.declared.py). The diff is a `rid not in marks` skip added as a 'post-run bug fix'. diagnosis-probe2-decl/RESULT.md:19 says 'not evaluable: the rule is stated \"of 40\" and only 27 and 25 were delivered'.",
+     "correction": "Document `.venv/bin/python probe2_score.py <probe --out folder> <majority-marks.json> [<result.json>]`. Pin the current sha 36a24973... in the new declaration. Declare in advance how undelivered calls are treated, for example 'INCOMPLETE, no decision unless 40/40 are delivered'.",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "Section 5: run 'scripts/experiments/check_clock_drift.py --store \u2026 --worlds --require-worlds and check_clock_drift_native.py'",
+     "problem": "No flags are given for the native check. Both scripts default --store to artifacts/lab.sqlite3, an old 901 MB store that exists. Run without --store, a script checks the wrong store and can pass. --store takes the .sqlite3 file, not the data directory.",
+     "evidence": "check_clock_drift.py:117 and check_clock_drift_native.py:122: `parser.add_argument('--store', default='artifacts/lab.sqlite3')`. `ls -la artifacts/lab.sqlite3` gives 901308416 bytes, dated Sep 27. v2g's clock-drift-native.txt has no 'world files missing' line, so it ran without --worlds.",
+     "correction": "Give both commands in full: `.venv/bin/python scripts/experiments/check_clock_drift.py --store /Users/shree/FaultLab_Runs/2026-09-30/native-v2b/lab.sqlite3 --worlds --require-worlds` and the same flags for check_clock_drift_native.py. Exit 0 is the pass.",
+     "severity": "MISLEADING"
+    },
+    {
+     "claim": "Sections 1 and 5: work is on backup/part2-2026-09-22, main (cbbf957) is untouched, and commits go through commit_to_backup.sh.",
+     "problem": "The handoff does not say the working tree is checked out on main with 346 uncommitted changes, which are the Part 2 work. An agent that runs git commit, checkout, stash or reset on what looks like a dirty main could lose or misplace work. The helper script is in no branch, because artifacts/ is gitignored. The handoff file itself is not yet committed.",
+     "evidence": "`git rev-parse --abbrev-ref HEAD` returns main. `git status --short` shows 120 'M' and 226 '??'. commit_to_backup.sh:5-6 says 'Never check out the backup branch (the working tree holds uncommitted Part 2 work)'. .gitignore:51 ignores 'artifacts/'. `git rev-parse backup/part2-2026-09-22:artifacts/phase22-2026-09-24/prep/commit_to_backup.sh` fails (missing in the branch). `git ls-tree --name-only backup/part2-2026-09-22 HANDOFF_2026-10-08.md CURRENT_STATUS.md` lists only CURRENT_STATUS.md. The script refuses directories and './'-prefixed paths (lines 28-31).",
+     "correction": "Add to section 5: 'The checkout is main with all Part 2 work uncommitted. Never git commit, checkout, stash, reset or clean. Commit only with commit_to_backup.sh, passing individual repository-relative files (no directories, no ./ prefix). The helper itself is untracked under the gitignored artifacts/.' Commit the handoff file as the handoff says.",
+     "severity": "MISSING"
+    },
+    {
+     "claim": "Section 6: 'Watch: watch_learn_v3.py <run_dir> <campaign> <store_identity> 8 144 3.47 10 3'",
+     "problem": "The command is correct, but three details are left implicit. It does not say where store_identity comes from. run_dir must already exist, because the watcher opens run_dir/monitor.log without creating the folder. The watcher is hard-wired to http://127.0.0.1:8000.",
+     "evidence": "watch_learn_v3.py:16: `B = 'http://127.0.0.1:8000'; log = open(R / 'monitor.log', 'a')`; store_identity is used only as a header on its POSTs (line 17). PLAN v2g gives the same bounds: '> 8 selections; before any counterexample used_calls > 144 or charged > $3.47; disk < 2 GiB; 10 hours; at most 3 operator evidence retries'.",
+     "correction": "Add: 'store_identity = data_store.identity from GET /api/run-options (3c7d9b7a... for native-v2b); create the run folder first; keep the default ports.'",
+     "severity": "MINOR"
+    },
+    {
+     "claim": "Section 4.1: 'One cheap provider check', and section 5: 'world-integrity and evidence checks'.",
+     "problem": "Neither names a tool. An agent has to work out which script makes the single paid call and how the integrity and evidence counts reported for v2 runs were produced.",
+     "evidence": "docs/user-guide.md:356-359 gives the provider check: `WANDB_ENTITY=... WANDB_PROJECT=... WANDB_MODEL='deepseek-ai/DeepSeek-V3.1' ./scripts/smoke-sponsors.sh --confirm-entity <entity> --max-output-tokens 2000`, one paid generation plus a Weave readback. docs/PRODUCT_NATIVE_V2_RUN_2026-09-29.md:78-81 reports 'World integrity: VALID 71 of 71' and Weave-verified evidence counts, but names no command. Evidence export is scripts/export-evidence.sh (app.cli.client export).",
+     "correction": "Name smoke-sponsors.sh for the 402 check, and stop on any 402. Name how integrity and evidence were counted, for example from the campaign export, or point to the script v2d-v2g used.",
+     "severity": "MINOR"
+    }
+   ]
+  }
+ ]
+}

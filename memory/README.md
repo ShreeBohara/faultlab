@@ -1,5 +1,7 @@
 # FaultLab memory index
 
+> **2026-10-08: the project was handed to a new agent. Read [HANDOFF_2026-10-08.md](../HANDOFF_2026-10-08.md) first** (git layout, state, rules, next steps); it wins where this file conflicts.
+
 1. [CURRENT_STATUS.md](../CURRENT_STATUS.md) — single current status, priorities, evidence and budget.
 2. [AGENTS.md](../AGENTS.md) — repository operating rules.
 3. [Product reliability implementation, September 27](context/product-core-2026-09-27.md) — latest core fixes, manual checks, limits and next work.

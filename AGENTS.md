@@ -1,5 +1,7 @@
 # FaultLab — Gatekeeper
 
+> **2026-10-08: the project was handed to a new agent. Read [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md) first** (git layout, state, rules, next steps); it wins where this file conflicts.
+
 ## Continuation context
 
 Read `CURRENT_STATUS.md` first for the current implementation checklist, configuration,

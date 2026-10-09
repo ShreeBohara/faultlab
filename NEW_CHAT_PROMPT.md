@@ -1,4 +1,11 @@
-# Starting prompt for a new chat
+# Starting prompt for a new chat (2026-10-08 handoff)
+
+See the copy-paste prompt in [HANDOFF_PROMPT_2026-10-08.md](HANDOFF_PROMPT_2026-10-08.md).
+
+---
+
+## Previous prompt (2026-09-27)
+
 
 Continue FaultLab in `/Users/shree/Desktop/Coreweave_AGI_Hackthon/faultlab`.
 
