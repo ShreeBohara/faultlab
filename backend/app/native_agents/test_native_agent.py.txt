@@ -1,0 +1,23 @@
+"""Fresh native regression; explicitly select a trusted local constructor.
+
+FAULTLAB_NATIVE_AGENT names a file exposing build_agent(model, tools).
+The scenario bundle never selects executable source or installs dependencies.
+This runs native smolagents with the installed deterministic model double.
+"""
+import asyncio
+import os
+from pathlib import Path
+
+from app.native_agents.runner import run_native_agent
+
+
+def test_native_agent_regression(tmp_path):
+    source = os.environ.get("FAULTLAB_NATIVE_AGENT")
+    assert source, "Select your constructor with FAULTLAB_NATIVE_AGENT=/absolute/path/to/agent.py"
+    assert Path(source).is_absolute(), "FAULTLAB_NATIVE_AGENT must be an absolute path"
+    result = asyncio.run(run_native_agent(tmp_path / "native-agent-regression", source,
+                                         bundle_dir=Path(__file__).parent / "bundle"))
+    assert result["complete"] is True and result["status"] == "PASS", (
+        f"{result['status']}: failed checks {result['failed_checks']}; "
+        f"saved evidence: {result['paths']['summary']}"
+    )

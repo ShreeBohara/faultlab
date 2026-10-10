@@ -1,0 +1,827 @@
+{
+  "$defs": {
+    "Assessment": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "PASS",
+            "VIOLATION",
+            "INCOMPLETE"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "failed_checks": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Failed Checks",
+          "type": "array"
+        },
+        "incomplete_reasons": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Incomplete Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "failed_checks",
+        "incomplete_reasons"
+      ],
+      "title": "Assessment",
+      "type": "object"
+    },
+    "Attempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "call_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Call Id",
+          "type": "string"
+        },
+        "intent_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Intent Id"
+        },
+        "action": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "operation_key": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Key"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Payload"
+        },
+        "payload_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Payload Digest"
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "attempt_id",
+        "call_id",
+        "intent_id",
+        "action",
+        "payload",
+        "payload_digest",
+        "source_ref"
+      ],
+      "title": "Attempt",
+      "type": "object"
+    },
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "details": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Details",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "pattern": "^/",
+            "type": "string"
+          },
+          "maxItems": 256,
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "check_id",
+        "passed"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "Effect": {
+      "additionalProperties": false,
+      "properties": {
+        "effect_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Effect Id",
+          "type": "string"
+        },
+        "intent_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Intent Id"
+        },
+        "operation_key": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Key"
+        },
+        "payload": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Payload",
+          "type": "object"
+        },
+        "payload_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Digest",
+          "type": "string"
+        },
+        "receipt": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Receipt"
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "effect_id",
+        "intent_id",
+        "payload",
+        "payload_digest",
+        "source_ref"
+      ],
+      "title": "Effect",
+      "type": "object"
+    },
+    "Exposure": {
+      "additionalProperties": false,
+      "properties": {
+        "fault_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Fault Id",
+          "type": "string"
+        },
+        "triggered": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Triggered"
+        },
+        "witness": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Witness"
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fault_id",
+        "triggered",
+        "witness",
+        "source_ref"
+      ],
+      "title": "Exposure",
+      "type": "object"
+    },
+    "Identity": {
+      "additionalProperties": false,
+      "properties": {
+        "task_type": {
+          "enum": [
+            "orders.upgrade_then_confirm/v1",
+            "payments.pay_invoice/v1"
+          ],
+          "title": "Task Type",
+          "type": "string"
+        },
+        "trial_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Trial Id",
+          "type": "string"
+        },
+        "world_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "World Id",
+          "type": "string"
+        },
+        "subject_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Subject Id",
+          "type": "string"
+        },
+        "subject_source_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Subject Source Digest",
+          "type": "string"
+        },
+        "runtime_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Runtime Digest",
+          "type": "string"
+        },
+        "task_contract_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Task Contract Digest",
+          "type": "string"
+        },
+        "configuration_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Configuration Digest",
+          "type": "string"
+        },
+        "mapping_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Mapping Digest",
+          "type": "string"
+        },
+        "source_mode": {
+          "const": "offline_fixture",
+          "default": "offline_fixture",
+          "title": "Source Mode",
+          "type": "string"
+        },
+        "evidence_origin": {
+          "const": "persisted_synthetic_execution",
+          "default": "persisted_synthetic_execution",
+          "title": "Evidence Origin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_type",
+        "trial_id",
+        "world_id",
+        "subject_id",
+        "subject_source_digest",
+        "runtime_digest",
+        "task_contract_digest",
+        "configuration_digest",
+        "mapping_digest"
+      ],
+      "title": "Identity",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "Lifecycle": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "COMPLETED",
+            "INCOMPLETE"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "authority_complete": {
+          "title": "Authority Complete",
+          "type": "boolean"
+        },
+        "cleanup_complete": {
+          "title": "Cleanup Complete",
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "missing": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Missing",
+          "type": "array"
+        }
+      },
+      "required": [
+        "state",
+        "authority_complete",
+        "cleanup_complete"
+      ],
+      "title": "Lifecycle",
+      "type": "object"
+    },
+    "Observation": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "attempt_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Attempt Id"
+        },
+        "intent_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Intent Id"
+        },
+        "transport": {
+          "enum": [
+            "ok",
+            "timeout",
+            "error",
+            "unknown"
+          ],
+          "title": "Transport",
+          "type": "string"
+        },
+        "payload": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "payload_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Digest",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "position": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Position"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "observation_id",
+        "attempt_id",
+        "intent_id",
+        "transport",
+        "payload",
+        "payload_digest",
+        "source_ref"
+      ],
+      "title": "Observation",
+      "type": "object"
+    },
+    "Operation": {
+      "additionalProperties": false,
+      "properties": {
+        "intent_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Intent Id",
+          "type": "string"
+        },
+        "action": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Action",
+          "type": "string"
+        },
+        "scope": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Payload",
+          "type": "object"
+        },
+        "payload_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Digest",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "intent_id",
+        "action",
+        "scope",
+        "payload",
+        "payload_digest",
+        "source_ref"
+      ],
+      "title": "Operation",
+      "type": "object"
+    },
+    "Position": {
+      "additionalProperties": false,
+      "properties": {
+        "clock": {
+          "enum": [
+            "lab_event",
+            "world_event",
+            "payment_event",
+            "tool_call"
+          ],
+          "title": "Clock",
+          "type": "string"
+        },
+        "sequence": {
+          "minimum": 0,
+          "title": "Sequence",
+          "type": "integer"
+        },
+        "tick": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tick"
+        }
+      },
+      "required": [
+        "clock",
+        "sequence"
+      ],
+      "title": "Position",
+      "type": "object"
+    },
+    "Report": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "DELIVERED",
+            "WITHHELD",
+            "ABSENT"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "original": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JsonValue"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "raw_text": {
+          "anyOf": [
+            {
+              "maxLength": 65536,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Text"
+        },
+        "interpreted": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JsonValue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source_ref": {
+          "maxLength": 512,
+          "minLength": 1,
+          "pattern": "^/",
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "original",
+        "source_ref"
+      ],
+      "title": "Report",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "faultlab-incident-evidence/v1",
+      "default": "faultlab-incident-evidence/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "schema_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Schema Digest",
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "#/$defs/Identity"
+    },
+    "scenario": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Scenario",
+      "type": "object"
+    },
+    "operations": {
+      "items": {
+        "$ref": "#/$defs/Operation"
+      },
+      "maxItems": 16,
+      "title": "Operations",
+      "type": "array"
+    },
+    "attempts": {
+      "items": {
+        "$ref": "#/$defs/Attempt"
+      },
+      "maxItems": 64,
+      "title": "Attempts",
+      "type": "array"
+    },
+    "effects": {
+      "items": {
+        "$ref": "#/$defs/Effect"
+      },
+      "maxItems": 256,
+      "title": "Effects",
+      "type": "array"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/Observation"
+      },
+      "maxItems": 1024,
+      "title": "Observations",
+      "type": "array"
+    },
+    "report": {
+      "$ref": "#/$defs/Report"
+    },
+    "required_fault_ids": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 16,
+      "title": "Required Fault Ids",
+      "type": "array"
+    },
+    "faults": {
+      "items": {
+        "$ref": "#/$defs/Exposure"
+      },
+      "maxItems": 16,
+      "title": "Faults",
+      "type": "array"
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/Check"
+      },
+      "maxItems": 64,
+      "title": "Checks",
+      "type": "array"
+    },
+    "lifecycle": {
+      "$ref": "#/$defs/Lifecycle"
+    },
+    "assessment": {
+      "$ref": "#/$defs/Assessment"
+    },
+    "source_facts": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Source Facts",
+      "type": "object"
+    },
+    "facts_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Facts Digest",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_digest",
+    "identity",
+    "scenario",
+    "operations",
+    "attempts",
+    "effects",
+    "observations",
+    "report",
+    "required_fault_ids",
+    "faults",
+    "checks",
+    "lifecycle",
+    "assessment",
+    "source_facts",
+    "facts_digest",
+    "digest"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}

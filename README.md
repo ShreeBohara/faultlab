@@ -11,6 +11,26 @@ Built in one weekend at CoreWeave Hacks: Agent Loops (San Francisco, September 1
 The [current status page](CURRENT_STATUS.md) is the starting point for measured results, current work,
 configuration and remaining gaps. The screenshots and campaign story below are the recorded hackathon example.
 
+**Try a fresh regression without credentials:** the [offline example](docs/offline-regression.md)
+shows an agent confirming a rejected upgrade, catches the false confirmation and report, and compares
+it with correct rejection and healthy controls. It uses scripted responses with the existing runner,
+simulator and checks, then exports a regression you can rerun in a separate checkout.
+
+**Test your own decision logic:** the [local Python agent guide](docs/local-agent.md)
+connects an explicitly selected `decide(request)` file to that same scenario. It records
+fresh trials, preserves the source and results, and exports a test for your candidate.
+This interface uses FaultLab's orders Actor and tools.
+
+**Test a native smolagents constructor:** the [native-agent guide](docs/native-agent.md)
+runs your `build_agent(model, tools)` file through the framework's own control flow.
+It supplies a declared offline model double and tests your tool guard against the
+same incident and a healthy control. This checks integration behavior, not production-model reliability.
+
+**Compare intent with actual effects across tasks:** the [incident-evidence guide](docs/incident-evidence.md)
+adds one format for orders and a persisted synthetic payment fixture. It preserves
+attempts, original reports, lost replies, duplicate effects and incomplete runs, with
+task-specific checks and explicit offline replay of a data-only bundle.
+
 ![The FaultLab dashboard in dark mode. The run summary shows 143 trials, 77 violations, 66 completed, 995 model calls and 143 of 143 Weave-verified traces, then six stages: the failure repeated 3 of 3 times, the fault was simplified, the diagnosis was supported, three candidate rules were proposed, the challenge found a counterexample and sent it back to repair, and no promotion qualified.](docs/assets/faultlab-dashboard-dark.png)
 
 ## The problem, in plain words
@@ -23,7 +43,7 @@ Timeouts happen all the time in real systems. We wanted to know whether an AI ag
 
 ## What FaultLab does
 
-FaultLab runs the assistant inside a fake shop, so nothing real can break. Then it runs one loop, over and over:
+FaultLab sends business-tool calls to a synthetic shop, so those calls do not change real orders. Then it runs one loop, over and over:
 
 1. **Try.** An Explorer model picks a fault (a delay, a lost response, a stale read or a temporary error) and the assistant attempts the task with that fault in place.
 2. **Check.** A Referee compares the assistant's report with what really happened in the shop. The Referee is fixed code with eight checks. It is not a model, so it cannot be talked into a passing grade.

@@ -25,6 +25,11 @@ MODEL = 'deepseek-ai/DeepSeek-V4-Pro-0813'
 def load():
     spec = importlib.util.spec_from_file_location('diagnosis_probe_under_test', SCRIPT)
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    # Exact public golden files are shipped with the tests; keep the live probe's paths and hash pins unchanged.
+    fixtures = pathlib.Path('backend/tests/fixtures/diagnosis-rules')
+    module.INPUT_DIR = fixtures / 'probe-inputs'
+    module.EXPORTS = {run: (str(fixtures / 'exports' / f'{run}.json'), digest)
+                      for run, (_, digest) in module.EXPORTS.items()}
     return module
 
 

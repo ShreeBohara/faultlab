@@ -6,8 +6,10 @@ project's .venv reaches the real faultlab/.env and copies its credentials into o
 load_dotenv disabled. The guard only protects its own import site: if any other module
 imported smolagents first, the values would already be exported (September 28 review).
 This test parses every FaultLab Python source file outside the test suite and fails if
-smolagents is imported anywhere except (a) inside ``_import_smolagents`` itself, or (b) in
-a function of external_agent.py after that function has called ``_import_smolagents()``.
+smolagents is imported anywhere except (a) inside ``_import_smolagents`` itself, (b) in
+a function of external_agent.py after that function has called ``_import_smolagents()``,
+or (c) in the native dependency worker's exact unconditional inline guard block.
+The worker exception applies to those guarded import nodes, never its whole file.
 """
 import ast
 from pathlib import Path
@@ -16,6 +18,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 ADAPTER = ROOT / 'backend/app/integrations/external_agent.py'
+WORKER = ROOT / 'backend/app/native_agents/worker.py'
 SOURCES = sorted([*(ROOT / 'backend/app').rglob('*.py'), *(ROOT / 'scripts').rglob('*.py')])
 IMPORTERS = {'import_module', '__import__'}
 
@@ -56,19 +59,59 @@ def _guard_called_before(function, node):
     return False
 
 
+WORKER_GUARD = ast.parse(
+    'import dotenv\n'
+    'import dotenv.main\n'
+    'dotenv.load_dotenv = dotenv.main.load_dotenv = lambda *a, **kw: False\n'
+).body
+WORKER_WITH = ast.parse('with contextlib.redirect_stdout(sys.stderr):\n    pass\n').body[0].items
+
+
+def _same_ast(actual, expected):
+    return ast.dump(actual, include_attributes=False) == ast.dump(expected, include_attributes=False)
+
+
+def _worker_guarded_nodes(tree):
+    """Only direct imports dominated by the worker's reviewed inline guard.
+
+    A guard in another branch, a partial replacement, an intervening statement,
+    or a restore before import does not match. No user code or dependencies run.
+    """
+    allowed = set()
+    for function in tree.body:
+        if not isinstance(function, ast.FunctionDef) or function.name != 'main':
+            continue
+        for block in function.body:
+            if (not isinstance(block, ast.With) or len(block.items) != len(WORKER_WITH)
+                    or not all(_same_ast(item, expected) for item, expected in zip(block.items, WORKER_WITH))
+                    or len(block.body) <= len(WORKER_GUARD)
+                    or not all(_same_ast(statement, expected)
+                               for statement, expected in zip(block.body, WORKER_GUARD))):
+                continue
+            imports = block.body[len(WORKER_GUARD):]
+            if all((isinstance(node, ast.ImportFrom) and _smolagents(node.module))
+                   or (isinstance(node, ast.Import) and all(_smolagents(alias.name) for alias in node.names))
+                   for node in imports):
+                allowed.update(imports)
+    return allowed
+
+
 def violations(path, source):
     bad = []
-    for node, function in _imports(ast.parse(source, filename=str(path))):
+    tree = ast.parse(source, filename=str(path))
+    worker_guarded = _worker_guarded_nodes(tree) if path == WORKER else set()
+    for node, function in _imports(tree):
         allowed = path == ADAPTER and function is not None and (
             (function.name == '_import_smolagents' and isinstance(node, ast.Call))
             or _guard_called_before(function, node))
+        allowed = allowed or node in worker_guarded
         if not allowed:
             bad.append(f'{path.relative_to(ROOT)}:{node.lineno}')
     return bad
 
 
 def test_scan_covers_the_backend_and_scripts():
-    assert ADAPTER in SOURCES and len(SOURCES) > 100
+    assert ADAPTER in SOURCES and WORKER in SOURCES and len(SOURCES) > 100
 
 
 def test_smolagents_is_imported_only_behind_the_dotenv_guard():
@@ -101,3 +144,48 @@ def test_the_check_allows_the_guarded_pattern():
               'def build():\n    _import_smolagents()\n    from smolagents import Tool\n')
     assert violations(ADAPTER, source) == []
     assert violations(ROOT / 'backend/app/other.py', source)  # only the adapter may do it
+
+
+def _worker_source(body):
+    return 'def main():\n    with contextlib.redirect_stdout(sys.stderr):\n' + ''.join(
+        '        ' + line + '\n' for line in body.splitlines())
+
+
+INLINE_GUARD = ('import dotenv\nimport dotenv.main\n'
+                'dotenv.load_dotenv = dotenv.main.load_dotenv = lambda *a, **kw: False\n')
+
+
+def test_the_worker_exception_requires_its_exact_guarded_import_nodes():
+    source = _worker_source(INLINE_GUARD + 'from smolagents import Tool\nfrom smolagents.models import ChatMessage')
+    assert violations(WORKER, source) == []
+    assert violations(ADAPTER, source)
+    assert violations(ROOT / 'backend/app/other.py', source)
+    assert violations(WORKER, WORKER.read_text()) == []
+    # A valid block never exempts an additional import elsewhere in this file.
+    assert violations(WORKER, source + '\nimport smolagents\n')
+
+
+@pytest.mark.parametrize('body', [
+    'from smolagents import Tool',  # no guard
+    'from smolagents import Tool\n' + INLINE_GUARD,  # late guard
+    'import dotenv\nimport dotenv.main\ndotenv.load_dotenv = lambda *a, **kw: False\nfrom smolagents import Tool',
+    'import dotenv\nimport dotenv.main\ndotenv.main.load_dotenv = lambda *a, **kw: False\nfrom smolagents import Tool',
+    INLINE_GUARD.replace('lambda *a, **kw: False', 'lambda *a, **kw: True') + 'from smolagents import Tool',
+    INLINE_GUARD.replace('lambda *a, **kw: False', 'lambda *a, **kw: False if enabled else True') + 'from smolagents import Tool',
+    'import dotenv\nimport dotenv.main\nif enabled:\n    dotenv.load_dotenv = dotenv.main.load_dotenv = lambda *a, **kw: False\nfrom smolagents import Tool',
+    INLINE_GUARD + 'dotenv.load_dotenv = original\nfrom smolagents import Tool',
+    INLINE_GUARD + 'dotenv.main.load_dotenv = original\nfrom smolagents import Tool',
+    INLINE_GUARD + 'if enabled:\n    from smolagents import Tool',
+    INLINE_GUARD + 'run_user_code()\nfrom smolagents import Tool',
+    INLINE_GUARD + 'importlib.import_module("smolagents")',
+])
+def test_worker_scanner_rejects_missing_late_partial_or_conditional_guards(body):
+    assert violations(WORKER, _worker_source(body))
+
+
+def test_worker_scanner_rejects_guarded_block_in_a_conditional_or_different_function():
+    source = _worker_source(INLINE_GUARD + 'from smolagents import Tool')
+    assert violations(WORKER, source.replace('def main():', 'def other():'))
+    conditional = 'def main():\n    if enabled:\n' + ''.join(
+        '    ' + line + '\n' for line in source.splitlines()[1:])
+    assert violations(WORKER, conditional)

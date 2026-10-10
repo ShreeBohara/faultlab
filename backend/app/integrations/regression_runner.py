@@ -267,8 +267,11 @@ class RegressionRunner:
         self.store.put_record("regression_playback", record.execution_id, {"historical_trials": inspected.trial_results, "fresh": False}, immutable=True)
         return record
 
-    async def execute(self, bundle_dir, target_configuration, registration_id, *, explicit_live, profile_id, run_fresh, policy_version=None, execution_id=None, finalize=None):
-        if explicit_live is not True or profile_id != PROFILE_ID:
+    async def execute(self, bundle_dir, target_configuration, registration_id, *, explicit_live=False, explicit_fresh=False, profile_id, run_fresh, policy_version=None, execution_id=None, finalize=None):
+        # Fresh worlds can use a local scripted actor. Provider-backed entry points
+        # retain their separate live-call authorization; this flag grants neither
+        # network access nor credentials to the supplied callback.
+        if (explicit_live is not True and explicit_fresh is not True) or profile_id != PROFILE_ID:
             raise ValueError("Fresh sandbox execution requires explicit action and the reviewed profile")
         inspected, registration = self._check(bundle_dir, target_configuration, registration_id)
         policy = policy_version or inspected.policy

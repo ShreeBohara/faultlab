@@ -1838,7 +1838,8 @@ def test_port_listeners_sees_every_server_beside_the_held_port_by_state():
                 assert len(found) == 1, found
                 [listener] = found
                 assert (listener['pid'], listener['type'], listener['seen_by']) == (os.getpid(), kind, 'lsof')
-                assert listener['backend'] is False and listener['program'].startswith('python')
+                # macOS framework builds label the same interpreter "Python".
+                assert listener['backend'] is False and listener['program'].casefold().startswith('python')
                 assert listener['address'] == (f'[::1]:{port}' if host == '::1' else f'*:{port}')
                 assert not gap.listeners_stop_the_run(found)
             finally:

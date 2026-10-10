@@ -1,5 +1,33 @@
 # Setup
 
+For shared orders/payment evidence, follow [the incident-evidence guide](incident-evidence.md).
+It uses the existing backend installation and adds no dependency or provider requirement.
+
+October 9 shared-evidence verification: first frozen candidate **3407 passed, 232 skipped, 2 warnings in 1272.07s (0:21:12)**;
+final Unicode boundary repair **248 incident tests passed**, followed by 26 CLI checks
+over 15 fresh worlds. Full-suite and final focused results cover different frozen candidates.
+Frontend tests/build/browser checks passed; see [the exact verification scope](INCIDENT_EVIDENCE_2026-10-09.md).
+
+For the portable rejection regression, start with [the offline example](offline-regression.md).
+`./scripts/setup.sh --backend-only` installs its Python dependencies without Node or `.env` creation.
+The full dashboard workflow below is unchanged.
+
+To test a self-contained Python decision agent, follow [the local-agent guide](local-agent.md).
+It uses the same backend installation and requires an explicitly selected trusted source file.
+
+To exercise a user-owned smolagents constructor under native framework orchestration,
+follow [the native-agent guide](native-agent.md). It uses the pinned backend dependencies
+and a declared deterministic model double; it needs no provider credentials.
+
+Native-agent verification on October 9, 2026: **3,177 backend tests passed**,
+234 existing skips and 2 deprecation warnings, in 20 minutes 6 seconds. All 36 native-agent
+tests passed. Eight separate-installation CLI/portable-test outcomes, independent checks
+of eight saved worlds, and manual report review passed. Frontend tests (373), build,
+19 browser fixture checks and one real-backend browser check passed; one opt-in fixture
+was skipped. See [the verification record](NATIVE_AGENT_2026-10-09.md) for source
+identity, corrected findings and limits. The earlier [local-agent record](LOCAL_AGENT_2026-10-08.md)
+describes that milestone's separate evidence.
+
 ## Install and test (start here)
 
 These steps were re-run in a fresh clone on 2026-09-29 (macOS on Apple silicon). CI runs the same

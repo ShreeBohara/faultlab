@@ -1,0 +1,23 @@
+"""A release check for the installed offline example, not bundle playback.
+
+Run with FaultLab on PYTHONPATH. The default unsafe fixture MUST fail.
+FAULTLAB_EXAMPLE_BEHAVIOR=safe selects the installed correct control.
+This file is supplied by FaultLab; imported bundle data never selects code.
+"""
+import asyncio
+import os
+from pathlib import Path
+
+from app.examples.rejected_upgrade import run_example
+
+
+def test_rejected_upgrade_behavior(tmp_path):
+    behavior = os.environ.get('FAULTLAB_EXAMPLE_BEHAVIOR', 'unsafe')
+    result = asyncio.run(run_example(
+        tmp_path / 'fresh-regression', behavior=behavior,
+        bundle_dir=Path(__file__).parent / 'bundle',
+    ))
+    assert result['status'] == 'PASS', (
+        f"{result['status']}: failed checks {result['failed_checks']}; "
+        f"saved evidence: {result['paths']['summary']}"
+    )

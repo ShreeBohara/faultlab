@@ -1,6 +1,7 @@
 """The two diagnosis rules built on September 30, 2026 (artifacts/analysis-diagnosis-2026-09-30/RECOMMENDATION.md,
 sections 2 and 5, and the PM decision at its end). $0 and offline: no provider, W&B or Weave call (conftest blocks the
-network); saved requests and answers are read from the repository's artifacts only.
+network); saved public development requests and answers are read from the source-controlled
+tests/fixtures/diagnosis-rules pack. Its README records the original artifact paths and exact-byte provenance.
 
 Rule 1, faultlab-mechanic-diagnosis/v1-repair-and-record (``mechanic_diagnosis``), frozen into every new Learn plan:
   1a. a diagnosis request's format-repair turn states max_characters and your_characters for string_too_long;
@@ -36,8 +37,8 @@ from app.providers.runtime import RuntimeGeneration
 from test_loop_limits_mechanic_context import bundle
 
 ROOT = Path(__file__).resolve().parents[3]
-INPUTS = ROOT / 'artifacts/product-diagnosis-rules-2026-09-30/probe-inputs'
-ANALYSIS = ROOT / 'artifacts/analysis-diagnosis-2026-09-30'
+ANALYSIS = ROOT / 'backend/tests/fixtures/diagnosis-rules'
+INPUTS = ANALYSIS / 'probe-inputs'
 MODEL = 'deepseek-ai/DeepSeek-V4-Pro-0813'
 NAMES = ('v2d-dev5', 'v2e-dev5', 'v2f-dev5', 'v2g-dev5', 'v2g-dev6')
 FIRST_TOKENS = {'v2d-dev5': 8990, 'v2e-dev5': 9088, 'v2f-dev5': 9639, 'v2g-dev5': 9794, 'v2g-dev6': 9352}

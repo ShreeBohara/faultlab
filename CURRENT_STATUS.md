@@ -1,13 +1,202 @@
 # FaultLab — current status
 
-Updated **October 8, 2026 (UTC)** (handoff). This is the single current status and continuation page.
+Updated **October 9, 2026 (Pacific)** (shared incident evidence milestone). This is the single current status and continuation page.
 README, AGENTS, CLAUDE and memory entry points refer here. Historical reports describe
 their own frozen experiments; their settings, budgets and next steps are not current instructions.
 
 **Install and test:** [Setup](docs/setup.md#install-and-test-start-here) has the current commands,
 timings and expected results for a fresh clone, and the port settings.
 
-## HANDOFF (2026-10-08): read [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md) first
+## Current product direction and build (October 9)
+
+**Built: shared incident evidence for orders and a persisted synthetic payment task.**
+FaultLab separates intended business actions, individual attempts, committed effects,
+delivered observations and original reports. Each task keeps its own checks. New CLI
+commands inspect data-only bundles, export selected offline orders episodes, and
+explicitly replay installed candidates into fresh worlds.
+
+The payment cases catch duplicate payments and falsely reused receipts. Corrected
+candidates passed fresh replays of the same declared scenarios. Incomplete executions
+retain known effects and failed checks; a native shutdown crash retained its original
+report as WITHHELD. Start with [the guide](docs/incident-evidence.md),
+[verification](docs/INCIDENT_EVIDENCE_2026-10-09.md) and
+[design decision](docs/ADR_INCIDENT_EVIDENCE_2026-10-09.md).
+
+**Verification:** the first frozen candidate's full backend suite finished with
+**3,407 passed, 232 skipped and two warnings**, in 21 minutes 12 seconds.
+After a small Unicode error-classification repair, all **248 incident tests** and
+**26 CLI outcomes across 15 fresh worlds** passed on the final candidate. The full
+backend suite was not repeated after that isolated repair; the verification record
+keeps those source versions distinct. Frontend tests (373), build, 19 browser fixtures
+and one real-backend browser check passed. Eight first-candidate reports were manually
+reviewed; their rendering source is unchanged in the final candidate.
+
+Runtime: `0beaf5a0f194870417a1796fe13f6c23be33ee772a63fa16a5176ddf401f325e`.
+Orders algorithm, service, legacy contracts, scorer, interpreter, capabilities and
+dependency identities are unchanged. Payment runtime identity has the bounded scope
+documented in the guide. Existing native/local agent protocols and legacy bundle
+inventories remain available. No check, threshold or gate was weakened.
+
+This is offline synthetic engineering evidence. It does not establish production
+payment behavior, customer adoption, generated repair, live-model reliability or an
+ACCEPTED policy. Native user code remains trusted local code, not an OS sandbox.
+Managed-provider calls and new managed-provider spend are zero; arbitrary native
+user-code activity is unmetered. Carried conservative spend remains **$937.99**,
+not a new billing query. Rule 2 remains deferred research.
+
+**Next:** use an independently authored workflow to measure integration effort,
+correction and repeat use; extend version compatibility as that workflow requires.
+The narrow-screen report needs polish. F5/F6 customer validation remains open.
+No workflow owner was contacted, and no hosted service or new framework adapter was added.
+
+**Preservation:** main remains at `cbbf957`. Work is uncommitted and unpushed.
+The release uses an explicit verified 22-path transfer, with backups and unchanged
+Git index/history. See the transfer receipt in the verification record. The working
+tree extends beyond backup `d022228`; that branch alone is not a current snapshot.
+
+The following sections are dated earlier milestones. Their budgets, runtime hashes
+and next-step statements do not override this section.
+
+## Earlier milestone: native smolagents constructor (October 9)
+
+**Built: test a user-owned smolagents constructor through its native execution loop.**
+A developer supplies a trusted local `build_agent(model, tools)` file. FaultLab runs
+fresh native trials, injects the existing rejected-upgrade fault, checks actual
+business effects and the agent's report, and exports a regression that requires
+explicit candidate selection. The earlier local `decide(request)` interface remains
+available and unchanged.
+
+Start with [the native-agent guide](docs/native-agent.md). The
+[verification record](docs/NATIVE_AGENT_2026-10-09.md) and
+[architecture decision](docs/ADR_NATIVE_AGENT_2026-10-09.md) record the design,
+corrected findings, evidence and limits. One unchanged deterministic model double
+proposes the unsafe action; the author's tool guard supplies the correction.
+Separate-installation acceptance reproduced C3+C5 in 3/3 unsafe trials, passed 3/3
+corrected trials, and completed one healthy upgrade and confirmation. A shutdown
+crash retained the actual confirmation and withheld the provisional report; its
+result stayed INCOMPLETE after 1 of 3 trials, with no retry.
+
+**Release verification:** **3,177 backend tests passed**, with 234 existing skips
+and 2 deprecation warnings, in 20 minutes 6 seconds. This includes all 36 native-agent tests.
+Eight expected CLI/portable-test outcomes passed. Independent read-only SQLite
+checks matched all eight new worlds; manual browser review matched all four reports.
+Frontend tests (373), build, browser fixtures (19; one opt-in skip), and one real-backend
+browser check passed. The application and test bytes match the frozen candidate.
+
+Runtime: `274c0830b03338dc6a9dc4f4ed06f6306a5f1cc3327e986886c5fe35947bf3df`.
+Runtime and algorithm identities changed with the new registered execution path.
+The service, contract, scorer, interpreter, capability, dependency lock, earlier
+rejection fixture and local callback worker remain unchanged. No gate was weakened.
+
+This is native integration and authored-guard conformance under a deterministic
+model double, not a production-model reliability result, generated repair or
+ACCEPTED policy. Only the pinned framework and supplied task/tool contract are
+supported. The worker executes trusted local code; it is not an operating-system
+security sandbox. Managed provider calls and new provider spend are zero; arbitrary
+user-code activity is unmetered. Rule 2 remains deferred research. Carried conservative
+spend is still **$937.99**, not a new billing query.
+
+**Next:** one independently authored workflow. Reproduce its owner's incident, verify
+their correction, and measure integration effort and repeat use. Additional adapters,
+a hosted system and generated repairs should follow that concrete evidence.
+
+**Git and preservation:** main remains at `cbbf957`; this milestone is uncommitted and
+unpushed. The original index and historical evidence are preserved. Development and
+verification used isolated checkouts; only the explicit verified 25-path delta is
+transferred to the original working tree. The working tree extends beyond backup
+`d022228`; that branch alone is not a complete snapshot of current work.
+
+The earlier milestone and experimental sections below describe their dated snapshots.
+Their “next,” “newest build” and spending statements do not override this section.
+
+## Earlier milestone: local Python decision agent (October 8)
+
+**Built: test an explicitly selected local Python decision agent.** A developer can keep
+`decide(request)` in a file outside FaultLab, run it through the existing orders tools and
+checks, edit that file, and rerun the same portable scenario. Candidate source, execution
+identity, observations, original reports, actual effects and incomplete attempts are saved.
+The command and exported pytest both require the developer to select the agent explicitly.
+
+Start with [the local-agent guide](docs/local-agent.md). The
+[verification record](docs/LOCAL_AGENT_2026-10-08.md) and
+[architecture decision](docs/ADR_LOCAL_AGENT_2026-10-08.md) describe the interface and limits.
+The separate-checkout acceptance caught the unsafe candidate in 3/3 trials (C3+C5), passed
+the corrected candidate in 3/3, and passed its healthy completion control. A shutdown crash
+after both business actions correctly stayed INCOMPLETE; its provisional report was retained
+as withheld. Independent read-only world checks matched all eight acceptance trials.
+
+**Release verification:** **3,127 backend tests passed**, with 234 existing skips and two
+deprecation warnings, in 20 minutes 15 seconds. This includes all 29 local-agent tests.
+Eight expected separate-checkout acceptance outcomes and independent checks of all eight
+saved worlds passed. Frontend tests (373), build, browser fixtures (19; one opt-in skip),
+and a separate real-backend browser smoke (1) passed. The final application and test bytes
+match the frozen candidate; the verification record distinguishes earlier attempts.
+
+Runtime: `2d2a6ddb40b0f93b3c51daf122e57b1f7f623fa8edc5b76f0653da0e489ef0e6`.
+The earlier offline fixture and all algorithm, service, contract, scorer, interpreter,
+capability and dependency identities remain unchanged. No gate was weakened.
+
+This is a trusted local decision adapter under FaultLab's Actor protocol, not unchanged
+native-framework support or an operating-system security sandbox. Managed provider calls
+are zero; arbitrary user-code activity and spend are unmetered. No generated repair,
+live-model gain or ACCEPTED policy follows from this work. Rule 2 remains deferred research;
+carried conservative spend is still **$937.99**, not a new billing query.
+
+The next product decision is one independently authored workflow: reproduce an incident,
+verify its owner's correction, and measure integration effort and repeat use. A bounded
+local native-framework exercise is the fallback when no partner workflow is available.
+The existing regression is the compatibility case; a broader hosted system remains later work.
+
+**Git and preservation:** main remains at `cbbf957`; no commit or push is part of this work.
+The existing index and historical evidence must remain unchanged. Development and verification
+use isolated source copies; only the explicit verified delta may be copied into the original
+working tree. The working tree already extends beyond backup `d022228`.
+
+The earlier milestone and experimental sections below describe their dated snapshots.
+Their “next,” “newest build” and spending statements do not override this section.
+
+## Earlier milestone: portable regression completed (October 8)
+
+The owner authorized implementation after the takeover audit and startup strategy review.
+The immediate product priority is a portable, trustworthy regression workflow that another
+engineer can run, followed by one external agent integration. The older handoff's request
+for a paid Rule 2 probe is deferred research, not the next required product step. Its
+preservation, evidence-integrity and protected-data boundaries still apply.
+
+**Built: an offline rejected-upgrade regression.** It runs the real local simulator, Actor,
+runner, fixed checks and regression compiler with explicitly scripted responses. Four unsafe
+trials produce C3+C5 violations; three correct-rejection trials pass; a healthy control
+completes the upgrade and confirmation. The exported bundle can run fresh behavioral checks
+from a separate source checkout without credentials or historical stores.
+
+Start with [the runnable guide](docs/offline-regression.md). The
+[verification record](docs/OFFLINE_REGRESSION_2026-10-08.md) records results, scope and limits.
+**Verification:** 3,098 backend tests passed (234 existing skips, 2 deprecation warnings),
+373 frontend tests and the build passed, and 20 browser checks passed (1 opt-in browser
+check skipped). The 17 new behavioral/CLI checks, fresh-install portable checks, and manual
+report/database checks passed. The final source and fixture bytes match the tested candidate.
+
+Runtime: `6174f241b59b236bf819d5e9855ecfc81a7f5e2321621c6c1cec1b25a22e4f79`.
+The simulator service/contract, fixed scorer, policy interpreter and dependency lock retain
+their previous identities. No gate was weakened. No provider call, billing change, commit or
+push is part of this work; carried conservative spend remains **$937.99**, not a newly
+queried billing balance. Live provider availability has not been rechecked.
+
+This does **not** establish a generated repair, a live-model reliability gain or an ACCEPTED
+policy. Rule 2 remains built but not offered. The next product milestone is connecting one
+external agent to this same incident-to-regression path; broader scenarios and generated
+repairs follow evidence from that integration.
+
+**Git:** the original checkout remains on `main` at `cbbf957`; its existing index is preserved.
+Development and validation used detached source copies of local backup `d022228`. This
+milestone is uncommitted. Its files extend the working tree
+beyond that backup branch; do not assume the working tree still matches the backup.
+Historical artifacts and `/Users/shree/FaultLab_Runs/` are preserved.
+
+The sections below retain the earlier handoff and experimental history. Their “newest build,”
+“current total” and “next” statements describe their dated snapshots; this section is current.
+
+## Earlier handoff (2026-10-08): [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md)
 
 Claude handed the project to another agent on 2026-10-08. The handoff page has the state, the open goal (first ACCEPTED
 policy), next steps, hard rules and how live runs are done. **Provider status from the owner's billing screenshots
@@ -30,7 +219,7 @@ shipped under the declared rule. Probe 2 (`…/diagnosis-probe2-decl/RESULT.md`)
 same. **Next once calls work again:** a fresh declared probe under P1b; if Rule 2 passes, offer it and run the next
 history-replay Learn campaign on native v2.1 (store `native-v2b`).
 
-## Latest live results (2026-09-28/29, Claude as PM) — read first
+## Historical live results (2026-09-28/29, Claude as PM)
 
 Runtime `c9af0a47…` for the first four runs (local backup commit `9970718`+) and `08e4c20d…` for the v3 run.
 **Newest build: `1abba8a6…`** (September 30, after the diagnosis analysis: the diagnosis repair-and-record rule

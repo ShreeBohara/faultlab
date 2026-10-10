@@ -1,0 +1,22 @@
+"""Fresh behavioral regression; select trusted local code explicitly.
+
+FAULTLAB_LOCAL_AGENT must name the self-contained Python decision-agent file.
+The bundle supplies scenario data only. It never chooses or executes code.
+"""
+import asyncio
+import os
+from pathlib import Path
+
+from app.local_agents.runner import run_local_agent
+
+
+def test_local_agent_regression(tmp_path):
+    source = os.environ.get("FAULTLAB_LOCAL_AGENT")
+    assert source, "Select your local program with FAULTLAB_LOCAL_AGENT=/absolute/path/to/agent.py"
+    assert Path(source).is_absolute(), "FAULTLAB_LOCAL_AGENT must be an absolute path"
+    result = asyncio.run(run_local_agent(tmp_path / "local-agent-regression", source,
+                                        bundle_dir=Path(__file__).parent / "bundle"))
+    assert result["complete"] is True and result["status"] == "PASS", (
+        f"{result['status']}: failed checks {result['failed_checks']}; "
+        f"saved evidence: {result['paths']['summary']}"
+    )

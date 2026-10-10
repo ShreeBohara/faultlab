@@ -71,10 +71,16 @@ def _study_context(store,campaign,study_id,purpose,arm,protocol):
     return protocol==expected
 
 
-def resolve_execution(store,campaign,frozen,*,arm,purpose,study_id,source_mode,registration_id,actor,actor_context_protocol,offline_fixture=False):
+def resolve_execution(store,campaign,frozen,*,arm,purpose,study_id,source_mode,registration_id,actor,actor_context_protocol,offline_fixture=False,provider=None,recipe=None,policy=None,fixture_id=None,trial_index=None):
     """Resolve all selected-agent phases before creating a world or spending."""
     from app.integrations.registry import AgentRegistry,NATIVE_ENTRYPOINTS,reviewed_actor_matches
     from app.lab.storage import StoreConflict
+    from app.native_agents.registration import has_native_marker,resolve_native_execution
+    if has_native_marker(store,campaign,frozen,registration_id,actor,provider):
+        return resolve_native_execution(store,campaign,frozen,arm=arm,purpose=purpose,study_id=study_id,
+            source_mode=source_mode,registration_id=registration_id,actor=actor,
+            actor_context_protocol=actor_context_protocol,offline_fixture=offline_fixture,provider=provider,
+            recipe=recipe,policy=policy,fixture_id=fixture_id,trial_index=trial_index)
     plan=campaign_run_plan(store,campaign)
     if plan is None:
         bound=store.get_record('campaign_registrations',campaign.campaign_id)
@@ -160,7 +166,8 @@ class EpisodeRunner:
         chosen,agent_registration_id,source_mode,episode_model,selected_context,execution=resolve_execution(
             self.store,campaign,frozen,arm=arm,purpose=purpose,study_id=study_id,source_mode=source_mode,
             registration_id=agent_registration_id,actor=actor or self.actor,actor_context_protocol=actor_context_protocol,
-            offline_fixture=self.offline_fixture)
+            offline_fixture=self.offline_fixture,provider=self.provider,recipe=recipe,policy=policy,
+            fixture_id=fixture_id,trial_index=trial_index)
         episode_id=episode_id or new_id('episode')
         intent=allocate_intent(campaign.order_id,campaign.task_text,4 if fixture_id=='history-v1' else 1)
         world=await self.world_client.create(episode_id,intent,recipe,fixture_id)

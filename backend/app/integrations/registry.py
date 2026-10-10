@@ -90,7 +90,9 @@ def _configuration(configuration):
     required = {"model", "actor_prompt_hash", "adapter_hash", "source_hash", "contract_hash", "service_hash", "capability_hash", "scorer_hash", "interpreter_hash", "dependency_lock_hash", "episode_budget", "model_settings"}
     if not isinstance(configuration, dict) or not required <= set(configuration):
         raise ValueError("Complete independently frozen target configuration required")
-    allowed = required | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing", "algorithm_hash", "runtime_hash", "trace_contract_version", "actor_response_protocol", "actor_context_protocols", "actor_context_protocol"}
+    from app.native_agents.registration import CONFIG_FIELDS, validate_configuration_marker
+    validate_configuration_marker(configuration)
+    allowed = required | CONFIG_FIELDS | {"schema_version", "models", "model_settings_by_role", "pricing", "campaign_budget", "profile_id", "external_source_revision", "external_agent_version", "lab_model", "lab_model_settings", "lab_pricing", "algorithm_hash", "runtime_hash", "trace_contract_version", "actor_response_protocol", "actor_context_protocols", "actor_context_protocol"}
     if set(configuration) - allowed or not isinstance(configuration["model"], str) or "://" in configuration["model"] or not isinstance(configuration.get("lab_model", ""), str):
         raise ValueError("Unreviewed target configuration fields or service URL")
     def no_location(value):
@@ -222,6 +224,9 @@ class AgentRegistry:
         """Register native adapter v1 (the default) or, when chosen explicitly, adapter v2."""
         _native_entrypoint(entrypoint)
         target = _configuration(configuration)
+        from app.native_agents.registration import CONFIG_FIELDS
+        if CONFIG_FIELDS.intersection(target):
+            raise ValueError("User native candidates require their separate reviewed registration")
         _installed_semantics(target)
         source_hash = verify_native_source()
         if target["source_hash"] != source_hash or target["adapter_hash"] != adapter_hash(entrypoint) or target["actor_prompt_hash"] != native_prompt_hash(entrypoint):
@@ -249,6 +254,9 @@ class AgentRegistry:
 
     def register_reference(self, configuration, *, internal_smoke=False):
         target = _configuration(configuration)
+        from app.native_agents.registration import CONFIG_FIELDS
+        if CONFIG_FIELDS.intersection(target):
+            raise ValueError("User native candidates cannot register as reference actors")
         _installed_semantics(target)
         from app.providers.runtime import actor_response_protocol
         if target.get("actor_response_protocol") != actor_response_protocol():
@@ -287,7 +295,12 @@ class AgentRegistry:
         pairs = {"contract_hash": "contract_hash", "capability_hash": "capability_hash", "oracle_hash": "scorer_hash", "adapter_hash": "adapter_hash", "source_hash": "source_hash", "prompt_hash": "actor_prompt_hash", "dependency_lock_hash": "dependency_lock_hash", "model": "model"}
         if any(getattr(registration, field) != target[key] for field, key in pairs.items()):
             raise ValueError("Registration/configuration identity mismatch")
-        if registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
+        from app.native_agents.registration import ENTRYPOINT, CONFIG_FIELDS, verify_registration
+        if CONFIG_FIELDS.intersection(target) and registration.adapter_entrypoint_id != ENTRYPOINT:
+            raise ValueError("Native candidate configuration cannot impersonate another adapter")
+        if registration.adapter_entrypoint_id == ENTRYPOINT:
+            verify_registration(self.store, registration, target)
+        elif registration.adapter_entrypoint_id in NATIVE_ENTRYPOINTS:
             entry = registration.adapter_entrypoint_id
             if registration.provenance_class != "external" or registration.source_hash != verify_native_source() or registration.adapter_hash != adapter_hash(entry) or registration.prompt_hash != native_prompt_hash(entry):
                 raise ValueError("Reviewed external source or adapter has changed")
@@ -306,6 +319,9 @@ class AgentRegistry:
         self.verify(registration_id, configuration)
         if model_id is not None and model_id != registration.model:
             raise ValueError("Requested model differs from registration")
+        from app.native_agents.registration import ENTRYPOINT, reviewed_actor
+        if registration.adapter_entrypoint_id == ENTRYPOINT:
+            return reviewed_actor(self.store, registration, provider)
         if registration.adapter_entrypoint_id == NATIVE_V1:
             from app.integrations.external_agent import SmolagentsActor
             return SmolagentsActor(model_id=registration.model)
