@@ -1,5 +1,7 @@
 # FaultLab — agent entry point
 
+> **2026-10-11: the working session moved to a Claude Code cloud session. Read [docs/HANDOFF_CLOUD_2026-10-11.md](docs/HANDOFF_CLOUD_2026-10-11.md) first**; it wins over the October 8 handoff where they conflict.
+
 > **2026-10-08: the project was handed to a new agent. Read [HANDOFF_2026-10-08.md](HANDOFF_2026-10-08.md) first** (git layout, state, rules, next steps); it wins where this file conflicts.
 
 Read [CURRENT_STATUS.md](CURRENT_STATUS.md) and [AGENTS.md](AGENTS.md), then the
