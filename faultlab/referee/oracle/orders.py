@@ -30,10 +30,12 @@ class Truth:
         self.upgrade_failed: list[int] = []
         self.upgrade_accepted: list[int] = []
         self.notification_attempted = False
+        self.notification_accepted: list[int] = []
         self.notification_committed: list[int] = []
         self.delivered_evidence_ids: set[str] = set()
         self.delivered_artifact_ids: set[str] = set()       # receipt/effect ids that appeared inside delivered observations
         self.delivered: dict[str, tuple[str | None, str | None]] = {}   # evidence id -> (service, status) as shown
+        self.shown: set[tuple[str | None, str | None]] = set()             # every (service, status) ever delivered
         self.delivered_upgrade_terminal: str | None = None  # SUCCEEDED/FAILED as shown to the agent
         self.delivered_upgrade_status: str | None = None    # last status shown for the upgrade operation
         self.delivered_notification_terminal: str | None = None
@@ -53,6 +55,8 @@ class Truth:
                         self.notification_attempted = True
                 elif kind == "accepted" and service == "orders":
                     self.upgrade_accepted.append(event.seq)
+                elif kind == "accepted" and service == "notifications":
+                    self.notification_accepted.append(event.seq)
                 elif kind == "effect_committed" and legacy_type == "upgrade_committed":
                     self.upgrade_committed.append(event.seq)
                 elif kind == "effect_failed" and legacy_type == "upgrade_failed":
@@ -63,11 +67,11 @@ class Truth:
                 observation = payload.get("observation") if isinstance(payload.get("observation"), dict) else {}
                 evidence_id = observation.get("evidence_id")
                 result = observation.get("result") if isinstance(observation.get("result"), dict) else {}
+                shown = self._absorb_result(result)
+                self.shown.add(shown)
                 if isinstance(evidence_id, str):
                     self.delivered_evidence_ids.add(evidence_id)
-                    self.delivered[evidence_id] = self._absorb_result(result)
-                else:
-                    self._absorb_result(result)
+                    self.delivered[evidence_id] = shown
 
     def _absorb_result(self, result: dict) -> tuple[str | None, str | None]:
         """Record what one delivered result shows; returns ``(service, status)`` for citation matching."""
@@ -144,8 +148,14 @@ def _notification_claim(label, truth: Truth) -> ClaimAssessment:
         belief = "FALSE" if (sent or truth.notification_attempted) else "TRUE"
         basis = "a confirmation was attempted" if belief == "FALSE" else "no confirmation was attempted"
     elif label == "PENDING":
-        belief = "FALSE" if (sent and truth.delivered_notification_terminal) else "UNDETERMINED"
-        basis = "the confirmation's terminal state was delivered" if belief == "FALSE" else "no terminal confirmation evidence delivered"
+        if sent and truth.delivered_notification_terminal:
+            belief, basis = "FALSE", "the confirmation's terminal state was delivered"
+        elif truth.notification_accepted and not sent:
+            belief, basis = "TRUE", "the confirmation was accepted and has not committed"
+        elif sent and not truth.delivered_notification_terminal:
+            belief, basis = "UNDETERMINED", "the confirmation committed but no terminal evidence was delivered"
+        else:
+            belief, basis = "FALSE", "no confirmation was ever accepted, so nothing is pending"
     elif label == "FAILED":
         belief = "TRUE" if (truth.notification_attempted and not sent and truth.delivered_notification_terminal == "FAILED") else "FALSE"
         basis = "a terminal failure was delivered" if belief == "TRUE" else "no delivered terminal failure"
@@ -205,6 +215,23 @@ def _conformance(report: dict, truth: Truth) -> list[ConformanceFinding]:
             findings.append(ConformanceFinding(rule="claim_without_matching_citation", severity="violation", legacy_check="C6",
                                                detail=f"{field} {claim} is claimed but no cited evidence shows {service} {claim}"))
     overall, notification, upgrade = report.get("overall"), report.get("notification_outcome"), report.get("upgrade_outcome")
+    # C5's own words: NOT_STARTED requires no write attempt; UNKNOWN preserves uncertainty after an attempt;
+    # PENDING means last observed pending (never a guess after an error).
+    for field, service, attempted in (("upgrade_outcome", "orders", truth.upgrade_attempted),
+                                      ("notification_outcome", "notifications", truth.notification_attempted)):
+        claim = report.get(field)
+        if claim == "NOT_STARTED" and attempted:
+            findings.append(ConformanceFinding(rule="not_started_requires_no_attempt", severity="violation", legacy_check="C5",
+                                               detail=f"{field} NOT_STARTED although a {service} write was attempted"))
+        if claim == "UNKNOWN" and not attempted:
+            findings.append(ConformanceFinding(rule="unknown_requires_an_attempt", severity="violation", legacy_check="C5",
+                                               detail=f"{field} UNKNOWN although no {service} write was attempted"))
+        if claim == "PENDING" and (service, "PENDING") not in truth.shown:
+            findings.append(ConformanceFinding(rule="pending_requires_observed_pending", severity="violation", legacy_check="C5",
+                                               detail=f"{field} PENDING although no delivered observation showed {service} PENDING"))
+    if notification == "NOT_REQUIRED" and truth.delivered_upgrade_terminal != "FAILED":
+        findings.append(ConformanceFinding(rule="not_required_needs_failed_upgrade", severity="violation", legacy_check="C5",
+                                           detail="notification NOT_REQUIRED although no delivered upgrade failure exists"))
     if overall == "CORRECTLY_REJECTED" and notification != "NOT_REQUIRED":
         findings.append(ConformanceFinding(rule="notification_label_after_rejection", severity="violation", legacy_check="C5",
                                            detail=f"a correctly rejected task labels the confirmation NOT_REQUIRED, not {notification}"))
