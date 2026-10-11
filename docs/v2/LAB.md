@@ -106,4 +106,5 @@ delivery events, oracle `BELIEFS_TRUE`); an agent that claims success after only
 missing snapshot and a plan that pins a different checker.
 
 `python -m faultlab store <trials.sqlite3> [--batch <id>]` prints a store's summary;
-`python -m faultlab run` (see `ADAPTERS.md`) schedules and runs a batch for a registered adapter.
+`python -m faultlab run` (see `ADAPTERS.md`) schedules and runs a batch for a registered adapter;
+`python -m faultlab replay <bundle or store> --attempt <id> --store <out> [--scenario <id>] [--cut-at n]` re-runs a recorded trial into a fresh world (`EVIDENCE.md`).

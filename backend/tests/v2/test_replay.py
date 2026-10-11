@@ -63,6 +63,32 @@ def test_a_replay_in_a_different_world_stops_at_the_first_divergence(tmp_path):
         assert [c["tool"] for c in diverged.source_facts["calls"]] == ["get_order", "update_order"]
 
 
+def test_the_replay_command_replays_from_a_bundle_and_from_a_store(tmp_path, capsys):
+    import json
+
+    from faultlab import __main__ as cli
+
+    with TrialStore(tmp_path / "trials.sqlite3") as store:
+        worker = TrialWorker(store=store, worker_id="w", database_dir=tmp_path / "worlds", referee=LegacyOrdersReferee())
+        record(worker, "dev-1", ReferenceOrdersAdapter(), "trial-a")
+        record(worker, "dev-5", ReferenceOrdersAdapter(), "trial-b")
+        store.export_bundle(tmp_path / "batch.zip", name="two")
+    out = str(tmp_path / "replays.sqlite3")
+    assert cli.main(["replay", str(tmp_path / "batch.zip"), "--attempt", "trial-a", "--store", out, "--worlds", str(tmp_path / "w2")]) == 0
+    same = json.loads(capsys.readouterr().out)
+    assert same["divergence"] is None and same["replayed"]["task"] == "COMPLETED" and same["replayed"]["violations"] == []
+    assert cli.main(["replay", str(tmp_path / "trials.sqlite3"), "--attempt", "trial-a", "--scenario", "dev-5", "--store", out,
+                     "--worlds", str(tmp_path / "w2")]) == 0
+    other = json.loads(capsys.readouterr().out)
+    assert other["divergence"]["tool"] == "update_order" and other["replayed"]["reason"] is None
+    assert cli.main(["replay", str(tmp_path / "batch.zip"), "--attempt", "trial-b", "--cut-at", "1", "--store", out, "--worlds", str(tmp_path / "w2")]) == 0
+    cut = json.loads(capsys.readouterr().out)
+    assert cut["steps_replayed"] == 1 and cut["replayed"]["task"] == "CORRECTLY_REFUSED"
+    assert cli.main(["replay", str(tmp_path / "batch.zip"), "--store", out]) == 2          # several envelopes, no --attempt
+    assert cli.main(["replay", str(tmp_path / "batch.zip"), "--attempt", "nope", "--store", out]) == 2
+    capsys.readouterr()
+
+
 def test_a_cut_point_replay_hands_the_session_to_a_continuation(tmp_path):
     with TrialStore(tmp_path / "trials.sqlite3") as store:
         worker = TrialWorker(store=store, worker_id="w", database_dir=tmp_path / "worlds", referee=LegacyOrdersReferee())
