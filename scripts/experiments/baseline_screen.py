@@ -34,6 +34,14 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 TASK_TEXT = "Upgrade the authorized order to express shipping, then record one truthful confirmation."
 TERMINAL = ("COMPLETED", "INCOMPLETE", "INTERRUPTED")
+# Which study a run queues: the frozen baseline study (phase A/B) or the generated completion-recovery
+# study (controls, Mechanic proposals, source gate, validation batch; never activates a policy).
+STUDIES = {
+    "baseline": {"queue": "/api/campaigns/{campaign_id}/baseline-study", "status": "/api/baseline-studies/{study_id}",
+                 "record": "baseline-study.json", "slots": 36, "live": 18},
+    "completion": {"queue": "/api/campaigns/{campaign_id}/completion-study", "status": "/api/completion-studies/{study_id}",
+                   "record": "completion-study.json", "slots": None, "live": None},
+}
 
 
 def log(run_dir: Path, message: str) -> None:
@@ -154,16 +162,84 @@ def summarize(record: dict) -> dict:
             "evidence": record.get("evidence"), "telemetry": record.get("telemetry")}
 
 
+def live_trials(record: dict) -> list:
+    """The live-arm trials of a baseline record, or every executed slot of a completion record."""
+    if record.get("trials") is not None:
+        return [t for t in record.get("trials", []) if t.get("arm") == "B0"]
+    return [slot for slot in record.get("slots", []) if slot.get("status") not in (None, "QUEUED", "RUNNING")]
+
+
+def lab_error_streak(trials: list) -> int:
+    streak = 0
+    for t in reversed(trials):
+        if t.get("lifecycle") == "LAB_ERROR" or t.get("outcome") == "LAB_ERROR":
+            streak += 1
+        else:
+            break
+    return streak
+
+
+def queue_and_watch(client, campaign_id: str, study: str, *, run_dir: Path, max_minutes: float, max_lab_error_streak: int,
+                    sleep=time.sleep, clock=time.monotonic, evidence_protocol: str | None = None) -> tuple[dict, str | None]:
+    """Queue one study on the campaign and watch it to a terminal status under the declared stop rules.
+
+    Returns the final record and the stop rule that fired (None when the study ended on its own).
+    """
+    spec = STUDIES[study]
+    body = {"execute_live": True}
+    if study == "completion" and evidence_protocol:
+        body["evidence_protocol"] = evidence_protocol
+    record = api(client, "POST", spec["queue"].format(campaign_id=campaign_id), body)
+    study_id = record["study_id"]
+    log(run_dir, f"{study} study {study_id} queued")
+    started = clock()
+    last_done, last_stage = -1, None
+    stopped_by_rule = None
+    status_path = spec["status"].format(study_id=study_id)
+    while record.get("status") not in TERMINAL:
+        sleep(10)
+        record = api(client, "GET", status_path)
+        trials = live_trials(record)
+        done = len(record.get("trials") or record.get("slots") or [])
+        stage = record.get("stage")
+        if done != last_done or stage != last_stage:
+            summary: dict = {}
+            for t in trials:
+                key = str(t.get("outcome") or t.get("lifecycle") or t.get("status"))
+                summary[key] = summary.get(key, 0) + 1
+            total = spec["slots"] or len(record.get("slots") or [])
+            log(run_dir, f"stage {stage or '-'} slots done {done}/{total} live {len(trials)}/{spec['live'] or total} {summary} decision {record.get('decision', '-')}")
+            last_done, last_stage = done, stage
+            if lab_error_streak(trials) >= max_lab_error_streak and stopped_by_rule is None:
+                stopped_by_rule = f"{lab_error_streak(trials)} consecutive LAB_ERROR live trials"
+        if stopped_by_rule is None and clock() - started > max_minutes * 60:
+            stopped_by_rule = f"exceeded {max_minutes:.0f} minutes"
+        if stopped_by_rule and record.get("status") not in TERMINAL:
+            log(run_dir, f"STOP RULE: {stopped_by_rule}; requesting stop")
+            api(client, "POST", f"/api/campaigns/{campaign_id}/stop", {})
+            for _ in range(30):
+                sleep(5)
+                record = api(client, "GET", status_path)
+                if record.get("status") in TERMINAL:
+                    break
+            break
+    (run_dir / spec["record"]).write_text(json.dumps(record, indent=2))
+    return record, stopped_by_rule
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--model", required=True, help="canonical Actor model name, e.g. anthropic:claude-haiku-5-5")
+    parser.add_argument("--study", choices=tuple(STUDIES), default="baseline",
+                        help="baseline (the frozen six-case study) or completion (controls, Mechanic proposals, source gate, validation)")
+    parser.add_argument("--evidence-protocol", default=None, help="completion study only: the declared Mechanic evidence presentation")
     parser.add_argument("--data-dir", required=True, type=Path, help="fresh store directory (created if absent)")
     parser.add_argument("--declaration", required=True, type=Path)
     parser.add_argument("--declaration-sha256", required=True)
     parser.add_argument("--lab-model", default=None, help="Explorer/Mechanic model (never called by a baseline study); default: the Actor model")
     parser.add_argument("--dollar-cap", type=float, default=60.0, help="FAULTLAB_DOLLAR_CAP for the campaign: a fresh live campaign reserves 1,064 protected calls plus the study's 144, all at the dearest role bound")
     parser.add_argument("--monthly-cap", type=float, default=None, help="override FAULTLAB_MONTHLY_DOLLAR_CAP for this run")
-    parser.add_argument("--max-minutes", type=float, default=75.0)
+    parser.add_argument("--max-minutes", type=float, default=None, help="stop rule; default 75 for a baseline study, 240 for a completion study")
     parser.add_argument("--max-lab-error-streak", type=int, default=3)
     parser.add_argument("--settle-seconds", type=float, default=120.0,
                         help="after the study ends, wait up to this long for queued telemetry uploads to drain before stopping")
@@ -184,7 +260,8 @@ def main(argv=None) -> int:
     power = subprocess.run(["pmset", "-g", "batt"], capture_output=True, text=True).stdout
     if "AC Power" not in power:
         log(run_dir, "WARNING: not on AC power")
-    log(run_dir, f"model={args.model} data_dir={run_dir} declaration_sha256={digest}")
+    max_minutes = args.max_minutes if args.max_minutes is not None else (75.0 if args.study == "baseline" else 240.0)
+    log(run_dir, f"model={args.model} study={args.study} lab_model={args.lab_model or args.model} data_dir={run_dir} declaration_sha256={digest}")
 
     env = live_environment(args.model, lab_model=args.lab_model or args.model, dollar_cap=args.dollar_cap, monthly_cap=args.monthly_cap)
     env["FAULTLAB_BACKEND_PORT"] = str(args.backend_port)
@@ -194,7 +271,8 @@ def main(argv=None) -> int:
                                  "--data-dir", str(run_dir)], cwd=ROOT, env=env, stdout=launcher_log, stderr=subprocess.STDOUT,
                                 start_new_session=True)
     log(run_dir, f"launcher pid {launcher.pid}")
-    result = {"model": args.model, "data_dir": str(run_dir), "declaration_sha256": digest}
+    result = {"model": args.model, "study": args.study, "lab_model": args.lab_model or args.model, "data_dir": str(run_dir),
+              "declaration_sha256": digest}
     client = httpx.Client(base_url=f"http://127.0.0.1:{args.backend_port}", timeout=30.0, trust_env=False)
     try:
         readiness = wait_for(client, "/api/readiness", timeout=180, run_dir=run_dir)
@@ -211,47 +289,14 @@ def main(argv=None) -> int:
         campaign_id = campaign["campaign_id"]
         result["campaign_id"] = campaign_id
         log(run_dir, f"campaign {campaign_id} created")
-        record = api(client, "POST", f"/api/campaigns/{campaign_id}/baseline-study", {"execute_live": True})
-        study_id = record["study_id"]
-        result["study_id"] = study_id
-        log(run_dir, f"baseline study {study_id} queued; 36 slots (18 live)")
-        started = time.monotonic()
-        last_done = -1
-        stopped_by_rule = None
-        while record.get("status") not in TERMINAL:
-            time.sleep(10)
-            record = api(client, "GET", f"/api/baseline-studies/{study_id}")
-            done = len(record.get("trials", []))
-            if done != last_done:
-                live = [t for t in record.get("trials", []) if t.get("arm") == "B0"]
-                summary = {}
-                for t in live:
-                    key = str(t.get("outcome") or t.get("lifecycle"))
-                    summary[key] = summary.get(key, 0) + 1
-                log(run_dir, f"slots done {done}/36 live {len(live)}/18 {summary}")
-                last_done = done
-                streak = 0
-                for t in reversed(live):
-                    if t.get("lifecycle") == "LAB_ERROR":
-                        streak += 1
-                    else:
-                        break
-                if streak >= args.max_lab_error_streak and stopped_by_rule is None:
-                    stopped_by_rule = f"{streak} consecutive LAB_ERROR live trials"
-            if stopped_by_rule is None and time.monotonic() - started > args.max_minutes * 60:
-                stopped_by_rule = f"exceeded {args.max_minutes:.0f} minutes"
-            if stopped_by_rule and record.get("status") not in TERMINAL:
-                log(run_dir, f"STOP RULE: {stopped_by_rule}; requesting stop")
-                api(client, "POST", f"/api/campaigns/{campaign_id}/stop", {})
-                for _ in range(30):
-                    time.sleep(5)
-                    record = api(client, "GET", f"/api/baseline-studies/{study_id}")
-                    if record.get("status") in TERMINAL:
-                        break
-                break
+        record, stopped_by_rule = queue_and_watch(client, campaign_id, args.study, run_dir=run_dir, max_minutes=max_minutes,
+                                                  max_lab_error_streak=args.max_lab_error_streak, evidence_protocol=args.evidence_protocol)
+        result["study_id"] = record.get("study_id")
         result["stopped_by_rule"] = stopped_by_rule
-        (run_dir / "baseline-study.json").write_text(json.dumps(record, indent=2))
-        result["summary"] = summarize(record)
+        result["summary"] = summarize(record) if args.study == "baseline" else {
+            "status": record.get("status"), "reason": record.get("reason"), "decision": record.get("decision"),
+            "stage": record.get("stage"), "slots": len(record.get("slots") or []), "usage": record.get("usage"),
+            "charged_model_calls": record.get("charged_model_calls"), "candidates": record.get("candidates")}
         log(run_dir, f"study {record.get('status')}: {record.get('reason')}")
         for path, name in ((f"/api/campaigns/{campaign_id}", "campaign.json"), (f"/api/campaigns/{campaign_id}/budget", "budget.json"),
                            (f"/api/campaigns/{campaign_id}/matrix", "matrix.json")):

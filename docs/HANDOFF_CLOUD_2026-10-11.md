@@ -131,6 +131,13 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
   and broke collection of the full backend suite (`./scripts/test.sh backend` failed at collection
   on `main` before this session); renamed to `test_envelope_bundles.py`.
 
+- **Credit plan**: the owner decided on 2026-10-11 to spend the whole promotional credit. The
+  plan, declarations and read-outs are in `docs/CLAUDE_CREDIT_PLAN_2026-10-11.md` (piece C: the
+  screen with Fable 5.1; D: completion studies with Sonnet Actor and Opus Mechanic; E: Opus
+  Actor until the credit is spent). `baseline_screen.py --study completion` queues a completion
+  study with the same declaration, caps and stop rules as a baseline study (offline-tested watch
+  loop). The launch is local, after the phase B read-out, before 2026-10-16.
+
 Still open from the Stage 1 list: the rest of 1.6 and 1.7 (above), the rest of 1.9 (free-text
 extraction, calibration by fault phase), 1.10 (a core suite under five minutes; the full backend
 suite is 3,840 tests, 1,085 of them under `tests/lab`), 1.11 (exporters, Weave optional), 1.12.
