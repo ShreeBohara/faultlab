@@ -85,3 +85,23 @@ def test_empty_duplicate_and_unreadable_bundles_are_refused(tmp_path):
     (tmp_path / "junk.zip").write_bytes(b"not a zip")
     with pytest.raises(IntegrityError, match="Unreadable bundle"):
         read_bundle(tmp_path / "junk.zip")
+
+
+def test_oversized_members_are_refused_before_they_are_read(tmp_path):
+    from faultlab.evidence import bundles
+    envelopes = envelopes_from_fixture(tmp_path)
+    bundle = tmp_path / "incident.zip"
+    write_bundle(envelopes, bundle, name="fixture incident")
+    bloated = tmp_path / "bloated.zip"
+    with zipfile.ZipFile(bundle) as source, zipfile.ZipFile(bloated, "w", compression=zipfile.ZIP_DEFLATED) as target:
+        for name in source.namelist():
+            target.writestr(name, source.read(name))
+        target.writestr("envelopes/episode-1.json", b" " * (bundles.MAX_MEMBER_BYTES + 1))   # a duplicate, huge member
+    with pytest.raises(IntegrityError, match="size bound|too many|differ"):
+        read_bundle(bloated)
+    many = tmp_path / "many.zip"
+    with zipfile.ZipFile(many, "w") as target:
+        for index in range(bundles.MAX_ENVELOPES + 2):
+            target.writestr(f"envelopes/{index}.json", "{}")
+    with pytest.raises(IntegrityError, match="too many members"):
+        read_bundle(many)

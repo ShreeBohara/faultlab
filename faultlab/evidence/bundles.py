@@ -25,6 +25,10 @@ from faultlab.evidence.models import TrialEnvelope, validate_structure
 
 BUNDLE_VERSION = "faultlab-envelope-bundle/v2"
 MAX_ENVELOPES = 4096
+# A hostile archive must fail before it is read: bounded member count, member size and total size.
+MAX_MEMBER_BYTES = 16 * 1024 * 1024          # one envelope's own bound (faultlab.evidence.models.MAX_BYTES)
+MAX_MANIFEST_BYTES = 8 * 1024 * 1024
+MAX_TOTAL_BYTES = 1024 * 1024 * 1024
 
 
 class BundleEntry(StrictModel):
@@ -91,6 +95,17 @@ def read_bundle(path) -> tuple[BundleManifest, list[TrialEnvelope]]:
     path = Path(path)
     try:
         with zipfile.ZipFile(path) as archive:
+            infos = archive.infolist()
+            if len(infos) > MAX_ENVELOPES + 1:
+                raise IntegrityError("Bundle has too many members")
+            total = 0
+            for info in infos:
+                limit = MAX_MANIFEST_BYTES if info.filename == "manifest.json" else MAX_MEMBER_BYTES
+                if info.file_size > limit or info.compress_size > limit:
+                    raise IntegrityError(f"Bundle member {info.filename} exceeds its size bound")
+                total += info.file_size
+                if total > MAX_TOTAL_BYTES:
+                    raise IntegrityError("Bundle exceeds its total size bound")
             names = set(archive.namelist())
             if "manifest.json" not in names:
                 raise IntegrityError("Bundle has no manifest")
@@ -104,6 +119,8 @@ def read_bundle(path) -> tuple[BundleManifest, list[TrialEnvelope]]:
                 raise IntegrityError("Bundle contents differ from its manifest")
             envelopes = []
             for entry in manifest.entries:
+                if archive.getinfo(entry.path).file_size > MAX_MEMBER_BYTES:
+                    raise IntegrityError(f"Envelope {entry.attempt_id} exceeds its size bound")
                 data = archive.read(entry.path)
                 if __import__("hashlib").sha256(data).hexdigest() != entry.file_sha256:
                     raise IntegrityError(f"Stored bytes changed for {entry.attempt_id}")
