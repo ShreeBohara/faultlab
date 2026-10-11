@@ -12,6 +12,9 @@ store readable. This page lists the pieces that exist, each with its evidence.
 | Trial envelope and the legacy projection | `faultlab/evidence` | `EVIDENCE.md` | 6,667 of 6,667 archived episodes project |
 | World kernel and the orders pack | `faultlab/env/kernel`, `faultlab/packs/orders` | `KERNEL.md` | the 20 simulator tests pass against it; a foreign pack runs on it |
 | Task-pack interface, registry and `packs` command | `faultlab/packs` | `PACKS.md` | orders parity with the legacy manifest, hooks, tools, report schema and checker digest (tests) |
+| Typed trial store, scheduler, worker, session, kernel transport | `faultlab/lab` | `LAB.md` | all six orders scenarios run to sealed envelopes on the kernel through effectsafe (tests) |
+| Legacy orders referee behind the v2 `Referee` protocol | `faultlab/referee/legacy.py` | `LAB.md` | C1 to C8 pass on every scenario for the scripted agent; a false success claim is a violation (tests) |
+| Adapter interface, the deterministic reference adapter, registry, `run` command | `faultlab/adapters`, `faultlab/lab/cli.py` | `ADAPTERS.md` | the reference adapter passes C1 to C8 on every scenario; `faultlab run` to sealed envelopes (tests) |
 | Belief-versus-effect oracle v1 | `faultlab/referee/oracle` | `ORACLE.md` | 144 of 144 agreement with recorded C5/C6 on the Claude screen |
 | effectsafe 0.1 alpha | `effectsafe/` | `EFFECTSAFE.md` | the non-idempotent create, same-bytes resend and no-decay tests |
 | Providers beyond W&B, verified prices, monthly ledger | `backend/app/providers` | `../providers.md` | live smoke and the four-model screen |
@@ -23,8 +26,9 @@ Tests for the new packages live in `backend/tests/v2` and run with the core suit
 ## Not there yet (Stage 1 remainder)
 
 Moving the orders checks themselves out of the legacy referee (the rest of 1.3; the pack pins
-their digest for now), the trial worker and typed store (1.5), one adapter interface and registry (1.6), the CLI, pytest plugin and CI action
-(1.7), incident bundles v2 and replay (1.8), the rest of the oracle (free-text extraction,
-calibration), the rest of test triage (a core suite under five minutes), exporters with Weave
-optional (1.11), docs v2 (1.12). The legacy loop still runs the research path on
-`backend/app`.
+their digest and the worker leaves the task outcome pending until a referee exists), an HTTP
+transport for the worker (the rest of 1.5), the model-backed, native and local adapters (the rest
+of 1.6), the rest of the CLI, the pytest plugin and the CI action (1.7), replay (the rest of
+1.8), the rest of the oracle (free-text extraction, calibration), the rest of test triage (a core
+suite under five minutes), exporters with Weave optional (1.11), docs v2 (1.12). The legacy loop
+still runs the research path on `backend/app`.
