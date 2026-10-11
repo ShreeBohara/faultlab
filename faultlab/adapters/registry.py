@@ -9,6 +9,8 @@ from faultlab.core.errors import FaultLabError
 
 ADAPTERS: dict[str, tuple[str, str]] = {
     "reference-orders": ("faultlab.adapters.reference", "ReferenceOrdersAdapter"),
+    # Needs settings: provider (the legacy RuntimeProvider shape) and model (canonical name).
+    "model-actor": ("faultlab.adapters.model_actor", "ModelActorAdapter"),
 }
 
 
@@ -32,7 +34,14 @@ def load_adapter(adapter_id: str, **settings) -> BaseAdapter:
 
 
 def load_adapters() -> list[BaseAdapter]:
-    return [load_adapter(adapter_id) for adapter_id in ADAPTERS]
+    """Every adapter that needs no settings (the ones a listing or an offline run can construct)."""
+    adapters = []
+    for adapter_id in ADAPTERS:
+        try:
+            adapters.append(load_adapter(adapter_id))
+        except TypeError:
+            continue
+    return adapters
 
 
 __all__ = ["ADAPTERS", "AdapterError", "adapter_ids", "load_adapter", "load_adapters"]

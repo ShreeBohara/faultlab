@@ -119,9 +119,12 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
   a status read into the write it reports on.
 - **1.6 (first cut)** adapter interface and registry, `reference-orders` (the legacy B1 control
   on the session; passes C1 to C8 on every development scenario), `faultlab run` and
-  `faultlab adapters` (`ADAPTERS.md`). Not done: the model-backed Actor adapter (the legacy prompt
-  loop on a provider), native smolagents and local `decide()` adapters; those need a provider key
-  or a decision about protocol identity, so they are the owner's call locally.
+  `faultlab adapters` (`ADAPTERS.md`). Then, on the owner's choice, `model-actor`: the legacy
+  Actor prompt loop on the session (same prompt hash, same turn message, v4 indexed evidence,
+  same retry and final-turn rules), tested with a scripted provider; a live run is
+  `faultlab run --adapter model-actor --model <provider:model> --execute-live --dollars <bound>`
+  on the Mac, under a declaration. Not done: native smolagents and local `decide()` adapters, and
+  recovery policies through the session.
 - **1.7 (first cut)** the pytest plugin (`faultlab_lab`, `assert_clean`), a CI job that runs every
   orders scenario twice with the reference adapter and the fixed checks and fails on any problem,
   `faultlab run --bundle` (`TESTING.md`).

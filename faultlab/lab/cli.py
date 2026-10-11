@@ -35,8 +35,28 @@ def build_referee(name: str, pack_id: str):
     raise ValueError(f"Unknown referee {name!r}")
 
 
+def build_adapter(args):
+    """The registered adapter; the model Actor needs a model, explicit live authorization and the owner's settings."""
+    if args.adapter != "model-actor":
+        if args.model or args.execute_live:
+            raise ValueError("--model and --execute-live apply to the model-actor adapter only")
+        return load_adapter(args.adapter)
+    if not args.model:
+        raise ValueError("model-actor needs --model provider:model")
+    if not args.execute_live:
+        raise ValueError("model-actor makes paid provider calls; pass --execute-live to authorize them (declaration and ledger entry first)")
+    if args.dollars <= 0:
+        raise ValueError("a paid run needs a positive --dollars bound per trial and batch")
+    from app.config import Settings
+    from app.providers.runtime import RuntimeProvider
+    settings = Settings.from_env()
+    provider = RuntimeProvider(settings, live_authorized=True)
+    return load_adapter("model-actor", provider=provider, model=args.model)
+
+
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(prog="faultlab run", description="Run a pack's scenarios for one adapter, offline, to sealed envelopes")
+    parser = argparse.ArgumentParser(prog="faultlab run", description="Run a pack's scenarios for one adapter to sealed envelopes "
+                                                                     "(offline for the reference adapter; paid, explicitly authorized, for the model Actor)")
     parser.add_argument("--store", required=True, help="path of the trial store to write (created if missing)")
     parser.add_argument("--pack", required=True, help="pack id, see `faultlab packs`")
     parser.add_argument("--adapter", required=True, help="adapter id, see `faultlab adapters`")
@@ -50,10 +70,12 @@ def main(argv=None) -> int:
     parser.add_argument("--wall-seconds", type=float, default=90.0, help="wall-clock cap per trial")
     parser.add_argument("--worlds", default=None, help="directory for the kernel's world files (default beside the store)")
     parser.add_argument("--bundle", default=None, help="also write the batch's envelopes as a bundle (zip) at this path")
+    parser.add_argument("--model", default=None, help="model-actor only: the canonical model to run (provider:model), paid")
+    parser.add_argument("--execute-live", action="store_true", help="model-actor only: authorize paid provider calls (needs the owner's .env)")
     args = parser.parse_args(argv)
     try:
         pack = load_pack(args.pack)
-        adapter = load_adapter(args.adapter)
+        adapter = build_adapter(args)
         if not adapter.supports(pack.pack_id):
             raise ValueError(f"Adapter {adapter.adapter_id} does not drive pack {pack.pack_id}")
         referee = build_referee(args.referee, pack.pack_id)
@@ -61,7 +83,7 @@ def main(argv=None) -> int:
         caps = Caps(model_calls=args.model_calls, http_attempts=args.http_attempts, wall_seconds=args.wall_seconds, dollars=args.dollars)
         plans = [pack.plan(scenario_id, agent=adapter.manifest(), environment=EnvSpec(kind="simulator"), protocol_version=PROTOCOL_VERSION,
                            caps=caps).model_copy(update={"repetition": RepetitionPolicy(k=args.k)}) for scenario_id in scenario_ids]
-    except (PackError, AdapterError, ValueError) as error:
+    except (PackError, AdapterError, ValueError, ImportError) as error:
         print(str(error), file=sys.stderr)
         return 2
     with TrialStore(args.store) as store:

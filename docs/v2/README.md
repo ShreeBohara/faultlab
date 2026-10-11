@@ -15,6 +15,7 @@ store readable. This page lists the pieces that exist, each with its evidence.
 | Typed trial store, scheduler, worker, session, kernel transport | `faultlab/lab` | `LAB.md` | all six orders scenarios run to sealed envelopes on the kernel through effectsafe (tests) |
 | Legacy orders referee behind the v2 `Referee` protocol | `faultlab/referee/legacy.py` | `LAB.md` | C1 to C8 pass on every scenario for the scripted agent; a false success claim is a violation (tests) |
 | Adapter interface, the deterministic reference adapter, registry, `run` command | `faultlab/adapters`, `faultlab/lab/cli.py` | `ADAPTERS.md` | the reference adapter passes C1 to C8 on every scenario; `faultlab run` to sealed envelopes (tests) |
+| Model Actor adapter: the legacy prompt loop on the session, comparable with the screens | `faultlab/adapters/model_actor.py` | `ADAPTERS.md` | a scripted model passes C1 to C8 with decoded citations; invalid answers, retries and losses behave as the legacy Actor (tests) |
 | pytest plugin and the CI smoke job | `faultlab/testing/plugin.py`, `.github/workflows/ci.yml` | `TESTING.md` | a clean run passes, a lying agent fails with every problem listed (tests); CI runs the offline batch |
 | Replay: recorded inputs in a fresh world, divergence stop, cut points | `faultlab/lab/replay.py` | `EVIDENCE.md` | a replay reproduces the recorded run; a different world stops at the first divergence (tests) |
 | Belief-versus-effect oracle v1 | `faultlab/referee/oracle` | `ORACLE.md` | 144 of 144 agreement with recorded C5/C6 on the Claude screen |

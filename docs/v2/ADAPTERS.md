@@ -26,6 +26,26 @@ report exactly what the delivered evidence supports (an attempted write without 
 is `UNKNOWN`, never `NOT_STARTED`; a rejected upgrade makes the confirmation `NOT_REQUIRED`). It is
 a control, not a learned policy.
 
+## The model Actor adapter
+
+`model-actor` (`faultlab/adapters/model_actor.py`) is the legacy reference Actor's prompt loop on
+the v2 session, kept comparable with the September program and the Claude screens: the same
+system prompt (its hash is the adapter's prompt digest), the same action schema, the same per-turn
+message built by the legacy `turn_message` with every observation in the legacy
+`PublicObservation` shape (under the indexed protocol `faultlab-actor-context/v4-indexed-evidence`,
+the one the screens ran, observations are named by journal position and the report's citations are
+decoded back, never repaired), the same final-turn rule, the same cost of an invalid answer, and the
+same blind-retry rule (one retry of the identical request only when no answer arrived; a second
+loss is infrastructure). Tools go through the session instead of the legacy broker. Recovery
+policies (the interpreter hooks) are not part of this cut; the empty baseline policy is what the
+screens ran. Protocols v2 and v3 (attempted-writes blocks) need the legacy journal and are not
+offered.
+
+It takes a provider with the legacy `RuntimeProvider.complete` shape. The tests drive it with a
+scripted provider; `faultlab run --adapter model-actor --model provider:model --execute-live
+--dollars <bound>` builds the real provider from the owner's `.env` and is paid: a declaration and
+a ledger entry come first, as for every paid run.
+
 ## The run command
 
 ```bash
@@ -50,6 +70,12 @@ pinned bytes after the lost reply and retries the transient refusal to success; 
 runs a two-scenario, two-repetition batch to four sealed envelopes and prints the summary, and
 refuses an unknown pack or adapter.
 
-Not in this cut: the model-backed adapter (the legacy Actor prompt loop on a provider), the native
-smolagents and local `decide()` adapters, and adapter settings in the registry. Those need either a
-provider key or the legacy packages and are the rest of 1.6.
+`backend/tests/v2/test_model_actor.py`: the model Actor carries the legacy prompt identity; a
+scripted model completes the healthy, delayed and rejected scenarios through the legacy checks with
+its label citations decoded; an invalid answer costs a turn and a transport loss is retried once;
+the reserved final turn is a report or nothing; a second transport loss is an infrastructure error
+with the cost marked unknown.
+
+Not in this cut: the native smolagents and local `decide()` adapters, recovery policies through the
+session, and a live run of the model Actor (needs the owner's key; the first one is a declared,
+paid study on the Mac).
