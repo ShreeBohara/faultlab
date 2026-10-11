@@ -53,3 +53,7 @@ artifacts/
 *.tmp
 *.swp
 frontend/tests/.results/
+
+# Symlinked local environments (the directory patterns above do not match symlinks).
+.venv
+**/node_modules

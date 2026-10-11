@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "effectsafe"
+version = "0.0.1"
+description = "Effect-safe action layer for LLM agents: intent-pinned operation identity, idempotency keys, an exact-bytes journal, receipts and honest unknown outcomes, with per-provider connector profiles. Name reserved; the first real release follows the FaultLab v2 rebuild."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Shree Bohara" }]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+]
+
+[project.urls]
+Homepage = "https://github.com/ShreeBohara/faultlab"
+
+[tool.setuptools]
+packages = ["effectsafe"]
