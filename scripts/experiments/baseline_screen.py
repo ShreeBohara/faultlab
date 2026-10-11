@@ -53,7 +53,7 @@ def port_free(port: int) -> bool:
             return False
 
 
-def live_environment(model: str, *, dollar_cap: float, monthly_cap: float | None) -> dict:
+def live_environment(model: str, *, lab_model: str, dollar_cap: float, monthly_cap: float | None) -> dict:
     """The launcher environment of the handoff recipe, with the Actor model chosen here."""
     from app.config import Settings
     settings = Settings.from_env()
@@ -64,7 +64,7 @@ def live_environment(model: str, *, dollar_cap: float, monthly_cap: float | None
         "FAULTLAB_READ_ONLY": "false", "FAULTLAB_LIVE_ENABLED": "true", "FAULTLAB_ARIA_PUBLISH_ENABLED": "false",
         "FAULTLAB_CONFIRMED_ENTITY": settings.wandb_entity, "FAULTLAB_CONTROL_TOKEN": "",
         "WANDB_MODEL": model, "FAULTLAB_ACTOR_MODEL": "",
-        "WANDB_EXPLORER_MODEL": "deepseek-ai/DeepSeek-V4-Pro-0813", "WANDB_MECHANIC_MODEL": "deepseek-ai/DeepSeek-V4-Pro-0813",
+        "WANDB_EXPLORER_MODEL": lab_model, "WANDB_MECHANIC_MODEL": lab_model,
         "FAULTLAB_LAB_MODEL": "", "FAULTLAB_ACTOR_CONTEXT_PROTOCOL": "faultlab-actor-context/v4-indexed-evidence",
         "FAULTLAB_MODEL_CALL_CAP": "6000", "FAULTLAB_TOKEN_CAP": "204000000", "FAULTLAB_DOLLAR_CAP": str(dollar_cap),
         "WANDB_ERROR_REPORTING": "false",
@@ -130,7 +130,8 @@ def main(argv=None) -> int:
     parser.add_argument("--data-dir", required=True, type=Path, help="fresh store directory (created if absent)")
     parser.add_argument("--declaration", required=True, type=Path)
     parser.add_argument("--declaration-sha256", required=True)
-    parser.add_argument("--dollar-cap", type=float, default=60.0, help="FAULTLAB_DOLLAR_CAP for the campaign")
+    parser.add_argument("--lab-model", default=None, help="Explorer/Mechanic model (never called by a baseline study); default: the Actor model")
+    parser.add_argument("--dollar-cap", type=float, default=60.0, help="FAULTLAB_DOLLAR_CAP for the campaign: a fresh live campaign reserves 1,064 protected calls plus the study's 144, all at the dearest role bound")
     parser.add_argument("--monthly-cap", type=float, default=None, help="override FAULTLAB_MONTHLY_DOLLAR_CAP for this run")
     parser.add_argument("--max-minutes", type=float, default=75.0)
     parser.add_argument("--max-lab-error-streak", type=int, default=3)
@@ -153,7 +154,7 @@ def main(argv=None) -> int:
         log(run_dir, "WARNING: not on AC power")
     log(run_dir, f"model={args.model} data_dir={run_dir} declaration_sha256={digest}")
 
-    env = live_environment(args.model, dollar_cap=args.dollar_cap, monthly_cap=args.monthly_cap)
+    env = live_environment(args.model, lab_model=args.lab_model or args.model, dollar_cap=args.dollar_cap, monthly_cap=args.monthly_cap)
     env["FAULTLAB_BACKEND_PORT"] = str(args.backend_port)
     env["FAULTLAB_SIMULATOR_PORT"] = str(args.simulator_port)
     launcher_log = (run_dir / "launcher.log").open("a", encoding="utf-8")
