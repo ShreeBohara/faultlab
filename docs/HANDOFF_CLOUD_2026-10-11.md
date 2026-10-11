@@ -133,6 +133,12 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
 - Repair: `backend/tests/v2/test_bundles.py` shared its basename with the incident-evidence module
   and broke collection of the full backend suite (`./scripts/test.sh backend` failed at collection
   on `main` before this session); renamed to `test_envelope_bundles.py`.
+- Full backend suite in the cloud container (after 1.8): 2,490 passed, 9 skipped, 11 failed in
+  44 minutes. All 11 are the native smolagents child-process path (`tests/native_agents`, the
+  native incident-evidence cases): the child answers `NATIVE_AGENT_EOF` instead of running. The
+  same tests fail the same way on the pre-session commit `228e5ee` in this container, so it is the
+  container, not this session's commits; GitHub CI (ubuntu) and the Mac are the reference for
+  those. The v2 suite is 120 passed, 1 skipped (plus 3 driver tests under `tests/experiments`).
 
 - **Credit plan**: the owner decided on 2026-10-11 to spend the whole promotional credit. The
   plan, declarations and read-outs are in `docs/CLAUDE_CREDIT_PLAN_2026-10-11.md` (piece C: the
