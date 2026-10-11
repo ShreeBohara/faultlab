@@ -68,6 +68,26 @@ completed tasks, 506 correctly refused, 2,129 safe unresolved, 528 violations; 0
 `faultlab.evidence.bundles` writes a zip of sealed envelopes with a digest manifest
 (`write_bundle`) and reads it back re-validating every envelope and every digest
 (`read_bundle`): a changed byte, a changed manifest entry, an extra or missing file are all
-refused. Bundles carry data only; a replay is the reader's own reviewed runner. The
-replay modes themselves (recorded-input execution with divergence stop, cut-point replay) are the
-rest of phase 1.8.
+refused. Bundles carry data only; a replay is the reader's own reviewed runner.
+
+## Replay (phase 1.8, second part)
+
+`faultlab.lab.replay.ReplayAdapter` re-issues one envelope's recorded agent-visible steps (the
+logical calls with the requests the agent made, the waits, the final report) through a fresh
+session on a new world, as any other adapter the worker runs. Every identity of the recorded
+intent is rebound to the fresh trial's intent and every recorded evidence id to the evidence the
+new world delivers, so the replayed report cites what this world showed.
+
+- **Recorded-input execution with divergence stop**: after each call, what the new world delivered
+  is compared with what was recorded (tool, transport, HTTP status, state word, error code). The
+  first difference stops the replay, is recorded as a `rule_step` event with the recorded and the
+  delivered shapes, and leaves the report absent: a replay never pretends the recorded agent would
+  have continued the same way in a different world.
+- **Cut-point replay**: `cut_at=n` replays the first `n` steps and then hands the session to a
+  continuation (what would a different agent have done from here?).
+
+Evidence (`backend/tests/v2/test_replay.py`): the reference adapter's lost-reply trial replays in
+a fresh lost-reply world with no divergence, the same task outcome, all eight checks passing and
+the report citing the new evidence; the healthy trial replayed into the rejected-upgrade world
+stops at the upgrade (SUCCEEDED recorded, PENDING delivered) with the divergence on the envelope;
+a cut after two steps hands over to a continuation that ends safely unresolved.

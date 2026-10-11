@@ -183,9 +183,13 @@ class TrialSession:
                     break
         finally:
             if attempts:
+                # The request as the agent made it (identities plus the pinned payload): what a replay re-issues.
+                recorded = {key: value for key, value in request.items() if key != "payload"}
+                recorded["payload"] = canonical_payload(operation["original_bytes"]) if contract.kind == "write" else None
                 self.calls.append({"call_id": call_id, "tool": tool, "service": service, "caller": caller, "hook": hook,
                                    "operation_id": operation_id if contract.kind == "write" else None, "attempt_ids": attempts,
-                                   "observation_ids": [o.evidence_id for o in self.observations if o.call_id == call_id]})
+                                   "observation_ids": [o.evidence_id for o in self.observations if o.call_id == call_id],
+                                   "request": recorded})
         return observation
 
     def _deliver(self, call_id, attempt_id, tool, contract, operation_id, result: TransportResult, reports_on: str | None) -> Observation:
