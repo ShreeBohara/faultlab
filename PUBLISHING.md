@@ -17,7 +17,7 @@ Status: checklist for the owner (Shree) to sign before the first push after the 
 
 - `.env`, API keys, tokens, `.netrc`, `.pem`, `.key`, `credentials*.json`, `secrets*.json` (all in `.gitignore`).
 - The large evidence stores: `artifacts/lab.sqlite3` and every world and run database, `~/FaultLab_Runs/`, the 6 GB `artifacts/` tree beyond the tracked small files. These stay local and in `~/FaultLab_Backups/`.
-- The W&B entity and project names stay out of docs (the team's; users supply their own).
+- New documents keep the W&B entity and project names out (users supply their own). The entity name itself has been public since September in nine hackathon-era docs on `main`, and the research docs and evidence files on the working branch mention it in 90 more; it is a team name, not a credential, so it stays.
 
 ## How the push will be done
 
@@ -27,10 +27,24 @@ Status: checklist for the owner (Shree) to sign before the first push after the 
 4. Push the tag `pre-v2-2026-10`.
 5. Enable GitHub Actions (the existing `ci.yml` has never run) and record its first result.
 
+## Pre-push audit (2026-10-10, night)
+
+Run over all 81 commits that the push publishes (`origin/main..HEAD`), by the agent, before pushing:
+
+- Exact-value search for every credential in the owner's `.env` (W&B key, Anthropic key, control token): 0 commits match.
+- Credential-shaped patterns (`sk-...`, `sk-ant-...`, AWS, GitHub, Slack tokens, private keys, bearer headers, key assignments):
+  the only matches are the placeholder `sk-000...0001` in the golden native requests and `task-<32 hex>` record ids whose
+  tail happens to spell `sk-`; nothing else.
+- The seven tracked `settings.env.txt` snapshots under `artifacts/product-native-v2-2026-09-29/` are empty files.
+- The two tracked `probe-ledger.sqlite3` files hold probe records and no key-shaped strings.
+- `artifacts/heldout2/` never appears in the history; the `audit/` partitions were already public.
+- Largest blobs 7.5 MB (tokenizer files already public); pack 35 MB.
+
 ## Owner sign-off
 
-- [ ] I understand that everything listed under "What the first push adds" becomes public.
-- [ ] I confirm no credentials live in the tree (secret scan: 0 hits on 2026-10-10).
-- [ ] License: Apache-2.0 for the whole repository.
+- [x] I understand that everything listed under "What the first push adds" becomes public.
+- [x] I confirm no credentials live in the tree (secret scan: 0 hits on 2026-10-10; pre-push audit above).
+- [x] License: Apache-2.0 for the whole repository.
 
-Signed: ____________________ Date: __________
+Signed: the owner authorized the push in chat on 2026-10-10 ("go ahead with your recommendation", after the
+recommendation "publish, then start Stage 1"); the agent ran the audit above and pushed the same night.
