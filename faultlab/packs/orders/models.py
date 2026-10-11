@@ -129,6 +129,27 @@ class WorldSnapshot(StrictModel):
     events: list[EventRecord] = Field(max_length=300)
 
 
+class NoNextAction(StrictModel):
+    kind: Literal["NONE", "ESCALATE"]
+
+
+class CheckNextAction(StrictModel):
+    kind: Literal["CHECK_EXISTING_UPGRADE", "CHECK_EXISTING_NOTIFICATION"]
+    operation_id: Id
+
+
+NextAction = Annotated[Union[NoNextAction, CheckNextAction], Field(discriminator="kind")]
+
+
+# The agent's final report, field for field the legacy ``TaskReport`` (same JSON schema, so no docstring).
+class TaskReport(StrictModel):
+    upgrade_outcome: Literal["NOT_STARTED", "PENDING", "SUCCEEDED", "FAILED", "UNKNOWN"]
+    notification_outcome: Literal["NOT_STARTED", "PENDING", "SUCCEEDED", "FAILED", "UNKNOWN", "NOT_REQUIRED"]
+    overall: Literal["COMPLETED", "SAFE_UNRESOLVED", "CORRECTLY_REJECTED"]
+    evidence_ids: list[Id] = Field(max_length=18)
+    next_action: NextAction
+
+
 class UpgradeRequest(StrictModel):
     order_id: Id
     desired_shipping: Literal["express"]
@@ -188,7 +209,7 @@ def validate_primitive(primitive: dict) -> None:
     PARAMETERS[kind].model_validate(primitive["parameters"])
 
 
-__all__ = ["SCOPE", "VERSION", "EventRecord", "F1Parameters", "F2Parameters", "F3Parameters", "F4Parameters",
-           "NotificationEffect", "NotificationRequest", "OperationData", "Operation", "Order", "Receipt", "Service",
-           "Status", "StoredStatus", "TaskIntent", "Tool", "ToolResult", "UpgradeRequest", "WorldSnapshot",
-           "validate_primitive"]
+__all__ = ["SCOPE", "VERSION", "CheckNextAction", "EventRecord", "F1Parameters", "F2Parameters", "F3Parameters",
+           "F4Parameters", "NextAction", "NoNextAction", "NotificationEffect", "NotificationRequest", "OperationData",
+           "Operation", "Order", "Receipt", "Service", "Status", "StoredStatus", "TaskIntent", "TaskReport", "Tool",
+           "ToolResult", "UpgradeRequest", "WorldSnapshot", "validate_primitive"]
