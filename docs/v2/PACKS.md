@@ -16,6 +16,7 @@ them and prints a manifest.
 | `intent_model`, `report_model` | strict models | what a trial starts from and what the agent hands back |
 | `allocate_intent` | `(fixture_id, namespace) -> dict` | an intent the handler accepts for the fixture, every identity derived from the namespace (the worker passes the attempt id; `example_intent` uses `"example"`) |
 | `service_of` | `(tool, request) -> str` | the kernel service a call is dispatched on (orders: the status read names its service) |
+| `validate_result` | `(tool, request, result, intent, tick)` | optional; raises when a schema-valid reply does not bind to the trial's own identities (orders: the legacy broker's binding rule, ported) |
 | `tools` | effectsafe `ToolContract` per tool | read or write, identity scope, commit boundary, status lookup, errors proving no effect |
 | `hooks` | names | where a recovery rule may run |
 | `fixtures` | names | the initial worlds the handler knows |

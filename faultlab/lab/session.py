@@ -20,6 +20,7 @@ from faultlab.evidence.models import EvidenceEvent, hashed_payload
 from faultlab.lab.transport import TIMEOUT_CODE, KernelTransport, TransportResult
 
 RETRYABLE_STATUSES = frozenset({429, 502, 503, 504})
+INVALID_RESPONSE = "INVALID_SERVICE_RESPONSE"
 RETRYABLE_CODES = frozenset({"TRANSIENT_UNAVAILABLE", "TRANSIENT_ERROR", "TEMPORARY_UNAVAILABLE", "SERVICE_UNAVAILABLE"})
 
 
@@ -177,7 +178,9 @@ class TrialSession:
                 wire["payload"] = canonical_payload(pinned) if contract.kind == "write" else None
                 result = self.transport.send(self.world_id, tool=tool, service=service, request=wire, call_id=call_id, attempt_id=attempt_id)
                 self.usage.ticks = self.transport.state(self.world_id)["tick"]
-                observation = self._deliver(call_id, attempt_id, tool, contract, operation_id, result, reports_on)
+                observation = self._deliver(call_id, attempt_id, tool, contract, operation_id, result, reports_on, request)
+                if observation.result.get("error_code") == INVALID_RESPONSE:
+                    break                                      # a reply that does not bind is final, never retried blindly
                 retryable = result.transport != "ok" or result.status in RETRYABLE_STATUSES or result.error_code in RETRYABLE_CODES
                 if not retryable or retry + 1 >= self.max_attempts_per_call:
                     break
@@ -192,8 +195,18 @@ class TrialSession:
                                    "request": recorded})
         return observation
 
-    def _deliver(self, call_id, attempt_id, tool, contract, operation_id, result: TransportResult, reports_on: str | None) -> Observation:
+    def _deliver(self, call_id, attempt_id, tool, contract, operation_id, result: TransportResult, reports_on: str | None,
+                 request: dict | None = None) -> Observation:
         body = result.body if isinstance(result.body, dict) else None
+        rejected = None
+        if result.transport == "ok" and body is not None:
+            # A schema-valid reply that does not bind to this trial's own identities is never shown as evidence.
+            try:
+                self.pack.check_result(tool, request or {}, body, self.intent, self.usage.ticks)
+            except (TypeError, ValueError) as error:
+                rejected = {"response_digest": content_hash(body), "reason": str(error)[:200]}
+                result = TransportResult(transport="error", status=result.status, error_code=INVALID_RESPONSE, delay=result.delay)
+                body = None
         if result.transport == "ok" and body is not None:
             evidence = Evidence(transport="ok", status=body.get("status") if isinstance(body.get("status"), str) else None,
                                 receipt_id=body.get("receipt_id") if isinstance(body.get("receipt_id"), str) else None,
@@ -215,7 +228,7 @@ class TrialSession:
         self.observations.append(observation)
         self._event("response_delivered", {"observation": observation.model_dump(mode="json"),
                                            "outcome": state.outcome if outcome_of else None, "reports_on": outcome_of,
-                                           "reply_delay_seconds": result.delay},
+                                           "reply_delay_seconds": result.delay, "rejected_response": rejected},
                     operation_id=outcome_of, attempt_ref=attempt_id)
         return observation
 

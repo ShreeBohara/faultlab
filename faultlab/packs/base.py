@@ -101,6 +101,9 @@ class TaskPack:
     business_router: Callable[..., Any] | None = None   # (store, limits) -> APIRouter, as the kernel app expects
     # (tool, request) -> the kernel service the call is dispatched on; defaults to the pack id.
     service_of: Callable[[str, dict], str] | None = None
+    # (tool, request, result, intent, tick) -> None, or raise ValueError when a schema-valid reply does not bind
+    # to this trial's own identities (a foreign order, another operation's receipt). Optional.
+    validate_result: Callable[[str, dict, dict, dict, int], None] | None = None
     diagnostics: dict[str, JsonValue] | None = None
     _by_tool: dict[str, ToolContract] = field(init=False, repr=False, compare=False)
     _by_scenario: dict[str, Scenario] = field(init=False, repr=False, compare=False)
@@ -142,6 +145,10 @@ class TaskPack:
 
     def service(self, tool: str, request: dict) -> str:
         return self.service_of(tool, request) if self.service_of is not None else self.pack_id
+
+    def check_result(self, tool: str, request: dict, result: dict, intent: dict, tick: int) -> None:
+        if self.validate_result is not None:
+            self.validate_result(tool, request, result, intent, tick)
 
     def scenario(self, scenario_id: str) -> Scenario:
         try:

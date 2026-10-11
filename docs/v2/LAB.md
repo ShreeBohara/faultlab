@@ -69,7 +69,10 @@ The broker rebuilt on effectsafe. `call(tool, request)` prepares the intent in t
 pinned; a key the pack already allocated is kept), journals the dispatch, sends through the
 transport, reconciles the reply into the operation's outcome, and records what the agent was shown.
 A read that is a write's declared `status_lookup` folds its evidence into that write's outcome
-(`Journal.observe`). One logical call makes up to two transport attempts on a transient refusal or
+(`Journal.observe`). A reply that does not bind to the trial's own identities (the pack's
+`validate_result`, for orders the legacy broker's rule) is never shown as evidence: the agent sees
+`INVALID_SERVICE_RESPONSE`, the envelope keeps the reply's digest and the reason, and the call is
+not retried blindly. One logical call makes up to two transport attempts on a transient refusal or
 a lost reply, as the legacy broker did; a write the provider cannot recognise is never resent while
 its effect is unknown (`UnsafeResend` propagates to the adapter). `wait(ticks)` advances the world's
 clock. `model_call()` charges a model call before it is made. `submit(report)` records the report

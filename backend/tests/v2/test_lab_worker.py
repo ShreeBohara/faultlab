@@ -4,7 +4,7 @@ import asyncio
 import pytest
 
 from effectsafe import Intent, Journal, ToolContract
-from faultlab.core import Caps, content_hash, is_digest
+from faultlab.core import Caps, canonical_json, content_hash, is_digest
 from faultlab.evidence import AgentManifest, EnvSpec, Finding, TrialAttempt, plan_hash, validate_structure
 from faultlab.evidence.bundles import read_bundle
 from faultlab.lab import (AdmissionRefused, CapExhausted, ProtocolError, Scheduler, StoreConflict, TrialStore, TrialWorker, Verdict,
@@ -305,6 +305,53 @@ def test_admission_refuses_rather_than_exceeding_the_batch_caps(store, tmp_path)
                                       caps=Caps(model_calls=10)).batch_id, worker_id="w")
     with pytest.raises(AdmissionRefused, match="UNBOUNDED_PLAN"):
         calls.next()
+
+
+def test_a_reply_that_does_not_bind_to_the_trial_is_refused_as_evidence(store, tmp_path):
+    from faultlab.lab.transport import KernelTransport, TransportResult
+
+    class Tampering(KernelTransport):
+        """A world that answers the first order read with somebody else's order."""
+
+        def send(self, world_id, *, tool, service, request, call_id, attempt_id):
+            result = super().send(world_id, tool=tool, service=service, request=request, call_id=call_id, attempt_id=attempt_id)
+            if tool == "get_order" and isinstance(result.body, dict):
+                body = dict(result.body)
+                body["order_id"] = "order-somebody-else"
+                body["data"] = {**body["data"], "order_id": "order-somebody-else"}
+                return TransportResult(transport="ok", status=result.status, body=body, delay=result.delay)
+            return result
+
+    import faultlab.lab.worker as worker_module
+    original = worker_module.KernelTransport
+    worker_module.KernelTransport = Tampering
+    try:
+        worker = worker_for(store, tmp_path, referee=ReportReferee())
+        plan = plan_for("dev-1")
+        envelope = run(worker.run(plan, TrialAttempt(attempt_id="trial-tampered", plan_hash=plan_hash(plan), lifecycle="READY"), ScriptedOrdersAdapter()))
+    finally:
+        worker_module.KernelTransport = original
+    delivered = [e.payload for e in envelope.events if e.kind == "response_delivered" and e.payload["observation"]["tool"] == "get_order"]
+    assert len(delivered) == 1 and delivered[0]["observation"]["result"]["error_code"] == "INVALID_SERVICE_RESPONSE"
+    assert delivered[0]["rejected_response"]["reason"] == "Foreign order response" and is_digest(delivered[0]["rejected_response"]["response_digest"])
+    assert "order-somebody-else" not in canonical_json(envelope.events)
+    assert envelope.outcome.execution == "COMPLETED"       # the scripted agent carried on with the identities it holds
+
+
+def test_the_orders_pack_refuses_unbound_results():
+    intent = ORDERS.example_intent("standard-v1")
+    good = {"call_id": "call-1", "tool": "get_order", "transport": "ok", "order_id": intent["order_id"], "observed_version": 1,
+            "data": {"order_id": intent["order_id"], "applied_shipping": "standard", "requested_shipping": "standard", "version": 1}}
+    ORDERS.check_result("get_order", {"order_id": intent["order_id"]}, good, intent, 1)
+    with pytest.raises(ValueError, match="Projection version"):
+        ORDERS.check_result("get_order", {}, {**good, "observed_version": 2}, intent, 1)
+    with pytest.raises(ValueError, match="Foreign operation"):
+        ORDERS.check_result("get_operation_status", {"service": "orders"}, {"call_id": "c", "tool": "get_operation_status", "transport": "ok",
+                                                                             "operation_id": "upgrade-other", "status": "UNKNOWN"}, intent, 1)
+    with pytest.raises(ValueError, match="terminal evidence"):
+        ORDERS.check_result("update_order", {}, {"call_id": "c", "tool": "update_order", "transport": "error", "status": "SUCCEEDED"}, intent, 1)
+    with pytest.raises(ValueError, match="typed public data"):
+        ORDERS.check_result("update_order", {}, {"call_id": "c", "tool": "update_order", "transport": "ok", "status": "PENDING"}, intent, 1)
 
 
 def test_the_journal_keeps_a_key_the_pack_already_allocated():

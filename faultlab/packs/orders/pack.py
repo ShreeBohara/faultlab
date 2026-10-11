@@ -119,6 +119,54 @@ def allocate_intent(fixture_id: str, namespace: str) -> dict:
     ).model_dump(mode="json")
 
 
+def validate_result(tool: str, request: dict, result: dict, intent: dict, tick: int) -> None:
+    """Schema-valid public data must still bind to this trial's own authority (the legacy broker's rule).
+
+    A port of ``app/adapters/business_tools.py::validate_result_binding``: a result that names another
+    order or operation, carries terminal evidence over a failed transport, lacks the typed body a
+    successful reply must have, or whose receipt does not match the operation is refused.
+    """
+    parsed = m.ToolResult.model_validate(result)
+    if parsed.call_id is None or parsed.tool != tool:
+        raise ValueError("Tool result correlation mismatch")
+    if parsed.order_id is not None and parsed.order_id != intent["order_id"]:
+        raise ValueError("Foreign order response")
+    service = service_of(tool, request)
+    operation = intent["notification_operation_id"] if service == "notifications" else intent["upgrade_operation_id"]
+    intent_hash = intent["notification_intent_hash"] if service == "notifications" else intent["upgrade_intent_hash"]
+    if tool != "get_order" and parsed.operation_id is not None and parsed.operation_id != operation:
+        raise ValueError("Foreign operation response")
+    if parsed.transport != "ok" and (parsed.data is not None or parsed.receipt_id is not None or parsed.status in ("SUCCEEDED", "FAILED")):
+        raise ValueError("Failed transport cannot deliver terminal evidence")
+    data = parsed.data
+    if parsed.transport == "ok" and ((tool == "get_order" and not isinstance(data, m.Order))
+                                     or (tool != "get_order" and not isinstance(data, m.OperationData))):
+        raise ValueError("Successful response requires the typed public data body")
+    if isinstance(data, m.Order):
+        if tool != "get_order" or data.order_id != intent["order_id"]:
+            raise ValueError("Order projection binding mismatch")
+        if parsed.observed_version != data.version:
+            raise ValueError("Projection version mismatch")
+    elif isinstance(data, m.OperationData):
+        if tool == "get_order" or (data.service, data.operation_id, data.order_id, data.intent_hash) != (service, operation, intent["order_id"], intent_hash):
+            raise ValueError("Operation data binding mismatch")
+        if parsed.status != data.status or parsed.operation_id != data.operation_id:
+            raise ValueError("Operation status mismatch")
+        receipt = data.receipt
+        if data.status in ("SUCCEEDED", "FAILED") and receipt is None:
+            raise ValueError("Terminal state requires a delivered receipt")
+        if data.status in ("PENDING", "UNKNOWN") and receipt is not None:
+            raise ValueError("Nonterminal state cannot include terminal receipt")
+        if receipt:
+            if ((receipt.service, receipt.operation_id, receipt.order_id, receipt.intent_hash) != (service, operation, intent["order_id"], intent_hash)
+                    or receipt.status != data.status or parsed.receipt_id != receipt.receipt_id or receipt.terminal_tick > tick):
+                raise ValueError("Terminal receipt binding mismatch")
+        elif parsed.receipt_id is not None:
+            raise ValueError("Missing delivered receipt body")
+    elif parsed.receipt_id is not None:
+        raise ValueError("Receipt pointer without delivered receipt")
+
+
 def service_of(tool: str, request: dict) -> str:
     """The kernel service a call is dispatched on: the status read names its service in the request."""
     if tool == "get_operation_status":
@@ -133,11 +181,11 @@ PACK = TaskPack(
     pack_id=PACK_ID, version=VERSION,
     description="Upgrade one order to express shipping with a keyed, asynchronously committed write, then send one "
                 "truthful confirmation; report what happened citing only delivered evidence.",
-    handler_factory=OrdersHandler, business_router=business_router, service_of=service_of,
+    handler_factory=OrdersHandler, business_router=business_router, service_of=service_of, validate_result=validate_result,
     intent_model=m.TaskIntent, report_model=m.TaskReport, allocate_intent=allocate_intent,
     tools=TOOLS, hooks=HOOKS, fixtures=tuple(FIXTURE_VERSIONS), scenarios=SCENARIOS, properties=PROPERTIES,
     diagnostics={"profiles": {profile: dict(hashes) for profile, hashes in PROFILE_HASHES.items()}},
 )
 
 __all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "KERNEL_REFUSALS", "PACK", "PROPERTIES", "SCENARIOS", "TOOLS", "VERSION",
-           "allocate_intent", "service_of"]
+           "allocate_intent", "service_of", "validate_result"]
