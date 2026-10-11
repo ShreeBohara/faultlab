@@ -60,3 +60,10 @@ def test_caps_are_optional_and_non_negative():
     with pytest.raises(ValueError):
         Caps(dollars=-1.0)
     assert issubclass(IntegrityError, ValueError)
+
+
+def test_the_faultlab_command_lists_its_subcommands(capsys):
+    from faultlab.__main__ import main as faultlab_main
+    assert faultlab_main(["--help"]) == 0 and "project" in capsys.readouterr().out
+    assert faultlab_main([]) == 2
+    assert faultlab_main(["schemas", str(__import__("tempfile").mkdtemp())]) == 0

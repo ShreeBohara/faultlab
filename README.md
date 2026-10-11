@@ -8,6 +8,11 @@ Built in one weekend at CoreWeave Hacks: Agent Loops (San Francisco, September 1
 
 [Current status and checklist](CURRENT_STATUS.md) · [Quick start](docs/user-guide.md) · [Slides (PDF)](docs/presentation.pdf) · [Architecture](docs/architecture.md) · [Plain-language guide](docs/demo-guide.md)
 
+**October 2026: FaultLab is being rebuilt as three products on one engine** (the lab, a public bench,
+and `effectsafe`, a runtime action layer). The new packages live beside the legacy code; see
+[docs/v2/README.md](docs/v2/README.md) for what exists, each piece with its evidence, and
+[docs/providers.md](docs/providers.md) for running the lab on OpenAI, Claude, OpenRouter or your own endpoint.
+
 The [current status page](CURRENT_STATUS.md) is the starting point for measured results, current work,
 configuration and remaining gaps. The screenshots and campaign story below are the recorded hackathon example.
 
