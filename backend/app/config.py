@@ -81,6 +81,8 @@ class Settings:
     # Every admitted call reserves its worst-case bound against this calendar-month cap.
     faultlab_monthly_dollar_cap: float = 100.0
     faultlab_pricing_table: str = ''
+    # The machine-wide monthly spend ledger; blank means ~/.faultlab/spend-ledger.sqlite3, shared by every store.
+    faultlab_spend_ledger: str = ''
     faultlab_allow_stale_prices: bool = False
     # Weave tracing and verified evidence export; legacy Learn campaigns require it.
     faultlab_weave_enabled: bool = True
@@ -296,7 +298,10 @@ class Settings:
 
     @property
     def spend_ledger_path(self) -> Path:
-        return self.artifact_path / 'spend-ledger.sqlite3'
+        """One ledger per machine, not per store: the monthly cap must see every run."""
+        if self.faultlab_spend_ledger.strip():
+            return Path(self.faultlab_spend_ledger).expanduser()
+        return Path.home() / '.faultlab' / 'spend-ledger.sqlite3'
 
     @property
     def model_call_dollar_bounds(self) -> dict[str, float] | None:

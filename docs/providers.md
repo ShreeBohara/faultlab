@@ -56,7 +56,8 @@ Two caps apply to every priced call:
 * `FAULTLAB_DOLLAR_CAP` (at most 500): the campaign's own ceiling, as before.
 * `FAULTLAB_MONTHLY_DOLLAR_CAP`: a machine-wide ceiling for the calendar month, across every campaign,
   study and smoke check. Before a call is sent, its worst-case bound (32,000 input + 2,000 output
-  tokens at the verified rates) is reserved in `<artifact dir>/spend-ledger.sqlite3`; the reservation
+  tokens at the verified rates) is reserved in `~/.faultlab/spend-ledger.sqlite3` (or `FAULTLAB_SPEND_LEDGER`), one ledger
+  per machine whatever store a run uses; the reservation
   is refused, before any client exists, when the month's reserved total would exceed the cap
   (`RuntimeProviderError` code `MONTHLY_CAP`, never retried). After the response the row is settled
   with the measured cost. The gate sums *bounds*, never measured costs, so a runaway loop cannot spend

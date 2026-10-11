@@ -378,3 +378,6 @@ def test_explicit_rates_win_over_the_table_and_wandb_roles_keep_the_entity_rule(
                        faultlab_pricing_model='wandb:m', faultlab_pricing_verified=True)
     assert explicit.model_rates_for_role('actor') == (1., 2.)
     assert explicit.spend_ledger_path.name == 'spend-ledger.sqlite3'
+    # The shared conftest fixture replaces spend_ledger_path for every test; check the unpatched property directly.
+    original = next(klass.__dict__['spend_ledger_path'] for klass in (Settings,) if 'spend_ledger_path' in klass.__dict__)
+    assert isinstance(original, property)
