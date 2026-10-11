@@ -1237,6 +1237,13 @@ this follow-up. The owned simulator is also stopped after verification. A live m
 without generation. Both compatibility checks used their own stores and explicitly declared their
 new runtimes; historical campaigns are read-only. Recheck processes before starting or stopping services.
 
+## Ledger entry 2026-10-11: Claude Actor screen (v2 reset, first paid runs)
+
+Four declared baseline studies (DeepSeek V3.1 control, Claude Haiku 5.5, Sonnet 5.5, Opus 5.5; 18 live
+episodes each): reserved bounds $3.01 + $0.61 + $12.10 + $24.19 = $39.91, measured $2.70; two smoke
+requests $0.08 reserved. Project ledger carried forward: $937.99 + $39.99 = **$977.98** (bounds, as always).
+Write-up: `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`; evidence `~/FaultLab_Runs/2026-10-11/claude-actor-screen/`.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
