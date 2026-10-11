@@ -62,3 +62,12 @@ completed tasks, 506 correctly refused, 2,129 safe unresolved, 528 violations; 0
   test pins them to each other so recorded identities keep their meaning.
 - Strict, closed models: unknown fields are refused, nothing is coerced.
 - No I/O at import time; `LegacyStore` opens SQLite read-only.
+
+## Bundles (phase 1.8, first part)
+
+`faultlab.evidence.bundles` writes a zip of sealed envelopes with a digest manifest
+(`write_bundle`) and reads it back re-validating every envelope and every digest
+(`read_bundle`): a changed byte, a changed manifest entry, an extra or missing file are all
+refused. Bundles carry data only; a replay is the reader's own reviewed runner. The
+replay modes themselves (recorded-input execution with divergence stop, cut-point replay) are the
+rest of phase 1.8.
