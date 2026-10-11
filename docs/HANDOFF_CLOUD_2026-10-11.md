@@ -101,6 +101,40 @@ remains the ledger of record.
   the report model's JSON schema equals the legacy `TaskReport`'s, the properties digest equals
   the sha256 of `backend/app/referee/checks.py` computed in the test.
 
+## Progress log of the cloud session (2026-10-11, from ~17:15 UTC)
+
+Each item is a commit on `main` with its tests and a page in `docs/v2/`; the v2 suite went from
+75 to 114 passed. Nothing paid ran. The phase B artifacts had not appeared on `main` while this
+was written (checked repeatedly); the phase B write-up and ledger line are still open.
+
+- **1.3** `TaskPack` interface, the orders declaration (public development split, legacy hooks and
+  tools, C1 to C8 pinned to the checker's sha256 without reading it), registry, `faultlab packs`,
+  conformance tests with orders parity (`PACKS.md`).
+- **1.5** `TrialStore`, scheduler with batch-cap admission, `TrialWorker`, `TrialSession` on
+  effectsafe, in-process `KernelTransport` where a lost reply is decided by the declared delay, not
+  raced (`LAB.md`). The legacy orders checks run behind the v2 `Referee` protocol through
+  `faultlab/referee/legacy.py`, called as a black box and refused unless their digest is the one the
+  plan pinned. The session refuses replies that do not bind to the trial's identities (the legacy
+  broker's rule, ported). effectsafe: a key already in the payload is kept; `Journal.observe` folds
+  a status read into the write it reports on.
+- **1.6 (first cut)** adapter interface and registry, `reference-orders` (the legacy B1 control
+  on the session; passes C1 to C8 on every development scenario), `faultlab run` and
+  `faultlab adapters` (`ADAPTERS.md`). Not done: the model-backed Actor adapter (the legacy prompt
+  loop on a provider), native smolagents and local `decide()` adapters; those need a provider key
+  or a decision about protocol identity, so they are the owner's call locally.
+- **1.7 (first cut)** the pytest plugin (`faultlab_lab`, `assert_clean`), a CI job that runs every
+  orders scenario twice with the reference adapter and the fixed checks and fails on any problem,
+  `faultlab run --bundle` (`TESTING.md`).
+- **1.8 (second part)** replay of recorded inputs in a fresh world with divergence stop and cut-point
+  continuation (`EVIDENCE.md`). A `faultlab run` bundle reads into the bench leaderboard.
+- Repair: `backend/tests/v2/test_bundles.py` shared its basename with the incident-evidence module
+  and broke collection of the full backend suite (`./scripts/test.sh backend` failed at collection
+  on `main` before this session); renamed to `test_envelope_bundles.py`.
+
+Still open from the Stage 1 list: the rest of 1.6 and 1.7 (above), the rest of 1.9 (free-text
+extraction, calibration by fault phase), 1.10 (a core suite under five minutes; the full backend
+suite is 3,840 tests, 1,085 of them under `tests/lab`), 1.11 (exporters, Weave optional), 1.12.
+
 ## For the next local session on the Mac
 
 - Fast-forward the clone: `git -C ~/FaultLab/faultlab fetch origin && git -C ~/FaultLab/faultlab merge --ff-only origin/main`
