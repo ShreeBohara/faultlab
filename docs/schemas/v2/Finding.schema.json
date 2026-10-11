@@ -1,0 +1,67 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "family": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "title": "Family",
+      "type": "string"
+    },
+    "note": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Note",
+      "type": "string"
+    },
+    "property_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+      "title": "Property Id",
+      "type": "string"
+    },
+    "property_version": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Property Version",
+      "type": "string"
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "VIOLATION",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ],
+      "title": "Result",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "witnesses": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 256,
+      "title": "Witnesses",
+      "type": "array"
+    }
+  },
+  "required": [
+    "property_id",
+    "property_version",
+    "result",
+    "family",
+    "severity"
+  ],
+  "title": "Finding",
+  "type": "object"
+}

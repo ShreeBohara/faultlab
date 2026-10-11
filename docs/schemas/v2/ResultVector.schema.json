@@ -1,0 +1,491 @@
+{
+  "$defs": {
+    "ClaimScore": {
+      "additionalProperties": false,
+      "description": "Beliefs versus effects (architecture section 5). ``UNSCORED`` until the oracle exists.",
+      "properties": {
+        "claims": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Claims",
+          "type": "object"
+        },
+        "mismatches": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Mismatches",
+          "type": "array"
+        },
+        "status": {
+          "default": "UNSCORED",
+          "enum": [
+            "UNSCORED",
+            "SCORED"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "title": "ClaimScore",
+      "type": "object"
+    },
+    "CostSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "dollars_measured": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dollars Measured"
+        },
+        "dollars_reserved": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dollars Reserved"
+        },
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        }
+      },
+      "title": "CostSummary",
+      "type": "object"
+    },
+    "ExecutionIdentity": {
+      "additionalProperties": false,
+      "description": "What makes two results comparable (architecture section 11). Unknown parts stay None.",
+      "properties": {
+        "adapter_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Digest"
+        },
+        "adapter_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "configuration_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration Digest"
+        },
+        "kernel_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kernel Digest"
+        },
+        "model": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "model_settings_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Settings Digest"
+        },
+        "pack_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pack Digest"
+        },
+        "pack_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Pack Id",
+          "type": "string"
+        },
+        "prompt_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Digest"
+        },
+        "properties_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Properties Digest"
+        },
+        "protocol_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Protocol Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pack_id",
+        "adapter_id",
+        "model",
+        "protocol_version"
+      ],
+      "title": "ExecutionIdentity",
+      "type": "object"
+    },
+    "ExposureSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "faults": {
+          "items": {
+            "$ref": "#/$defs/FaultExposure"
+          },
+          "maxItems": 64,
+          "title": "Faults",
+          "type": "array"
+        },
+        "required_fault_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Required Fault Ids",
+          "type": "array"
+        }
+      },
+      "title": "ExposureSummary",
+      "type": "object"
+    },
+    "FaultExposure": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attempt Ref"
+        },
+        "configured": {
+          "default": true,
+          "title": "Configured",
+          "type": "boolean"
+        },
+        "fault_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Fault Id",
+          "type": "string"
+        },
+        "not_triggered_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "target_not_reached",
+                "target_not_committed",
+                "pre_effect_failure",
+                "avoided_by_alternative_path",
+                "unclassified"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Not Triggered Reason"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "trigger_time": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trigger Time"
+        },
+        "triggered": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Triggered"
+        }
+      },
+      "required": [
+        "fault_id",
+        "triggered"
+      ],
+      "title": "FaultExposure",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Family",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Note",
+          "type": "string"
+        },
+        "property_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Property Id",
+          "type": "string"
+        },
+        "property_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Property Version",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "VIOLATION",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "major",
+            "minor"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "witnesses": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 256,
+          "title": "Witnesses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "property_id",
+        "property_version",
+        "result",
+        "family",
+        "severity"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "JsonValue": {}
+  },
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "$ref": "#/$defs/ClaimScore"
+    },
+    "cost": {
+      "$ref": "#/$defs/CostSummary"
+    },
+    "evidence_completeness": {
+      "enum": [
+        "complete",
+        "incomplete",
+        "unavailable"
+      ],
+      "title": "Evidence Completeness",
+      "type": "string"
+    },
+    "execution": {
+      "enum": [
+        "COMPLETED",
+        "INFRA_ERROR",
+        "STOPPED",
+        "PENDING_EVIDENCE"
+      ],
+      "title": "Execution",
+      "type": "string"
+    },
+    "exposure": {
+      "$ref": "#/$defs/ExposureSummary"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "maxItems": 256,
+      "title": "Findings",
+      "type": "array"
+    },
+    "identity": {
+      "$ref": "#/$defs/ExecutionIdentity"
+    },
+    "task": {
+      "anyOf": [
+        {
+          "enum": [
+            "COMPLETED",
+            "SAFE_UNRESOLVED",
+            "CORRECTLY_REFUSED",
+            "VIOLATION"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Task"
+    }
+  },
+  "required": [
+    "execution",
+    "task",
+    "evidence_completeness",
+    "identity"
+  ],
+  "title": "ResultVector",
+  "type": "object"
+}

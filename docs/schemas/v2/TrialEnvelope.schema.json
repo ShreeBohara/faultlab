@@ -1,0 +1,1365 @@
+{
+  "$defs": {
+    "AgentManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "model": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "prompt_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Digest"
+        },
+        "settings_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Settings Digest"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "adapter_id",
+        "model"
+      ],
+      "title": "AgentManifest",
+      "type": "object"
+    },
+    "Caps": {
+      "additionalProperties": false,
+      "properties": {
+        "dollars": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dollars"
+        },
+        "http_attempts": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Attempts"
+        },
+        "model_calls": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Calls"
+        },
+        "ticks": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ticks"
+        },
+        "tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tokens"
+        },
+        "wall_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wall Seconds"
+        }
+      },
+      "title": "Caps",
+      "type": "object"
+    },
+    "ClaimScore": {
+      "additionalProperties": false,
+      "description": "Beliefs versus effects (architecture section 5). ``UNSCORED`` until the oracle exists.",
+      "properties": {
+        "claims": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Claims",
+          "type": "object"
+        },
+        "mismatches": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Mismatches",
+          "type": "array"
+        },
+        "status": {
+          "default": "UNSCORED",
+          "enum": [
+            "UNSCORED",
+            "SCORED"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "title": "ClaimScore",
+      "type": "object"
+    },
+    "CostSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "dollars_measured": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dollars Measured"
+        },
+        "dollars_reserved": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dollars Reserved"
+        },
+        "http_attempts": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Http Attempts",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "model_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Model Calls",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "ticks": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ticks",
+          "type": "integer"
+        },
+        "wall_seconds": {
+          "default": 0.0,
+          "minimum": 0,
+          "title": "Wall Seconds",
+          "type": "number"
+        }
+      },
+      "title": "CostSummary",
+      "type": "object"
+    },
+    "EnvSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "capabilities": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Capabilities",
+          "type": "object"
+        },
+        "digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Digest"
+        },
+        "kind": {
+          "enum": [
+            "simulator",
+            "staging"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "EnvSpec",
+      "type": "object"
+    },
+    "EvidenceEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attempt Ref"
+        },
+        "causal_parents": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Causal Parents",
+          "type": "array"
+        },
+        "certainty": {
+          "enum": [
+            "observed",
+            "inferred",
+            "unknown"
+          ],
+          "title": "Certainty",
+          "type": "string"
+        },
+        "clock": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clock"
+        },
+        "clock_sequence": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Clock Sequence"
+        },
+        "kind": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Kind",
+          "type": "string"
+        },
+        "logical_time": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Logical Time"
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Id"
+        },
+        "payload": {
+          "$ref": "#/$defs/JsonValue"
+        },
+        "payload_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Payload Digest",
+          "type": "string"
+        },
+        "plane": {
+          "enum": [
+            "agent_visible",
+            "evaluator",
+            "orchestrator"
+          ],
+          "title": "Plane",
+          "type": "string"
+        },
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "source": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "source_ref": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "pattern": "^/",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Ref"
+        },
+        "wall_time": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wall Time"
+        }
+      },
+      "required": [
+        "seq",
+        "plane",
+        "kind",
+        "source",
+        "certainty",
+        "payload",
+        "payload_digest"
+      ],
+      "title": "EvidenceEvent",
+      "type": "object"
+    },
+    "ExecutionIdentity": {
+      "additionalProperties": false,
+      "description": "What makes two results comparable (architecture section 11). Unknown parts stay None.",
+      "properties": {
+        "adapter_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Digest"
+        },
+        "adapter_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Adapter Id",
+          "type": "string"
+        },
+        "configuration_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration Digest"
+        },
+        "kernel_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kernel Digest"
+        },
+        "model": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "model_settings_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Settings Digest"
+        },
+        "pack_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pack Digest"
+        },
+        "pack_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Pack Id",
+          "type": "string"
+        },
+        "prompt_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Digest"
+        },
+        "properties_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Properties Digest"
+        },
+        "protocol_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Protocol Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pack_id",
+        "adapter_id",
+        "model",
+        "protocol_version"
+      ],
+      "title": "ExecutionIdentity",
+      "type": "object"
+    },
+    "ExposureSummary": {
+      "additionalProperties": false,
+      "properties": {
+        "faults": {
+          "items": {
+            "$ref": "#/$defs/FaultExposure"
+          },
+          "maxItems": 64,
+          "title": "Faults",
+          "type": "array"
+        },
+        "required_fault_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Required Fault Ids",
+          "type": "array"
+        }
+      },
+      "title": "ExposureSummary",
+      "type": "object"
+    },
+    "FaultExposure": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attempt Ref"
+        },
+        "configured": {
+          "default": true,
+          "title": "Configured",
+          "type": "boolean"
+        },
+        "fault_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Fault Id",
+          "type": "string"
+        },
+        "not_triggered_reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "target_not_reached",
+                "target_not_committed",
+                "pre_effect_failure",
+                "avoided_by_alternative_path",
+                "unclassified"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Not Triggered Reason"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "trigger_time": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trigger Time"
+        },
+        "triggered": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Triggered"
+        }
+      },
+      "required": [
+        "fault_id",
+        "triggered"
+      ],
+      "title": "FaultExposure",
+      "type": "object"
+    },
+    "FaultPlacement": {
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Family",
+          "type": "string"
+        },
+        "fault_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Fault Id",
+          "type": "string"
+        },
+        "occurrence": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurrence"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service"
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool"
+        }
+      },
+      "required": [
+        "fault_id",
+        "family"
+      ],
+      "title": "FaultPlacement",
+      "type": "object"
+    },
+    "FaultSchedule": {
+      "additionalProperties": false,
+      "properties": {
+        "placements": {
+          "items": {
+            "$ref": "#/$defs/FaultPlacement"
+          },
+          "maxItems": 64,
+          "title": "Placements",
+          "type": "array"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        }
+      },
+      "title": "FaultSchedule",
+      "type": "object"
+    },
+    "Finding": {
+      "additionalProperties": false,
+      "properties": {
+        "family": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "title": "Family",
+          "type": "string"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Note",
+          "type": "string"
+        },
+        "property_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Property Id",
+          "type": "string"
+        },
+        "property_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Property Version",
+          "type": "string"
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "VIOLATION",
+            "UNKNOWN",
+            "NOT_APPLICABLE"
+          ],
+          "title": "Result",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "major",
+            "minor"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "witnesses": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 256,
+          "title": "Witnesses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "property_id",
+        "property_version",
+        "result",
+        "family",
+        "severity"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "RepetitionPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "k": {
+          "default": 1,
+          "minimum": 1,
+          "title": "K",
+          "type": "integer"
+        },
+        "pairing": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pairing"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        }
+      },
+      "title": "RepetitionPolicy",
+      "type": "object"
+    },
+    "Report": {
+      "additionalProperties": false,
+      "properties": {
+        "interpreted": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JsonValue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "original": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/JsonValue"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "raw_text": {
+          "anyOf": [
+            {
+              "maxLength": 65536,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Text"
+        },
+        "source_ref": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "pattern": "^/",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Ref"
+        },
+        "status": {
+          "enum": [
+            "DELIVERED",
+            "WITHHELD",
+            "ABSENT"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "Report",
+      "type": "object"
+    },
+    "ResultVector": {
+      "additionalProperties": false,
+      "properties": {
+        "claims": {
+          "$ref": "#/$defs/ClaimScore"
+        },
+        "cost": {
+          "$ref": "#/$defs/CostSummary"
+        },
+        "evidence_completeness": {
+          "enum": [
+            "complete",
+            "incomplete",
+            "unavailable"
+          ],
+          "title": "Evidence Completeness",
+          "type": "string"
+        },
+        "execution": {
+          "enum": [
+            "COMPLETED",
+            "INFRA_ERROR",
+            "STOPPED",
+            "PENDING_EVIDENCE"
+          ],
+          "title": "Execution",
+          "type": "string"
+        },
+        "exposure": {
+          "$ref": "#/$defs/ExposureSummary"
+        },
+        "findings": {
+          "items": {
+            "$ref": "#/$defs/Finding"
+          },
+          "maxItems": 256,
+          "title": "Findings",
+          "type": "array"
+        },
+        "identity": {
+          "$ref": "#/$defs/ExecutionIdentity"
+        },
+        "task": {
+          "anyOf": [
+            {
+              "enum": [
+                "COMPLETED",
+                "SAFE_UNRESOLVED",
+                "CORRECTLY_REFUSED",
+                "VIOLATION"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Task"
+        }
+      },
+      "required": [
+        "execution",
+        "task",
+        "evidence_completeness",
+        "identity"
+      ],
+      "title": "ResultVector",
+      "type": "object"
+    },
+    "SourceDescriptor": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "legacy_lab_store",
+            "faultlab_v2"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "mapping_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Mapping Digest",
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Notes",
+          "type": "array"
+        },
+        "projection": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Projection",
+          "type": "string"
+        },
+        "store_identity": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Store Identity"
+        }
+      },
+      "required": [
+        "kind",
+        "projection",
+        "mapping_digest"
+      ],
+      "title": "SourceDescriptor",
+      "type": "object"
+    },
+    "TrialAttempt": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "ended_at": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ended At"
+        },
+        "lifecycle": {
+          "enum": [
+            "CREATED",
+            "READY",
+            "RUNNING",
+            "SETTLING",
+            "TERMINAL"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "parent_attempt": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Parent Attempt"
+        },
+        "plan_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Plan Hash",
+          "type": "string"
+        },
+        "started_at": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Started At"
+        },
+        "terminal_reason": {
+          "anyOf": [
+            {
+              "maxLength": 600,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Terminal Reason"
+        }
+      },
+      "required": [
+        "attempt_id",
+        "plan_hash",
+        "lifecycle"
+      ],
+      "title": "TrialAttempt",
+      "type": "object"
+    },
+    "TrialPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/AgentManifest"
+        },
+        "caps": {
+          "$ref": "#/$defs/Caps"
+        },
+        "environment": {
+          "$ref": "#/$defs/EnvSpec"
+        },
+        "fixture_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fixture Digest"
+        },
+        "fixture_id": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fixture Id"
+        },
+        "pack_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pack Digest"
+        },
+        "pack_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Pack Id",
+          "type": "string"
+        },
+        "properties_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Properties Digest"
+        },
+        "protocol_version": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "repetition": {
+          "$ref": "#/$defs/RepetitionPolicy"
+        },
+        "scenario_id": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "schedule": {
+          "$ref": "#/$defs/FaultSchedule"
+        }
+      },
+      "required": [
+        "pack_id",
+        "scenario_id",
+        "agent",
+        "environment",
+        "protocol_version"
+      ],
+      "title": "TrialPlan",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "attempt": {
+      "$ref": "#/$defs/TrialAttempt"
+    },
+    "digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Digest",
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "$ref": "#/$defs/EvidenceEvent"
+      },
+      "maxItems": 4096,
+      "title": "Events",
+      "type": "array"
+    },
+    "facts_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Facts Digest",
+      "type": "string"
+    },
+    "outcome": {
+      "$ref": "#/$defs/ResultVector"
+    },
+    "plan": {
+      "$ref": "#/$defs/TrialPlan"
+    },
+    "report": {
+      "$ref": "#/$defs/Report"
+    },
+    "schema_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Schema Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "faultlab-trial-envelope/v2",
+      "default": "faultlab-trial-envelope/v2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceDescriptor"
+    },
+    "source_facts": {
+      "additionalProperties": {
+        "$ref": "#/$defs/JsonValue"
+      },
+      "title": "Source Facts",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_digest",
+    "plan",
+    "attempt",
+    "report",
+    "outcome",
+    "source",
+    "source_facts",
+    "facts_digest",
+    "digest"
+  ],
+  "title": "TrialEnvelope",
+  "type": "object"
+}
