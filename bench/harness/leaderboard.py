@@ -96,8 +96,11 @@ def aggregate(items: list[tuple[str, TrialEnvelope]], *, live_only: bool = True)
             for finding in oracle.conformance:
                 if finding.severity == "violation":
                     row["conformance_rules"][finding.rule] = row["conformance_rules"].get(finding.rule, 0) + 1
-        scenario = row["scenarios"].setdefault(envelope.plan.scenario_id[:12], {"n": 0, "violations": 0, "completed": 0, "untriggered": 0,
-                                                                                 "families": sorted({p.family for p in envelope.plan.schedule.placements})})
+        placements = envelope.plan.schedule.placements
+        label = (" + ".join(f"{p.family} {p.tool or '?'} #{p.occurrence or '?'}" for p in placements) or "healthy") \
+            + (f" [{envelope.plan.fixture_id}]" if envelope.plan.fixture_id and envelope.plan.fixture_id != "standard-v1" else "")
+        scenario = row["scenarios"].setdefault(label, {"scenario_id": envelope.plan.scenario_id, "n": 0, "violations": 0, "completed": 0,
+                                                       "untriggered": 0, "families": sorted({p.family for p in placements})})
         scenario["n"] += 1
         scenario["violations"] += int(task == "VIOLATION")
         scenario["completed"] += int(task == "COMPLETED")
