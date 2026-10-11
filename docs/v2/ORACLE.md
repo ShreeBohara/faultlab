@@ -36,5 +36,18 @@ description). The older stores also show the other side of the oracle: the nativ
 agent had false beliefs in 94 of 254 episodes of the v2b store, where every Claude report had
 true beliefs. Reports: `artifacts/plan-v2-stage1/oracle/` (local).
 
+## Validation against the whole research archive
+
+Scoring all 6,667 archived episodes of the September program (reference Actor on DeepSeek V3.1
+and Llama 3.3, native smolagents v1 and v2, every phase): the oracle agrees with the recorded
+C5 decision in 6,662 cases and with C6 in 6,660, with zero cases where the oracle flags a
+violation the checks did not. Getting there added three C5 rules in the contract's own words
+(NOT_STARTED after a write attempt; PENDING never shown; NOT_REQUIRED without a delivered
+failure) and withdrew one that the checks do not enforce (UNKNOWN without an attempt is
+admissible: 118 reports). Four episodes remain where the recorded C6 fails and the public
+contract gives no reason; their ids are listed in `artifacts/plan-v2-stage1/oracle/` for review
+by someone with access to the private checks. Beliefs across the archive: 4,024 true, 136 false,
+2,099 undetermined, 408 without a report.
+
 What v1 does not do yet: free-text reports (no model extraction, so no agreement statistic to
 report), calibration by fault phase, and the other packs. Those are the rest of phase 1.9.
