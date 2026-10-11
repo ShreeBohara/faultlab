@@ -23,8 +23,9 @@ different parameters never share an identity:
 Importing this module performs no I/O and creates no client.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 ProviderId = Literal["wandb", "openai", "anthropic", "openrouter", "custom"]
 PROVIDER_IDS: tuple[str, ...] = ("wandb", "openai", "anthropic", "openrouter", "custom")
@@ -152,9 +153,9 @@ class ProviderClientSpec:
     """Everything needed to build one SDK client for a provider; never logged or traced."""
     provider: str
     base_url: str
-    api_key: str
-    client_kwargs: dict[str, Any]
-    missing: tuple[str, ...]            # configuration names that are blank, by setting name
+    api_key: str = field(repr=False)     # kept out of repr, so an accidental print or log never shows it
+    client_kwargs: dict[str, Any] = field(default_factory=dict)
+    missing: tuple[str, ...] = ()        # configuration names that are blank or unusable, by setting name
 
     @property
     def configured(self) -> bool:
@@ -183,12 +184,23 @@ def client_spec(ref: ModelRef, settings) -> ProviderClientSpec:
         return ProviderClientSpec("openrouter", OPENROUTER_BASE_URL, settings.openrouter_api_key,
                                   {"default_headers": headers}, missing)
     if ref.provider == "custom":
-        missing = tuple(name for name, value in (("FAULTLAB_CUSTOM_BASE_URL", settings.faultlab_custom_base_url),
+        base_url = settings.faultlab_custom_base_url.strip()
+        missing = tuple(name for name, value in (("FAULTLAB_CUSTOM_BASE_URL", base_url),
                                                    ("FAULTLAB_CUSTOM_API_KEY", settings.faultlab_custom_api_key))
                         if not value.strip())
-        return ProviderClientSpec("custom", settings.faultlab_custom_base_url.strip(),
-                                  settings.faultlab_custom_api_key, {}, missing)
+        if base_url and not _credential_safe_url(base_url):
+            # The key travels in a header: only TLS or the local machine may receive it.
+            missing = tuple(dict.fromkeys((*missing, "FAULTLAB_CUSTOM_BASE_URL")))
+        return ProviderClientSpec("custom", base_url, settings.faultlab_custom_api_key, {}, missing)
     raise UnknownProviderError(f"Unknown provider '{ref.provider}'.")
+
+
+def _credential_safe_url(url: str) -> bool:
+    """True for https anywhere, or plain http to this machine only (a local model server)."""
+    parts = urlsplit(url)
+    if parts.scheme == "https" and parts.hostname:
+        return True
+    return parts.scheme == "http" and parts.hostname in ("localhost", "127.0.0.1", "::1")
 
 
 def provider_secrets(settings) -> tuple[str, ...]:

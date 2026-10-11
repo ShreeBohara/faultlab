@@ -11,7 +11,7 @@ Campaign identity, admission, redaction and the dollar ledgers are provider-inde
 | OpenAI | `openai:gpt-5-mini` | `OPENAI_API_KEY` | Sends `max_completion_tokens`. Reasoning models (`gpt-5*`, `gpt-6*`, `o*`) reject `temperature`, so it is omitted for them. |
 | Anthropic | `anthropic:claude-sonnet-5-5` | `ANTHROPIC_API_KEY` (plus `ANTHROPIC_WORKSPACE_ID` for a key that is not scoped to a workspace) | Anthropic's OpenAI-compatible layer ignores `response_format` and returns 400 for `temperature` below 1 on current models, so neither is sent. Structured output is recorded as *not enforced*; the lab validates every answer anyway. |
 | OpenRouter | `openrouter:anthropic/claude-sonnet-5-5` | `OPENROUTER_API_KEY` | Forwards `response_format`; reports the call's own `usage.cost`, which FaultLab records as the measured cost. Vendor parameter rules apply by model prefix. |
-| Custom | `custom:my-model` | `FAULTLAB_CUSTOM_BASE_URL`, `FAULTLAB_CUSTOM_API_KEY` | Any OpenAI-compatible endpoint: a local server, a gateway, a proxy. Plain request. |
+| Custom | `custom:my-model` | `FAULTLAB_CUSTOM_BASE_URL`, `FAULTLAB_CUSTOM_API_KEY` | Any OpenAI-compatible endpoint: a local server, a gateway, a proxy. Plain request. The URL must be `https://`, or `http://` to this machine only (localhost, 127.0.0.1, ::1), because the key travels in a header. |
 
 Sources for the profiles, read on 2026-10-10: Anthropic's OpenAI SDK compatibility page
 (`response_format: Ignored`; omit `temperature` on Claude 4.7 and later), OpenAI's reasoning guide

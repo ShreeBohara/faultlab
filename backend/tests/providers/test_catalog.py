@@ -120,6 +120,19 @@ def test_configured_client_specs_carry_each_providers_base_url_and_options():
                                                             'X-Title': 'FaultLab'}}
     custom = client_spec(ModelRef('custom', 'm'), settings)
     assert custom.base_url == 'http://127.0.0.1:11434/v1' and custom.api_key == 'c-key' and custom.configured
+    assert 'c-key' not in repr(custom) and 'c-key' not in str(custom)
     assert provider_secrets(settings) == ('w-key', 'o-key', 'a-key', 'r-key', 'c-key')
     assert 'o-key' not in repr(settings) and 'a-key' not in repr(settings) and 'r-key' not in repr(settings)
     assert 'c-key' not in repr(settings)
+
+
+@pytest.mark.parametrize('url,usable', [
+    ('https://gateway.example.com/v1', True), ('http://localhost:8000/v1', True), ('http://127.0.0.1:11434/v1', True),
+    ('http://[::1]:8000/v1', True), ('http://gateway.example.com/v1', False), ('ftp://example.com', False),
+    ('gateway.example.com/v1', False), ('https://', False),
+])
+def test_custom_endpoints_receive_the_key_only_over_tls_or_loopback(url, usable):
+    spec = client_spec(ModelRef('custom', 'm'), Settings(faultlab_custom_base_url=url, faultlab_custom_api_key='c-key'))
+    assert spec.configured is usable
+    if not usable:
+        assert spec.missing == ('FAULTLAB_CUSTOM_BASE_URL',)
