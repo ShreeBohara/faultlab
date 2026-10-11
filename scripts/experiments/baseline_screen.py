@@ -105,6 +105,36 @@ def api(client: httpx.Client, method: str, path: str, body=None):
     return response.json()
 
 
+def outbox_pending(run_dir: Path) -> int | None:
+    """Queued telemetry uploads not yet sent (read-only look at the store); None when unreadable."""
+    import sqlite3
+    try:
+        with sqlite3.connect(f"file:{run_dir / 'lab.sqlite3'}?mode=ro", uri=True) as db:
+            row = db.execute("SELECT COUNT(*) FROM records WHERE kind='telemetry_outbox' "
+                             "AND json_extract(payload,'$.state') IN ('PENDING','UPLOADING')").fetchone()
+            return int(row[0])
+    except sqlite3.Error:
+        return None
+
+
+def settle_outbox(run_dir: Path, seconds: float) -> None:
+    """Give the services time to send queued traces; stop early once nothing is pending or nothing moves."""
+    deadline = time.monotonic() + seconds
+    last, stalled = None, 0
+    while time.monotonic() < deadline:
+        pending = outbox_pending(run_dir)
+        if pending == 0:
+            log(run_dir, "telemetry outbox drained")
+            return
+        stalled = stalled + 1 if pending == last else 0
+        last = pending
+        if stalled >= 6:
+            log(run_dir, f"telemetry outbox not moving ({pending} pending); not waiting longer")
+            return
+        time.sleep(5)
+    log(run_dir, f"telemetry outbox still has {last} pending after {seconds:.0f}s")
+
+
 def summarize(record: dict) -> dict:
     live = [trial for trial in record.get("trials", []) if trial.get("arm") == "B0"]
     by_case: dict[str, list] = {}
@@ -135,6 +165,8 @@ def main(argv=None) -> int:
     parser.add_argument("--monthly-cap", type=float, default=None, help="override FAULTLAB_MONTHLY_DOLLAR_CAP for this run")
     parser.add_argument("--max-minutes", type=float, default=75.0)
     parser.add_argument("--max-lab-error-streak", type=int, default=3)
+    parser.add_argument("--settle-seconds", type=float, default=120.0,
+                        help="after the study ends, wait up to this long for queued telemetry uploads to drain before stopping")
     parser.add_argument("--backend-port", type=int, default=8000)
     parser.add_argument("--simulator-port", type=int, default=8001)
     args = parser.parse_args(argv)
@@ -227,6 +259,7 @@ def main(argv=None) -> int:
                 (run_dir / name).write_text(json.dumps(api(client, "GET", path), indent=2))
             except Exception as error:
                 log(run_dir, f"could not save {name}: {error}")
+        settle_outbox(run_dir, args.settle_seconds)
         export = subprocess.run([str(ROOT / ".venv" / "bin" / "python"), "-m", "app.cli.client", "export", "--campaign", campaign_id,
                                  "--output", str(run_dir / "export.json")], cwd=ROOT / "backend", env=env, capture_output=True, text=True)
         log(run_dir, f"export exit {export.returncode} {export.stderr.strip()[-300:]}")
