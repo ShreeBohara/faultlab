@@ -11,6 +11,7 @@ on purpose, so the dependency is visible in one place.
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from faultlab.core.canonical import canonical_json
@@ -26,8 +27,19 @@ def _legacy():
     try:
         from app.contracts import models
         from app.referee import checks
-    except ImportError as error:                      # the legacy backend is not on the path: no scoring, no guess
-        raise IntegrityError(f"The legacy orders referee is unavailable: {error}") from error
+    except ImportError:
+        # Running from the repository (python -m faultlab): the legacy package lives under backend/.
+        import sys
+        backend = Path(__file__).resolve().parents[2] / "backend"
+        if not (backend / "app" / "referee").is_dir():
+            raise IntegrityError("The legacy orders referee is unavailable: no backend/app beside this package") from None
+        if str(backend) not in sys.path:
+            sys.path.append(str(backend))
+        try:
+            from app.contracts import models
+            from app.referee import checks
+        except ImportError as error:                  # the legacy backend cannot be imported: no scoring, no guess
+            raise IntegrityError(f"The legacy orders referee is unavailable: {error}") from error
     return models, checks
 
 

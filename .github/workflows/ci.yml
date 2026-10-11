@@ -44,6 +44,37 @@ jobs:
       - name: Run offline backend tests (core suite; experiment tests run in the experiments job)
         run: ./scripts/test.sh backend
 
+  v2-offline-batch:
+    name: v2 offline batch (reference adapter, legacy checks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      FAULTLAB_LIVE_ENABLED: "false"
+      WANDB_MODE: disabled
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - name: Install locked backend dependencies
+        run: ./scripts/setup.sh --backend-only
+      - name: Run every orders scenario twice with the reference adapter and the fixed checks (no provider)
+        run: |
+          mkdir -p artifacts/ci
+          ./.venv/bin/python -m faultlab run --store artifacts/ci/trials.sqlite3 --pack orders.upgrade_then_confirm/v1 \
+            --adapter reference-orders --referee legacy --k 2 --bundle artifacts/ci/batch.zip | tee artifacts/ci/summary.json
+      - name: Fail on any violation, false claim, unfired fault or non-completed execution
+        run: |
+          ./.venv/bin/python - <<'EOF'
+          import json
+          summary = json.load(open("artifacts/ci/summary.json"))
+          bad = [t for t in summary["trials"] if t["execution"] != "COMPLETED" or t["violations"] or t["claims"] or t["faults_triggered"] is not True]
+          print(json.dumps({"trials": len(summary["trials"]), "tasks": summary["tasks"], "problems": bad}, indent=2))
+          raise SystemExit(1 if bad or not summary["trials"] else 0)
+          EOF
+
   frontend:
     name: Frontend, build and browser tests
     runs-on: ubuntu-24.04

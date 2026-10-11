@@ -15,6 +15,7 @@ store readable. This page lists the pieces that exist, each with its evidence.
 | Typed trial store, scheduler, worker, session, kernel transport | `faultlab/lab` | `LAB.md` | all six orders scenarios run to sealed envelopes on the kernel through effectsafe (tests) |
 | Legacy orders referee behind the v2 `Referee` protocol | `faultlab/referee/legacy.py` | `LAB.md` | C1 to C8 pass on every scenario for the scripted agent; a false success claim is a violation (tests) |
 | Adapter interface, the deterministic reference adapter, registry, `run` command | `faultlab/adapters`, `faultlab/lab/cli.py` | `ADAPTERS.md` | the reference adapter passes C1 to C8 on every scenario; `faultlab run` to sealed envelopes (tests) |
+| pytest plugin and the CI smoke job | `faultlab/testing/plugin.py`, `.github/workflows/ci.yml` | `TESTING.md` | a clean run passes, a lying agent fails with every problem listed (tests); CI runs the offline batch |
 | Belief-versus-effect oracle v1 | `faultlab/referee/oracle` | `ORACLE.md` | 144 of 144 agreement with recorded C5/C6 on the Claude screen |
 | effectsafe 0.1 alpha | `effectsafe/` | `EFFECTSAFE.md` | the non-idempotent create, same-bytes resend and no-decay tests |
 | Providers beyond W&B, verified prices, monthly ledger | `backend/app/providers` | `../providers.md` | live smoke and the four-model screen |

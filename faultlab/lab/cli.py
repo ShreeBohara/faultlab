@@ -49,6 +49,7 @@ def main(argv=None) -> int:
     parser.add_argument("--http-attempts", type=int, default=18, help="HTTP-attempt cap per trial")
     parser.add_argument("--wall-seconds", type=float, default=90.0, help="wall-clock cap per trial")
     parser.add_argument("--worlds", default=None, help="directory for the kernel's world files (default beside the store)")
+    parser.add_argument("--bundle", default=None, help="also write the batch's envelopes as a bundle (zip) at this path")
     args = parser.parse_args(argv)
     try:
         pack = load_pack(args.pack)
@@ -68,6 +69,9 @@ def main(argv=None) -> int:
         worker = TrialWorker(store=store, referee=referee, database_dir=args.worlds)
         envelopes = asyncio.run(run_batch(store, batch.batch_id, worker, adapter))
         summary = store.summary(batch_id=batch.batch_id)
+        if args.bundle and envelopes:
+            manifest = store.export_bundle(args.bundle, name=batch.name, batch_id=batch.batch_id)
+            summary["bundle"] = {"path": args.bundle, "bundle_id": manifest.bundle_id, "manifest_digest": manifest.manifest_digest}
     summary["batch_id"] = batch.batch_id
     summary["trials"] = [{"attempt_id": e.attempt.attempt_id, "scenario_id": e.plan.scenario_id, "execution": e.outcome.execution,
                           "task": e.outcome.task, "reason": e.attempt.terminal_reason,
