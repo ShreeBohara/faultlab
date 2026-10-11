@@ -51,7 +51,10 @@ episode's, evidence from another episode) fail closed, so a projection run repor
 episodes could not be represented.
 
 Exit evidence for phase 1.1 is kept under `artifacts/plan-v2-stage1/` (local, not in git): every
-episode of every local historical store projected, 100 percent, with the report per store.
+episode of every local historical store projected, 100 percent, with the report per store: the
+seven run stores of 27 to 30 September (568 episodes) and the main archive store of the whole
+research program (6,667 episodes: 6,633 completed executions, 32 lab errors, 2 stopped; 3,472
+completed tasks, 506 correctly refused, 2,129 safe unresolved, 528 violations; 0 failures).
 
 ## Rules this package follows
 

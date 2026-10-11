@@ -90,4 +90,9 @@ traced to Weave by `check`; `wandb --generate` keeps its verified trace.
   still needs the W&B credentials for tracing.
 * The pricing entries for OpenAI and Anthropic are unverified placeholders; verify them before use.
 * Provider-specific input-token counting is the generic byte bound for non-W&B models; the per-call
-  token admission is therefore conservative, not exact.
+  token admission is therefore conservative, not exact. Concretely, `app/contracts/tokens.py` counts one
+  token per byte for a model without a registered tokenizer, so a Claude model is refused
+  (`INPUT_LIMIT`) once a request exceeds about 32 KB of text, far below the real 32,000-token bound.
+  Smoke checks and short episodes are unaffected; long Mechanic or Actor contexts are. The fix is a
+  registered admission source per provider (Anthropic's token-count endpoint, or a reviewed
+  approximation with a stated margin), planned with the provider work of Stage 1.
