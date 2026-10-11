@@ -151,8 +151,13 @@ def test_rules_read_wait_and_block_a_dependent_write_until_a_receipt_exists():
         interpreter = Interpreter(policy, journal, FakeExecutor(journal, []))
         gate = asyncio.run(interpreter.invoke("before_dependent_write", "proposal-3"))
         assert gate.blocked and gate.reasons == ["RECEIPT_REQUIRED:op-1"]
-        claim = asyncio.run(interpreter.invoke("before_dependent_write", "proposal-4", claims={"op-1": "UNKNOWN"}))
-        assert not claim.blocked and claim.reasons == ["RECEIPT_REQUIRED:op-1"]
+        # A write gate blocks whatever claims are passed; only a report gate consults them, and silence counts as a claim.
+        still = asyncio.run(interpreter.invoke("before_dependent_write", "proposal-3b", claims={"op-1": "UNKNOWN"}))
+        assert still.blocked
+        honest = asyncio.run(interpreter.invoke("before_dependent_write", "proposal-4", gate="report", claims={"op-1": "UNKNOWN"}))
+        assert not honest.blocked and honest.reasons == ["RECEIPT_REQUIRED:op-1"]
+        assert asyncio.run(interpreter.invoke("before_dependent_write", "proposal-4b", gate="report", claims={"op-1": "SUCCEEDED"})).blocked
+        assert asyncio.run(interpreter.invoke("before_dependent_write", "proposal-4c", gate="report", claims={})).blocked
         final = asyncio.run(interpreter.invoke("before_final_report", "proposal-5"))
         assert not final.final_requested and final.reasons == []        # no terminal failure: the rule does not fire
 
@@ -173,3 +178,38 @@ def test_rule_shapes_are_validated():
         Step(op="wait")
     with pytest.raises(ValueError):
         Rule(hook="h", operation="op", steps=())
+
+
+def test_concurrent_dispatches_of_an_unkeyed_write_admit_exactly_one(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    path = tmp_path / "journal.sqlite3"
+    with Journal(path) as journal:
+        journal.prepare(intent("hold-1", "place_hold", room="7"), UNKEYED_CREATE)
+    def attempt(_):
+        with Journal(path) as own:
+            try:
+                return own.dispatch("hold-1")[0]
+            except UnsafeResend:
+                return None
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(attempt, range(16)))
+    assert sum(result is not None for result in results) == 1
+    with Journal(path) as journal:
+        assert journal.operation("hold-1")["state"].attempts == 1 and len(journal.attempts("hold-1")) == 1
+
+
+def test_an_attempt_delivers_once_and_a_contract_cannot_change():
+    with Journal() as journal:
+        journal.prepare(intent(), KEYED_WRITE)
+        attempt, _ = journal.dispatch("op-1")
+        journal.deliver(attempt, Evidence(transport="ok", status="SUCCEEDED", receipt_id="r1"))
+        with pytest.raises(JournalError, match="exactly once"):
+            journal.deliver(attempt, Evidence(transport="ok", status="FAILED", receipt_id="r2"))
+        assert journal.operation("op-1")["state"].outcome == SUCCEEDED
+        # Same bytes, different promise about replays: refused, because resend safety depends on it.
+        with pytest.raises(JournalError, match="contract cannot change"):
+            journal.prepare(intent(), KEYED_WRITE.model_copy(update={"mismatch_behavior": "replay"}))
+        with pytest.raises(JournalError, match="cannot change"):
+            journal.prepare(intent(), KEYED_WRITE.model_copy(update={"identity_scope": "none"}))
+        with pytest.raises(JournalError, match="Unknown attempt"):
+            journal.deliver("attempt-missing", Evidence(transport="ok"))

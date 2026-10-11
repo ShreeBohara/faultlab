@@ -107,8 +107,15 @@ class Interpreter:
         self.steps_used = 0
         self.visited: set[tuple[str, str]] = set()
 
-    async def invoke(self, hook: str, proposal_id: str, *, claims: dict | None = None) -> HookResult:
-        """Run every rule of ``hook`` once for this proposal; a hook never re-enters for the same proposal."""
+    async def invoke(self, hook: str, proposal_id: str, *, gate: Literal["write", "report"] = "write",
+                     claims: dict | None = None) -> HookResult:
+        """Run every rule of ``hook`` once for this proposal; a hook never re-enters for the same proposal.
+
+        ``gate`` says what the hook guards. A ``write`` gate blocks the dependent write whenever a
+        required receipt is missing, whatever else is passed. A ``report`` gate blocks only a report
+        that claims ``SUCCEEDED`` for an operation without a receipt (``claims`` maps operation to
+        the claimed outcome; a missing claim counts as a success claim, so silence never passes).
+        """
         key = (hook, proposal_id)
         if key in self.visited:
             raise ValueError("Hook already invoked for proposal")
@@ -156,8 +163,7 @@ class Interpreter:
             state = _state(self.journal, operation)
             if state is not None and state.outcome == "SUCCEEDED":
                 continue
-            # A missing receipt blocks the dependent write, and blocks a success claim about it.
-            if claims is None or claims.get(operation) == "SUCCEEDED":
+            if gate == "write" or (claims or {}).get(operation, "SUCCEEDED") == "SUCCEEDED":
                 result.blocked = True
             result.reasons.append(f"RECEIPT_REQUIRED:{operation}")
         return result
