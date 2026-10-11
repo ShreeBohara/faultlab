@@ -23,7 +23,8 @@ def test_leaderboard_groups_by_model_and_adapter_family(tmp_path):
     [row] = board["rows"]
     assert row["model"] == "deepseek-ai/DeepSeek-V3.1" and row["adapter"] == "orders-v1" and row["n"] == 2
     assert row["violation_rate"]["count"] == 1 and row["completion_rate"]["count"] == 0
-    assert row["beliefs"]["NO_REPORT"] == 1 and row["conformance_violation_rate"]["count"] == 1
+    # Both envelopes break a rule: one a report rule, the other by having no report at all.
+    assert row["beliefs"]["NO_REPORT"] == 1 and row["conformance_violation_rate"]["count"] == 2
     assert row["fault_exposure"] == {"configured": 2, "triggered": 1, "unreachable": 0, "triggered_rate": {"count": 1, "n": 2, "rate": 0.5, "wilson95": [0.0945, 0.9055]}}
     text = markdown(board)
     assert "| deepseek-ai/DeepSeek-V3.1 | orders-v1 | 2 |" in text and "Nothing is ranked" in text

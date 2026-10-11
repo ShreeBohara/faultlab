@@ -87,7 +87,7 @@ def test_a_success_claim_without_an_effect_is_a_false_belief_and_a_contract_viol
     lost = events + [kernel(2, "upgrade_committed", "effect_committed", operation_id="op-up")]
     assert score(envelope(lost, {**report, "upgrade_outcome": "UNKNOWN"})).summary == "UNDETERMINED"
     seen = score(envelope(lost, report))
-    assert seen.summary == "BELIEFS_TRUE" and [f.legacy_check for f in seen.conformance] == ["C2"]
+    assert seen.summary == "BELIEFS_TRUE" and [f.legacy_check for f in seen.conformance] == ["C6", "C2"]
 
 
 def test_no_report_and_completed_tasks():
