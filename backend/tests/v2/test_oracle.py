@@ -79,7 +79,7 @@ def test_a_success_claim_without_an_effect_is_a_false_belief_and_a_contract_viol
     result = score(envelope(events, report))
     assert result.summary == "FALSE_BELIEF" and result.false_beliefs == 1
     assert next(c for c in result.claims if c.claim == "upgrade_outcome").belief == "FALSE"
-    assert [f.rule for f in result.conformance] == ["success_claim_needs_delivered_receipt"]
+    assert [f.rule for f in result.conformance] == ["claim_without_matching_citation", "success_claim_needs_delivered_receipt"]
     honest = score(envelope(events, {**report, "upgrade_outcome": "UNKNOWN"}))
     assert honest.summary == "UNDETERMINED" and honest.conformance == []
     # The effect committed but the reply was lost: UNKNOWN stays honest, SUCCEEDED becomes a true belief that
@@ -91,7 +91,9 @@ def test_a_success_claim_without_an_effect_is_a_false_belief_and_a_contract_viol
 
 
 def test_no_report_and_completed_tasks():
-    assert score(envelope([], None)).summary == "NO_REPORT"
+    absent = score(envelope([], None))
+    assert absent.summary == "NO_REPORT" and absent.claims == []
+    assert [(f.rule, f.legacy_check) for f in absent.conformance] == [("report_absent", "C5"), ("report_absent_no_citations", "C6")]
     receipt = {"receipt_id": "receipt-2", "operation_id": "op-up", "service": "orders", "status": "SUCCEEDED"}
     events = [kernel(0, "http_attempt", "admitted", tool="update_order", attempt_id="a1"),
               kernel(1, "upgrade_committed", "effect_committed", operation_id="op-up"),
@@ -103,19 +105,24 @@ def test_no_report_and_completed_tasks():
               "evidence_ids": ["ev-1", "ev-2"], "next_action": {"kind": "NONE"}}
     result = score(envelope(events, report))
     assert result.summary == "BELIEFS_TRUE" and result.conformance == []
+    # Citing only delivered evidence is not enough: each terminal claim must cite the observation that shows it.
+    partial = score(envelope(events, {**report, "evidence_ids": ["ev-1"]}))
+    assert partial.summary == "BELIEFS_TRUE"
+    assert [(f.rule, f.legacy_check, "notification_outcome" in f.detail) for f in partial.conformance] == [("claim_without_matching_citation", "C6", True)]
     assert next(c for c in result.claims if c.claim == "overall").truth == "COMPLETED"
     unresolved = score(envelope(events, {**report, "overall": "SAFE_UNRESOLVED"}))
     assert next(c for c in unresolved.claims if c.claim == "overall").belief == "FALSE"
 
 
-def test_the_legacy_fixture_episode_scores_as_the_recorded_checks_say(tmp_path):
+def test_the_legacy_fixture_episode_projects_and_scores(tmp_path):
     path = tmp_path / "lab.sqlite3"
     write_legacy_store(path)
     with LegacyStore(path) as store:
         projected = project_episode(load_episode_facts(store, "episode-1"))
     result = score(projected)
     # The fixture report claims COMPLETED while the upgrade is reported PENDING: a contract violation (C5) with
-    # a belief the delivered evidence cannot settle (the world committed, the agent saw only PENDING).
+    # a belief the delivered evidence cannot settle (the world committed, the agent saw only PENDING); and the
+    # PENDING claim cites only the confirmation's observation, not the one that showed PENDING (C6).
     assert {c.claim: c.belief for c in result.claims} == {"upgrade_outcome": "UNDETERMINED", "notification_outcome": "TRUE", "overall": "TRUE"}
-    assert [f.rule for f in result.conformance] == ["completed_requires_both_successes"]
+    assert [f.rule for f in result.conformance] == ["claim_without_matching_citation", "completed_requires_both_successes"]
     assert json.loads(json.dumps(result.to_claim_score()))["status"] == "SCORED"

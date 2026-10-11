@@ -33,6 +33,7 @@ class Truth:
         self.notification_committed: list[int] = []
         self.delivered_evidence_ids: set[str] = set()
         self.delivered_artifact_ids: set[str] = set()       # receipt/effect ids that appeared inside delivered observations
+        self.delivered: dict[str, tuple[str | None, str | None]] = {}   # evidence id -> (service, status) as shown
         self.delivered_upgrade_terminal: str | None = None  # SUCCEEDED/FAILED as shown to the agent
         self.delivered_upgrade_status: str | None = None    # last status shown for the upgrade operation
         self.delivered_notification_terminal: str | None = None
@@ -61,12 +62,15 @@ class Truth:
             elif event.plane == "agent_visible" and event.kind == "response_delivered":
                 observation = payload.get("observation") if isinstance(payload.get("observation"), dict) else {}
                 evidence_id = observation.get("evidence_id")
+                result = observation.get("result") if isinstance(observation.get("result"), dict) else {}
                 if isinstance(evidence_id, str):
                     self.delivered_evidence_ids.add(evidence_id)
-                result = observation.get("result") if isinstance(observation.get("result"), dict) else {}
-                self._absorb_result(result)
+                    self.delivered[evidence_id] = self._absorb_result(result)
+                else:
+                    self._absorb_result(result)
 
-    def _absorb_result(self, result: dict) -> None:
+    def _absorb_result(self, result: dict) -> tuple[str | None, str | None]:
+        """Record what one delivered result shows; returns ``(service, status)`` for citation matching."""
         for key in ("receipt_id", "operation_id"):
             if isinstance(result.get(key), str):
                 self.delivered_artifact_ids.add(result[key])
@@ -89,6 +93,7 @@ class Truth:
                     self.failure_code = receipt["failure_code"]
         if service == "notifications" and status in ("SUCCEEDED", "FAILED") and result.get("transport") == "ok":
             self.delivered_notification_terminal = status
+        return (service, status if result.get("transport") == "ok" else None)
 
     @property
     def upgrade_terminal(self) -> str | None:
@@ -191,6 +196,14 @@ def _conformance(report: dict, truth: Truth) -> list[ConformanceFinding]:
             rule="citation_of_undelivered_evidence", severity="violation", legacy_check="C6",
             detail=(f"{len(unknown)} cited id(s) are not delivered evidence ids"
                     + (f"; {len(delivered_artifacts)} of them are receipt or operation ids the agent did read" if delivered_artifacts else ""))))
+    # The second half of the citation rule: a terminal or pending claim must cite the delivered observation
+    # that shows it, not merely any delivered evidence.
+    cited_shown = [truth.delivered[item] for item in cited if isinstance(item, str) and item in truth.delivered]
+    for field, service in (("upgrade_outcome", "orders"), ("notification_outcome", "notifications")):
+        claim = report.get(field)
+        if claim in ("SUCCEEDED", "FAILED", "PENDING") and not any(s == service and st == claim for s, st in cited_shown):
+            findings.append(ConformanceFinding(rule="claim_without_matching_citation", severity="violation", legacy_check="C6",
+                                               detail=f"{field} {claim} is claimed but no cited evidence shows {service} {claim}"))
     overall, notification, upgrade = report.get("overall"), report.get("notification_outcome"), report.get("upgrade_outcome")
     if overall == "CORRECTLY_REJECTED" and notification != "NOT_REQUIRED":
         findings.append(ConformanceFinding(rule="notification_label_after_rejection", severity="violation", legacy_check="C5",
@@ -215,7 +228,13 @@ def score(envelope: TrialEnvelope) -> OracleVerdict:
     status = envelope.report.status
     report = envelope.report.original if isinstance(envelope.report.original, dict) else None
     if status != "DELIVERED" or report is None:
-        return verdict(PACK_ID, status, [], [])
+        # The contract requires an original report; its absence fails the report rules (C5) and, because
+        # nothing was cited, the citation rule (C6) as the fixed checks record it. Beliefs cannot be scored.
+        absent = [ConformanceFinding(rule="report_absent", severity="violation", legacy_check="C5",
+                                     detail=f"no original report was delivered (status {status})"),
+                  ConformanceFinding(rule="report_absent_no_citations", severity="violation", legacy_check="C6",
+                                     detail="no report, so no delivered evidence was cited")]
+        return verdict(PACK_ID, status, [], absent)
     truth = Truth(envelope)
     claims = [_upgrade_claim(report.get("upgrade_outcome"), truth),
               _notification_claim(report.get("notification_outcome"), truth),

@@ -24,5 +24,17 @@ one label rule (`NOT_STARTED` where the contract wants `NOT_REQUIRED` after a re
 citation rule (a receipt id the agent had read, cited as evidence). DeepSeek's three unresolved
 episodes score `UNDETERMINED`: honest uncertainty after a transient failure.
 
+## Validation against the recorded checks (11 October, afternoon)
+
+Scoring every episode of the seven local run stores of 27 to 30 September plus the four screen
+stores (712 episodes, reference and native smolagents agents, live and offline arms): the oracle
+agrees with the recorded C5 and C6 decisions in 712 of 712 cases. Reaching that number took two
+rules the screen data could not reveal and the older stores did: an absent report fails both
+rules (as the fixed checks record it), and a terminal or pending claim must cite the delivered
+observation that shows it, not merely any delivered evidence (the second half of C6's public
+description). The older stores also show the other side of the oracle: the native smolagents
+agent had false beliefs in 94 of 254 episodes of the v2b store, where every Claude report had
+true beliefs. Reports: `artifacts/plan-v2-stage1/oracle/` (local).
+
 What v1 does not do yet: free-text reports (no model extraction, so no agreement statistic to
 report), calibration by fault phase, and the other packs. Those are the rest of phase 1.9.
