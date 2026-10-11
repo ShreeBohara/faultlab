@@ -4,6 +4,8 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * 1'   # weekly: the research experiment tests
 
 permissions:
   contents: read
@@ -39,7 +41,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install locked local dependencies
         run: ./scripts/setup.sh
-      - name: Run offline backend tests
+      - name: Run offline backend tests (core suite; experiment tests run in the experiments job)
         run: ./scripts/test.sh backend
 
   frontend:
@@ -70,3 +72,30 @@ jobs:
         run: ./node_modules/.bin/playwright install --with-deps chromium
       - name: Run offline frontend, build and browser checks
         run: ./scripts/test.sh frontend build browser
+
+  experiments:
+    name: Research experiment tests (weekly or on demand)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      FAULTLAB_LIVE_ENABLED: "false"
+      FAULTLAB_ARIA_PUBLISH_ENABLED: "false"
+      FAULTLAB_BROWSER_LOCAL: "0"
+      WANDB_MODE: disabled
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked local dependencies
+        run: ./scripts/setup.sh
+      - name: Run the research experiment tests
+        run: ./scripts/test.sh experiments

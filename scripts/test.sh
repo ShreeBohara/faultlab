@@ -10,7 +10,10 @@ trap 'printf "\nInterrupted; later stages not run.\n" >&2; exit 130' INT
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 ALL_STAGES="backend frontend build browser"
 
+# Not in ALL_STAGES: the research experiment tests (tests/experiments) run only when named.
+OPTIONAL_STAGES="experiments"
 run_backend() { cd "$ROOT/backend" && "$ROOT/.venv/bin/python" -m pytest; }
+run_experiments() { cd "$ROOT/backend" && "$ROOT/.venv/bin/python" -m pytest -m experiment tests/experiments; }
 run_frontend() { cd "$ROOT/frontend" && npm test; }
 run_build() { cd "$ROOT/frontend" && npm run build; }
 run_browser() { cd "$ROOT/frontend" && npm run test:browser; }
@@ -21,9 +24,9 @@ if [[ ${#stages[@]} -eq 0 ]]; then
   stages=($ALL_STAGES)
 fi
 for stage in "${stages[@]}"; do
-  case " $ALL_STAGES " in
+  case " $ALL_STAGES $OPTIONAL_STAGES " in
     *" $stage "*) ;;
-    *) printf 'Unknown stage %s. Stages: %s\n' "$stage" "$ALL_STAGES" >&2; exit 2 ;;
+    *) printf 'Unknown stage %s. Stages: %s (optional: %s)\n' "$stage" "$ALL_STAGES" "$OPTIONAL_STAGES" >&2; exit 2 ;;
   esac
 done
 

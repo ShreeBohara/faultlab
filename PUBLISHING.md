@@ -26,6 +26,8 @@ Status: checklist for the owner (Shree) to sign before the first push after the 
 3. Push the working branch, then fast-forward `main` to it on GitHub.
 4. Push the tag `pre-v2-2026-10`.
 5. Enable GitHub Actions (the existing `ci.yml` has never run) and record its first result.
+   Recorded 2026-10-11: the first run, on the pushed commit `fca3502b`, succeeded (backend tests and the
+   frontend, build and browser job; 21 minutes 50 seconds).
 
 ## Pre-push audit (2026-10-10, night)
 
