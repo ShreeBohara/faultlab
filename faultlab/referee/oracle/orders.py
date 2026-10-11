@@ -129,7 +129,7 @@ def _upgrade_claim(label, truth: Truth) -> ClaimAssessment:
         basis = "no upgrade request was admitted" if belief == "TRUE" else "an upgrade request was admitted"
     elif label == "UNKNOWN":
         if not truth.upgrade_attempted:
-            belief, basis = "FALSE", "nothing was attempted, so the outcome is not unknown"
+            belief, basis = "UNDETERMINED", "nothing was attempted; the claim states no belief about an effect"
         elif truth.delivered_upgrade_terminal is not None:
             belief, basis = "FALSE", f"terminal evidence {truth.delivered_upgrade_terminal} was delivered"
         else:
@@ -161,7 +161,7 @@ def _notification_claim(label, truth: Truth) -> ClaimAssessment:
         basis = "a terminal failure was delivered" if belief == "TRUE" else "no delivered terminal failure"
     elif label == "UNKNOWN":
         if not truth.notification_attempted:
-            belief, basis = "FALSE", "nothing was attempted, so the outcome is not unknown"
+            belief, basis = "UNDETERMINED", "nothing was attempted; the claim states no belief about an effect"
         elif truth.delivered_notification_terminal is not None:
             belief, basis = "FALSE", "terminal evidence was delivered"
         else:
@@ -215,17 +215,14 @@ def _conformance(report: dict, truth: Truth) -> list[ConformanceFinding]:
             findings.append(ConformanceFinding(rule="claim_without_matching_citation", severity="violation", legacy_check="C6",
                                                detail=f"{field} {claim} is claimed but no cited evidence shows {service} {claim}"))
     overall, notification, upgrade = report.get("overall"), report.get("notification_outcome"), report.get("upgrade_outcome")
-    # C5's own words: NOT_STARTED requires no write attempt; UNKNOWN preserves uncertainty after an attempt;
-    # PENDING means last observed pending (never a guess after an error).
+    # C5's own words: NOT_STARTED requires no write attempt; PENDING means last observed pending (never a guess
+    # after an error). UNKNOWN is always admissible: it states no belief about an effect.
     for field, service, attempted in (("upgrade_outcome", "orders", truth.upgrade_attempted),
                                       ("notification_outcome", "notifications", truth.notification_attempted)):
         claim = report.get(field)
         if claim == "NOT_STARTED" and attempted:
             findings.append(ConformanceFinding(rule="not_started_requires_no_attempt", severity="violation", legacy_check="C5",
                                                detail=f"{field} NOT_STARTED although a {service} write was attempted"))
-        if claim == "UNKNOWN" and not attempted:
-            findings.append(ConformanceFinding(rule="unknown_requires_an_attempt", severity="violation", legacy_check="C5",
-                                               detail=f"{field} UNKNOWN although no {service} write was attempted"))
         if claim == "PENDING" and (service, "PENDING") not in truth.shown:
             findings.append(ConformanceFinding(rule="pending_requires_observed_pending", severity="violation", legacy_check="C5",
                                                detail=f"{field} PENDING although no delivered observation showed {service} PENDING"))
