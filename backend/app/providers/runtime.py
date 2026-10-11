@@ -1,7 +1,12 @@
-"""Explicit, asynchronous W&B inference for bounded campaign actions.
+"""Explicit, asynchronous model inference for bounded campaign actions.
 
 Unlike the standalone checker, this module never changes process environment,
 logging, stdout, or SDK instrumentation. Clients are private and lazily created.
+
+Every call is dispatched to the provider named by the role's model reference
+(``provider:model_id``; see ``app.providers.catalog``) with that provider's documented
+request profile, after input admission, credential checks, and a worst-case dollar
+reservation against the monthly spend ledger when the model is priced.
 """
 
 import asyncio
@@ -14,7 +19,9 @@ from app.contracts.models import (MODEL_INPUT_TOKEN_LIMIT, MODEL_OUTPUT_TOKEN_LI
                                   TaskReport, canonical_json, content_hash)
 from app.contracts.tokens import validate_model_input
 from app.providers import redact_text
-from app.providers.wandb_inference import BASE_URL, model_request_options
+from app.providers.catalog import (UnknownProviderError, client_spec, parse_model_ref, provider_secrets,
+                                   request_profile)
+from app.providers.spend import MonthlyCapExceeded, SpendLedger
 
 MODEL_REQUEST_SETTINGS = {"max_input_tokens": MODEL_INPUT_TOKEN_LIMIT,
                           "max_output_tokens": MODEL_OUTPUT_TOKEN_LIMIT, "timeout_seconds": 20, "retries": 0,
@@ -94,7 +101,24 @@ def validate_request_input(messages, model: str, *, role: str = "actor",
 
 
 def model_request_settings(model: str) -> dict:
-    return {**MODEL_REQUEST_SETTINGS, **model_request_options(model)}
+    """The frozen per-call settings for a canonical model name (``Settings.model_for``).
+
+    A W&B model (a bare id) keeps exactly the dict every earlier campaign recorded, so their
+    identities survive. A model on another provider (``provider:model``) adds that provider's
+    request profile: the provider, which token-limit parameter is sent, whether ``temperature`` is
+    sent (None: omitted) and whether the API enforces ``response_format``.
+    """
+    if not isinstance(model, str) or not model.strip():
+        return dict(MODEL_REQUEST_SETTINGS)
+    ref = parse_model_ref(model)
+    profile = request_profile(ref)
+    settings = dict(MODEL_REQUEST_SETTINGS)
+    if profile.extra_body:
+        settings["extra_body"] = profile.extra_body
+    if ref.provider != "wandb":
+        settings.update(provider=ref.provider, token_limit_parameter=profile.token_limit_parameter,
+                        temperature=profile.temperature, response_format_enforced=profile.response_format_enforced)
+    return settings
 
 
 class RuntimeProviderError(RuntimeError):
@@ -106,7 +130,7 @@ class RuntimeProviderError(RuntimeError):
         self.code = code if code in {
             "PROVIDER_ERROR", "EMPTY_FINAL_RESPONSE", "INVALID_RESPONSE_SHAPE", "REQUEST_TIMEOUT",
             "HTTP_ERROR", "CONNECTION_ERROR", "LIVE_ACTION_REQUIRED", "INVALID_ROLE", "REQUEST_LIMIT",
-            "INVALID_INPUT", "INPUT_LIMIT", "SECRET_INPUT"} else "PROVIDER_ERROR"
+            "INVALID_INPUT", "INPUT_LIMIT", "SECRET_INPUT", "MONTHLY_CAP", "UNKNOWN_PROVIDER"} else "PROVIDER_ERROR"
         self.error_class = error_class if error_class in {
             "APIConnectionError", "APITimeoutError", "RateLimitError", "BadRequestError", "AuthenticationError",
             "PermissionDeniedError", "NotFoundError", "ConflictError", "UnprocessableEntityError",
@@ -131,78 +155,117 @@ class RuntimeGeneration:
     input_tokens: int | None = None
     output_tokens: int | None = None
     cost_usd: float | None = None
+    provider: str | None = None
+    structured_output_enforced: bool = True
+
+
+def _token_count(usage, name: str) -> int | None:
+    value = getattr(usage, name, None)
+    return value if type(value) is int and 0 <= value <= 1_000_000_000 else None
+
+
+def _reported_cost(usage) -> float | None:
+    """A provider-reported per-call cost (OpenRouter's ``usage.cost``); never used for admission."""
+    value = usage.get("cost") if isinstance(usage, dict) else getattr(usage, "cost", None)
+    return float(value) if type(value) in (int, float) and 0 <= value < 1_000 else None
 
 
 class RuntimeProvider:
     def __init__(self, settings: Settings, *, live_authorized: bool = False,
-                 client_factory: Callable[..., Any] | None = None):
+                 client_factory: Callable[..., Any] | None = None, spend_ledger: SpendLedger | None = None):
         self._settings = settings
         self._authorized = live_authorized
         self._factory = client_factory
         self._clients = {}
+        self._ledger = spend_ledger
 
     def role_model(self, role: str) -> str:
         """Frozen model for a runtime role; Explorer/Mechanic may use the lab model."""
         return self._settings.model_for(role)
+
+    def _spend_ledger(self) -> SpendLedger:
+        if self._ledger is None:
+            self._ledger = SpendLedger(self._settings.spend_ledger_path)
+        return self._ledger
 
     async def complete(self, messages: list[dict[str, str]], *, role: str = "actor",
                        max_output_tokens: int = MODEL_OUTPUT_TOKEN_LIMIT, timeout_seconds: float = 20.0,
                        response_contract: ResponseContract | None = None) -> RuntimeGeneration:
         if not self._authorized:
             raise RuntimeProviderError("An explicit bounded live action is required.", code="LIVE_ACTION_REQUIRED")
-        self._settings.require_wandb(require_model=True)
         if role not in {"actor", "explorer", "mechanic"}:
             raise RuntimeProviderError("Unknown runtime role.", code="INVALID_ROLE")
-        model=self._settings.model_for_role(role)
+        try:
+            # ConfigurationError (a blank model or blank credentials) propagates by name, as before.
+            self._settings.require_provider(role)
+            ref = self._settings.model_ref_for_role(role)
+        except UnknownProviderError:
+            raise RuntimeProviderError("The configured default provider is unknown.", code="UNKNOWN_PROVIDER") from None
         if not 1 <= max_output_tokens <= MODEL_OUTPUT_TOKEN_LIMIT or not 0 < timeout_seconds <= 20:
             raise RuntimeProviderError("Model request exceeds the frozen per-call limits.", code="REQUEST_LIMIT")
         if not messages or any(set(m) != {"role", "content"} or m["role"] not in {"system", "user", "assistant"}
                                or not isinstance(m["content"], str) for m in messages):
             raise RuntimeProviderError("Invalid model input.", code="INVALID_INPUT")
         model = self.role_model(role)
+        profile = request_profile(ref)
         response_format = response_format_for(role=role, response_contract=response_contract)
         try:
-            validate_request_input(messages, model, role=role, response_contract=response_contract)
+            validate_request_input(messages, ref.model_id, role=role, response_contract=response_contract)
         except ValueError:
             raise RuntimeProviderError(f"Model input exceeds or cannot verify the frozen {MODEL_INPUT_TOKEN_LIMIT:,}-token bound.", code="INPUT_LIMIT") from None
-        secrets = (self._settings.wandb_api_key, self._settings.typesafe_api_key)
+        secrets = provider_secrets(self._settings)
         if any(secret and secret in json.dumps(messages) for secret in secrets):
             raise RuntimeProviderError("Secret-bearing model input was rejected.", code="SECRET_INPUT")
+        spec = client_spec(ref, self._settings)
+        rates = self._settings.model_rates_for_role(role)
+        bound = self._settings.per_call_dollar_bound_for_role(role)
+        charge_id = None
+        if bound is not None:
+            try:
+                charge_id = self._spend_ledger().reserve(provider=ref.provider, model=ref.ref, role=role, bound_usd=bound,
+                                                         cap_usd=self._settings.faultlab_monthly_dollar_cap)
+            except MonthlyCapExceeded as error:
+                raise RuntimeProviderError(str(error), code="MONTHLY_CAP") from None
         returned_usage = None
         finish_reason = None
         try:
-            if model not in self._clients:
+            if ref.provider not in self._clients:
                 if self._factory is None:
                     from openai import AsyncOpenAI
                     factory = AsyncOpenAI
                 else:
                     factory = self._factory
-                self._clients[model] = factory(base_url=BASE_URL, api_key=self._settings.wandb_api_key,
-                                               project=self._settings.project_path, timeout=timeout_seconds, max_retries=0)
-            client=self._clients[model]
+                self._clients[ref.provider] = factory(base_url=spec.base_url, api_key=spec.api_key,
+                                                      timeout=timeout_seconds, max_retries=0, **spec.client_kwargs)
+            client = self._clients[ref.provider]
             async with asyncio.timeout(timeout_seconds):
                 response = await client.chat.completions.create(
-                    model=model, messages=messages, max_tokens=max_output_tokens,
-                    response_format=response_format,
-                    temperature=MODEL_REQUEST_SETTINGS["temperature"], stream=False, timeout=timeout_seconds,
-                    **model_request_options(model))
+                    model=ref.model_id, messages=messages, stream=False, timeout=timeout_seconds,
+                    **profile.request_kwargs(max_output_tokens=max_output_tokens, response_format=response_format))
             usage = getattr(response, "usage", None)
-            def token_count(name):
-                value = getattr(usage, name, None)
-                return value if type(value) is int and 0 <= value <= 1_000_000_000 else None
+            input_tokens, output_tokens = _token_count(usage, "prompt_tokens"), _token_count(usage, "completion_tokens")
+            # Measured cost: the provider's own per-call figure when it reports one (OpenRouter), else the
+            # response's token counts at the verified rates. None stays None: nothing is ever estimated.
+            cost = _reported_cost(usage) if ref.provider == "openrouter" else None
+            if cost is None and rates is not None and input_tokens is not None and output_tokens is not None:
+                cost = (input_tokens * rates[0] + output_tokens * rates[1]) / 1000000
+            if charge_id is not None:
+                self._spend_ledger().settle(charge_id, actual_usd=cost, input_tokens=input_tokens, output_tokens=output_tokens)
             # This is usage from an actual response, not a fabricated actor answer.
             # Preserve it even if no final content survives the output-token cap.
-            returned_usage = RuntimeGeneration(content="", model_id=model,
-                input_tokens=token_count("prompt_tokens"), output_tokens=token_count("completion_tokens"))
+            returned_usage = RuntimeGeneration(content="", model_id=model, input_tokens=input_tokens,
+                                               output_tokens=output_tokens, cost_usd=cost, provider=ref.provider,
+                                               structured_output_enforced=profile.response_format_enforced)
             choice = response.choices[0]
             finish_reason = getattr(choice, "finish_reason", None)
             content = choice.message.content
             if not isinstance(content, str) or not content.strip():
-                raise RuntimeProviderError("W&B returned no final response; no generation retry was made.",
+                raise RuntimeProviderError("The provider returned no final response; no generation retry was made.",
                     code="EMPTY_FINAL_RESPONSE", error_class="ValueError", finish_reason=finish_reason, generation=returned_usage)
             return RuntimeGeneration(
                 content=redact_text(content, *secrets), model_id=model,
-                input_tokens=returned_usage.input_tokens, output_tokens=returned_usage.output_tokens)
+                input_tokens=input_tokens, output_tokens=output_tokens, cost_usd=cost, provider=ref.provider,
+                structured_output_enforced=profile.response_format_enforced)
         except asyncio.CancelledError:
             raise
         except RuntimeProviderError:
@@ -214,11 +277,11 @@ class RuntimeProvider:
                     "HTTP_ERROR" if type(status) is int and 100 <= status <= 599 else
                     "CONNECTION_ERROR" if error_name == "APIConnectionError" else
                     "INVALID_RESPONSE_SHAPE" if returned_usage is not None else "PROVIDER_ERROR")
-            raise RuntimeProviderError("W&B inference failed; no generation retry was made.", code=code,
+            raise RuntimeProviderError("Model inference failed; no generation retry was made.", code=code,
                 error_class=error_name, http_status=status, finish_reason=finish_reason, generation=returned_usage) from None
 
     async def close(self) -> None:
-        clients=list(self._clients.values())
+        clients = list(self._clients.values())
         self._clients.clear()
         for client in clients:
             try:

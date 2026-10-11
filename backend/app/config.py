@@ -64,18 +64,79 @@ class Settings:
     faultlab_reasoning_pricing_model: str = ''
     faultlab_reasoning_pricing_verified: bool = False
 
+    # Providers beyond W&B. A model is a reference "provider:model_id"; an unprefixed name
+    # belongs to FAULTLAB_DEFAULT_PROVIDER, so every older configuration keeps its meaning.
+    openai_api_key: str = field(default='', repr=False)
+    anthropic_api_key: str = field(default='', repr=False)
+    # Required by Anthropic for an organization-scoped key (one not tied to a workspace); blank otherwise.
+    anthropic_workspace_id: str = ''
+    openrouter_api_key: str = field(default='', repr=False)
+    faultlab_custom_base_url: str = ''
+    faultlab_custom_api_key: str = field(default='', repr=False)
+    faultlab_default_provider: str = 'wandb'
+    # Generic role models take precedence over the WANDB_* names when set.
+    faultlab_actor_model: str = ''
+    faultlab_explorer_model: str = ''
+    faultlab_mechanic_model: str = ''
+    # Every admitted call reserves its worst-case bound against this calendar-month cap.
+    faultlab_monthly_dollar_cap: float = 100.0
+    faultlab_pricing_table: str = ''
+    faultlab_allow_stale_prices: bool = False
+    # Weave tracing and verified evidence export; legacy Learn campaigns require it.
+    faultlab_weave_enabled: bool = True
+
     def model_for(self, role: str) -> str:
+        """The canonical model name for a role: a bare W&B id, or ``provider:model`` for any other provider.
+
+        FAULTLAB_<ROLE>_MODEL wins; then the legacy WANDB_* and FAULTLAB_LAB_MODEL selections. An
+        unprefixed name belongs to FAULTLAB_DEFAULT_PROVIDER, and the name is recorded in its canonical
+        spelling (app.providers.catalog.canonical_model_name), so frozen configurations never depend on
+        the writing machine's default provider.
+        """
+        explicit = {'actor': self.faultlab_actor_model, 'explorer': self.faultlab_explorer_model,
+                    'mechanic': self.faultlab_mechanic_model}.get(role, '').strip()
+        if explicit:
+            return self._canonical_model_name(explicit)
         if role == "explorer":
             if self.wandb_explorer_model.strip():
-                return self.wandb_explorer_model.strip()
+                return self._canonical_model_name(self.wandb_explorer_model)
             if self.faultlab_lab_model.strip():
-                return self.faultlab_lab_model.strip()
+                return self._canonical_model_name(self.faultlab_lab_model)
         elif role == "mechanic":
             if self.wandb_mechanic_model.strip():
-                return self.wandb_mechanic_model.strip()
+                return self._canonical_model_name(self.wandb_mechanic_model)
             if self.faultlab_lab_model.strip():
-                return self.faultlab_lab_model.strip()
-        return self.wandb_model
+                return self._canonical_model_name(self.faultlab_lab_model)
+        return self._canonical_model_name(self.faultlab_actor_model.strip() or self.wandb_model)
+
+    def _canonical_model_name(self, name: str) -> str:
+        from app.providers.catalog import canonical_model_name
+        return canonical_model_name(name, self.faultlab_default_provider)
+
+    def _blank_model_names(self) -> tuple[str, ...]:
+        """Which settings name a role's model when every selection is blank."""
+        return ('WANDB_MODEL',) if self.faultlab_default_provider == 'wandb' else ('FAULTLAB_ACTOR_MODEL',)
+
+    def model_ref_for_role(self, role: str):
+        """The provider and bare model id behind a role's canonical model name."""
+        from app.providers.catalog import parse_model_ref
+        model = self.model_for_role(role)
+        if not model:
+            raise ConfigurationError(self._blank_model_names())
+        return parse_model_ref(model)
+
+    def providers_in_use(self) -> tuple[str, ...]:
+        """Every provider some role's model lives on, in role order, without repeats."""
+        from app.providers.catalog import parse_model_ref
+        providers = [parse_model_ref(model).provider for model in self.role_models.values() if model]
+        return tuple(dict.fromkeys(providers))
+
+    def require_provider(self, role: str) -> None:
+        """Refuse a role whose model is blank or whose provider lacks credentials; names only, never values."""
+        from app.providers.catalog import client_spec
+        spec = client_spec(self.model_ref_for_role(role), self)
+        if spec.missing:
+            raise ConfigurationError(spec.missing)
 
     @classmethod
     def from_env(cls, env_path: str | Path | None = None) -> "Settings":
@@ -120,6 +181,9 @@ class Settings:
         from app.agents.progress import ACTOR_CONTEXT_PROTOCOLS
         if values['faultlab_actor_context_protocol'] not in ACTOR_CONTEXT_PROTOCOLS:
             raise ConfigurationError(('FAULTLAB_ACTOR_CONTEXT_PROTOCOL',))
+        from app.providers.catalog import PROVIDER_IDS
+        if values['faultlab_default_provider'] not in PROVIDER_IDS:
+            raise ConfigurationError(('FAULTLAB_DEFAULT_PROVIDER',))
         return cls(**values)
 
     def require_wandb(self, require_model: bool = False) -> None:
@@ -145,63 +209,94 @@ class Settings:
         return {role: self.model_for_role(role) for role in ("actor", "explorer", "mechanic")}
 
     def require_live(self) -> None:
-        self.require_wandb(require_model=True)
+        """Refuse paid work unless every role has credentials, a verified price and declared caps."""
+        import math
+        from app.providers.catalog import UnknownProviderError, client_spec
         missing = []
         if not self.faultlab_live_enabled:
             missing.append('FAULTLAB_LIVE_ENABLED')
         if self.faultlab_read_only:
             missing.append('FAULTLAB_READ_ONLY')
-        if self.faultlab_confirmed_entity != self.wandb_entity:
-            missing.append('FAULTLAB_CONFIRMED_ENTITY')
         if not (1 <= self.faultlab_model_call_cap <= 6000):
             missing.append('FAULTLAB_MODEL_CALL_CAP')
         if not (1 <= self.faultlab_token_cap <= CAMPAIGN_TOKEN_LIMIT):
             missing.append('FAULTLAB_TOKEN_CAP')
         if not (0 < self.faultlab_dollar_cap <= 500):
             missing.append('FAULTLAB_DOLLAR_CAP')
-        import math
-        for name in ('faultlab_input_dollars_per_million','faultlab_output_dollars_per_million'):
-            value=getattr(self,name)
-            if not math.isfinite(value) or value<0: missing.append(name.upper())
-        if self.faultlab_pricing_model!=self.wandb_model:
-            missing.append('FAULTLAB_PRICING_MODEL')
-        if not self.faultlab_pricing_verified:
-            missing.append('FAULTLAB_PRICING_VERIFIED')
-        if self.faultlab_lab_model.strip():
-            for name in ('faultlab_lab_input_dollars_per_million','faultlab_lab_output_dollars_per_million'):
-                value=getattr(self,name)
-                if not math.isfinite(value) or value<0: missing.append(name.upper())
-            if self.faultlab_lab_pricing_model!=self.faultlab_lab_model.strip():
-                missing.append('FAULTLAB_LAB_PRICING_MODEL')
-        explicit={self.wandb_explorer_model.strip(), self.wandb_mechanic_model.strip()} - {'', self.wandb_model}
-        if explicit:
-            for name in ('faultlab_reasoning_input_dollars_per_million','faultlab_reasoning_output_dollars_per_million'):
-                value=getattr(self,name)
-                if not math.isfinite(value) or value<0: missing.append(name.upper())
-            if len(explicit)!=1 or self.faultlab_reasoning_pricing_model not in explicit:
-                missing.append('FAULTLAB_REASONING_PRICING_MODEL')
-            if not self.faultlab_reasoning_pricing_verified:
-                missing.append('FAULTLAB_REASONING_PRICING_VERIFIED')
+        if not (math.isfinite(self.faultlab_monthly_dollar_cap) and self.faultlab_monthly_dollar_cap > 0):
+            missing.append('FAULTLAB_MONTHLY_DOLLAR_CAP')
+        uses_wandb = False
+        for role in ('actor', 'explorer', 'mechanic'):
+            try:
+                ref = self.model_ref_for_role(role)
+            except UnknownProviderError:
+                missing.append('FAULTLAB_DEFAULT_PROVIDER')
+                continue
+            except ConfigurationError as error:
+                missing.extend(error.missing_fields)
+                continue
+            uses_wandb = uses_wandb or ref.provider == 'wandb'
+            missing.extend(client_spec(ref, self).missing)
+            if self.model_rates_for_role(role) is None:
+                # Not a setting: a verified, dated entry for this model in the pricing table (docs/providers.md).
+                missing.append(f'PRICING:{ref.ref}')
+        if uses_wandb or self.faultlab_weave_enabled:
+            # Weave evidence is credited to the confirmed W&B entity, exactly like W&B Inference itself.
+            missing.extend(name.upper() for name in ('wandb_api_key', 'wandb_entity', 'wandb_project')
+                           if not getattr(self, name).strip())
+            if not self.wandb_entity.strip() or self.faultlab_confirmed_entity != self.wandb_entity:
+                missing.append('FAULTLAB_CONFIRMED_ENTITY')
         if missing:
             raise ConfigurationError(tuple(dict.fromkeys(missing)))
 
     def model_rates_for_role(self, role: str) -> tuple[float, float] | None:
-        """Use one verified model/rate selection for admission and frozen records."""
+        """Use one verified model/rate selection for admission and frozen records.
+
+        Explicit FAULTLAB_*_DOLLARS_PER_MILLION settings win; otherwise the dated pricing
+        table supplies verified, fresh rates for the role's provider:model reference.
+        """
+        from app.providers.pricing import PricingTableError, table_rates
+        try:
+            explicit = self._explicit_rates_for_role(role)
+            if explicit is not None:
+                return explicit
+            ref = self.model_ref_for_role(role)
+            return table_rates(ref.ref, path=Path(self.faultlab_pricing_table) if self.faultlab_pricing_table else None,
+                               allow_stale=self.faultlab_allow_stale_prices)
+        except (PricingTableError, ValueError):
+            # UnknownProviderError and ConfigurationError are ValueErrors: an unpriceable role has no bound.
+            return None
+
+    def _explicit_rates_for_role(self, role: str) -> tuple[float, float] | None:
+        """The FAULTLAB_*_DOLLARS_PER_MILLION selections of earlier campaigns, matched by canonical name."""
         import math
         model=self.model_for_role(role)
+        canonical=self._canonical_model_name
         actor_rates=(self.faultlab_input_dollars_per_million,self.faultlab_output_dollars_per_million)
-        if model==self.wandb_model:
-            return actor_rates if (self.faultlab_pricing_verified and self.faultlab_pricing_model==model
+        if model==canonical(self.wandb_model):
+            return actor_rates if (self.faultlab_pricing_verified and canonical(self.faultlab_pricing_model)==model
                 and all(math.isfinite(v) and v>=0 for v in actor_rates)) else None
         reasoning_rates=(self.faultlab_reasoning_input_dollars_per_million,self.faultlab_reasoning_output_dollars_per_million)
         lab_rates=(self.faultlab_lab_input_dollars_per_million,self.faultlab_lab_output_dollars_per_million)
-        if (self.faultlab_reasoning_pricing_verified and self.faultlab_reasoning_pricing_model==model
+        if (self.faultlab_reasoning_pricing_verified and canonical(self.faultlab_reasoning_pricing_model)==model
                 and all(math.isfinite(v) and v>=0 for v in reasoning_rates)):
             return reasoning_rates
-        if (self.faultlab_lab_model.strip()==model and self.faultlab_lab_pricing_model==model
+        if (canonical(self.faultlab_lab_model)==model and canonical(self.faultlab_lab_pricing_model)==model
                 and all(math.isfinite(v) and v>=0 for v in lab_rates)):
             return lab_rates
         return None
+
+    def per_call_dollar_bound_for_role(self, role: str) -> float | None:
+        """Worst-case dollars for one admitted call of this role, from its verified rates."""
+        rates = self.model_rates_for_role(role)
+        if rates is None:
+            return None
+        caps = CampaignBudget()
+        return (caps.input_tokens_per_call * rates[0] + caps.output_tokens_per_call * rates[1]) / 1000000
+
+    @property
+    def spend_ledger_path(self) -> Path:
+        return self.artifact_path / 'spend-ledger.sqlite3'
 
     @property
     def model_call_dollar_bounds(self) -> dict[str, float] | None:

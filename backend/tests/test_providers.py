@@ -298,3 +298,96 @@ def test_v4_smoke_disables_default_thinking(configured, monkeypatch):
     assert len(client.generations) == 1
     assert client.generations[0]['extra_body'] == {'chat_template_kwargs': {'enable_thinking': False}}
     assert 'response_format' not in client.generations[0]
+
+
+# ---- The generic provider check (Phase 0.5) ----
+
+def _runtime_client(calls, content='{"status": "FaultLab connection OK"}', usage=None):
+    async def create(**kwargs):
+        calls.append(kwargs)
+        return SimpleNamespace(choices=[SimpleNamespace(finish_reason="stop", message=SimpleNamespace(content=content))],
+                               usage=usage or SimpleNamespace(prompt_tokens=20, completion_tokens=9))
+    async def close(): pass
+    return SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create)), close=close)
+
+
+def test_generic_check_generates_once_through_the_runtime_path(configured, monkeypatch, capsys):
+    import json
+    calls, factories = [], []
+    def factory(**kwargs):
+        factories.append(kwargs)
+        return _runtime_client(calls)
+    monkeypatch.setattr(Settings, "from_env", lambda **_: replace(configured, openai_api_key="dummy-openai-key"))
+    monkeypatch.setattr(check_provider, "runtime_client_factory", factory)
+    monkeypatch.setattr(check_provider, "list_client_factory", lambda **_: pytest.fail("Listed models during --generate"))
+    assert check_provider.main(["check", "--provider", "openai", "--model", "gpt-5-mini", "--generate",
+                                "--max-output-tokens", "64"]) == 0
+    captured = capsys.readouterr()
+    report = json.loads(captured.out)
+    assert report["model"] == "openai:gpt-5-mini" and report["model_sent"] == "gpt-5-mini"
+    assert report["json_valid"] is True and report["generation_requests"] == 1 and report["mode"] == "generate"
+    assert calls[0]["model"] == "gpt-5-mini" and calls[0]["max_completion_tokens"] == 64 and "temperature" not in calls[0]
+    assert calls[0]["messages"] == [{"role": "user", "content": check_provider.SMOKE_PROMPT}]
+    assert factories[0]["api_key"] == "dummy-openai-key" and factories[0]["base_url"] == "https://api.openai.com/v1"
+    assert report["pricing"]["status"] == "unverified" and report["per_call_dollar_bound"] is None
+    assert report["input_tokens"] == 20 and report["cost_usd"] is None and report["monthly_dollar_cap"] == 100.0
+    assert "dummy" not in captured.out and "64 output tokens" in captured.err
+
+
+def test_generic_check_lists_models_without_generating(configured, monkeypatch, capsys):
+    import json
+    client = FakeInferenceClient(model_ids=("claude-sonnet-5-5", "claude-haiku-4-5"))
+    specs = []
+    def factory(**kwargs):
+        specs.append(kwargs)
+        return client
+    monkeypatch.setattr(Settings, "from_env", lambda **_: replace(configured, anthropic_api_key="dummy-anthropic-key"))
+    monkeypatch.setattr(check_provider, "list_client_factory", factory)
+    monkeypatch.setattr(check_provider, "runtime_client_factory", lambda **_: pytest.fail("Generated during --list-models"))
+    assert check_provider.main(["check", "--provider", "anthropic", "--model", "claude-sonnet-5-5", "--list-models"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["model_ids"] == ["claude-haiku-4-5", "claude-sonnet-5-5"] and report["generation_requests"] == 0
+    assert client.list_requests == 1 and client.generations == []
+    assert specs[0]["base_url"] == "https://api.anthropic.com/v1/" and specs[0]["max_retries"] == 0
+
+
+def test_generic_check_blocks_on_missing_credentials_without_network(configured, monkeypatch, capsys):
+    monkeypatch.setattr(Settings, "from_env", lambda **_: configured)
+    monkeypatch.setattr(check_provider, "runtime_client_factory", lambda **_: pytest.fail("Client without credentials"))
+    monkeypatch.setattr(check_provider, "list_client_factory", lambda **_: pytest.fail("Client without credentials"))
+    assert check_provider.main(["check", "--provider", "openrouter", "--model", "x", "--generate"]) == 2
+    assert "OPENROUTER_API_KEY" in capsys.readouterr().err
+    assert check_provider.main(["check", "--provider", "custom", "--model", "x", "--list-models"]) == 2
+    assert "FAULTLAB_CUSTOM_BASE_URL, FAULTLAB_CUSTOM_API_KEY" in capsys.readouterr().err
+
+
+def test_generic_check_for_wandb_requires_the_confirmed_entity(configured, monkeypatch, capsys):
+    import json
+    calls = []
+    monkeypatch.setattr(Settings, "from_env", lambda **_: configured)
+    monkeypatch.setattr(check_provider, "runtime_client_factory", lambda **_: _runtime_client(calls))
+    assert check_provider.main(["check", "--provider", "wandb", "--model", "model-from-fake-list", "--generate"]) == 2
+    assert "confirm-entity" in capsys.readouterr().err and calls == []
+    assert check_provider.main(["check", "--provider", "wandb", "--model", "model-from-fake-list", "--generate",
+                                "--confirm-entity", "test-credited-entity"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["model"] == "wandb:model-from-fake-list" and calls[0]["max_tokens"] == 32 and calls[0]["temperature"] == 0
+
+
+def test_generic_check_reports_failure_codes_without_provider_text(configured, monkeypatch, capsys):
+    async def create(**kwargs):
+        raise RuntimeError("dummy-openai-key leaked in an exception")
+    monkeypatch.setattr(Settings, "from_env", lambda **_: replace(configured, openai_api_key="dummy-openai-key"))
+    monkeypatch.setattr(check_provider, "runtime_client_factory",
+                        lambda **_: SimpleNamespace(chat=SimpleNamespace(completions=SimpleNamespace(create=create))))
+    assert check_provider.main(["check", "--provider", "openai", "--model", "gpt-4.1", "--generate"]) == 1
+    err = capsys.readouterr().err
+    assert "PROVIDER_ERROR" in err and "RuntimeError" in err and "dummy" not in err and "leaked" not in err
+
+
+def test_generic_check_rejects_unknown_providers_and_bad_caps_before_settings(monkeypatch, capsys):
+    monkeypatch.setattr(Settings, "from_env", lambda **_: pytest.fail("Read settings for an invalid command line"))
+    with pytest.raises(SystemExit):
+        check_provider.main(["check", "--provider", "bedrock", "--model", "x", "--generate"])
+    with pytest.raises(SystemExit):
+        check_provider.main(["check", "--provider", "openai", "--model", "x", "--generate", "--max-output-tokens", "0"])

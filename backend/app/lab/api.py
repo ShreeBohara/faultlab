@@ -255,7 +255,8 @@ def create_router(get_coordinator, *, get_settings=None):
         from app.lab.exports import development_recording
         c().get(id)
         settings=c().settings
-        return development_recording(c().store,id,secrets=(settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token))
+        from app.providers.catalog import provider_secrets
+        return development_recording(c().store,id,secrets=(*provider_secrets(settings),settings.faultlab_control_token))
     @router.get('/campaigns/{id}/matrix')
     @guarded
     def matrix(id:str):
@@ -559,8 +560,9 @@ def create_router(get_coordinator, *, get_settings=None):
         import_store_preflight(expected)
         data=await read_zip_request(request)
         settings=get_settings() if get_settings is not None else c().settings
+        from app.providers.catalog import provider_secrets
         prepared=await asyncio.to_thread(_inspect_upload,data,
-            (settings.wandb_api_key,settings.typesafe_api_key,settings.faultlab_control_token))
+            (*provider_secrets(settings),settings.faultlab_control_token))
         detail,created=await save_import(c(),expected,data,prepared=prepared,with_status=True)
         # Re-saving the same ZIP returns the saved import; say so instead of a silent reopen.
         return {**detail,'import_status':'created' if created else 'existing'}

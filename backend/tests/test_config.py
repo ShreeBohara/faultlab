@@ -295,3 +295,86 @@ def test_split_role_models_have_frozen_verified_price_bounds():
     assert frozen['models']==settings.role_models
     assert frozen['pricing']['actor']['model']==settings.wandb_model
     assert frozen['pricing']['explorer']['per_call_dollar_upper_bound']==pytest.approx(.04984)
+
+
+# ---- Providers (Phase 0.5) ----
+
+def test_canonical_model_names_record_the_provider_once(tmp_path):
+    env_file = tmp_path / '.env'
+    env_file.write_text('FAULTLAB_DEFAULT_PROVIDER=openai\nWANDB_MODEL=gpt-5-mini\n'
+                        'WANDB_EXPLORER_MODEL=wandb:deepseek-ai/DeepSeek-V4-Pro-0813\n'
+                        'FAULTLAB_MECHANIC_MODEL=anthropic:claude-sonnet-5-5\n')
+    settings = Settings.from_env(env_file)
+    assert settings.role_models == {'actor': 'openai:gpt-5-mini', 'explorer': 'deepseek-ai/DeepSeek-V4-Pro-0813',
+                                    'mechanic': 'anthropic:claude-sonnet-5-5'}
+    assert settings.providers_in_use() == ('openai', 'wandb', 'anthropic')
+    assert settings.model_ref_for_role('explorer').ref == 'wandb:deepseek-ai/DeepSeek-V4-Pro-0813'
+    assert settings.model_ref_for_role('actor').model_id == 'gpt-5-mini'
+    assert Settings.from_env(tmp_path / 'missing.env').providers_in_use() == ('wandb',)
+
+
+def test_explicit_role_models_win_over_legacy_selections():
+    settings = Settings(wandb_model='deepseek-ai/DeepSeek-V3.1', faultlab_lab_model='legacy-shared',
+                        faultlab_actor_model='openai:gpt-5-mini', faultlab_mechanic_model='wandb:deepseek-ai/DeepSeek-V4-Pro-0813')
+    assert settings.role_models == {'actor': 'openai:gpt-5-mini', 'explorer': 'legacy-shared',
+                                    'mechanic': 'deepseek-ai/DeepSeek-V4-Pro-0813'}
+    with pytest.raises(ConfigurationError, match='^WANDB_MODEL$'):
+        Settings().model_ref_for_role('actor')
+    with pytest.raises(ConfigurationError, match='^FAULTLAB_ACTOR_MODEL$'):
+        Settings(faultlab_default_provider='openai').model_ref_for_role('explorer')
+
+
+def test_unknown_default_provider_is_rejected_by_name(tmp_path, monkeypatch):
+    monkeypatch.setenv('FAULTLAB_DEFAULT_PROVIDER', 'bedrock')
+    with pytest.raises(ConfigurationError) as error:
+        Settings.from_env(tmp_path / 'missing.env')
+    assert error.value.missing_fields == ('FAULTLAB_DEFAULT_PROVIDER',)
+
+
+def _pricing_table(tmp_path, *entries):
+    import json
+    from datetime import date
+    table = tmp_path / 'pricing.json'
+    table.write_text(json.dumps({'schema': 'faultlab-pricing-table/v1', 'entries': [
+        {'ref': ref, 'input_per_million': rates[0], 'output_per_million': rates[1], 'verified': verified,
+         'verified_on': date.today().isoformat(), 'source': 'test'} for ref, rates, verified in entries]}))
+    return str(table)
+
+
+def test_live_admission_names_each_providers_missing_credentials_and_prices(tmp_path):
+    from dataclasses import replace
+    table = _pricing_table(tmp_path, ('openai:gpt-5-mini', (.25, 2.), True), ('anthropic:claude-sonnet-5-5', (2., 10.), False))
+    settings = Settings(faultlab_actor_model='openai:gpt-5-mini', faultlab_explorer_model='anthropic:claude-sonnet-5-5',
+                        faultlab_mechanic_model='openai:gpt-5-mini', faultlab_live_enabled=True,
+                        faultlab_weave_enabled=False, faultlab_pricing_table=table)
+    with pytest.raises(ConfigurationError) as error:
+        settings.require_live()
+    assert error.value.missing_fields == ('OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'PRICING:anthropic:claude-sonnet-5-5')
+    keyed = replace(settings, openai_api_key='k', anthropic_api_key='k', faultlab_explorer_model='openai:gpt-5-mini')
+    keyed.require_live()    # no W&B role and no Weave: the W&B entity confirmation is not required
+    assert keyed.model_call_dollar_bound == pytest.approx(.012)
+    assert keyed.model_call_dollar_bounds == pytest.approx({'actor': .012, 'explorer': .012, 'mechanic': .012})
+    with pytest.raises(ConfigurationError, match='FAULTLAB_CONFIRMED_ENTITY'):
+        replace(keyed, faultlab_weave_enabled=True).require_live()
+    with pytest.raises(ConfigurationError, match='FAULTLAB_MONTHLY_DOLLAR_CAP'):
+        replace(keyed, faultlab_monthly_dollar_cap=0.0).require_live()
+    with pytest.raises(ConfigurationError, match='FAULTLAB_MONTHLY_DOLLAR_CAP'):
+        replace(keyed, faultlab_monthly_dollar_cap=float('inf')).require_live()
+    with pytest.raises(ConfigurationError, match='PRICING:openai:gpt-5-mini'):
+        replace(keyed, faultlab_pricing_table=str(tmp_path / 'absent.json')).require_live()
+
+
+def test_explicit_rates_win_over_the_table_and_wandb_roles_keep_the_entity_rule(tmp_path):
+    from dataclasses import replace
+    table = _pricing_table(tmp_path, ('wandb:m', (.25, 2.), True))
+    settings = Settings(wandb_api_key='k', wandb_entity='team', wandb_project='p', wandb_model='m',
+                        faultlab_live_enabled=True, faultlab_weave_enabled=False, faultlab_pricing_table=table)
+    with pytest.raises(ConfigurationError, match='^FAULTLAB_CONFIRMED_ENTITY$'):
+        settings.require_live()
+    confirmed = replace(settings, faultlab_confirmed_entity='team')
+    confirmed.require_live()
+    assert confirmed.model_rates_for_role('actor') == (.25, 2.)
+    explicit = replace(confirmed, faultlab_input_dollars_per_million=1., faultlab_output_dollars_per_million=2.,
+                       faultlab_pricing_model='wandb:m', faultlab_pricing_verified=True)
+    assert explicit.model_rates_for_role('actor') == (1., 2.)
+    assert explicit.spend_ledger_path.name == 'spend-ledger.sqlite3'

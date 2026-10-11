@@ -103,6 +103,23 @@ def _local(host):
 
 
 @pytest.fixture(autouse=True)
+def isolated_spend_ledger(monkeypatch, tmp_path_factory):
+    """Priced fake calls reserve against a scratch monthly ledger, never artifacts/spend-ledger.sqlite3.
+
+    The directory is made only when a test actually prices a call; the ledger's own tests pass
+    their own path.
+    """
+    from app.config import Settings
+    holder = {}
+
+    def scratch_ledger(self):
+        if 'path' not in holder:
+            holder['path'] = tmp_path_factory.mktemp('spend-ledger') / 'spend-ledger.sqlite3'
+        return holder['path']
+    monkeypatch.setattr(Settings, 'spend_ledger_path', property(scratch_ledger))
+
+
+@pytest.fixture(autouse=True)
 def prohibit_network(monkeypatch, request):
     permit = request.node.get_closest_marker('localhost_http') is not None
     original_gai=socket.getaddrinfo

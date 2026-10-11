@@ -31,10 +31,11 @@ def test_lab_model_routes_roles_and_raises_the_per_call_bound_to_the_dearest_mod
     assert settings.model_call_dollar_bound==pytest.approx(.04984)
     settings.require_live()
     assert priced().model_for('explorer')=='deepseek-ai/DeepSeek-V3.1' and priced().model_call_dollar_bound==pytest.approx(.0209)
-    unpriced=replace(settings,faultlab_lab_pricing_model='other')
+    # A lab model that neither the explicit settings nor the shipped pricing table price has no bound.
+    unpriced=replace(settings,faultlab_lab_model='unlisted/lab-model',faultlab_lab_pricing_model='other')
     assert unpriced.model_call_dollar_bound is None
     with pytest.raises(ConfigurationError): unpriced.require_live()
-    with pytest.raises(ConfigurationError): replace(settings,faultlab_lab_input_dollars_per_million=-1.0).require_live()
+    with pytest.raises(ConfigurationError): replace(unpriced,faultlab_lab_pricing_model='unlisted/lab-model',faultlab_lab_input_dollars_per_million=-1.0).require_live()
 
 
 def test_campaign_dollar_ceiling_is_500():
