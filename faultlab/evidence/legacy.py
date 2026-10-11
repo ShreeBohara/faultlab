@@ -86,6 +86,7 @@ class LegacyStore:
         path = Path(path).expanduser()
         _require(path.is_file() and not path.is_symlink(), "Legacy store must be an existing regular file")
         self.path = path
+        self._rowids: dict[str, dict[str, list[int]]] = {}
         try:
             self.db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
             self.db.execute("SELECT 1 FROM records LIMIT 1")
@@ -112,10 +113,24 @@ class LegacyStore:
         return None if row is None else json.loads(row["payload"])
 
     def rows(self, kind, episode_id):
-        raw = self.db.execute(
-            "SELECT payload FROM records WHERE kind=? AND json_extract(payload,'$.episode_id')=? ORDER BY rowid",
-            (kind, episode_id)).fetchall()
-        return [json.loads(row["payload"]) for row in raw]
+        """Every record of ``kind`` for one episode, in insertion order.
+
+        The legacy store has no index on the episode, so the first call for a kind reads that
+        kind's row ids once (ids only, never payloads) and later calls fetch by row id.
+        """
+        if kind not in self._rowids:
+            index: dict[str, list[int]] = {}
+            for rowid, owner in self.db.execute(
+                    "SELECT rowid, json_extract(payload,'$.episode_id') FROM records WHERE kind=? ORDER BY rowid", (kind,)):
+                if isinstance(owner, str):
+                    index.setdefault(owner, []).append(rowid)
+            self._rowids[kind] = index
+        rows = []
+        for rowid in self._rowids[kind].get(episode_id, []):
+            row = self.db.execute("SELECT payload FROM records WHERE rowid=?", (rowid,)).fetchone()
+            if row is not None:
+                rows.append(json.loads(row["payload"]))
+        return rows
 
     def events(self, episode_id):
         raw = self.db.execute("SELECT payload FROM events WHERE episode_id=? ORDER BY seq", (episode_id,)).fetchall()
