@@ -147,6 +147,21 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
   study with the same declaration, caps and stop rules as a baseline study (offline-tested watch
   loop). The launch is local, after the phase B read-out, before 2026-10-16.
 
+- **Phase B did not publish, and the loop ended early.** The owner's console had a $20 monthly
+  spend limit; it tripped at 18:49 UTC (Anthropic's email), the API refused every Claude call
+  until the owner raised the limit to $230 around 19:00, and the loop ended with 30 of 36 study
+  folders (b7 Opus never ran, b8 Haiku interrupted, rounds 8 and 9 never started). The wrap-up
+  ran at 18:56 UTC, passed the drift checks, leaderboard, reports, secret scan and backup, and
+  logged "PUBLISHED to GitHub main: 746fd8f", but git answered "Everything up-to-date": nothing
+  was committed, because `artifacts/` is in `.gitignore` and the script's `git add` was not
+  `-f` (every earlier evidence folder on `main` was force-added). The read-outs are intact in
+  `~/FaultLab_Runs/2026-10-11/claude-actor-screen/`. To publish by hand on the Mac: in the
+  wrap-up's worktree (`git worktree list` in the clone) or the clone itself, copy or find
+  `artifacts/claude-actor-screen-2026-10-11/phase-b/`, then `git add -f` that folder, commit and
+  push. The Phase B write-up then uses the clean studies only (six full Claude rounds, 108 live
+  episodes per model, not 180; the control has eight) and lists the block-affected studies as
+  errors with the reason. Fix the wrap-up script's add to `git add -f` before phase C.
+
 Still open from the Stage 1 list: the rest of 1.6 and 1.7 (above), the rest of 1.9 (free-text
 extraction, calibration by fault phase), 1.10 (a core suite under five minutes; the full backend
 suite is 3,840 tests, 1,085 of them under `tests/lab`), 1.11 (exporters, Weave optional), 1.12.
