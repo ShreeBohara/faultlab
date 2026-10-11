@@ -25,6 +25,22 @@ store readable. This page lists the pieces that exist, each with its evidence.
 Tests for the new packages live in `backend/tests/v2` and run with the core suite
 (`./scripts/test.sh backend`).
 
+## Run it offline
+
+No provider, no key: the deterministic reference adapter on the kernel-hosted orders world, scored
+by the fixed checks through the bridge, then the bench board over the bundle.
+
+```bash
+./scripts/setup.sh --backend-only
+./.venv/bin/python -m faultlab packs                       # the registered packs and their digests
+./.venv/bin/python -m faultlab run --store /tmp/fl/trials.sqlite3 --pack orders.upgrade_then_confirm/v1 \
+    --adapter reference-orders --referee legacy --k 3 --bundle /tmp/fl/batch.zip
+./.venv/bin/python -m faultlab store /tmp/fl/trials.sqlite3
+./.venv/bin/python -m bench.harness.leaderboard /tmp/fl --markdown /tmp/fl/leaderboard.md
+```
+
+Inside a test suite, the same run is `faultlab_lab.run(...)` plus `assert_clean()` (`TESTING.md`).
+
 ## Not there yet (Stage 1 remainder)
 
 Moving the orders checks themselves out of the legacy referee (the rest of 1.3; the pack pins

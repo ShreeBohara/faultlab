@@ -8,6 +8,9 @@ multi-provider data. `bench/harness/leaderboard.py` turns a directory of run sto
 ./.venv/bin/python -m bench.harness.leaderboard ~/FaultLab_Runs/2026-10-11/claude-actor-screen --out leaderboard.json --markdown leaderboard.md
 ```
 
+A bundle written by `faultlab run --bundle` (or `TrialStore.export_bundle`) is read the same way,
+so an offline v2 batch and a legacy run store appear on one board.
+
 Per model and adapter family: executions and task outcomes, violation and completion rates,
 false-belief and conformance rates from the belief-versus-effect oracle, fault exposure
 (configured, triggered, unreachable), per-scenario counts, tokens and measured dollars. Every
