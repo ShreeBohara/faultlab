@@ -14,7 +14,8 @@ them and prints a manifest.
 | `handler_factory` | `() -> WorldHandler` | the business semantics the kernel hosts (phase 1.2) |
 | `business_router` | `(store, limits) -> APIRouter` | the pack's HTTP routes over the kernel's dispatch |
 | `intent_model`, `report_model` | strict models | what a trial starts from and what the agent hands back |
-| `example_intent` | `fixture_id -> dict` | an intent the handler accepts for each fixture (conformance, smoke) |
+| `allocate_intent` | `(fixture_id, namespace) -> dict` | an intent the handler accepts for the fixture, every identity derived from the namespace (the worker passes the attempt id; `example_intent` uses `"example"`) |
+| `service_of` | `(tool, request) -> str` | the kernel service a call is dispatched on (orders: the status read names its service) |
 | `tools` | effectsafe `ToolContract` per tool | read or write, identity scope, commit boundary, status lookup, errors proving no effect |
 | `hooks` | names | where a recovery rule may run |
 | `fixtures` | names | the initial worlds the handler knows |
@@ -44,8 +45,9 @@ its status.
 
 - Tools: `get_order` and `get_operation_status` are reads. `update_order` is a keyed write (client
   key in the payload, a different payload under the same key is a conflict, the commit is
-  asynchronous and `get_operation_status` reports it; `VERSION_CONFLICT` and `IDENTITY_CONFLICT`
-  prove no effect). `send_confirmation` is a keyed write committed on its acknowledgement.
+  asynchronous and `get_operation_status` reports it; `VERSION_CONFLICT`, `IDENTITY_CONFLICT` and
+  the kernel's refusals before admission such as `TRANSIENT_UNAVAILABLE` prove no effect).
+  `send_confirmation` is a keyed write committed on its acknowledgement.
 - Hooks: the legacy four. Fixtures: `standard-v1`, `history-v1`.
 - Scenarios: the six cases of the public development split (`audit/development.json`), copied
   case for case. The promotion and final-audit partitions stay out of the pack.

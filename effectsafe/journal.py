@@ -59,8 +59,10 @@ class Journal:
                 bytes_digest TEXT NOT NULL, dispatched_at TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS deliveries(delivery_id TEXT PRIMARY KEY, attempt_id TEXT NOT NULL UNIQUE, evidence TEXT NOT NULL,
                 received_at TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS observations(observation_id TEXT PRIMARY KEY, operation_id TEXT NOT NULL,
+                source_attempt_id TEXT, evidence TEXT NOT NULL, received_at TEXT NOT NULL);
         """)
-        for table in ("attempts", "deliveries"):
+        for table in ("attempts", "deliveries", "observations"):
             for action in ("UPDATE", "DELETE"):
                 self._db.execute(f"CREATE TRIGGER IF NOT EXISTS no_{action.lower()}_{table} BEFORE {action} ON {table} "
                                  "BEGIN SELECT RAISE(ABORT,'append-only journal'); END")
@@ -80,7 +82,10 @@ class Journal:
         """Pin an operation's identity and exact bytes; idempotent for identical bytes, refused otherwise."""
         key = None
         if contract.kind == "write" and contract.identity_scope == "client_key":
-            key = derive_key(self.namespace, intent.intent_hash)
+            # A key the caller already allocated in the payload (a pack's own identities) is kept; otherwise
+            # the journal derives one from the intent and its namespace.
+            preset = intent.payload.get("idempotency_key") if contract.key_placement == "field" else None
+            key = preset if isinstance(preset, str) and preset else derive_key(self.namespace, intent.intent_hash)
         original = intent.original_bytes(key=key) if contract.key_placement == "field" and key else intent.original_bytes()
         with self._lock:
             self._db.execute("BEGIN IMMEDIATE")
@@ -184,6 +189,37 @@ class Journal:
                 if self._db.in_transaction:
                     self._db.execute("ROLLBACK")
                 raise
+
+    def observe(self, operation_id: str, evidence: Evidence, *, source_attempt_id: str | None = None) -> OperationState:
+        """Fold what a status read reported about a write into that write's outcome (the contract's ``status_lookup``).
+
+        Only a pending or terminal state word moves the outcome; anything else (an unknown word, a
+        failed read) is recorded and changes nothing, so a status read can never invent an attempt.
+        """
+        with self._lock:
+            self._db.execute("BEGIN IMMEDIATE")
+            try:
+                operation = self.operation(operation_id)
+                contract, state = operation["contract"], operation["state"]
+                if contract.kind != "write":
+                    raise JournalError("Only a write has an outcome a status read can report")
+                if evidence.transport == "ok" and evidence.status in (contract.terminal_states | contract.pending_states):
+                    state = reconcile(state, evidence, terminal_states=contract.terminal_states, pending_states=contract.pending_states)
+                else:
+                    state.history.append(f"observed:{evidence.transport}:{evidence.status or evidence.error_code or ''}")
+                self._db.execute("INSERT INTO observations VALUES (?,?,?,?,?)",
+                                 (f"observation-{uuid4().hex}", operation_id, source_attempt_id, evidence.model_dump_json(), _now()))
+                self._db.execute("UPDATE operations SET state=? WHERE operation_id=?", (state.model_dump_json(), operation_id))
+                self._db.execute("COMMIT")
+                return state
+            except BaseException:
+                if self._db.in_transaction:
+                    self._db.execute("ROLLBACK")
+                raise
+
+    def observations(self, operation_id: str) -> list[dict]:
+        rows = self._db.execute("SELECT * FROM observations WHERE operation_id=? ORDER BY received_at, observation_id", (operation_id,))
+        return [{**dict(row), "evidence": json.loads(row["evidence"])} for row in rows]
 
     def attempts(self, operation_id: str) -> list[dict]:
         rows = self._db.execute("SELECT * FROM attempts WHERE operation_id=? ORDER BY seq", (operation_id,))

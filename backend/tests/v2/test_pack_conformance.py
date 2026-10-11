@@ -91,6 +91,10 @@ def test_every_scenario_creates_a_world_on_the_kernel(pack, tmp_path):
         assert len(state["fault_executions"]) == len(scenario.fault_spec.primitives)
     with pytest.raises((ValueError, WorldError)):
         pack.example_intent("no-such-fixture")
+    first, second = pack.allocate_intent(pack.fixtures[0], "trial-1"), pack.allocate_intent(pack.fixtures[0], "trial-2")
+    assert first == pack.allocate_intent(pack.fixtures[0], "trial-1") and first != second
+    with pytest.raises(PackError, match="declares no tool"):
+        pack.tool("no-such-tool")
 
 
 def test_plan_fixes_a_scenario_into_a_valid_trial_plan(pack):
@@ -123,8 +127,8 @@ def test_inconsistent_declarations_are_refused_at_construction():
     read, write = ToolContract(name="get", kind="read"), ToolContract(name="put", kind="write", identity_scope="client_key",
                                                                         mismatch_behavior="conflict", status_lookup="get")
     base = dict(pack_id="p/v1", version="1", description="", handler_factory=WorldHandler, intent_model=TrialPlan,
-                report_model=TrialPlan, example_intent=lambda fixture: {}, tools=(read, write), hooks=("h",), fixtures=("f",),
-                scenarios=(), properties=properties)
+                report_model=TrialPlan, allocate_intent=lambda fixture, namespace: {}, tools=(read, write), hooks=("h",),
+                fixtures=("f",), scenarios=(), properties=properties)
     TaskPack(**base)
     scenario = Scenario(scenario_id="s", label="s", fixture_id="f", expected_class="fault",
                         fault_spec={"seed": 1, "primitives": [{"kind": "F4", "target_tool": "put", "target_service": "svc",
@@ -176,6 +180,10 @@ def test_orders_hooks_tools_and_models_equal_the_legacy_contracts():
     for name in ORDERS.write_tools:
         assert ORDERS.tool(name).resend_is_identity_safe and ORDERS.tool(name).status_lookup == "get_operation_status"
     assert ORDERS.tool("update_order").commit_boundary == "async" and ORDERS.tool("send_confirmation").commit_boundary == "on_ack"
+    assert ORDERS.service("get_order", {}) == "orders" and ORDERS.service("send_confirmation", {}) == "notifications"
+    assert ORDERS.service("get_operation_status", {"service": "notifications"}) == "notifications"
+    with pytest.raises(ValueError):
+        ORDERS.service("get_operation_status", {})
 
 
 def test_orders_properties_are_the_public_invariants_pinned_to_the_checker_bytes():

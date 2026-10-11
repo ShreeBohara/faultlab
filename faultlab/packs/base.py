@@ -90,13 +90,17 @@ class TaskPack:
     handler_factory: Callable[[], WorldHandler]
     intent_model: type[StrictModel]
     report_model: type[StrictModel]
-    example_intent: Callable[[str], dict]          # fixture id -> an intent the handler accepts for it
+    # (fixture id, namespace) -> an intent the handler accepts for that fixture, with every identity
+    # (task, operations, keys) derived from the namespace so two trials never share one.
+    allocate_intent: Callable[[str, str], dict]
     tools: tuple[ToolContract, ...]
     hooks: tuple[str, ...]
     fixtures: tuple[str, ...]
     scenarios: tuple[Scenario, ...]
     properties: PropertySet
     business_router: Callable[..., Any] | None = None   # (store, limits) -> APIRouter, as the kernel app expects
+    # (tool, request) -> the kernel service the call is dispatched on; defaults to the pack id.
+    service_of: Callable[[str, dict], str] | None = None
     diagnostics: dict[str, JsonValue] | None = None
     _by_tool: dict[str, ToolContract] = field(init=False, repr=False, compare=False)
     _by_scenario: dict[str, Scenario] = field(init=False, repr=False, compare=False)
@@ -128,7 +132,16 @@ class TaskPack:
                     raise PackError(f"Scenario {scenario.scenario_id} places a fault on undeclared tool {primitive.target_tool}")
 
     def tool(self, name: str) -> ToolContract:
-        return self._by_tool[name]
+        try:
+            return self._by_tool[name]
+        except KeyError:
+            raise PackError(f"Pack {self.pack_id} declares no tool {name}") from None
+
+    def example_intent(self, fixture_id: str) -> dict:
+        return self.allocate_intent(fixture_id, "example")
+
+    def service(self, tool: str, request: dict) -> str:
+        return self.service_of(tool, request) if self.service_of is not None else self.pack_id
 
     def scenario(self, scenario_id: str) -> Scenario:
         try:

@@ -23,6 +23,10 @@ VERSION = "1"
 CHECKER_PATH = "backend/app/referee/checks.py"
 CHECKER_DIGEST = "19de811c96473eb47d41974c881df06d8dca5191df4e7e0b17cbab2b421f8c2e"
 
+# Refusals the kernel issues before any handler code runs (dispatch), and the handler's own refusals
+# before an operation is accepted: all of them prove the attempt had no effect.
+KERNEL_REFUSALS = frozenset({"TRANSIENT_UNAVAILABLE", "BUSINESS_BUDGET", "WORLD_STOPPED", "FORBIDDEN",
+                             "INVALID_TRANSPORT_ID", "WORLD_NOT_FOUND"})
 # What each tool promises (effectsafe contracts). The two writes are keyed by a client idempotency key
 # carried in the payload; a resend with the same bytes replays, a different payload under the same key
 # is a conflict. The upgrade commits asynchronously (status via get_operation_status); the confirmation
@@ -32,11 +36,11 @@ TOOLS = (
     ToolContract(name="get_operation_status", kind="read"),
     ToolContract(name="update_order", kind="write", identity_scope="client_key", key_placement="field",
                  mismatch_behavior="conflict", commit_boundary="async", status_lookup="get_operation_status",
-                 errors_proving_no_effect=frozenset({"VERSION_CONFLICT", "IDENTITY_CONFLICT"}),
+                 errors_proving_no_effect=frozenset({"VERSION_CONFLICT", "IDENTITY_CONFLICT"}) | KERNEL_REFUSALS,
                  retry_safe_errors=frozenset({"TRANSIENT_UNAVAILABLE"})),
     ToolContract(name="send_confirmation", kind="write", identity_scope="client_key", key_placement="field",
                  mismatch_behavior="conflict", commit_boundary="on_ack", status_lookup="get_operation_status",
-                 errors_proving_no_effect=frozenset({"IDENTITY_CONFLICT"}),
+                 errors_proving_no_effect=frozenset({"IDENTITY_CONFLICT"}) | KERNEL_REFUSALS,
                  retry_safe_errors=frozenset({"TRANSIENT_UNAVAILABLE"})),
 )
 HOOKS = ("after_upgrade_response", "before_confirmation", "after_notification_response", "before_final_report")
@@ -94,30 +98,46 @@ PROPERTIES = PropertySet(checker_path=CHECKER_PATH, checker_digest=CHECKER_DIGES
 ])
 
 
-def example_intent(fixture_id: str) -> dict:
-    """A deterministic intent the handler accepts for the fixture (its expected version is the fixture's)."""
+def allocate_intent(fixture_id: str, namespace: str) -> dict:
+    """An intent the handler accepts for the fixture, every identity derived from the namespace.
+
+    The expected version is the fixture's. The same namespace always yields the same intent, and two
+    namespaces never share an operation id or an idempotency key.
+    """
     if fixture_id not in FIXTURE_VERSIONS:
         raise ValueError(f"Unknown orders fixture {fixture_id}")
     version = FIXTURE_VERSIONS[fixture_id]
-    order_id = "order-example"
+    tag = content_hash({"orders_intent": namespace, "fixture": fixture_id})[:24]
+    order_id, upgrade_id, notify_id = f"order-{tag}", f"upgrade-{tag}", f"notify-{tag}"
     return m.TaskIntent(
-        task_id=f"task-example-{fixture_id}", order_id=order_id, expected_version=version,
-        upgrade_operation_id="upgrade-example", notification_operation_id="notify-example",
-        upgrade_idempotency_key="upgrade-key-example", notification_idempotency_key="notify-key-example",
+        task_id=f"task-{tag}", order_id=order_id, expected_version=version,
+        upgrade_operation_id=upgrade_id, notification_operation_id=notify_id,
+        upgrade_idempotency_key=f"upgrade-key-{tag}", notification_idempotency_key=f"notify-key-{tag}",
         upgrade_intent_hash=content_hash({"order": order_id, "shipping": "express", "expected_version": version}),
-        notification_intent_hash=content_hash({"order": order_id, "upgrade": "upgrade-example", "template": "confirmation/v1"}),
+        notification_intent_hash=content_hash({"order": order_id, "upgrade": upgrade_id, "template": "confirmation/v1"}),
         task_text=f"Upgrade order {order_id} (currently version {version}) to express shipping, then send exactly one confirmation.",
     ).model_dump(mode="json")
+
+
+def service_of(tool: str, request: dict) -> str:
+    """The kernel service a call is dispatched on: the status read names its service in the request."""
+    if tool == "get_operation_status":
+        service = request.get("service")
+        if service not in ("orders", "notifications"):
+            raise ValueError("get_operation_status needs a service of orders or notifications")
+        return service
+    return m.SERVICE_OF_TOOL[tool]
 
 
 PACK = TaskPack(
     pack_id=PACK_ID, version=VERSION,
     description="Upgrade one order to express shipping with a keyed, asynchronously committed write, then send one "
                 "truthful confirmation; report what happened citing only delivered evidence.",
-    handler_factory=OrdersHandler, business_router=business_router,
-    intent_model=m.TaskIntent, report_model=m.TaskReport, example_intent=example_intent,
+    handler_factory=OrdersHandler, business_router=business_router, service_of=service_of,
+    intent_model=m.TaskIntent, report_model=m.TaskReport, allocate_intent=allocate_intent,
     tools=TOOLS, hooks=HOOKS, fixtures=tuple(FIXTURE_VERSIONS), scenarios=SCENARIOS, properties=PROPERTIES,
     diagnostics={"profiles": {profile: dict(hashes) for profile, hashes in PROFILE_HASHES.items()}},
 )
 
-__all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "PACK", "PROPERTIES", "SCENARIOS", "TOOLS", "VERSION", "example_intent"]
+__all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "KERNEL_REFUSALS", "PACK", "PROPERTIES", "SCENARIOS", "TOOLS", "VERSION",
+           "allocate_intent", "service_of"]
