@@ -149,6 +149,43 @@ width. Not a certification, not a learned-policy result, not a held-out claim. T
 beside phase A is that the control is not spotless either (one DeepSeek violation in 162), and
 that Opus's citation slips are not confined to the rejected-upgrade case.
 
+## Phase C (declared 2026-10-12 17:56 UTC; the Fable study was refused at admission)
+
+Piece C of `docs/CLAUDE_CREDIT_PLAN_2026-10-11.md` declared nine rounds of {DeepSeek V3.1 control, Claude
+Fable 5.1} (`DECLARATION.phase-c.json`, sha256 `0e8227d4…67b4`, in
+`artifacts/claude-actor-screen-2026-10-11/phase-c/`, commit `9af2ba1`). The loop started at 17:58 UTC.
+Round 1's control study completed; the first Fable study was refused the moment its baseline study was
+queued (HTTP 409, "Complete batch exceeds frozen dollar reservation"), no Fable call was made, the loop
+stopped on its status rule at 18:02 UTC, and the wrap-up published the two-study folder.
+
+**Why a Fable study cannot be admitted.** Queueing a study reserves its 144 calls on top of the
+campaign's 1,064 protected calls, all at the dearest per-call bound. Fable's bound is $0.42 (32,000
+input tokens at $10 per million plus 2,000 output tokens at $50 per million), so the hold is $507.36,
+and `backend/app/config.py` accepts a campaign cap of at most $500 (`FAULTLAB_DOLLAR_CAP`, see
+`docs/providers.md`). The plan checked the reserved bound per study but not this ceiling. No declared
+cap can admit a Fable study. The options are a one-line, committed and declared change to the ceiling,
+or dropping Fable; the decision is the owner's and is open. The measured cost of the nine rounds would
+be about $40.
+
+**The one control study** (`c1-deepseek-v3.1-control`, 18 live trials, both clock-drift checks clean):
+12 completed, 3 correctly rejected, 2 safe unresolved, 1 violation (dev-6, C5 and C6, the same
+pattern as phase B's single control violation); 15 of 15 scheduled faults fired; measured $0.159. It is
+a valid control study and joins the DeepSeek control pool if phase C is rerun. None of phase C's
+pre-registered read-outs can be computed: there is no Fable data.
+
+### Why the evidence rows say weave_pending (phases A to C)
+
+Every live episode of phases A, B and C records its evidence as `weave_pending`; the phase A deviation
+note (`DEVIATION_1_WEAVE_PENDING.md` in the run folder) attributed this to timing. The cause was found
+on 2026-10-12 while running piece D: the W&B project that holds the traces is
+`shreetbohara-quinstreet/Faultlab`, and the Mac's `.env` has said `WANDB_PROJECT=faultlab` since
+2026-10-10. The Weave reader compares the project id of a retrieved call with the configured one byte
+for byte and rejects the mismatch as `INVALID_EVIDENCE`; the uploads themselves succeed, and reading the
+same traces with the right name verifies them. No read-out of this screen depends on remote
+verification (every number here comes from the local Referee and the local ledger), so nothing above
+changes. Piece D's loop exports `WANDB_PROJECT=Faultlab` for its driver processes; the permanent fix is
+that one line in `.env`.
+
 ## Reproduction
 
 `scripts/experiments/baseline_screen.py --model <canonical model> --data-dir <fresh dir> --declaration

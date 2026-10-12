@@ -122,3 +122,24 @@ D and E's outcomes are stage counts of a loop on frontier models; a candidate th
 validation is not ACCEPTED and no pointer moves. The write-ups go next to the phase B section in
 `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md` (piece C) and in a new `docs/CLAUDE_LAB_LOOP_PROBE_2026-10.md`
 (pieces D and E), with only the read-outs declared here.
+
+## Outcomes (2026-10-12, local session on the Mac)
+
+- **Piece C: blocked at admission.** The loop ran one control study (valid, in the pool) and the
+  first Fable study was refused when queued: queueing holds 1,064 protected calls plus the study's
+  144 at Fable's $0.42 per-call bound, $507.36, and the lab's settings accept a campaign cap of at
+  most $500. No declared cap can admit Fable. Published as `9af2ba1`; details in the Phase C section
+  of `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`. Open decision: change the ceiling (one line in
+  `backend/app/config.py`, committed and declared) or drop Fable. The nine rounds would measure about $40.
+- **Piece D: done.** Five studies, all COMPLETED with NO_CHANGE at the controls stage; 0 of 5 reached a
+  proposal (Wilson 0% to 43.4%); measured $1.48 plus $0.11 for two excluded attempts. Published as
+  `0de4133` and `b45ad73`; write-up in `docs/CLAUDE_LAB_LOOP_PROBE_2026-10.md`. The completion study's
+  manifests are completion gaps on transient failures, which Claude Actors complete, so the Mechanic is
+  never reached with a Claude Actor; the plan's dev-5 question needs a new study design.
+- **Piece E: not run.** It would end the same way as D (Opus completes dev-6 in every phase B trial).
+- **Corrections to this plan found at launch:** the campaign cap for D must be at least $260.06 ($300
+  was declared); the monthly cap gates on the month's summed per-call bounds ($182.80 before C, $197.45
+  after D), so nine Fable rounds would need about $760, not $400; verified evidence needs
+  `WANDB_PROJECT=Faultlab` (the project's real name), which `.env` has not said since 2026-10-10.
+- **Credit:** the lab's ledger shows $21.73 settled with Anthropic in October at 19:15 UTC, so about
+  $178 of the credit remains, expiring 2026-10-16.

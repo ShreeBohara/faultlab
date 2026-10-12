@@ -177,3 +177,13 @@ suite is 3,840 tests, 1,085 of them under `tests/lab`), 1.11 (exporters, Weave o
   `FINDINGS.md` and `SUMMARY.json` from the committed read-outs, and the memory index.
 - Any further paid work (for example a declared Claude lab-loop probe) is a local decision with a
   fresh declaration.
+
+## Update from the Mac (2026-10-12, local session)
+
+Pieces C and D of the credit plan ran; their outcomes, the corrections to the plan and the open
+decisions are in the "Outcomes" section of `docs/CLAUDE_CREDIT_PLAN_2026-10-11.md`, with write-ups in
+the Phase C section of `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md` and in
+`docs/CLAUDE_LAB_LOOP_PROBE_2026-10.md`, and ledger lines in `CURRENT_STATUS.md`. Two facts every later
+session needs: the lab's campaign cap cannot exceed $500, which excludes Fable 5.1 as declared; and
+verified Weave evidence needs `WANDB_PROJECT=Faultlab` (the project's real name), which the Mac's `.env`
+has not said since 2026-10-10. The clone is fast-forwarded to `main`.

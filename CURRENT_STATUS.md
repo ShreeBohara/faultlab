@@ -1253,6 +1253,27 @@ Reserved bounds from the declaration, per started study: 8 x $3.01 + 8 x $0.61 +
 two studies inside the block carry no measured cost). Project ledger carried forward: $977.98 + $282.99
 = **$1,260.97** (bounds, as always). Read-outs: the Phase B section of `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`.
 
+## Ledger entry 2026-10-12: Claude Actor screen phase C (refused at admission)
+
+One of the declared 18 studies ran: the round-1 DeepSeek control (`c1-deepseek-v3.1-control`, COMPLETED).
+The first Fable study was refused when queued (hold $507.36 at Fable's $0.42 per-call bound against the
+lab's $500 campaign-cap ceiling) and the loop stopped. Reserved bound for the started study: 1 x $3.01 =
+**$3.01** (the Fable study was never admitted, so nothing was reserved for it); measured $0.16
+(`artifacts/claude-actor-screen-2026-10-11/phase-c/LEDGER.phase-c.auto.json`). Project ledger carried
+forward: $1,260.97 + $3.01 = **$1,263.98** (bounds, as always). Read-outs: the Phase C section of
+`docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`.
+
+## Ledger entry 2026-10-12: Claude lab-loop probe piece D
+
+Seven completion studies started under `DECLARATION.piece-d.json`: two attempts ended INCOMPLETE after
+one control trial each on the Weave project-name mismatch and are excluded; the declared five then ran
+to completion, all NO_CHANGE at the controls stage. Reserved bounds from the declaration, per started
+study: 7 x $40.99 = **$286.93** (480 Actor calls at Sonnet's $0.084 plus 4 Mechanic calls at Opus's
+$0.168; the campaign hold per study was $260.06); measured $1.48 for the five plus $0.11 for the two
+attempts = $1.59 (`artifacts/claude-lab-loop-probe-2026-10/piece-d/LEDGER.piece-d.auto.json` carries the
+five). Project ledger carried forward: $1,263.98 + $286.93 = **$1,550.91** (bounds, as always).
+Read-outs: `docs/CLAUDE_LAB_LOOP_PROBE_2026-10.md`.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
