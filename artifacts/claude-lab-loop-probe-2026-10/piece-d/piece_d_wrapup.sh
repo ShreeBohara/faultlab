@@ -88,7 +88,7 @@ for d in sorted(screen.glob("d*-*")):
         "manifest_hash": rec.get("manifest_hash"), "charged_model_calls": rec.get("charged_model_calls", s.get("charged_model_calls")),
         "measured_cost": cost, "slots_by_stage_arm_status": by_stage, "candidates": candidates,
         "validation_assessment": {"decision": va.get("decision"), "reason": va.get("reason")} if va else None,
-        "reached_validation": any(str(k).startswith("validation:") for k in by_stage)}
+        "reached_validation": any(str(k).startswith("validation:") and not str(k).endswith(":NOT_ATTEMPTED") for k in by_stage)}
 (out / "LEDGER.piece-d.auto.json").write_text(json.dumps({"studies": rows, "measured_total_usd": round(total, 4),
     "note": "measured provider cost per study from RESULT.json; reserved bounds are in DECLARATION.piece-d.json"}, indent=2))
 (out / "completion-readouts.json").write_text(json.dumps(readouts, indent=2))

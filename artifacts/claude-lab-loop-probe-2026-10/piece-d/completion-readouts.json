@@ -22,7 +22,7 @@
     },
     "candidates": [],
     "validation_assessment": null,
-    "reached_validation": true
+    "reached_validation": false
   },
   "d2-sonnet-actor-opus-mechanic": {
     "status": "COMPLETED",
@@ -47,7 +47,7 @@
     },
     "candidates": [],
     "validation_assessment": null,
-    "reached_validation": true
+    "reached_validation": false
   },
   "d3-sonnet-actor-opus-mechanic": {
     "status": "COMPLETED",
@@ -72,7 +72,7 @@
     },
     "candidates": [],
     "validation_assessment": null,
-    "reached_validation": true
+    "reached_validation": false
   },
   "d4-sonnet-actor-opus-mechanic": {
     "status": "COMPLETED",
@@ -97,7 +97,7 @@
     },
     "candidates": [],
     "validation_assessment": null,
-    "reached_validation": true
+    "reached_validation": false
   },
   "d5-sonnet-actor-opus-mechanic": {
     "status": "COMPLETED",
@@ -122,6 +122,6 @@
     },
     "candidates": [],
     "validation_assessment": null,
-    "reached_validation": true
+    "reached_validation": false
   }
 }
