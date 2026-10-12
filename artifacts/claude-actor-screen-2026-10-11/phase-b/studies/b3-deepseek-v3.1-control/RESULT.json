@@ -1,0 +1,210 @@
+{
+  "model": "deepseek-ai/DeepSeek-V3.1",
+  "data_dir": "/Users/shree/FaultLab_Runs/2026-10-11/claude-actor-screen/b3-deepseek-v3.1-control",
+  "declaration_sha256": "e56521f9fc4c6bc64979410f77faf7ecc4f4b0b6582f08843d28395689af6286",
+  "store_identity": "a11ecef4903082b261ab67a592ced720a04c6ce9b3f679a9a3c87f6e75ffd085",
+  "campaign_id": "campaign-145854ab2a2b4b719ccd3536b271c19d",
+  "study_id": "baseline-study-de7f68b792b94424b3d7c014102a9210",
+  "stopped_by_rule": null,
+  "summary": {
+    "status": "COMPLETED",
+    "reason": "All predeclared trials retained; observed outcomes are not a learned-policy claim",
+    "live_trials": 18,
+    "live_outcomes": {
+      "COMPLETED": 11,
+      "SAFE_UNRESOLVED": 4,
+      "CORRECTLY_REJECTED": 3
+    },
+    "by_case": {
+      "dev-1": [
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        }
+      ],
+      "dev-2": [
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        }
+      ],
+      "dev-3": [
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        }
+      ],
+      "dev-4": [
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "COMPLETED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "SAFE_UNRESOLVED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        }
+      ],
+      "dev-5": [
+        {
+          "outcome": "CORRECTLY_REJECTED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "CORRECTLY_REJECTED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "CORRECTLY_REJECTED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        }
+      ],
+      "dev-6": [
+        {
+          "outcome": "SAFE_UNRESOLVED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "SAFE_UNRESOLVED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        },
+        {
+          "outcome": "SAFE_UNRESOLVED",
+          "lifecycle": "COMPLETED",
+          "failed_checks": [],
+          "fault_scheduled": true,
+          "fault_triggered": true
+        }
+      ]
+    },
+    "usage": {
+      "actor_calls": 102,
+      "cost_dollars": 0.1780119,
+      "http_attempts": 165,
+      "input_tokens": 313617,
+      "model_calls": 102,
+      "output_tokens": 3347,
+      "policy_steps": 0,
+      "ticks": 189,
+      "wait_cycles": 6,
+      "wall_seconds": 108.47283287753817
+    },
+    "charged_model_calls": 102,
+    "charged_token_upper_bound": 3468000,
+    "evidence": {
+      "episode-07f91b9e0c6646889dc9937bbd55191e": "weave_pending",
+      "episode-0f96dda1685d44d49660fb66ce72e26e": "weave_pending",
+      "episode-159a4b48ca5f41f480134a7a72946bc6": "weave_pending",
+      "episode-20270ec15b6d49598c515390cb9c08b3": "weave_pending",
+      "episode-3c1d83533596448390eb7c59cf1fb68e": "weave_pending",
+      "episode-915def47fd8b4777b161365c8762f0f5": "weave_pending",
+      "episode-9493ce02a82049c8bd950ff2017aaf29": "weave_pending",
+      "episode-a77742fa7a7b49d299a8f349ab5d379d": "weave_pending",
+      "episode-b568a14531ed4892af10e5165f457076": "weave_pending",
+      "episode-b7897b47fca74902a09acd018c27c25e": "weave_pending",
+      "episode-d8d62e6f9bf046a5b979329cea1f2349": "weave_pending",
+      "episode-d9dd794a21554c3a952604ddbc44d5df": "weave_pending",
+      "episode-de4c95076d6c49249f11d2bf9f9ef5c2": "weave_pending",
+      "episode-e4a5251d32834c30950cdbfd6d249513": "weave_pending",
+      "episode-e7e8202175884e32a66f0c92b582092a": "weave_pending",
+      "episode-fa496e2172f64b049b7be8fcb925cba2": "weave_pending",
+      "episode-fd77aa66793d4d7ea54e96b26eb2a3e6": "weave_pending",
+      "episode-ffe55987801545b5a342c8623ca16bec": "weave_pending"
+    },
+    "telemetry": {
+      "B0": {
+        "outbox_id": "evaluation:baseline-study-de7f68b792b94424b3d7c014102a9210-B0",
+        "remote_ref": null,
+        "status": "weave_pending"
+      },
+      "B1": {
+        "remote_ref": null,
+        "status": "local_only"
+      }
+    }
+  },
+  "monthly_ledger": {
+    "month": "2026-10",
+    "reserved_bound": 70.90310000000001,
+    "settled_actual": 8.40781385,
+    "calls": 1166
+  }
+}

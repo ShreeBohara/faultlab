@@ -1,0 +1,225 @@
+{
+  "model": "anthropic:claude-haiku-5-5",
+  "data_dir": "/Users/shree/FaultLab_Runs/2026-10-11/claude-actor-screen/b8-claude-haiku-5-5",
+  "declaration_sha256": "e56521f9fc4c6bc64979410f77faf7ecc4f4b0b6582f08843d28395689af6286",
+  "store_identity": "c85e901b54b95ebccf5a487164eb264436e1bcd694dfd16d70660aee359611b5",
+  "campaign_id": "campaign-339b9d36e0c54ceaa7c66cb1a594ed0d",
+  "study_id": "baseline-study-854f24f30d5d4325956cd6d90eb8a761",
+  "stopped_by_rule": "14 consecutive LAB_ERROR live trials",
+  "summary": {
+    "status": "INTERRUPTED",
+    "reason": "Stopped; all attempted effects retained and no trial replayed",
+    "live_trials": 15,
+    "live_outcomes": {
+      "LAB_ERROR": 15
+    },
+    "by_case": {
+      "dev-1": [
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": false,
+          "fault_triggered": false
+        }
+      ],
+      "dev-2": [
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        }
+      ],
+      "dev-3": [
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        }
+      ],
+      "dev-4": [
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        }
+      ],
+      "dev-5": [
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        },
+        {
+          "outcome": "LAB_ERROR",
+          "lifecycle": "LAB_ERROR",
+          "failed_checks": [
+            "C5",
+            "C6",
+            "C7"
+          ],
+          "fault_scheduled": true,
+          "fault_triggered": false
+        }
+      ]
+    },
+    "usage": {
+      "actor_calls": 15,
+      "cost_dollars": null,
+      "http_attempts": 53,
+      "input_tokens": 0,
+      "model_calls": 15,
+      "output_tokens": 0,
+      "policy_steps": 0,
+      "ticks": 73,
+      "wait_cycles": 5,
+      "wall_seconds": 7.212246707058512
+    },
+    "charged_model_calls": 15,
+    "charged_token_upper_bound": 510000,
+    "evidence": {},
+    "telemetry": {
+      "B0": {
+        "batch_id": "baseline-study-854f24f30d5d4325956cd6d90eb8a761-B0",
+        "status": "PENDING"
+      },
+      "B1": {
+        "batch_id": "baseline-study-854f24f30d5d4325956cd6d90eb8a761-B1",
+        "status": "local_only"
+      }
+    }
+  },
+  "monthly_ledger": {
+    "month": "2026-10",
+    "reserved_bound": 182.8004,
+    "settled_actual": null,
+    "calls": 2945
+  }
+}

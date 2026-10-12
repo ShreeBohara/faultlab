@@ -1,0 +1,5 @@
+scored episodes checked: 36
+worlds directory: /Users/shree/FaultLab_Runs/2026-10-11/claude-actor-screen/b7-claude-sonnet-5-5/worlds
+world files missing: 0
+drifted: 0
+masked response-delay faults: 0

@@ -1,0 +1,156 @@
+{
+  "studies": {
+    "b1-claude-haiku-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.0527555,
+      "error": false
+    },
+    "b1-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.611928,
+      "error": false
+    },
+    "b1-claude-sonnet-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.979576,
+      "error": false
+    },
+    "b1-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.17036635000000003,
+      "error": false
+    },
+    "b2-claude-haiku-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.0549981,
+      "error": false
+    },
+    "b2-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.60908,
+      "error": false
+    },
+    "b2-claude-sonnet-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.887114,
+      "error": false
+    },
+    "b2-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.16087555,
+      "error": false
+    },
+    "b3-claude-haiku-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.0496401,
+      "error": false
+    },
+    "b3-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.610084,
+      "error": false
+    },
+    "b3-claude-sonnet-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.9568260000000001,
+      "error": false
+    },
+    "b3-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.1780119,
+      "error": false
+    },
+    "b4-claude-haiku-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.0492883,
+      "error": false
+    },
+    "b4-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.628736,
+      "error": false
+    },
+    "b4-claude-sonnet-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.988702,
+      "error": false
+    },
+    "b4-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.17322030000000002,
+      "error": false
+    },
+    "b5-claude-haiku-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.0523447,
+      "error": false
+    },
+    "b5-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.656788,
+      "error": false
+    },
+    "b5-claude-sonnet-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.02088,
+      "error": false
+    },
+    "b5-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.17267800000000003,
+      "error": false
+    },
+    "b6-claude-haiku-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.0526658,
+      "error": false
+    },
+    "b6-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 1.67426,
+      "error": false
+    },
+    "b6-claude-sonnet-5-5": {
+      "status": "COMPLETED",
+      "measured_cost": 0.987808,
+      "error": false
+    },
+    "b6-deepseek-v3.1-control": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.16287425000000003,
+      "error": false
+    },
+    "b7-claude-haiku-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.0506971,
+      "error": false
+    },
+    "b7-claude-opus-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.0,
+      "error": false
+    },
+    "b7-claude-sonnet-5-5": {
+      "status": "INCOMPLETE",
+      "measured_cost": 0.940304,
+      "error": false
+    },
+    "b7-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.17170175000000001,
+      "error": false
+    },
+    "b8-claude-haiku-5-5": {
+      "status": "INTERRUPTED",
+      "measured_cost": 0.0,
+      "error": false
+    },
+    "b8-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.17056105000000002,
+      "error": false
+    }
+  },
+  "measured_total_usd": 18.2748,
+  "note": "measured provider cost per study from RESULT.json; reserved bounds are in DECLARATION.phase-b.json"
+}

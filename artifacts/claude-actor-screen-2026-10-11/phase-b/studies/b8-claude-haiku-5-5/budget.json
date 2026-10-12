@@ -1,0 +1,42 @@
+{
+  "actual_cost_dollars": null,
+  "caps": {
+    "candidates": 4,
+    "discovery_selections": 8,
+    "dollars": 60.0,
+    "input_tokens_per_call": 32000,
+    "model_calls": 6000,
+    "output_tokens_per_call": 2000,
+    "tokens": 204000000
+  },
+  "charged_dollar_upper_bound": 0.06300000000000001,
+  "charged_token_upper_bound": 510000,
+  "dollar_bound": 0.0042,
+  "dollar_bounds": {
+    "actor": 0.0042,
+    "explorer": 0.0042,
+    "mechanic": 0.0042
+  },
+  "measured_input_tokens": 0,
+  "measured_output_tokens": 0,
+  "reservations": {
+    "final_audit": {
+      "calls": 384,
+      "tokens": 13056000
+    },
+    "portability": {
+      "calls": 288,
+      "tokens": 9792000
+    },
+    "selection_comparison": {
+      "calls": 392,
+      "tokens": 13328000
+    }
+  },
+  "unknown_cost_calls": 15,
+  "unknown_token_calls": 15,
+  "usage_metadata_known": false,
+  "used_calls": 15,
+  "used_cost": null,
+  "used_tokens": 510000
+}

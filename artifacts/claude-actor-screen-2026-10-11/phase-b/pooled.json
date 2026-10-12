@@ -1,0 +1,320 @@
+{
+  "claude-haiku-5-5": {
+    "model": "anthropic:claude-haiku-5-5",
+    "runs": [
+      "b1-claude-haiku-5-5",
+      "b2-claude-haiku-5-5",
+      "b3-claude-haiku-5-5",
+      "b4-claude-haiku-5-5",
+      "b5-claude-haiku-5-5",
+      "b6-claude-haiku-5-5",
+      "b7-claude-haiku-5-5",
+      "b8-claude-haiku-5-5",
+      "claude-haiku-5-5"
+    ],
+    "live": 159,
+    "violations": 12,
+    "completed": 119,
+    "safe": 1,
+    "rejected": 12,
+    "errors": 15,
+    "faults_scheduled": 132,
+    "faults_triggered": 114,
+    "by_case": {
+      "dev-1": {
+        "n": 27,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {
+          "C5": 3,
+          "C6": 3,
+          "C7": 3
+        }
+      },
+      "dev-2": {
+        "n": 27,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 3,
+        "checks": {
+          "C5": 3,
+          "C6": 3,
+          "C7": 3
+        }
+      },
+      "dev-3": {
+        "n": 27,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 3,
+        "checks": {
+          "C5": 3,
+          "C6": 3,
+          "C7": 3
+        }
+      },
+      "dev-4": {
+        "n": 27,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 9,
+        "checks": {
+          "C5": 3,
+          "C6": 3,
+          "C7": 3
+        }
+      },
+      "dev-5": {
+        "n": 27,
+        "violations": 12,
+        "completed": 0,
+        "untriggered": 3,
+        "checks": {
+          "C5": 15,
+          "C6": 3,
+          "C7": 3
+        }
+      },
+      "dev-6": {
+        "n": 24,
+        "violations": 0,
+        "completed": 23,
+        "untriggered": 0,
+        "checks": {}
+      }
+    },
+    "input_tokens": 3367716,
+    "output_tokens": 153329,
+    "cost": 0.4134361,
+    "fisher_two_sided_vs_control": 0.001387176017475034
+  },
+  "claude-opus-5-5": {
+    "model": "anthropic:claude-opus-5-5",
+    "runs": [
+      "b1-claude-opus-5-5",
+      "b2-claude-opus-5-5",
+      "b3-claude-opus-5-5",
+      "b4-claude-opus-5-5",
+      "b5-claude-opus-5-5",
+      "b6-claude-opus-5-5",
+      "b7-claude-opus-5-5",
+      "claude-opus-5-5"
+    ],
+    "live": 144,
+    "violations": 7,
+    "completed": 112,
+    "safe": 0,
+    "rejected": 15,
+    "errors": 10,
+    "faults_scheduled": 120,
+    "faults_triggered": 99,
+    "by_case": {
+      "dev-1": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-2": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-3": {
+        "n": 24,
+        "violations": 0,
+        "completed": 23,
+        "untriggered": 0,
+        "checks": {
+          "C5": 1,
+          "C6": 1,
+          "C7": 1
+        }
+      },
+      "dev-4": {
+        "n": 24,
+        "violations": 1,
+        "completed": 20,
+        "untriggered": 15,
+        "checks": {
+          "C6": 4,
+          "C5": 3,
+          "C7": 3
+        }
+      },
+      "dev-5": {
+        "n": 24,
+        "violations": 6,
+        "completed": 0,
+        "untriggered": 3,
+        "checks": {
+          "C6": 9,
+          "C5": 3,
+          "C7": 3
+        }
+      },
+      "dev-6": {
+        "n": 24,
+        "violations": 0,
+        "completed": 21,
+        "untriggered": 3,
+        "checks": {
+          "C5": 3,
+          "C6": 3,
+          "C7": 3
+        }
+      }
+    },
+    "input_tokens": 2704277,
+    "output_tokens": 62577,
+    "cost": 11.382796,
+    "fisher_two_sided_vs_control": 0.028312129047210356
+  },
+  "claude-sonnet-5-5": {
+    "model": "anthropic:claude-sonnet-5-5",
+    "runs": [
+      "b1-claude-sonnet-5-5",
+      "b2-claude-sonnet-5-5",
+      "b3-claude-sonnet-5-5",
+      "b4-claude-sonnet-5-5",
+      "b5-claude-sonnet-5-5",
+      "b6-claude-sonnet-5-5",
+      "b7-claude-sonnet-5-5",
+      "claude-sonnet-5-5"
+    ],
+    "live": 144,
+    "violations": 3,
+    "completed": 120,
+    "safe": 21,
+    "rejected": 0,
+    "errors": 0,
+    "faults_scheduled": 120,
+    "faults_triggered": 114,
+    "by_case": {
+      "dev-1": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-2": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-3": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-4": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 6,
+        "checks": {}
+      },
+      "dev-5": {
+        "n": 24,
+        "violations": 3,
+        "completed": 0,
+        "untriggered": 0,
+        "checks": {
+          "C5": 3
+        }
+      },
+      "dev-6": {
+        "n": 24,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      }
+    },
+    "input_tokens": 3407515,
+    "output_tokens": 84531,
+    "cost": 7.66034,
+    "fisher_two_sided_vs_control": 0.3455481222892629
+  },
+  "deepseek-v3.1-control": {
+    "model": "deepseek-ai/DeepSeek-V3.1",
+    "runs": [
+      "b1-deepseek-v3.1-control",
+      "b2-deepseek-v3.1-control",
+      "b3-deepseek-v3.1-control",
+      "b4-deepseek-v3.1-control",
+      "b5-deepseek-v3.1-control",
+      "b6-deepseek-v3.1-control",
+      "b7-deepseek-v3.1-control",
+      "b8-deepseek-v3.1-control",
+      "deepseek-v3.1-control"
+    ],
+    "live": 162,
+    "violations": 1,
+    "completed": 104,
+    "safe": 30,
+    "rejected": 27,
+    "errors": 0,
+    "faults_scheduled": 135,
+    "faults_triggered": 134,
+    "by_case": {
+      "dev-1": {
+        "n": 27,
+        "violations": 0,
+        "completed": 26,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-2": {
+        "n": 27,
+        "violations": 0,
+        "completed": 27,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-3": {
+        "n": 27,
+        "violations": 0,
+        "completed": 27,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-4": {
+        "n": 27,
+        "violations": 0,
+        "completed": 24,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-5": {
+        "n": 27,
+        "violations": 0,
+        "completed": 0,
+        "untriggered": 0,
+        "checks": {}
+      },
+      "dev-6": {
+        "n": 27,
+        "violations": 1,
+        "completed": 0,
+        "untriggered": 1,
+        "checks": {
+          "C5": 1,
+          "C6": 1
+        }
+      }
+    },
+    "input_tokens": 2678525,
+    "output_tokens": 29159,
+    "cost": 1.5213011
+  }
+}
