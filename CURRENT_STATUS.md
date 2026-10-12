@@ -1244,6 +1244,15 @@ episodes each): reserved bounds $3.01 + $0.61 + $12.10 + $24.19 = $39.91, measur
 requests $0.08 reserved. Project ledger carried forward: $937.99 + $39.99 = **$977.98** (bounds, as always).
 Write-up: `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`; evidence `~/FaultLab_Runs/2026-10-11/claude-actor-screen/`.
 
+## Ledger entry 2026-10-11: Claude Actor screen phase B
+
+Thirty of the declared 36 baseline studies started (the loop stopped at 18:56 UTC after the owner's
+console spend limit refused Claude calls from 18:49): DeepSeek control 8, Haiku 8, Sonnet 7, Opus 7.
+Reserved bounds from the declaration, per started study: 8 x $3.01 + 8 x $0.61 + 7 x $12.10 + 7 x $24.19
+= **$282.99**; measured $18.27 (`artifacts/claude-actor-screen-2026-10-11/phase-b/LEDGER.phase-b.auto.json`;
+two studies inside the block carry no measured cost). Project ledger carried forward: $977.98 + $282.99
+= **$1,260.97** (bounds, as always). Read-outs: the Phase B section of `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md`.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

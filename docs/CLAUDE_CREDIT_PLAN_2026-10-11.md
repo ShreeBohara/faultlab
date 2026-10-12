@@ -21,10 +21,12 @@ different numbers and both are reported.
 | phase A, Haiku 5.5 | 18 | $0.051 | $0.003 |
 | phase A, Sonnet 5.5 | 18 | $0.899 | $0.050 |
 | phase A, Opus 5.5 | 18 | $1.592 | $0.088 |
-| phase B, one round of the four | 72 | about $0.60 | |
+| phase B, one round of the four (measured, 28 clean studies) | 72 | about $2.45 | |
 
 Fable 5.1 is priced at 2.5 times Opus (verified table, 2026-10-10): about $0.22 per episode by
-the same ratio. A completion study (6 controls, up to two Mechanic proposals, a 3-pair source gate
+the same ratio. Phase B measured $18.27 for 28 clean studies, so about $20 of the $200 credit is
+spent (the console agrees: $20.14 on 2026-10-11 at 19:00 UTC) and about $180 remains for the
+pieces below. A completion study (6 controls, up to two Mechanic proposals, a 3-pair source gate
 per candidate, one 42-episode validation batch) was at most about $10 on DeepSeek in Phase 17;
 with a Claude Actor and a Claude Mechanic the Actor side scales by the table above and the
 Mechanic side by its prompt size (bounded at 32,000 input tokens per call). Estimates below are

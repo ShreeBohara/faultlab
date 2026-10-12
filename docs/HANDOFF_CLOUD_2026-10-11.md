@@ -158,9 +158,12 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
   `~/FaultLab_Runs/2026-10-11/claude-actor-screen/`. To publish by hand on the Mac: in the
   wrap-up's worktree (`git worktree list` in the clone) or the clone itself, copy or find
   `artifacts/claude-actor-screen-2026-10-11/phase-b/`, then `git add -f` that folder, commit and
-  push. The Phase B write-up then uses the clean studies only (six full Claude rounds, 108 live
-  episodes per model, not 180; the control has eight) and lists the block-affected studies as
-  errors with the reason. Fix the wrap-up script's add to `git add -f` before phase C.
+  push. Done by the owner on 2026-10-12 (`ea3776a`). The Phase B section of
+  `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md` and the ledger line in `CURRENT_STATUS.md` are written
+  from the clean studies (28 of 30; `b7-claude-opus-5-5` and `b8-claude-haiku-5-5` excluded as
+  errors). Fix the wrap-up script's add to `git add -f` before phase C. The earlier estimate of
+  "$0.60 per round of four" was wrong: a round measures about $2.45, and the console's $20.14
+  matches the lab's accounting.
 
 Still open from the Stage 1 list: the rest of 1.6 and 1.7 (above), the rest of 1.9 (free-text
 extraction, calibration by fault phase), 1.10 (a core suite under five minutes; the full backend
