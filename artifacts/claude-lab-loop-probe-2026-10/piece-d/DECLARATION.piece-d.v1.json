@@ -1,0 +1,102 @@
+{
+  "schema_version": "faultlab-claude-credit-declaration/v1",
+  "piece": "D",
+  "name": "claude-lab-loop-probe-piece-d",
+  "declared_at_utc": "2026-10-12T18:47:47Z",
+  "declared_by": "Claude (Fable 5.1), local session on the owner's Mac",
+  "approved_by": "the owner (Shree) in chat on 2026-10-11: spend the whole promotional credit at Claude's judgment; on 2026-10-12 the owner chose piece D in chat after piece C was refused by the lab's campaign-cap ceiling",
+  "plan": {
+    "file": "docs/CLAUDE_CREDIT_PLAN_2026-10-11.md",
+    "commit": "e08f338",
+    "section": "Piece D: Claude lab-loop probe, Sonnet Actor and Opus Mechanic"
+  },
+  "question": "When a Claude Actor violates reliably (Haiku and Sonnet on the rejected-upgrade case, a label rule), can a Claude Mechanic propose a repair that passes the source gate and the validation batch?",
+  "models": {
+    "actor": "anthropic:claude-sonnet-5-5",
+    "explorer": "anthropic:claude-opus-5-5",
+    "mechanic": "anthropic:claude-opus-5-5",
+    "control": null,
+    "control_note": "no comparison to a control model: DeepSeek's loop results are the September archive, run under different runtimes; they are context, not a control",
+    "driver_model_arguments": {
+      "--model": "anthropic:claude-sonnet-5-5",
+      "--lab-model": "anthropic:claude-opus-5-5"
+    }
+  },
+  "study": "completion",
+  "rounds_or_studies": 5,
+  "design": {
+    "studies": 5,
+    "sequential": true,
+    "each_study_a_fresh_live_campaign": true,
+    "folders": "d<n>-sonnet-actor-opus-mechanic under this directory",
+    "evidence_protocol": "faultlab-compact-evidence/v2-task-outcome (the study's default and Phase 17's declared protocol; passed explicitly)",
+    "rules": "the unchanged completion-study rules: controls, up to two Mechanic proposals, the source gate, one validation batch; no policy is ever activated; 'certified' stays Phase 17's rule and is reported only if it happens",
+    "shell": {
+      "loop": "piece_d_loop.sh: the phase B/C loop shape, one driver call per study, with the plan's stop rules made explicit after each study",
+      "wrapup": "piece_d_wrapup.sh: the phase B/C wrap-up with completion-study records, publishing to artifacts/claude-lab-loop-probe-2026-10/piece-d/ on GitHub main; it does not publish if no study produced a record"
+    },
+    "driver_arguments_per_study": "--study completion --model anthropic:claude-sonnet-5-5 --lab-model anthropic:claude-opus-5-5 --evidence-protocol faultlab-compact-evidence/v2-task-outcome --data-dir <folder> --declaration DECLARATION.piece-d.json --declaration-sha256 <sha256 of this file> --dollar-cap 300 --monthly-cap 400 --settle-seconds 30"
+  },
+  "driver": "scripts/experiments/baseline_screen.py",
+  "driver_sha256": "a0260e6f16618ed7115eba9f661ca414fd07658d2c421779652e26108ba6579e",
+  "driver_commit": "e08f338 (clone at GitHub main)",
+  "caps": {
+    "dollar_cap_per_study": 300,
+    "dollar_cap_max_if_admission_refuses": 400,
+    "dollar_cap_note": "the campaign cap must cover the hold the lab takes at study admission: 1,064 protected calls plus the completion study's 484 reserved calls (60 trials at 8 calls plus two Mechanic requests per proposal slot), all at the dearest role bound, Opus's 0.168 per call: 260.06. The plan's '$60 start, $120 maximum' cannot admit this (the protected calls alone hold 178.75), so the cap is 300, with 400 as the declared maximum if admission refuses with a bound error; the settings' ceiling is 500.",
+    "monthly_cap": 400,
+    "monthly_cap_note": "the machine-wide ledger admits a call only while the month's summed per-call bounds stay at or below the cap; at launch that sum is 184.765. A study adds at most 40.99 in bounds (480 Actor calls at Sonnet's 0.084 plus 4 Mechanic calls at Opus's 0.168), so five studies add at most 204.95: 389.72 at the maximum, under 400.",
+    "reserved_dollar_bound_per_study": 40.99,
+    "campaign_hold_per_study": 260.06,
+    "reserved_total_usd": 204.95,
+    "measured_estimate_total": 80,
+    "measured_estimate_note": "the plan's figure: 12 to 20 per study"
+  },
+  "runaway_limit_per_study_usd": {
+    "value": 80,
+    "rule": "the loop stops if a study's measured cost exceeds 80, four times the plan's upper estimate of 20 per study (the phase B convention of four times the expected cost)"
+  },
+  "stop_rules": [
+    "3 consecutive LAB_ERROR live trials (driver)",
+    "time limit per study: 240 minutes for a completion study (driver)",
+    "first provider error naming credit or billing: after each study the loop greps driver.log, RESULT.json and export.json for 'HTTP 402', 'insufficient credit' or 'billing' and stops the piece; such calls also fail as LAB_ERROR and end the study on the streak rule",
+    "any clock-drift check not clean: both checks run per store in the wrap-up; a study that is not clean is excluded from the read-out",
+    "settled total above the remaining credit: after each study the loop reads the month's Anthropic settled total from the spend ledger and stops when it exceeds 200, the size of the credit (it is 20.1424 at launch)",
+    "the loop stops at the first study that ends with a driver error or any status other than COMPLETED or INCOMPLETE; INCOMPLETE (exact valid triggered pairs incomplete) is an expected decision and continues (shell rule as in phases B and C)",
+    "the loop stops if a study's measured cost exceeds the runaway limit above (shell rule)"
+  ],
+  "pre_registered_readouts": [
+    "per study and pooled: the decision (SOURCE_QUALIFIED, OBSERVED_IMPROVEMENT, NO_CHANGE, INCOMPLETE) with its reason",
+    "per study: controls with a violation and which check",
+    "per study: proposals made and the number that passed the source gate",
+    "per study: validation batches run and their failed checks",
+    "per study: measured cost",
+    "pooled: studies reaching validation out of five, with a 95% Wilson interval",
+    "no comparison to a control model; 'certified' under Phase 17's rule is reported only if it happens"
+  ],
+  "claims_discipline": "Outcomes are stage counts of a loop on frontier models. A candidate that reaches validation is not ACCEPTED and no pointer moves. Not a certification, not a held-out claim, not a ranking, not a learned-policy result.",
+  "preconditions": {
+    "phase_b_readout_written": true,
+    "phase_b_readout_commit": "e08f338",
+    "piece_c_outcome": "launched 2026-10-12 17:58 UTC under DECLARATION.phase-c.json; its first Fable study was refused at admission (Fable's hold of 507.36 exceeds the settings' campaign-cap ceiling of 500); the loop stopped on its status rule and the wrap-up published the two-study folder as 9af2ba1; piece D was then chosen by the owner",
+    "no_other_paid_run": true,
+    "no_other_paid_run_evidence": "no driver, loop or wrap-up process at launch; the spend ledger's last row is 2026-10-12T18:01:21.741844+00:00",
+    "ledger_checked": true,
+    "on_ac_power": true,
+    "on_ac_power_evidence": "pmset at launch: drawing from AC Power, battery 100%"
+  },
+  "ledger_before_dollars": 21.8223,
+  "ledger_before": {
+    "ledger": "/Users/shree/.faultlab/spend-ledger.sqlite3",
+    "month": "2026-10",
+    "rows": 3039,
+    "reserved_bound_sum_usd": 184.765,
+    "settled_actual_sum_usd": 21.8223,
+    "anthropic_settled_actual_usd": 20.1424,
+    "unsettled_rows": 25,
+    "unsettled_note": "reservations from the phase B spend block of 2026-10-11, never settled; their bounds stay charged",
+    "last_row_at": "2026-10-12T18:01:21.741844+00:00",
+    "credit_remaining_estimate_usd": 179.8576,
+    "project_ledger_carried_forward_bounds_usd": 1260.97
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "model": "anthropic:claude-sonnet-5-5",
+  "study": "completion",
+  "lab_model": "anthropic:claude-opus-5-5",
+  "data_dir": "/Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d3-sonnet-actor-opus-mechanic",
+  "declaration_sha256": "b010d9f2af1c1e3884f024327362e206588d1df4c3928f323540a3396850fb21",
+  "store_identity": "ce0ea607eaf2608dde53ed44c42d324d1630e95c14c6de66300c2fc092337385",
+  "campaign_id": "campaign-7eb8c7ee87a7448980f50ce499d7fefe",
+  "study_id": "completion-study-9fa19dd8e6b14d0bb1ddc0acc19de2bf",
+  "stopped_by_rule": null,
+  "summary": {
+    "status": "COMPLETED",
+    "reason": "Declared completion gap or healthy control did not reproduce in the valid controls; no candidate requested",
+    "decision": "NO_CHANGE",
+    "stage": "controls",
+    "slots": 60,
+    "usage": {
+      "actor_calls": 28,
+      "cost_dollars": 0.29342199999999996,
+      "http_attempts": 25,
+      "input_tokens": 129851,
+      "model_calls": 28,
+      "output_tokens": 3372,
+      "policy_steps": 0,
+      "ticks": 25,
+      "wait_cycles": 0,
+      "wall_seconds": 68.9209325829288
+    },
+    "charged_model_calls": 28,
+    "candidates": []
+  },
+  "monthly_ledger": {
+    "month": "2026-10",
+    "reserved_bound": 192.829,
+    "settled_actual": null,
+    "calls": 3135
+  }
+}

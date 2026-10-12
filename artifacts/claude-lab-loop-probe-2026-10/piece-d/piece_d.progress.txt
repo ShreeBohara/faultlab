@@ -1,0 +1,14 @@
+=== study 1 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d1-sonnet-actor-opus-mechanic
+    status: INCOMPLETE decision: INCOMPLETE measured_cost: 0.057016 (runaway limit 80) anthropic settled this month: 20.1994401
+=== study 2 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d2-sonnet-actor-opus-mechanic
+=== study 1 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d1-sonnet-actor-opus-mechanic
+    status: COMPLETED decision: NO_CHANGE measured_cost: 0.31469600000000003 (runaway limit 80) anthropic settled this month: 20.5697781
+=== study 2 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d2-sonnet-actor-opus-mechanic
+    status: COMPLETED decision: NO_CHANGE measured_cost: 0.29178399999999993 (runaway limit 80) anthropic settled this month: 20.8615621
+=== study 3 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d3-sonnet-actor-opus-mechanic
+    status: COMPLETED decision: NO_CHANGE measured_cost: 0.29342199999999996 (runaway limit 80) anthropic settled this month: 21.1549841
+=== study 4 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d4-sonnet-actor-opus-mechanic
+    status: COMPLETED decision: NO_CHANGE measured_cost: 0.3036419999999999 (runaway limit 80) anthropic settled this month: 21.4586261
+=== study 5 actor anthropic:claude-sonnet-5-5 lab anthropic:claude-opus-5-5 cap 300 -> /Users/shree/FaultLab_Runs/2026-10-12/claude-lab-loop-probe-piece-d/d5-sonnet-actor-opus-mechanic
+    status: COMPLETED decision: NO_CHANGE measured_cost: 0.27303800000000006 (runaway limit 80) anthropic settled this month: 21.7316641
+PIECE D LOOP DONE

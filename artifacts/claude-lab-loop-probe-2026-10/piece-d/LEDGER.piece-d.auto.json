@@ -1,0 +1,36 @@
+{
+  "studies": {
+    "d1-sonnet-actor-opus-mechanic": {
+      "status": "COMPLETED",
+      "decision": "NO_CHANGE",
+      "measured_cost": 0.31469600000000003,
+      "error": false
+    },
+    "d2-sonnet-actor-opus-mechanic": {
+      "status": "COMPLETED",
+      "decision": "NO_CHANGE",
+      "measured_cost": 0.29178399999999993,
+      "error": false
+    },
+    "d3-sonnet-actor-opus-mechanic": {
+      "status": "COMPLETED",
+      "decision": "NO_CHANGE",
+      "measured_cost": 0.29342199999999996,
+      "error": false
+    },
+    "d4-sonnet-actor-opus-mechanic": {
+      "status": "COMPLETED",
+      "decision": "NO_CHANGE",
+      "measured_cost": 0.3036419999999999,
+      "error": false
+    },
+    "d5-sonnet-actor-opus-mechanic": {
+      "status": "COMPLETED",
+      "decision": "NO_CHANGE",
+      "measured_cost": 0.27303800000000006,
+      "error": false
+    }
+  },
+  "measured_total_usd": 1.4766,
+  "note": "measured provider cost per study from RESULT.json; reserved bounds are in DECLARATION.piece-d.json"
+}

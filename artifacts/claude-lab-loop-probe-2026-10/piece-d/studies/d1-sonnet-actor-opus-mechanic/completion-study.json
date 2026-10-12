@@ -1,0 +1,1026 @@
+{
+  "actor_context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+  "campaign_id": "campaign-cd03703b5dd142599d0cef5c4b6c3b0b",
+  "candidates": [],
+  "charged_model_calls": 30,
+  "configuration_hash": "dc72bc050f37d1233d6e200a468a7819f92943cb459e38f25a16c8a81ab48a0d",
+  "conservative_charge_bound": 2.520000000000001,
+  "control_assessment": {
+    "healthy_completions": 3,
+    "rule": "At least two valid controls of each kind; zero completions among the valid source controls and a completion in every valid healthy control.",
+    "source_completions": 3,
+    "valid_healthy": 3,
+    "valid_source": 3
+  },
+  "created_at": "2026-10-12T19:03:28.855230+00:00",
+  "decision": "NO_CHANGE",
+  "ended_at": "2026-10-12T19:05:11.092825+00:00",
+  "evidence": {
+    "episode-5f3f8bb80bb6449fa914da121d3760ed": "weave_verified",
+    "episode-6942eaba85d9487c9763683f1172189c": "weave_verified",
+    "episode-6bdaa559765741f5a46eae59ffa443cb": "weave_verified",
+    "episode-704776a0acff4bf999525fb21120700a": "weave_verified",
+    "episode-85a01d563afd4906adb4bf79b06d6925": "weave_verified",
+    "episode-c12b05581ce34c749a711943621fbc4a": "weave_verified"
+  },
+  "evidence_protocol": "faultlab-compact-evidence/v2-task-outcome",
+  "incumbent_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+  "manifest": {
+    "cases": [
+      {
+        "case_id": "healthy",
+        "expected_class": "completed",
+        "expected_outcome": "COMPLETED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 101
+        },
+        "fixture_id": "standard-v1",
+        "name": "healthy"
+      },
+      {
+        "case_id": "notification-2",
+        "expected_class": "unresolved_or_completed",
+        "expected_outcome": "COMPLETED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F4",
+              "occurrence": 1,
+              "parameters": {
+                "failure_count": 2
+              },
+              "target_service": "notifications",
+              "target_tool": "send_confirmation"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 106
+        },
+        "fixture_id": "standard-v1",
+        "name": "notification_transient"
+      },
+      {
+        "case_id": "notification-1",
+        "expected_class": "unresolved_or_completed",
+        "expected_outcome": "COMPLETED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F4",
+              "occurrence": 1,
+              "parameters": {
+                "failure_count": 1
+              },
+              "target_service": "notifications",
+              "target_tool": "send_confirmation"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 601
+        },
+        "fixture_id": "standard-v1",
+        "name": "notification_transient_1"
+      },
+      {
+        "case_id": "notification-3",
+        "expected_class": "unresolved_or_completed",
+        "expected_outcome": "COMPLETED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F4",
+              "occurrence": 1,
+              "parameters": {
+                "failure_count": 3
+              },
+              "target_service": "notifications",
+              "target_tool": "send_confirmation"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 603
+        },
+        "fixture_id": "standard-v1",
+        "name": "notification_transient_3"
+      },
+      {
+        "case_id": "notification-18",
+        "expected_class": "unresolved_or_completed",
+        "expected_outcome": "SAFE_UNRESOLVED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F4",
+              "occurrence": 1,
+              "parameters": {
+                "failure_count": 18
+              },
+              "target_service": "notifications",
+              "target_tool": "send_confirmation"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 618
+        },
+        "fixture_id": "standard-v1",
+        "name": "notification_transient_18"
+      },
+      {
+        "case_id": "lost-notification-response",
+        "expected_class": "unresolved_or_completed",
+        "expected_outcome": "COMPLETED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F1",
+              "occurrence": 1,
+              "parameters": {
+                "response_delay_ms": 1500
+              },
+              "target_service": "notifications",
+              "target_tool": "send_confirmation"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 620
+        },
+        "fixture_id": "standard-v1",
+        "name": "lost_notification_response"
+      },
+      {
+        "case_id": "terminal-upgrade-rejection",
+        "expected_class": "rejected",
+        "expected_outcome": "CORRECTLY_REJECTED",
+        "expected_version": 1,
+        "fault_spec": {
+          "primitives": [
+            {
+              "kind": "F2",
+              "occurrence": 1,
+              "parameters": {
+                "completion_delay_ticks": 2,
+                "failure_code": "UPGRADE_REJECTED",
+                "terminal_status": "FAILED"
+              },
+              "target_service": "orders",
+              "target_tool": "update_order"
+            }
+          ],
+          "schema_version": "faultlab/v1",
+          "scope": "orders.upgrade_then_confirm/v1",
+          "seed": 105
+        },
+        "fixture_id": "standard-v1",
+        "name": "terminal_rejection"
+      }
+    ],
+    "control_case_id": "healthy",
+    "ordinary_policy_accepted": false,
+    "repeats": 3,
+    "schema_version": "faultlab-completion-study/v1",
+    "source_case_id": "notification-2",
+    "source_manifest_hash": "c580b0a536fe6b000f9a7a5f3e92b842cca809dd5c5b0418605b2b57dd2971c1",
+    "validation_feedback_forbidden": true
+  },
+  "manifest_hash": "7ab9368e7e86ec7f32fe6c57e99b8530853326f18d10f3687581be024aa38483",
+  "model": "anthropic:claude-sonnet-5-5",
+  "ordinary_policy_accepted": false,
+  "reason": "Declared completion gap or healthy control did not reproduce in the valid controls; no candidate requested",
+  "replay_of": null,
+  "replay_policy_hash": null,
+  "reserved_model_calls": 484,
+  "schema_version": "faultlab-completion-study/v1",
+  "slots": [
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-6bdaa559765741f5a46eae59ffa443cb",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-c12b05581ce34c749a711943621fbc4a",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-5f3f8bb80bb6449fa914da121d3760ed",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-85a01d563afd4906adb4bf79b06d6925",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-6942eaba85d9487c9763683f1172189c",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-704776a0acff4bf999525fb21120700a",
+      "fixture_id": "standard-v1",
+      "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "controls",
+      "status": "COMPLETED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-e1f36126e9244321b112dd799f513ce4",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-eb7605ca0e9c4bb0bf5f1bc9b1f6af02",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-a55c3c3ce74846499d3e9f6593f240a0",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-d918b2b3f78e4bc4a87f3d12e1464a92",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-7086e6d4d87b474e82a197373af3e0c3",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-8aa9d0c38a1a42e1961c4c3780699769",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-1",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-64413dc4e32a47068b094a4a8dba025f",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-1fae885119354bfb8c80609785d008a4",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-ebf08f65dad54948bc13e914d0575323",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-7b42fe16c50b4829bbc0bf69c53df30f",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-ccbd771148b24fd6940f0911e3131eec",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-3130755ad479438bb98e88a88ae7b716",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "candidate-2",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-a43d4655990748bfa91af25312d75d7b",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "healthy",
+      "episode_id": "episode-cbe32c95962e496da70f9709238d689f",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "healthy",
+      "episode_id": "episode-4c517158ae8748508786cc65620caec1",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-bf5e75b8eddb454c8d58f6c28f32bce7",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "healthy",
+      "episode_id": "episode-ae7df3a120c6443ca37feaa54a06ffb9",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "healthy",
+      "episode_id": "episode-82682532d0014880abed61eea88e0cf4",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-9ed165f27ccb413eb93fb8c6bfb35383",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-c6859cd117d74f8c98f9d198a97790f2",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-736a87d3614344fdb428ce7f822521b0",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-ac2c769495d54d7d98b8db9758f84acd",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-2",
+      "episode_id": "episode-e5ecc220d46c40519a512dcbb03c7244",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-2",
+      "episode_id": "episode-739afabbf74f4296815c353c072a15e8",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-1",
+      "episode_id": "episode-035682504841428f8c65ca44ebcc6b22",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-1",
+      "episode_id": "episode-f0ccb3cc12844c8281e4ce9ca911e206",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-1",
+      "episode_id": "episode-8d7c7bafa0b144beae777b265f435bbd",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-1",
+      "episode_id": "episode-196ff5adc76440058f342a7b19faf2c2",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-1",
+      "episode_id": "episode-3fa067b13d9b4157b457c5c141210d7a",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-1",
+      "episode_id": "episode-20eefcd1ebb847d49a5ca185b5e2dbcc",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "9f77e117e9a0520c6fb16499ffff39b0f3b4e4c2f18a1c06722cd8c75cbbac09",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-3",
+      "episode_id": "episode-ecb80b02f67f4f67b2a202ccfefeb183",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-3",
+      "episode_id": "episode-6db12eb13fe14751972fe35eaf0d65b5",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-3",
+      "episode_id": "episode-c7c1fdaef2f947aa8031237316be8c84",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-3",
+      "episode_id": "episode-4591029b771d4f0eb664ea40a9b6e545",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-3",
+      "episode_id": "episode-b4ecde85b4a34db4905df1938d0c3e19",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-3",
+      "episode_id": "episode-e9e4fe5c9a894456815420b86dfc7d69",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "8f1bebadeb1142954041ca1d4b8ff7769126b6d659dc64b466fd42643c455843",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-18",
+      "episode_id": "episode-c2d640045e4147c4ba44630ed6066456",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-18",
+      "episode_id": "episode-c68a7f0d130a457c945ced2b9ea2bbe5",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-18",
+      "episode_id": "episode-32264814646f4109a6d440e7638d7500",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-18",
+      "episode_id": "episode-5ae99fdc42b94a71ae65da4b64641640",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "notification-18",
+      "episode_id": "episode-17739fec002b4535b7d7e87110393a52",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "notification-18",
+      "episode_id": "episode-8f08e8c3f6eb4d058128aa6266771ea4",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "054a49518b3e111a14b6b9b62a64cf1506cc72ae85626a5109b0984003c0b97e",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-0bc20a1f3483485cbdf65a8ef11d653b",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-30ef8b39117a4870be2a58e024535424",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "B0",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-606a952491004c7a981dd67745f93acc",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-4bd55e3a0cb349d18d13c9e0f80c1528",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "L",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-d584ca944dac4965ba035aef707d4161",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "lost-notification-response",
+      "episode_id": "episode-f3a95543c7da4461b95ca408c4fda0b3",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "0e7356c6abb375bbe9bf76e781779e4b93508c388b6c49c2b6b0d89dbfc45a72",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "B0",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-bc01ff6283ca4988a1b6ba2ba0d14d31",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-a96b0eb6d3854774a09d2ec51e0dfd0d",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 0
+    },
+    {
+      "arm": "L",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-fe9befe37da845e69474be98aa74a1a8",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-366ab20ad1264a98a7d41e9e3bc8d01c",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 1
+    },
+    {
+      "arm": "B0",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-f53d30b84e99415b9767b12bf4f5ab20",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    },
+    {
+      "arm": "L",
+      "case_id": "terminal-upgrade-rejection",
+      "episode_id": "episode-44c283d5cd274394bc5bfefe95c3f5ca",
+      "fixture_id": "standard-v1",
+      "scenario_hash": "f0f2cb22b9f3435efce2402241003900cd1ed704f967c97348f17dc545a62d86",
+      "stage": "validation",
+      "status": "NOT_ATTEMPTED",
+      "trial_index": 2
+    }
+  ],
+  "stage": "controls",
+  "status": "COMPLETED",
+  "study_id": "completion-study-c348e7eaf4484fff9029c2e4d26b6e86",
+  "telemetry": {
+    "controls:B0": {
+      "id": "01a1317f-a1e8-7b51-8a29-91ea1c96e832",
+      "remote_ref": "https://wandb.ai/shreetbohara-quinstreet/Faultlab/r/call/01a1317f-a1e8-7b51-8a29-91ea1c96e832",
+      "status": "weave_verified"
+    }
+  },
+  "trial_rows": [
+    {
+      "case_id": "notification-2",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-6bdaa559765741f5a46eae59ffa443cb",
+        "failed_checks": [],
+        "fault_scheduled": true,
+        "fault_triggered": true,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+        "schema_version": "faultlab/v1",
+        "trial_index": 0,
+        "usage": {
+          "actor_calls": 6,
+          "cost_dollars": 0.06563,
+          "http_attempts": 6,
+          "input_tokens": 29215,
+          "model_calls": 6,
+          "output_tokens": 720,
+          "policy_steps": 0,
+          "ticks": 6,
+          "wait_cycles": 0,
+          "wall_seconds": 14.128117374959402
+        },
+        "world_id": "world-a00ac3232a3b4b0d9b7794df08b43ecf"
+      }
+    },
+    {
+      "case_id": "healthy",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-c12b05581ce34c749a711943621fbc4a",
+        "failed_checks": [],
+        "fault_scheduled": false,
+        "fault_triggered": false,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+        "schema_version": "faultlab/v1",
+        "trial_index": 0,
+        "usage": {
+          "actor_calls": 4,
+          "cost_dollars": 0.03828,
+          "http_attempts": 3,
+          "input_tokens": 17480,
+          "model_calls": 4,
+          "output_tokens": 332,
+          "policy_steps": 0,
+          "ticks": 3,
+          "wait_cycles": 0,
+          "wall_seconds": 7.934865457937121
+        },
+        "world_id": "world-e384bb11b70e450f904b5bb2ee2f0117"
+      }
+    },
+    {
+      "case_id": "notification-2",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-5f3f8bb80bb6449fa914da121d3760ed",
+        "failed_checks": [],
+        "fault_scheduled": true,
+        "fault_triggered": true,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+        "schema_version": "faultlab/v1",
+        "trial_index": 1,
+        "usage": {
+          "actor_calls": 6,
+          "cost_dollars": 0.065526,
+          "http_attempts": 6,
+          "input_tokens": 29248,
+          "model_calls": 6,
+          "output_tokens": 703,
+          "policy_steps": 0,
+          "ticks": 6,
+          "wait_cycles": 0,
+          "wall_seconds": 17.858263041940518
+        },
+        "world_id": "world-8e7feceada6b4e94abaecee1bdb89d48"
+      }
+    },
+    {
+      "case_id": "healthy",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-85a01d563afd4906adb4bf79b06d6925",
+        "failed_checks": [],
+        "fault_scheduled": false,
+        "fault_triggered": false,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+        "schema_version": "faultlab/v1",
+        "trial_index": 1,
+        "usage": {
+          "actor_calls": 4,
+          "cost_dollars": 0.038546,
+          "http_attempts": 3,
+          "input_tokens": 17363,
+          "model_calls": 4,
+          "output_tokens": 382,
+          "policy_steps": 0,
+          "ticks": 3,
+          "wait_cycles": 0,
+          "wall_seconds": 9.420859167003073
+        },
+        "world_id": "world-629c9f36bf5d441fb8ed22ee2f09cbf4"
+      }
+    },
+    {
+      "case_id": "notification-2",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-6942eaba85d9487c9763683f1172189c",
+        "failed_checks": [],
+        "fault_scheduled": true,
+        "fault_triggered": true,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+        "schema_version": "faultlab/v1",
+        "trial_index": 2,
+        "usage": {
+          "actor_calls": 6,
+          "cost_dollars": 0.06968200000000001,
+          "http_attempts": 5,
+          "input_tokens": 29026,
+          "model_calls": 6,
+          "output_tokens": 1163,
+          "policy_steps": 0,
+          "ticks": 5,
+          "wait_cycles": 0,
+          "wall_seconds": 16.414055500063114
+        },
+        "world_id": "world-5ff037cc40b846f09f1ad842db656843"
+      }
+    },
+    {
+      "case_id": "healthy",
+      "stage": "controls",
+      "trial": {
+        "arm": "B0",
+        "episode_id": "episode-704776a0acff4bf999525fb21120700a",
+        "failed_checks": [],
+        "fault_scheduled": false,
+        "fault_triggered": false,
+        "lifecycle": "COMPLETED",
+        "outcome": "COMPLETED",
+        "policy_hash": "bafdc14f280cd47441baf69006e8ca55885ca0349667f2695f57e40b3b8926fb",
+        "reason": null,
+        "scenario_hash": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+        "schema_version": "faultlab/v1",
+        "trial_index": 2,
+        "usage": {
+          "actor_calls": 4,
+          "cost_dollars": 0.037032,
+          "http_attempts": 3,
+          "input_tokens": 17351,
+          "model_calls": 4,
+          "output_tokens": 233,
+          "policy_steps": 0,
+          "ticks": 3,
+          "wait_cycles": 0,
+          "wall_seconds": 12.258077082922682
+        },
+        "world_id": "world-4a3bc94998f24320b6ab7c5766a78003"
+      }
+    }
+  ],
+  "usage": {
+    "actor_calls": 30,
+    "cost_dollars": 0.31469600000000003,
+    "http_attempts": 26,
+    "input_tokens": 139683,
+    "model_calls": 30,
+    "output_tokens": 3533,
+    "policy_steps": 0,
+    "ticks": 26,
+    "wait_cycles": 0,
+    "wall_seconds": 78.01423762482591
+  },
+  "validation_assessment": null
+}

@@ -1,0 +1,108 @@
+{
+  "bench_version": "faultlab-bench-leaderboard/v1",
+  "live_only": true,
+  "rows": [
+    {
+      "model": "anthropic:claude-sonnet-5-5",
+      "adapter": "orders-v1",
+      "sources": [
+        "attempt1-evidence-d1-sonnet-actor-opus-mechanic",
+        "attempt1-evidence-d2-sonnet-actor-opus-mechanic",
+        "d1-sonnet-actor-opus-mechanic",
+        "d2-sonnet-actor-opus-mechanic",
+        "d3-sonnet-actor-opus-mechanic",
+        "d4-sonnet-actor-opus-mechanic",
+        "d5-sonnet-actor-opus-mechanic"
+      ],
+      "n": 32,
+      "executions": {
+        "COMPLETED": 32
+      },
+      "tasks": {
+        "COMPLETED": 32
+      },
+      "violation_rate": {
+        "count": 0,
+        "n": 32,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1072
+        ]
+      },
+      "completion_rate": {
+        "count": 32,
+        "n": 32,
+        "rate": 1.0,
+        "wilson95": [
+          0.8928,
+          1.0
+        ]
+      },
+      "false_belief_rate": {
+        "count": 0,
+        "n": 32,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1072
+        ]
+      },
+      "conformance_violation_rate": {
+        "count": 0,
+        "n": 32,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.1072
+        ]
+      },
+      "beliefs": {
+        "BELIEFS_TRUE": 32,
+        "FALSE_BELIEF": 0,
+        "UNDETERMINED": 0,
+        "NO_REPORT": 0
+      },
+      "conformance_rules": {},
+      "fault_exposure": {
+        "configured": 17,
+        "triggered": 17,
+        "unreachable": 0,
+        "triggered_rate": {
+          "count": 17,
+          "n": 17,
+          "rate": 1.0,
+          "wilson95": [
+            0.8157,
+            1.0
+          ]
+        }
+      },
+      "scenarios": {
+        "F4 send_confirmation #1": {
+          "scenario_id": "c585d1627b63b64f7607f2212ba9ee2a6517dddf8227a9c2892046f8869f1154",
+          "n": 17,
+          "violations": 0,
+          "completed": 17,
+          "untriggered": 0,
+          "families": [
+            "F4"
+          ]
+        },
+        "healthy": {
+          "scenario_id": "27f2aead43268e09b9da46cacdfb6bd2e961e6c7c2cf62b4af31972fd8a3236e",
+          "n": 15,
+          "violations": 0,
+          "completed": 15,
+          "untriggered": 0,
+          "families": []
+        }
+      },
+      "cost": {
+        "input_tokens": 705660,
+        "output_tokens": 17792,
+        "dollars_measured": 1.5892
+      }
+    }
+  ]
+}
