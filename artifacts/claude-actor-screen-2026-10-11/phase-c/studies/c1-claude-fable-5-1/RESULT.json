@@ -1,0 +1,16 @@
+{
+  "model": "anthropic:claude-fable-5-1",
+  "study": "baseline",
+  "lab_model": "anthropic:claude-fable-5-1",
+  "data_dir": "/Users/shree/FaultLab_Runs/2026-10-12/claude-actor-screen-phase-c/c1-claude-fable-5-1",
+  "declaration_sha256": "0e8227d4ed71959fef7b8058ad44b8463149c452aa6dfc1dabbaaacafe1c67b4",
+  "store_identity": "ae2902cdeacaa6f08f5db10a4ee82461b30ae69e944dcb863db7075b4eaf2a9e",
+  "campaign_id": "campaign-cd007ff0e740425e981b2a89d302ac04",
+  "error": "RuntimeError: POST /api/campaigns/campaign-cd007ff0e740425e981b2a89d302ac04/baseline-study -> HTTP 409: {\"error\": {\"code\": \"CONFLICT\", \"message\": \"Complete batch exceeds frozen dollar reservation\", \"request_id\": \"request-8880e0b8d5f144c6ba6497c6397a104e\"}}",
+  "monthly_ledger": {
+    "month": "2026-10",
+    "reserved_bound": 184.76500000000001,
+    "settled_actual": null,
+    "calls": 3039
+  }
+}

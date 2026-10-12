@@ -1,0 +1,4 @@
+{
+  "c1-claude-fable-5-1": {"status": "error", "measured_cost": 0, "clock_drift_exit": 0, "clock_drift_native_exit": 0, "drifted_line": "drifted: 0"},
+  "c1-deepseek-v3.1-control": {"status": "COMPLETED", "measured_cost": 0.15859965, "clock_drift_exit": 0, "clock_drift_native_exit": 0, "drifted_line": "drifted: 0"}
+}

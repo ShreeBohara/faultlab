@@ -1,0 +1,117 @@
+{
+  "schema_version": "faultlab-claude-credit-declaration/v1",
+  "piece": "C",
+  "name": "claude-actor-screen-phase-c",
+  "declared_at_utc": "2026-10-12T17:56:50Z",
+  "declared_by": "Claude (Fable 5.1), local session on the owner's Mac, on the owner's instruction in chat on 2026-10-12 to launch piece C of docs/CLAUDE_CREDIT_PLAN_2026-10-11.md",
+  "approved_by": "the owner (Shree) in chat on 2026-10-11: spend the whole promotional credit at Claude's judgment; the launch of piece C was instructed by the owner in chat on 2026-10-12",
+  "plan": {
+    "file": "docs/CLAUDE_CREDIT_PLAN_2026-10-11.md",
+    "commit": "e08f338",
+    "section": "Piece C: the screen with Fable 5.1"
+  },
+  "extends": {
+    "file": "DECLARATION.phase-b.json",
+    "path": "/Users/shree/FaultLab_Runs/2026-10-11/claude-actor-screen/DECLARATION.phase-b.json",
+    "sha256": "e56521f9fc4c6bc64979410f77faf7ecc4f4b0b6582f08843d28395689af6286"
+  },
+  "question": "With nine baseline studies for Claude Fable 5.1 and nine fresh DeepSeek V3.1 controls (30 live trials per case, 180 per model), do the phase-A observations hold for Fable: Claude completes the transient-failure case where DeepSeek stops; every Claude violation on the rejected-upgrade case is a label or citation slip with correct world beliefs; the stale-read fault is unreachable for Claude?",
+  "models": {
+    "actor": "anthropic:claude-fable-5-1",
+    "explorer": null,
+    "mechanic": null,
+    "control": "wandb:deepseek-ai/DeepSeek-V3.1",
+    "lab_model_note": "a baseline study never calls the Explorer or the Mechanic; the driver's --lab-model defaults to the Actor model and RESULT.json records it as such",
+    "driver_model_arguments": {
+      "control": "deepseek-ai/DeepSeek-V3.1",
+      "actor": "anthropic:claude-fable-5-1"
+    }
+  },
+  "study": "baseline",
+  "rounds_or_studies": 9,
+  "design": {
+    "same_as_phase_b": true,
+    "studies_per_model": 9,
+    "models_in_round_robin_order": [
+      "deepseek-ai/DeepSeek-V3.1",
+      "anthropic:claude-fable-5-1"
+    ],
+    "folders": "c<round>-<model> under this directory",
+    "why_round_robin": "time-of-day effects at the providers are spread evenly across models",
+    "shell": {
+      "loop": "phase_c_loop.sh: phase B's phase_b_loop.sh with the model list, the folder prefix, the paths, the declaration sha256 and the Fable runaway limit set; no check, gate or threshold changed",
+      "wrapup": "phase_c_wrapup.sh: phase B's fixed phase_b_wrapup.sh (git add -f) with paths and names changed; publishes to artifacts/claude-actor-screen-2026-10-11/phase-c/ on GitHub main"
+    },
+    "driver_arguments_per_study": "--model <model> --data-dir <folder> --declaration DECLARATION.phase-c.json --declaration-sha256 <sha256 of this file> --dollar-cap <per model below> --monthly-cap 400 --settle-seconds 30"
+  },
+  "driver": "scripts/experiments/baseline_screen.py",
+  "driver_sha256": "a0260e6f16618ed7115eba9f661ca414fd07658d2c421779652e26108ba6579e",
+  "driver_commit": "e08f338 (the clone was fast-forwarded to GitHub main before launch; the driver file is identical on both)",
+  "caps": {
+    "dollar_cap_per_study": {
+      "deepseek-ai/DeepSeek-V3.1": 60,
+      "anthropic:claude-fable-5-1": 500
+    },
+    "dollar_cap_max_if_admission_refuses": {
+      "deepseek-ai/DeepSeek-V3.1": 60,
+      "anthropic:claude-fable-5-1": 500
+    },
+    "dollar_cap_note": "FAULTLAB_DOLLAR_CAP is the campaign cap and the lab's settings accept at most 500. A fresh live campaign reserves 1,064 protected calls plus the study's calls at the dearest role bound; Fable's per-call bound is 0.42 (32,000 input tokens at 10 per million plus 2,000 output tokens at 50 per million, pricing.json verified 2026-10-10), so 500 covers the protected calls (446.88) plus 126 study calls. The phase B Opus studies used 78 to 81 calls each. If a Fable study needs more calls than that, the campaign cap refuses the call (LAB_ERROR) and the study ends on the streak rule.",
+    "monthly_cap": 400,
+    "monthly_cap_note": "the machine-wide ledger admits a call only while the calendar month's sum of per-call bounds stays at or below the cap. At launch that sum is 182.8004 (phases A and B), leaving 217.1996. A round is expected to add about 35.7 in bounds (Fable about 80 calls at 0.42, the control about 99 calls at 0.0209), so the cap is expected to refuse calls during round 7; from then on studies end on the LAB_ERROR streak rule and are reported as errors, not results. The cap stays at 400 as the plan declares; raising it for the remaining rounds is the owner's decision and needs an amended declaration.",
+    "reserved_dollar_bound_per_study": {
+      "deepseek-ai/DeepSeek-V3.1": 3.01,
+      "anthropic:claude-fable-5-1": 60.48
+    },
+    "reserved_total_usd": 571.41,
+    "measured_estimate_total": 42,
+    "measured_estimate_note": "the plan's figure; by phase B's Opus measurements (1.61 to 1.67 per study) times the 2.5 price ratio, about 37 for Fable plus about 1.55 for the nine controls"
+  },
+  "runaway_limit_per_study_usd": {
+    "deepseek-v3.1-control": 0.65,
+    "claude-fable-5-1": 16.0,
+    "rule": "the loop stops if a study's measured cost exceeds 4 times its phase-A measured cost (phase B rule, unchanged). Fable has no phase A, so its limit is 4 times 2.5 times Opus's phase-A cost of 1.6, the same ratio the plan uses for every Fable figure"
+  },
+  "stop_rules": [
+    "3 consecutive LAB_ERROR live trials (driver)",
+    "time limit per study: 75 minutes for a baseline study (driver)",
+    "first provider error naming credit or billing (HTTP 402 or an insufficient-credit message): such calls fail as LAB_ERROR and the driver's streak rule ends the study; the shell has no text match for it, so the owner reads driver.log and stops the loop by hand",
+    "any clock-drift check not clean: both checks run per store in the wrap-up; a study that is not clean is excluded from the read-out",
+    "settled total above the remaining credit: the month's bound sum cannot pass 400, so this piece's measured spend stays below 217.1996; the credit remaining at launch is about 179.8576",
+    "the loop stops at the first study that ends with a driver error or any status other than COMPLETED or INCOMPLETE; INCOMPLETE through untriggered faults is expected and continues (shell, unchanged)",
+    "the loop stops if a study's measured cost exceeds its runaway limit above (shell, unchanged rule)"
+  ],
+  "pre_registered_readouts": [
+    "per model: violations and completions out of 180 live episodes, with 95% Wilson intervals; per case out of 30",
+    "per model: the fraction of stale-read trials where the fault could not fire",
+    "the three phase-A observations, each marked supported, not supported, or mixed for Fable",
+    "a two-sided Fisher test for Fable against the pooled DeepSeek control (phases B and C pooled) on violations; p below 0.017 counts as notable after the Bonferroni correction over the four Claude models",
+    "measured cost per model",
+    "studies whose clock-drift check is not clean are excluded and listed with the reason"
+  ],
+  "claims_discipline": "This is a screen of baseline behaviour, not a certification, not a learned-policy result and not a held-out claim. Nothing here feeds the research loop's promotion path.",
+  "preconditions": {
+    "phase_b_readout_written": true,
+    "phase_b_readout_commit": "e08f338 (Phase B section of docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md and the ledger line in CURRENT_STATUS.md)",
+    "wrapup_git_add_fixed": true,
+    "no_other_paid_run": true,
+    "no_other_paid_run_evidence": "no baseline_screen.py, loop or wrap-up process at launch; no launchd job; the spend ledger's last row is 2026-10-11T18:54:44.864218+00:00",
+    "ledger_checked": true,
+    "on_ac_power": true,
+    "on_ac_power_evidence": "pmset at launch: drawing from AC Power, battery 100%"
+  },
+  "ledger_before_dollars": 21.6637,
+  "ledger_before": {
+    "ledger": "/Users/shree/.faultlab/spend-ledger.sqlite3",
+    "month": "2026-10",
+    "rows": 2945,
+    "reserved_bound_sum_usd": 182.8004,
+    "settled_actual_sum_usd": 21.6637,
+    "anthropic_settled_actual_usd": 20.1424,
+    "unsettled_rows": 25,
+    "unsettled_note": "reservations from the phase B spend block of 2026-10-11 that were never settled; their bounds stay charged, as the ledger's rule says",
+    "last_row_at": "2026-10-11T18:54:44.864218+00:00",
+    "credit_remaining_estimate_usd": 179.8576,
+    "project_ledger_carried_forward_bounds_usd": 1260.97
+  }
+}

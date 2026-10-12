@@ -1,0 +1,5 @@
+scored episodes checked: 36
+worlds directory: /Users/shree/FaultLab_Runs/2026-10-12/claude-actor-screen-phase-c/c1-deepseek-v3.1-control/worlds
+world files missing: 0
+drifted: 0
+masked response-delay faults: 0

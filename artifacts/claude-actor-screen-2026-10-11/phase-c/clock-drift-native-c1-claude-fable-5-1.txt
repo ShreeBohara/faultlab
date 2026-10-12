@@ -1,0 +1,5 @@
+scored episodes checked: 0
+worlds directory: /Users/shree/FaultLab_Runs/2026-10-12/claude-actor-screen-phase-c/c1-claude-fable-5-1/worlds
+world files missing: 0
+drifted: 0
+masked response-delay faults: 0

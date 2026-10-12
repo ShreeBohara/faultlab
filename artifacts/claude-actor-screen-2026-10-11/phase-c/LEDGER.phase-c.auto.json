@@ -1,0 +1,16 @@
+{
+  "studies": {
+    "c1-claude-fable-5-1": {
+      "status": null,
+      "measured_cost": 0.0,
+      "error": true
+    },
+    "c1-deepseek-v3.1-control": {
+      "status": "COMPLETED",
+      "measured_cost": 0.15859965,
+      "error": false
+    }
+  },
+  "measured_total_usd": 0.1586,
+  "note": "measured provider cost per study from RESULT.json; reserved bounds are in DECLARATION.phase-c.json"
+}
