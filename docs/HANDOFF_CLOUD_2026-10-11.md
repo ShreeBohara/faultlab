@@ -187,3 +187,8 @@ the Phase C section of `docs/CLAUDE_ACTOR_SCREEN_2026-10-11.md` and in
 session needs: the lab's campaign cap cannot exceed $500, which excludes Fable 5.1 as declared; and
 verified Weave evidence needs `WANDB_PROJECT=Faultlab` (the project's real name), which the Mac's `.env`
 has not said since 2026-10-10. The clone is fast-forwarded to `main`.
+
+Update 2026-10-24: the owner's constraints changed ($200 of API credit a month, Claude Code available, no outside
+dependencies). The phase-by-phase revision is `docs/PLAN_REVISION_2026-10-24.md`; its first engineering steps are the
+dollars-based monthly ledger, a dry-run admission check in the driver, Weave verification behind a flag (1.11), and a
+Claude Code provider for the model Actor (1.6). The campaign-cap ceiling stays at 500; the Fable screen moves to the v2 lab.
