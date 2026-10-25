@@ -11,6 +11,7 @@ Campaign identity, admission, redaction and the dollar ledgers are provider-inde
 | OpenAI | `openai:gpt-5-mini` | `OPENAI_API_KEY` | Sends `max_completion_tokens`. Reasoning models (`gpt-5*`, `gpt-6*`, `o*`) reject `temperature`, so it is omitted for them. |
 | Anthropic | `anthropic:claude-sonnet-5-5` | `ANTHROPIC_API_KEY` (plus `ANTHROPIC_WORKSPACE_ID` for a key that is not scoped to a workspace) | Anthropic's OpenAI-compatible layer ignores `response_format` and returns 400 for `temperature` below 1 on current models, so neither is sent. Structured output is recorded as *not enforced*; the lab validates every answer anyway. |
 | OpenRouter | `openrouter:anthropic/claude-sonnet-5-5` | `OPENROUTER_API_KEY` | Forwards `response_format`; reports the call's own `usage.cost`, which FaultLab records as the measured cost. Vendor parameter rules apply by model prefix. |
+| Claude Code (subscription) | `claude-code:claude-sonnet-5-5` | a logged-in `claude` CLI (`claude auth login`); `FAULTLAB_CLAUDE_CODE_BIN` names the binary | Runs the CLI in print mode on the owner's subscription; no money moves. See the section below. |
 | Custom | `custom:my-model` | `FAULTLAB_CUSTOM_BASE_URL`, `FAULTLAB_CUSTOM_API_KEY` | Any OpenAI-compatible endpoint: a local server, a gateway, a proxy. Plain request. The URL must be `https://`, or `http://` to this machine only (localhost, 127.0.0.1, ::1), because the key travels in a header. |
 
 Sources for the profiles, read on 2026-10-10: Anthropic's OpenAI SDK compatibility page
@@ -104,3 +105,37 @@ traced to Weave by `check`; `wandb --generate` keeps its verified trace.
   Smoke checks and short episodes are unaffected; long Mechanic or Actor contexts are. The fix is a
   registered admission source per provider (Anthropic's token-count endpoint, or a reviewed
   approximation with a stated margin), planned with the provider work of Stage 1.
+
+## Claude Code: the subscription channel
+
+`claude-code:<model id>` (for example `claude-code:claude-sonnet-5-5`) sends a role's calls through the
+Claude Code CLI on the owner's subscription instead of the API. It exists for development, iteration and
+the adapters under test, where measured spend would otherwise be the constraint; public numbers that
+must be API-exact stay on `anthropic:*`. First-party only: the CLI or the Claude Agent SDK, never a
+third-party harness; the owner confirms Anthropic's current terms before relying on it, and the
+subscription's rate windows (five-hour and weekly) are the real limit.
+
+How a call runs: `claude -p --model <id> --output-format json --tools "" --max-turns 1
+--no-session-persistence --setting-sources "" --strict-mcp-config --system-prompt <system>` with the
+user turn on stdin, in an empty temporary working directory, under a scrubbed environment (`HOME`,
+`PATH`, `USER`, `LANG`, `TERM`, `CLAUDE_CODE_MAX_OUTPUT_TOKENS` for the output cap,
+`CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, plus `CLAUDE_CONFIG_DIR` and `CLAUDE_CODE_OAUTH_TOKEN` when
+set). No API key reaches the CLI, so the subscription is always what pays; no settings, plugins, MCP
+servers, hooks or `CLAUDE.md` files load (checked on 2026-10-25: a `CLAUDE.md` in the working directory
+did not reach the model). Use the full model id: the aliases (`haiku`, `sonnet`) resolve to the CLI's
+own defaults, add thinking and may fence the answer.
+
+What is recorded: the frozen request profile names the provider `claude-code` with
+`extra_body: {channel: subscription, transport: claude -p}`, so a campaign on this channel never shares an
+identity with an API campaign. **Shadow pricing:** the model is priced at the `anthropic:<id>` entry of the
+pricing table, the per-call bound and the campaign caps use that price, and `RESULT.json` reports the
+API-equivalent cost; the machine-wide monthly ledger records each call at zero with the equivalent bound in
+its note (`provider = 'claude-code'`), so the owner's monthly figure stays real money. Cache reads and
+writes count as input tokens, which keeps the equivalent an upper bound.
+
+Known differences from an API call, all recorded by the channel: the CLI adds a few hundred tokens of its
+own context; a conversation with assistant turns (the Actor's and Mechanic's correction loops) is rendered
+into one prompt as a transcript; no `response_format`; the CLI's answer text is passed through unchanged,
+so the lab's validators see exactly what the model wrote. A timeout, a non-JSON result, an error result
+(`is_error`, for example "not logged in") or an answer from a different model than the one frozen is a
+`RuntimeProviderError` with a code and class and no retained text; nothing is retried.

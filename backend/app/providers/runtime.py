@@ -178,6 +178,7 @@ class RuntimeProvider:
         self._factory = client_factory
         self._clients = {}
         self._ledger = spend_ledger
+        self._workdir: str | None = None     # the Claude Code CLI's empty working directory, made on first use
 
     def role_model(self, role: str) -> str:
         """Frozen model for a runtime role; Explorer/Mechanic may use the lab model."""
@@ -221,11 +222,20 @@ class RuntimeProvider:
         bound = self._settings.per_call_dollar_bound_for_role(role)
         charge_id = None
         if bound is not None:
+            # A subscription call moves no money: the monthly ledger records it at zero with the API-equivalent
+            # bound in the note, while the campaign ledger still charges the equivalent cost (shadow pricing).
+            subscription = ref.provider == "claude-code"
             try:
-                charge_id = self._spend_ledger().reserve(provider=ref.provider, model=ref.ref, role=role, bound_usd=bound,
-                                                         cap_usd=self._settings.faultlab_monthly_dollar_cap)
+                charge_id = self._spend_ledger().reserve(
+                    provider=ref.provider, model=ref.ref, role=role, bound_usd=0.0 if subscription else bound,
+                    cap_usd=self._settings.faultlab_monthly_dollar_cap,
+                    note=f"subscription; api-equivalent bound {bound:.6f}" if subscription else "")
             except MonthlyCapExceeded as error:
                 raise RuntimeProviderError(str(error), code="MONTHLY_CAP") from None
+        if ref.provider == "claude-code":
+            return await self._complete_via_claude_code(ref=ref, spec=spec, messages=messages, model=model, rates=rates,
+                                                        charge_id=charge_id, max_output_tokens=max_output_tokens,
+                                                        timeout_seconds=timeout_seconds, secrets=secrets)
         returned_usage = None
         finish_reason = None
         try:
@@ -280,9 +290,100 @@ class RuntimeProvider:
             raise RuntimeProviderError("Model inference failed; no generation retry was made.", code=code,
                 error_class=error_name, http_status=status, finish_reason=finish_reason, generation=returned_usage) from None
 
+    async def _complete_via_claude_code(self, *, ref, spec, messages, model, rates, charge_id, max_output_tokens,
+                                        timeout_seconds, secrets) -> RuntimeGeneration:
+        """One bounded call through the Claude Code CLI on the owner's subscription (docs/providers.md).
+
+        The CLI runs in a scrubbed environment (no API key can reach it, so the subscription is always what
+        pays), with no setting sources, no tools, one turn, no session persistence, and the lab's system
+        prompt in place of its own. The prompt goes in on stdin; the JSON result's usage and text come back.
+        A transcript with assistant turns is rendered into the single prompt, which the frozen request
+        profile records as the channel's behaviour. Nothing is retried.
+        """
+        import os
+        import shutil
+        import tempfile
+        system = "\n\n".join(m["content"] for m in messages if m["role"] == "system")
+        turns = [m for m in messages if m["role"] != "system"]
+        if len(turns) == 1 and turns[0]["role"] == "user":
+            prompt = turns[0]["content"]
+        else:
+            prompt = ("The conversation so far, oldest first. Continue it with your next reply only.\n\n"
+                      + "\n\n".join(f"[{m['role']}]\n{m['content']}" for m in turns))
+        env = {"HOME": os.environ.get("HOME", ""), "PATH": os.environ.get("PATH", ""), "USER": os.environ.get("USER", ""),
+               "LANG": os.environ.get("LANG") or "en_US.UTF-8", "TERM": "dumb",
+               "CLAUDE_CODE_MAX_OUTPUT_TOKENS": str(int(max_output_tokens)), "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"}
+        for name in ("CLAUDE_CONFIG_DIR", "CLAUDE_CODE_OAUTH_TOKEN"):
+            if os.environ.get(name):
+                env[name] = os.environ[name]
+        command = [spec.client_kwargs["binary"], "-p", "--model", ref.model_id, "--output-format", "json", "--tools", "",
+                   "--max-turns", "1", "--no-session-persistence", "--setting-sources", "", "--strict-mcp-config",
+                   "--system-prompt", system]
+        if self._workdir is None or not os.path.isdir(self._workdir):
+            self._workdir = tempfile.mkdtemp(prefix="faultlab-claude-code-")
+        failure = "Model inference failed; no generation retry was made."
+        try:
+            process = await asyncio.create_subprocess_exec(
+                *command, stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+                env=env, cwd=self._workdir)
+        except (OSError, ValueError) as error:
+            raise RuntimeProviderError(failure, code="CONNECTION_ERROR", error_class=type(error).__name__) from None
+        try:
+            async with asyncio.timeout(timeout_seconds):
+                stdout, _stderr = await process.communicate(prompt.encode("utf-8"))
+        except TimeoutError:
+            process.kill()
+            await process.wait()
+            raise RuntimeProviderError(failure, code="REQUEST_TIMEOUT", error_class="TimeoutError") from None
+        try:
+            result = json.loads(stdout.decode("utf-8", "replace"))
+            if not isinstance(result, dict):
+                raise ValueError("not an object")
+        except ValueError:
+            raise RuntimeProviderError(failure, code="INVALID_RESPONSE_SHAPE", error_class="ValueError") from None
+        usage = result.get("usage") if isinstance(result.get("usage"), dict) else {}
+
+        def count(name):
+            value = usage.get(name)
+            return value if type(value) is int and 0 <= value <= 1_000_000_000 else None
+        fresh = count("input_tokens")
+        # Cache reads and writes are input the model saw; counting them in full keeps the equivalent cost an upper bound.
+        input_tokens = None if fresh is None else fresh + (count("cache_creation_input_tokens") or 0) + (count("cache_read_input_tokens") or 0)
+        output_tokens = count("output_tokens")
+        cost = None
+        if rates is not None and input_tokens is not None and output_tokens is not None:
+            cost = (input_tokens * rates[0] + output_tokens * rates[1]) / 1000000
+        if charge_id is not None:
+            self._spend_ledger().settle(charge_id, actual_usd=0.0, input_tokens=input_tokens, output_tokens=output_tokens)
+        returned = RuntimeGeneration(content="", model_id=model, input_tokens=input_tokens, output_tokens=output_tokens,
+                                     cost_usd=cost, provider="claude-code", structured_output_enforced=False)
+        if result.get("is_error") or result.get("subtype") not in (None, "success"):
+            text = str(result.get("result") or "").lower()
+            error_class = ("AuthenticationError" if "not logged in" in text or "login" in text else
+                           "BadRequestError" if "too long" in text else
+                           "RateLimitError" if "limit" in text else "RuntimeError")
+            status = result.get("api_error_status")
+            raise RuntimeProviderError(failure, code="PROVIDER_ERROR", error_class=error_class,
+                                       http_status=status if type(status) is int else None, generation=returned)
+        used = result.get("modelUsage") if isinstance(result.get("modelUsage"), dict) else {}
+        if used and not any(key == ref.model_id or key.startswith(ref.model_id) for key in used):
+            # The CLI answered with a model other than the one frozen into the campaign: not this identity.
+            raise RuntimeProviderError(failure, code="INVALID_RESPONSE_SHAPE", error_class="ValueError", generation=returned)
+        content = result.get("result")
+        if not isinstance(content, str) or not content.strip():
+            raise RuntimeProviderError("The provider returned no final response; no generation retry was made.",
+                                       code="EMPTY_FINAL_RESPONSE", error_class="ValueError", generation=returned)
+        return RuntimeGeneration(content=redact_text(content, *secrets), model_id=model, input_tokens=input_tokens,
+                                 output_tokens=output_tokens, cost_usd=cost, provider="claude-code",
+                                 structured_output_enforced=False)
+
     async def close(self) -> None:
         clients = list(self._clients.values())
         self._clients.clear()
+        if self._workdir is not None:
+            import shutil
+            shutil.rmtree(self._workdir, ignore_errors=True)
+            self._workdir = None
         for client in clients:
             try:
                 await client.close()

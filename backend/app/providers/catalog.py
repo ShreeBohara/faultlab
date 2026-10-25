@@ -27,8 +27,8 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 from urllib.parse import urlsplit
 
-ProviderId = Literal["wandb", "openai", "anthropic", "openrouter", "custom"]
-PROVIDER_IDS: tuple[str, ...] = ("wandb", "openai", "anthropic", "openrouter", "custom")
+ProviderId = Literal["wandb", "openai", "anthropic", "openrouter", "custom", "claude-code"]
+PROVIDER_IDS: tuple[str, ...] = ("wandb", "openai", "anthropic", "openrouter", "custom", "claude-code")
 
 WANDB_BASE_URL = "https://api.inference.wandb.ai/v1"
 OPENAI_BASE_URL = "https://api.openai.com/v1"
@@ -145,6 +145,10 @@ def request_profile(ref: ModelRef) -> RequestProfile:
         return RequestProfile("openrouter", "max_tokens", temperature, True)
     if ref.provider == "custom":
         return RequestProfile("custom", "max_tokens", 0, True)
+    if ref.provider == "claude-code":
+        # The Claude Code CLI on the owner's subscription (docs/providers.md): the output cap travels as
+        # CLAUDE_CODE_MAX_OUTPUT_TOKENS, no temperature, no response_format; the channel is frozen into the identity.
+        return RequestProfile("claude-code", "max_tokens", None, False, {"channel": "subscription", "transport": "claude -p"})
     raise UnknownProviderError(f"Unknown provider '{ref.provider}'.")
 
 
@@ -183,6 +187,12 @@ def client_spec(ref: ModelRef, settings) -> ProviderClientSpec:
         headers = {"HTTP-Referer": "https://github.com/ShreeBohara/faultlab", "X-Title": "FaultLab"}
         return ProviderClientSpec("openrouter", OPENROUTER_BASE_URL, settings.openrouter_api_key,
                                   {"default_headers": headers}, missing)
+    if ref.provider == "claude-code":
+        import os
+        import shutil
+        binary = settings.faultlab_claude_code_bin.strip() or "claude"
+        missing = () if (shutil.which(binary) or os.path.isfile(binary)) else ("FAULTLAB_CLAUDE_CODE_BIN",)
+        return ProviderClientSpec("claude-code", "", "", {"binary": binary}, missing)
     if ref.provider == "custom":
         base_url = settings.faultlab_custom_base_url.strip()
         missing = tuple(name for name, value in (("FAULTLAB_CUSTOM_BASE_URL", base_url),

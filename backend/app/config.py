@@ -73,6 +73,8 @@ class Settings:
     openrouter_api_key: str = field(default='', repr=False)
     faultlab_custom_base_url: str = ''
     faultlab_custom_api_key: str = field(default='', repr=False)
+    # The Claude Code CLI for the subscription channel (docs/providers.md); a name on PATH or a path.
+    faultlab_claude_code_bin: str = 'claude'
     faultlab_default_provider: str = 'wandb'
     # Generic role models take precedence over the WANDB_* names when set.
     faultlab_actor_model: str = ''
@@ -263,8 +265,12 @@ class Settings:
             if explicit is not None:
                 return explicit
             ref = self.model_ref_for_role(role)
-            return table_rates(ref.ref, path=Path(self.faultlab_pricing_table) if self.faultlab_pricing_table else None,
-                               allow_stale=self.faultlab_allow_stale_prices)
+            table = Path(self.faultlab_pricing_table) if self.faultlab_pricing_table else None
+            if ref.provider == 'claude-code':
+                # Shadow pricing: a subscription call costs no money, but it is bounded, capped and recorded at the
+                # API price of the same model so holds, caps and read-outs keep their meaning (docs/providers.md).
+                return table_rates(f'anthropic:{ref.model_id}', path=table, allow_stale=self.faultlab_allow_stale_prices)
+            return table_rates(ref.ref, path=table, allow_stale=self.faultlab_allow_stale_prices)
         except (PricingTableError, ValueError):
             # UnknownProviderError and ConfigurationError are ValueErrors: an unpriceable role has no bound.
             return None
