@@ -9,6 +9,7 @@ fixed checks through the bridge; ``none`` leaves the task outcome pending).
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 import asyncio
 import json
 import sys
@@ -35,6 +36,14 @@ def build_referee(name: str, pack_id: str):
     raise ValueError(f"Unknown referee {name!r}")
 
 
+def _backend_on_path() -> None:
+    """The owner's settings and providers live in the legacy backend package beside this one."""
+    import sys
+    backend = Path(__file__).resolve().parents[2] / "backend"
+    if str(backend) not in sys.path and (backend / "app").is_dir():
+        sys.path.append(str(backend))
+
+
 def build_adapter(args):
     """The registered adapter; the model Actor needs a model, explicit live authorization and the owner's settings."""
     if args.adapter not in ("model-actor", "claude-agent"):
@@ -47,6 +56,7 @@ def build_adapter(args):
         raise ValueError(f"{args.adapter} makes live model calls; pass --execute-live to authorize them (declaration and ledger entry first)")
     if args.dollars <= 0:
         raise ValueError("a live run needs a positive --dollars bound per trial and batch")
+    _backend_on_path()
     from app.config import Settings
     settings = Settings.from_env()
     if args.adapter == "claude-agent":
@@ -67,7 +77,9 @@ def main(argv=None) -> int:
     parser.add_argument("--k", type=int, default=1, help="repetitions per scenario (default 1)")
     parser.add_argument("--referee", choices=("legacy", "none"), default="none", help="who scores the task outcome")
     parser.add_argument("--name", default=None, help="batch name (default: pack and adapter)")
-    parser.add_argument("--dollars", type=float, default=0.0, help="batch dollar cap and each plan's bound (offline adapters spend 0)")
+    parser.add_argument("--dollars", type=float, default=0.0, help="each trial's dollar bound (offline adapters spend 0)")
+    parser.add_argument("--batch-dollars", type=float, default=None,
+                        help="the batch's dollar cap; default: the trial bound times the number of trials, so every trial can be admitted")
     parser.add_argument("--model-calls", type=int, default=8, help="model-call cap per trial")
     parser.add_argument("--http-attempts", type=int, default=18, help="HTTP-attempt cap per trial")
     parser.add_argument("--wall-seconds", type=float, default=90.0, help="wall-clock cap per trial")
@@ -90,7 +102,10 @@ def main(argv=None) -> int:
         print(str(error), file=sys.stderr)
         return 2
     with TrialStore(args.store) as store:
-        batch = schedule(store, plans, name=args.name or f"{pack.pack_id} x {adapter.adapter_id}", caps=Caps(dollars=args.dollars))
+        # The scheduler admits a trial only while measured plus reserved plus the trial's bound fits the batch cap, so a
+        # multi-trial batch needs a cap of at least the bound times the trials (2026-10-25: one bound for both ran one trial).
+        batch_dollars = args.batch_dollars if args.batch_dollars is not None else args.dollars * len(plans) * args.k
+        batch = schedule(store, plans, name=args.name or f"{pack.pack_id} x {adapter.adapter_id}", caps=Caps(dollars=batch_dollars))
         worker = TrialWorker(store=store, referee=referee, database_dir=args.worlds)
         envelopes = asyncio.run(run_batch(store, batch.batch_id, worker, adapter))
         summary = store.summary(batch_id=batch.batch_id)

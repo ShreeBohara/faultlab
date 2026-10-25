@@ -29,8 +29,9 @@ def run(coro):
 class ScriptedHarness:
     """A stand-in for ``claude_agent_sdk.query``: decides each tool call from the observations it was shown."""
 
-    def __init__(self, adapter, *, silent=False, bad_report_first=False, fail_after=None, model=HARNESS_MODEL):
+    def __init__(self, adapter, *, silent=False, bad_report_first=False, fail_after=None, model=HARNESS_MODEL, split_blocks=False):
         self.adapter, self.silent, self.bad_report_first, self.fail_after, self.model = adapter, silent, bad_report_first, fail_after, model
+        self.split_blocks = split_blocks      # stream the text and the tool call of one turn as two messages, as the CLI does
         self.calls, self.seen, self.results, self.env_seen = [], [], [], None
 
     async def __call__(self, *, prompt, options):
@@ -42,9 +43,15 @@ class ScriptedHarness:
                 raise RuntimeError("harness lost its process")
             name, arguments = self._decide()
             turns += 1
-            yield sdk.AssistantMessage(content=[sdk.TextBlock(text=f"turn {turns}"),
-                                                sdk.ToolUseBlock(id=f"tu-{turns}", name=f"mcp__faultlab__{name}", input=arguments)],
-                                       model=self.model, usage={"input_tokens": 100, "output_tokens": 20})
+            usage = {"input_tokens": 100, "output_tokens": 20}
+            if self.split_blocks:
+                yield sdk.AssistantMessage(content=[sdk.TextBlock(text=f"turn {turns}")], model=self.model, usage=usage, message_id=f"msg-{turns}")
+                yield sdk.AssistantMessage(content=[sdk.ToolUseBlock(id=f"tu-{turns}", name=f"mcp__faultlab__{name}", input=arguments)],
+                                           model=self.model, usage=usage, message_id=f"msg-{turns}")
+            else:
+                yield sdk.AssistantMessage(content=[sdk.TextBlock(text=f"turn {turns}"),
+                                                    sdk.ToolUseBlock(id=f"tu-{turns}", name=f"mcp__faultlab__{name}", input=arguments)],
+                                           model=self.model, usage=usage, message_id=f"msg-{turns}")
             result = await self.adapter.handle(name, arguments)
             self.results.append((name, result))
             text = result["content"][0]["text"]
@@ -184,3 +191,13 @@ def test_a_harness_failure_is_infrastructure_not_the_task(worker):
     adapter, _ = adapter_with(model="claude-opus-5-5-20260301")
     envelope = trial(worker, "dev-1", adapter, "trial-other-model")
     assert envelope.outcome.execution == "INFRA_ERROR" and envelope.attempt.terminal_reason == "ADAPTER_ERROR:RuntimeError"
+
+
+def test_the_blocks_of_one_turn_are_one_charged_model_call(worker):
+    adapter, harness = adapter_with(split_blocks=True)
+    envelope = trial(worker, "dev-1", adapter, "trial-split")
+    assert envelope.outcome.task == "COMPLETED"
+    turns = len(harness.results)
+    assert envelope.outcome.cost.model_calls == turns == len(adapter.turns)      # two messages per turn, one charge
+    assert envelope.outcome.cost.input_tokens == 100 * turns and envelope.outcome.cost.output_tokens == 20 * turns
+    assert all(t["message_id"] == f"msg-{t['turn']}" and t["text"] and t["tool_uses"] for t in adapter.turns)

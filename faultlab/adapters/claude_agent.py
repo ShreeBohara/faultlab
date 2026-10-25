@@ -278,15 +278,25 @@ class ClaudeAgentAdapter(BaseAdapter):
                              "instruction": "Carry out the task with the faultlab tools, then call report exactly once."}, sort_keys=True)
         query = self.query or sdk.query
         stream = query(prompt=prompt, options=self._options(caps))
+        seen_messages: set[str] = set()
         try:
             with scrubbed_environment():
                 async for message in stream:
                     if isinstance(message, sdk.AssistantMessage):
+                        text = [b.text for b in message.content if isinstance(b, sdk.TextBlock)]
+                        tool_uses = [{"name": b.name, "input": b.input} for b in message.content if isinstance(b, sdk.ToolUseBlock)]
+                        if message.message_id is not None and message.message_id in seen_messages:
+                            # The CLI streams each content block of one API turn as its own assistant message, with the
+                            # turn's usage repeated on every block: more of the same turn, charged and accounted once.
+                            self.turns[-1]["text"].extend(text)
+                            self.turns[-1]["tool_uses"].extend(tool_uses)
+                            continue
+                        if message.message_id is not None:
+                            seen_messages.add(message.message_id)
                         session.model_call()                   # one turn, charged as it arrives; CapExhausted ends the trial
                         accounted = self._account(session, message.usage)
-                        self.turns.append({"turn": session.usage.model_calls, "model": message.model, **accounted,
-                                           "text": [b.text for b in message.content if isinstance(b, sdk.TextBlock)],
-                                           "tool_uses": [{"name": b.name, "input": b.input} for b in message.content if isinstance(b, sdk.ToolUseBlock)]})
+                        self.turns.append({"turn": session.usage.model_calls, "model": message.model, "message_id": message.message_id,
+                                           **accounted, "text": text, "tool_uses": tool_uses})
                         if message.model and not message.model.startswith(self.model):
                             self._failure = RuntimeError(f"The harness answered with model {message.model!r}, not the frozen {self.model!r}")
                     elif isinstance(message, sdk.ResultMessage):
