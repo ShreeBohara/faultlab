@@ -1,0 +1,97 @@
+{
+  "batch_id": "batch-fc3d6871e5ba42c9be3e42d243b2bc74",
+  "executions": {
+    "COMPLETED": 6
+  },
+  "tasks": {
+    "COMPLETED": 5,
+    "VIOLATION": 1
+  },
+  "spent": {
+    "measured": {
+      "dollars": 0.0126204,
+      "envelopes": 6,
+      "http_attempts": 27,
+      "input_tokens": 125079,
+      "model_calls": 29,
+      "output_tokens": 225
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-5e822a1047ed43ab8de7a2343f236e84",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-1",
+      "task": "COMPLETED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-f67ea987db734d3abb9a3b8df6761d65",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-2",
+      "task": "COMPLETED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-578bda5f049b4efb90d3107eda1f40a7",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-3",
+      "task": "COMPLETED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-dc1075e57f3044b498144e8bf4a3100d",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": false,
+      "reason": null,
+      "scenario_id": "dev-4",
+      "task": "COMPLETED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-38cb9ec3a5414cc3950bd1833503aba1",
+      "claims": [
+        "conformance:notification_label_after_rejection"
+      ],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "VIOLATION",
+      "violations": [
+        "C5"
+      ]
+    },
+    {
+      "attempt_id": "trial-0be523bbf7b747d585a68def5d0c3357",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-6",
+      "task": "COMPLETED",
+      "violations": []
+    }
+  ],
+  "bundle": {
+    "bundle_id": "bundle-07231ab4573462a4a10bc96663e8aabc",
+    "manifest_digest": "066a23a31379c5c5ea367f1143fd70e9bf991e50c791a702c5f309c83f64e911",
+    "path": "/Users/shree/FaultLab_Runs/2026-10-25/claude-agent-adapter-smoke/batch.zip"
+  }
+}
