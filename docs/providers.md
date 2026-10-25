@@ -58,10 +58,12 @@ Two caps apply to every priced call:
   study and smoke check. Before a call is sent, its worst-case bound (32,000 input + 2,000 output
   tokens at the verified rates) is reserved in `~/.faultlab/spend-ledger.sqlite3` (or `FAULTLAB_SPEND_LEDGER`), one ledger
   per machine whatever store a run uses; the reservation
-  is refused, before any client exists, when the month's reserved total would exceed the cap
+  is refused, before any client exists, when the month's committed total would exceed the cap
   (`RuntimeProviderError` code `MONTHLY_CAP`, never retried). After the response the row is settled
-  with the measured cost. The gate sums *bounds*, never measured costs, so a runaway loop cannot spend
-  past the cap on optimistic estimates. A crash between reserve and settle leaves the bound charged.
+  with the measured cost. The committed total counts every settled call at its measured cost and every
+  open call at its bound, so the cap means dollars while a call in flight is still charged for the
+  worst it could cost (until 2026-10-24 the gate summed bounds only, and a cap of 400 meant about 50
+  dollars of spend). A crash between reserve and settle leaves the bound charged.
 
 Unpriced models (no verified rate) reserve nothing and report `cost_usd` as unknown; campaigns refuse
 them at admission, smoke checks allow them.

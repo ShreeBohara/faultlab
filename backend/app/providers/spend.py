@@ -1,10 +1,12 @@
 """A monthly spend ledger shared by every store, campaign and smoke check on this machine.
 
 Each admitted model call reserves its *worst-case* dollar bound before it is sent; the
-reservation is refused when the calendar month's reserved total would exceed the monthly
+reservation is refused when the calendar month's committed total would exceed the monthly
 cap. After the response the row is settled with the measured cost when tokens are known.
-The month's figure that gates admission is the sum of bounds, never the sum of measured
-costs, so a runaway loop cannot spend past the cap on optimistic estimates.
+The committed total that gates admission counts every settled call at its measured cost and
+every open call at its bound: measured costs are facts, not estimates, so the cap means
+dollars, while a call in flight is still charged for the worst it could cost. (Until
+2026-10-24 the gate summed bounds only, so a cap of 400 meant about 50 dollars of spend.)
 
 The ledger is one SQLite file under the artifact directory. It is append-only: rows are
 settled, never deleted, and a crash between reserve and settle leaves the bound charged.
@@ -19,8 +21,10 @@ import sqlite3
 
 class MonthlyCapExceeded(RuntimeError):
     def __init__(self, *, month: str, reserved: float, bound: float, cap: float):
-        super().__init__(f"Monthly cap reached: {reserved:.4f} reserved + {bound:.4f} > {cap:.2f} for {month}")
+        # ``reserved`` is the month's committed total (settled calls at cost, open calls at bound).
+        super().__init__(f"Monthly cap reached: {reserved:.4f} committed + {bound:.4f} > {cap:.2f} for {month}")
         self.month, self.reserved, self.bound, self.cap = month, reserved, bound, cap
+        self.committed = reserved
 
 
 @dataclass(frozen=True)
@@ -29,6 +33,10 @@ class SpendSummary:
     reserved_bound: float
     settled_actual: float | None
     calls: int
+    committed: float = 0.0
+
+
+COMMITTED_SQL = "COALESCE(SUM(CASE WHEN actual_usd IS NULL THEN bound_usd ELSE actual_usd END), 0)"
 
 
 def current_month(now: datetime | None = None) -> str:
@@ -53,7 +61,11 @@ class SpendLedger:
 
     def reserve(self, *, provider: str, model: str, role: str, bound_usd: float, cap_usd: float,
                 note: str = "", now: datetime | None = None) -> int:
-        """Charge the worst-case bound for one call, or refuse without recording anything."""
+        """Charge the worst-case bound for one call, or refuse without recording anything.
+
+        Admission compares the month's committed total (settled calls at their measured cost, open
+        calls at their bound) plus this call's bound against the cap.
+        """
         if not (bound_usd >= 0 and cap_usd >= 0):
             raise ValueError("bound and cap must be non-negative")
         month = current_month(now)
@@ -61,10 +73,10 @@ class SpendLedger:
         with closing(self._connect()) as connection:
             connection.execute("BEGIN IMMEDIATE")
             try:
-                reserved = connection.execute("SELECT COALESCE(SUM(bound_usd), 0) FROM charges WHERE month = ?",
-                                              (month,)).fetchone()[0]
-                if reserved + bound_usd > cap_usd:
-                    raise MonthlyCapExceeded(month=month, reserved=reserved, bound=bound_usd, cap=cap_usd)
+                committed = connection.execute(f"SELECT {COMMITTED_SQL} FROM charges WHERE month = ?",
+                                               (month,)).fetchone()[0]
+                if committed + bound_usd > cap_usd:
+                    raise MonthlyCapExceeded(month=month, reserved=committed, bound=bound_usd, cap=cap_usd)
                 cursor = connection.execute(
                     "INSERT INTO charges(month, at, provider, model, role, bound_usd, note) VALUES (?,?,?,?,?,?,?)",
                     (month, at, provider, model, role, bound_usd, note))
@@ -84,8 +96,9 @@ class SpendLedger:
         month = month or current_month()
         with closing(self._connect()) as connection:
             row = connection.execute(
-                "SELECT COALESCE(SUM(bound_usd), 0), SUM(actual_usd), COUNT(*), COUNT(actual_usd) FROM charges WHERE month = ?",
-                (month,)).fetchone()
-        reserved, actual, calls, settled = row
+                f"SELECT COALESCE(SUM(bound_usd), 0), SUM(actual_usd), COUNT(*), COUNT(actual_usd), {COMMITTED_SQL} "
+                "FROM charges WHERE month = ?", (month,)).fetchone()
+        reserved, actual, calls, settled, committed = row
         return SpendSummary(month=month, reserved_bound=float(reserved),
-                            settled_actual=float(actual) if settled == calls and calls else None, calls=int(calls))
+                            settled_actual=float(actual) if settled == calls and calls else None, calls=int(calls),
+                            committed=float(committed))

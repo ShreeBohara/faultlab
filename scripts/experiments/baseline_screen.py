@@ -329,7 +329,8 @@ def main(argv=None) -> int:
             if ledger_path.exists():
                 summary = SpendLedger(ledger_path).summary()
                 result["monthly_ledger"] = {"month": summary.month, "reserved_bound": summary.reserved_bound,
-                                            "settled_actual": summary.settled_actual, "calls": summary.calls}
+                                            "settled_actual": summary.settled_actual, "calls": summary.calls,
+                                            "committed": getattr(summary, "committed", None)}
         except Exception as error:
             result["monthly_ledger"] = f"unavailable: {error}"
         (run_dir / "RESULT.json").write_text(json.dumps(result, indent=2))

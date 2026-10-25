@@ -15,24 +15,42 @@ def test_reservations_charge_bounds_and_settlements_record_actuals(tmp_path):
     second = ledger.reserve(provider='wandb', model='wandb:m', role='mechanic', bound_usd=0.05, cap_usd=1.0, note='smoke', now=OCTOBER)
     summary = ledger.summary('2026-10')
     assert summary.calls == 2 and summary.reserved_bound == pytest.approx(0.094) and summary.settled_actual is None
+    assert summary.committed == pytest.approx(0.094)           # both open: committed at their bounds
     ledger.settle(first, actual_usd=0.0012, input_tokens=300, output_tokens=40)
     assert ledger.summary('2026-10').settled_actual is None    # one row is still unsettled
+    assert ledger.summary('2026-10').committed == pytest.approx(0.0012 + 0.05)
     ledger.settle(second, actual_usd=0.002, input_tokens=10, output_tokens=5)
     settled = ledger.summary('2026-10')
     assert settled.settled_actual == pytest.approx(0.0032) and settled.reserved_bound == pytest.approx(0.094)
+    assert settled.committed == pytest.approx(0.0032)
     assert ledger.summary('2026-11').calls == 0 and ledger.summary('2026-11').reserved_bound == 0
 
 
-def test_the_cap_gates_on_reserved_bounds_and_a_refusal_records_nothing(tmp_path):
+def test_the_cap_gates_on_settled_cost_plus_open_bounds_and_a_refusal_records_nothing(tmp_path):
     ledger = SpendLedger(tmp_path / 'ledger.sqlite3')
     charge = ledger.reserve(provider='openai', model='m', role='actor', bound_usd=0.6, cap_usd=1.0, now=OCTOBER)
-    ledger.settle(charge, actual_usd=0.01, input_tokens=1, output_tokens=1)   # cheap in fact; the bound still counts
-    with pytest.raises(MonthlyCapExceeded) as refused:
+    ledger.settle(charge, actual_usd=0.01, input_tokens=1, output_tokens=1)   # cheap in fact: only the cost counts now
+    assert ledger.reserve(provider='openai', model='m', role='actor', bound_usd=0.5, cap_usd=1.0, now=OCTOBER)
+    with pytest.raises(MonthlyCapExceeded) as refused:                        # 0.01 settled + 0.5 open + 0.5 > 1.0
         ledger.reserve(provider='openai', model='m', role='actor', bound_usd=0.5, cap_usd=1.0, now=OCTOBER)
     assert (refused.value.month, refused.value.bound, refused.value.cap) == ('2026-10', 0.5, 1.0)
-    assert refused.value.reserved == pytest.approx(0.6) and ledger.summary('2026-10').calls == 1
-    assert ledger.reserve(provider='openai', model='m', role='actor', bound_usd=0.4, cap_usd=1.0, now=OCTOBER)
-    assert ledger.summary('2026-10').reserved_bound == pytest.approx(1.0)
+    assert refused.value.reserved == pytest.approx(0.51) and refused.value.committed == pytest.approx(0.51)
+    assert ledger.summary('2026-10').calls == 2 and ledger.summary('2026-10').committed == pytest.approx(0.51)
+    assert ledger.reserve(provider='openai', model='m', role='actor', bound_usd=0.49, cap_usd=1.0, now=OCTOBER)
+    assert ledger.summary('2026-10').reserved_bound == pytest.approx(1.59)
+
+
+def test_an_open_call_counts_at_its_bound_until_it_settles(tmp_path):
+    ledger = SpendLedger(tmp_path / 'ledger.sqlite3')
+    open_call = ledger.reserve(provider='p', model='m', role='actor', bound_usd=0.6, cap_usd=1.0, now=OCTOBER)
+    with pytest.raises(MonthlyCapExceeded) as refused:                        # the open call is charged in full
+        ledger.reserve(provider='p', model='m', role='actor', bound_usd=0.5, cap_usd=1.0, now=OCTOBER)
+    assert refused.value.committed == pytest.approx(0.6)
+    ledger.settle(open_call, actual_usd=0.1, input_tokens=1, output_tokens=1)
+    assert ledger.reserve(provider='p', model='m', role='actor', bound_usd=0.5, cap_usd=1.0, now=OCTOBER)
+    # a crash between reserve and settle leaves actual_usd NULL: the bound stays charged
+    ledger.settle(open_call, actual_usd=None, input_tokens=None, output_tokens=None)
+    assert ledger.summary('2026-10').committed == pytest.approx(0.6 + 0.5)
 
 
 def test_a_new_month_starts_from_zero(tmp_path):

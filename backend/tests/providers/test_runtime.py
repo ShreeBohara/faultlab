@@ -329,11 +329,12 @@ def _priced_openai_settings(tmp_path, **overrides):
                     faultlab_pricing_table=str(table), **overrides)
 
 
-def test_monthly_cap_refuses_before_the_client_once_reserved_bounds_reach_it(tmp_path):
+def test_monthly_cap_refuses_before_the_client_once_committed_dollars_reach_it(tmp_path):
     from app.providers.spend import SpendLedger
     calls = []
     usage = SimpleNamespace(prompt_tokens=1000, completion_tokens=100)
-    settings = _priced_openai_settings(tmp_path, faultlab_monthly_dollar_cap=0.02)
+    # The first call's bound (0.012) fits; once it settles at 0.00045, a second bound would commit 0.01245.
+    settings = _priced_openai_settings(tmp_path, faultlab_monthly_dollar_cap=0.0124)
     assert settings.per_call_dollar_bound_for_role('actor') == pytest.approx(0.012)    # 32,000 in + 2,000 out per million
     ledger = SpendLedger(tmp_path / 'ledger.sqlite3')
     provider = RuntimeProvider(settings, live_authorized=True, client_factory=lambda **_: _client(calls, usage=usage),
@@ -346,7 +347,12 @@ def test_monthly_cap_refuses_before_the_client_once_reserved_bounds_reach_it(tmp
     assert 'private-key' not in str(refused.value)
     summary = ledger.summary()
     assert summary.calls == 1 and summary.reserved_bound == pytest.approx(0.012)
-    assert summary.settled_actual == pytest.approx(0.00045)
+    assert summary.settled_actual == pytest.approx(0.00045) and summary.committed == pytest.approx(0.00045)
+    # With the old bound-summing gate a cap of 0.02 refused the second call; the committed gate admits it.
+    roomier = RuntimeProvider(_priced_openai_settings(tmp_path, faultlab_monthly_dollar_cap=0.02), live_authorized=True,
+                              client_factory=lambda **_: _client(calls, usage=usage), spend_ledger=ledger)
+    asyncio.run(roomier.complete([{'role': 'user', 'content': 'x'}]))
+    assert len(calls) == 2 and ledger.summary().committed == pytest.approx(0.0009)
 
 
 def test_a_failed_priced_call_keeps_its_reserved_bound(tmp_path):
