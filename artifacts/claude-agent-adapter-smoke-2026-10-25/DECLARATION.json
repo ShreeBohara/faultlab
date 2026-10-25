@@ -1,0 +1,42 @@
+{
+  "declaration": "faultlab-paid-run-declaration/v1",
+  "name": "claude-agent-adapter-smoke-2026-10-25",
+  "declared_at_utc": "2026-10-25T18:25:41Z",
+  "declared_by": "Claude (Fable 5.1), local session on the owner's Mac, under the owner's go-ahead of 2026-10-24",
+  "question": "Does Claude Code, through the Claude Agent SDK adapter (faultlab/adapters/claude_agent.py), complete the orders pack's six development scenarios on the v2 lab with its citations decoded and the legacy checks scoring it, on the owner's subscription?",
+  "run": "faultlab run --adapter claude-agent --model claude-haiku-5-5 --execute-live --dollars 1 --referee legacy --k 1, every scenario of orders.upgrade_then_confirm/v1",
+  "channel": {
+    "pays": "the owner's Claude subscription through the claude CLI; no API key reaches the CLI",
+    "model": "claude-code:claude-haiku-5-5",
+    "identity": "the adapter's own prompt digest and settings digest; never pooled with API runs"
+  },
+  "caps": {
+    "per_trial": {
+      "model_calls": 8,
+      "http_attempts": 18,
+      "ticks": 20,
+      "wall_seconds": 90
+    },
+    "batch_dollars": 1,
+    "note": "dollars are the API-equivalent price of Haiku (0.1 and 0.5 per million tokens); money moved: 0"
+  },
+  "stop_rules": [
+    "the v2 scheduler refuses an attempt that would exceed the batch dollar bound",
+    "the per-trial wall cap of 90 seconds",
+    "the operator stops the batch by hand on a harness error naming authentication or rate limits"
+  ],
+  "pre_registered_readouts": [
+    "execution and task outcome per scenario",
+    "findings per scenario (C1 to C8)",
+    "claim mismatches",
+    "model calls, tokens and API-equivalent dollars per trial",
+    "cited observations are delivered observations"
+  ],
+  "claims_discipline": "A smoke of an adapter, not a bench result. Six trials of one model; nothing enters a pooled read-out.",
+  "preconditions": {
+    "cli_logged_in": "claude auth status: loggedIn true (2026-10-25)",
+    "no_other_paid_run": true,
+    "on_ac_power": false,
+    "power_at_launch": "Now drawing from 'Battery Power'"
+  }
+}

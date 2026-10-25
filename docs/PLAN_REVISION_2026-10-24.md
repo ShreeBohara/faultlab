@@ -264,3 +264,10 @@ the owner logged the standalone CLI in. The first declared study on the channel
 236 seconds, 15 completed and 3 violations out of 18 (all dev-5 through C5, as phase B found for Haiku on the
 API), every episode's evidence `weave_verified`, 90 calls, $0 of money, $0.056 API-equivalent. The channel
 is ready for development runs and the Claude Agent SDK adapter; public numbers stay on the API.
+
+## Addendum (2026-10-25, later): Claude Code is on the bench
+
+The Claude Agent SDK adapter (`claude-agent`, Stage 2.6's first harness cell, commits `94c129f` and `17edfdf`)
+ran the orders pack's six scenarios with Haiku 5.5 as Claude Code on the subscription: five completed clean,
+the rejected-upgrade case the familiar C5 slip, 55 seconds and $0.013 equivalent for the batch. The channel and
+the adapter are what section 6 asked for; the Mechanic-as-Claude-Code and the violation-gap manifest remain.

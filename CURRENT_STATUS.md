@@ -1284,6 +1284,19 @@ Money: **$0** (91 ledger rows at zero); API-equivalent cost $0.056, the shadow p
 charged. Project ledger carried forward unchanged at **$1,550.91** (bounds); the channel's equivalent
 figures are reported, never added. A smoke of the channel, not a screen result.
 
+## Ledger entry 2026-10-25: first run of the Claude Agent adapter (Claude Code as the agent under test)
+
+One declared batch, `faultlab run --adapter claude-agent --model claude-haiku-5-5 --execute-live --dollars 1`,
+every scenario of the orders pack once, on the owner's subscription (`~/FaultLab_Runs/2026-10-25/claude-agent-adapter-smoke/`,
+declaration sha256 `c8b85812…640e`, commits `94c129f` and `17edfdf`, bundle in
+`artifacts/claude-agent-adapter-smoke-2026-10-25/`): dev-1, dev-2, dev-3, dev-4 and dev-6 COMPLETED with no
+violation; dev-5 VIOLATION through C5 (the notification label after a rejection, as Haiku shows on the API);
+the stale-read fault of dev-4 did not fire. 29 model calls, 125,079 input and 225 output tokens, 55 seconds.
+Money: **$0**; API-equivalent $0.013 (the adapter's shadow price). Project ledger carried forward unchanged at
+**$1,550.91** (bounds). A smoke of an adapter, not a bench result. Two earlier attempts the same hour ended
+on defects the run exposed (the batch cap admitting one trial; each content block charged as a turn), fixed
+in `17edfdf`; their files are kept beside the run as `attempt1` and `attempt2`.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

@@ -93,6 +93,13 @@ The prompt is this adapter's own (its hash is the prompt digest); the settings d
 version, the tool schemas and the labelling rule. `faultlab run --adapter claude-agent --model
 claude-haiku-5-5 --execute-live --dollars <bound>` runs it; `FAULTLAB_CLAUDE_CODE_BIN` names the CLI.
 
+First live run (2026-10-25, declared, `artifacts/claude-agent-adapter-smoke-2026-10-25/`): Haiku 5.5
+through Claude Code on all six development scenarios, 3 to 7 turns each, 6 to 11 seconds each; five
+COMPLETED with no violation, dev-5 a C5 label slip after the rejection (Haiku's pattern on the API),
+dev-4's stale-read fault not reached; $0.013 API-equivalent, no money. The run also found and fixed
+three defects of the live path (the batch cap admitting one trial, a content block charged as a turn,
+the backend package off the path), all in `17edfdf`.
+
 `backend/tests/v2/test_claude_agent.py`: identity and registry; a scripted harness (a fake `query`
 that calls the adapter's tool handlers) completes the healthy, delayed and rejected scenarios through
 the legacy checks with its label citations decoded; an invalid report is refused and corrected; a
