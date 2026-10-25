@@ -114,7 +114,7 @@ async def _execute(coordinator,campaign,baseline,manifest,record,ledger,reservat
                     except Exception: record['telemetry'][arm]['status']='weave_pending' if arm=='B0' else 'local_pending'
             if arm=='B0' and trial.lifecycle=='COMPLETED' and coordinator.evidence_gateway:
                 try:
-                    evidence=await coordinator.evidence_gateway.get(trial.episode_id,EvidenceContext(id,study_id,study_id),stopped=stop)
+                    evidence=await coordinator.evidence_gateway.get(trial.episode_id,EvidenceContext(id,study_id,study_id),require_remote=getattr(coordinator.settings,'faultlab_require_remote_evidence',True),stopped=stop)
                     record['evidence'][trial.episode_id]=evidence.source
                 except Exception: record['evidence'][trial.episode_id]='weave_pending'
             save()

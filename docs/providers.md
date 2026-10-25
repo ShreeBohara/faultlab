@@ -92,11 +92,14 @@ traced to Weave by `check`; `wandb --generate` keeps its verified trace.
 
 ## What is not done yet
 
-* **Weave stays coupled to campaign execution.** The coordinator starts the Weave worker for every
-  live campaign, and Weave needs the W&B credentials. `FAULTLAB_WEAVE_ENABLED=false` today only lifts
-  the `FAULTLAB_CONFIRMED_ENTITY` rule when no role runs on W&B; making the evidence pipeline run
-  without Weave is Stage 1 work (plan item 1.11). Until then a campaign on OpenAI or Anthropic models
-  still needs the W&B credentials for tracing.
+* **Weave is optional (plan item 1.11, first slice, 2026-10-25).** `FAULTLAB_WEAVE_ENABLED=false` makes a
+  live campaign start no Weave worker, tracer or publisher and lifts the W&B credential rule when no role
+  runs on W&B; local evidence is the authority. A baseline or completion study then reads evidence with
+  `FAULTLAB_REQUIRE_REMOTE_EVIDENCE=false` (local bundles, recorded as `local_only`; a completion study
+  records `evidence_requirement: local` when queued); with the default `true` a study still demands
+  Weave-verified evidence and ends INCOMPLETE on `WaitingEvidence` where none can be read, exactly as
+  before. The legacy Learn, diagnosis and challenge loops still require Weave. The OpenTelemetry exporter
+  of 1.11 is not written.
 * The pricing entries for OpenAI and Anthropic are unverified placeholders; verify them before use.
 * Provider-specific input-token counting is the generic byte bound for non-W&B models; the per-call
   token admission is therefore conservative, not exact. Concretely, `app/contracts/tokens.py` counts one

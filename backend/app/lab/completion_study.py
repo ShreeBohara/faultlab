@@ -225,6 +225,9 @@ async def queue_completion_study(coordinator, campaign_id, evidence_protocol=Non
         if case_manifest_id is not None:
             # Only when a request names a manifest, so a default request writes today's record.
             record['case_manifest_id'] = case_manifest_id
+        if not getattr(coordinator.settings, 'faultlab_require_remote_evidence', True):
+            # Declared at queue time (plan item 1.11): local evidence bundles stand in for Weave-verified ones.
+            record['evidence_requirement'] = 'local'
         coordinator.store.put_record('completion_plans', study_id, deepcopy(record), immutable=True)
         coordinator.store.put_record('completion_studies', study_id, record)
         coordinator.tasks[study_id] = asyncio.create_task(
@@ -267,8 +270,9 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
         # generated again (pitfall 49). The first failure is kept in the record, since
         # a successful re-read overwrites the ingestion row (pitfall 48).
         gateway = coordinator.evidence_gateway
+        remote = record.get('evidence_requirement', 'remote') == 'remote'
         try:
-            return await gateway.get(episode_id, context, stopped=stop)
+            return await gateway.get(episode_id, context, require_remote=remote, stopped=stop)
         except WaitingEvidence as pending:
             first = store.get_record('ingestions', episode_id) or {}
             if (stop() or first.get('state') != 'RETRYABLE_ERROR'
@@ -351,7 +355,7 @@ async def _execute(coordinator, campaign, baseline, record, ledger, reservation,
             if coordinator.evidence_gateway is None:
                 raise WaitingEvidence('Verified development evidence is required')
             bundles[trial.episode_id] = await verified_evidence(trial.episode_id)
-            if bundles[trial.episode_id].source != 'weave_verified':
+            if record.get('evidence_requirement', 'remote') == 'remote' and bundles[trial.episode_id].source != 'weave_verified':
                 raise WaitingEvidence('Study requires actual verified Weave evidence')
             record['evidence'][trial.episode_id] = bundles[trial.episode_id].source
             session = sessions.get((stage, slot['arm']))

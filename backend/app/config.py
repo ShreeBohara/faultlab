@@ -86,8 +86,12 @@ class Settings:
     # The machine-wide monthly spend ledger; blank means ~/.faultlab/spend-ledger.sqlite3, shared by every store.
     faultlab_spend_ledger: str = ''
     faultlab_allow_stale_prices: bool = False
-    # Weave tracing and verified evidence export; legacy Learn campaigns require it.
+    # Weave tracing and verified evidence export; legacy Learn campaigns require it. False (plan item 1.11):
+    # a live campaign starts no Weave worker, tracer or publisher; local evidence is the authority.
     faultlab_weave_enabled: bool = True
+    # Whether a completion or baseline study must read each trial's evidence back from Weave (weave_verified)
+    # or may take the local bundle (local_only). The study record carries the choice as evidence_requirement.
+    faultlab_require_remote_evidence: bool = True
 
     def model_for(self, role: str) -> str:
         """The canonical model name for a role: a bare W&B id, or ``provider:model`` for any other provider.

@@ -406,6 +406,12 @@ class LabCoordinator:
         from app.providers.runtime import RuntimeProvider
         world=WorldClient(self.settings.faultlab_simulator_url,self.settings.local_control_token())
         runner=EpisodeRunner(self.store,world,RuntimeProvider(self.settings,live_authorized=live))
+        if live and not self.settings.faultlab_weave_enabled:
+            # Plan item 1.11: no Weave worker, tracer or publisher. Local evidence is the authority; a gateway without a
+            # reader answers local-only bundles to studies that declare them and refuses remote verification to the rest.
+            from app.lab.evidence import EvidenceGateway
+            self.evidence_gateway=EvidenceGateway(self.store,self.settings.project_path)
+            return runner,True
         if live:
             from app.telemetry.worker import WeaveWorker
             from app.telemetry.outbox import TelemetryOutbox
