@@ -74,3 +74,42 @@ def test_the_driver_parses_the_study_choice(driver):
     with pytest.raises(SystemExit):
         driver.main(["--model", "m", "--data-dir", "/tmp/x", "--declaration", "/nonexistent", "--declaration-sha256", "0", "--study", "other"])
     assert set(driver.STUDIES) == {"baseline", "completion"}
+
+
+def test_dry_run_preview_sizes_the_hold_and_the_month_without_creating_anything(driver, tmp_path):
+    from datetime import date
+    from app.config import Settings
+    from app.providers.spend import SpendLedger
+    table = tmp_path / "pricing.json"
+    table.write_text(json.dumps({"schema": "faultlab-pricing-table/v1", "entries": [
+        {"ref": "openai:gpt-5-mini", "input_per_million": 0.25, "output_per_million": 2.0, "verified": True,
+         "verified_on": date.today().isoformat(), "source": "test"}]}))
+    def settings(**overrides):
+        values = dict(faultlab_live_enabled=True, faultlab_read_only=False, faultlab_weave_enabled=False,
+                      openai_api_key="openai-private-key", faultlab_actor_model="openai:gpt-5-mini",
+                      faultlab_pricing_table=str(table), faultlab_dollar_cap=60.0, faultlab_monthly_dollar_cap=5.0)
+        values.update(overrides)
+        return Settings(**values)
+
+    # The suite's conftest points every Settings at one scratch ledger; seed that one with a settled call.
+    ledger = settings().spend_ledger_path
+    charge = SpendLedger(ledger).reserve(provider="openai", model="openai:gpt-5-mini", role="actor", bound_usd=0.012, cap_usd=5.0)
+    SpendLedger(ledger).settle(charge, actual_usd=0.00045, input_tokens=1000, output_tokens=100)
+
+    preview = driver.admission_preview(settings(), study="baseline")
+    assert preview["dearest_bound"] == pytest.approx(0.012)          # 32,000 in + 2,000 out at the test rates
+    assert (preview["protected_calls"], preview["study_calls"]) == (1064, 144)
+    assert preview["hold"] == pytest.approx(1208 * 0.012) and preview["live_configuration"] == "ok"
+    assert preview["ledger"]["committed"] == pytest.approx(0.00045) and preview["ledger"]["room"] == pytest.approx(5.0 - 0.00045, abs=1e-3)
+    assert preview["ledger"]["study_worst_case"] == pytest.approx(144 * 0.012)
+    assert preview["problems"] == [] and preview["admissible"]
+    assert "private-key" not in json.dumps(preview)
+    assert not any(p.is_dir() for p in tmp_path.iterdir())          # nothing created
+
+    tight = driver.admission_preview(settings(faultlab_dollar_cap=10.0), study="baseline", monthly_cap=1.0)
+    assert not tight["admissible"]
+    assert any("campaign hold" in problem for problem in tight["problems"])
+    assert any("month's room" in problem for problem in tight["problems"])
+
+    completion = driver.admission_preview(settings(), study="completion")
+    assert completion["study_calls"] == 484 and completion["hold"] == pytest.approx(1548 * 0.012)

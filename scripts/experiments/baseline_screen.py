@@ -12,11 +12,16 @@ Usage (from the repository root, with the owner's .env in place):
       --model anthropic:claude-haiku-5-5 --data-dir ~/FaultLab_Runs/2026-10-11/claude-actor-screen/haiku-5-5 \\
       --declaration ~/FaultLab_Runs/2026-10-11/claude-actor-screen/DECLARATION.json \\
       --declaration-sha256 <sha> --dollar-cap 60
+
+Add ``--dry-run`` to the same command to see what admission would decide (the campaign hold against
+the campaign cap, the live configuration, the month's committed total and room) without creating,
+starting or calling anything; exit code 2 means the run would be refused.
 """
 
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 import json
 import os
@@ -59,6 +64,82 @@ def port_free(port: int) -> bool:
             return True
         except OSError:
             return False
+
+
+@contextmanager
+def applied_environment(env: dict):
+    """Apply the launcher environment to this process for one Settings read, then restore it exactly."""
+    saved = {key: os.environ.get(key) for key in env}
+    os.environ.update(env)
+    try:
+        yield
+    finally:
+        for key, value in saved.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+
+
+def admission_preview(settings, *, study: str, monthly_cap: float | None = None) -> dict:
+    """What admission would decide for one study, from the settings, the lab's constants and the ledger.
+
+    Nothing is created or called. The campaign hold is what the lab sets aside when the study is queued:
+    the protected calls every live campaign reserves plus the study's own calls, all at the dearest
+    role's per-call bound. The month's room is the monthly figure minus the ledger's committed total.
+    October 2026 would have been caught here twice: a Fable hold above the campaign ceiling, and a
+    monthly figure that could not hold nine rounds.
+    """
+    from app.lab.baseline_study import MODEL_CALL_RESERVATION as BASELINE_CALLS
+    from app.lab.completion_study import MODEL_CALL_RESERVATION as COMPLETION_CALLS
+    from app.providers.spend import SpendLedger
+    from app.referee.freeze import RESERVATIONS
+
+    roles: dict[str, dict] = {}
+    for role in ("actor", "explorer", "mechanic"):
+        entry: dict = {"model": None, "bound": None}
+        try:
+            entry["model"] = settings.model_for_role(role)
+            entry["bound"] = settings.per_call_dollar_bound_for_role(role)
+        except Exception as error:  # an unknown provider or a blank model name: reported, never raised here
+            entry["problem"] = f"{type(error).__name__}: {error}"
+        roles[role] = entry
+    bounds = [entry["bound"] for entry in roles.values() if entry["bound"] is not None]
+    dearest = max(bounds) if bounds else None
+    study_calls = {"baseline": BASELINE_CALLS, "completion": COMPLETION_CALLS}[study]
+    protected = int(RESERVATIONS["model_calls"])
+    hold = None if dearest is None else round((protected + study_calls) * dearest, 4)
+    campaign_cap = float(settings.faultlab_dollar_cap)
+    problems: list[str] = []
+    try:
+        settings.require_live()
+        live_configuration = "ok"
+    except Exception as error:
+        live_configuration = f"{type(error).__name__}: {error}"
+        problems.append(f"live configuration refused: {live_configuration}")
+    if dearest is None:
+        problems.append("a role has no verified price, so the lab cannot bound the hold")
+    elif hold > campaign_cap:
+        problems.append(f"campaign hold {hold} exceeds the campaign cap {campaign_cap}")
+    monthly = float(monthly_cap if monthly_cap is not None else settings.faultlab_monthly_dollar_cap)
+    ledger: dict = {"monthly_cap": monthly}
+    path = Path(settings.spend_ledger_path)
+    if path.exists():
+        summary = SpendLedger(path).summary()
+        room = round(monthly - summary.committed, 4)
+        ledger.update({"path": str(path), "month": summary.month, "calls": summary.calls, "committed": summary.committed,
+                       "settled_actual": summary.settled_actual, "reserved_bound": summary.reserved_bound, "room": room})
+    else:
+        room = monthly
+        ledger.update({"path": str(path), "note": "no ledger file yet: the month starts at zero", "room": room})
+    worst = None if dearest is None else round(study_calls * dearest, 4)
+    ledger["study_worst_case"] = worst
+    if worst is not None and worst > room:
+        problems.append(f"the month's room {room} is below the study's worst case {worst} "
+                        f"(every one of its {study_calls} calls at the {dearest} bound)")
+    return {"study": study, "roles": roles, "dearest_bound": dearest, "protected_calls": protected,
+            "study_calls": study_calls, "hold": hold, "campaign_cap": campaign_cap, "live_configuration": live_configuration,
+            "ledger": ledger, "problems": problems, "admissible": not problems}
 
 
 def live_environment(model: str, *, lab_model: str, dollar_cap: float, monthly_cap: float | None) -> dict:
@@ -245,14 +326,27 @@ def main(argv=None) -> int:
                         help="after the study ends, wait up to this long for queued telemetry uploads to drain before stopping")
     parser.add_argument("--backend-port", type=int, default=8000)
     parser.add_argument("--simulator-port", type=int, default=8001)
+    parser.add_argument("--dry-run", action="store_true",
+                        help="print what admission would decide (the campaign hold, the caps, the month's room) and exit; "
+                             "nothing is created, started or called")
     args = parser.parse_args(argv)
 
-    run_dir = args.data_dir.expanduser().resolve()
-    run_dir.mkdir(parents=True, exist_ok=True)
     text = args.declaration.expanduser().read_bytes()
     digest = hashlib.sha256(text).hexdigest()
     if digest != args.declaration_sha256:
         raise SystemExit(f"Declaration sha256 mismatch: {digest}")
+    if args.dry_run:
+        env = live_environment(args.model, lab_model=args.lab_model or args.model, dollar_cap=args.dollar_cap,
+                               monthly_cap=args.monthly_cap)
+        with applied_environment(env):
+            from app.config import Settings
+            settings = Settings.from_env()
+        preview = admission_preview(settings, study=args.study, monthly_cap=args.monthly_cap)
+        preview.update({"model": args.model, "lab_model": args.lab_model or args.model, "declaration_sha256": digest})
+        print(json.dumps(preview, indent=2))
+        return 0 if preview["admissible"] else 2
+    run_dir = args.data_dir.expanduser().resolve()
+    run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "DECLARATION.copy.json").write_bytes(text)
     for port in (args.backend_port, args.simulator_port):
         if not port_free(port):

@@ -65,6 +65,11 @@ Two caps apply to every priced call:
   worst it could cost (until 2026-10-24 the gate summed bounds only, and a cap of 400 meant about 50
   dollars of spend). A crash between reserve and settle leaves the bound charged.
 
+Before declaring a paid run, `scripts/experiments/baseline_screen.py --dry-run ...` (the same arguments as
+the run) prints what admission would decide: the campaign hold (protected calls plus the study's calls at
+the dearest role's per-call bound) against the campaign cap, the live configuration, and the month's
+committed total and room. Nothing is created, started or called; exit code 2 means the run would be refused.
+
 Unpriced models (no verified rate) reserve nothing and report `cost_usd` as unknown; campaigns refuse
 them at admission, smoke checks allow them.
 
