@@ -1274,6 +1274,16 @@ attempts = $1.59 (`artifacts/claude-lab-loop-probe-2026-10/piece-d/LEDGER.piece-
 five). Project ledger carried forward: $1,263.98 + $286.93 = **$1,550.91** (bounds, as always).
 Read-outs: `docs/CLAUDE_LAB_LOOP_PROBE_2026-10.md`.
 
+## Ledger entry 2026-10-25: first run on the subscription channel (claude-code provider)
+
+One declared baseline study, `claude-code:claude-haiku-5-5`, through the Claude Code CLI on the owner's
+subscription (`~/FaultLab_Runs/2026-10-25/claude-code-channel-smoke/`, declaration sha256 `0f464e28…4573`,
+commit `fc9dc45`): COMPLETED, 18 live episodes, 15 completed and 3 violations (all dev-5 through C5, the
+pattern phase B saw for Haiku on the API), all 18 episodes `weave_verified`, 90 calls, 236 seconds.
+Money: **$0** (91 ledger rows at zero); API-equivalent cost $0.056, the shadow price the campaign ledger
+charged. Project ledger carried forward unchanged at **$1,550.91** (bounds); the channel's equivalent
+figures are reported, never added. A smoke of the channel, not a screen result.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

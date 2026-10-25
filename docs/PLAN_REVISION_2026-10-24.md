@@ -253,3 +253,14 @@ C blocked at admission (one valid control study; the two-study publish `9af2ba1`
 complete (five studies, all NO_CHANGE at controls, $1.48; published `0de4133`, `b45ad73`), E withdrawn.
 Write-ups and ledger lines are on `main` (`856ca5c`). The project ledger stands at $1,550.91 in holds; the
 October bill was $23.41.
+
+## Addendum (2026-10-25): the subscription channel exists and ran a study
+
+Done after this page was written, with the owner's go-ahead: the monthly ledger gates on committed dollars
+(`ba82842`), the driver has `--dry-run` (`82da7fd`), the `claude-code` provider is in (`fc9dc45`,
+"Claude Code: the subscription channel" in `docs/providers.md`), `.env` names the real W&B project, and
+the owner logged the standalone CLI in. The first declared study on the channel
+(`~/FaultLab_Runs/2026-10-25/claude-code-channel-smoke/`, Haiku, the frozen baseline study): COMPLETED in
+236 seconds, 15 completed and 3 violations out of 18 (all dev-5 through C5, as phase B found for Haiku on the
+API), every episode's evidence `weave_verified`, 90 calls, $0 of money, $0.056 API-equivalent. The channel
+is ready for development runs and the Claude Agent SDK adapter; public numbers stay on the API.
