@@ -271,3 +271,16 @@ The Claude Agent SDK adapter (`claude-agent`, Stage 2.6's first harness cell, co
 ran the orders pack's six scenarios with Haiku 5.5 as Claude Code on the subscription: five completed clean,
 the rejected-upgrade case the familiar C5 slip, 55 seconds and $0.013 equivalent for the batch. The channel and
 the adapter are what section 6 asked for; the Mechanic-as-Claude-Code and the violation-gap manifest remain.
+
+## Addendum (2026-10-25, evening): the violation-gap manifest of section 6 is withdrawn
+
+Reading the code behind section 6's proposal showed it cannot produce a repair. The completion study's
+gates are completion counts, which dev-5 (expected `CORRECTLY_REJECTED`) can never satisfy, and, the
+real blocker, neither the legacy policy DSL nor the effectsafe rule language has a step that can act on
+a report label; the dev-5 violation is a label slip (`NOT_STARTED` where the convention is
+`NOT_REQUIRED`, every belief true). A Mechanic shown that counterexample has no vocabulary that repairs
+it, so the study would end `NO_CHANGE` by construction. The design that can answer the question, one
+report-gate step (`require_label`) in effectsafe plus a v2 repair study with Claude Code as the
+Mechanic, its pre-registered read-outs, cost and the decisions needed, is in
+[VIOLATION_GAP_DESIGN_2026-10-25.md](VIOLATION_GAP_DESIGN_2026-10-25.md). Stage 4.5's "redesign first"
+is that note.
