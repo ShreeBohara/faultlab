@@ -25,7 +25,7 @@ def run(coro):
 def test_the_registry_resolves_reviewed_adapters_with_identities():
     adapters = load_adapters()
     assert [a.adapter_id for a in adapters] == ["reference-orders"]            # the model adapter needs settings
-    assert adapter_ids() == ["reference-orders", "model-actor"]
+    assert adapter_ids() == ["reference-orders", "model-actor", "claude-agent"]
     reference = load_adapter("reference-orders")
     assert isinstance(reference, BaseAdapter) and is_digest(reference.digest) and reference.digest == ReferenceOrdersAdapter().digest
     manifest = reference.manifest()

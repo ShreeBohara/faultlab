@@ -11,6 +11,8 @@ ADAPTERS: dict[str, tuple[str, str]] = {
     "reference-orders": ("faultlab.adapters.reference", "ReferenceOrdersAdapter"),
     # Needs settings: provider (the legacy RuntimeProvider shape) and model (canonical name).
     "model-actor": ("faultlab.adapters.model_actor", "ModelActorAdapter"),
+    # Needs settings: model (an API model id, run through the Claude Code CLI on the owner's subscription).
+    "claude-agent": ("faultlab.adapters.claude_agent", "ClaudeAgentAdapter"),
 }
 
 

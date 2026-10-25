@@ -76,6 +76,29 @@ its label citations decoded; an invalid answer costs a turn and a transport loss
 the reserved final turn is a report or nothing; a second transport loss is an infrastructure error
 with the cost marked unknown.
 
+## The Claude Agent adapter
+
+`claude-agent` (`faultlab/adapters/claude_agent.py`, 2026-10-25) is Claude Code itself as the agent
+under test: one trial is one Claude Code session through the first-party `claude-agent-sdk`
+(pinned in `backend/requirements.txt`), on the owner's subscription. The pack's tools are served to
+the agent as an in-process MCP server named `faultlab` (`get_order`, `get_operation_status`,
+`update_order`, `send_confirmation`, `report`); every call goes through the `TrialSession`, so the
+journal, the kernel transport and the checks are the same as for any adapter. The agent ends the
+trial by calling `report`; its citations are the `obs-N` labels of delivered observations, decoded
+exactly and never repaired. Each assistant turn is one charged model call (`max_turns` is the
+session's cap), tokens come from the turn's usage, and dollars are the API-equivalent price of the
+model (the subscription's shadow price). The CLI runs with no setting sources, no built-in tools, no
+other MCP servers, an empty working directory and a scrubbed environment in which no API key exists.
+The prompt is this adapter's own (its hash is the prompt digest); the settings digest pins the SDK
+version, the tool schemas and the labelling rule. `faultlab run --adapter claude-agent --model
+claude-haiku-5-5 --execute-live --dollars <bound>` runs it; `FAULTLAB_CLAUDE_CODE_BIN` names the CLI.
+
+`backend/tests/v2/test_claude_agent.py`: identity and registry; a scripted harness (a fake `query`
+that calls the adapter's tool handlers) completes the healthy, delayed and rejected scenarios through
+the legacy checks with its label citations decoded; an invalid report is refused and corrected; a
+harness that never reports ends without one; a harness failure is an infrastructure error; the
+environment the CLI would inherit carries no API key and is restored afterwards.
+
 Not in this cut: the native smolagents and local `decide()` adapters, recovery policies through the
 session, and a live run of the model Actor (needs the owner's key; the first one is a declared,
 paid study on the Mac).

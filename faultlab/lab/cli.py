@@ -37,19 +37,22 @@ def build_referee(name: str, pack_id: str):
 
 def build_adapter(args):
     """The registered adapter; the model Actor needs a model, explicit live authorization and the owner's settings."""
-    if args.adapter != "model-actor":
+    if args.adapter not in ("model-actor", "claude-agent"):
         if args.model or args.execute_live:
-            raise ValueError("--model and --execute-live apply to the model-actor adapter only")
+            raise ValueError("--model and --execute-live apply to the model-actor and claude-agent adapters only")
         return load_adapter(args.adapter)
     if not args.model:
-        raise ValueError("model-actor needs --model provider:model")
+        raise ValueError(f"{args.adapter} needs --model (provider:model for model-actor; an API model id for claude-agent)")
     if not args.execute_live:
-        raise ValueError("model-actor makes paid provider calls; pass --execute-live to authorize them (declaration and ledger entry first)")
+        raise ValueError(f"{args.adapter} makes live model calls; pass --execute-live to authorize them (declaration and ledger entry first)")
     if args.dollars <= 0:
-        raise ValueError("a paid run needs a positive --dollars bound per trial and batch")
+        raise ValueError("a live run needs a positive --dollars bound per trial and batch")
     from app.config import Settings
-    from app.providers.runtime import RuntimeProvider
     settings = Settings.from_env()
+    if args.adapter == "claude-agent":
+        # The Claude Code CLI on the owner's subscription: no API key is used; the bound is the API-equivalent price.
+        return load_adapter("claude-agent", model=args.model, cli_path=settings.faultlab_claude_code_bin.strip() or None)
+    from app.providers.runtime import RuntimeProvider
     provider = RuntimeProvider(settings, live_authorized=True)
     return load_adapter("model-actor", provider=provider, model=args.model)
 
