@@ -44,11 +44,20 @@ def _backend_on_path() -> None:
         sys.path.append(str(backend))
 
 
+def load_rule_policy(path):
+    """A recovery-rule policy from a JSON file (``faultlab.lab.rules``), or None without one."""
+    if path is None:
+        return None
+    from faultlab.lab.rules import policy_from_json
+    return policy_from_json(Path(path).read_text(encoding="utf-8"))
+
+
 def build_adapter(args):
     """The registered adapter; the model Actor needs a model, explicit live authorization and the owner's settings."""
+    policy = load_rule_policy(getattr(args, "rule_policy", None))
     if args.adapter not in ("model-actor", "claude-agent"):
-        if args.model or args.execute_live:
-            raise ValueError("--model and --execute-live apply to the model-actor and claude-agent adapters only")
+        if args.model or args.execute_live or policy is not None:
+            raise ValueError("--model, --execute-live and --rule-policy apply to the model-actor and claude-agent adapters only")
         return load_adapter(args.adapter)
     if not args.model:
         raise ValueError(f"{args.adapter} needs --model (provider:model for model-actor; an API model id for claude-agent)")
@@ -61,10 +70,10 @@ def build_adapter(args):
     settings = Settings.from_env()
     if args.adapter == "claude-agent":
         # The Claude Code CLI on the owner's subscription: no API key is used; the bound is the API-equivalent price.
-        return load_adapter("claude-agent", model=args.model, cli_path=settings.faultlab_claude_code_bin.strip() or None)
+        return load_adapter("claude-agent", model=args.model, cli_path=settings.faultlab_claude_code_bin.strip() or None, rule_policy=policy)
     from app.providers.runtime import RuntimeProvider
     provider = RuntimeProvider(settings, live_authorized=True)
-    return load_adapter("model-actor", provider=provider, model=args.model)
+    return load_adapter("model-actor", provider=provider, model=args.model, rule_policy=policy)
 
 
 def main(argv=None) -> int:
@@ -87,6 +96,7 @@ def main(argv=None) -> int:
     parser.add_argument("--bundle", default=None, help="also write the batch's envelopes as a bundle (zip) at this path")
     parser.add_argument("--model", default=None, help="model-actor only: the canonical model to run (provider:model), paid")
     parser.add_argument("--execute-live", action="store_true", help="model-actor only: authorize paid provider calls (needs the owner's .env)")
+    parser.add_argument("--rule-policy", default=None, help="model-actor and claude-agent: a JSON recovery-rule policy run at the report gate")
     args = parser.parse_args(argv)
     try:
         pack = load_pack(args.pack)

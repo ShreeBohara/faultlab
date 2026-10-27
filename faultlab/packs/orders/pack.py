@@ -44,6 +44,14 @@ TOOLS = (
                  retry_safe_errors=frozenset({"TRANSIENT_UNAVAILABLE"})),
 )
 HOOKS = ("after_upgrade_response", "before_confirmation", "after_notification_response", "before_final_report")
+# What a recovery rule may call the two operations (``faultlab.lab.rules``): the trial's own operation ids come
+# from the intent, the status tool reads them, and each operation's outcome is one claim of the report.
+OPERATION_ALIASES = {
+    "upgrade": {"intent_key": "upgrade_operation_id", "service": "orders", "write_tool": "update_order",
+                "status_tool": "get_operation_status", "claim": "upgrade_outcome"},
+    "notification": {"intent_key": "notification_operation_id", "service": "notifications", "write_tool": "send_confirmation",
+                     "status_tool": "get_operation_status", "claim": "notification_outcome"},
+}
 
 
 def _scenario(case_id, label, description, fixture_id, seed, primitives, expected_class):
@@ -185,7 +193,8 @@ PACK = TaskPack(
     intent_model=m.TaskIntent, report_model=m.TaskReport, allocate_intent=allocate_intent,
     tools=TOOLS, hooks=HOOKS, fixtures=tuple(FIXTURE_VERSIONS), scenarios=SCENARIOS, properties=PROPERTIES,
     diagnostics={"profiles": {profile: dict(hashes) for profile, hashes in PROFILE_HASHES.items()}},
+    operation_aliases=OPERATION_ALIASES,
 )
 
-__all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "KERNEL_REFUSALS", "PACK", "PROPERTIES", "SCENARIOS", "TOOLS", "VERSION",
+__all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "KERNEL_REFUSALS", "OPERATION_ALIASES", "PACK", "PROPERTIES", "SCENARIOS", "TOOLS", "VERSION",
            "allocate_intent", "service_of", "validate_result"]

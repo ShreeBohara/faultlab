@@ -42,6 +42,9 @@ by the fixed checks through the bridge, then the bench board over the bundle.
 ```
 
 Inside a test suite, the same run is `faultlab_lab.run(...)` plus `assert_clean()` (`TESTING.md`).
+The research track's first study runs the same way: `faultlab study repair --adapter reference-orders
+--mechanic none ...` offline (the gate stays closed: the reference agent never slips), or with the live
+adapters, a rule policy and the Claude Code Mechanic (`REPAIR_STUDY.md`).
 
 ## Not there yet (Stage 1 remainder)
 

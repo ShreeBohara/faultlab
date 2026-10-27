@@ -216,3 +216,25 @@ About three working sessions before the smoke. Nothing in `backend/app` changes.
 4. Choose the pilot's Actor and budget. Recommended: Haiku first, a $2 bound on the API; Sonnet second
    with twelve controls, only if the Haiku pilot repairs.
 5. Whether to run Option C alongside, at $0.
+
+## Build record (2026-10-26)
+
+The owner approved option B on 2026-10-26 ("Yes, build it"). Built and on main, with no change to
+`backend/app`, any check, gate or threshold:
+
+- `require_label` in `effectsafe/rules.py` (B.1): a report-gate step that blocks, never rewrites;
+  write gates ignore it; a missing label never passes.
+- The report gate in both live adapters (B.2): `faultlab/lab/rules.py` runs a `RulePolicy` at
+  `before_final_report`; the policy is recorded as the trial's first `rule_step` event, every
+  proposal's verdict as another, and it changes the adapter's settings digest. Operation aliases
+  live in the orders pack outside its manifest. `faultlab run --rule-policy`.
+- The study (B.3, B.4): `faultlab/research/repair_study.py`, the Claude Code Mechanic with the
+  pre-registered redaction, `faultlab study repair`, the record with the seven read-outs
+  ([docs/v2/REPAIR_STUDY.md](v2/REPAIR_STUDY.md)).
+- Tests: `test_effectsafe.py` (the step), `test_report_gate.py` (seven tests through both adapters),
+  `test_repair_study.py` (five tests, scripted agents and Mechanic). The v2 suite: 140 passed.
+
+Two things the build settled beyond the note. Each trial of a stage runs with a fresh adapter, so no
+state crosses trials. And a wrong rule hurts every case it fires on: the overreach test shows a rule
+keyed on a succeeded upgrade losing both the healthy and the delayed-upgrade case, which is what the
+validation stage is for.

@@ -1,0 +1,77 @@
+# The repair study (stage 4.5, first design)
+
+Design and rationale: [VIOLATION_GAP_DESIGN_2026-10-25.md](../VIOLATION_GAP_DESIGN_2026-10-25.md),
+option B. Code: `faultlab/research/repair_study.py` (the study), `faultlab/research/mechanic.py`
+(the Mechanic), `faultlab/research/cli.py` (`faultlab study repair`). Nothing in `faultlab/research`
+imports `backend/app`; the legacy referee scores envelopes through the bridge when asked.
+
+## The question
+
+Claude Actors' only failure on the public cases is a report-contract slip on dev-5: after a rejected
+upgrade the confirmation is labelled `NOT_STARTED` where the convention is `NOT_REQUIRED`, every belief
+true (oracle rule `notification_label_after_rejection`, legacy C5). Can a Mechanic, shown one such
+trial, propose a runtime rule that repairs it without hurting anything else?
+
+## Stages, every one pre-registered
+
+1. **Controls.** `source_controls` (default 6) trials of the source case (dev-5) and
+   `healthy_controls` (3) of the healthy case (dev-1), no rule. The gate opens when at least
+   `gap_min` (3) valid source controls carry the target finding and at least `healthy_min_valid` (2)
+   healthy controls are valid with no conformance finding. A closed gate ends the study (`NO_CHANGE`)
+   having spent only the controls.
+2. **Mechanic.** One fresh session per proposal slot (`slots`, default 2) on the first source control
+   carrying the target finding, shown as a redacted counterexample: the scenario (public), every
+   observation the agent was shown, its report, the journal outcomes, the conformance findings as
+   rule id plus the public one-line meaning of the check they reproduce (the oracle's detail sentence
+   is withheld, `REDACTION = oracle-rule-id-and-public-check-meaning/v1`), the beliefs, and the task
+   outcome. A proposal that does not validate (shape, hook, alias, claim) spends its slot. Slots are
+   independent: nothing from a later stage reaches the Mechanic (`validation_feedback_forbidden`).
+3. **Candidate.** `pairs` (3) fresh trials of the source case under no rule (B0) and under the
+   proposal (L). Qualified only if every L trial is valid, carries neither the target nor any other
+   conformance finding, has no false belief and reaches the expected outcome. B0 is pooled with the
+   controls for the reported gap, not gated.
+4. **Validation.** The other public cases (dev-1, dev-2, dev-3, dev-4, dev-6), `pairs` per arm. The
+   proposal passes only if every L trial is valid and no case gains a conformance finding or a false
+   belief or loses its expected outcome relative to B0, and the `must_complete` cases (dev-1, dev-6)
+   complete in every L trial.
+5. **Decision.** `REPAIRED` at the first proposal that passes validation; `NO_CHANGE` when the gate
+   did not open or no proposal passed; `INCOMPLETE` when a stage could not run (admission refused,
+   worker stopped, infrastructure).
+
+A valid trial completed its execution, delivered a report and fired every scheduled fault. Each trial
+runs with a fresh adapter (no state crosses trials). Every batch is capped at its trials' bound; the
+study refuses to start when its maximum bound exceeds `--study-dollars`. The record
+(`repair-study.json`) is rewritten after every stage and carries the design digest, the pack digest,
+the rule-language digest, the Mechanic's identity, every stage's rows, counts, cost and bundle, every
+proposal verbatim, the decision and the seven read-outs of the design note.
+
+## The Mechanic
+
+`ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same
+scrubbed environment and empty working directory as the Claude Agent adapter, three MCP tools
+(`get_counterexample`, `get_rule_language`, `propose_rule`), no files, no network, `max_turns` 8.
+Turns and tokens are accounted and shadow-priced at the model's API rates. `ScriptedMechanic` proposes
+given policies for tests and plumbing checks; a run with it is labelled as such and is not repair
+evidence (the standing rule of CURRENT_STATUS.md).
+
+## Running it
+
+```bash
+.venv/bin/python -m faultlab study repair --store <trials.sqlite3> --out <dir> \
+  --adapter claude-agent --model claude-haiku-5-5 --execute-live --dollars 0.034 \
+  --mechanic claude-agent --mechanic-model claude-sonnet-5-5 --mechanic-dollars 0.84 \
+  --study-dollars 4.5 --declaration <DECLARATION.json>
+```
+
+Offline plumbing: `--adapter reference-orders --mechanic none` (the reference agent never slips, so
+the gate stays closed) or `--mechanic scripted:<policies.json>`. The defaults are the design note's
+(6/3 controls, gap 3, 3 pairs, 2 slots, the five validation cases, `must_complete` dev-1 and dev-6).
+
+## Evidence
+
+`backend/tests/v2/test_repair_study.py`: a closed gate ends at the controls without consulting the
+Mechanic; a slipping agent opens the gate and the right rule is `REPAIRED` through candidate and
+validation (the redacted view checked field by field, bundles per batch, read-outs); an invalid
+proposal spends its slot and a rule that does not fire is not qualified; a rule that repairs the
+source but blocks truthful reports elsewhere fails validation; the declared-cap refusal and the
+command offline.

@@ -4,8 +4,9 @@ A policy is a list of rules; a rule fires at one *hook* (a named point in a work
 by the pack or the integration) when a *condition* about one operation holds, and runs a short
 list of *steps*. Steps are the only side effects a rule can have, every step is bounded by the
 caller's limits, and no step rewrites the agent's own report: a rule may block a dependent
-write, request a status read or a wait, resend the pinned bytes, require a receipt, or ask the
-workflow to end unresolved or with a terminal failure.
+write, request a status read or a wait, resend the pinned bytes, require a receipt or a report
+label, or ask the workflow to end unresolved or with a terminal failure. A label requirement can
+only block a report, which the agent then re-proposes; nothing rewrites a label.
 
 Conditions are evaluated against the journal only (delivered evidence), never against the
 agent's beliefs. This is the legacy ``PolicyState``/``PolicyInterpreter`` made generic over
@@ -21,8 +22,10 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from effectsafe.journal import Journal
 
 Condition = Literal["always", "receipt_missing", "pending", "outcome_uncertain", "terminal_failure", "succeeded"]
-Op = Literal["read_status", "wait", "retry_original", "require_receipt", "report_terminal_failure", "defer_unresolved"]
+Op = Literal["read_status", "wait", "retry_original", "require_receipt", "report_terminal_failure", "defer_unresolved", "require_label"]
 MAX_STEPS_PER_HOOK = 32
+MAX_EXPECTED_LABELS = 8
+MAX_LABEL_LENGTH = 40
 
 
 class Step(BaseModel):
@@ -31,16 +34,25 @@ class Step(BaseModel):
     operation: str | None = None                 # which operation the step is about (not for wait/defer)
     ticks: int | None = Field(default=None, ge=1, le=20)
     only_if: Condition = "always"
+    claim: str | None = Field(default=None, min_length=1, max_length=80)      # require_label: which report claim
+    expect: tuple[str, ...] | None = Field(default=None, min_length=1, max_length=MAX_EXPECTED_LABELS)   # the labels it may carry
 
     @model_validator(mode="after")
     def shape(self):
-        needs_operation = self.op in ("read_status", "retry_original", "require_receipt", "report_terminal_failure")
+        needs_operation = self.op in ("read_status", "retry_original", "require_receipt", "report_terminal_failure", "require_label")
         if needs_operation and not self.operation:
             raise ValueError(f"{self.op} names an operation")
         if self.op == "wait" and self.ticks is None:
             raise ValueError("wait needs ticks")
         if self.only_if != "always" and not self.operation and self.op in ("wait", "defer_unresolved"):
             raise ValueError("a conditional wait or defer names the operation its condition is about")
+        if self.op == "require_label":
+            if not self.claim or not self.expect:
+                raise ValueError("require_label names a claim and the labels it may carry")
+            if any(not label or len(label) > MAX_LABEL_LENGTH for label in self.expect):
+                raise ValueError(f"a required label is 1 to {MAX_LABEL_LENGTH} characters")
+        elif self.claim is not None or self.expect is not None:
+            raise ValueError("claim and expect belong to require_label")
         return self
 
 
@@ -108,13 +120,16 @@ class Interpreter:
         self.visited: set[tuple[str, str]] = set()
 
     async def invoke(self, hook: str, proposal_id: str, *, gate: Literal["write", "report"] = "write",
-                     claims: dict | None = None) -> HookResult:
+                     claims: dict | None = None, labels: dict | None = None) -> HookResult:
         """Run every rule of ``hook`` once for this proposal; a hook never re-enters for the same proposal.
 
         ``gate`` says what the hook guards. A ``write`` gate blocks the dependent write whenever a
         required receipt is missing, whatever else is passed. A ``report`` gate blocks only a report
         that claims ``SUCCEEDED`` for an operation without a receipt (``claims`` maps operation to
         the claimed outcome; a missing claim counts as a success claim, so silence never passes).
+        ``labels`` maps a report claim to the label the report carries: at a ``report`` gate a
+        ``require_label`` step blocks a report whose label for its claim is not among the expected
+        ones (a missing label never passes); a ``write`` gate ignores label requirements.
         """
         key = (hook, proposal_id)
         if key in self.visited:
@@ -122,6 +137,7 @@ class Interpreter:
         self.visited.add(key)
         result = HookResult()
         requirements: list[str] = []
+        label_requirements: list[tuple[str, tuple[str, ...]]] = []
         for rule in self.policy.rules:
             if rule.hook != hook or not holds(self.journal, rule.operation, rule.when):
                 continue
@@ -147,6 +163,8 @@ class Interpreter:
                         await self.executor.resend(target)
                 elif step.op == "require_receipt":
                     requirements.append(target)
+                elif step.op == "require_label":
+                    label_requirements.append((step.claim, step.expect))
                 elif step.op == "report_terminal_failure":
                     state = _state(self.journal, target)
                     if state is None or state.outcome != "FAILED":
@@ -166,4 +184,9 @@ class Interpreter:
             if gate == "write" or (claims or {}).get(operation, "SUCCEEDED") == "SUCCEEDED":
                 result.blocked = True
             result.reasons.append(f"RECEIPT_REQUIRED:{operation}")
+        if gate == "report":
+            for claim, expected in label_requirements:
+                if (labels or {}).get(claim) not in expected:
+                    result.blocked = True
+                    result.reasons.append(f"LABEL_REQUIRED:{claim}:{'|'.join(expected)}")
         return result

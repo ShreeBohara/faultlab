@@ -8,8 +8,9 @@ protocol, named by its journal position), the same final-turn rule (the last all
 be a report), the same handling of an invalid answer (it costs a turn, the model is told, nothing
 is repaired) and the same blind-retry rule (one retry of the identical request only when no
 answer arrived). What differs is where the tools go: through the ``TrialSession`` (effectsafe
-journal, kernel transport) instead of the legacy broker. Recovery policies (the interpreter
-hooks) are not part of this cut: the empty baseline policy is what the screens ran.
+journal, kernel transport) instead of the legacy broker. Recovery policies run at one hook only,
+the report gate (``faultlab.lab.rules``), and only when the adapter is given a ``rule_policy``;
+without one the empty baseline policy is what the screens ran.
 
 The provider is anything with the legacy ``RuntimeProvider.complete`` shape; the tests use a
 scripted one, a live run passes the real one. Legacy modules are imported lazily, like the
@@ -25,7 +26,9 @@ from typing import Any, Protocol
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
+from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
+from faultlab.packs import load_pack
 
 ADAPTER_ID = "model-actor"
 VERSION = "1"
@@ -72,16 +75,25 @@ def legacy_observation(observation: dict, episode_id: str, models) -> dict:
 
 
 class ModelActorAdapter(BaseAdapter):
-    def __init__(self, provider: Provider, model: str, *, protocol: str = PROTOCOL_V4, turn_timeout_seconds: float = TURN_TIMEOUT_SECONDS):
+    def __init__(self, provider: Provider, model: str, *, protocol: str = PROTOCOL_V4, turn_timeout_seconds: float = TURN_TIMEOUT_SECONDS,
+                 rule_policy: Any = None):
         if protocol not in SUPPORTED_PROTOCOLS:
             raise ValueError(f"Unsupported actor context protocol {protocol!r}; this adapter runs {SUPPORTED_PROTOCOLS}")
         actor, progress, _, _, runtime = _legacy()
         self.provider, self.model, self.protocol, self.turn_timeout_seconds = provider, model, protocol, turn_timeout_seconds
+        # A recovery-rule policy (effectsafe rules at the report gate) is part of what this agent carries: refused here
+        # if it names a hook or an operation the gate does not run; it changes the settings digest.
+        self.rule_policy = policy_from_json(rule_policy) if rule_policy is not None else None
+        if self.rule_policy is not None:
+            check_policy(self.rule_policy, load_pack(PACK_ID))
         descriptor = progress.actor_context_protocol(protocol)
         settings = {"actor_context_protocol": protocol, "actor_context_protocol_hash": descriptor["descriptor_hash"],
                     "actor_response_protocol": runtime.ACTOR_RESPONSE_PROTOCOL_VERSION,
                     "actor_response_protocol_hash": content_hash(runtime.actor_response_protocol()),
                     "max_output_tokens": MAX_OUTPUT_TOKENS, "turn_timeout_seconds": turn_timeout_seconds, "blind_retries": 1}
+        if self.rule_policy is not None:
+            settings["rule_policy"] = self.rule_policy.model_dump(mode="json")
+            settings["rule_hooks"] = list(SUPPORTED_HOOKS)
         self.spec = AdapterSpec(adapter_id=ADAPTER_ID, version=VERSION, model=model, packs=[PACK_ID],
                                 description="The legacy reference Actor's prompt loop on a model provider, through the v2 session.",
                                 settings_digest=content_hash(settings), prompt_digest=actor.ACTOR_PROMPT_HASH)
@@ -94,6 +106,8 @@ class ModelActorAdapter(BaseAdapter):
         messages = [{"role": "system", "content": actor.ACTOR_PROMPT},
                     {"role": "user", "content": models.canonical_json({"task": i, "output_schema": actor.ACTION_ADAPTER.json_schema()})}]
         episode_id = session.attempt_id
+        gate = ReportGate(self.rule_policy, session.pack, session)
+        gate.declare()
         while session.usage.model_calls < caps:
             final = session.usage.model_calls + 1 >= caps
             shown = [legacy_observation(o.model_dump(mode="json"), episode_id, models) for o in session.observations]
@@ -141,7 +155,16 @@ class ModelActorAdapter(BaseAdapter):
                 report = action.report
                 if self.protocol in progress.INDEXED_EVIDENCE_PROTOCOLS:
                     report = report.model_copy(update={"evidence_ids": progress.decode_citations(report.evidence_ids, shown)})
-                session.submit(report.model_dump(mode="json"))
+                proposal = report.model_dump(mode="json")
+                verdict = await gate.check(proposal)
+                if verdict is not None and verdict.blocked:
+                    # A runtime rule refused the proposal: nothing was recorded, the model is told why, the turn is spent.
+                    messages.extend([{"role": "assistant", "content": generation.content},
+                                     {"role": "user", "content": models.canonical_json({"report_blocked": verdict.reasons, "instruction":
+                                         "A runtime rule refused this report; nothing was recorded. Re-read the delivered evidence and "
+                                         "return a truthful report action; this correction consumes a turn."})}])
+                    continue
+                session.submit(proposal)
                 return None
             if final:
                 messages.append({"role": "user", "content": "A report was required on the reserved final turn; no business call executed."})

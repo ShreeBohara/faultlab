@@ -34,7 +34,9 @@ from typing import Any, Callable
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
+from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
+from faultlab.packs import load_pack
 
 ADAPTER_ID = "claude-agent"
 VERSION = "1"
@@ -124,13 +126,18 @@ class ClaudeAgentAdapter(BaseAdapter):
     """Claude Code, through the Claude Agent SDK, driving the orders pack's tools as an MCP server."""
 
     def __init__(self, model: str, *, cli_path: str | None = None, rates: tuple[float, float] | None = None,
-                 query: Callable[..., Any] | None = None, sdk_version: str | None = None):
+                 query: Callable[..., Any] | None = None, sdk_version: str | None = None, rule_policy: Any = None):
         if model.startswith(f"{CHANNEL}:"):
             model = model[len(CHANNEL) + 1:]
         if not model.strip():
             raise ValueError("The Claude Agent adapter needs a model id, e.g. claude-sonnet-5-5")
         self.model, self.cli_path, self.query = model.strip(), cli_path, query
         self.rates = rates if rates is not None else shadow_rates(self.model)
+        # A recovery-rule policy (effectsafe rules at the report gate) is part of what this agent carries: it is
+        # refused here if it names a hook or an operation the gate does not run, and it changes the settings digest.
+        self.rule_policy = policy_from_json(rule_policy) if rule_policy is not None else None
+        if self.rule_policy is not None:
+            check_policy(self.rule_policy, load_pack(PACK_ID))
         version = sdk_version
         if version is None:
             try:
@@ -142,6 +149,9 @@ class ClaudeAgentAdapter(BaseAdapter):
                     "report_schema": REPORT_SCHEMA, "status_schema": STATUS_SCHEMA, "max_output_tokens": MAX_OUTPUT_TOKENS,
                     "setting_sources": [], "builtin_tools": [], "evidence_label_prefix": EVIDENCE_LABEL_PREFIX,
                     "citation_decode": "exact-match label lookup over observations delivered in this trial; unknown labels pass through unchanged"}
+        if self.rule_policy is not None:
+            settings["rule_policy"] = self.rule_policy.model_dump(mode="json")
+            settings["rule_hooks"] = list(SUPPORTED_HOOKS)
         self.spec = AdapterSpec(adapter_id=ADAPTER_ID, version=VERSION, model=f"{CHANNEL}:{self.model}", packs=[PACK_ID],
                                 description="Claude Code (the Claude Agent SDK) driving the pack's tools as an MCP server, on the owner's subscription.",
                                 settings_digest=content_hash(settings), prompt_digest=PROMPT_DIGEST)
@@ -150,6 +160,7 @@ class ClaudeAgentAdapter(BaseAdapter):
         self._done = False
         self._failure: BaseException | None = None
         self._workdir: str | None = None
+        self._gate: ReportGate | None = None
 
     # -- the tools the agent sees -------------------------------------------------------------------
 
@@ -199,14 +210,14 @@ class ClaudeAgentAdapter(BaseAdapter):
         """One tool call from the agent, as the MCP server delivers it; the fake query of the tests calls this too."""
         arguments = dict(arguments or {})
         if name == "report":
-            return self._report(arguments)
+            return await self._report(arguments)
         try:
             tool, request = self._request(name, arguments)
         except ValueError as error:
             return {"content": [{"type": "text", "text": f"Invalid arguments: {error}"}], "is_error": True}
         return await self._call(tool, request)
 
-    def _report(self, arguments: dict) -> dict:
+    async def _report(self, arguments: dict) -> dict:
         session = self._session
         assert session is not None
         if session.report_submitted:
@@ -223,7 +234,17 @@ class ClaudeAgentAdapter(BaseAdapter):
                       if hasattr(error, "errors") else [{"location": [], "type": type(error).__name__}])
             return {"content": [{"type": "text", "text": json.dumps({"report_errors": issues, "instruction":
                     "Your report failed the schema. Call report again with only its declared fields and values."})}], "is_error": True}
-        session.submit(report.model_dump(mode="json"))
+        proposal = report.model_dump(mode="json")
+        gate = await self._gate.check(proposal) if self._gate is not None else None
+        if gate is not None and gate.blocked:
+            # A runtime rule refused the proposal: nothing was recorded, the agent is told why and may call report
+            # again within its turn budget. Observations a rule step delivered are named like every other.
+            count = len(session.observations)
+            fresh = [self._label(index) for index in range(count - self._gate.last_new_observations + 1, count + 1)]
+            return {"content": [{"type": "text", "text": json.dumps({"report_blocked": gate.reasons, "new_observations": fresh, "instruction":
+                    "A runtime rule refused this report; nothing was recorded. Re-read the delivered evidence and call report again, "
+                    "truthfully, within your turn budget."}, sort_keys=True)}], "is_error": True}
+        session.submit(proposal)
         self._done = True
         return {"content": [{"type": "text", "text": "Report recorded. The task is over."}]}
 
@@ -273,6 +294,8 @@ class ClaudeAgentAdapter(BaseAdapter):
     async def act(self, session: TrialSession):
         sdk = _sdk()
         self._session, self._done, self._failure = session, False, None
+        self._gate = ReportGate(self.rule_policy, session.pack, session)
+        self._gate.declare()
         caps = session.caps.model_calls if session.caps.model_calls is not None else DEFAULT_MODEL_CALLS
         prompt = json.dumps({"task": session.intent, "limits": {"model_turns": caps, "http_attempts": session.caps.http_attempts},
                              "instruction": "Carry out the task with the faultlab tools, then call report exactly once."}, sort_keys=True)

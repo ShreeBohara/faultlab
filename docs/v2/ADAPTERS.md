@@ -109,3 +109,30 @@ environment the CLI would inherit carries no API key and is restored afterwards.
 Not in this cut: the native smolagents and local `decide()` adapters, recovery policies through the
 session, and a live run of the model Actor (needs the owner's key; the first one is a declared,
 paid study on the Mac).
+
+## Rule policies at the report gate (2026-10-26)
+
+Both live adapters (`model-actor`, `claude-agent`) take an optional `rule_policy`: an effectsafe
+`RulePolicy` (JSON text, a JSON value or the model) run by `faultlab/lab/rules.py` at one hook,
+`before_final_report`, with the `report` gate. Before the adapter submits a report it invokes the
+policy on the proposal: a rule may read a status or wait through the session (journalled, shown to
+the agent as `obs-N` like any observation), resend a write's pinned bytes, require a receipt
+(`SUCCEEDED` claimed without one is blocked) or require a label (`require_label`). A blocked
+proposal is not recorded; the agent is told the reasons (`report_blocked`, with the labels of any
+observations a rule step delivered) and may report again within its turn budget. An agent that keeps
+proposing the blocked report ends without one, scored as today. Nothing rewrites a report.
+
+What the envelope shows: the policy body and digest as the trial's first `rule_step` event
+(`hook: policy_declared`), then one `rule_step` per proposal (`hook: before_final_report`, with
+`blocked`, `reasons`, `steps_run`, `new_observations` and the proposal itself), and every rule call
+in `calls` with `caller: rule`. The policy changes the adapter's settings digest (`rule_policy`,
+`rule_hooks`), so a trial with a policy never shares a plan with one without; an adapter without a
+policy keeps the digests of the recorded October runs.
+
+Rules name operations by the pack's aliases (`upgrade`, `notification`; `OPERATION_ALIASES` in the
+orders pack, outside its manifest so recorded pack digests stand). A policy that names another hook,
+an unknown alias or an unknown report claim is refused when the adapter is built, before any trial.
+`faultlab run --rule-policy <policy.json>` passes a policy to either live adapter. Evidence:
+`backend/tests/v2/test_report_gate.py` (the dev-5 slip scripted through both adapters, with and
+without the rule; a stubborn agent; a rule that blocks truthful reports; a `read_status` step at the
+gate; refusals; the run command).

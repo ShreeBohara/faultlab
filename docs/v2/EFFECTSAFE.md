@@ -29,8 +29,12 @@ never imports `faultlab` (the lab imports it). It is the legacy broker
   write to `NOT_STARTED`.
 - **`rules`**: the recovery-rule language (hooks, conditions, steps) and its interpreter, generic
   over operation and hook names. Conditions read the journal only, never the agent's beliefs;
-  steps are bounded (read a status, wait, resend the pinned bytes, require a receipt, end
-  unresolved or with a terminal failure); a hook never re-enters for the same proposal.
+  steps are bounded (read a status, wait, resend the pinned bytes, require a receipt or a report
+  label, end unresolved or with a terminal failure); a hook never re-enters for the same proposal.
+  `require_label` (added 2026-10-26 for the repair study) blocks, at a `report` gate, a report whose
+  label for one claim is not among the expected ones; the agent is told why and may report again.
+  It never rewrites a label, a `write` gate ignores it, and a missing label never passes
+  ([VIOLATION_GAP_DESIGN_2026-10-25.md](../VIOLATION_GAP_DESIGN_2026-10-25.md), option B.1).
 
 ## Evidence
 
@@ -38,7 +42,8 @@ never imports `faultlab` (the lab imports it). It is the legacy broker
 the wire; the lattice (lost reply stays `UNKNOWN`, acceptance to `PENDING`, receipt to
 `SUCCEEDED`, contradiction to `CONFLICT`); the non-idempotent create refused while unknown and
 allowed after a pre-admission error; reads always resendable; rules reading, waiting, blocking a
-dependent write without a receipt, and the step budget.
+dependent write without a receipt, the step budget, and `require_label` (blocks only at the report gate,
+only when its condition holds, never on a write gate; shape errors refused).
 
 Not done: receipts (signed, hash-chained), approvals, connector profiles, the transports and the
 framework integrations; and the lab's broker still runs its own copy of this logic until a later

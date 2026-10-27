@@ -105,6 +105,10 @@ class TaskPack:
     # to this trial's own identities (a foreign order, another operation's receipt). Optional.
     validate_result: Callable[[str, dict, dict, dict, int], None] | None = None
     diagnostics: dict[str, JsonValue] | None = None
+    # Stable names a recovery rule may use for the pack's operations (``faultlab.lab.rules``): alias -> the intent
+    # key holding the trial's operation id, the service, the write tool, its status tool and the report claim that
+    # carries the operation's outcome. Not part of the manifest: recorded identities keep their digests.
+    operation_aliases: dict[str, dict[str, str]] = field(default_factory=dict)
     _by_tool: dict[str, ToolContract] = field(init=False, repr=False, compare=False)
     _by_scenario: dict[str, Scenario] = field(init=False, repr=False, compare=False)
 
@@ -133,6 +137,14 @@ class TaskPack:
             for primitive in scenario.fault_spec.primitives:
                 if primitive.target_tool not in self._by_tool:
                     raise PackError(f"Scenario {scenario.scenario_id} places a fault on undeclared tool {primitive.target_tool}")
+        for alias, spec in self.operation_aliases.items():
+            missing = [key for key in ("intent_key", "service", "write_tool", "status_tool", "claim") if not spec.get(key)]
+            if missing:
+                raise PackError(f"Operation alias {alias} lacks {', '.join(missing)}")
+            if spec["write_tool"] not in self._by_tool or spec["status_tool"] not in self._by_tool:
+                raise PackError(f"Operation alias {alias} names an undeclared tool")
+            if spec["intent_key"] not in self.intent_model.model_fields or spec["claim"] not in self.report_model.model_fields:
+                raise PackError(f"Operation alias {alias} names an unknown intent key or report claim")
 
     def tool(self, name: str) -> ToolContract:
         try:

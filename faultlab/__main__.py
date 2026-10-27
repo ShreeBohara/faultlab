@@ -4,6 +4,7 @@
   adapters  list the registered adapters
   run       run a pack's scenarios for one adapter, offline, to sealed envelopes (run --help)
   replay    re-run a recorded trial from a bundle or store into a fresh world (replay --help)
+  study     run a research study on the v2 lab: study repair --help
   store     summarise a v2 trial store: store <trials.sqlite3> [--batch <id>]
   project   project every episode of a legacy store into trial envelopes
   oracle    score a legacy store with the belief-versus-effect oracle
@@ -78,10 +79,15 @@ def replay_main(argv) -> int:
     return replay(argv)
 
 
+def study_main(argv) -> int:
+    from faultlab.research.cli import main as study
+    return study(argv)
+
+
 def main(argv=None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     commands = {"project": "faultlab.evidence.legacy", "oracle": "faultlab.referee.oracle.__main__", "schemas": "faultlab.evidence.schemas"}
-    local = {"packs": packs_main, "store": store_main, "adapters": adapters_main, "run": run_main, "replay": replay_main}
+    local = {"packs": packs_main, "store": store_main, "adapters": adapters_main, "run": run_main, "replay": replay_main, "study": study_main}
     if not argv or argv[0] in ("-h", "--help") or (argv[0] not in commands and argv[0] not in local):
         print(__doc__.strip())
         return 0 if argv and argv[0] in ("-h", "--help") else 2

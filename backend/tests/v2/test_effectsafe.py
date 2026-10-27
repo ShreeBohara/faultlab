@@ -213,3 +213,46 @@ def test_an_attempt_delivers_once_and_a_contract_cannot_change():
             journal.prepare(intent(), KEYED_WRITE.model_copy(update={"identity_scope": "none"}))
         with pytest.raises(JournalError, match="Unknown attempt"):
             journal.deliver("attempt-missing", Evidence(transport="ok"))
+
+
+def test_require_label_blocks_only_at_the_report_gate_and_only_when_its_condition_holds():
+    policy = RulePolicy(version="labels", rules=(
+        Rule(hook="before_final_report", operation="op-1", when="terminal_failure",
+             steps=(Step(op="require_label", operation="op-1", claim="notification_outcome", expect=("NOT_REQUIRED",)),)),))
+    with Journal() as journal:
+        journal.prepare(intent(), KEYED_WRITE)
+        attempt, _ = journal.dispatch("op-1")
+        journal.deliver(attempt, Evidence(transport="ok", status="FAILED", receipt_id="r-fail"))
+        assert journal.operation("op-1")["state"].outcome == FAILED
+        interpreter = Interpreter(policy, journal, FakeExecutor(journal, []))
+        blocked = asyncio.run(interpreter.invoke("before_final_report", "p1", gate="report", claims={"op-1": "FAILED"},
+                                                 labels={"notification_outcome": "NOT_STARTED"}))
+        assert blocked.blocked and blocked.reasons == ["LABEL_REQUIRED:notification_outcome:NOT_REQUIRED"]
+        assert blocked.steps_run == ["require_label:op-1"] and not blocked.final_requested
+        passed = asyncio.run(interpreter.invoke("before_final_report", "p2", gate="report", claims={"op-1": "FAILED"},
+                                                labels={"notification_outcome": "NOT_REQUIRED"}))
+        assert not passed.blocked and passed.reasons == []
+        silent = asyncio.run(interpreter.invoke("before_final_report", "p3", gate="report", claims={"op-1": "FAILED"}))
+        assert silent.blocked                                         # a missing label never passes
+        write = asyncio.run(interpreter.invoke("before_final_report", "p4", gate="write", labels={"notification_outcome": "NOT_STARTED"}))
+        assert not write.blocked and write.reasons == []              # a write gate ignores label requirements
+    with Journal() as journal:                                        # no terminal failure: the rule does not fire
+        journal.prepare(intent(), KEYED_WRITE)
+        attempt, _ = journal.dispatch("op-1")
+        journal.deliver(attempt, Evidence(transport="ok", status="SUCCEEDED", receipt_id="r1"))
+        interpreter = Interpreter(policy, journal, FakeExecutor(journal, []))
+        result = asyncio.run(interpreter.invoke("before_final_report", "p5", gate="report", claims={"op-1": "SUCCEEDED"},
+                                                labels={"notification_outcome": "NOT_STARTED"}))
+        assert not result.blocked and result.steps_run == []
+    for bad in ({"op": "require_label", "operation": "op-1"},
+                {"op": "require_label", "operation": "op-1", "claim": "x", "expect": ()},
+                {"op": "require_label", "claim": "x", "expect": ("A",)},
+                {"op": "require_label", "operation": "op-1", "claim": "x", "expect": ("A" * 41,)},
+                {"op": "wait", "ticks": 1, "claim": "x"},
+                {"op": "require_receipt", "operation": "op-1", "expect": ("A",)}):
+        with pytest.raises(ValueError):
+            Step.model_validate(bad)
+    text = ('{"version":"from-json","rules":[{"hook":"before_final_report","operation":"upgrade","when":"terminal_failure",'
+            '"steps":[{"op":"require_label","operation":"upgrade","claim":"notification_outcome","expect":["NOT_REQUIRED"]}]}]}')
+    parsed = RulePolicy.model_validate_json(text)                     # a proposal arrives as JSON text: arrays become tuples
+    assert parsed.rules[0].steps[0].expect == ("NOT_REQUIRED",) and parsed.rules[0].steps[0].claim == "notification_outcome"
