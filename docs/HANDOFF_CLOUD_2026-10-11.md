@@ -192,3 +192,8 @@ Update 2026-10-24: the owner's constraints changed ($200 of API credit a month, 
 dependencies). The phase-by-phase revision is `docs/PLAN_REVISION_2026-10-24.md`; its first engineering steps are the
 dollars-based monthly ledger, a dry-run admission check in the driver, Weave verification behind a flag (1.11), and a
 Claude Code provider for the model Actor (1.6). The campaign-cap ceiling stays at 500; the Fable screen moves to the v2 lab.
+
+**Update 2026-10-26.** The violation-gap question of piece D has an answer path: the repair study on the v2
+lab ([VIOLATION_GAP_DESIGN_2026-10-25.md](VIOLATION_GAP_DESIGN_2026-10-25.md), [v2/REPAIR_STUDY.md](v2/REPAIR_STUDY.md))
+reached REPAIRED once on the subscription at $0 (smoke 3, `artifacts/repair-study-smoke-3-2026-10-26/`). The
+design is frozen at 6e179d0; a confirmatory run and the API pilot await the owner.

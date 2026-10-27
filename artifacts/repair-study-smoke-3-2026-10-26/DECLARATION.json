@@ -1,0 +1,133 @@
+{
+  "amendments": [
+    "counterexample view v2: report_contract = the pack's report JSON schema (public: the Actor's own report tool shows it)",
+    "candidate gate: expected outcome count under L >= count under B0 (target 0, no other finding, no false belief, all L valid unchanged)",
+    "3: the Claude Agent adapter ends a trial normally on the CLI's error_max_turns (absent report, the agent's failure), not as INFRA_ERROR; validity no longer requires a delivered report",
+    "4: the block message carries the requirements in words (rule_requirements) beside the reason codes",
+    "5: a candidate qualifies only if the policy acted (a rule step ran at the report gate) in at least one L trial",
+    "6: validation trials are valid when their execution completed; exposure is reported, not demanded; must_complete compares completions under L with B0"
+  ],
+  "caps": {
+    "per_proposal": {
+      "bound_basis": "8 turns x (32,000 in x $2/M + 4,000 out x $10/M) = $0.832 at Sonnet rates",
+      "dollars_bound": 0.84
+    },
+    "per_trial": {
+      "bound_basis": "8 calls x (32,000 in x $0.10/M + 2,000 out x $0.50/M) = $0.0336 at Haiku rates",
+      "dollars_bound": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "study": {
+      "max_dollars_equivalent": 4.434,
+      "max_trials": 81,
+      "study_dollars_cap": 4.5
+    }
+  },
+  "channel": {
+    "actor": "claude-code (the owner's subscription through the Claude Agent SDK); no API key reaches the CLI",
+    "mechanic": "claude-code (the same subscription); no API key",
+    "money": 0.0,
+    "pricing": "every bound and measured figure below is the API-equivalent price at the verified rates (backend/app/providers/pricing.json)"
+  },
+  "code": {
+    "claude_agent_sha256": "869d3a6f0a2a49249995b7b78d438451b1e9e963ab67e1e74181ad6e7e6ba0a0",
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "6e179d0042651cfe27dda68444f2b2dc5c76721d",
+    "mechanic_sha256": "5ffd38267a2bdc5145f3884a793bc305d23d90c4974c8c9aa82e85b33d1a13f5",
+    "repair_study_sha256": "9f333d416a657af313021e4523d08bc824341d768c13b3b0d30872fe61dfa6b4",
+    "rules_sha256": "dd0c4004ac9778573d39ddb28182376e24d77eee1d8ee891e21210e3d2f8f3c7",
+    "study_cli_sha256": "1f787001a52a4aa752daa32797a21124306c370d3f0553e33c706cec624011a3"
+  },
+  "declared_at": "2026-10-26",
+  "design": {
+    "gap_min": 3,
+    "healthy": "dev-1",
+    "healthy_controls": 3,
+    "healthy_min_valid": 2,
+    "must_complete": [
+      "dev-1",
+      "dev-6"
+    ],
+    "pairs": 3,
+    "referee": "legacy (the fixed checks through the bridge, for the C labels)",
+    "slots": 2,
+    "source": "dev-5",
+    "source_controls": 6,
+    "target_rule": "notification_label_after_rejection",
+    "validation": [
+      "dev-1",
+      "dev-2",
+      "dev-3",
+      "dev-4",
+      "dev-6"
+    ],
+    "validation_feedback_forbidden": true
+  },
+  "ledger_before": {
+    "bound_sum_usd": 197.449,
+    "committed_usd": 25.1546,
+    "month": "2026-10",
+    "note": "unchanged by smokes 1 and 2 (the v2 lab writes no ledger rows); their equivalents, $0.068 and $0.137, are in CURRENT_STATUS.md",
+    "rows": 3281,
+    "settled_usd": 23.4116
+  },
+  "machine": {
+    "battery": " -InternalBattery-0 (id=36634723)\t47%; discharging; 2:30 rem",
+    "keep_awake": "held through the desktop app for the session",
+    "on_ac_power": false,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "repair-study-smoke-3-2026-10-26",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke-3/bundles",
+    "log": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke-3/run.log",
+    "record": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke-3/repair-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke-3/trials.sqlite3"
+  },
+  "pre_registered_readouts": [
+    "1 gap: target findings among valid source controls (n of 6), conformance findings among healthy controls (n of 3)",
+    "2 whether the gate opened",
+    "3 proposals: slots used, valid policies, each verbatim",
+    "4 candidate: target findings under L and B0 (n of 3), beliefs, expected class",
+    "5 validation: per case, findings, false beliefs, expected class under B0 and L",
+    "6 the decision",
+    "7 cost: measured vs bound, channel per role, Mechanic tokens"
+  ],
+  "previous_runs": [
+    {
+      "api_equivalent_usd": 0.068,
+      "decision": "NO_CHANGE",
+      "declaration_sha256": "e85176212f4723a63dadc316b388a8fb1d7b703ba3ff0089faa2a42ed918a1db",
+      "name": "repair-study-smoke-2026-10-26"
+    },
+    {
+      "api_equivalent_usd": 0.137,
+      "decision": "NO_CHANGE",
+      "declaration_sha256": "0e18e595882c026bdbef3e64ca1ff61d186e7b3f6ba892d0aff215d3e539968f",
+      "name": "repair-study-smoke-2-2026-10-26"
+    }
+  ],
+  "purpose": "Third declared smoke of the repair study, same Actor, Mechanic, channel and parameters as smokes 1 and 2, with amendments 3 to 6 pre-registered after smoke 2 (design note, build record). Amendment 7 (more pairs) is deliberately not applied: the smoke stays comparable at 3 pairs; power is the pilot's budget question. Not the declared API pilot.",
+  "roles": {
+    "actor": {
+      "adapter": "claude-agent",
+      "model": "claude-haiku-5-5"
+    },
+    "mechanic": {
+      "id": "claude-code-mechanic",
+      "max_turns": 8,
+      "model": "claude-sonnet-5-5",
+      "redaction": "oracle-rule-id-and-public-check-meaning/v1"
+    }
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "every batch is capped at its trials' bound; admission refuses beyond it (the study then ends INCOMPLETE)",
+    "a trial ends at 8 model calls, 18 HTTP attempts or 90 wall seconds",
+    "a Mechanic session ends at 8 turns",
+    "a 402, credit or billing message in run.log stops the run (manual)",
+    "the run is killed if it exceeds 60 minutes wall time (manual)"
+  ]
+}

@@ -1333,6 +1333,24 @@ the 3 of 3 `must_complete` rule). Decision NO_CHANGE. 51 trials, 248 Actor model
 2,244 output tokens, 466 seconds. Money: **$0**; API-equivalent $0.107 Actor + $0.030 Mechanic = $0.137. Project
 ledger carried forward unchanged at **$1,550.91** (bounds). Five amendments follow, in the design note.
 
+### Repair study smoke 3 (2026-10-26, subscription): REPAIRED
+
+Same Actor, Mechanic, channel and parameters with amendments 1 to 6 (commit `6e179d0`,
+`~/FaultLab_Runs/2026-10-26/repair-study-smoke-3/`, declaration sha256 `a0a59248…6e52`, record and bundles in
+`artifacts/repair-study-smoke-3-2026-10-26/`). Gate opened at its minimum (3 of 6 dev-5 controls with the C5 label
+slip, dev-1 3 of 3 clean). The Mechanic's first slot (three turns, one refused then one accepted proposal, 13,828
+input tokens) proposed `require_label notification_outcome [NOT_REQUIRED, FAILED, UNKNOWN, PENDING, SUCCEEDED]`
+when the upgrade's `terminal_failure` holds: every label but the slip's. Candidate: the rule acted in all three L
+trials, blocked one NOT_STARTED proposal in each, and Haiku re-reported NOT_REQUIRED every time (3 of 3, against
+1 of 3 in smoke 2 before the block message carried the requirement in words); L 0 of 3 target, no finding, no false
+belief, expected outcome 1 against 0 under B0 (B0 2 of 3 target). Validation: all five cases passed, completions
+3 of 3 under both arms in every case; dev-4's stale read fired 1 of 3 under L and 2 of 3 under B0 (reported, not
+demanded). Decision **REPAIRED**, the study's first. 45 trials, 211 Actor model calls, 887,541 input and 1,854
+output tokens, 389 seconds. Money: **$0**; API-equivalent $0.090 Actor + $0.028 Mechanic = $0.118. Project ledger
+carried forward unchanged at **$1,550.91** (bounds). A pilot-grade result under a design amended twice during the
+smoke phase: the design is frozen at this commit, and a confirmatory run with more pairs is the next decision
+(design note, build record).
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

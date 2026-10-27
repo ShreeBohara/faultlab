@@ -284,3 +284,15 @@ report-gate step (`require_label`) in effectsafe plus a v2 repair study with Cla
 Mechanic, its pre-registered read-outs, cost and the decisions needed, is in
 [VIOLATION_GAP_DESIGN_2026-10-25.md](VIOLATION_GAP_DESIGN_2026-10-25.md). Stage 4.5's "redesign first"
 is that note.
+
+## Addendum (2026-10-26, night): Stage 4.5 ran its first repair, for $0
+
+Option B of [VIOLATION_GAP_DESIGN_2026-10-25.md](VIOLATION_GAP_DESIGN_2026-10-25.md) is built and on main
+(9580bc0, 370a1e2, 6e179d0): `require_label` in effectsafe, the report gate in both v2 adapters, the repair
+study and the Claude Code Mechanic. Three declared smokes on the subscription, all at $0 money and under
+$0.14 API-equivalent each: the first showed the Mechanic needs the report's label vocabulary, the second
+that with it Sonnet proposes the designed repair at the first attempt, the third ended **REPAIRED**, the
+loop of 4.5 closed once with the Mechanic's rule certified against the five other public cases. Six
+amendments to the study's own rules are recorded with their reasons in the design note's build record. The
+design is frozen at 6e179d0; a confirmatory run with six pairs and the declared API pilot are the owner's
+next decisions. Nothing in `backend/app`, no check, gate or threshold changed.

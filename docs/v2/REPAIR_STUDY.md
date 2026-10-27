@@ -95,3 +95,8 @@ command offline.
   trials ran out of turns; slot 2 had its condition on the wrong operation, never acted, "qualified" by
   chance and failed validation on the Actor's own variance. NO_CHANGE in 466 s. Amendments 3 to 7 followed
   (design note, build record).
+- **Smoke 3, 2026-10-26** (subscription, $0; `artifacts/repair-study-smoke-3-2026-10-26/`): amendments 1 to 6;
+  **REPAIRED** at slot 1 with `require_label notification_outcome` to every label but NOT_STARTED after the
+  upgrade's terminal failure; the rule acted in all three L trials and Haiku re-reported NOT_REQUIRED each
+  time; all five validation cases passed; 45 trials, 389 s, $0.118 API-equivalent. Pilot-grade (three
+  pairs, a design amended during the smokes); the design is frozen at 6e179d0 for a confirmatory run.
