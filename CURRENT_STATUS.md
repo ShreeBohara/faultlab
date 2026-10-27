@@ -1315,6 +1315,24 @@ Mechanic, not a pilot result. Two design findings, recorded in
 label vocabulary (the public report schema), and the candidate gate's "expected outcome 3 of 3" cannot be met
 by an Actor that truthfully reports SAFE_UNRESOLVED on dev-5 five times in twelve; both amended for a second smoke.
 
+### Repair study smoke 2 (2026-10-26, subscription)
+
+Same Actor, Mechanic, channel and parameters as smoke 1 with its two amendments (commit `370a1e2`,
+`~/FaultLab_Runs/2026-10-26/repair-study-smoke-2/`, declaration sha256 `0e18e595…968f`, record and bundles in
+`artifacts/repair-study-smoke-2-2026-10-26/`). Gate opened again (4 of 6 dev-5 controls with the C5 label slip,
+dev-1 3 of 3 clean). With the report contract in view, both Mechanic slots proposed the repair the design note
+expected, `require_label notification_outcome NOT_REQUIRED` when the upgrade's `terminal_failure` holds, at the
+first attempt (two turns, 7,208 input tokens each). Slot 1 (condition `always` on the step) blocked six
+NOT_STARTED or UNKNOWN proposals across three trials; Haiku relabelled to NOT_REQUIRED in one trial and ran out
+of turns in two, which the adapter filed as `ADAPTER_ERROR:RuntimeError` (the CLI's `error_max_turns`): not
+qualified. Slot 2 put the step's condition on the notification operation, which never fails, so the rule never
+acted; its L arm showed 0 of 3 target by chance (three truthful SAFE_UNRESOLVED reports against 3 of 3 slips
+under B0) and "qualified", then failed validation on dev-4 (the stale-read fault unfired in 3 of 3 L trials
+against 1 of 3 under B0, the Actor's path, not the rule) and dev-6 (2 completed and 1 SAFE_UNRESOLVED against
+the 3 of 3 `must_complete` rule). Decision NO_CHANGE. 51 trials, 248 Actor model calls, 1,062,408 input and
+2,244 output tokens, 466 seconds. Money: **$0**; API-equivalent $0.107 Actor + $0.030 Mechanic = $0.137. Project
+ledger carried forward unchanged at **$1,550.91** (bounds). Five amendments follow, in the design note.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

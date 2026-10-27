@@ -160,7 +160,8 @@ class ModelActorAdapter(BaseAdapter):
                 if verdict is not None and verdict.blocked:
                     # A runtime rule refused the proposal: nothing was recorded, the model is told why, the turn is spent.
                     messages.extend([{"role": "assistant", "content": generation.content},
-                                     {"role": "user", "content": models.canonical_json({"report_blocked": verdict.reasons, "instruction":
+                                     {"role": "user", "content": models.canonical_json({"report_blocked": verdict.reasons,
+                                         "rule_requirements": gate.last_requirements, "instruction":
                                          "A runtime rule refused this report; nothing was recorded. Re-read the delivered evidence and "
                                          "return a truthful report action; this correction consumes a turn."})}])
                     continue

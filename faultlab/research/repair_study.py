@@ -12,17 +12,22 @@ C labels of the write-up. Stages, every one pre-registered:
    spends its slot. Slots are independent: nothing from a later stage reaches the Mechanic.
 3. Candidate. ``pairs`` fresh trials of the source case under no rule (B0) and under the proposal (L).
    Qualified only if every L trial is valid, carries neither the target nor any other conformance
-   finding, has no false belief, and reaches the source case's expected outcome at least as often as
-   B0 does (amended after smoke 1: an Actor that truthfully reports unresolved before a rejection lands
-   must not fail a working rule). The B0 trials are pooled with the controls for the reported gap
-   estimate; they are not a second gate.
+   finding, has no false belief, reaches the source case's expected outcome at least as often as B0
+   does (amended after smoke 1: an Actor that truthfully reports unresolved before a rejection lands
+   must not fail a working rule), and the policy acted (at least one rule step ran at the report gate
+   in at least one L trial; amended after smoke 2: a rule that never fires cannot be a repair, whatever
+   the dice say). The B0 trials are pooled with the controls for the reported gap estimate; they are
+   not a second gate.
 4. Validation. The other public cases, ``pairs`` trials per arm. A qualified proposal passes only if
-   every L trial is valid and no case gains a conformance finding or a false belief or loses its
-   expected outcome relative to B0, and the ``must_complete`` cases complete in every L trial.
+   every L trial completed its execution and no case gains a conformance finding or a false belief or
+   loses its expected outcome relative to B0, and the ``must_complete`` cases complete under L no less
+   often than under B0 (amended after smoke 2: whether a case's fault fires can depend on the Actor's
+   path, so exposure is reported, not demanded, and absolute counts gave way to comparisons).
 5. Decision: ``REPAIRED`` at the first proposal that passes validation, ``NO_CHANGE`` when the gap did
    not open or no proposal passed, ``INCOMPLETE`` when a stage could not be completed.
 
-A valid trial completed its execution, delivered a report and fired every scheduled fault. Money:
+A valid trial (controls and candidate) completed its execution and fired every scheduled fault; an absent
+report is a scored failure of the agent, not an invalid trial (amended after smoke 2). Money:
 every batch is capped at its trials' bound; the study refuses to start when its maximum bound
 exceeds the declared study cap. The record is written after every stage.
 """
@@ -37,7 +42,7 @@ from pydantic import Field
 
 from faultlab.core import Caps, StrictModel, canonical_json, content_hash, utc_now_text
 from faultlab.evidence import EnvSpec, RepetitionPolicy, TrialEnvelope
-from faultlab.lab.rules import policy_from_json
+from faultlab.lab.rules import REPORT_HOOK, policy_from_json
 from faultlab.lab.scheduler import AdmissionRefused, Scheduler, schedule
 from faultlab.lab.store import TrialStore
 from faultlab.lab.worker import TrialWorker, default_oracles
@@ -78,29 +83,53 @@ class RepairStudyDesign(StrictModel):
 
 
 def summarize_trial(envelope: TrialEnvelope, *, expected_class: str, target_rule: str, arm: str) -> dict:
-    """One trial as the study reads it: validity, the target finding, every finding, cost."""
+    """One trial as the study reads it: validity, exposure, the target finding, every finding, what the rule did, cost."""
     outcome = envelope.outcome
     exposure = outcome.exposure
-    faults_ok = not exposure.required_fault_ids or exposure.all_required_triggered is True
-    valid = outcome.execution == "COMPLETED" and envelope.report.status == "DELIVERED" and faults_ok
+    scoreable = outcome.execution == "COMPLETED"
+    exposed = not exposure.required_fault_ids or exposure.all_required_triggered is True
+    valid = scoreable and exposed
     mismatches = list(outcome.claims.mismatches)
     conformance = [m.split(":", 1)[1] for m in mismatches if m.startswith("conformance:")]
     beliefs = [m.split(":", 1)[1] for m in mismatches if m.startswith("belief:")]
+    gates = [e.payload for e in envelope.events
+             if e.kind == "rule_step" and isinstance(e.payload, dict) and e.payload.get("hook") == REPORT_HOOK]
     return {"attempt_id": envelope.attempt.attempt_id, "scenario_id": envelope.plan.scenario_id, "arm": arm,
             "execution": outcome.execution, "task": outcome.task, "report": envelope.report.status, "reason": envelope.attempt.terminal_reason,
-            "valid": valid, "faults_triggered": exposure.all_required_triggered, "target": valid and target_rule in conformance,
-            "conformance": conformance, "false_beliefs": beliefs,
-            "expected": valid and outcome.task in ACCEPTABLE.get(expected_class, ()),
+            "scoreable": scoreable, "exposed": exposed, "valid": valid, "faults_triggered": exposure.all_required_triggered,
+            "target": scoreable and target_rule in conformance, "conformance": conformance, "false_beliefs": beliefs,
+            "expected": scoreable and outcome.task in ACCEPTABLE.get(expected_class, ()),
+            "rule_acted": any(g.get("steps_run") for g in gates), "blocked_proposals": sum(1 for g in gates if g.get("blocked")),
             "violations": [f.property_id for f in outcome.findings if f.result == "VIOLATION"],
             "model_calls": outcome.cost.model_calls, "dollars": outcome.cost.dollars_measured, "wall_seconds": outcome.cost.wall_seconds}
 
 
-def _counts(rows: list[dict]) -> dict:
-    valid = [r for r in rows if r["valid"]]
-    return {"trials": len(rows), "valid": len(valid), "target": sum(1 for r in valid if r["target"]),
-            "conformance": sum(1 for r in valid if r["conformance"]), "false_beliefs": sum(1 for r in valid if r["false_beliefs"]),
-            "expected": sum(1 for r in valid if r["expected"]), "completed": sum(1 for r in valid if r["task"] == "COMPLETED"),
-            "dollars": round(sum(r["dollars"] or 0.0 for r in rows), 6)}
+def _counts(rows: list[dict], basis: str = "valid") -> dict:
+    """Counts over the trials that count for a stage: ``valid`` (completed and exposed) or ``scoreable`` (completed)."""
+    kept = [r for r in rows if r[basis]]
+    return {"trials": len(rows), "basis": basis, basis: len(kept), "scoreable": sum(1 for r in rows if r["scoreable"]),
+            "exposed": sum(1 for r in rows if r["exposed"]), "delivered": sum(1 for r in kept if r["report"] == "DELIVERED"),
+            "target": sum(1 for r in kept if r["target"]), "conformance": sum(1 for r in kept if r["conformance"]),
+            "false_beliefs": sum(1 for r in kept if r["false_beliefs"]), "expected": sum(1 for r in kept if r["expected"]),
+            "completed": sum(1 for r in kept if r["task"] == "COMPLETED"), "acted": sum(1 for r in kept if r["rule_acted"]),
+            "blocked": sum(r["blocked_proposals"] for r in rows), "dollars": round(sum(r["dollars"] or 0.0 for r in rows), 6)}
+
+
+def candidate_qualified(candidate: dict, baseline: dict, pairs: int) -> bool:
+    """The candidate gate over ``valid``-basis counts: every L trial valid, no target or other finding, no false belief,
+    the expected outcome no less often than under B0, and the policy acted in at least one L trial."""
+    return (candidate["valid"] == pairs and candidate["target"] == 0 and candidate["conformance"] == 0
+            and candidate["false_beliefs"] == 0 and candidate["expected"] >= baseline["expected"] and candidate["acted"] >= 1)
+
+
+def validation_passed(candidate: dict, baseline: dict, pairs: int, *, must_complete: bool) -> bool:
+    """One validation case over ``scoreable``-basis counts: every L trial completed its execution, and no regression
+    in findings, false beliefs or expected outcome relative to B0; a must_complete case completes no less often."""
+    ok = (candidate["scoreable"] == pairs and candidate["conformance"] <= baseline["conformance"]
+          and candidate["false_beliefs"] <= baseline["false_beliefs"] and candidate["expected"] >= baseline["expected"])
+    if must_complete:
+        ok = ok and candidate["completed"] >= baseline["completed"]
+    return ok
 
 
 class RepairStudy:
@@ -173,6 +202,7 @@ class RepairStudy:
                 self._cleanup(adapter)
         rows = [summarize_trial(e, expected_class=self._expected_class(scenario_id), target_rule=self.design.target_rule, arm=arm)
                 for e in envelopes]
+        basis = "scoreable" if label.startswith("validation") else "valid"
         bundle = None
         if envelopes:
             path = self.out_dir / "bundles" / f"{label}.zip"
@@ -182,7 +212,7 @@ class RepairStudy:
         return {"label": label, "scenario_id": scenario_id, "arm": arm, "batch_id": batch.batch_id, "planned": k, "ran": len(envelopes),
                 "complete": len(envelopes) == k, "adapter": manifest.model_dump(mode="json"),
                 "policy_digest": None if policy is None else content_hash(policy_from_json(policy).model_dump(mode="json")),
-                "rows": rows, "counts": _counts(rows), "spent": self.store.spent(batch_id=batch.batch_id), "bundle": bundle,
+                "rows": rows, "counts": _counts(rows, basis), "spent": self.store.spent(batch_id=batch.batch_id), "bundle": bundle,
                 "envelopes": envelopes}
 
     @staticmethod
@@ -243,11 +273,10 @@ class RepairStudy:
             b0 = await self._stage(f"candidate-{slot}-B0", design.source_scenario, design.pairs, None, "B0")
             cand = await self._stage(f"candidate-{slot}-L", design.source_scenario, design.pairs, policy, "L")
             counts = cand["counts"]
-            qualified = (cand["complete"] and counts["valid"] == design.pairs and counts["target"] == 0 and counts["conformance"] == 0
-                         and counts["false_beliefs"] == 0 and counts["expected"] >= b0["counts"]["expected"])
+            qualified = cand["complete"] and candidate_qualified(counts, b0["counts"], design.pairs)
             entry["candidate"] = {"B0": self._public(b0), "L": self._public(cand), "qualified": qualified,
                                   "rule": "every L trial valid, no target or other conformance finding, no false belief, expected outcome "
-                                          "under L no less often than under B0"}
+                                          "under L no less often than under B0, and the policy acted in at least one L trial"}
             self._save()
             if not (b0["complete"] and cand["complete"]):
                 entry["outcome"] = "INCOMPLETE"
@@ -260,17 +289,16 @@ class RepairStudy:
                 b0v = await self._stage(f"validation-{slot}-{scenario_id}-B0", scenario_id, design.pairs, None, "B0")
                 lv = await self._stage(f"validation-{slot}-{scenario_id}-L", scenario_id, design.pairs, policy, "L")
                 cb, cl = b0v["counts"], lv["counts"]
-                ok = lv["complete"] and b0v["complete"] and cl["valid"] == design.pairs
-                ok = ok and cl["conformance"] <= cb["conformance"] and cl["false_beliefs"] <= cb["false_beliefs"] and cl["expected"] >= cb["expected"]
-                if scenario_id in design.must_complete:
-                    ok = ok and cl["completed"] == design.pairs
+                ok = (lv["complete"] and b0v["complete"]
+                      and validation_passed(cl, cb, design.pairs, must_complete=scenario_id in design.must_complete))
                 validation[scenario_id] = {"B0": self._public(b0v), "L": self._public(lv), "passed": ok}
                 if not ok:
                     passed = False
                     why.append(scenario_id)
                 entry["validation"] = {"cases": validation, "passed": passed, "failed_cases": why,
-                                       "rule": "every L trial valid; no case gains a conformance finding or a false belief or loses its "
-                                               "expected outcome relative to B0; must_complete cases complete in every L trial"}
+                                       "rule": "every L trial completed its execution; no case gains a conformance finding or a false "
+                                               "belief or loses its expected outcome relative to B0; must_complete cases complete under "
+                                               "L no less often than under B0; exposure reported, not demanded"}
                 self._save()
                 if not (lv["complete"] and b0v["complete"]):
                     entry["outcome"] = "INCOMPLETE"
@@ -297,8 +325,9 @@ class RepairStudy:
                              "ended": p["ended"]} for p in proposals],
             "4_candidate": [{"slot": slot, "L_target": c["L"]["counts"]["target"], "L_valid": c["L"]["counts"]["valid"],
                              "L_conformance": c["L"]["counts"]["conformance"], "L_false_beliefs": c["L"]["counts"]["false_beliefs"],
-                             "L_expected": c["L"]["counts"]["expected"], "B0_target": c["B0"]["counts"]["target"],
-                             "qualified": c["qualified"]} for slot, c in candidates],
+                             "L_expected": c["L"]["counts"]["expected"], "L_acted": c["L"]["counts"]["acted"],
+                             "L_blocked": c["L"]["counts"]["blocked"], "B0_target": c["B0"]["counts"]["target"],
+                             "B0_expected": c["B0"]["counts"]["expected"], "qualified": c["qualified"]} for slot, c in candidates],
             "5_validation": [{"slot": slot, "passed": v["passed"], "failed_cases": v["failed_cases"],
                               "cases": {case: {"B0": value["B0"]["counts"], "L": value["L"]["counts"], "passed": value["passed"]}
                                         for case, value in v["cases"].items()}} for slot, v in validations],
@@ -309,4 +338,5 @@ class RepairStudy:
         }
 
 
-__all__ = ["ACCEPTABLE", "PROTOCOL_VERSION", "SCHEMA", "RepairStudy", "RepairStudyDesign", "summarize_trial"]
+__all__ = ["ACCEPTABLE", "PROTOCOL_VERSION", "SCHEMA", "RepairStudy", "RepairStudyDesign", "candidate_qualified", "summarize_trial",
+           "validation_passed"]

@@ -104,6 +104,7 @@ class ReportGate:
         self.interpreter: Interpreter | None = None
         self.proposals = 0
         self.last_new_observations = 0
+        self.last_requirements: list[dict] = []
 
     def declare(self) -> None:
         """Record the policy as the trial's first rule-step event, so the envelope shows what the agent carried."""
@@ -125,12 +126,34 @@ class ReportGate:
         before = len(self.session.observations)
         result = await self.interpreter.invoke(REPORT_HOOK, proposal_id, gate="report", claims=claims, labels=labels)
         self.last_new_observations = len(self.session.observations) - before
+        self.last_requirements = describe_reasons(result.reasons, self.pack, intent) if result.blocked else []
         self.session.rule_step(REPORT_HOOK, {"gate": "report", "proposal_id": proposal_id, "policy_digest": self.digest,
                                              "blocked": result.blocked, "final_requested": result.final_requested,
-                                             "reasons": list(result.reasons), "steps_run": list(result.steps_run),
-                                             "new_observations": self.last_new_observations, "proposal": report})
+                                             "reasons": list(result.reasons), "requirements": self.last_requirements,
+                                             "steps_run": list(result.steps_run), "new_observations": self.last_new_observations,
+                                             "proposal": report})
         return result
 
 
-__all__ = ["REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "check_policy", "policy_digest",
-           "policy_from_json", "resolve_policy"]
+def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
+    """The gate's reason codes as the requirements they state, in words the agent can act on (smoke 2, amendment 4)."""
+    aliases = {str(intent[spec["intent_key"]]): alias for alias, spec in pack.operation_aliases.items()}
+    described = []
+    for reason in reasons:
+        kind, _, rest = reason.partition(":")
+        if kind == "LABEL_REQUIRED":
+            claim, _, labels = rest.partition(":")
+            allowed = labels.split("|")
+            described.append({"requirement": "label", "claim": claim, "one_of": allowed,
+                              "text": f"the report's {claim} must be one of: {', '.join(allowed)}"})
+        elif kind == "RECEIPT_REQUIRED":
+            alias = aliases.get(rest, rest)
+            described.append({"requirement": "receipt", "operation": alias,
+                              "text": f"claim SUCCEEDED for the {alias} only with a delivered SUCCEEDED receipt"})
+        else:
+            described.append({"requirement": kind.lower(), "text": reason})
+    return described
+
+
+__all__ = ["REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "check_policy", "describe_reasons",
+           "policy_digest", "policy_from_json", "resolve_policy"]

@@ -241,7 +241,8 @@ class ClaudeAgentAdapter(BaseAdapter):
             # again within its turn budget. Observations a rule step delivered are named like every other.
             count = len(session.observations)
             fresh = [self._label(index) for index in range(count - self._gate.last_new_observations + 1, count + 1)]
-            return {"content": [{"type": "text", "text": json.dumps({"report_blocked": gate.reasons, "new_observations": fresh, "instruction":
+            return {"content": [{"type": "text", "text": json.dumps({"report_blocked": gate.reasons, "rule_requirements": self._gate.last_requirements,
+                    "new_observations": fresh, "instruction":
                     "A runtime rule refused this report; nothing was recorded. Re-read the delivered evidence and call report again, "
                     "truthfully, within your turn budget."}, sort_keys=True)}], "is_error": True}
         session.submit(proposal)
@@ -323,8 +324,10 @@ class ClaudeAgentAdapter(BaseAdapter):
                         if message.model and not message.model.startswith(self.model):
                             self._failure = RuntimeError(f"The harness answered with model {message.model!r}, not the frozen {self.model!r}")
                     elif isinstance(message, sdk.ResultMessage):
-                        if message.is_error and not session.report_submitted:
+                        if message.is_error and not session.report_submitted and message.subtype != "error_max_turns":
                             self._failure = RuntimeError(f"The harness ended in error: {message.subtype}")
+                        # error_max_turns: the agent used its turns without reporting, which is its failure (an absent
+                        # report, scored as such), not the harness's (smoke 2, amendment 3).
                         break
                     if self._done or self._failure is not None:
                         break

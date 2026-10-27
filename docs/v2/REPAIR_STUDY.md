@@ -29,20 +29,24 @@ trial, propose a runtime rule that repairs it without hurting anything else?
    independent: nothing from a later stage reaches the Mechanic (`validation_feedback_forbidden`).
 3. **Candidate.** `pairs` (3) fresh trials of the source case under no rule (B0) and under the
    proposal (L). Qualified only if every L trial is valid, carries neither the target nor any other
-   conformance finding, has no false belief, and reaches the expected outcome at least as often as B0
+   conformance finding, has no false belief, reaches the expected outcome at least as often as B0
    (amended after smoke 1: Haiku truthfully reports `SAFE_UNRESOLVED` on dev-5 in five of twelve no-rule
-   trials, which a working rule must not be failed for). B0 is pooled with the controls for the reported
-   gap, not gated.
+   trials, which a working rule must not be failed for), and the policy acted in at least one L trial
+   (amended after smoke 2: a rule that never fires "qualified" by chance). B0 is pooled with the
+   controls for the reported gap, not gated.
 4. **Validation.** The other public cases (dev-1, dev-2, dev-3, dev-4, dev-6), `pairs` per arm. The
-   proposal passes only if every L trial is valid and no case gains a conformance finding or a false
-   belief or loses its expected outcome relative to B0, and the `must_complete` cases (dev-1, dev-6)
-   complete in every L trial.
+   proposal passes only if every L trial completed its execution and no case gains a conformance
+   finding or a false belief or loses its expected outcome relative to B0, and the `must_complete`
+   cases (dev-1, dev-6) complete under L no less often than under B0 (amended after smoke 2: exposure
+   is reported, not demanded, since whether dev-4's stale read fires depends on the Actor's path; absolute
+   counts gave way to comparisons).
 5. **Decision.** `REPAIRED` at the first proposal that passes validation; `NO_CHANGE` when the gate
    did not open or no proposal passed; `INCOMPLETE` when a stage could not run (admission refused,
    worker stopped, infrastructure).
 
-A valid trial completed its execution, delivered a report and fired every scheduled fault. Each trial
-runs with a fresh adapter (no state crosses trials). Every batch is capped at its trials' bound; the
+A valid trial (controls, candidate) completed its execution and fired every scheduled fault; an absent
+report is the agent's scored failure, not an invalid trial. Each trial runs with a fresh adapter (no
+state crosses trials). Every batch is capped at its trials' bound; the
 study refuses to start when its maximum bound exceeds `--study-dollars`. The record
 (`repair-study.json`) is rewritten after every stage and carries the design digest, the pack digest,
 the rule-language digest, the Mechanic's identity, every stage's rows, counts, cost and bundle, every
@@ -85,3 +89,9 @@ command offline.
   Sonnet Mechanic; the gate opened (4 of 6), both slots proposed valid policies at the first attempt,
   neither qualified (one action-only, one requiring the slip's own label); NO_CHANGE in 181 s. The two
   amendments above came out of it; the write-up is in the design note's build record.
+- **Smoke 2, 2026-10-26** (subscription, $0; `artifacts/repair-study-smoke-2-2026-10-26/`): amendments 1 and 2;
+  the gate opened (4 of 6); both slots proposed `require_label NOT_REQUIRED` under the upgrade's
+  `terminal_failure` at the first attempt. Slot 1 acted (six blocked proposals, one relabelled) but two
+  trials ran out of turns; slot 2 had its condition on the wrong operation, never acted, "qualified" by
+  chance and failed validation on the Actor's own variance. NO_CHANGE in 466 s. Amendments 3 to 7 followed
+  (design note, build record).

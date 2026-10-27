@@ -118,9 +118,11 @@ Both live adapters (`model-actor`, `claude-agent`) take an optional `rule_policy
 policy on the proposal: a rule may read a status or wait through the session (journalled, shown to
 the agent as `obs-N` like any observation), resend a write's pinned bytes, require a receipt
 (`SUCCEEDED` claimed without one is blocked) or require a label (`require_label`). A blocked
-proposal is not recorded; the agent is told the reasons (`report_blocked`, with the labels of any
-observations a rule step delivered) and may report again within its turn budget. An agent that keeps
-proposing the blocked report ends without one, scored as today. Nothing rewrites a report.
+proposal is not recorded; the agent is told the reasons (`report_blocked`, the same requirements in words
+as `rule_requirements`, and the labels of any observations a rule step delivered) and may report again
+within its turn budget. An agent that keeps proposing the blocked report ends without one, scored as
+today; in the Claude Agent adapter the CLI's `error_max_turns` end is that case, the agent's failure,
+not a harness error (smoke 2, 2026-10-26). Nothing rewrites a report.
 
 What the envelope shows: the policy body and digest as the trial's first `rule_step` event
 (`hook: policy_declared`), then one `rule_step` per proposal (`hook: before_final_report`, with
