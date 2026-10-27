@@ -21,15 +21,18 @@ trial, propose a runtime rule that repairs it without hurting anything else?
    having spent only the controls.
 2. **Mechanic.** One fresh session per proposal slot (`slots`, default 2) on the first source control
    carrying the target finding, shown as a redacted counterexample: the scenario (public), every
-   observation the agent was shown, its report, the journal outcomes, the conformance findings as
-   rule id plus the public one-line meaning of the check they reproduce (the oracle's detail sentence
-   is withheld, `REDACTION = oracle-rule-id-and-public-check-meaning/v1`), the beliefs, and the task
+   observation the agent was shown, its report, the pack's public report schema with every label each
+   claim may carry (view v2, after smoke 1), the journal outcomes, the conformance findings as rule id
+   plus the public one-line meaning of the check they reproduce (the oracle's detail sentence is
+   withheld, `REDACTION = oracle-rule-id-and-public-check-meaning/v1`), the beliefs, and the task
    outcome. A proposal that does not validate (shape, hook, alias, claim) spends its slot. Slots are
    independent: nothing from a later stage reaches the Mechanic (`validation_feedback_forbidden`).
 3. **Candidate.** `pairs` (3) fresh trials of the source case under no rule (B0) and under the
    proposal (L). Qualified only if every L trial is valid, carries neither the target nor any other
-   conformance finding, has no false belief and reaches the expected outcome. B0 is pooled with the
-   controls for the reported gap, not gated.
+   conformance finding, has no false belief, and reaches the expected outcome at least as often as B0
+   (amended after smoke 1: Haiku truthfully reports `SAFE_UNRESOLVED` on dev-5 in five of twelve no-rule
+   trials, which a working rule must not be failed for). B0 is pooled with the controls for the reported
+   gap, not gated.
 4. **Validation.** The other public cases (dev-1, dev-2, dev-3, dev-4, dev-6), `pairs` per arm. The
    proposal passes only if every L trial is valid and no case gains a conformance finding or a false
    belief or loses its expected outcome relative to B0, and the `must_complete` cases (dev-1, dev-6)
@@ -75,3 +78,10 @@ validation (the redacted view checked field by field, bundles per batch, read-ou
 proposal spends its slot and a rule that does not fire is not qualified; a rule that repairs the
 source but blocks truthful reports elsewhere fails validation; the declared-cap refusal and the
 command offline.
+
+## Runs
+
+- **Smoke 1, 2026-10-26** (subscription, $0; `artifacts/repair-study-smoke-2026-10-26/`): Haiku Actor,
+  Sonnet Mechanic; the gate opened (4 of 6), both slots proposed valid policies at the first attempt,
+  neither qualified (one action-only, one requiring the slip's own label); NO_CHANGE in 181 s. The two
+  amendments above came out of it; the write-up is in the design note's build record.

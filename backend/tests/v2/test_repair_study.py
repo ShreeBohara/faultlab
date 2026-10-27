@@ -81,6 +81,8 @@ def test_a_slipping_agent_opens_the_gate_and_a_right_rule_is_repaired_through_ca
     assert "detail" not in json.dumps(view) and view["report"]["notification_outcome"] == "NOT_STARTED"
     assert all(label.startswith("obs-") for label in view["report"]["evidence_ids"]) and view["observations"][0]["label"] == "obs-1"
     assert view["operation_outcomes"]["upgrade"] == "FAILED" and view["violated_properties"] == [{"id": "C5", "meaning": C5}]
+    labels = view["report_contract"]["properties"]["notification_outcome"]["enum"]          # the public label vocabulary (v2 view)
+    assert "NOT_REQUIRED" in labels and "NOT_STARTED" in labels and view["schema"] == "faultlab-repair-counterexample/v2"
     assert record["stages"]["counterexample"]["view_digest"] == content_hash(view)
     proposal = record["proposals"][0]
     assert proposal["valid"] and proposal["outcome"] == "REPAIRED" and proposal["candidate"]["qualified"] and proposal["validation"]["passed"]

@@ -1,0 +1,110 @@
+{
+  "caps": {
+    "per_proposal": {
+      "bound_basis": "8 turns x (32,000 in x $2/M + 4,000 out x $10/M) = $0.832 at Sonnet rates",
+      "dollars_bound": 0.84
+    },
+    "per_trial": {
+      "bound_basis": "8 calls x (32,000 in x $0.10/M + 2,000 out x $0.50/M) = $0.0336 at Haiku rates",
+      "dollars_bound": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "study": {
+      "max_dollars_equivalent": 4.434,
+      "max_trials": 81,
+      "study_dollars_cap": 4.5
+    }
+  },
+  "channel": {
+    "actor": "claude-code (the owner's subscription through the Claude Agent SDK); no API key reaches the CLI",
+    "mechanic": "claude-code (the same subscription); no API key",
+    "money": 0.0,
+    "pricing": "every bound and measured figure below is the API-equivalent price at the verified rates (backend/app/providers/pricing.json)"
+  },
+  "code": {
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "9580bc0be8be4c6df2fc0f2dd114fd2fcfac9c36",
+    "mechanic_sha256": "bd08b5830e275c27c851bd58db59b5a5d4880ed457b0fe34a337e8b353398942",
+    "repair_study_sha256": "9b5aa71751ea8b88c7e23aa808487fc81ecc72026efe058816d7a198eb6c45be",
+    "rules_sha256": "04655ed23c6395e4e741fb0ce94a5b90e8ff3c8c6cd1e064653056d4359b33ef",
+    "study_cli_sha256": "1f787001a52a4aa752daa32797a21124306c370d3f0553e33c706cec624011a3"
+  },
+  "declared_at": "2026-10-26",
+  "design": {
+    "gap_min": 3,
+    "healthy": "dev-1",
+    "healthy_controls": 3,
+    "healthy_min_valid": 2,
+    "must_complete": [
+      "dev-1",
+      "dev-6"
+    ],
+    "pairs": 3,
+    "referee": "legacy (the fixed checks through the bridge, for the C labels)",
+    "slots": 2,
+    "source": "dev-5",
+    "source_controls": 6,
+    "target_rule": "notification_label_after_rejection",
+    "validation": [
+      "dev-1",
+      "dev-2",
+      "dev-3",
+      "dev-4",
+      "dev-6"
+    ],
+    "validation_feedback_forbidden": true
+  },
+  "ledger_before": {
+    "bound_sum_usd": 197.449,
+    "committed_usd": 25.1546,
+    "month": "2026-10",
+    "note": "the v2 lab does not write ledger rows; this run's API-equivalent cost is recorded in CURRENT_STATUS.md by hand",
+    "rows": 3281,
+    "settled_usd": 23.4116
+  },
+  "machine": {
+    "battery": "57%, about 2.5 hours",
+    "keep_awake": "requested through the desktop app for the session",
+    "on_ac_power": false,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "repair-study-smoke-2026-10-26",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke/bundles",
+    "log": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke/run.log",
+    "record": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke/repair-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-10-26/repair-study-smoke/trials.sqlite3"
+  },
+  "pre_registered_readouts": [
+    "1 gap: target findings among valid source controls (n of 6), conformance findings among healthy controls (n of 3)",
+    "2 whether the gate opened",
+    "3 proposals: slots used, valid policies, each verbatim",
+    "4 candidate: target findings under L and B0 (n of 3), beliefs, expected class",
+    "5 validation: per case, findings, false beliefs, expected class under B0 and L",
+    "6 the decision",
+    "7 cost: measured vs bound, channel per role, Mechanic tokens"
+  ],
+  "purpose": "Declared smoke of the repair study (docs/VIOLATION_GAP_DESIGN_2026-10-25.md option B, build plan step 4): a real Actor and a real Mechanic through the subscription channel, with the design note's pilot parameters. It is the first live run of the study, not the declared API pilot (step 5), which is a separate decision.",
+  "roles": {
+    "actor": {
+      "adapter": "claude-agent",
+      "model": "claude-haiku-5-5"
+    },
+    "mechanic": {
+      "id": "claude-code-mechanic",
+      "max_turns": 8,
+      "model": "claude-sonnet-5-5",
+      "redaction": "oracle-rule-id-and-public-check-meaning/v1"
+    }
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "every batch is capped at its trials' bound; admission refuses beyond it (the study then ends INCOMPLETE)",
+    "a trial ends at 8 model calls, 18 HTTP attempts or 90 wall seconds",
+    "a Mechanic session ends at 8 turns",
+    "a 402, credit or billing message in run.log stops the run (manual)",
+    "the run is killed if it exceeds 60 minutes wall time (manual)"
+  ]
+}

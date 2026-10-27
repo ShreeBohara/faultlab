@@ -1297,6 +1297,24 @@ Money: **$0**; API-equivalent $0.013 (the adapter's shadow price). Project ledge
 on defects the run exposed (the batch cap admitting one trial; each content block charged as a turn), fixed
 in `17edfdf`; their files are kept beside the run as `attempt1` and `attempt2`.
 
+### Repair study smoke (2026-10-26, subscription)
+
+One declared run of `faultlab study repair` (commit `9580bc0`, `~/FaultLab_Runs/2026-10-26/repair-study-smoke/`,
+declaration sha256 `e8517621…a1db`, record and bundles in `artifacts/repair-study-smoke-2026-10-26/`): Haiku 5.5
+as Actor through the Claude Agent adapter, Sonnet 5.5 as Mechanic through the Claude Agent SDK, both on the
+owner's subscription. Controls: 4 of 6 dev-5 trials carried the target finding (C5,
+`notification_label_after_rejection`), 3 of 3 dev-1 clean; the gate opened. The Mechanic proposed a valid policy
+at its first attempt in both slots (two turns, 6,497 input tokens each): slot 1 `report_terminal_failure` alone,
+which cannot touch a label (L 2 of 3 target, as B0); slot 2 added `require_label notification_outcome
+NOT_STARTED`, the slip's own label, so nothing was blocked (L 2 of 3 target). Decision NO_CHANGE at the
+candidate stage; validation never ran. 21 trials, 100 Actor model calls, 405,954 input and 1,174 output tokens,
+181 seconds. Money: **$0**; API-equivalent $0.041 Actor + $0.027 Mechanic = $0.068 (shadow price). Project
+ledger carried forward unchanged at **$1,550.91** (bounds). A smoke of the study with a real Actor and a real
+Mechanic, not a pilot result. Two design findings, recorded in
+[VIOLATION_GAP_DESIGN_2026-10-25.md](docs/VIOLATION_GAP_DESIGN_2026-10-25.md): the Mechanic's view carried no
+label vocabulary (the public report schema), and the candidate gate's "expected outcome 3 of 3" cannot be met
+by an Actor that truthfully reports SAFE_UNRESOLVED on dev-5 five times in twelve; both amended for a second smoke.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

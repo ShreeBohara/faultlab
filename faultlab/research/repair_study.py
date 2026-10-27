@@ -12,8 +12,10 @@ C labels of the write-up. Stages, every one pre-registered:
    spends its slot. Slots are independent: nothing from a later stage reaches the Mechanic.
 3. Candidate. ``pairs`` fresh trials of the source case under no rule (B0) and under the proposal (L).
    Qualified only if every L trial is valid, carries neither the target nor any other conformance
-   finding, has no false belief and reaches the source case's expected outcome. The B0 trials are
-   pooled with the controls for the reported gap estimate; they are not a second gate.
+   finding, has no false belief, and reaches the source case's expected outcome at least as often as
+   B0 does (amended after smoke 1: an Actor that truthfully reports unresolved before a rejection lands
+   must not fail a working rule). The B0 trials are pooled with the controls for the reported gap
+   estimate; they are not a second gate.
 4. Validation. The other public cases, ``pairs`` trials per arm. A qualified proposal passes only if
    every L trial is valid and no case gains a conformance finding or a false belief or loses its
    expected outcome relative to B0, and the ``must_complete`` cases complete in every L trial.
@@ -242,9 +244,10 @@ class RepairStudy:
             cand = await self._stage(f"candidate-{slot}-L", design.source_scenario, design.pairs, policy, "L")
             counts = cand["counts"]
             qualified = (cand["complete"] and counts["valid"] == design.pairs and counts["target"] == 0 and counts["conformance"] == 0
-                         and counts["false_beliefs"] == 0 and counts["expected"] == design.pairs)
+                         and counts["false_beliefs"] == 0 and counts["expected"] >= b0["counts"]["expected"])
             entry["candidate"] = {"B0": self._public(b0), "L": self._public(cand), "qualified": qualified,
-                                  "rule": "every L trial valid, no target or other conformance finding, no false belief, expected outcome"}
+                                  "rule": "every L trial valid, no target or other conformance finding, no false belief, expected outcome "
+                                          "under L no less often than under B0"}
             self._save()
             if not (b0["complete"] and cand["complete"]):
                 entry["outcome"] = "INCOMPLETE"
