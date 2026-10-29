@@ -100,3 +100,8 @@ command offline.
   upgrade's terminal failure; the rule acted in all three L trials and Haiku re-reported NOT_REQUIRED each
   time; all five validation cases passed; 45 trials, 389 s, $0.118 API-equivalent. Pilot-grade (three
   pairs, a design amended during the smokes); the design is frozen at 6e179d0 for a confirmatory run.
+- **Confirmatory replication, 2026-10-28** (subscription, $0; `artifacts/repair-study-confirm-2026-10-28/`): the
+  frozen design with six pairs, declared before the run; **REPAIRED** again at slot 1 with `require_label
+  notification_outcome [NOT_REQUIRED]` after the upgrade's terminal failure; L 0 of 6 target against B0 4 of 6,
+  the rule acted and was obeyed in all six L trials; all five validation cases passed at 6 of 6; 81 trials,
+  692 s, $0.184 API-equivalent.

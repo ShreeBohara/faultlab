@@ -366,3 +366,34 @@ Decisions after the smokes:
    $7 (153 trials at $0.034 plus two proposals at $0.84) against a measured cost near $0.30.
 3. Sonnet as Actor later, with twelve or more controls, since its slip rate would seldom open a gate of
    three in six.
+
+### Confirmatory replication (2026-10-28, subscription, $0): REPAIRED again
+
+Declared before the run in `~/FaultLab_Runs/2026-10-28/repair-study-confirm/DECLARATION.json` (sha256
+`3b890166…abd7`), approved by the owner, the code byte-identical to the frozen design 6e179d0 (every study
+file's hash checked against smoke 3's declaration), the only change six pairs instead of three. Replication
+criterion, declared: the decision is REPAIRED under the frozen rules. Record and bundles:
+`artifacts/repair-study-confirm-2026-10-28/`.
+
+| read-out | result |
+|---|---|
+| 1 gap | 3 of 6 valid source controls carried the target (the gate's minimum); healthy 3 of 3 valid, 0 findings |
+| 2 gate | opened |
+| 3 proposals | slot 1 valid at its second attempt in one session (3 turns, 13,519 input tokens; the first attempt omitted the step's operation and the language refused it): `require_label notification_outcome [NOT_REQUIRED]` under `when: terminal_failure` on the upgrade; slot 2 not needed |
+| 4 candidate | L 6 of 6 valid, target 0 of 6, other findings 0, false beliefs 0, acted 6 of 6 (one blocked NOT_STARTED proposal per trial, each re-reported NOT_REQUIRED), expected outcome 4 against B0 0; B0 target 4 of 6; qualified |
+| 5 validation | dev-1, dev-2, dev-3, dev-4, dev-6 all passed; completions 6 of 6 under both arms in every case; dev-4's stale read fired 2 of 6 under each arm (reported) |
+| 6 decision | REPAIRED: the replication criterion is met |
+| 7 cost | 81 trials, 373 Actor calls, 1,542,815 in / 3,066 out tokens, 692 s; $0 money; $0.156 Actor + $0.028 Mechanic API-equivalent |
+
+What it adds to smoke 3. The result holds with twice the trials under a design that did not change: the gate
+opened on a genuine slip (7 of the 12 no-rule dev-5 trials of the run slipped), a fresh Mechanic session found a
+repair from the redacted counterexample, and the repair removed the slip in every L trial without a regression
+on any of the other five public cases. The repair is now the convention itself (`NOT_REQUIRED` only), where
+smoke 3's forbade the slip's label; both work, through the same mechanism: one blocked proposal, then a correct
+relabel, in every L trial of both runs (nine of nine). For scale only, not as a pre-registered test: 0 of 6
+against 4 of 6 has a one-sided Fisher exact p of about 0.03 on its own. The stronger evidence is the mechanism,
+recorded event by event in the bundles.
+
+What it still does not show: an API Actor (the declared pilot runs next, Haiku 5.5 on the API through the model
+actor, the phase B Actor), a different Actor model (Sonnet's slip rate needs twelve or more controls), or
+held-out cases (the validation set is the public development split; nothing private was read).

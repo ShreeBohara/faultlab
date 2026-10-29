@@ -1351,6 +1351,22 @@ carried forward unchanged at **$1,550.91** (bounds). A pilot-grade result under 
 smoke phase: the design is frozen at this commit, and a confirmatory run with more pairs is the next decision
 (design note, build record).
 
+### Repair study confirmatory replication (2026-10-28, subscription): REPAIRED again
+
+The frozen design of smoke 3 (code identical to `6e179d0`) with six pairs instead of three, declared before the
+run and approved by the owner (`~/FaultLab_Runs/2026-10-28/repair-study-confirm/`, declaration sha256
+`3b890166…abd7`, record and bundles in `artifacts/repair-study-confirm-2026-10-28/`). Haiku 5.5 Actor and Sonnet 5.5
+Mechanic on the subscription. Gate opened at its minimum (3 of 6 dev-5 controls with the C5 label slip; dev-1 3 of
+3 clean). The Mechanic's first slot proposed, at its second attempt in one session (the first omitted a step's
+operation and was refused by the language), `require_label notification_outcome [NOT_REQUIRED]` when the
+upgrade's `terminal_failure` holds: the convention itself. Candidate: L 6 of 6 valid, target 0 of 6 against 4 of 6
+under B0, the rule acted in all six L trials, blocked one NOT_STARTED proposal in each, and Haiku re-reported
+NOT_REQUIRED every time (4 correct refusals, 2 truthful SAFE_UNRESOLVED; B0 0 correct refusals). Validation: all
+five cases passed, completions 6 of 6 under both arms in every case. Decision **REPAIRED**: the replication
+criterion declared in advance is met. 81 trials, 373 Actor model calls, 1,542,815 input and 3,066 output tokens,
+692 seconds. Money: **$0**; API-equivalent $0.156 Actor + $0.028 Mechanic = $0.184. Project ledger carried forward
+unchanged at **$1,550.91** (bounds).
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
