@@ -197,3 +197,8 @@ Claude Code provider for the model Actor (1.6). The campaign-cap ceiling stays a
 lab ([VIOLATION_GAP_DESIGN_2026-10-25.md](VIOLATION_GAP_DESIGN_2026-10-25.md), [v2/REPAIR_STUDY.md](v2/REPAIR_STUDY.md))
 reached REPAIRED once on the subscription at $0 (smoke 3, `artifacts/repair-study-smoke-3-2026-10-26/`). The
 design is frozen at 6e179d0; a confirmatory run and the API pilot await the owner.
+
+**Update 2026-10-29.** The repair study replicated on the subscription (REPAIRED, $0, 2026-10-28). Its first API
+pilot ended NO_CHANGE ($0.46) on a validation defect, which amendment 8 corrected. The second API pilot then ended
+REPAIRED ($0.24, `artifacts/repair-study-api-pilot-2-2026-10-29/`), a development qualification on the public split.
+Ledger lines are in `CURRENT_STATUS.md`; write-ups are in the design note.

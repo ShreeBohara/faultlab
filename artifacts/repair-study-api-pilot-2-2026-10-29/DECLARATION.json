@@ -1,0 +1,178 @@
+{
+  "amendment_8": {
+    "applied_in": "35e401f",
+    "post_hoc_note": "read against the first pilot's saved rows, both of its proposals would have passed (neither acted in any validation trial); that is why this run is a new pilot, not a re-scoring",
+    "pre_registered_in": "docs/VIOLATION_GAP_DESIGN_2026-10-25.md at 1ea87b4, before this run",
+    "reading": [
+      "an act is a report-gate rule step that ran at least one step or blocked a proposal; the policy_declared event is not an act",
+      "valid means what it means for controls and the candidate: the execution completed and every scheduled fault fired",
+      "the existing must_complete gate is kept, read per acting trial: in dev-1 and dev-6 every trial where the rule acted must complete",
+      "trials where the rule did not act are not judged, in any case",
+      "both arms still run in every validation case (both arms' counts are reported); B0 no longer enters the validation decision"
+    ],
+    "text": "Validation attributes a regression to the rule only where the rule acted. A validation case in which the policy ran no step and blocked nothing in any L trial is inert: its L trials received exactly the B0 inputs, so the case passes and is reported as inert with both arms' counts. In a case where the policy acted in at least one L trial, every trial where it acted must be valid, carry no conformance finding and no false belief, and reach the case's expected outcome. The candidate stage is unchanged. A rule that fires outside the source case is still judged where it fires (the overreach test keeps failing a rule that blocks truthful reports)."
+  },
+  "caps": {
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "pilot_process_cap_usd": 31.62,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to October's committed dollars plus $6.00, so the ledger refuses any call that would spend more than about $6 in total"
+    },
+    "per_call_reservation_usd": 0.0209,
+    "per_proposal": {
+      "bound_basis": "8 turns x (32,000 in x $2/M + 4,000 out x $10/M) = $0.832 at Sonnet rates",
+      "dollars_bound": 0.84
+    },
+    "per_trial": {
+      "bound_basis": "8 calls x $0.0042 (32,000 in x $0.10/M + 2,000 out x $0.50/M)",
+      "dollars_bound": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "study": {
+      "basis": "preflight 1 + 153 study trials (6 + 3 controls + 2 slots x 72) at $0.034; 2 proposals at $0.84 equivalent",
+      "max_actor_usd_real_money": 5.236,
+      "max_mechanic_usd_equivalent": 1.68,
+      "max_trials": 154,
+      "study_dollars_cap": 7.0
+    }
+  },
+  "channel": {
+    "actor": "anthropic API (real money) through app.providers.runtime.RuntimeProvider; every call reserves its bound in the monthly ledger and settles at measured cost",
+    "mechanic": "claude-code (the owner's subscription through the Claude Agent SDK); no API key",
+    "pricing": "verified rates, backend/app/providers/pricing.json"
+  },
+  "code": {
+    "claude_agent_sha256": "869d3a6f0a2a49249995b7b78d438451b1e9e963ab67e1e74181ad6e7e6ba0a0",
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "35e401fcfd74d9cdfc3667fcec013ab58f86a5d5",
+    "mechanic_sha256": "5ffd38267a2bdc5145f3884a793bc305d23d90c4974c8c9aa82e85b33d1a13f5",
+    "model_actor_sha256": "f152994dc2d54c66e5d07d3287e489600023e9759b79e1ca3276d875e33d6af8",
+    "repair_study_sha256": "a20a76c4c45027bf90eda5e47537dafb126e40090d719c684a9e8d4a7060d643",
+    "rules_sha256": "dd0c4004ac9778573d39ddb28182376e24d77eee1d8ee891e21210e3d2f8f3c7",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "1f787001a52a4aa752daa32797a21124306c370d3f0553e33c706cec624011a3"
+  },
+  "decision_rule": "the study's own decision under the rules above (REPAIRED, NO_CHANGE or INCOMPLETE) is the result; nothing read after the run changes it",
+  "declared_at": "2026-10-29",
+  "design": {
+    "gap_min": 3,
+    "healthy": "dev-1",
+    "healthy_controls": 3,
+    "healthy_min_valid": 2,
+    "must_complete": [
+      "dev-1",
+      "dev-6"
+    ],
+    "pairs": 6,
+    "referee": "legacy (the fixed checks through the bridge, for the C labels)",
+    "slots": 2,
+    "source": "dev-5",
+    "source_controls": 6,
+    "target_rule": "notification_label_after_rejection",
+    "validation": [
+      "dev-1",
+      "dev-2",
+      "dev-3",
+      "dev-4",
+      "dev-6"
+    ],
+    "validation_feedback_forbidden": true,
+    "validation_rule": "where_acted (amendment 8)"
+  },
+  "expected_cost": "about $0.46 of API money (the first pilot measured $0.4575 for 154 trials) and about 22 minutes",
+  "frozen_design": {
+    "commit": "35e401f",
+    "design_digest": "d3844c46ac5dcedd3f4a057d30c3f519dd6f1466cb5c4b237cbf7386c3230ca8",
+    "design_digest_pilot1": "0a2f83bdc72cefa1291ad955df674849267673c8a3cd907f9caaec67ad3b86a3",
+    "only_change_from_pilot1": "amendment 8 (the validation rule); the study module is the only changed file",
+    "pilot1_declaration_sha256": "450bf8c95e31562ea19a19e7b678543d0080b3e69227fb830f9a86d174bef971"
+  },
+  "incidents_before_launch": [
+    "2026-10-29T11:42:12Z: an attempt launched without a declaration (the declaration script failed its text check and the launch command did not stop); the preflight refused the empty monthly cap (ConfigurationError) before any provider call; no ledger row; files kept in aborted-launch-2026-10-29T1142Z/ with a README. launch.sh now refuses to start without a declaration whose sha256 matches and a numeric pilot cap"
+  ],
+  "ledger_before": {
+    "bound_sum_usd": 200.7502,
+    "committed_usd": 25.6121,
+    "month": "2026-10",
+    "rows": 4067
+  },
+  "machine": {
+    "keep_awake": "held through the desktop app for the session",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "repair-study-api-pilot-2-2026-10-29",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/bundles",
+    "logs": [
+      "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/preflight.log",
+      "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/run.log"
+    ],
+    "preflight_store": "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/preflight.sqlite3",
+    "record": "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/repair-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/trials.sqlite3"
+  },
+  "pre_registered_readouts": [
+    "1 gap: target findings among valid source controls (n of 6), conformance findings among healthy controls (n of 3)",
+    "2 whether the gate opened",
+    "3 proposals: slots used, valid policies, each verbatim",
+    "4 candidate: target findings under L and B0 (n of 3), beliefs, expected class",
+    "5 validation: per case, inert or acting; where the rule acted, how many acting trials were clean; findings, false beliefs, expected outcome and completions under B0 and L",
+    "6 the decision",
+    "7 cost: measured vs bound, channel per role, Mechanic tokens"
+  ],
+  "preflight": {
+    "on_failure": "the study is not started; the failure is written up",
+    "pass": "the trial's execution is COMPLETED (a scored task outcome, whatever it is) and its measured dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor` with the same settings, before the study, as in the first pilot"
+  },
+  "previous_runs": [
+    {
+      "api_equivalent_usd": 0.118,
+      "decision": "REPAIRED",
+      "declaration_sha256": "a0a592481062efe9dffade8feba8ad7cf022048c2a44b5df77dc9e5eca6a6e52",
+      "name": "repair-study-smoke-3-2026-10-26"
+    },
+    {
+      "api_equivalent_usd": 0.184,
+      "decision": "REPAIRED",
+      "declaration_sha256": "3b8901664a50cd01fa4828dc916695635b421dee6786fa59c4d83a801976abd7",
+      "name": "repair-study-confirm-2026-10-28"
+    },
+    {
+      "api_usd_real_money": 0.4575,
+      "decision": "NO_CHANGE",
+      "declaration_sha256": "450bf8c95e31562ea19a19e7b678543d0080b3e69227fb830f9a86d174bef971",
+      "name": "repair-study-api-pilot-2026-10-28",
+      "why": "both proposals qualified (slip 0 of 12 under L, 11 of 12 under B0) and failed validation in cases where the rule never acted"
+    }
+  ],
+  "purpose": "The second API pilot of the repair study, approved by the owner on 2026-10-29 ('yeah please go ahead') in answer to 'a second API pilot under amendment 8, otherwise identical': Haiku 5.5 as Actor on the Anthropic API through the model-actor adapter, Sonnet 5.5 as Mechanic on Claude Code (the subscription), six pairs, the validation rule of amendment 8; everything else as the first API pilot.",
+  "roles": {
+    "actor": {
+      "adapter": "model-actor",
+      "context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+      "environment": "FAULTLAB_ACTOR_MODEL=anthropic:claude-haiku-5-5",
+      "model": "anthropic:claude-haiku-5-5"
+    },
+    "mechanic": {
+      "id": "claude-code-mechanic",
+      "max_turns": 8,
+      "model": "claude-sonnet-5-5",
+      "redaction": "oracle-rule-id-and-public-check-meaning/v1"
+    }
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "the preflight must pass before the study starts",
+    "every batch is capped at its trials' bound; admission refuses beyond it",
+    "the monthly ledger refuses any call past the pilot's process cap (about $6 of new spend)",
+    "a trial ends at 8 model calls, 18 HTTP attempts or 90 wall seconds",
+    "a Mechanic session ends at 8 turns",
+    "a 402, credit or billing message in the logs stops the run",
+    "the run is killed if it exceeds 90 minutes wall time"
+  ]
+}

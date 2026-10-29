@@ -114,3 +114,8 @@ command offline.
   under L against 11 of 12 under B0); both failed validation in a case where the rule never acted (dev-6, dev-3:
   the Actor's own variance); **NO_CHANGE**, as declared. Amendment 8 (validation attributes regressions only where
   the rule acted) is pre-registered in the design note for any second pilot.
+- **Second API pilot, 2026-10-29** (Anthropic API, $0.2360; `artifacts/repair-study-api-pilot-2-2026-10-29/`): the
+  first pilot's setup under amendment 8 (35e401f). Slot 1 proposed the convention; L 0 of 6 target against B0 6 of 6,
+  and the rule acted in all six L trials. All five validation cases were inert and passed; every validation trial
+  completed without a finding in both arms, so the earlier comparative rule would also have passed them.
+  **REPAIRED**; 82 trials, 716 s.

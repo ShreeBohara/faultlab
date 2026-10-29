@@ -303,3 +303,12 @@ The six-pair confirmatory replication on the subscription ended REPAIRED again (
 (Haiku on the API, $0.46 of the $200 month) ended NO_CHANGE: the repair worked on the source case (slip 0 of 12
 against 11 of 12) but validation failed it in cases where the rule never acted, on the Actor's own variance.
 Amendment 8 is pre-registered in the design note; a second pilot under it is the owner's decision.
+
+## Addendum (2026-10-29): the second API pilot ended REPAIRED
+
+The second API pilot ran under amendment 8 (applied at 35e401f) with Haiku on the API, for $0.24 of the $200 month.
+It ended REPAIRED. The Mechanic's rule removed the slip on fresh trials (0 of 6 against 6 of 6) and stayed silent in
+all five validation cases. Every validation trial completed without a finding under both arms, so the result does
+not depend on the amendment. Stage 4.5's loop is now closed on the API Actor, as a development qualification on the
+public split. Unseen cases, Sonnet as Actor with twelve or more controls, and the DeepSeek arm (which needs the
+owner's OpenRouter key) are the owner's next decisions.

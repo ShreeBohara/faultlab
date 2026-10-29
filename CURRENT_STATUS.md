@@ -1386,6 +1386,27 @@ Mechanic: $0 money, $0.044 API-equivalent. Declared bound $5.24 (154 trials at $
 forward: $1,550.91 + $5.24 = **$1,556.15** (bounds, as always). Write-up and amendment 8, pre-registered for any
 second pilot, in the design note.
 
+### Ledger entry 2026-10-29: repair study second API pilot (Anthropic API): REPAIRED
+
+The second API pilot, approved by the owner on 2026-10-29 (`~/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/`,
+declaration sha256 `879b7707…8875`, record, logs and bundles in `artifacts/repair-study-api-pilot-2-2026-10-29/`): the
+first API pilot's setup (Haiku 5.5 as Actor on the Anthropic API through the model actor, Sonnet 5.5 as Mechanic on the
+subscription, six pairs) with one change, amendment 8 to the validation rule, applied at 35e401f. A first launch at
+11:42Z started without its declaration (the declaration script failed a text check and the launch command did not
+stop); its preflight refused the empty monthly cap before any provider call, so no ledger row; the files are kept
+with a README, and the launcher now refuses to start without a matching declaration and a numeric cap. The real
+launch's preflight passed (dev-5, a slip, $0.0026). Gate: 5 of 6 dev-5 controls carried the C5 label slip, dev-1 3 of
+3 clean. Slot 1 proposed `require_label notification_outcome [NOT_REQUIRED]` after the upgrade's terminal failure
+(at its second attempt; the first omitted the step's operation). Candidate: the rule acted in 6 of 6 L trials, the
+slip fell to 0 of 6 against 6 of 6 under B0, correct refusals 6 of 6 against 0 of 6; qualified. Validation: all five
+cases inert (the rule acted in none of the 30 validation L trials) and passed; every validation trial of both arms
+completed without a finding, so the pre-amendment comparative rule would have passed them too. Decision
+**REPAIRED**: a development qualification on the public split, not a held-out result and not an active policy. 82
+trials (preflight included), 411 Actor calls, 1,916,892 input and 83,355 output tokens in the study, 716 seconds.
+Money: **$0.2360** of API credit (monthly ledger committed $25.6121 to $25.8481, 4,067 to 4,478 rows; the run's
+process cap was $31.62). Mechanic: $0 money, $0.029 API-equivalent. Declared bound $5.24 (154 trials at $0.034).
+Project ledger carried forward: $1,556.15 + $5.24 = **$1,561.39** (bounds, as always). Write-up in the design note.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

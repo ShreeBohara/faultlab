@@ -1,0 +1,4 @@
+cat: /Users/shree/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/pilot_cap: No such file or directory
+2026-10-29T11:42:12Z preflight start (monthly cap for this process: )
+2026-10-29T11:42:13Z preflight exit 2: FAIL no store: no such table: envelopes
+STOP preflight failed

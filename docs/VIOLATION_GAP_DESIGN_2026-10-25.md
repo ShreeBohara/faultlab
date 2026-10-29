@@ -441,3 +441,61 @@ under amendment 8 both of this pilot's proposals would have passed, since neithe
 
 Decision needed from the owner: a second API pilot under amendment 8, otherwise identical (about $0.46 of API
 money and 22 minutes at this pilot's measured cost, declared bound about $5.24).
+
+### Second API pilot (2026-10-29, Anthropic API, $0.24): REPAIRED
+
+The owner approved the second pilot on 2026-10-29 ("yeah please go ahead"). Declared in
+`~/FaultLab_Runs/2026-10-29/repair-study-api-pilot-2/DECLARATION.json` (sha256 `879b7707…8875`): the first API
+pilot's setup with one change, amendment 8, applied at 35e401f. The declaration script checked that the study module
+is the only changed file since the first pilot and that the amendment's text matches this note. The declaration also
+records how the amendment is read: an act is a report-gate rule step that ran a step or blocked a proposal; "valid"
+means what it means for the controls; the must_complete gate is kept, applied to each acting trial; trials where the
+rule did not act are not judged; both arms still run in every case. Record, logs and bundles:
+`artifacts/repair-study-api-pilot-2-2026-10-29/`.
+
+| read-out | result |
+|---|---|
+| 1 gap | 5 of 6 valid source controls carried the target; healthy 3 of 3 valid, 0 findings |
+| 2 gate | opened |
+| 3 proposals | slot 1 valid at its second attempt (3 turns, 14,195 input tokens; the first omitted the step's operation): `require_label notification_outcome [NOT_REQUIRED]` under `when: terminal_failure` on the upgrade; slot 2 not needed |
+| 4 candidate | L 6 of 6 valid, target 0 of 6 against B0 6 of 6, other findings 0, false beliefs 0, acted 6 of 6 (in five trials a blocked NOT_STARTED report, then a NOT_REQUIRED relabel; in the sixth the first report already said NOT_REQUIRED), correct refusals 6 against 0; qualified |
+| 5 validation | dev-1, dev-2, dev-3, dev-4, dev-6 inert (the rule acted in 0 of 30 L trials) and passed; every trial of both arms completed without a finding, so the pre-amendment comparative rule would also have passed every case; dev-4's stale read fired 5 of 6 under L and 6 of 6 under B0 (reported) |
+| 6 decision | REPAIRED |
+| 7 cost | 82 trials (preflight included), 411 Actor calls, 1,916,892 in / 83,355 out tokens in the study, 716 s; $0.2360 of API money (ledger committed $25.6121 to $25.8481); Mechanic $0 money, $0.029 API-equivalent |
+
+What it shows. The repair loop closed on the API Actor, the Actor of phase B. A fresh Claude Code Mechanic read a
+redacted counterexample of Haiku's slip and proposed the convention as a runtime rule. On fresh trials the rule
+removed the slip (0 of 6 against 6 of 6) and stayed silent in the five other public cases. The decision does not
+depend on amendment 8: every validation trial completed without a finding under both arms, so the comparative rule
+of the first pilot would have passed this proposal too. The candidate stage did not change between the two API
+pilots. Across both, the slip appeared in 0 of 18 trials under a Mechanic's rule against 17 of 18 without one
+(descriptive only; the pilots were not designed to be pooled). For scale only, not as a pre-registered test: 0 of 6
+against 6 of 6 has a one-sided Fisher exact p of about 0.001. The API Actor slipped in 11 of the 12 no-rule dev-5
+trials of this study (17 of 18 in the first pilot).
+
+What it does not show:
+
+- **Unseen cases.** Validation used the public development split. dev-5 is the split's only case with a terminal
+  upgrade failure, so the five validation cases test that the rule stays silent where it should. They do not test
+  whether it repairs other rejection cases. Nothing private or held-out was read. The claim is a development
+  qualification, not an unseen-case result and not an active policy.
+- **Breadth.** One pack, one slip (the C5 label after a rejection), one Actor model and prompt (Haiku 5.5 through
+  the legacy reference prompt), one Mechanic model (Sonnet 5.5).
+- **A design fixed in advance from the start.** The study's rules changed seven times (amendments 1 to 6 after the
+  smokes, amendment 8 after the first pilot; item 7, power, changed no rule), each change made after one run and
+  before the next. Amendment 8 was written after the first pilot's data, and this is the first run under it. The
+  caveat matters less here because the decision also holds under the earlier rule.
+- **A Mechanic that is right the first time.** Its first attempt omitted the step's operation, as in the
+  confirmatory run and the first pilot's slot 2. The language's refusal led to a valid proposal at the second
+  attempt.
+
+Launch incident, no cost. A first launch at 11:42Z started without its declaration: the declaration script's text
+check did not strip this note's markdown emphasis and failed, and the launch command did not stop on that failure.
+The preflight refused the empty monthly cap (ConfigurationError) before any provider call, and the launcher stopped.
+There was no ledger row. The files are kept in the run folder and in the artifacts with a README. The launcher now
+refuses to start without a declaration whose sha256 matches and a numeric cap, and the declaration records the
+incident.
+
+Decisions for the owner after this run: whether the development qualification is enough for now or calls for an
+unseen-case evaluation, which needs held-out cases this session does not read; Sonnet as Actor with twelve or more
+controls; and the DeepSeek arm, which needs the owner's OpenRouter key.
