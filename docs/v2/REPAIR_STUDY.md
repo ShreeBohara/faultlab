@@ -34,17 +34,21 @@ trial, propose a runtime rule that repairs it without hurting anything else?
    trials, which a working rule must not be failed for), and the policy acted in at least one L trial
    (amended after smoke 2: a rule that never fires "qualified" by chance). B0 is pooled with the
    controls for the reported gap, not gated.
-4. **Validation.** The other public cases (dev-1, dev-2, dev-3, dev-4, dev-6), `pairs` per arm. The
-   proposal passes only if every L trial completed its execution and no case gains a conformance
-   finding or a false belief or loses its expected outcome relative to B0, and the `must_complete`
-   cases (dev-1, dev-6) complete under L no less often than under B0 (amended after smoke 2: exposure
-   is reported, not demanded, since whether dev-4's stale read fires depends on the Actor's path; absolute
-   counts gave way to comparisons).
+4. **Validation.** The other public cases (dev-1, dev-2, dev-3, dev-4, dev-6), `pairs` per arm. A
+   regression is attributed to the rule only where the rule acted (amendment 8, after the API pilot,
+   whose zero-tolerance comparison of six L with six B0 trials failed two cases where the rule never
+   acted, on the Actor's own variance). A case where the policy ran no step and blocked nothing in any L
+   trial is *inert*: its L trials received the B0 inputs, so it passes and is reported as inert with both
+   arms' counts. In any other case every L trial where the rule acted must be valid, carry no conformance
+   finding and no false belief, reach the case's expected outcome and, in a `must_complete` case (dev-1,
+   dev-6), complete. Before amendment 8 (smokes, confirmatory run, API pilot) the rule was comparative:
+   every L trial completed its execution, no case gained a finding or a false belief or lost its expected
+   outcome relative to B0, and the `must_complete` cases completed under L no less often than under B0.
 5. **Decision.** `REPAIRED` at the first proposal that passes validation; `NO_CHANGE` when the gate
    did not open or no proposal passed; `INCOMPLETE` when a stage could not run (admission refused,
    worker stopped, infrastructure).
 
-A valid trial (controls, candidate) completed its execution and fired every scheduled fault; an absent
+A valid trial (controls, candidate, validation trials where the rule acted) completed its execution and fired every scheduled fault; an absent
 report is the agent's scored failure, not an invalid trial. Each trial runs with a fresh adapter (no
 state crosses trials). Every batch is capped at its trials' bound; the
 study refuses to start when its maximum bound exceeds `--study-dollars`. The record

@@ -12,7 +12,7 @@ from faultlab.lab import TrialStore
 from faultlab.referee.legacy import LegacyOrdersReferee
 from faultlab.research import RULE_LANGUAGE, RepairStudy, RepairStudyDesign, ScriptedMechanic, counterexample_view
 from faultlab.research.mechanic import REDACTION
-from faultlab.research.repair_study import candidate_qualified, validation_passed
+from faultlab.research.repair_study import candidate_qualified, validation_case
 from faultlab import __main__ as cli
 from test_report_gate import POLICY, TARGET, WRONG_ON_SUCCESS, agent, run
 
@@ -94,6 +94,8 @@ def test_a_slipping_agent_opens_the_gate_and_a_right_rule_is_repaired_through_ca
     assert proposal["candidate"]["L"]["adapter"]["settings_digest"] != proposal["candidate"]["B0"]["adapter"]["settings_digest"]
     assert set(proposal["validation"]["cases"]) == {"dev-1", "dev-3"} and proposal["validation"]["failed_cases"] == []
     assert all(case["L"]["counts"]["completed"] == 1 for case in proposal["validation"]["cases"].values())
+    # The right rule never fires outside a rejection: both validation cases are inert (amendment 8), reported with both arms.
+    assert all(case["inert"] and case["acting"] == 0 and case["passed"] for case in proposal["validation"]["cases"].values())
     readouts = record["readouts"]
     assert readouts["2_gate_opened"] is True and readouts["4_candidate"][0]["qualified"] and readouts["5_validation"][0]["passed"]
     assert readouts["3_proposals"][0]["policy"] == proposal["policy"] and readouts["6_decision"]["decision"] == "REPAIRED"
@@ -135,9 +137,36 @@ def test_a_rule_that_repairs_the_source_but_blocks_healthy_reports_fails_validat
         # The refused report is absent: the trial still completed (scoreable), scored as the agent's failure, a gained finding.
         assert counts["basis"] == "scoreable" and counts["scoreable"] == 1 and counts["conformance"] == 1 and counts["blocked"] >= 1
         assert value["L"]["rows"][0]["report"] == "ABSENT" and value["B0"]["counts"]["completed"] == 1 and value["B0"]["counts"]["conformance"] == 0
+        assert value["inert"] is False and value["acting"] == 1 and value["clean"] == 0        # judged where it fired (amendment 8)
+    assert record["readouts"]["5_validation"][0]["cases"]["dev-1"] == {**record["readouts"]["5_validation"][0]["cases"]["dev-1"],
+                                                                      "inert": False, "acting": 1, "clean": 0, "passed": False}
 
 
-def test_the_candidate_and_validation_gates_are_the_pre_registered_comparisons():
+def test_a_case_where_the_rule_never_acted_is_inert_and_the_actors_own_variance_does_not_fail_it(tmp_path):
+    # The API pilot's failure replayed (amendment 8): every validation L trial ends without a report, so each case gains a
+    # finding and dev-1 loses a completion against B0, but the rule never acted in them; the comparative rule failed such
+    # cases on the Actor's own variance, amendment 8 reports them inert and the repair stands.
+    made = {"L": 0}
+
+    def varying(policy):
+        if policy is None:
+            return slipping(None)
+        made["L"] += 1
+        return agent(policy, silent=made["L"] > 2)[0]     # the candidate stage's two adapters (manifest, trial) behave
+    store, repair = study(tmp_path, varying, ScriptedMechanic([POLICY]))
+    with store:
+        record = run(repair.run())
+    assert record["decision"] == "REPAIRED"
+    proposal = record["proposals"][0]
+    assert proposal["candidate"]["qualified"] and proposal["validation"]["passed"] and proposal["validation"]["failed_cases"] == []
+    for case in ("dev-1", "dev-3"):
+        value = proposal["validation"]["cases"][case]
+        assert value["L"]["rows"][0]["report"] == "ABSENT" and value["L"]["counts"]["completed"] == 0
+        assert value["B0"]["counts"]["completed"] == 1 and value["L"]["counts"]["conformance"] > value["B0"]["counts"]["conformance"]
+        assert value["inert"] is True and value["acting"] == 0 and value["passed"] is True
+
+
+def test_the_candidate_gate_compares_with_b0_and_validation_judges_only_where_the_rule_acted():
     clean = {"valid": 3, "target": 0, "conformance": 0, "false_beliefs": 0, "expected": 2, "acted": 1}
     base = {"expected": 1}
     assert candidate_qualified(clean, base, 3)
@@ -147,14 +176,19 @@ def test_the_candidate_and_validation_gates_are_the_pre_registered_comparisons()
     assert not candidate_qualified({**clean, "conformance": 1}, base, 3)
     assert not candidate_qualified({**clean, "expected": 0}, base, 3)              # fewer expected outcomes than B0
     assert candidate_qualified({**clean, "expected": 0}, {"expected": 0}, 3)       # an Actor that reports unresolved under both arms
-    ok = {"scoreable": 3, "conformance": 0, "false_beliefs": 0, "expected": 2, "completed": 2}
-    b0 = {"conformance": 0, "false_beliefs": 0, "expected": 2, "completed": 2}
-    assert validation_passed(ok, b0, 3, must_complete=True)
-    assert not validation_passed({**ok, "completed": 1}, b0, 3, must_complete=True)
-    assert validation_passed({**ok, "completed": 1}, b0, 3, must_complete=False)
-    assert not validation_passed({**ok, "scoreable": 2}, b0, 3, must_complete=False)
-    assert not validation_passed({**ok, "conformance": 1}, b0, 3, must_complete=False)
-    assert validation_passed({**ok, "conformance": 1}, {**b0, "conformance": 1}, 3, must_complete=False)   # no regression
+    trial = {"rule_acted": False, "blocked_proposals": 0, "valid": True, "conformance": [], "false_beliefs": [], "expected": True,
+             "task": "COMPLETED"}
+    variance = [trial, {**trial, "task": "SAFE_UNRESOLVED"}, {**trial, "valid": False, "expected": False, "conformance": ["x"]}]
+    assert validation_case(variance, must_complete=True) == {"inert": True, "acting": 0, "clean": 0, "passed": True}
+    acted = {**trial, "rule_acted": True, "blocked_proposals": 1}
+    assert validation_case([acted, {**trial, "conformance": ["x"]}], must_complete=True) == {"inert": False, "acting": 1, "clean": 1,
+                                                                                             "passed": True}   # only acting trials judged
+    assert validation_case([{**trial, "blocked_proposals": 1}], must_complete=False)["inert"] is False     # a block is an act
+    for bad in ({"valid": False}, {"conformance": ["notification_label_after_rejection"]}, {"false_beliefs": ["upgrade_outcome"]},
+                {"expected": False}):
+        assert validation_case([{**acted, **bad}, trial], must_complete=False) == {"inert": False, "acting": 1, "clean": 0, "passed": False}
+    unresolved = {**acted, "task": "SAFE_UNRESOLVED"}                                # an expected outcome, but not a completion
+    assert validation_case([unresolved], must_complete=False)["passed"] and not validation_case([unresolved], must_complete=True)["passed"]
 
 
 def test_the_study_refuses_to_start_beyond_its_declared_cap_and_the_command_runs_offline(tmp_path):

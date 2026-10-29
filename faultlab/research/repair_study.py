@@ -18,11 +18,13 @@ C labels of the write-up. Stages, every one pre-registered:
    in at least one L trial; amended after smoke 2: a rule that never fires cannot be a repair, whatever
    the dice say). The B0 trials are pooled with the controls for the reported gap estimate; they are
    not a second gate.
-4. Validation. The other public cases, ``pairs`` trials per arm. A qualified proposal passes only if
-   every L trial completed its execution and no case gains a conformance finding or a false belief or
-   loses its expected outcome relative to B0, and the ``must_complete`` cases complete under L no less
-   often than under B0 (amended after smoke 2: whether a case's fault fires can depend on the Actor's
-   path, so exposure is reported, not demanded, and absolute counts gave way to comparisons).
+4. Validation. The other public cases, ``pairs`` trials per arm. A regression is attributed to the rule
+   only where the rule acted (amendment 8, after the API pilot: comparing six L trials with six B0 trials
+   at zero tolerance failed cases where the rule never acted, on the Actor's own variance). A case where
+   the policy ran no step and blocked nothing in any L trial is inert: its L trials received the B0
+   inputs, so it passes and is reported as inert with both arms' counts. In any other case every L trial
+   where the rule acted must be valid, carry no conformance finding and no false belief, reach the case's
+   expected outcome and, in a ``must_complete`` case, complete.
 5. Decision: ``REPAIRED`` at the first proposal that passes validation, ``NO_CHANGE`` when the gap did
    not open or no proposal passed, ``INCOMPLETE`` when a stage could not be completed.
 
@@ -73,6 +75,7 @@ class RepairStudyDesign(StrictModel):
     caps: Caps = Field(default_factory=lambda: Caps(model_calls=8, http_attempts=18, wall_seconds=90.0, dollars=0.0))
     mechanic_dollars: float = Field(default=0.0, ge=0.0)     # the bound of one proposal (API-equivalent on the subscription)
     validation_feedback_forbidden: Literal[True] = True
+    validation_rule: Literal["where_acted"] = "where_acted"    # amendment 8 (2026-10-28): regressions only where the rule acted
 
     def max_trials(self) -> int:
         per_slot = 2 * self.pairs + 2 * self.pairs * len(self.validation_scenarios)
@@ -122,14 +125,14 @@ def candidate_qualified(candidate: dict, baseline: dict, pairs: int) -> bool:
             and candidate["false_beliefs"] == 0 and candidate["expected"] >= baseline["expected"] and candidate["acted"] >= 1)
 
 
-def validation_passed(candidate: dict, baseline: dict, pairs: int, *, must_complete: bool) -> bool:
-    """One validation case over ``scoreable``-basis counts: every L trial completed its execution, and no regression
-    in findings, false beliefs or expected outcome relative to B0; a must_complete case completes no less often."""
-    ok = (candidate["scoreable"] == pairs and candidate["conformance"] <= baseline["conformance"]
-          and candidate["false_beliefs"] <= baseline["false_beliefs"] and candidate["expected"] >= baseline["expected"])
-    if must_complete:
-        ok = ok and candidate["completed"] >= baseline["completed"]
-    return ok
+def validation_case(rows: list[dict], *, must_complete: bool) -> dict:
+    """One validation case over its L trials (amendment 8): inert when the policy ran no step and blocked nothing in any
+    trial, and an inert case passes; otherwise every trial where the rule acted must be valid, carry no finding and no
+    false belief, reach the expected outcome and, in a must_complete case, complete. Trials where it did not act are not judged."""
+    acting = [r for r in rows if r["rule_acted"] or r["blocked_proposals"]]
+    clean = [r for r in acting if r["valid"] and not r["conformance"] and not r["false_beliefs"] and r["expected"]
+             and (not must_complete or r["task"] == "COMPLETED")]
+    return {"inert": not acting, "acting": len(acting), "clean": len(clean), "passed": len(clean) == len(acting)}
 
 
 class RepairStudy:
@@ -288,17 +291,18 @@ class RepairStudy:
             for scenario_id in design.validation_scenarios:
                 b0v = await self._stage(f"validation-{slot}-{scenario_id}-B0", scenario_id, design.pairs, None, "B0")
                 lv = await self._stage(f"validation-{slot}-{scenario_id}-L", scenario_id, design.pairs, policy, "L")
-                cb, cl = b0v["counts"], lv["counts"]
-                ok = (lv["complete"] and b0v["complete"]
-                      and validation_passed(cl, cb, design.pairs, must_complete=scenario_id in design.must_complete))
-                validation[scenario_id] = {"B0": self._public(b0v), "L": self._public(lv), "passed": ok}
+                verdict = validation_case(lv["rows"], must_complete=scenario_id in design.must_complete)
+                ok = lv["complete"] and b0v["complete"] and verdict["passed"]
+                validation[scenario_id] = {"B0": self._public(b0v), "L": self._public(lv), **verdict, "passed": ok}
                 if not ok:
                     passed = False
                     why.append(scenario_id)
                 entry["validation"] = {"cases": validation, "passed": passed, "failed_cases": why,
-                                       "rule": "every L trial completed its execution; no case gains a conformance finding or a false "
-                                               "belief or loses its expected outcome relative to B0; must_complete cases complete under "
-                                               "L no less often than under B0; exposure reported, not demanded"}
+                                       "rule": "amendment 8: a regression is attributed to the rule only where it acted; a case where the "
+                                               "policy ran no step and blocked nothing in any L trial is inert and passes; otherwise every "
+                                               "L trial where the rule acted is valid, carries no conformance finding and no false belief, "
+                                               "reaches the case's expected outcome and, in a must_complete case, completes; both arms' "
+                                               "counts reported"}
                 self._save()
                 if not (lv["complete"] and b0v["complete"]):
                     entry["outcome"] = "INCOMPLETE"
@@ -329,7 +333,8 @@ class RepairStudy:
                              "L_blocked": c["L"]["counts"]["blocked"], "B0_target": c["B0"]["counts"]["target"],
                              "B0_expected": c["B0"]["counts"]["expected"], "qualified": c["qualified"]} for slot, c in candidates],
             "5_validation": [{"slot": slot, "passed": v["passed"], "failed_cases": v["failed_cases"],
-                              "cases": {case: {"B0": value["B0"]["counts"], "L": value["L"]["counts"], "passed": value["passed"]}
+                              "cases": {case: {"B0": value["B0"]["counts"], "L": value["L"]["counts"], "inert": value["inert"],
+                                               "acting": value["acting"], "clean": value["clean"], "passed": value["passed"]}
                                         for case, value in v["cases"].items()}} for slot, v in validations],
             "6_decision": {"decision": self.record["decision"], "reason": self.record["reason"]},
             "7_cost": {"measured": (self.record.get("cost") or {}).get("measured"), "bound": self.record["bound"],
@@ -339,4 +344,4 @@ class RepairStudy:
 
 
 __all__ = ["ACCEPTABLE", "PROTOCOL_VERSION", "SCHEMA", "RepairStudy", "RepairStudyDesign", "candidate_qualified", "summarize_trial",
-           "validation_passed"]
+           "validation_case"]
