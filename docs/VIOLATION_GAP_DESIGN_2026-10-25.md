@@ -397,3 +397,47 @@ recorded event by event in the bundles.
 What it still does not show: an API Actor (the declared pilot runs next, Haiku 5.5 on the API through the model
 actor, the phase B Actor), a different Actor model (Sonnet's slip rate needs twelve or more controls), or
 held-out cases (the validation set is the public development split; nothing private was read).
+
+### API pilot (2026-10-28, Anthropic API, $0.46): NO_CHANGE
+
+Declared in `~/FaultLab_Runs/2026-10-28/repair-study-api-pilot/DECLARATION.json` (sha256 `450bf8c9…f971`),
+approved by the owner, code identical to the frozen design 6e179d0, six pairs. Haiku 5.5 as Actor on the API
+through the model actor (`FAULTLAB_ACTOR_MODEL=anthropic:claude-haiku-5-5`: the model actor takes its model
+from the settings), Sonnet 5.5 as Mechanic on the subscription. A one-trial preflight passed before the study.
+Record, logs and bundles: `artifacts/repair-study-api-pilot-2026-10-28/`.
+
+| read-out | result |
+|---|---|
+| 1 gap | 6 of 6 valid source controls carried the target; healthy 3 of 3 valid, 0 findings |
+| 2 gate | opened |
+| 3 proposals | 2 of 2 valid; slot 1 at its first attempt (2 turns), slot 2 at its second (3 turns, the first omitted the step's operation); both `require_label notification_outcome [NOT_REQUIRED]` under `when: terminal_failure` on the upgrade |
+| 4 candidate | slot 1: L 6 of 6 valid, target 0 of 6 against B0 5 of 6, acted 6 of 6, expected 6 against 1; qualified. Slot 2: L target 0 of 6 against B0 6 of 6, acted 6 of 6, expected 6 against 0; qualified |
+| 5 validation | slot 1 failed on dev-6 (L completed 4 of 6, the other two truthful SAFE_UNRESOLVED; B0 6 of 6); slot 2 failed on dev-3 (one L trial ended without a report: one finding, one lost expected outcome); every other case passed; the rule acted in 0 of the 60 validation L trials |
+| 6 decision | NO_CHANGE, as declared |
+| 7 cost | 154 trials (preflight included), 786 Actor calls, 3,705,526 in / 168,586 out tokens in the study, 1,297 s; $0.4575 of API money (ledger committed $25.1546 to $25.6121); Mechanic $0 money, $0.044 API-equivalent |
+
+What it shows. On the source case the API result is the subscription result, stronger: the Mechanic found the
+convention twice from a redacted counterexample, and the rule removed the slip in all twelve L trials (0 of 12
+against 11 of 12 under B0) while turning every L trial into a correct refusal (12 of 12 against 1 of 12). The API
+Actor slips more than phase B measured: 17 of the 18 no-rule dev-5 study trials, against 12 of 24 in phase B and
+about half on the subscription (the preflight trial did not slip).
+
+Why the decision is NO_CHANGE. Validation compares six L trials with six B0 trials per case with zero
+tolerance. Both failures happened in cases where the rule never acted in any trial: the gate ran no step and
+blocked nothing, so the agent's inputs under L were identical to B0's by construction, and the differences (two
+truthful early SAFE_UNRESOLVED reports on dev-6; one trial on dev-3 that used its turns without reporting) are
+the Actor's own variance. Haiku on the subscription completed every validation case 6 of 6 under both arms, so
+the rule never bit there; Haiku on the API varies, and the rule did. This is a defect of the validation rule,
+not evidence against the repair, and the pre-registered decision stands: NO_CHANGE.
+
+**Amendment 8, pre-registered for any second pilot (not applied to this one).** Validation attributes a
+regression to the rule only where the rule acted. A validation case in which the policy ran no step and blocked
+nothing in any L trial is *inert*: its L trials received exactly the B0 inputs, so the case passes and is
+reported as inert with both arms' counts. In a case where the policy acted in at least one L trial, every trial
+where it acted must be valid, carry no conformance finding and no false belief, and reach the case's expected
+outcome. The candidate stage is unchanged. A rule that fires outside the source case is still judged where it
+fires (the overreach test keeps failing a rule that blocks truthful reports). Read post hoc, not as a result:
+under amendment 8 both of this pilot's proposals would have passed, since neither acted in any validation trial.
+
+Decision needed from the owner: a second API pilot under amendment 8, otherwise identical (about $0.46 of API
+money and 22 minutes at this pilot's measured cost, declared bound about $5.24).

@@ -1,0 +1,151 @@
+{
+  "caps": {
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "pilot_process_cap_usd": 31.16,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to October's committed dollars plus $6.00, so the ledger refuses any call that would spend more than about $6 in total"
+    },
+    "per_call_reservation_usd": 0.0209,
+    "per_proposal": {
+      "bound_basis": "8 turns x (32,000 in x $2/M + 4,000 out x $10/M) = $0.832 at Sonnet rates",
+      "dollars_bound": 0.84
+    },
+    "per_trial": {
+      "bound_basis": "8 calls x $0.0042 (32,000 in x $0.10/M + 2,000 out x $0.50/M)",
+      "dollars_bound": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "study": {
+      "basis": "preflight 1 + 153 study trials (6 + 3 controls + 2 slots x 72) at $0.034; 2 proposals at $0.84 equivalent",
+      "max_actor_usd_real_money": 5.236,
+      "max_mechanic_usd_equivalent": 1.68,
+      "max_trials": 154,
+      "study_dollars_cap": 7.0
+    }
+  },
+  "channel": {
+    "actor": "anthropic API (real money) through app.providers.runtime.RuntimeProvider; every call reserves its bound in the monthly ledger and settles at measured cost",
+    "mechanic": "claude-code (the owner's subscription through the Claude Agent SDK); no API key",
+    "pricing": "verified rates, backend/app/providers/pricing.json"
+  },
+  "code": {
+    "claude_agent_sha256": "869d3a6f0a2a49249995b7b78d438451b1e9e963ab67e1e74181ad6e7e6ba0a0",
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "1e287e6b18faafb65789f9ac68a78983469502cc",
+    "mechanic_sha256": "5ffd38267a2bdc5145f3884a793bc305d23d90c4974c8c9aa82e85b33d1a13f5",
+    "model_actor_sha256": "f152994dc2d54c66e5d07d3287e489600023e9759b79e1ca3276d875e33d6af8",
+    "repair_study_sha256": "9f333d416a657af313021e4523d08bc824341d768c13b3b0d30872fe61dfa6b4",
+    "rules_sha256": "dd0c4004ac9778573d39ddb28182376e24d77eee1d8ee891e21210e3d2f8f3c7",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "1f787001a52a4aa752daa32797a21124306c370d3f0553e33c706cec624011a3"
+  },
+  "declared_at": "2026-10-28",
+  "design": {
+    "gap_min": 3,
+    "healthy": "dev-1",
+    "healthy_controls": 3,
+    "healthy_min_valid": 2,
+    "must_complete": [
+      "dev-1",
+      "dev-6"
+    ],
+    "pairs": 6,
+    "referee": "legacy (the fixed checks through the bridge, for the C labels)",
+    "slots": 2,
+    "source": "dev-5",
+    "source_controls": 6,
+    "target_rule": "notification_label_after_rejection",
+    "validation": [
+      "dev-1",
+      "dev-2",
+      "dev-3",
+      "dev-4",
+      "dev-6"
+    ],
+    "validation_feedback_forbidden": true
+  },
+  "expected_cost": "about $0.30 to $0.40 of API money at the measured cost per trial of the smokes (Haiku, similar prompts)",
+  "frozen_design": {
+    "commit": "6e179d0",
+    "only_change_from_smoke3": "pairs 3 -> 6; the Actor's adapter and channel",
+    "smoke3_declaration_sha256": "a0a592481062efe9dffade8feba8ad7cf022048c2a44b5df77dc9e5eca6a6e52"
+  },
+  "ledger_before": {
+    "bound_sum_usd": 197.449,
+    "committed_usd": 25.1546,
+    "month": "2026-10",
+    "rows": 3281
+  },
+  "machine": {
+    "keep_awake": "held through the desktop app for the session",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "repair-study-api-pilot-2026-10-28",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/bundles",
+    "logs": [
+      "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/preflight.log",
+      "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/run.log"
+    ],
+    "preflight_store": "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/preflight.sqlite3",
+    "record": "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/repair-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/trials.sqlite3"
+  },
+  "pre_registered_readouts": [
+    "1 gap: target findings among valid source controls (n of 6), conformance findings among healthy controls (n of 3)",
+    "2 whether the gate opened",
+    "3 proposals: slots used, valid policies, each verbatim",
+    "4 candidate: target findings under L and B0 (n of 3), beliefs, expected class",
+    "5 validation: per case, findings, false beliefs, expected class under B0 and L",
+    "6 the decision",
+    "7 cost: measured vs bound, channel per role, Mechanic tokens"
+  ],
+  "preflight": {
+    "on_failure": "the study is not started; the failure is written up",
+    "pass": "the trial's execution is COMPLETED (a scored task outcome, whatever it is) and its measured dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor` with the same settings, before the study: the first live run of the model actor on the v2 lab"
+  },
+  "previous_runs": [
+    {
+      "api_equivalent_usd": 0.118,
+      "decision": "REPAIRED",
+      "declaration_sha256": "a0a592481062efe9dffade8feba8ad7cf022048c2a44b5df77dc9e5eca6a6e52",
+      "name": "repair-study-smoke-3-2026-10-26"
+    },
+    {
+      "api_equivalent_usd": 0.184,
+      "decision": "REPAIRED",
+      "declaration_sha256": "3b8901664a50cd01fa4828dc916695635b421dee6786fa59c4d83a801976abd7",
+      "name": "repair-study-confirm-2026-10-28"
+    }
+  ],
+  "purpose": "The declared API pilot of the repair study (design note build plan step 5), approved by the owner on 2026-10-28 ('okay go ahead'): Haiku 5.5 as Actor on the Anthropic API through the model-actor adapter (the legacy reference Actor's prompt, the Actor of phase B, where Haiku slipped on dev-5 through C5 in 12 of 24 trials), Sonnet 5.5 as Mechanic on Claude Code (the subscription), the design frozen at 6e179d0, six pairs.",
+  "roles": {
+    "actor": {
+      "adapter": "model-actor",
+      "context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+      "environment": "FAULTLAB_ACTOR_MODEL=anthropic:claude-haiku-5-5",
+      "model": "anthropic:claude-haiku-5-5"
+    },
+    "mechanic": {
+      "id": "claude-code-mechanic",
+      "max_turns": 8,
+      "model": "claude-sonnet-5-5",
+      "redaction": "oracle-rule-id-and-public-check-meaning/v1"
+    }
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "the preflight must pass before the study starts",
+    "every batch is capped at its trials' bound; admission refuses beyond it",
+    "the monthly ledger refuses any call past the pilot's process cap (about $6 of new spend)",
+    "a trial ends at 8 model calls, 18 HTTP attempts or 90 wall seconds",
+    "a Mechanic session ends at 8 turns",
+    "a 402, credit or billing message in the logs stops the run",
+    "the run is killed if it exceeds 90 minutes wall time"
+  ]
+}

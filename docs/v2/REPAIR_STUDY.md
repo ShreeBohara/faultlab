@@ -105,3 +105,8 @@ command offline.
   notification_outcome [NOT_REQUIRED]` after the upgrade's terminal failure; L 0 of 6 target against B0 4 of 6,
   the rule acted and was obeyed in all six L trials; all five validation cases passed at 6 of 6; 81 trials,
   692 s, $0.184 API-equivalent.
+- **API pilot, 2026-10-28** (Anthropic API, $0.4575; `artifacts/repair-study-api-pilot-2026-10-28/`): Haiku through the
+  model actor, the frozen design with six pairs; both proposals were the convention and qualified (slip 0 of 12
+  under L against 11 of 12 under B0); both failed validation in a case where the rule never acted (dev-6, dev-3:
+  the Actor's own variance); **NO_CHANGE**, as declared. Amendment 8 (validation attributes regressions only where
+  the rule acted) is pre-registered in the design note for any second pilot.

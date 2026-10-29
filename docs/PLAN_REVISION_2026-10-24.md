@@ -296,3 +296,10 @@ loop of 4.5 closed once with the Mechanic's rule certified against the five othe
 amendments to the study's own rules are recorded with their reasons in the design note's build record. The
 design is frozen at 6e179d0; a confirmatory run with six pairs and the declared API pilot are the owner's
 next decisions. Nothing in `backend/app`, no check, gate or threshold changed.
+
+## Addendum (2026-10-28): the replication held; the API pilot exposed a validation defect
+
+The six-pair confirmatory replication on the subscription ended REPAIRED again ($0). The declared API pilot
+(Haiku on the API, $0.46 of the $200 month) ended NO_CHANGE: the repair worked on the source case (slip 0 of 12
+against 11 of 12) but validation failed it in cases where the rule never acted, on the Actor's own variance.
+Amendment 8 is pre-registered in the design note; a second pilot under it is the owner's decision.

@@ -1367,6 +1367,25 @@ criterion declared in advance is met. 81 trials, 373 Actor model calls, 1,542,81
 692 seconds. Money: **$0**; API-equivalent $0.156 Actor + $0.028 Mechanic = $0.184. Project ledger carried forward
 unchanged at **$1,550.91** (bounds).
 
+### Ledger entry 2026-10-28: repair study API pilot (Anthropic API): NO_CHANGE
+
+The declared API pilot, approved by the owner (`~/FaultLab_Runs/2026-10-28/repair-study-api-pilot/`, declaration
+sha256 `450bf8c9…f971`, record, logs and bundles in `artifacts/repair-study-api-pilot-2026-10-28/`): Haiku 5.5 as
+Actor on the Anthropic API through the model actor (the phase B Actor's prompt), Sonnet 5.5 as Mechanic on the
+subscription, the frozen design of 6e179d0 with six pairs. A one-trial preflight passed first (dev-5,
+CORRECTLY_REFUSED, $0.0027). Gate: 6 of 6 dev-5 controls carried the C5 label slip, dev-1 3 of 3 clean. Both
+Mechanic slots proposed `require_label notification_outcome [NOT_REQUIRED]` after the upgrade's terminal failure
+(slot 2 after one refused attempt). Both qualified: on dev-5 the rule acted in all 12 L trials, the slip fell to
+0 of 12 against 11 of 12 under B0, and correct refusals rose to 12 of 12 against 1 of 12. Both failed validation
+in a case where the rule never acted in any trial: slot 1 on dev-6 (L completed 4 of 6 with two truthful
+SAFE_UNRESOLVED reports, B0 6 of 6), slot 2 on dev-3 (one L trial ended without a report). The rule acted in none
+of the 60 validation L trials. Decision **NO_CHANGE**, as declared. 154 trials (preflight included), 786 Actor
+calls, 3,705,526 input and 168,586 output tokens in the study, 1,297 seconds. Money: **$0.4575** of API credit
+(monthly ledger committed $25.1546 to $25.6121, 3,281 to 4,067 rows; October's process cap for the run was $31.16).
+Mechanic: $0 money, $0.044 API-equivalent. Declared bound $5.24 (154 trials at $0.034). Project ledger carried
+forward: $1,550.91 + $5.24 = **$1,556.15** (bounds, as always). Write-up and amendment 8, pre-registered for any
+second pilot, in the design note.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

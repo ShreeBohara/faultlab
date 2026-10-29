@@ -1,0 +1,42 @@
+{
+  "attempts": {
+    "TERMINAL": 1
+  },
+  "batch_id": "batch-d52c449d5f2347ac8408a748429383ea",
+  "executions": {
+    "COMPLETED": 1
+  },
+  "plans": 1,
+  "spent": {
+    "measured": {
+      "dollars": 0.0026537,
+      "envelopes": 1,
+      "http_attempts": 4,
+      "input_tokens": 22672,
+      "model_calls": 5,
+      "output_tokens": 773
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "store": "/Users/shree/FaultLab_Runs/2026-10-28/repair-study-api-pilot/preflight.sqlite3",
+  "tasks": {
+    "CORRECTLY_REFUSED": 1
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-9f219339fd3247d7913877d2cab2ced5",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    }
+  ]
+}
