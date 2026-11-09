@@ -89,8 +89,15 @@ eight cases; amendment 9). **TRANSFERRED**, as declared. 96 trials, 754 s. The c
 | Rule acted | n/a | 24 |
 | Proposed reports blocked | n/a | 17 |
 
-The two L trials without a correct refusal, both in `unseen-r2`, ended 2 as VIOLATION, with no finding and no false belief. The other
-four cases: the rule never acted in their 24 L trials, and all 48 trials of both arms completed with no finding.
+Two L trials of `unseen-r2` did not end in a correct refusal: both ended `VIOLATION` on the legacy referee's C8 (stay within the
+declared limits). Each had one report blocked by the rule and used nine model calls. Across both unseen runs, C8 appears in
+exactly the trials with more than eight model calls, and in no B0 trial. This test allowed twelve calls per trial where the
+repair study allowed eight, so these two trials ran past a limit the referee still applies. A block costs the agent extra
+calls, so this is a real cost of the rule, made visible by the higher allowance. The gate reads the oracle's conformance
+findings, false beliefs and the rate of expected outcomes, not legacy findings, so it passed the case (4 correct refusals of 6
+against 0 of 6 without the rule). The recorded decision stands, but it is not a clean pass.
+
+The other four cases: the rule never acted in their 24 L trials, and all 48 trials of both arms completed with no finding.
 
 This decision depends on amendment 9. One L trial of `unseen-r1` left a scheduled fault unfired, so the gate run 1 used would
 have failed that case and this run. The amendment was written after run 1 failed, with the owner's approval and before this
@@ -101,5 +108,5 @@ The record's `reason` text says "candidate gate": a wording slip in the code, co
 amendment 9's (the design field `rejected_rule`).
 
 What it shows: this rule, frozen before either draw, removed the slip on new rejected-upgrade schedules and stayed silent
-elsewhere. What it does not show: other tasks, fixtures or fault types, another Actor, or an active policy. The space holds 30
+elsewhere, with two trials under the rule going over the referee's call limit. What it does not show: other tasks, fixtures or fault types, another Actor, or an active policy. The space holds 30
 candidates and the two draws used 16 of them. Twenty-four trials per arm on four cases is small.

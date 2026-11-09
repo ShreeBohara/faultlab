@@ -1431,7 +1431,7 @@ before the draw, judges a rejected case where the rule acted, whether or not ano
 schedules drawn by a seed fixed before the draw and leaving out run 1's cases, six trials per arm, Haiku 5.5 on the Anthropic API.
 The preflight passed (dev-5, $0.0027). Decision **TRANSFERRED**: over 24 rejected-case trials per arm the slip appeared 22 times
 without the rule and 0 times with it; the rule acted in all 24 L trials and blocked 17 proposed reports; correct refusals 22
-of 24 against 2 of 24 (the other two L trials ended 2 as VIOLATION, with no finding). The rule never acted in the four other cases, whose 48
+of 24 against 2 of 24 (the other two L trials ended VIOLATION on a legacy C8 finding, nine model calls each; the gate does not read legacy findings, so this is not a clean pass). The rule never acted in the four other cases, whose 48
 trials were clean in both arms. **The pass depends on amendment 9**: one L trial of `unseen-r1` left a scheduled fault unfired,
 so the gate of run 1 would have failed it. An unseen-case result for this rule on these schedules of this task, not an active policy.
 
