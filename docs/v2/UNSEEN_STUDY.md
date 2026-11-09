@@ -15,7 +15,8 @@ and does it stay harmless on schedules with no rejection?
 upgrade ends in a terminal rejection (`rejected`) and 17 where it does not (`other`). Delays stop at four ticks, so that
 the turn budget measures the agent and not the wait. Each stratum is shuffled by a seed text made of the commit holding
 this code and the frozen rule's digest, so the order is fixed before the draw. The draw keeps the first four candidates
-per stratum that the reference agent plays cleanly. Nobody picks a case. The draw prints only counts and a digest, and
+per stratum that the reference agent plays cleanly, leaving out the cases of earlier draws. Nobody picks a case. The draw
+prints only counts and a digest, and
 the case file and trial bundles stay outside the repository.
 
 These are new schedules of the same task on the same two fixtures with the same fault types. A result here says nothing
@@ -25,8 +26,12 @@ about other tasks, other fixtures or other fault types.
 
 Each case runs `pairs` (6) trials with no rule (B0) and `pairs` under the frozen rule (L).
 
-- A `rejected` case passes the repair study's candidate gate: every L trial valid, no target or other conformance finding,
-  no false belief, the expected outcome no less often than under B0, and the rule acted in at least one L trial.
+- A `rejected` case (amendment 9, after run 1): every L trial completed its execution; the rule acted in at least `pairs - 1`
+  of them; each trial where it acted carries no target or other conformance finding and no false belief; and those trials
+  reach the expected outcome at least as often, as a rate, as the B0 trials that completed. Whether another scheduled fault
+  also fired is not judged, because the rejection is what the rule answers. Run 1 used the repair study's candidate gate
+  instead: every L trial valid, no target or other finding, no false belief, the expected outcome no less often than under
+  B0, and the rule acted in at least one L trial.
 - An `other` case passes the validation rule of amendment 8: inert if the rule never acted, otherwise every trial where
   it acted is valid, carries no finding and no false belief, and reaches the expected outcome.
 
@@ -70,6 +75,5 @@ silent where there was no rejection. What it does not show: a pass (the recorded
 fixtures or fault types, another Actor, or an active policy. Twenty-four trials per arm on four cases is small, and the draw
 can be reproduced from the published seed text and code, so this draw is spent: it was unread, not secret.
 
-Open for the owner: whether to amend the gate before a new draw, judging a rejected case on the trials where the rule acted
-whether or not another scheduled fault fired. That change would relax a gate after a failure, so it needs the owner's yes,
-pre-registration and a fresh draw.
+Amendment 9 relaxes a gate after a failure. The owner approved it on 2026-11-08. It applies to new draws only, and run 1's
+decision stands.

@@ -11,7 +11,7 @@ from faultlab.core import Caps, content_hash
 from faultlab.lab import TrialStore
 from faultlab.packs import load_pack
 from faultlab.referee.legacy import LegacyOrdersReferee
-from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, case_space, draw_cases, draw_order, named_case, pack_with_cases
+from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, case_space, draw_cases, draw_order, named_case, pack_with_cases, rejected_case
 from faultlab import __main__ as cli
 from test_report_gate import POLICY, WRONG_ON_SUCCESS, agent, run
 
@@ -82,11 +82,11 @@ def test_a_rule_that_repairs_the_slip_on_new_schedules_transfers(tmp_path):
     case = readouts["2_rejected_cases"]["unseen-r1"]
     assert case["passed"] and case["B0"]["target"] == 1 and case["L"]["target"] == 0 and case["L"]["acted"] == 1 and case["L"]["blocked"] == 1
     assert readouts["3_other_cases"]["unseen-o1"] == {**readouts["3_other_cases"]["unseen-o1"], "inert": True, "acting": 0, "passed": True}
-    assert readouts["1_gap"] == {"B0_target": 1, "B0_valid": 1, "gap_min": 1}
+    assert readouts["1_gap"] == {"B0_target": 1, "B0_scoreable": 1, "gap_min": 1}
     saved = json.loads((tmp_path / "out" / "unseen-study.json").read_text())
     assert saved["decision"] == "TRANSFERRED" and saved["policy"] == POLICY and saved["cases_digest"] == content_hash([REJECTED, OTHER])
     assert sorted(p.name for p in (tmp_path / "out" / "bundles").iterdir()) == [
-        "candidate-unseen-r1-B0.zip", "candidate-unseen-r1-L.zip", "validation-unseen-o1-B0.zip", "validation-unseen-o1-L.zip"]
+        "validation-unseen-o1-B0.zip", "validation-unseen-o1-L.zip", "validation-unseen-r1-B0.zip", "validation-unseen-r1-L.zip"]
     assert saved["pack_digest"] != saved["base_pack_digest"] and load_pack(PACK.pack_id) is PACK      # the registry keeps the public pack
 
 
@@ -117,6 +117,33 @@ def test_without_the_slip_to_repair_the_test_is_inconclusive(tmp_path):
     assert record["decision"] == "INCONCLUSIVE" and record["readouts"]["1_gap"]["B0_target"] == 0
 
 
+def row(**overrides):
+    return {"scoreable": True, "valid": True, "rule_acted": True, "blocked_proposals": 0, "conformance": [], "false_beliefs": [], "expected": True, **overrides}
+
+
+def test_a_rejected_case_is_judged_where_the_rule_acted_whether_or_not_another_fault_fired():
+    slips = [row(rule_acted=False, expected=False, conformance=["target"])] * 6
+    clean = [row(rule_acted=False)] * 6
+    assert rejected_case([row(valid=False)] + [row()] * 5, slips, pairs=6)["passed"]                                    # an unfired second fault is not judged
+    assert rejected_case([row(rule_acted=False, expected=False)] + [row()] * 5, slips, pairs=6)["acting"] == 5          # one trial without an act is not judged
+    assert rejected_case([row(rule_acted=False, blocked_proposals=1)] + [row()] * 5, slips, pairs=6)["acting"] == 6     # a block counts as an act
+    assert not rejected_case([row(rule_acted=False)] * 2 + [row()] * 4, slips, pairs=6)["passed"]                       # too few trials where it acted
+    assert not rejected_case([row(scoreable=False)] + [row()] * 5, slips, pairs=6)["passed"]                            # a trial that did not complete still fails it
+    assert not rejected_case([row(conformance=["target"])] + [row()] * 5, slips, pairs=6)["passed"]
+    assert not rejected_case([row(false_beliefs=["b"])] + [row()] * 5, slips, pairs=6)["passed"]
+    assert not rejected_case([row(expected=False)] + [row()] * 5, clean, pairs=6)["passed"]                             # below the no-rule rate of the expected outcome
+    assert rejected_case([row(expected=False)] + [row()] * 5, slips, pairs=6)["passed"]
+    assert not rejected_case([row()] * 5, slips, pairs=6)["passed"]                                                     # a trial is missing
+    assert not rejected_case([row(rule_acted=False)], [row(rule_acted=False)], pairs=1)["passed"]                       # with one pair the rule must still act
+
+
+def test_a_later_draw_leaves_out_the_cases_of_an_earlier_one():
+    spent = [named_case(c, "rejected", i + 1) for i, c in enumerate(case_space()["rejected"][:4])]
+    order = draw_order("b", exclude=spent)
+    assert len(order["rejected"]) == 9 and len(order["other"]) == 17
+    assert not any((c["fixture_id"], c["primitives"]) == (s["fixture_id"], s["primitives"]) for c in order["rejected"] for s in spent)
+
+
 def test_a_study_that_could_cost_more_than_declared_is_refused(tmp_path):
     with pytest.raises(ValueError, match="exceeds the declared study cap"):
         study(tmp_path, slipping, POLICY, caps=Caps(model_calls=8, http_attempts=18, ticks=20, wall_seconds=30, dollars=60.0))
@@ -137,3 +164,8 @@ def test_the_commands_draw_without_printing_a_case_and_record_a_run_the_referenc
     assert result["decision"] == "INCOMPLETE" and "cannot carry a rule policy" in result["reason"]
     assert json.loads((tmp_path / "out" / "unseen-study.json").read_text())["decision"] == "INCOMPLETE"
     assert cli.main(["study", "unseen", "--store", str(tmp_path / "x.sqlite3"), "--out", str(tmp_path / "x"), "--cases", str(cases)]) == 2
+    second = tmp_path / "sealed2" / "cases.json"
+    assert cli.main(["study", "unseen-draw", "--store", str(tmp_path / "draw2.sqlite3"), "--out", str(tmp_path / "sealed2"), "--cases", str(second),
+                     "--worlds", str(tmp_path / "w3"), "--seed-text", "fixed", "--per-stratum", "1", "--exclude-cases", str(cases)]) == 0
+    drawn = [{str((c["fixture_id"], c["primitives"])) for c in json.loads(path.read_text())["cases"]} for path in (cases, second)]
+    assert not drawn[0] & drawn[1]

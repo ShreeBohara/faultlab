@@ -86,6 +86,7 @@ def unseen_main(argv) -> int:
     parser.add_argument("--pack", default="orders.upgrade_then_confirm/v1")
     parser.add_argument("--seed-text", default=None, help="unseen-draw: the text, fixed before the draw, that orders the candidates")
     parser.add_argument("--per-stratum", type=int, default=4, help="unseen-draw: cases kept per stratum")
+    parser.add_argument("--exclude-cases", action="append", default=None, help="unseen-draw: an earlier draw's case file, whose cases are left out")
     parser.add_argument("--policy", default=None, help="unseen: the frozen rule, a JSON file")
     parser.add_argument("--adapter", default="reference-orders", help="unseen: reference-orders, model-actor or claude-agent")
     parser.add_argument("--model", default=None, help="model-actor: provider:model; claude-agent: an API model id")
@@ -110,9 +111,10 @@ def unseen_main(argv) -> int:
         if args.kind == "unseen-draw":
             if not args.seed_text:
                 raise ValueError("unseen-draw needs --seed-text, fixed before the draw")
+            exclude = [c for path in args.exclude_cases or [] for c in json.loads(Path(path).read_text(encoding="utf-8"))["cases"]]
             with TrialStore(args.store) as store:
                 drawn = asyncio.run(draw_cases(args.seed_text, per_stratum=args.per_stratum, store=store, out_dir=args.out, referee=referee,
-                                               worlds_dir=args.worlds, pack_id=pack.pack_id))
+                                               worlds_dir=args.worlds, pack_id=pack.pack_id, exclude=exclude))
             cases_path.parent.mkdir(parents=True, exist_ok=True)
             cases_path.write_text(json.dumps(drawn, indent=2, sort_keys=True), encoding="utf-8")
             print(json.dumps({"cases": len(drawn["cases"]), "tried": drawn["tried"], "sha256": sha256(cases_path.read_bytes()).hexdigest()}, sort_keys=True))
