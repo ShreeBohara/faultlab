@@ -136,6 +136,8 @@ def validation_case(rows: list[dict], *, must_complete: bool) -> dict:
 
 
 class RepairStudy:
+    record_file = "repair-study.json"
+
     def __init__(self, *, store: TrialStore, design: RepairStudyDesign, adapter_factory: Callable[[Any], Any], mechanic,
                  out_dir, referee=None, worlds_dir=None, name: str = "repair-study", notes: list[str] | None = None,
                  study_dollars: float | None = None, declaration: dict | None = None):
@@ -163,7 +165,7 @@ class RepairStudy:
 
     def _save(self) -> None:
         self.out_dir.mkdir(parents=True, exist_ok=True)
-        (self.out_dir / "repair-study.json").write_text(json.dumps(self.record, indent=2, sort_keys=True), encoding="utf-8")
+        (self.out_dir / self.record_file).write_text(json.dumps(self.record, indent=2, sort_keys=True), encoding="utf-8")
 
     def _expected_class(self, scenario_id: str) -> str:
         return self.pack.scenario(scenario_id).expected_class

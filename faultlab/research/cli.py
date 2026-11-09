@@ -20,6 +20,7 @@ from faultlab.lab.store import TrialStore
 from faultlab.packs import PackError, load_pack
 from faultlab.research.mechanic import ClaudeCodeMechanic, ScriptedMechanic
 from faultlab.research.repair_study import RepairStudy, RepairStudyDesign
+from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, draw_cases
 
 
 def _list(value: str | None, default: list[str]) -> list[str]:
@@ -74,7 +75,76 @@ def build_mechanic(args):
     raise ValueError(f"Unknown mechanic {args.mechanic!r}: none, scripted:<policies.json> or claude-agent")
 
 
+def unseen_main(argv) -> int:
+    """``faultlab study unseen-draw`` fixes the new cases and prints only counts and a digest; ``faultlab study unseen`` tests a frozen rule on them."""
+    parser = argparse.ArgumentParser(prog="faultlab study", description="Draw unseen cases, or test a frozen rule on them")
+    parser.add_argument("kind", choices=("unseen-draw", "unseen"))
+    parser.add_argument("--store", required=True, help="path of the trial store to write (created if missing)")
+    parser.add_argument("--out", required=True, help="directory for the record and the bundles")
+    parser.add_argument("--cases", required=True, help="the case file: written by unseen-draw, read by unseen")
+    parser.add_argument("--name", default="unseen-study")
+    parser.add_argument("--pack", default="orders.upgrade_then_confirm/v1")
+    parser.add_argument("--seed-text", default=None, help="unseen-draw: the text, fixed before the draw, that orders the candidates")
+    parser.add_argument("--per-stratum", type=int, default=4, help="unseen-draw: cases kept per stratum")
+    parser.add_argument("--policy", default=None, help="unseen: the frozen rule, a JSON file")
+    parser.add_argument("--adapter", default="reference-orders", help="unseen: reference-orders, model-actor or claude-agent")
+    parser.add_argument("--model", default=None, help="model-actor: provider:model; claude-agent: an API model id")
+    parser.add_argument("--execute-live", action="store_true", help="authorize live model calls")
+    parser.add_argument("--referee", choices=("legacy", "none"), default="legacy")
+    parser.add_argument("--target", default="notification_label_after_rejection", help="the oracle rule id of the target finding")
+    parser.add_argument("--pairs", type=int, default=6)
+    parser.add_argument("--gap", type=int, default=6, help="target findings over all B0 trials of the rejected cases for a repair to be testable")
+    parser.add_argument("--dollars", type=float, default=0.0, help="each trial's dollar bound")
+    parser.add_argument("--study-dollars", type=float, default=None, help="the study's cap: refused before anything runs if the maximum bound exceeds it")
+    parser.add_argument("--model-calls", type=int, default=12)
+    parser.add_argument("--http-attempts", type=int, default=24)
+    parser.add_argument("--wall-seconds", type=float, default=120.0)
+    parser.add_argument("--worlds", default=None)
+    parser.add_argument("--declaration", default=None, help="a declaration file whose sha256 the record carries")
+    parser.add_argument("--note", action="append", default=None)
+    args = parser.parse_args(argv)
+    try:
+        pack = load_pack(args.pack)
+        referee = build_referee(args.referee, pack.pack_id)
+        cases_path = Path(args.cases)
+        if args.kind == "unseen-draw":
+            if not args.seed_text:
+                raise ValueError("unseen-draw needs --seed-text, fixed before the draw")
+            with TrialStore(args.store) as store:
+                drawn = asyncio.run(draw_cases(args.seed_text, per_stratum=args.per_stratum, store=store, out_dir=args.out, referee=referee,
+                                               worlds_dir=args.worlds, pack_id=pack.pack_id))
+            cases_path.parent.mkdir(parents=True, exist_ok=True)
+            cases_path.write_text(json.dumps(drawn, indent=2, sort_keys=True), encoding="utf-8")
+            print(json.dumps({"cases": len(drawn["cases"]), "tried": drawn["tried"], "sha256": sha256(cases_path.read_bytes()).hexdigest()}, sort_keys=True))
+            return 0
+        if not args.policy:
+            raise ValueError("unseen needs --policy, the frozen rule")
+        cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
+        policy = json.loads(Path(args.policy).read_text(encoding="utf-8"))
+        design = UnseenStudyDesign(pack_id=pack.pack_id, target_rule=args.target, pairs=args.pairs, gap_min=args.gap,
+                                   rejected_cases=[c["case_id"] for c in cases if c["stratum"] == "rejected"],
+                                   other_cases=[c["case_id"] for c in cases if c["stratum"] == "other"],
+                                   caps=Caps(model_calls=args.model_calls, http_attempts=args.http_attempts, wall_seconds=args.wall_seconds, dollars=args.dollars))
+        factory = build_adapter_factory(args)
+        declaration = None
+        if args.declaration:
+            declaration = {"path": str(args.declaration), "sha256": sha256(Path(args.declaration).read_bytes()).hexdigest()}
+        with TrialStore(args.store) as store:
+            study = UnseenStudy(store=store, design=design, adapter_factory=factory, cases=cases, policy=policy, out_dir=args.out, referee=referee,
+                                worlds_dir=args.worlds, name=args.name, notes=args.note, study_dollars=args.study_dollars, declaration=declaration)
+            record = asyncio.run(study.run())
+    except (PackError, AdapterError, ValueError, ImportError, OSError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
+    print(json.dumps({"decision": record["decision"], "reason": record["reason"], "readouts": record["readouts"],
+                      "record": str(Path(args.out) / UnseenStudy.record_file)}, indent=2, sort_keys=True))
+    return 0
+
+
 def main(argv=None) -> int:
+    argv = sys.argv[1:] if argv is None else list(argv)
+    if argv and argv[0].startswith("unseen"):
+        return unseen_main(argv)
     parser = argparse.ArgumentParser(prog="faultlab study repair", description="Run the repair study: controls, Mechanic, candidate, validation")
     parser.add_argument("kind", choices=("repair",), help="the study to run")
     parser.add_argument("--store", required=True, help="path of the trial store to write (created if missing)")
