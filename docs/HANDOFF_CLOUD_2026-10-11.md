@@ -206,4 +206,5 @@ Ledger lines are in `CURRENT_STATUS.md`; write-ups are in the design note.
 **Update 2026-11-08.** The first unseen-case test of the frozen rule ended NOT_TRANSFERRED ($0.29,
 `artifacts/unseen-study-1-2026-11-08/`). On new rejected-upgrade schedules the slip fell from 21 of 24 to 0 of 24, but two
 cases failed the gate on an unfired second fault, recorded as a design defect of the test; the decision stands. Method and
-result are in `docs/v2/UNSEEN_STUDY.md`. Whether to amend the gate and draw again is the owner's call.
+result are in `docs/v2/UNSEEN_STUDY.md`. The owner approved amending that gate (amendment 9), and a second run on a fresh draw ended TRANSFERRED
+($0.28, `artifacts/unseen-study-2-2026-11-08/`): slip 22 of 24 to 0 of 24. That pass depends on amendment 9.

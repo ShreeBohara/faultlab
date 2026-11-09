@@ -1423,6 +1423,21 @@ written up in the method note; it does not change the decision, and nothing was 
 Money: **$0.2898 of API money** (study $0.2871, preflight $0.0027). November committed $0 to $0.2898, rows 0 to 506, process
 cap $6.00. Declared bound $4.87 ($4.84 study, $0.034 preflight); project ledger $1,561.39 + $4.87 = $1,566.26 (bounds). 742 s.
 
+### Ledger entry 2026-11-08: unseen-case test 2 (Anthropic API): TRANSFERRED
+
+The second unseen-case test of the same frozen rule, approved by the owner on 2026-11-08 (`~/FaultLab_Runs/2026-11-08/unseen-study-2/`,
+declaration sha256 `546784c7…1aff`, record and logs in `artifacts/unseen-study-2-2026-11-08/`). Amendment 9, committed at 5658d7d
+before the draw, judges a rejected case where the rule acted, whether or not another scheduled fault fired. Eight new
+schedules drawn by a seed fixed before the draw and leaving out run 1's cases, six trials per arm, Haiku 5.5 on the Anthropic API.
+The preflight passed (dev-5, $0.0027). Decision **TRANSFERRED**: over 24 rejected-case trials per arm the slip appeared 22 times
+without the rule and 0 times with it; the rule acted in all 24 L trials and blocked 17 proposed reports; correct refusals 22
+of 24 against 2 of 24 (the other two L trials ended 2 as VIOLATION, with no finding). The rule never acted in the four other cases, whose 48
+trials were clean in both arms. **The pass depends on amendment 9**: one L trial of `unseen-r1` left a scheduled fault unfired,
+so the gate of run 1 would have failed it. An unseen-case result for this rule on these schedules of this task, not an active policy.
+
+Money: **$0.2757 of API money** (study $0.2730, preflight $0.0027). November committed $0.2898 to $0.5655, rows 506 to 991, process
+cap $6.29. Declared bound $4.87 ($4.84 study, $0.034 preflight); project ledger $1,566.26 + $4.87 = $1,571.13 (bounds). 754 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

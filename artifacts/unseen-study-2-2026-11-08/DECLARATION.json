@@ -1,0 +1,168 @@
+{
+  "amendment_9": {
+    "approved_by_owner": "2026-11-08",
+    "commit": "5658d7df7786ca86ef7ee8aca94eb849c4cd738b",
+    "document": "docs/v2/UNSEEN_STUDY.md",
+    "post_hoc_note": "read against run 1's saved rows, all four of its rejected cases would have passed; that is why this is a new draw that leaves out run 1's cases, and why run 1's NOT_TRANSFERRED stands",
+    "relaxes_a_gate_after_a_failure": true,
+    "text": "a rejected case: every L trial completed its execution; the rule acted in at least pairs - 1 of them; each trial where it acted carries no target or other conformance finding and no false belief; those trials reach the expected outcome at least as often, as a rate, as the B0 trials that completed; whether another scheduled fault also fired is not judged"
+  },
+  "caps": {
+    "max_trials": 96,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 6.29,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $6.00"
+    },
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_usd": 0.0504,
+    "study_usd": 4.84
+  },
+  "claim_scope": "new fault schedules of the same task, fixtures and fault types; not new tasks; a test of one rule with one Actor (Haiku 5.5 on the API); not an active policy",
+  "code": {
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "5658d7df7786ca86ef7ee8aca94eb849c4cd738b",
+    "model_actor_sha256": "f152994dc2d54c66e5d07d3287e489600023e9759b79e1ca3276d875e33d6af8",
+    "orders_pack_sha256": "5053b4d5f4f8808db0caba84d2ccc4102be0e72afc5818a8da370e305d0f4b0b",
+    "repair_study_sha256": "015af30f971940414b6d243b1453cba1e61fdcac736cb3e4356b21cf1f062f6f",
+    "rules_sha256": "dd0c4004ac9778573d39ddb28182376e24d77eee1d8ee891e21210e3d2f8f3c7",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "5cc315105249e41bd870af84bf9e5ebaec36597fe9df1fda3b78aa310d2dfd7a",
+    "unseen_study_sha256": "995b644dec8aa924d496f85cea0e17a6cb0fedd97aa321a5e0647b6c65a074ba"
+  },
+  "decision_rule": "NOT_TRANSFERRED if any case fails (rejected: amendment 9; other: the validation rule of amendment 8); INCONCLUSIVE if none fails and the slip appeared in fewer than 6 of the 24 B0 trials of the rejected cases; TRANSFERRED otherwise; INCOMPLETE if a stage cannot run. The recorded decision is the result.",
+  "declared_at": "2026-11-08",
+  "design": {
+    "caps": {
+      "dollars": 0.0504,
+      "http_attempts": 24,
+      "model_calls": 12,
+      "ticks": null,
+      "tokens": null,
+      "wall_seconds": 120.0
+    },
+    "gap_min": 6,
+    "other_cases": [
+      "unseen-o1",
+      "unseen-o2",
+      "unseen-o3",
+      "unseen-o4"
+    ],
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "pairs": 6,
+    "rejected_cases": [
+      "unseen-r1",
+      "unseen-r2",
+      "unseen-r3",
+      "unseen-r4"
+    ],
+    "rejected_rule": "where_acted",
+    "target_rule": "notification_label_after_rejection",
+    "validation_rule": "where_acted"
+  },
+  "design_digest": "fcd804c05c70774215c6881780f4120c395b3dfbeb091a2d2469779c2f478dd2",
+  "draw": {
+    "cases": 8,
+    "cases_file_sha256": "1d2dac87b3cdb4a3a594050574e04b3a154608e189a62b3116535d5da9608263",
+    "excluded": "the eight cases of unseen-study-1",
+    "per_stratum": 4,
+    "sealed": "the case file and trial bundles stay outside the repository and are not opened by the agent; the record names cases by id only",
+    "seed_rule": "the commit holding the code and the frozen rule's digest",
+    "seed_text": "5658d7df7786ca86ef7ee8aca94eb849c4cd738b|7585f57d613579d4145c045ee0b03cc4c02d80385e12b74b6c13094d99288bde",
+    "space": {
+      "other": 17,
+      "rejected": 13
+    },
+    "tried": {
+      "other": 4,
+      "rejected": 4
+    }
+  },
+  "expected_cost": "about $0.30 of API money (the second pilot measured $0.0029 per trial) and about 15 minutes",
+  "frozen_rule": {
+    "pilot_declaration_sha256": "879b77072d0a9d09a2bfcf53bf700b5987afe265d28e45f62dd1fd6149108875",
+    "policy": {
+      "rules": [
+        {
+          "hook": "before_final_report",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "require_label",
+              "operation": "upgrade",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        }
+      ],
+      "version": "rejected-upgrade-notification-not-required"
+    },
+    "policy_digest": "7585f57d613579d4145c045ee0b03cc4c02d80385e12b74b6c13094d99288bde",
+    "source": "artifacts/repair-study-api-pilot-2-2026-10-29",
+    "written_by": "the Sonnet 5.5 Mechanic of the second API pilot, shown one dev-5 trial; not changed since"
+  },
+  "ledger_before": {
+    "bound_sum_usd": 2.1252,
+    "committed_usd": 0.2898,
+    "month": "2026-11",
+    "rows": 506
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "unseen-study-2-2026-11-08",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-2/bundles",
+    "logs": [
+      "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-2/preflight.log",
+      "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-2/run.log"
+    ],
+    "record": "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-2/unseen-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-2/trials.sqlite3"
+  },
+  "pre_registration": {
+    "commit": "5658d7df7786ca86ef7ee8aca94eb849c4cd738b",
+    "document": "docs/v2/UNSEEN_STUDY.md",
+    "rule_and_method_committed_before_the_draw": true
+  },
+  "preflight": {
+    "on_failure": "the study is not started; the failure is written up",
+    "pass": "the trial's execution is COMPLETED and its measured dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor`, before the study, as in the second API pilot"
+  },
+  "previous_runs": [
+    {
+      "api_usd_real_money": 0.2898,
+      "decision": "NOT_TRANSFERRED",
+      "declaration_sha256": "76330a1554772e02fb97cf0061d3b24cea92d67fc4fa25472f01c6c7b781119a",
+      "name": "unseen-study-1-2026-11-08",
+      "why": "two rejected cases failed the candidate gate because one L trial each left a scheduled fault unfired"
+    }
+  ],
+  "purpose": "The second unseen-case test of the same frozen rule, on a fresh draw, under amendment 9. Approved by the owner on 2026-11-08 ('Yeah, please go ahead with your recommendation, and whatever you think is right, just go ahead and do it') in answer to 'a re-test with corrected criteria on a fresh set of cases'; run the same night inside the Claude plan usage the owner allowed (stop at 95% of the weekly limit, nothing after the morning reset).",
+  "roles": {
+    "actor": {
+      "adapter": "model-actor",
+      "channel": "Anthropic API (real money)",
+      "context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+      "model": "anthropic:claude-haiku-5-5"
+    },
+    "mechanic": "none: the rule arrives frozen"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "the study stops at the first stage that cannot run (admission refused, worker stopped, infrastructure): INCOMPLETE",
+    "the ledger refuses any call past the process cap",
+    "a billing message in the preflight stops the launch",
+    "one run per draw: no rerun and no change to the rule, the cases or the decision rule after a result"
+  ]
+}

@@ -192,7 +192,7 @@ class UnseenStudy(RepairStudy):
         gap = sum(value["B0"]["counts"]["target"] for value in stages["rejected"].values())
         if gap < design.gap_min:
             return "INCONCLUSIVE", f"no case failed, but the slip appeared in only {gap} B0 trials of the rejected cases (needed {design.gap_min})"
-        return "TRANSFERRED", "every rejected case passed the candidate gate and every other case the validation rule"
+        return "TRANSFERRED", "every rejected case passed amendment 9's gate and every other case the validation rule"
 
     def _readouts(self) -> dict:
         rejected, other = self.record["stages"]["rejected"], self.record["stages"]["other"]
