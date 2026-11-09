@@ -1,0 +1,327 @@
+{
+  "decision": "NOT_TRANSFERRED",
+  "readouts": {
+    "1_gap": {
+      "B0_target": 17,
+      "B0_valid": 20,
+      "gap_min": 6
+    },
+    "2_rejected_cases": {
+      "unseen-r1": {
+        "B0": {
+          "acted": 0,
+          "basis": "valid",
+          "blocked": 0,
+          "completed": 0,
+          "conformance": 3,
+          "delivered": 3,
+          "dollars": 0.014708,
+          "expected": 0,
+          "exposed": 3,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 3,
+          "trials": 6,
+          "valid": 3
+        },
+        "L": {
+          "acted": 5,
+          "basis": "valid",
+          "blocked": 4,
+          "completed": 0,
+          "conformance": 0,
+          "delivered": 5,
+          "dollars": 0.019395,
+          "expected": 5,
+          "exposed": 5,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6,
+          "valid": 5
+        },
+        "passed": false
+      },
+      "unseen-r2": {
+        "B0": {
+          "acted": 0,
+          "basis": "valid",
+          "blocked": 0,
+          "completed": 0,
+          "conformance": 6,
+          "delivered": 6,
+          "dollars": 0.015837,
+          "expected": 0,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 6,
+          "trials": 6,
+          "valid": 6
+        },
+        "L": {
+          "acted": 6,
+          "basis": "valid",
+          "blocked": 4,
+          "completed": 0,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.019201,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6,
+          "valid": 6
+        },
+        "passed": true
+      },
+      "unseen-r3": {
+        "B0": {
+          "acted": 0,
+          "basis": "valid",
+          "blocked": 0,
+          "completed": 0,
+          "conformance": 3,
+          "delivered": 5,
+          "dollars": 0.013054,
+          "expected": 2,
+          "exposed": 5,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 3,
+          "trials": 6,
+          "valid": 5
+        },
+        "L": {
+          "acted": 5,
+          "basis": "valid",
+          "blocked": 6,
+          "completed": 0,
+          "conformance": 0,
+          "delivered": 5,
+          "dollars": 0.016718,
+          "expected": 5,
+          "exposed": 5,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6,
+          "valid": 5
+        },
+        "passed": false
+      },
+      "unseen-r4": {
+        "B0": {
+          "acted": 0,
+          "basis": "valid",
+          "blocked": 0,
+          "completed": 0,
+          "conformance": 5,
+          "delivered": 6,
+          "dollars": 0.012277,
+          "expected": 1,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 5,
+          "trials": 6,
+          "valid": 6
+        },
+        "L": {
+          "acted": 6,
+          "basis": "valid",
+          "blocked": 6,
+          "completed": 0,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.016624,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6,
+          "valid": 6
+        },
+        "passed": true
+      }
+    },
+    "3_other_cases": {
+      "unseen-o1": {
+        "B0": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.012971,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "L": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.012751,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "acting": 0,
+        "clean": 0,
+        "inert": true,
+        "passed": true
+      },
+      "unseen-o2": {
+        "B0": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.01565,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "L": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.016078,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "acting": 0,
+        "clean": 0,
+        "inert": true,
+        "passed": true
+      },
+      "unseen-o3": {
+        "B0": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.024308,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "L": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.02414,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "acting": 0,
+        "clean": 0,
+        "inert": true,
+        "passed": true
+      },
+      "unseen-o4": {
+        "B0": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.025997,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "L": {
+          "acted": 0,
+          "basis": "scoreable",
+          "blocked": 0,
+          "completed": 6,
+          "conformance": 0,
+          "delivered": 6,
+          "dollars": 0.027384,
+          "expected": 6,
+          "exposed": 6,
+          "false_beliefs": 0,
+          "scoreable": 6,
+          "target": 0,
+          "trials": 6
+        },
+        "acting": 0,
+        "clean": 0,
+        "inert": true,
+        "passed": true
+      }
+    },
+    "4_totals": {
+      "other_L_acted": 0,
+      "other_L_blocked": 0,
+      "rejected_L_acted": 22,
+      "rejected_L_blocked": 20,
+      "rejected_L_target": 0,
+      "rejected_L_valid": 22
+    },
+    "5_decision": {
+      "decision": "NOT_TRANSFERRED",
+      "reason": "failed cases: unseen-r1, unseen-r3"
+    },
+    "6_cost": {
+      "bound": {
+        "max_dollars": 4.8384,
+        "max_trials": 96,
+        "study_dollars": 4.84
+      },
+      "measured": {
+        "dollars": 0.28709329999999994,
+        "envelopes": 96,
+        "http_attempts": 417,
+        "input_tokens": 2362768,
+        "model_calls": 501,
+        "output_tokens": 101633
+      }
+    }
+  },
+  "reason": "failed cases: unseen-r1, unseen-r3",
+  "record": "/Users/shree/FaultLab_Runs/2026-11-08/unseen-study-1/unseen-study.json"
+}

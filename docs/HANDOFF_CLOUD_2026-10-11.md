@@ -202,3 +202,8 @@ design is frozen at 6e179d0; a confirmatory run and the API pilot await the owne
 pilot ended NO_CHANGE ($0.46) on a validation defect, which amendment 8 corrected. The second API pilot then ended
 REPAIRED ($0.24, `artifacts/repair-study-api-pilot-2-2026-10-29/`), a development qualification on the public split.
 Ledger lines are in `CURRENT_STATUS.md`; write-ups are in the design note.
+
+**Update 2026-11-08.** The first unseen-case test of the frozen rule ended NOT_TRANSFERRED ($0.29,
+`artifacts/unseen-study-1-2026-11-08/`). On new rejected-upgrade schedules the slip fell from 21 of 24 to 0 of 24, but two
+cases failed the gate on an unfired second fault, recorded as a design defect of the test; the decision stands. Method and
+result are in `docs/v2/UNSEEN_STUDY.md`. Whether to amend the gate and draw again is the owner's call.

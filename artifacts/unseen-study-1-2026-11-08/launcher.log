@@ -1,0 +1,4 @@
+2026-11-09T05:20:07Z preflight start (monthly cap for this process: 6.00)
+2026-11-09T05:20:16Z preflight exit 0: PASS {"execution": "COMPLETED", "task": "CORRECTLY_REFUSED", "calls": 5, "dollars": 0.0026805}
+2026-11-09T05:20:16Z study start
+2026-11-09T05:32:38Z study exit 0

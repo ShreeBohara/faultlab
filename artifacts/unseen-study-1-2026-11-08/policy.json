@@ -1,0 +1,22 @@
+{
+  "rules": [
+    {
+      "hook": "before_final_report",
+      "operation": "upgrade",
+      "steps": [
+        {
+          "claim": "notification_outcome",
+          "expect": [
+            "NOT_REQUIRED"
+          ],
+          "only_if": "always",
+          "op": "require_label",
+          "operation": "upgrade",
+          "ticks": null
+        }
+      ],
+      "when": "terminal_failure"
+    }
+  ],
+  "version": "rejected-upgrade-notification-not-required"
+}

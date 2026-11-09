@@ -42,3 +42,34 @@ could not run. The test runs once per draw: no rerun, and no change to the rule,
 .venv/bin/python -m faultlab study unseen --store <trials.sqlite3> --out <dir> --cases <cases.json> --policy <rule.json> \
   --adapter model-actor --model anthropic:claude-haiku-5-5 --execute-live --dollars 0.0504 --study-dollars 4.84 --declaration <DECLARATION.json>
 ```
+
+## Runs
+
+**Run 1, 2026-11-08** (Anthropic API, $0.2898 with the preflight; Haiku 5.5 through the model actor; record and logs in
+`artifacts/unseen-study-1-2026-11-08/`; declaration sha256 `76330a15…119a`; drawn from commit e5b2497). **NOT_TRANSFERRED**,
+as declared: `unseen-r1` and `unseen-r3` failed the candidate gate. 96 trials, 742 s. The case file and bundles are not published.
+
+| Rejected-upgrade cases, 24 trials per arm | No rule | Frozen rule |
+|---|---|---|
+| Slip, all trials | 21 | 0 |
+| Slip, valid trials | 17 of 20 | 0 of 22 |
+| Correct refusal, all trials | 3 | 24 |
+| Rule acted | n/a | 24 |
+
+The other four cases: the rule never acted in their 24 L trials, and all 48 trials of both arms completed with no finding.
+
+Why two cases failed. The gate requires every L trial to be valid, and valid includes every scheduled fault having fired.
+One L trial of `unseen-r1` and one of `unseen-r3` left a scheduled fault unfired (as did three and one B0 trials of those
+cases). In both L trials the rule acted and the report was correct, and since a rule acts only after a terminal failure,
+the unfired fault was the other fault of a two-fault schedule. The gate came from the source-case stage, where the one
+scheduled fault is the rejection; on a two-fault schedule it also judges something the rule does not control. This is a
+defect of this test's design, found after the result. It does not change the result.
+
+What it shows, descriptively: on new schedules with a rejected upgrade the frozen rule removed the slip, and it stayed
+silent where there was no rejection. What it does not show: a pass (the recorded decision is `NOT_TRANSFERRED`), other tasks,
+fixtures or fault types, another Actor, or an active policy. Twenty-four trials per arm on four cases is small, and the draw
+can be reproduced from the published seed text and code, so this draw is spent: it was unread, not secret.
+
+Open for the owner: whether to amend the gate before a new draw, judging a rejected case on the trials where the rule acted
+whether or not another scheduled fault fired. That change would relax a gate after a failure, so it needs the owner's yes,
+pre-registration and a fresh draw.

@@ -1407,6 +1407,22 @@ Money: **$0.2360** of API credit (monthly ledger committed $25.6121 to $25.8481,
 process cap was $31.62). Mechanic: $0 money, $0.029 API-equivalent. Declared bound $5.24 (154 trials at $0.034).
 Project ledger carried forward: $1,556.15 + $5.24 = **$1,561.39** (bounds, as always). Write-up in the design note.
 
+### Ledger entry 2026-11-08: unseen-case test 1 (Anthropic API): NOT_TRANSFERRED
+
+The first unseen-case test of the rule frozen by the second API pilot, chosen under the owner's instruction of 2026-11-08
+(`~/FaultLab_Runs/2026-11-08/unseen-study-1/`, declaration sha256 `76330a15…119a`, record and logs in
+`artifacts/unseen-study-1-2026-11-08/`, method in `docs/v2/UNSEEN_STUDY.md`, committed at e5b2497 before the draw). Eight new
+fault schedules drawn from the pack's own grammar by a seed fixed before the draw (four with a rejected upgrade, four
+without), six trials per arm, Haiku 5.5 on the Anthropic API, no Mechanic. The preflight passed (dev-5, $0.0027). Decision
+**NOT_TRANSFERRED**: `unseen-r1` and `unseen-r3` failed the candidate gate because one L trial of each left a scheduled
+fault unfired. Over the 24 rejected-case trials per arm the slip appeared 21 times without the rule and 0 times with it (17
+of 20 and 0 of 22 among valid trials); the rule acted in all 24 L trials; correct refusals 24 of 24 against 3 of 24. The rule
+never acted in the four other cases, whose 48 trials were clean in both arms. The gate's defect on two-fault schedules is
+written up in the method note; it does not change the decision, and nothing was rerun or changed after the result.
+
+Money: **$0.2898 of API money** (study $0.2871, preflight $0.0027). November committed $0 to $0.2898, rows 0 to 506, process
+cap $6.00. Declared bound $4.87 ($4.84 study, $0.034 preflight); project ledger $1,561.39 + $4.87 = $1,566.26 (bounds). 742 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
