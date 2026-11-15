@@ -1,0 +1,124 @@
+# Second task plan: the bookings task on the v2 lab
+
+*2026-11-15. This is a plan only. Nothing in it is built yet, and writing it cost no API money.*
+
+## In one paragraph
+
+Every FaultLab result so far comes from one task: upgrade an order, then send one confirmation. A
+second task already exists in an early form, **`bookings.move_with_hold/v1`** (move a booking using
+a hold; see [its README](../../taskpacks/bookings_move_with_hold/README.md)). It was built on 2026-09-29
+as a standalone world with its own checks H1–H8, a correct agent, eight deliberately buggy agents
+and 203 offline tests. It never ran through the lab. Its phase 2 plan targeted the legacy backend,
+and the v2 lab has since been built with a seam meant for exactly this. The registry in
+`faultlab/packs/registry.py` says "Adding a pack means adding a line here and passing the
+conformance tests". This plan moves the bookings task onto the v2 lab in six steps. The first four
+cost no API money and must reproduce the September numbers exactly through the real lab. Only then
+does a small paid screen ask whether a real model fails the task often enough to study.
+
+## Where it stands (checked 2026-11-15)
+
+- `pytest taskpacks/bookings_move_with_hold/tests`: **202 passed, 1 failed.** The failure is the
+  September order-identity guard. `dependency_lock_hash` no longer matches its 2026-09-29
+  baseline because the project's dependency lock has changed since then. The other four order
+  identities match, and no bookings code caused the mismatch.
+- Nothing under `faultlab/` knows the task yet. The registry lists one pack, orders.
+
+## Why this is a good second task
+
+It tests habits that the order task cannot:
+
+- **A write that is not safe to repeat.** Each `place_hold` call makes a new hold. Suppose the
+  answer to the first call is lost. A careless agent places a second hold, which fails H2. The safe
+  habit from the order task is to report "unknown" and stop, but that leaves an invisible hold
+  blocking a place, which fails H3. Only listing the holds first passes. On orders, every write is
+  keyed and an honest "unknown" always passes.
+- **Clean-up after a failure.** On orders, a rejected upgrade means the confirmation is simply not
+  required. Here, a rejected move means the agent must act: it has to release the hold.
+- **Two new faults.** F5: the effect commits, then the answer is a 500 error. F6: a hold expires
+  early.
+
+## What the v2 lab already provides
+
+- The kernel places F1 and F4 on any tool and lets a handler place F2 and F3. Budgets, histories,
+  ticks and snapshots are generic (`faultlab/env/kernel`). A test,
+  `backend/tests/v2/kernel/test_generic_handler.py`, already runs a second toy pack, a ledger.
+- effectsafe models a write the provider cannot recognise (`identity_scope="none"`) and refuses
+  to resend one whose effect is unknown (`UnsafeResend`).
+- The session gives each agent write that has no operation id a fresh operation
+  (`faultlab/lab/session.py:152`). An agent's own second `place_hold` therefore reaches the world,
+  as it did in September, and H2 can see that mistake.
+- The worker, store, envelopes, bundles, replay, the study tools and the Study results page work
+  from records, not from order fields.
+
+## What is still order-specific (the work)
+
+| # | Area | Today | Needed |
+|---|---|---|---|
+| 1 | Fault families | The kernel knows F1–F4 (`faults.py`). | Add F5 (placed by the kernel, like F1) and F6 (placed by the handler, like F2 and F3) without changing any order digest. |
+| 2 | World | A standalone `world.py` (515 lines). | `faultlab/packs/bookings/`: handler, models, routes and `pack.py`. |
+| 3 | Automatic retry | The session retries any failed transport (`session.py:184`). | Retry a non-keyed write only after an error that proves no effect (a 503 before admission). **Found while planning:** as the code stands, a lost `place_hold` answer would be resent. effectsafe would refuse the resend (`UnsafeResend`), and the worker would end the trial as `UNSAFE_RESEND_REFUSED` (`worker.py:157`) instead of showing the agent the uncertain answer. Order writes are keyed, so their behaviour stays the same. |
+| 4 | Which hold ids the agent may use | Nothing. | The September rule: a hold id must have been delivered in this trial, or the broker refuses locally (`UNKNOWN_HOLD_REFERENCE`, with no HTTP attempt). This needs an optional request check on `TaskPack` that the session runs. |
+| 5 | Referee | `faultlab/referee/legacy.py` runs the order checks C1–C8. | A bridge that calls the bookings `checks.score(...)` and pins its digest, the way orders does. H2 and H3 need property families, for example `duplicate_holding` and `abandoned_effect`. Adding them must leave the orders manifest digest unchanged. |
+| 6 | Oracle | `oracle/orders.py`, registered in `worker.py:86`. | `oracle/bookings.py`: it checks the claims `move_outcome`, `booking_slot`, `open_hold_ids` and `overall` against the world's events. |
+| 7 | Scripted agents | `adapters/reference.py` plays orders. | `reference-bookings` and the eight buggy agents as $0 adapters. |
+| 8 | Model Actor | The legacy order prompt and action schema (`adapters/model_actor.py`, through `app.agents.actor`). | An Actor built from the pack: the prompt comes from the pack's task text, tools and report schema, with the same final-turn and invalid-answer rules. The orders prompt stays byte for byte the same, because its digest is pinned. |
+| 9 | Rule language | Two hooks, `before_final_report` and `before_agent_turn` (`lab/rules.py:33`); operations are named by alias. | Likely bookings repairs need a gate before a tool call ("after an unclear `place_hold`, list the holds before placing another") and a hold condition at the report gate ("release open holds first"). Add only what a repair study shows is needed. Order policies keep their digests. |
+| 10 | Study tools | Unseen-case draws use the order fault grammar (`unseen_study.py:38`). The repair study defaults to orders and dev-5 (`repair_study.py:63`). The Mechanic prompt describes orders (`mechanic.py:48`). | The pack supplies its case grammar, its strata (for example `lost_hold`, `rejected_move` and `other`), its source case and its Mechanic text. |
+| 11 | Claude Code agent | `adapters/claude_agent.py` plays orders. | Later. The first screen does not need it. |
+
+## Steps
+
+Each step ends with its own tests passing, the full backend suite green, a manual check and a
+short write-up. Steps 1 to 4 cost no API money.
+
+1. **The pack on the kernel** (items 1–4). Exit: the pack conformance tests pass for both packs;
+   the orders pack, checker and policy digests are unchanged; the same scripted calls give the same
+   world event log as the September `world.py`, both in process and over HTTP; and a lost
+   `place_hold` answer reaches the agent as uncertain and is never resent. The step starts with a
+   test that fails today and shows the trial ending as `UNSAFE_RESEND_REFUSED`. New file names
+   avoid the September guard's markers (`taskpack`, `task_pack`, `move_with_hold`, `hk-dev`), or
+   that guard is retired first (decision 4).
+2. **Scoring through the real lab** (items 5–7). Exit: the September numbers, now through the v2
+   worker. The correct agent is clean on 24 of 24 trials; each buggy agent fails exactly its
+   documented checks on 3 of 3; the give-up caller fails H3 and the blind-retry caller fails H2 on
+   `hk-dev-2` and `hk-dev-3`.
+3. **A Model Actor for any pack** (item 8), tested with a scripted provider. Exit: bookings
+   prompts and actions are validated offline, and the orders Actor's prompt digest is unchanged.
+4. **Study tools per pack** (item 10, plus item 9 only if needed). Exit: an unseen-case draw for
+   bookings that excludes the eight public cases, and the Study results page names the task.
+5. **First paid screen**, which needs the owner's OK and a declaration first. Haiku 5.5 on the
+   eight public cases, three trials each, with no rule. The question: does a real model make a
+   mistake here, and does it repeat? Cost bound: 24 trials × 8 calls × $0.0042 a call = **$0.81**.
+   The actual cost is likely under $0.30, because Haiku trials have cost about a cent each.
+6. **Only if step 5 finds a repeated mistake:** a repair study on bookings, then an unseen-case
+   test, under the same declaration rules as on orders. Each run is quoted first; at Haiku prices
+   expect about $0.3 to $2 each.
+
+**Plan usage, as rough guesses to agree before each step:** step 1 about 8–12% of a weekly meter,
+step 2 6–10%, step 3 6–10%, step 4 5–8%, and step 5 2–3% plus the API money. The meter is read
+between parts, and work stops at the agreed line.
+
+## Decisions for the owner
+
+1. **Move the task to the v2 lab, not the legacy backend.** Recommended. The September phase 2
+   plan was written before the v2 lab existed, and doing both would duplicate the engine.
+2. **Hold ids: short labels or 12 hex characters.** The September README left this open.
+   Recommended: short per-trial labels such as `hold-1`, so that copying errors do not hide the
+   mistakes the test is meant to find. This has to be settled before step 1 freezes the pack.
+3. **`hk-dev-6`.** Recommended: keep the 9-tick cut, which forces every agent onto the "place a
+   new hold" path. A cut of 7 or 8 would make that path depend on the agent's speed instead.
+4. **The September order guard.** It compares the order task's identities with a September
+   baseline, and one of them (`dependency_lock_hash`) has moved because dependencies changed. Its
+   listing check also refuses certain file names under `backend/` and `docs/`. Recommended: record
+   the baseline again once, with a note saying why, and from step 1 rely on the v2 digest pins
+   (pack, checker and prompt) instead of the listing check.
+
+## What each step can claim
+
+- Steps 1–4 show that **the engine runs a second task**. That is a product claim, and it says
+  nothing about how often a real model fails the task.
+- Step 5 is a **screen**: development evidence on the public cases.
+- A repair found in step 6 is first a **development qualification**. An unseen-case pass is a
+  separate claim. Neither makes it an active policy.
+- If a real model rarely fails this task, that is a valid result too. It means there is nothing
+  to repair here, and it will be reported that way.

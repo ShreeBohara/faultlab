@@ -254,3 +254,5 @@ a reply from a different model) and a per-trial dollar bound at that model's rat
 The dashboard now has a read-only **Study results** page (`#/studies`) over every study folder in `artifacts/`
 (`faultlab/research/archive.py`, `GET /api/studies`); a new study shows up there once its declaration and records are
 published in `artifacts/<name>/` the way comparisons 1 to 4 were.
+The second task is planned, not built: [v2/SECOND_TASK_PLAN.md](v2/SECOND_TASK_PLAN.md) moves the September bookings task onto
+the v2 lab; four owner decisions come first.

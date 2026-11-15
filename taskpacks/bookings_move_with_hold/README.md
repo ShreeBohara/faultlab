@@ -352,6 +352,9 @@ owner.
 
 ## 10. What phase 2 will wire into the main loop
 
+> **2026-11-15:** this section was written before the v2 lab existed. The current plan moves the task onto the v2
+> lab as a task pack instead: [docs/v2/SECOND_TASK_PLAN.md](../../docs/v2/SECOND_TASK_PLAN.md).
+
 Phase 2 starts only after discovery v3 lands and is verified. Nothing here is loaded until then.
 
 1. **Record "before" values and pin them** in `backend/tests/taskpacks/test_order_task_unchanged.py`

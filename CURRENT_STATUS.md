@@ -1588,6 +1588,16 @@ backend suite 2,620 passed, 1 skipped (20 min; the last link-out test was added 
 381 passed and the build; checked by hand in the browser against the real backend (dark and light themes). No provider call,
 no money.
 
+### 2026-11-15: plan for the second task ($0)
+
+At the owner's choice, [docs/v2/SECOND_TASK_PLAN.md](docs/v2/SECOND_TASK_PLAN.md) plans the second task: the September
+bookings task (`taskpacks/bookings_move_with_hold`, standalone, checks H1-H8) moved onto the v2 lab as a task pack, in six
+steps (four at $0 that must reproduce the September numbers through the real worker, then a Haiku screen bounded at $0.81).
+Today its offline tests give 202 passed, 1 failed: the September order-identity guard, whose `dependency_lock_hash` baseline
+predates later dependency changes. Found while planning: the session retries any failed transport, so a lost answer to a
+write that is not safe to repeat would be resent, refused by effectsafe and the trial ended `UNSAFE_RESEND_REFUSED`; step 1
+fixes that for such writes only. Four owner decisions are listed in the plan. Nothing is built yet.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
