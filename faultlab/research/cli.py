@@ -21,7 +21,7 @@ from faultlab.packs import PackError, load_pack
 from faultlab.research.compare import compare_records
 from faultlab.research.mechanic import ClaudeCodeMechanic, ScriptedMechanic
 from faultlab.research.repair_study import RepairStudy, RepairStudyDesign
-from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, draw_cases
+from faultlab.research.unseen_study import REJECTION_STRATA, UnseenStudy, UnseenStudyDesign, draw_cases
 
 
 def _list(value: str | None, default: list[str]) -> list[str]:
@@ -96,6 +96,7 @@ def unseen_main(argv) -> int:
     parser.add_argument("--seed-text", default=None, help="unseen-draw: the text, fixed before the draw, that orders the candidates")
     parser.add_argument("--per-stratum", type=int, default=4, help="unseen-draw: cases kept per stratum")
     parser.add_argument("--per-other", type=int, default=None, help="unseen-draw: cases kept in the other stratum (default --per-stratum)")
+    parser.add_argument("--per-late", type=int, default=0, help="unseen-draw: cases kept in the late stratum (default 0)")
     parser.add_argument("--exclude-cases", action="append", default=None, help="unseen-draw: an earlier draw's case file, whose cases are left out")
     parser.add_argument("--policy", default=None, help="unseen: the frozen rule, a JSON file")
     parser.add_argument("--adapter", default="reference-orders", help="unseen: reference-orders, model-actor or claude-agent")
@@ -127,7 +128,8 @@ def unseen_main(argv) -> int:
             exclude = [c for path in args.exclude_cases or [] for c in json.loads(Path(path).read_text(encoding="utf-8"))["cases"]]
             with TrialStore(args.store) as store:
                 drawn = asyncio.run(draw_cases(args.seed_text, per_stratum=args.per_stratum, store=store, out_dir=args.out, referee=referee,
-                                               worlds_dir=args.worlds, pack_id=pack.pack_id, exclude=exclude, per_other=args.per_other))
+                                               worlds_dir=args.worlds, pack_id=pack.pack_id, exclude=exclude, per_other=args.per_other,
+                                               per_late=args.per_late))
             cases_path.parent.mkdir(parents=True, exist_ok=True)
             cases_path.write_text(json.dumps(drawn, indent=2, sort_keys=True), encoding="utf-8")
             print(json.dumps({"cases": len(drawn["cases"]), "tried": drawn["tried"], "sha256": sha256(cases_path.read_bytes()).hexdigest()}, sort_keys=True))
@@ -137,7 +139,7 @@ def unseen_main(argv) -> int:
         cases = json.loads(cases_path.read_text(encoding="utf-8"))["cases"]
         policy = json.loads(Path(args.policy).read_text(encoding="utf-8"))
         design = UnseenStudyDesign(pack_id=pack.pack_id, target_rule=args.target, pairs=args.pairs, gap_min=args.gap, other_pairs=args.other_pairs,
-                                   rejected_cases=[c["case_id"] for c in cases if c["stratum"] == "rejected"],
+                                   rejected_cases=[c["case_id"] for c in cases if c["stratum"] in REJECTION_STRATA],
                                    other_cases=[c["case_id"] for c in cases if c["stratum"] == "other"],
                                    caps=Caps(model_calls=args.model_calls, http_attempts=args.http_attempts, wall_seconds=args.wall_seconds, dollars=args.dollars))
         factory = build_adapter_factory(args)

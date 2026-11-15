@@ -42,7 +42,8 @@ SCHEMA = "faultlab-unseen-study/v1"
 Decision = Literal["TRANSFERRED", "NOT_TRANSFERRED", "INCONCLUSIVE", "INCOMPLETE"]
 _REJECT = {"terminal_status": "FAILED", "failure_code": "UPGRADE_REJECTED"}
 _SUCCEED = {"terminal_status": "SUCCEEDED", "failure_code": None}
-_WORLD_SEEDS = {"rejected": 200, "other": 300}
+_WORLD_SEEDS = {"rejected": 200, "other": 300, "late": 400}
+REJECTION_STRATA = ("rejected", "late")     # strata judged by the rejected-case gate
 _REFERENCE_CAPS = Caps(model_calls=8, http_attempts=24, wall_seconds=60.0, dollars=None)
 
 
@@ -63,7 +64,8 @@ def _flaky(failures):
 
 
 def _outage(tool, failures):
-    """F4 on an orders tool: its first ``failures`` requests fail before admission, then it answers."""
+    """F4 on an orders tool: its first ``failures`` requests are admitted (each advances the clock a tick) and fail with a
+    transient error before any effect, then it answers."""
     return _primitive("F4", tool, "orders", {"failure_count": failures})
 
 
@@ -89,8 +91,13 @@ def case_space() -> dict[str, list[dict]]:
     30 candidates come first and unchanged, and the three earlier draws used only them. v3 (2026-11-15): the 17 v2
     candidates whose faults cannot all fire (a lost reply on the write F2 leaves pending, ``all_faults_can_fire``) are left
     out, and outages are added: F4 on ``get_order``, ``update_order`` or ``get_operation_status`` for one or two requests,
-    with a rejection after one to three ticks (36) or alone or before a success (16). Earlier draws are reproduced by the code
-    at their own commits; their case files hold every case in full."""
+    with a rejection after one to three ticks (36) or alone or before a success (16). v4 (2026-11-15) adds a ``late`` stratum,
+    judged like ``rejected``: two failed requests to ``get_order`` or ``update_order``, then a rejection after four ticks (4).
+    The session retries a transient failure once within the same call, so two failures cost the agent one extra call, and every
+    request, a failed one too, advances the clock a tick: an agent that reads the order, upgrades and polls first sees the
+    rejection on its seventh call, and the rule's advice comes on the eighth, the reserved final turn under the 8-call budget.
+    A one-request outage costs no call, and an outage on ``get_operation_status`` brings the rejection sooner, so neither is in
+    this stratum. Earlier draws are reproduced by the code at their own commits; their case files hold every case in full."""
     rejected = ([("standard-v1", [_delayed(t, _REJECT)]) for t in (1, 3, 4)]
                 + [("history-v1", [_delayed(t, _REJECT)]) for t in (1, 2, 3, 4)]
                 + [("history-v1", [_stale(b), _delayed(t, _REJECT)]) for b in (1, 2) for t in (1, 2, 3)])
@@ -115,9 +122,12 @@ def case_space() -> dict[str, list[dict]]:
     completed_v3 = [(fixture, schedule) for fixture in ("standard-v1", "history-v1") for n in (1, 2) for schedule in (
                     [_outage("get_order", n)], [_outage("update_order", n)], [_outage("get_operation_status", n), _delayed(2, _SUCCEED)],
                     [_outage("update_order", n), _delayed_at(2, _SUCCEED, n + 1)])]
+    late_v4 = [(fixture, [_outage(tool, 2), _delayed_at(4, _REJECT, 3 if tool == "update_order" else 1)])
+               for fixture in ("standard-v1", "history-v1") for tool in ("get_order", "update_order")]
     space = {"rejected": _candidates("rejected", rejected) + _candidates("rejected", rejected_v2) + _candidates("rejected", rejected_v3),
              "other": (_candidates("fault", completed) + _candidates("unresolved_or_completed", unresolved)
-                       + _candidates("fault", completed_v2) + _candidates("unresolved_or_completed", unresolved_v2) + _candidates("fault", completed_v3))}
+                       + _candidates("fault", completed_v2) + _candidates("unresolved_or_completed", unresolved_v2) + _candidates("fault", completed_v3)),
+             "late": _candidates("rejected", late_v4)}
     return {stratum: [c for c in group if all_faults_can_fire(c["primitives"])] for stratum, group in space.items()}
 
 
@@ -266,8 +276,8 @@ async def reference_check(case: dict, *, store: TrialStore, out_dir, label: str,
                           pack_id: str = "orders.upgrade_then_confirm/v1") -> bool:
     """Whether the reference agent plays a case cleanly: one offline trial, valid (completed, every scheduled fault fired),
     with the expected outcome and no conformance finding or false belief."""
-    stratum = case["stratum"]
-    design = UnseenStudyDesign(pack_id=pack_id, pairs=1, caps=_REFERENCE_CAPS, **{f"{stratum}_cases": [case["case_id"]]})
+    field = "rejected_cases" if case["stratum"] in REJECTION_STRATA else "other_cases"
+    design = UnseenStudyDesign(pack_id=pack_id, pairs=1, caps=_REFERENCE_CAPS, **{field: [case["case_id"]]})
     study = UnseenStudy(store=store, design=design, adapter_factory=lambda _policy: load_adapter("reference-orders"), cases=[case],
                         policy=None, out_dir=out_dir, referee=referee, worlds_dir=worlds_dir, name="unseen-draw")
     stage = await study._stage(label, case["case_id"], 1, None, "B0")
@@ -276,12 +286,14 @@ async def reference_check(case: dict, *, store: TrialStore, out_dir, label: str,
 
 
 async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out_dir, referee=None, worlds_dir=None,
-                     pack_id: str = "orders.upgrade_then_confirm/v1", exclude: list[dict] | None = None, per_other: int | None = None) -> dict:
-    """The draw: each stratum in seeded order, a candidate kept when the reference agent plays it cleanly, until the stratum is full."""
+                     pack_id: str = "orders.upgrade_then_confirm/v1", exclude: list[dict] | None = None, per_other: int | None = None,
+                     per_late: int = 0) -> dict:
+    """The draw: each stratum in seeded order, a candidate kept when the reference agent plays it cleanly, until the stratum is full.
+    ``per_stratum`` counts rejected cases, ``per_other`` other cases (``None``: ``per_stratum``) and ``per_late`` late cases."""
     kept, tried = [], {}
     for stratum, candidates in draw_order(seed_text, exclude).items():
         taken = tried[stratum] = 0
-        wanted = per_other if stratum == "other" and per_other else per_stratum
+        wanted = {"other": per_stratum if per_other is None else per_other, "late": per_late}.get(stratum, per_stratum)
         for candidate in candidates:
             if taken == wanted:
                 break
@@ -296,5 +308,5 @@ async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out
     return {"schema": SCHEMA, "seed_sha256": sha256(seed_text.encode("utf-8")).hexdigest(), "cases": kept, "tried": tried}
 
 
-__all__ = ["SCHEMA", "UnseenStudy", "UnseenStudyDesign", "all_faults_can_fire", "case_space", "draw_cases", "draw_order", "named_case", "pack_with_cases",
+__all__ = ["REJECTION_STRATA", "SCHEMA", "UnseenStudy", "UnseenStudyDesign", "all_faults_can_fire", "case_space", "draw_cases", "draw_order", "named_case", "pack_with_cases",
            "reference_check", "rejected_case"]

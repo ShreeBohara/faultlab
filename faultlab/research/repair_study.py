@@ -105,7 +105,9 @@ def summarize_trial(envelope: TrialEnvelope, *, expected_class: str, target_rule
             "scoreable": scoreable, "exposed": exposed, "valid": valid, "faults_triggered": exposure.all_required_triggered,
             "target": scoreable and target_rule in conformance, "conformance": conformance, "false_beliefs": beliefs,
             "expected": scoreable and outcome.task in ACCEPTABLE.get(expected_class, ()),
-            "rule_acted": any(g.get("steps_run") for g in gates) or bool(advised), "advice_turns": len(advised), "blocked_proposals": sum(1 for g in gates if g.get("blocked")),
+            "rule_acted": any(g.get("steps_run") for g in gates) or bool(advised), "advice_turns": len(advised),
+            "first_advice_turn": min((a["turn"] for a in advised if isinstance(a.get("turn"), int)), default=None),
+            "blocked_proposals": sum(1 for g in gates if g.get("blocked")),
             "violations": [f.property_id for f in outcome.findings if f.result == "VIOLATION"],
             "model_calls": outcome.cost.model_calls, "dollars": outcome.cost.dollars_measured, "wall_seconds": outcome.cost.wall_seconds}
 

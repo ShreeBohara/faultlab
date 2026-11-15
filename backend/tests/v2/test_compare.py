@@ -88,6 +88,14 @@ def test_a_tiny_p_value_stays_visible_and_each_arm_names_its_actor():
     assert record_readouts(record("old", [ADVISED], [SLIP]))["actor"] is None              # records before 2026-11-15 name no actor
 
 
+def test_advice_first_shown_on_the_last_call_is_counted_when_rows_name_the_turn():
+    late_block = {**OUT_OF_TURNS, "advice_turns": 1, "first_advice_turn": 8}
+    rows = [late_block, {**ADVISED, "first_advice_turn": 8}, {**BLOCKED_THEN_FIXED, "advice_turns": 2, "first_advice_turn": 6}, {**SILENT, "first_advice_turn": None}]
+    L = record_readouts(record("A", rows, [SLIP]))["rejected"]["L"]
+    assert L["last_call_advice"] == {"trials": 2, "side_effect_trials": 1, "blocked": 1}
+    assert record_readouts(record("old", [ADVISED], [SLIP]))["rejected"]["L"]["last_call_advice"] is None     # rows before the field: unknown, not 0
+
+
 def test_records_from_different_draws_or_designs_are_refused():
     a = record("A", [ADVISED], [SLIP])
     with pytest.raises(ValueError, match="cases_digest"):

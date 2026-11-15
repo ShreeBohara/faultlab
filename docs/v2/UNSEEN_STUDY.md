@@ -11,16 +11,25 @@ and does it stay harmless on schedules with no rejection?
 
 ## The cases
 
-`case_space` lists 99 candidate schedules, the orders pack's own fault grammar minus the six public cases: 55 where the
-upgrade ends in a terminal rejection (`rejected`) and 44 where it does not (`other`). The space grew from 30 on 2026-11-14
+`case_space` lists 103 candidate schedules, the orders pack's own fault grammar minus the six public cases: 55 where the
+upgrade ends in a terminal rejection (`rejected`), 44 where it does not (`other`) and 4 where the rejection arrives late (`late`). The space grew from 30 on 2026-11-14
 (v2, 64), adding a stale read of three versions, a lost upgrade response before a rejection or a success, and flaky
 confirmations on the history fixture; the first 30 come first and unchanged, and runs 1 to 3 drew only from them.
 On 2026-11-15 (v3) the 17 v2 candidates that paired a lost upgrade response with a delayed completion were taken out: the
 kernel loses a reply only on a write that committed at once, and a delayed completion leaves the write pending, so those
 faults could never both fire (`all_faults_can_fire`). The reference check had rejected every one of them in comparison 1's
 draw, which left only 19 playable rejected candidates, all now drawn. v3 adds outages: one or two requests to `get_order`,
-`update_order` or `get_operation_status` fail before admission, then a rejection after one to three ticks (36 candidates),
-or the outage alone or before a success (16). The reference agent plays all 52 cleanly. Delays stop at four ticks, so that
+`update_order` or `get_operation_status` fail with a transient error before any effect, then a rejection after one to three
+ticks (36 candidates),
+or the outage alone or before a success (16). The reference agent plays all 52 cleanly. v4 (2026-11-15, after comparison 2)
+adds a third stratum, `late`, judged like `rejected`: two failed requests to `get_order` or `update_order`, then a rejection
+after four ticks (4 candidates, none in an earlier stratum). The session retries a transient failure once within the same
+call, so two failures cost the agent one extra call; and every request advances the clock a tick, a failed one too (the v3
+text said such requests fail before admission; they are admitted and fail before any effect). So an agent that reads the
+order, upgrades and polls first sees the rejection on its seventh call, and an advice rule speaks on the eighth, the reserved
+final turn. A test plays a scripted polling agent through the model actor to check this; a one-request outage costs no call,
+and an outage on `get_operation_status` brings the rejection sooner. These schedules exist to test what a rule does when the
+evidence arrives late. `--per-late` sets how many the draw keeps (default 0), and `--per-other 0` now keeps none. Delays stop at four ticks, so that
 the turn budget measures the agent and not the wait. Each stratum is shuffled by a seed text made of the commit holding
 this code and the frozen rule's digest, so the order is fixed before the draw. The draw keeps the first four candidates
 per stratum that the reference agent plays cleanly, leaving out the cases of earlier draws. Nobody picks a case. The draw

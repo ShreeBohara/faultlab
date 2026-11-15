@@ -87,9 +87,21 @@ def rule_rows(rows: list[dict], cap: int | None) -> dict:
         "tasks": {str(k): v for k, v in sorted(Counter(row["task"] for row in rows).items())},
         "legacy": _legacy(rows),
         "model_calls": _calls(rows, cap),
+        "last_call_advice": _last_call_advice(rows, cap),
         "rule_silent": {"trials": len(quiet), "tasks": {str(k): v for k, v in sorted(Counter(row["task"] for row in quiet).items())},
                         "no_report": sum(1 for row in quiet if row["report"] != "DELIVERED")},
     }
+
+
+def _last_call_advice(rows: list[dict], cap: int | None) -> dict | None:
+    """Trials whose first advice came on the last allowed call (the reserved final turn), and how many of them carry a side
+    effect. Turns count the model actor's model calls. ``None`` for records written before trial rows named that turn
+    (2026-11-15) or without a call cap."""
+    if cap is None or not rows or any("first_advice_turn" not in row for row in rows):
+        return None
+    last = [row for row in rows if row["first_advice_turn"] == cap]
+    return {"trials": len(last), "side_effect_trials": sum(1 for row in last if side_effect(row)),
+            "blocked": sum(1 for row in last if row["blocked_proposals"])}
 
 
 def baseline_rows(rows: list[dict], cap: int | None) -> dict:

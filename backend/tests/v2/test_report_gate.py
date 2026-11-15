@@ -272,12 +272,14 @@ def test_an_advice_rule_shows_the_expected_label_before_the_report_and_never_blo
     assert "rule_advice" not in turns[0] and turns[-1]["rule_advice"][0]["one_of"] == ["NOT_REQUIRED"]
     row = summarize_trial(envelope, expected_class="rejected", target_rule="notification_label_after_rejection", arm="L")
     assert row["rule_acted"] and row["advice_turns"] == len(advice) and row["blocked_proposals"] == 0
+    assert row["first_advice_turn"] == advice[0]["turn"] == next(n for n, turn in enumerate(turns, 1) if "rule_advice" in turn)     # the turn it was first shown
     blocked = trial(worker, "dev-5", ModelActorAdapter(SlippingProvider(), PROVIDER_MODEL, rule_policy=POLICY), "trial-blocked")
     assert envelope.outcome.cost.model_calls == blocked.outcome.cost.model_calls - 1                  # no turn spent on a block
     ignored = trial(worker, "dev-5", ModelActorAdapter(SlippingProvider(), PROVIDER_MODEL, rule_policy=ADVISE), "trial-ignored")
     assert ignored.outcome.claims.mismatches == [TARGET]                                               # advice alone enforces nothing
     healthy = trial(worker, "dev-1", ModelActorAdapter(AdvisedProvider(), PROVIDER_MODEL, rule_policy=ADVISE), "trial-healthy")
     assert healthy.outcome.task == "COMPLETED" and not [s for s in rule_steps(healthy) if s["hook"] == "before_agent_turn"]
+    assert summarize_trial(healthy, expected_class="fault", target_rule="notification_label_after_rejection", arm="L")["first_advice_turn"] is None
 
 
 def test_the_claude_agent_sees_advice_with_the_evidence_and_the_gate_stays_a_backstop(worker):
