@@ -62,6 +62,23 @@ def _flaky(failures):
     return _primitive("F4", "send_confirmation", "notifications", {"failure_count": failures})
 
 
+def _outage(tool, failures):
+    """F4 on an orders tool: its first ``failures`` requests fail before admission, then it answers."""
+    return _primitive("F4", tool, "orders", {"failure_count": failures})
+
+
+def _delayed_at(ticks, ending, occurrence):
+    return _primitive("F2", "update_order", "orders", {"completion_delay_ticks": ticks, **ending}, occurrence)
+
+
+def all_faults_can_fire(primitives) -> bool:
+    """Whether every scheduled fault can fire in correct play. The kernel fires F1 (a lost reply) only on a write that committed
+    at once (``dispatch``), and F2 leaves the write it targets pending, so F1 and F2 on the same call never both fire: the
+    reference check rejected every such candidate (found 2026-11-15)."""
+    lost = {(p["target_tool"], p["occurrence"]) for p in primitives if p["kind"] == "F1"}
+    return not any((p["target_tool"], p["occurrence"]) in lost for p in primitives if p["kind"] == "F2")
+
+
 def _candidates(expected_class, schedules) -> list[dict]:
     return [{"fixture_id": fixture, "primitives": primitives, "expected_class": expected_class} for fixture, primitives in schedules]
 
@@ -69,7 +86,11 @@ def _candidates(expected_class, schedules) -> list[dict]:
 def case_space() -> dict[str, list[dict]]:
     """Every candidate schedule in a fixed order: the pack's fault grammar minus the six public cases. Delays stop at four
     ticks so that a trial's turn budget measures the agent and not the wait. The space grew on 2026-11-14 (v2): the first
-    30 candidates come first and unchanged, and the three earlier draws used only them."""
+    30 candidates come first and unchanged, and the three earlier draws used only them. v3 (2026-11-15): the 17 v2
+    candidates whose faults cannot all fire (a lost reply on the write F2 leaves pending, ``all_faults_can_fire``) are left
+    out, and outages are added: F4 on ``get_order``, ``update_order`` or ``get_operation_status`` for one or two requests,
+    with a rejection after one to three ticks (36) or alone or before a success (16). Earlier draws are reproduced by the code
+    at their own commits; their case files hold every case in full."""
     rejected = ([("standard-v1", [_delayed(t, _REJECT)]) for t in (1, 3, 4)]
                 + [("history-v1", [_delayed(t, _REJECT)]) for t in (1, 2, 3, 4)]
                 + [("history-v1", [_stale(b), _delayed(t, _REJECT)]) for b in (1, 2) for t in (1, 2, 3)])
@@ -88,9 +109,16 @@ def case_space() -> dict[str, list[dict]]:
                     + [("history-v1", [_stale(1), _delayed(t, _SUCCEED)]) for t in (2, 4)])
     unresolved_v2 = ([("history-v1", [_flaky(n)]) for n in (1, 2, 3)] + [("standard-v1", [_lost(2000), _flaky(1)])]
                      + [("history-v1", [_stale(2), _flaky(2)])])
-    return {"rejected": _candidates("rejected", rejected) + _candidates("rejected", rejected_v2),
-            "other": (_candidates("fault", completed) + _candidates("unresolved_or_completed", unresolved)
-                      + _candidates("fault", completed_v2) + _candidates("unresolved_or_completed", unresolved_v2))}
+    tools = ("get_order", "update_order", "get_operation_status")
+    rejected_v3 = [(fixture, [_outage(tool, n), _delayed_at(t, _REJECT, n + 1 if tool == "update_order" else 1)])
+                   for fixture in ("standard-v1", "history-v1") for n in (1, 2) for t in (1, 2, 3) for tool in tools]
+    completed_v3 = [(fixture, schedule) for fixture in ("standard-v1", "history-v1") for n in (1, 2) for schedule in (
+                    [_outage("get_order", n)], [_outage("update_order", n)], [_outage("get_operation_status", n), _delayed(2, _SUCCEED)],
+                    [_outage("update_order", n), _delayed_at(2, _SUCCEED, n + 1)])]
+    space = {"rejected": _candidates("rejected", rejected) + _candidates("rejected", rejected_v2) + _candidates("rejected", rejected_v3),
+             "other": (_candidates("fault", completed) + _candidates("unresolved_or_completed", unresolved)
+                       + _candidates("fault", completed_v2) + _candidates("unresolved_or_completed", unresolved_v2) + _candidates("fault", completed_v3))}
+    return {stratum: [c for c in group if all_faults_can_fire(c["primitives"])] for stratum, group in space.items()}
 
 
 def draw_order(seed_text: str, exclude: list[dict] | None = None) -> dict[str, list[dict]]:
@@ -233,6 +261,19 @@ class UnseenStudy(RepairStudy):
         }
 
 
+async def reference_check(case: dict, *, store: TrialStore, out_dir, label: str, referee=None, worlds_dir=None,
+                          pack_id: str = "orders.upgrade_then_confirm/v1") -> bool:
+    """Whether the reference agent plays a case cleanly: one offline trial, valid (completed, every scheduled fault fired),
+    with the expected outcome and no conformance finding or false belief."""
+    stratum = case["stratum"]
+    design = UnseenStudyDesign(pack_id=pack_id, pairs=1, caps=_REFERENCE_CAPS, **{f"{stratum}_cases": [case["case_id"]]})
+    study = UnseenStudy(store=store, design=design, adapter_factory=lambda _policy: load_adapter("reference-orders"), cases=[case],
+                        policy=None, out_dir=out_dir, referee=referee, worlds_dir=worlds_dir, name="unseen-draw")
+    stage = await study._stage(label, case["case_id"], 1, None, "B0")
+    row = stage["rows"][0] if stage["rows"] else None
+    return bool(row and row["valid"] and row["expected"] and not row["conformance"] and not row["false_beliefs"])
+
+
 async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out_dir, referee=None, worlds_dir=None,
                      pack_id: str = "orders.upgrade_then_confirm/v1", exclude: list[dict] | None = None, per_other: int | None = None) -> dict:
     """The draw: each stratum in seeded order, a candidate kept when the reference agent plays it cleanly, until the stratum is full."""
@@ -245,12 +286,8 @@ async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out
                 break
             tried[stratum] += 1
             case = named_case(candidate, stratum, taken + 1)
-            design = UnseenStudyDesign(pack_id=pack_id, pairs=1, caps=_REFERENCE_CAPS, **{f"{stratum}_cases": [case["case_id"]]})
-            study = UnseenStudy(store=store, design=design, adapter_factory=lambda _policy: load_adapter("reference-orders"), cases=[case],
-                                policy=None, out_dir=out_dir, referee=referee, worlds_dir=worlds_dir, name="unseen-draw")
-            stage = await study._stage(f"check-{stratum}-{tried[stratum]}", case["case_id"], 1, None, "B0")
-            row = stage["rows"][0] if stage["rows"] else None
-            if row and row["valid"] and row["expected"] and not row["conformance"] and not row["false_beliefs"]:
+            if await reference_check(case, store=store, out_dir=out_dir, label=f"check-{stratum}-{tried[stratum]}", referee=referee,
+                                     worlds_dir=worlds_dir, pack_id=pack_id):
                 kept.append(case)
                 taken += 1
         if taken < wanted:
@@ -258,4 +295,5 @@ async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out
     return {"schema": SCHEMA, "seed_sha256": sha256(seed_text.encode("utf-8")).hexdigest(), "cases": kept, "tried": tried}
 
 
-__all__ = ["SCHEMA", "UnseenStudy", "UnseenStudyDesign", "case_space", "draw_cases", "draw_order", "named_case", "pack_with_cases", "rejected_case"]
+__all__ = ["SCHEMA", "UnseenStudy", "UnseenStudyDesign", "all_faults_can_fire", "case_space", "draw_cases", "draw_order", "named_case", "pack_with_cases",
+           "reference_check", "rejected_case"]

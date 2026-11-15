@@ -11,7 +11,9 @@ from faultlab.core import Caps, content_hash
 from faultlab.lab import TrialStore
 from faultlab.packs import load_pack
 from faultlab.referee.legacy import LegacyOrdersReferee
-from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, case_space, draw_cases, draw_order, named_case, pack_with_cases, rejected_case
+from faultlab.research.unseen_study import (UnseenStudy, UnseenStudyDesign, all_faults_can_fire, case_space, draw_cases, draw_order, named_case,
+                                            pack_with_cases, reference_check, rejected_case)
+from faultlab.packs.orders.pack import _primitive
 from faultlab import __main__ as cli
 from test_report_gate import POLICY, WRONG_ON_SUCCESS, agent, run
 
@@ -48,14 +50,40 @@ def test_the_space_holds_no_public_case_and_its_classes_follow_the_faults():
     extended = pack_with_cases(PACK, cases)
     public = [signature(s) for s in PACK.scenarios]
     drawn = [signature(s) for s in extended.scenarios[len(PACK.scenarios):]]
-    assert len(space["rejected"]) == 32 and len(space["other"]) == 32 and len(drawn) == 64
+    assert len(space["rejected"]) == 55 and len(space["other"]) == 44 and len(drawn) == 99                  # v3: 13+6+36 and 17+11+16
     assert content_hash({"rejected": space["rejected"][:13], "other": space["other"][:17]}) == "c489068f7881162b7a59c1167d3b84a3e667845898822e74f42eabde93ee689e"   # v1 first, unchanged
     assert all(s not in public for s in drawn)
     assert all(a != b for i, a in enumerate(drawn) for b in drawn[i + 1:])
     terminal = lambda c: any(p["parameters"].get("terminal_status") == "FAILED" for p in c["primitives"])
     assert all(c["expected_class"] == "rejected" and terminal(c) for c in space["rejected"])
     assert not any(terminal(c) for c in space["other"]) and {c["expected_class"] for c in space["other"]} == {"fault", "unresolved_or_completed"}
-    assert all(c["expected_class"] == "unresolved_or_completed" for c in space["other"] if any(p["kind"] == "F4" for p in c["primitives"]))
+    flaky = lambda c: any(p["kind"] == "F4" and p["target_service"] == "notifications" for p in c["primitives"])
+    assert all(c["expected_class"] == ("unresolved_or_completed" if flaky(c) else "fault") for c in space["other"])
+    assert all(all_faults_can_fire(c["primitives"]) for group in space.values() for c in group)
+
+
+def test_a_lost_reply_cannot_share_its_call_with_a_delayed_completion():
+    lost, late = _primitive("F1", "update_order", "orders", {"response_delay_ms": 2000}), _primitive("F2", "update_order", "orders", {
+        "completion_delay_ticks": 1, "terminal_status": "FAILED", "failure_code": "UPGRADE_REJECTED"})
+    assert not all_faults_can_fire([lost, late]) and all_faults_can_fire([lost]) and all_faults_can_fire([late])
+    assert all_faults_can_fire([lost, {**late, "occurrence": 2}])
+    assert all_faults_can_fire([_primitive("F1", "send_confirmation", "notifications", {"response_delay_ms": 2000}), late])
+
+
+def test_the_reference_agent_plays_each_new_kind_of_outage_cleanly(tmp_path):
+    space = case_space()
+    kinds = {}
+    for stratum, group in space.items():
+        for candidate in group:
+            outage = [p for p in candidate["primitives"] if p["kind"] == "F4" and p["target_service"] == "orders"]
+            if outage:
+                kinds.setdefault((stratum, outage[0]["target_tool"], len(candidate["primitives"])), (stratum, candidate))
+    assert len(kinds) == 7                                       # rejected after an outage on each of 3 tools; 4 kinds without a rejection
+    with TrialStore(tmp_path / "check.sqlite3") as store:
+        for number, (stratum, candidate) in enumerate(kinds.values(), 1):
+            case = named_case(candidate, stratum, number)
+            assert run(reference_check(case, store=store, out_dir=tmp_path / "out", label=f"kind-{number}", referee=LegacyOrdersReferee(),
+                                       worlds_dir=tmp_path / "worlds")), candidate
 
 
 def test_the_order_depends_only_on_the_seed_text():
@@ -148,7 +176,7 @@ def test_a_rejected_case_is_judged_where_the_rule_acted_whether_or_not_another_f
 def test_a_later_draw_leaves_out_the_cases_of_an_earlier_one():
     spent = [named_case(c, "rejected", i + 1) for i, c in enumerate(case_space()["rejected"][:4])]
     order = draw_order("b", exclude=spent)
-    assert len(order["rejected"]) == 28 and len(order["other"]) == 32
+    assert len(order["rejected"]) == 51 and len(order["other"]) == 44
     assert not any((c["fixture_id"], c["primitives"]) == (s["fixture_id"], s["primitives"]) for c in order["rejected"] for s in spent)
 
 
