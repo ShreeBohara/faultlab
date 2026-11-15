@@ -1,0 +1,189 @@
+{
+  "amendment_10": {
+    "approved_by_owner": "2026-11-14",
+    "commit": "20722401323b1d9642d5f1ab63e07e9a004a881f",
+    "document": "docs/v2/UNSEEN_STUDY.md",
+    "makes_a_pass_harder": true,
+    "text": "a trial where the rule acted must also carry no legacy referee violation; every trial runs within the repair study's limits of 8 model calls, 18 HTTP attempts and 90 seconds (runs 1 and 2 allowed 12, 24 and 120)",
+    "why": "in run 2 two trials under the rule ended VIOLATION on the legacy C8 after nine model calls, and the gate did not read legacy findings"
+  },
+  "amendment_9": {
+    "approved_by_owner": "2026-11-08",
+    "relaxes_a_gate_after_a_failure": true,
+    "text": "a rejected case is judged where the rule acted, whether or not another scheduled fault fired"
+  },
+  "caps": {
+    "max_trials": 96,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 6.59,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $6.00"
+    },
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_usd": 0.034,
+    "study_usd": 3.27
+  },
+  "claim_scope": "new fault schedules of the same task, fixtures and fault types; not new tasks; a test of one rule with one Actor (Haiku 5.5 on the API); not an active policy",
+  "code": {
+    "effectsafe_rules_sha256": "3982567efa58e1fa82312a06b88f8b11c6457ebdd685a90b71e43e4cd14a8099",
+    "git_sha": "20722401323b1d9642d5f1ab63e07e9a004a881f",
+    "git_sha_at_launch": "1d3bf78abe2f9538ac8550dbddaad17f2dbb4c5c",
+    "model_actor_sha256": "f152994dc2d54c66e5d07d3287e489600023e9759b79e1ca3276d875e33d6af8",
+    "orders_pack_sha256": "5053b4d5f4f8808db0caba84d2ccc4102be0e72afc5818a8da370e305d0f4b0b",
+    "repair_study_sha256": "015af30f971940414b6d243b1453cba1e61fdcac736cb3e4356b21cf1f062f6f",
+    "rules_sha256": "dd0c4004ac9778573d39ddb28182376e24d77eee1d8ee891e21210e3d2f8f3c7",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "0a1050bbdfd0944c7b71f6cf6dcaf58f1232fcb6a116e1d4cf02b1669435a975",
+    "unseen_study_sha256": "186534ee447e41d991274e8e65c5a53075a14fcae2939405ad4dc6086ca58efb"
+  },
+  "decision_rule": "NOT_TRANSFERRED if any case fails (rejected: amendments 9 and 10; other: the validation rule of amendment 8); INCONCLUSIVE if none fails and the slip appeared in fewer than 6 of the 24 B0 trials of the rejected cases; TRANSFERRED otherwise; INCOMPLETE if a stage cannot run. The recorded decision is the result.",
+  "declared_at": "2026-11-14",
+  "design": {
+    "caps": {
+      "dollars": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "ticks": null,
+      "tokens": null,
+      "wall_seconds": 90.0
+    },
+    "gap_min": 6,
+    "other_cases": [
+      "unseen-o1",
+      "unseen-o2",
+      "unseen-o3",
+      "unseen-o4"
+    ],
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "pairs": 6,
+    "rejected_cases": [
+      "unseen-r1",
+      "unseen-r2",
+      "unseen-r3",
+      "unseen-r4"
+    ],
+    "rejected_rule": "where_acted_no_legacy",
+    "target_rule": "notification_label_after_rejection",
+    "validation_rule": "where_acted"
+  },
+  "design_digest": "40619061b648acb301374f8789405fa411213c5903924531f256aa78c5c29909",
+  "draw": {
+    "cases": 8,
+    "cases_file_sha256": "9249605ac01852fbe16a8c497d2f876ee761193ff3864bc2462effbf810ec40f",
+    "excluded": "the sixteen cases of unseen-study-1 and unseen-study-2",
+    "per_stratum": 4,
+    "sealed": "the case file and trial bundles stay outside the repository and are not opened by the agent; the record names cases by id only",
+    "seed_rule": "the commit holding the code and the frozen rule's digest",
+    "seed_text": "20722401323b1d9642d5f1ab63e07e9a004a881f|7585f57d613579d4145c045ee0b03cc4c02d80385e12b74b6c13094d99288bde",
+    "space": {
+      "other": 17,
+      "rejected": 13
+    },
+    "tried": {
+      "other": 4,
+      "rejected": 4
+    }
+  },
+  "expected_cost": "about $0.30 of API money (the second pilot measured $0.0029 per trial) and about 15 minutes",
+  "first_declaration_sha256": "a3519230d146f4f5f6601f53925818f52f8686525ded5a99cd702ecfb772bfb3",
+  "frozen_rule": {
+    "pilot_declaration_sha256": "879b77072d0a9d09a2bfcf53bf700b5987afe265d28e45f62dd1fd6149108875",
+    "policy": {
+      "rules": [
+        {
+          "hook": "before_final_report",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "require_label",
+              "operation": "upgrade",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        }
+      ],
+      "version": "rejected-upgrade-notification-not-required"
+    },
+    "policy_digest": "7585f57d613579d4145c045ee0b03cc4c02d80385e12b74b6c13094d99288bde",
+    "source": "artifacts/repair-study-api-pilot-2-2026-10-29",
+    "written_by": "the Sonnet 5.5 Mechanic of the second API pilot, shown one dev-5 trial; not changed since"
+  },
+  "incidents_before_launch": [
+    "2026-11-15T05:31:24Z: the first launch's preflight failed with ADAPTER_ERROR:RuntimeProviderError, so the study did not start and no case trial ran. A second preflight failed the same way, and one diagnostic call showed HTTP 401 AuthenticationError: the Anthropic API key in .env was rejected. The owner replaced the key the same evening; a model-list request then returned HTTP 200. Nothing was billed; the ledger booked three reservations ($0.0126). The first launch's files are in aborted-launch-2026-11-15T0531Z/ with a README.",
+    "2026-11-15T05:40:39Z: with the new key the preflight passed (dev-5, COMPLETED, $0.0021), but the launcher's billing guard matched '402' inside the random trial id in preflight.log, so the study was not started and no case trial ran. The guard now matches 402 only as a separate number, plus 'credit balance'. Files and the launcher as it ran are in aborted-launch-2026-11-15T0540Z/."
+  ],
+  "launcher_sha256": "b0778fb0a3cc63d7adcc1f050dd230de0915ba762f4f9435319c4ad505ab68a2",
+  "ledger_before": {
+    "bound_sum_usd": 4.1916,
+    "committed_usd": 0.5803,
+    "month": "2026-11",
+    "rows": 998
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "unseen-study-3-2026-11-14",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/bundles",
+    "logs": [
+      "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/preflight.log",
+      "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/run.log"
+    ],
+    "record": "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/unseen-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/trials.sqlite3"
+  },
+  "pre_registration": {
+    "commit": "20722401323b1d9642d5f1ab63e07e9a004a881f",
+    "document": "docs/v2/UNSEEN_STUDY.md",
+    "rule_and_method_committed_before_the_draw": true
+  },
+  "preflight": {
+    "on_failure": "the study is not started; the failure is written up",
+    "pass": "the trial's execution is COMPLETED and its measured dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor`, before the study, as in the second API pilot"
+  },
+  "previous_runs": [
+    {
+      "api_usd_real_money": 0.2898,
+      "decision": "NOT_TRANSFERRED",
+      "declaration_sha256": "76330a1554772e02fb97cf0061d3b24cea92d67fc4fa25472f01c6c7b781119a",
+      "name": "unseen-study-1-2026-11-08",
+      "why": "two rejected cases failed the candidate gate because one L trial each left a scheduled fault unfired"
+    },
+    {
+      "api_usd_real_money": 0.2757,
+      "decision": "TRANSFERRED (under amendment 9; not a clean pass)",
+      "declaration_sha256": "546784c7aa32c52bc3825922358b6793dc4d7c62b14caf4d6dabf3761cf17aff",
+      "name": "unseen-study-2-2026-11-08",
+      "why": "slip 22 of 24 to 0 of 24, but two L trials carried a legacy C8 violation that the gate did not read"
+    }
+  ],
+  "purpose": "The third unseen-case test of the same frozen rule, on a fresh draw, under amendments 9 and 10. Approved by the owner on 2026-11-14 ('go ahead with the one more test') in answer to 'one more test, with the step limit set back to 8 and the criteria also checking that limit'.",
+  "redeclared_at": "2026-11-14",
+  "roles": {
+    "actor": {
+      "adapter": "model-actor",
+      "channel": "Anthropic API (real money)",
+      "context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+      "model": "anthropic:claude-haiku-5-5"
+    },
+    "mechanic": "none: the rule arrives frozen"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "second_declaration_sha256": "fd13716aaea35ff075a01e839f71c1ffa13e56914617f76a4ff1c9e8407d29fc",
+  "stop_rules": [
+    "the study stops at the first stage that cannot run (admission refused, worker stopped, infrastructure): INCOMPLETE",
+    "the ledger refuses any call past the process cap",
+    "a billing message in the preflight stops the launch",
+    "one run per draw: no rerun and no change to the rule, the cases or the decision rule after a result"
+  ]
+}

@@ -1,0 +1,3 @@
+2026-11-15T05:31:24Z preflight start (monthly cap for this process: 6.57)
+2026-11-15T05:31:26Z preflight exit 0: FAIL {"execution": "INFRA_ERROR", "task": null, "calls": 1, "dollars": null}
+STOP preflight failed

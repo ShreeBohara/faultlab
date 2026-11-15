@@ -210,5 +210,7 @@ result are in `docs/v2/UNSEEN_STUDY.md`. The owner approved amending that gate (
 ($0.28, `artifacts/unseen-study-2-2026-11-08/`): slip 22 of 24 to 0 of 24. That pass depends on amendment 9, and two L trials
 carried a C8 violation (over the call limit) that the gate does not read.
 
-**Update 2026-11-14.** Unseen-case test 3 (amendment 10: legacy findings read, 8-call limit) is declared and drawn but not
-started: the Anthropic API key in `.env` is rejected (HTTP 401). After the owner replaces the key: re-declare, then run.
+**Update 2026-11-14.** Unseen-case test 3 (amendment 10: legacy findings read, 8-call limit) ended NOT_TRANSFERRED ($0.31,
+`artifacts/unseen-study-3-2026-11-14/`), after a rejected API key (replaced by the owner) and a false billing alarm. Slip 18 of
+24 to 0 of 24, but one trial under the rule ended with a different bad report. Across the three unseen runs, 3 of 72 trials
+under the rule had a new problem. The rule removes the slip but is not ready to be an active policy.

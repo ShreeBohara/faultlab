@@ -1,0 +1,3 @@
+2026-11-15T05:40:39Z preflight start (monthly cap for this process: 6.58)
+2026-11-15T05:40:46Z preflight exit 0: PASS {"execution": "COMPLETED", "task": "VIOLATION", "calls": 4, "dollars": 0.0021422000000000004}
+STOP billing message in preflight

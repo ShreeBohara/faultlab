@@ -1448,6 +1448,21 @@ no case trial ran; the draw is unused. Money: none billed (each call was refused
 three reservations conservatively, $0.0126 (November committed $0.5655 to 0.5781, rows 991 to 994).
 Next step: the owner replaces the key; then a new declaration recording this incident, and the run.
 
+### Ledger entry 2026-11-14: unseen-case test 3 (Anthropic API): NOT_TRANSFERRED
+
+Unseen-case test 3 ran after two stopped launches (a rejected API key, which the owner replaced, and a false billing alarm
+on a trial id containing "402"; the guard is fixed). The draw, the code and the decision rule did not change. Final declaration
+sha256 `c723e157…a2eb`; record, logs and all three declarations are in `artifacts/unseen-study-3-2026-11-14/`. Haiku 5.5 on
+the Anthropic API, amendments 9 and 10. Decision **NOT_TRANSFERRED**: in `unseen-r3` one trial under the rule ended
+`VIOLATION` (conformance `report_absent`, `report_absent_no_citations`; legacy C5, C6, C7) after a blocked report. Over 24 rejected-case trials per arm the slip
+appeared 18 times without the rule and 0 times with it; correct refusals 22 against 6; the rule never acted on the four other
+cases. Across the three unseen runs: slip 61 of 72 without the rule and 0 of 72 with it, and 3 of 72 trials under the rule had a
+new problem no no-rule trial had. The rule is not ready to be an active policy.
+
+Money: **$0.3081 of API money billed** for test 3 (study $0.3032, two passing preflights $0.0048), plus $0.0126 of
+reservations booked for the three calls refused with 401. November committed $0.5655 to 0.8862, rows 991 to
+1536. Declared bound $3.30 ($3.27 study, $0.034 preflight); project ledger $1,571.13 + $3.30 = $1,574.43 (bounds). 836 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

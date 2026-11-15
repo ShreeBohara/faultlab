@@ -1,0 +1,45 @@
+{
+  "attempts": {
+    "TERMINAL": 1
+  },
+  "batch_id": "batch-cd19060e71884696b4c2228de77b8364",
+  "executions": {
+    "INFRA_ERROR": 1
+  },
+  "plans": 1,
+  "spent": {
+    "measured": {
+      "dollars": 0.034,
+      "envelopes": 1,
+      "http_attempts": 0,
+      "input_tokens": 0,
+      "model_calls": 1,
+      "output_tokens": 0
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "store": "/Users/shree/FaultLab_Runs/2026-11-14/unseen-study-3/preflight-retry.sqlite3",
+  "tasks": {
+    "None": 1
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-f3b1bec3da7b402a999deb19ef2012bc",
+      "claims": [
+        "conformance:report_absent",
+        "conformance:report_absent_no_citations"
+      ],
+      "execution": "INFRA_ERROR",
+      "faults_triggered": false,
+      "reason": "ADAPTER_ERROR:RuntimeProviderError",
+      "scenario_id": "dev-5",
+      "task": null,
+      "violations": []
+    }
+  ]
+}
