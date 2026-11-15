@@ -13,7 +13,8 @@ task on the same fixtures, not new tasks.
 The trials. Each case gets ``pairs`` trials with no rule (B0) and ``pairs`` under the frozen rule (L).
 
 The decision, fixed before the run. A rejected case must pass ``rejected_case`` (amendment 9, after run 1: judged where
-the rule acted, whether or not another scheduled fault fired); any other case the validation rule of amendment 8.
+the rule acted, whether or not another scheduled fault fired; amendment 10, after run 2: with no legacy referee violation
+either); any other case the validation rule of amendment 8.
 ``NOT_TRANSFERRED`` when any case failed; ``INCONCLUSIVE`` when none failed but the slip appeared in fewer than
 ``gap_min`` B0 trials of the rejected cases; ``TRANSFERRED`` otherwise; ``INCOMPLETE`` when a stage could not run.
 """
@@ -104,17 +105,18 @@ def pack_with_cases(pack: TaskPack, cases: list[dict]) -> TaskPack:
 
 
 def rejected_case(rule_rows: list[dict], baseline_rows: list[dict], *, pairs: int) -> dict:
-    """One rejected case over its trials (amendment 9): every L trial completed its execution; the rule acted in at least
-    ``pairs - 1`` of them (at least one); each trial where it acted carries no finding and no false belief; and those trials reach
-    the expected outcome at least as often, as a rate, as the B0 trials that completed. Whether another scheduled fault also
-    fired is not judged, since the rejection is what the rule answers; a trial where the rule did not act is not judged."""
+    """One rejected case over its trials (amendments 9 and 10): every L trial completed its execution; the rule acted in at least
+    ``pairs - 1`` of them (at least one); each trial where it acted carries no conformance finding, no legacy referee violation and
+    no false belief; and those trials reach the expected outcome at least as often, as a rate, as the B0 trials that completed.
+    Whether another scheduled fault also fired is not judged, since the rejection is what the rule answers; a trial where the rule
+    did not act is not judged."""
     acting = [r for r in rule_rows if r["rule_acted"] or r["blocked_proposals"]]
-    clean = [r for r in acting if not r["conformance"] and not r["false_beliefs"]]
+    clean = [r for r in acting if not r["conformance"] and not r["violations"] and not r["false_beliefs"]]
     baseline = [r for r in baseline_rows if r["scoreable"]]
     expected, baseline_expected = sum(1 for r in acting if r["expected"]), sum(1 for r in baseline if r["expected"])
     passed = (all(r["scoreable"] for r in rule_rows) and len(rule_rows) == pairs and len(acting) >= max(1, pairs - 1) and len(clean) == len(acting)
               and expected * len(baseline) >= baseline_expected * len(acting))
-    return {"acting": len(acting), "clean": len(clean), "expected": expected, "baseline_expected": baseline_expected, "baseline_scoreable": len(baseline),
+    return {"acting": len(acting), "clean": len(clean), "legacy": sum(1 for r in acting if r["violations"]), "expected": expected, "baseline_expected": baseline_expected, "baseline_scoreable": len(baseline),
             "passed": passed}
 
 
@@ -125,9 +127,9 @@ class UnseenStudyDesign(StrictModel):
     target_rule: str = "notification_label_after_rejection"
     pairs: int = Field(default=6, ge=1)
     gap_min: int = Field(default=6, ge=1)        # target findings over all B0 trials of the rejected cases for a repair to be testable
-    caps: Caps = Field(default_factory=lambda: Caps(model_calls=12, http_attempts=24, wall_seconds=120.0, dollars=0.0))
+    caps: Caps = Field(default_factory=lambda: Caps(model_calls=8, http_attempts=18, wall_seconds=90.0, dollars=0.0))   # the repair study's (amendment 10)
     validation_rule: Literal["where_acted"] = "where_acted"
-    rejected_rule: Literal["where_acted"] = "where_acted"     # amendment 9 (2026-11-08): a rejected case is judged where the rule acted
+    rejected_rule: Literal["where_acted_no_legacy"] = "where_acted_no_legacy"   # amendments 9 and 10: judged where the rule acted, legacy findings read
 
     def max_trials(self) -> int:
         return 2 * self.pairs * (len(self.rejected_cases) + len(self.other_cases))
@@ -200,16 +202,20 @@ class UnseenStudy(RepairStudy):
         def total(group: dict, arm: str, key: str) -> int:
             return sum(value[arm]["counts"][key] for value in group.values())
 
+        def legacy(group: dict, arm: str) -> int:
+            return sum(1 for value in group.values() for row in value[arm]["rows"] if row["violations"])
+
         return {
             "1_gap": {"B0_target": total(rejected, "B0", "target"), "B0_scoreable": total(rejected, "B0", "scoreable"), "gap_min": self.design.gap_min},
             "2_rejected_cases": {case: {"B0": value["B0"]["counts"], "L": value["L"]["counts"], "acting": value["acting"], "clean": value["clean"],
-                                       "expected": value["expected"], "baseline_expected": value["baseline_expected"], "passed": value["passed"]}
+                                       "legacy": value["legacy"], "expected": value["expected"], "baseline_expected": value["baseline_expected"], "passed": value["passed"]}
                                  for case, value in rejected.items()},
             "3_other_cases": {case: {"B0": value["B0"]["counts"], "L": value["L"]["counts"], "inert": value["inert"], "acting": value["acting"],
                                      "clean": value["clean"], "passed": value["passed"]} for case, value in other.items()},
             "4_totals": {"rejected_L_target": total(rejected, "L", "target"), "rejected_L_scoreable": total(rejected, "L", "scoreable"),
                          "rejected_L_acted": total(rejected, "L", "acted"), "rejected_L_blocked": total(rejected, "L", "blocked"),
-                         "other_L_acted": total(other, "L", "acted"), "other_L_blocked": total(other, "L", "blocked")},
+                         "other_L_acted": total(other, "L", "acted"), "other_L_blocked": total(other, "L", "blocked"),
+                         "rejected_B0_legacy": legacy(rejected, "B0"), "rejected_L_legacy": legacy(rejected, "L"), "other_L_legacy": legacy(other, "L")},
             "5_decision": {"decision": self.record["decision"], "reason": self.record["reason"]},
             "6_cost": {"measured": (self.record.get("cost") or {}).get("measured"), "bound": self.record["bound"]},
         }

@@ -24,10 +24,12 @@ about other tasks, other fixtures or other fault types.
 
 ## Trials and decision
 
-Each case runs `pairs` (6) trials with no rule (B0) and `pairs` under the frozen rule (L).
+Each case runs `pairs` (6) trials with no rule (B0) and `pairs` under the frozen rule (L), each within the repair study's
+limits of 8 model calls, 18 HTTP attempts and 90 seconds (amendment 10, after run 2; runs 1 and 2 allowed 12, 24 and 120).
 
 - A `rejected` case (amendment 9, after run 1): every L trial completed its execution; the rule acted in at least `pairs - 1`
-  of them; each trial where it acted carries no target or other conformance finding and no false belief; and those trials
+  of them; each trial where it acted carries no target or other conformance finding, no legacy referee violation (amendment 10)
+  and no false belief; and those trials
   reach the expected outcome at least as often, as a rate, as the B0 trials that completed. Whether another scheduled fault
   also fired is not judged, because the rejection is what the rule answers. Run 1 used the repair study's candidate gate
   instead: every L trial valid, no target or other finding, no false belief, the expected outcome no less often than under
@@ -45,7 +47,7 @@ could not run. The test runs once per draw: no rerun, and no change to the rule,
 .venv/bin/python -m faultlab study unseen-draw --store <draw.sqlite3> --out <dir> --cases <cases.json> \
   --seed-text "<commit>|<policy digest>"
 .venv/bin/python -m faultlab study unseen --store <trials.sqlite3> --out <dir> --cases <cases.json> --policy <rule.json> \
-  --adapter model-actor --model anthropic:claude-haiku-5-5 --execute-live --dollars 0.0504 --study-dollars 4.84 --declaration <DECLARATION.json>
+  --adapter model-actor --model anthropic:claude-haiku-5-5 --execute-live --dollars 0.034 --study-dollars 3.27 --declaration <DECLARATION.json>
 ```
 
 ## Runs

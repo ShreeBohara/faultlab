@@ -118,7 +118,8 @@ def test_without_the_slip_to_repair_the_test_is_inconclusive(tmp_path):
 
 
 def row(**overrides):
-    return {"scoreable": True, "valid": True, "rule_acted": True, "blocked_proposals": 0, "conformance": [], "false_beliefs": [], "expected": True, **overrides}
+    return {"scoreable": True, "valid": True, "rule_acted": True, "blocked_proposals": 0, "conformance": [], "violations": [], "false_beliefs": [], "expected": True,
+            **overrides}
 
 
 def test_a_rejected_case_is_judged_where_the_rule_acted_whether_or_not_another_fault_fired():
@@ -131,6 +132,8 @@ def test_a_rejected_case_is_judged_where_the_rule_acted_whether_or_not_another_f
     assert not rejected_case([row(scoreable=False)] + [row()] * 5, slips, pairs=6)["passed"]                            # a trial that did not complete still fails it
     assert not rejected_case([row(conformance=["target"])] + [row()] * 5, slips, pairs=6)["passed"]
     assert not rejected_case([row(false_beliefs=["b"])] + [row()] * 5, slips, pairs=6)["passed"]
+    assert not rejected_case([row(violations=["C8"])] + [row()] * 5, slips, pairs=6)["passed"]                          # a legacy finding where it acted (amendment 10)
+    assert rejected_case([row(rule_acted=False, violations=["C8"])] + [row()] * 5, slips, pairs=6)["passed"]           # not judged where it did not act
     assert not rejected_case([row(expected=False)] + [row()] * 5, clean, pairs=6)["passed"]                             # below the no-rule rate of the expected outcome
     assert rejected_case([row(expected=False)] + [row()] * 5, slips, pairs=6)["passed"]
     assert not rejected_case([row()] * 5, slips, pairs=6)["passed"]                                                     # a trial is missing
@@ -145,6 +148,8 @@ def test_a_later_draw_leaves_out_the_cases_of_an_earlier_one():
 
 
 def test_a_study_that_could_cost_more_than_declared_is_refused(tmp_path):
+    caps = UnseenStudyDesign().caps
+    assert (caps.model_calls, caps.http_attempts, caps.wall_seconds) == (8, 18, 90.0)                                    # the repair study's limits
     with pytest.raises(ValueError, match="exceeds the declared study cap"):
         study(tmp_path, slipping, POLICY, caps=Caps(model_calls=8, http_attempts=18, ticks=20, wall_seconds=30, dollars=60.0))
 
