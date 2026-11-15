@@ -1,0 +1,398 @@
+{
+ "root": "artifacts",
+ "schema": "faultlab-study-index/v1",
+ "studies": [
+  {
+   "claim": "Unseen-case comparison: each study's own decision is its claim. Not an active policy.",
+   "date": "2026-11-15",
+   "decisions": [
+    {
+     "arm": "E",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-sonnet-5-5",
+     "presentation": "expectation"
+    },
+    {
+     "arm": "Q",
+     "decision": "TRANSFERRED",
+     "model": "anthropic:claude-sonnet-5-5",
+     "presentation": "requirement"
+    }
+   ],
+   "declaration": {
+    "sha256": "1e65abff8f44ccc84e679332ca5e0749d9f106ad14cd643cb03aa20350994e85",
+    "verified": true
+   },
+   "dollars": 11.223806,
+   "id": "unseen-comparison-4-2026-11-15",
+   "kind": "unseen_comparison",
+   "problems": [],
+   "question": "With Sonnet 5.5 as the Actor, on new schedules of the same task: (1) does the report slip appear without the rule, and does the frozen L3 rule remove it with no failed case (each study's decision)? (2) Does showing the rule's advice as the report gate's requirement (Q) still leave fewer trials with a block than showing it as an expectation (E)?",
+   "started_at": "2026-11-15T16:17:41.502171+00:00",
+   "title": "Unseen comparison 4"
+  },
+  {
+   "claim": "Unseen-case comparison: each study's own decision is its claim. Not an active policy.",
+   "date": "2026-11-15",
+   "decisions": [
+    {
+     "arm": "E",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": "expectation"
+    },
+    {
+     "arm": "Q",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": "requirement"
+    }
+   ],
+   "declaration": {
+    "sha256": "8a6e6159e549aef9ecb76c7ea3315f569483be5a7c0c5bed615c4e20cbada776",
+    "verified": true
+   },
+   "dollars": 1.854411,
+   "id": "unseen-comparison-3-2026-11-15",
+   "kind": "unseen_comparison",
+   "problems": [],
+   "question": "On new schedules whose rejection arrives late (case space v4's late stratum, where an agent that reads the order, upgrades and polls first sees the rule's advice on its eighth and last allowed call), does showing the L3 rule's advice as the report gate's requirement with the final-turn note (Q) leave fewer side-effect trials than showing it as an expectation (E)?",
+   "started_at": "2026-11-15T11:17:14.062263+00:00",
+   "title": "Unseen comparison 3"
+  },
+  {
+   "claim": "Unseen-case comparison: each study's own decision is its claim. Not an active policy.",
+   "date": "2026-11-15",
+   "decisions": [
+    {
+     "arm": "E",
+     "decision": "TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": "expectation"
+    },
+    {
+     "arm": "Q",
+     "decision": "TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": "requirement"
+    }
+   ],
+   "declaration": {
+    "sha256": "591fd65c5466226e864912da1409519fef6db5df1c84362d553c5e805290b861",
+    "verified": true
+   },
+   "dollars": 2.465002,
+   "id": "unseen-comparison-2-2026-11-15",
+   "kind": "unseen_comparison",
+   "problems": [],
+   "question": "On new rejected-upgrade schedules, does showing the L3 rule's advice as the report gate's requirement (Q) leave fewer trials with a block and fewer side effects than showing it as an expectation (E), while still removing the slip?",
+   "started_at": "2026-11-15T08:33:32.027458+00:00",
+   "title": "Unseen comparison 2"
+  },
+  {
+   "claim": "Development check on a public case: it decides whether an unseen-case test is worth running.",
+   "date": "2026-11-15",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "PROCEED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "2a2e9dfe4671547df3d52354fa324d19967eefe2b7665fb7988e18db8b9357fc",
+    "verified": true
+   },
+   "dollars": 0.070464,
+   "id": "advice-presentation-dev-1-2026-11-15",
+   "kind": "development_check",
+   "problems": [],
+   "question": "On dev-5, the development case the rule was built from, does showing the L3 rule's advice as the report gate's requirement (Q) cut the trials where the agent still proposes a report the gate refuses, compared with the advice shown as an expectation (E)?",
+   "started_at": null,
+   "title": "Advice presentation dev 1"
+  },
+  {
+   "claim": "Development check on a public case: it decides whether an unseen-case test is worth running.",
+   "date": "2026-11-15",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "INCONCLUSIVE",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "11f0b4c28e60e3cd3b3fbaf7fe5259906ca71653eec19f1d9a5a5be825161898",
+    "verified": true
+   },
+   "dollars": 0.124695,
+   "id": "advice-final-turn-dev-2-2026-11-15",
+   "kind": "development_check",
+   "problems": [],
+   "question": "On dev-5 with the turn budget cut from 8 to 5 model calls, so that the L3 rule's advice usually first appears on the reserved final turn, does showing it as the report gate's requirement with the final-turn note (Q) leave fewer side-effect trials than showing it as an expectation (E)?",
+   "started_at": null,
+   "title": "Advice final turn dev 2"
+  },
+  {
+   "claim": "Unseen-case comparison: each study's own decision is its claim. Not an active policy.",
+   "date": "2026-11-14",
+   "decisions": [
+    {
+     "arm": "R",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    },
+    {
+     "arm": "L3",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "ccf9a075a2b62e7f8138167173195b74ecb814864e90ae4069f6ede4face4245",
+    "verified": true
+   },
+   "dollars": 1.680454,
+   "id": "unseen-comparison-1-2026-11-14",
+   "kind": "unseen_comparison",
+   "problems": [],
+   "question": "Does the rule the Mechanic wrote with advice available (L3: advise_label before each turn plus require_label at the report gate) remove the slip on new rejected-upgrade schedules with fewer blocks and fewer side effects than the rule it wrote with blocks only (R)?",
+   "started_at": "2026-11-15T06:30:25.933914+00:00",
+   "title": "Unseen comparison 1"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-11-14",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "REPAIRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "c9d801ac9e9cee6faac8318462091416cf1f3f8713feb2b5559bf2068f3cb2ac",
+    "verified": true
+   },
+   "dollars": 0.234904,
+   "id": "repair-study-v3-2026-11-14",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "Given rule language v2 (a before_agent_turn hook whose advise_label step shows the expected label before the report, and the documented turn cost of a block) and amendment 11 (legacy referee violations count as findings in both gates), does the Mechanic propose a repair that qualifies on dev-5 and passes validation on the other public cases, and which hooks does its proposal use?",
+   "started_at": "2026-11-15T06:16:42.675927+00:00",
+   "title": "Repair study v3"
+  },
+  {
+   "claim": "Unseen-case result on new schedules of the same task, fixtures and fault types. Not an active policy.",
+   "date": "2026-11-14",
+   "decisions": [
+    {
+     "arm": "study",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "c723e15775070c91640d4457d280d5b92b9e84d972893520db10ce37bfb0a2eb",
+    "verified": true
+   },
+   "dollars": 0.303217,
+   "id": "unseen-study-3-2026-11-14",
+   "kind": "unseen_study",
+   "problems": [],
+   "question": "The third unseen-case test of the same frozen rule, on a fresh draw, under amendments 9 and 10. Approved by the owner on 2026-11-14 ('go ahead with the one more test') in answer to 'one more test, with the step limit set back to 8 and the criteria also checking that limit'.",
+   "started_at": "2026-11-15T05:42:01.664880+00:00",
+   "title": "Unseen study 3"
+  },
+  {
+   "claim": "Unseen-case result on new schedules of the same task, fixtures and fault types. Not an active policy.",
+   "date": "2026-11-08",
+   "decisions": [
+    {
+     "arm": "study",
+     "decision": "TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "546784c7aa32c52bc3825922358b6793dc4d7c62b14caf4d6dabf3761cf17aff",
+    "verified": true
+   },
+   "dollars": 0.273043,
+   "id": "unseen-study-2-2026-11-08",
+   "kind": "unseen_study",
+   "problems": [],
+   "question": "The second unseen-case test of the same frozen rule, on a fresh draw, under amendment 9. Approved by the owner on 2026-11-08 ('Yeah, please go ahead with your recommendation, and whatever you think is right, just go ahead and do it') in answer to 'a re-test with corrected criteria on a fresh set of cases'; run the same night inside the Claude plan usage the owner allowed (stop at 95% of the weekly limit, nothing after the morning reset).",
+   "started_at": "2026-11-09T06:52:14.270168+00:00",
+   "title": "Unseen study 2"
+  },
+  {
+   "claim": "Unseen-case result on new schedules of the same task, fixtures and fault types. Not an active policy.",
+   "date": "2026-11-08",
+   "decisions": [
+    {
+     "arm": "study",
+     "decision": "NOT_TRANSFERRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "76330a1554772e02fb97cf0061d3b24cea92d67fc4fa25472f01c6c7b781119a",
+    "verified": true
+   },
+   "dollars": 0.287093,
+   "id": "unseen-study-1-2026-11-08",
+   "kind": "unseen_study",
+   "problems": [],
+   "question": "The first unseen-case test of the rule frozen by the second API pilot. Chosen by the agent under the owner's instruction of 2026-11-08 ('Okay, go ahead with whatever you think is the best'), run the same night inside the Claude plan usage the owner allowed (stop at 95% of the weekly limit).",
+   "started_at": "2026-11-09T05:20:16.666452+00:00",
+   "title": "Unseen study 1"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-29",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "REPAIRED",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "879b77072d0a9d09a2bfcf53bf700b5987afe265d28e45f62dd1fd6149108875",
+    "verified": true
+   },
+   "dollars": 0.233367,
+   "id": "repair-study-api-pilot-2-2026-10-29",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "The second API pilot of the repair study, approved by the owner on 2026-10-29 ('yeah please go ahead') in answer to 'a second API pilot under amendment 8, otherwise identical': Haiku 5.5 as Actor on the Anthropic API through the model-actor adapter, Sonnet 5.5 as Mechanic on Claude Code (the subscription), six pairs, the validation rule of amendment 8; everything else as the first API pilot.",
+   "started_at": "2026-10-29T11:43:44.361281+00:00",
+   "title": "Repair study API pilot 2"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-28",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "NO_CHANGE",
+     "model": "anthropic:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "450bf8c95e31562ea19a19e7b678543d0080b3e69227fb830f9a86d174bef971",
+    "verified": true
+   },
+   "dollars": 0.454846,
+   "id": "repair-study-api-pilot-2026-10-28",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "The declared API pilot of the repair study (design note build plan step 5), approved by the owner on 2026-10-28 ('okay go ahead'): Haiku 5.5 as Actor on the Anthropic API through the model-actor adapter (the legacy reference Actor's prompt, the Actor of phase B, where Haiku slipped on dev-5 through C5 in 12 of 24 trials), Sonnet 5.5 as Mechanic on Claude Code (the subscription), the design frozen at 6e179d0, six pairs.",
+   "started_at": "2026-10-29T06:07:32.708700+00:00",
+   "title": "Repair study API pilot"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-28",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "REPAIRED",
+     "model": "claude-code:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "3b8901664a50cd01fa4828dc916695635b421dee6786fa59c4d83a801976abd7",
+    "verified": true
+   },
+   "dollars": 0.155814,
+   "id": "repair-study-confirm-2026-10-28",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "Confirmatory replication of repair-study smoke 3 (REPAIRED) under the design frozen at 6e179d0, changing nothing but the pair count from 3 to 6, declared before the run. Approved by the owner on 2026-10-28 ('okay go ahead'). Not the API pilot, which follows it under its own declaration.",
+   "started_at": "2026-10-29T05:53:58.378817+00:00",
+   "title": "Repair study confirm"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-26",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "REPAIRED",
+     "model": "claude-code:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "a0a592481062efe9dffade8feba8ad7cf022048c2a44b5df77dc9e5eca6a6e52",
+    "verified": true
+   },
+   "dollars": 0.089681,
+   "id": "repair-study-smoke-3-2026-10-26",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "Third declared smoke of the repair study, same Actor, Mechanic, channel and parameters as smokes 1 and 2, with amendments 3 to 6 pre-registered after smoke 2 (design note, build record). Amendment 7 (more pairs) is deliberately not applied: the smoke stays comparable at 3 pairs; power is the pilot's budget question. Not the declared API pilot.",
+   "started_at": "2026-10-27T01:27:59.086160+00:00",
+   "title": "Repair study smoke 3"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-26",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "NO_CHANGE",
+     "model": "claude-code:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "0e18e595882c026bdbef3e64ca1ff61d186e7b3f6ba892d0aff215d3e539968f",
+    "verified": true
+   },
+   "dollars": 0.107363,
+   "id": "repair-study-smoke-2-2026-10-26",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "Second declared smoke of the repair study, same Actor, Mechanic, channel and parameters as smoke 1, with the two amendments pre-registered after smoke 1: (1) the counterexample view carries the pack's public report schema (view v2), the redaction unchanged; (2) the candidate stage requires the expected outcome under L no less often than under B0 instead of 3 of 3. Not the declared API pilot.",
+   "started_at": "2026-10-27T01:12:39.700497+00:00",
+   "title": "Repair study smoke 2"
+  },
+  {
+   "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+   "date": "2026-10-26",
+   "decisions": [
+    {
+     "arm": null,
+     "decision": "NO_CHANGE",
+     "model": "claude-code:claude-haiku-5-5",
+     "presentation": null
+    }
+   ],
+   "declaration": {
+    "sha256": "e85176212f4723a63dadc316b388a8fb1d7b703ba3ff0089faa2a42ed918a1db",
+    "verified": true
+   },
+   "dollars": 0.041182,
+   "id": "repair-study-smoke-2026-10-26",
+   "kind": "repair_study",
+   "problems": [],
+   "question": "Declared smoke of the repair study (docs/VIOLATION_GAP_DESIGN_2026-10-25.md option B, build plan step 4): a real Actor and a real Mechanic through the subscription channel, with the design note's pilot parameters. It is the first live run of the study, not the declared API pilot (step 5), which is a separate decision.",
+   "started_at": "2026-10-27T01:04:35.741504+00:00",
+   "title": "Repair study smoke"
+  }
+ ]
+}

@@ -111,6 +111,8 @@ Results on 2026-09-29:
   start a campaign.
 - **Or from a second terminal:** `./scripts/run-demo.sh --mode baseline --wait` runs one offline
   reference attempt and prints the result.
+- **See the research results:** open http://127.0.0.1:5173/#/studies (or **Study results** in the header). It lists
+  every saved study in `artifacts/` with its declared question, decision and read-outs. Read-only; no provider call.
 - **To stop:** press Ctrl+C in the first terminal. That stops all three services.
 
 [Local operation](local-operation.md) covers archives, recovery and running services one at a time.

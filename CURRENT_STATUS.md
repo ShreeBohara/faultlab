@@ -1570,6 +1570,24 @@ process cap (committed + $15.00 = $22.33). November committed $7.3268 to 18.7631
 $56.45 each and $2.688 for the preflight, reservations at Sonnet's worst-case rates; the process cap bound the run, so project
 ledger $1,637.96 + $15.00 = $1,652.96 (bounds). 2,141 s.
 
+### 2026-11-15: product, the dashboard's Study results page ($0)
+
+At the owner's choice ("go ahead with the product work"), the dashboard gained a read-only **Study results** page
+(`#/studies`, linked from the header). It lists the 16 saved studies in `artifacts/` (4 unseen-case comparisons, 3 unseen-case
+studies, 2 development checks, 7 repair studies), and for each shows the declared question and scope, whether the declaration
+matches its published sha256, each record's decision and reason, the `faultlab study compare` read-outs (rejected cases with
+and without the rule, case by case, the declared comparison), repair proposals and validation, measured money and links to the
+saved records. Each kind carries its claim label (development qualification, unseen-case result, never an active policy).
+Pieces: `faultlab/research/archive.py` (offline reader; published record files only, never a case file, trial store or
+bundle, no path outside its root), `backend/app/studies.py` (`GET /api/studies`, `/api/studies/{id}`,
+`/api/studies/{id}/files/{name}`; `FAULTLAB_STUDIES_DIR`, default `artifacts/`), `frontend/src/studies.ts` (strict
+validators) and `frontend/src/components/StudiesScreen.tsx`; `faultlab study compare` now also reads run 1's older case
+records. Checks: 24 new backend tests (including a subprocess that runs the app the way the server does, which caught an
+import that failed only outside pytest, and links out of the root), 8 new frontend tests on real API answers; full offline
+backend suite 2,620 passed, 1 skipped (20 min; the last link-out test was added after it started and passes on its own), frontend
+381 passed and the build; checked by hand in the browser against the real backend (dark and light themes). No provider call,
+no money.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

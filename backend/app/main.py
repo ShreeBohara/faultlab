@@ -102,6 +102,8 @@ def create_app(*, settings=None, coordinator=None, allowed_hosts=None):
 
     from app.lab.api import create_router
     app.include_router(create_router(get_coordinator, get_settings=get_settings))
+    from app.studies import create_studies_router
+    app.include_router(create_studies_router(get_settings))
     app.add_middleware(LocalHostGuard, allowed=configured_hosts(allowed_hosts))
     return app
 

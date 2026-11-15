@@ -68,6 +68,16 @@ could not run. The test runs once per draw: no rerun, and no change to the rule,
   --adapter model-actor --model anthropic:claude-haiku-5-5 --execute-live --dollars 0.034 --study-dollars 3.27 --declaration <DECLARATION.json>
 ```
 
+## Browsing the results
+
+The dashboard's **Study results** page (`#/studies`, linked from the header) lists every study folder under
+`artifacts/` (or `FAULTLAB_STUDIES_DIR`): unseen-case comparisons and studies, repair studies and development checks. For
+each it shows the declared question and scope, whether the declaration still matches its published sha256, each record's
+decision with its reason, the read-outs of `faultlab study compare` (rejected cases with and without the rule, case by
+case, the declared comparison), the measured money and links to the saved record files. The backend reads the published
+record files only (`faultlab/research/archive.py` through `GET /api/studies`); it never opens a case file, trial store or
+bundle, so a sealed draw stays sealed, and it calls no provider.
+
 ## Runs
 
 **Run 1, 2026-11-08** (Anthropic API, $0.2898 with the preflight; Haiku 5.5 through the model actor; record and logs in

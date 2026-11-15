@@ -251,3 +251,6 @@ NOT_TRANSFERRED on one lost report after advice that first came on the last call
 rule (Haiku 81% on comparison 2's draw) and in none with it, reported "unresolved" far more often than Haiku, and had no blocked
 report under either presentation. Running another model needs `FAULTLAB_ACTOR_MODEL` and `--model` set alike (the adapter refuses
 a reply from a different model) and a per-trial dollar bound at that model's rates (Sonnet: $0.084 a call, $0.672 a trial).
+The dashboard now has a read-only **Study results** page (`#/studies`) over every study folder in `artifacts/`
+(`faultlab/research/archive.py`, `GET /api/studies`); a new study shows up there once its declaration and records are
+published in `artifacts/<name>/` the way comparisons 1 to 4 were.

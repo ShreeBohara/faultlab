@@ -1,0 +1,368 @@
+{
+ "arms": [],
+ "claim": "Development qualification on the public cases. Not an unseen-case result and not an active policy.",
+ "comparison": null,
+ "date": "2026-11-14",
+ "declaration": {
+  "claim_scope": "a development qualification on the public split for one Actor (Haiku 5.5 on the API) and one Mechanic (Sonnet 5.5); not an unseen-case result, not an active policy",
+  "decision_rule": "the study's own decision (REPAIRED, NO_CHANGE or INCOMPLETE) under docs/v2/REPAIR_STUDY.md at this commit (amendments 1 to 8 and 11); nothing read after the run changes it",
+  "declared_at": "2026-11-14",
+  "expected_cost": "about $0.25 to $0.50 of API money and 12 to 25 minutes",
+  "name": "repair-study-v3-2026-11-14",
+  "purpose": "Repair study v3, chosen by the agent under the owner's instruction of 2026-11-14 ('Yeah, please go ahead. We have lots of time and money. We want to make this project the best. If you want to add more things, add more code, do more tests, and do more verification, just do it.'), after three unseen-case tests found that the frozen require_label rule removes the slip but its block sometimes costs the agent its last turn.",
+  "question": "Given rule language v2 (a before_agent_turn hook whose advise_label step shows the expected label before the report, and the documented turn cost of a block) and amendment 11 (legacy referee violations count as findings in both gates), does the Mechanic propose a repair that qualifies on dev-5 and passes validation on the other public cases, and which hooks does its proposal use?",
+  "readouts": [
+   "1 gap: target findings among valid source controls; healthy validity and findings",
+   "2 gate",
+   "3 proposals: validity, policy, attempts, turns, and the hooks each uses",
+   "4 candidate: L and B0 counts including legacy violations, advice turns and blocked proposals",
+   "5 validation: per case inert or acting, clean acting trials, both arms' counts",
+   "6 decision",
+   "7 cost: Actor dollars and tokens, Mechanic tokens and API-equivalent dollars"
+  ],
+  "schema": "faultlab-run-declaration/v2",
+  "sha256": "c9d801ac9e9cee6faac8318462091416cf1f3f8713feb2b5559bf2068f3cb2ac",
+  "stop_rules": [
+   "the study stops at the first stage that cannot run (admission refused, worker stopped, infrastructure): INCOMPLETE",
+   "the ledger refuses any call past the process cap",
+   "a billing message in the preflight stops the launch (402 as a separate number, credit balance, billing)",
+   "one run: no rerun and no change to the design after a result"
+  ],
+  "verified": true
+ },
+ "development": null,
+ "dollars": 0.234904,
+ "files": [
+  {
+   "bytes": 6447,
+   "name": "DECLARATION.json"
+  },
+  {
+   "bytes": 129158,
+   "name": "repair-study.json"
+  }
+ ],
+ "id": "repair-study-v3-2026-11-14",
+ "kind": "repair_study",
+ "problems": [],
+ "repair": {
+  "candidates": [
+   {
+    "B0_expected": 1,
+    "B0_target": 5,
+    "L_acted": 6,
+    "L_blocked": 4,
+    "L_conformance": 0,
+    "L_expected": 6,
+    "L_false_beliefs": 0,
+    "L_target": 0,
+    "L_valid": 6,
+    "qualified": true,
+    "slot": 1
+   }
+  ],
+  "created_at": "2026-11-15T06:16:42.675927+00:00",
+  "decision": "REPAIRED",
+  "design": {
+   "caps": {
+    "dollars": 0.034,
+    "http_attempts": 18,
+    "model_calls": 8,
+    "ticks": null,
+    "tokens": null,
+    "wall_seconds": 90.0
+   },
+   "gap_min": 3,
+   "healthy_scenario": "dev-1",
+   "must_complete": [
+    "dev-1",
+    "dev-6"
+   ],
+   "pairs": 6,
+   "slots": 2,
+   "source_scenario": "dev-5",
+   "target_rule": "notification_label_after_rejection"
+  },
+  "ended_at": "2026-11-15T06:27:57.084010+00:00",
+  "gap": {
+   "healthy_conformance": 0,
+   "healthy_trials": 3,
+   "healthy_valid": 3,
+   "source_target": 3,
+   "source_trials": 6,
+   "source_valid": 6
+  },
+  "gate_opened": true,
+  "measured": {
+   "dollars": 0.23490419999999995,
+   "envelopes": 81,
+   "http_attempts": 336,
+   "input_tokens": 1927207,
+   "model_calls": 408,
+   "output_tokens": 84367
+  },
+  "mechanic_model": "claude-code:claude-sonnet-5-5",
+  "model": "anthropic:claude-haiku-5-5",
+  "notes": [
+   "repair study v3: rule language v2 (advice hook) and amendment 11 (legacy findings in both gates); otherwise as the second API pilot"
+  ],
+  "proposals": [
+   {
+    "attempts": 1,
+    "ended": "proposal_recorded",
+    "rules": [
+     {
+      "hook": "before_final_report",
+      "operation": "upgrade",
+      "steps": [
+       {
+        "claim": "notification_outcome",
+        "expect": [
+         "NOT_REQUIRED"
+        ],
+        "only_if": "always",
+        "op": "require_label",
+        "operation": "notification",
+        "ticks": null
+       }
+      ],
+      "when": "terminal_failure"
+     },
+     {
+      "hook": "before_agent_turn",
+      "operation": "upgrade",
+      "steps": [
+       {
+        "claim": "notification_outcome",
+        "expect": [
+         "NOT_REQUIRED"
+        ],
+        "only_if": "always",
+        "op": "advise_label",
+        "operation": "notification",
+        "ticks": null
+       }
+      ],
+      "when": "terminal_failure"
+     }
+    ],
+    "slot": 1,
+    "turns": 2,
+    "valid": true,
+    "version": "rejection-notification-not-required"
+   }
+  ],
+  "reason": "slot 1: the proposal qualified on the source case and passed validation",
+  "validation": [
+   {
+    "cases": {
+     "dev-1": {
+      "B0": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.012288,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "L": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.012254,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "acting": 0,
+      "clean": 0,
+      "inert": true,
+      "passed": true
+     },
+     "dev-2": {
+      "B0": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.012753,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "L": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.012038,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "acting": 0,
+      "clean": 0,
+      "inert": true,
+      "passed": true
+     },
+     "dev-3": {
+      "B0": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.024009,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "L": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.024767,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "acting": 0,
+      "clean": 0,
+      "inert": true,
+      "passed": true
+     },
+     "dev-4": {
+      "B0": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.013439,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "L": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.012754,
+       "expected": 6,
+       "exposed": 5,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "acting": 0,
+      "clean": 0,
+      "inert": true,
+      "passed": true
+     },
+     "dev-6": {
+      "B0": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.02648,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "L": {
+       "acted": 0,
+       "advised": 0,
+       "basis": "scoreable",
+       "blocked": 0,
+       "completed": 6,
+       "conformance": 0,
+       "delivered": 6,
+       "dollars": 0.02644,
+       "expected": 6,
+       "exposed": 6,
+       "false_beliefs": 0,
+       "legacy": 0,
+       "scoreable": 6,
+       "target": 0,
+       "trials": 6
+      },
+      "acting": 0,
+      "clean": 0,
+      "inert": true,
+      "passed": true
+     }
+    },
+    "passed": true,
+    "slot": 1
+   }
+  ]
+ },
+ "schema": "faultlab-study/v1",
+ "started_at": "2026-11-15T06:16:42.675927+00:00",
+ "title": "Repair study v3"
+}

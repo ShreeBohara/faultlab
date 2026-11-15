@@ -1,0 +1,88 @@
+{
+ "arms": [],
+ "claim": "Development check on a public case: it decides whether an unseen-case test is worth running.",
+ "comparison": null,
+ "date": "2026-11-15",
+ "declaration": {
+  "claim_scope": "development only: one public case, one rule (L3, unchanged), one Actor (Haiku 5.5 on the API); not an unseen-case result and not a policy",
+  "decision_rule": "development go or no-go, fixed now: PROCEED to an unseen-case comparison of the two presentations if Q has at most half as many trials with a block as E, no slip, and no more side-effect trials than E; otherwise STOP and write it up",
+  "declared_at": "2026-11-15",
+  "expected_cost": "about $0.10 of API money (24 trials at about $0.004) and about 6 minutes",
+  "name": "advice-presentation-dev-1-2026-11-15",
+  "purpose": "A development check, under the owner's instruction of 2026-11-14 ('If you want to add more things, add more code, do more tests, and do more verification, just do it'), of the requirement presentation of advice (commit 0a817d8) before any unseen-case test of it.",
+  "question": "On dev-5, the development case the rule was built from, does showing the L3 rule's advice as the report gate's requirement (Q) cut the trials where the agent still proposes a report the gate refuses, compared with the advice shown as an expectation (E)?",
+  "readouts": [
+   "per arm over its 12 trials: trials with a blocked report (primary), slips (the target finding), side effects (the rule acted and the trial has a conformance finding, a legacy violation, a false belief or no report), correct refusals, trials shown advice, model calls",
+   "trials with a block, Q against E, with a two-sided Fisher exact p-value as description"
+  ],
+  "schema": "faultlab-run-declaration/v2",
+  "sha256": "2a2e9dfe4671547df3d52354fa324d19967eefe2b7665fb7988e18db8b9357fc",
+  "stop_rules": [
+   "E runs first; an INFRA_ERROR trial or a billing message in E stops the launch before Q",
+   "the ledger refuses any call past the process cap",
+   "one run per arm: no rerun and no change to the rule, the arms or the read-outs after a result"
+  ],
+  "verified": true
+ },
+ "development": {
+  "arms": {
+   "E": {
+    "acted": 12,
+    "advice_turns": 19,
+    "correct_refusals": 12,
+    "dollars": 0.038267,
+    "side_effect_trials": 0,
+    "slips": 0,
+    "trials": 12,
+    "trials_with_block": 7
+   },
+   "Q": {
+    "acted": 12,
+    "advice_turns": 12,
+    "correct_refusals": 12,
+    "dollars": 0.032197,
+    "side_effect_trials": 0,
+    "slips": 0,
+    "trials": 12,
+    "trials_with_block": 0
+   }
+  },
+  "decision": "PROCEED",
+  "model": "anthropic:claude-haiku-5-5",
+  "primary": {
+   "trials_with_block": {
+    "E": [
+     7,
+     12
+    ],
+    "Q": [
+     0,
+     12
+    ],
+    "fisher_two_sided_p": 0.004577
+   }
+  }
+ },
+ "dollars": 0.070464,
+ "files": [
+  {
+   "bytes": 5174,
+   "name": "DECLARATION.json"
+  },
+  {
+   "bytes": 2105,
+   "name": "readouts.json"
+  },
+  {
+   "bytes": 850,
+   "name": "policy-L3.json"
+  }
+ ],
+ "id": "advice-presentation-dev-1-2026-11-15",
+ "kind": "development_check",
+ "problems": [],
+ "repair": null,
+ "schema": "faultlab-study/v1",
+ "started_at": null,
+ "title": "Advice presentation dev 1"
+}

@@ -23,6 +23,7 @@ store readable. This page lists the pieces that exist, each with its evidence.
 | effectsafe 0.1 alpha | `effectsafe/` | `EFFECTSAFE.md` | the non-idempotent create, same-bytes resend and no-decay tests |
 | Providers beyond W&B, verified prices, monthly ledger | `backend/app/providers` | `../providers.md` | live smoke and the four-model screen |
 | First multi-provider data | runs folder | `../CLAUDE_ACTOR_SCREEN_2026-10-11.md` | 72 live episodes, four models |
+| Study archive and the dashboard's Study results page | `faultlab/research/archive.py`, `backend/app/studies.py`, `frontend/src/components/StudiesScreen.tsx` | `UNSEEN_STUDY.md` | every committed study reads with its declaration verified; sealed files are never served (tests) |
 
 Tests for the new packages live in `backend/tests/v2` and run with the core suite
 (`./scripts/test.sh backend`).

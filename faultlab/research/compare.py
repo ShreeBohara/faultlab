@@ -126,7 +126,9 @@ def record_readouts(record: dict) -> dict:
     per_case = {}
     for case_id, case in rejected.items():
         rows = case["L"]["rows"]
-        per_case[case_id] = {"passed": case["passed"], "acting": case["acting"], "clean": case["clean"],
+        # Run 1 (2026-11-08) judged its cases by the repair study's candidate gate, whose case records carry no acting or clean
+        # counts; they read as None there.
+        per_case[case_id] = {"passed": case.get("passed"), "acting": case.get("acting"), "clean": case.get("clean"),
                              "side_effect_trials": sum(1 for row in rows if side_effect(row)),
                              "trials_with_block": sum(1 for row in rows if row["blocked_proposals"]),
                              "trials_with_advice": sum(1 for row in rows if row.get("advice_turns")),

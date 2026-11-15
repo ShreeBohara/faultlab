@@ -92,6 +92,9 @@ class Settings:
     # Whether a completion or baseline study must read each trial's evidence back from Weave (weave_verified)
     # or may take the local bundle (local_only). The study record carries the choice as evidence_requirement.
     faultlab_require_remote_evidence: bool = True
+    # The saved study records the dashboard's study pages read (faultlab.research.archive); blank means the repository's
+    # artifacts folder, where finished studies publish their declarations and records. Read-only; never a run folder's seal.
+    faultlab_studies_dir: str = ''
 
     def model_for(self, role: str) -> str:
         """The canonical model name for a role: a bare W&B id, or ``provider:model`` for any other provider.
@@ -331,6 +334,11 @@ class Settings:
     @property
     def artifact_path(self) -> Path:
         value = Path(self.faultlab_artifact_dir)
+        return value if value.is_absolute() else ROOT_ENV_PATH.parent / value
+
+    @property
+    def studies_path(self) -> Path:
+        value = Path(self.faultlab_studies_dir.strip() or 'artifacts')
         return value if value.is_absolute() else ROOT_ENV_PATH.parent / value
 
     def local_control_token(self) -> str:
