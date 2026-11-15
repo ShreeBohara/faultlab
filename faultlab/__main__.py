@@ -4,7 +4,7 @@
   adapters  list the registered adapters
   run       run a pack's scenarios for one adapter, offline, to sealed envelopes (run --help)
   replay    re-run a recorded trial from a bundle or store into a fresh world (replay --help)
-  study     run a research study on the v2 lab: study repair --help
+  study     run a research study on the v2 lab: study repair|unseen-draw|unseen --help; compare saved records: study compare --help
   store     summarise a v2 trial store: store <trials.sqlite3> [--batch <id>]
   project   project every episode of a legacy store into trial envelopes
   oracle    score a legacy store with the belief-versus-effect oracle

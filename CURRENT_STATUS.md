@@ -1478,6 +1478,22 @@ Money: **$0.2376 of API money** (study $0.2349, preflight $0.0027); Mechanic $0.
 November committed $0.8862 to 1.1237, rows 1,536 to 1,949. Declared bound $7.03 ($7.00 study, $0.034
 preflight); project ledger $1,574.43 + $7.03 = $1,581.46 (bounds). 675 s.
 
+### Ledger entry 2026-11-15: unseen-case comparison 1 (Anthropic API): both rules NOT_TRANSFERRED
+
+Declared (`~/FaultLab_Runs/2026-11-14/unseen-comparison-1/`, sha256 `ccf9a075…4245`; records, logs and the comparison in
+`artifacts/unseen-comparison-1-2026-11-14/`): the blocks-only rule R (second API pilot) and the advice-plus-block rule L3 (repair
+study v3), each in its own unseen-case study on one fresh draw of 11 cases leaving out runs 1 to 3 (7 rejected cases with 12
+pairs, 4 other cases with 6), Haiku 5.5 on the API, 8 model calls, amendments 9 and 10. The preflight passed (dev-5). **R
+NOT_TRANSFERRED** (5 of 7 rejected cases failed), **L3 NOT_TRANSFERRED** (2 of 7). Over 84 rejected-case trials per study: slip
+64 and 57 without a rule, 0 and 0 with one; trials with a blocked report 54 under R and 34 under L3 (Fisher p = 0.0032, descriptive);
+side-effect trials 5 and 5 (p = 1.0), each a block on the eighth and last model call followed by no report. Advice cut the blocks
+by about a third but not the side effects; three of R's failed cases also came from trials where the rejection arrived after the
+agent's calls ran out, which is chance. Write-up: [UNSEEN_STUDY.md](docs/v2/UNSEEN_STUDY.md#runs).
+
+Money: **$1.6832 of API money** (R $0.8433, L3 $0.8371, preflight $0.0027; 2,767 model calls, all settled). November committed
+$1.1237 to 2.8069, rows 1,949 to 4,716. Declared bound $14.73 ($7.35 per study, $0.034 preflight); project ledger
+$1,581.46 + $14.73 = $1,596.19 (bounds). 4,954 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

@@ -18,6 +18,7 @@ from faultlab.core import Caps
 from faultlab.lab.cli import _backend_on_path, build_referee
 from faultlab.lab.store import TrialStore
 from faultlab.packs import PackError, load_pack
+from faultlab.research.compare import compare_records
 from faultlab.research.mechanic import ClaudeCodeMechanic, ScriptedMechanic
 from faultlab.research.repair_study import RepairStudy, RepairStudyDesign
 from faultlab.research.unseen_study import UnseenStudy, UnseenStudyDesign, draw_cases
@@ -145,10 +146,40 @@ def unseen_main(argv) -> int:
     return 0
 
 
+def compare_main(argv) -> int:
+    """``faultlab study compare``: the read-outs of unseen-study records on one draw. Offline: reads record files only."""
+    parser = argparse.ArgumentParser(prog="faultlab study compare", description="Compare unseen-study records that share a draw and a design")
+    parser.add_argument("kind", choices=("compare",))
+    parser.add_argument("--record", action="append", required=True, metavar="NAME=PATH",
+                        help="a record (unseen-study.json) and its short name; the first two give the primary comparison")
+    parser.add_argument("--out", default=None, help="also write the comparison to this JSON file")
+    args = parser.parse_args(argv)
+    try:
+        records = {}
+        for item in args.record:
+            name, sep, path = item.partition("=")
+            if not sep or not name or not path:
+                raise ValueError(f"--record takes NAME=PATH, not {item!r}")
+            if name in records:
+                raise ValueError(f"two records are named {name!r}")
+            records[name] = json.loads(Path(path).read_text(encoding="utf-8"))
+        comparison = compare_records(records)
+    except (ValueError, KeyError, OSError) as error:
+        print(f"{type(error).__name__}: {error}", file=sys.stderr)
+        return 2
+    text = json.dumps(comparison, indent=2, sort_keys=True)
+    if args.out:
+        Path(args.out).write_text(text + "\n", encoding="utf-8")
+    print(text)
+    return 0
+
+
 def main(argv=None) -> int:
     argv = sys.argv[1:] if argv is None else list(argv)
     if argv and argv[0].startswith("unseen"):
         return unseen_main(argv)
+    if argv and argv[0] == "compare":
+        return compare_main(argv)
     parser = argparse.ArgumentParser(prog="faultlab study repair", description="Run the repair study: controls, Mechanic, candidate, validation")
     parser.add_argument("kind", choices=("repair",), help="the study to run")
     parser.add_argument("--store", required=True, help="path of the trial store to write (created if missing)")

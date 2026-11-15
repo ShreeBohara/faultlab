@@ -214,3 +214,11 @@ carried a C8 violation (over the call limit) that the gate does not read.
 `artifacts/unseen-study-3-2026-11-14/`), after a rejected API key (replaced by the owner) and a false billing alarm. Slip 18 of
 24 to 0 of 24, but one trial under the rule ran out of calls after a block and filed no report. Across the three unseen runs, 3 of 72 trials
 under the rule had a new problem. The rule removes the slip but is not ready to be an active policy.
+
+**Update 2026-11-15.** Rule language v2 adds advice (`advise_label` at `before_agent_turn`): the agent is told the expected label
+before it reports, nothing is blocked and no turn is spent. Repair study v3 (amendment 11: legacy findings read in both gates)
+was REPAIRED: the Mechanic chose advice plus a block ($0.24, `artifacts/repair-study-v3-2026-11-14/`). Unseen-case comparison 1
+then tested that rule (L3) against the blocks-only rule (R) on one fresh draw, 84 rejected-case trials each ($1.68,
+`artifacts/unseen-comparison-1-2026-11-14/`). Both NOT_TRANSFERRED. Both removed the slip (0 of 168 against 121 of 168 without a
+rule); advice cut trials with a block from 54 to 34, but each rule still had 5 trials where a block on the last model call left no
+report. `faultlab study compare` computes those read-outs from saved records, offline.
