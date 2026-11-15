@@ -93,6 +93,11 @@ still proposed `NOT_STARTED` and was refused, then corrected). Q: a block in 0 o
 Q. Fisher p = 0.0046 for the blocks. The declared go/no-go was **PROCEED** to an unseen-case comparison. This is one public
 case, the one the rule was built from, so it is development evidence only. $0.0705 of API money, 4 minutes.
 
+The unseen-case comparison that followed (comparison 2, [UNSEEN_STUDY.md](UNSEEN_STUDY.md#runs)) ran both presentations on 14
+new rejected-upgrade cases, 168 trials each: blocks 98 of 168 as an expectation and 0 of 168 as a requirement, no slip and no
+side effect under either, and both studies TRANSFERRED. Its declared criterion also needed fewer side effects, and there were
+none to reduce, so the requirement presentation is not shown better there. The default stays `expectation`.
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

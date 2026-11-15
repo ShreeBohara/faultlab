@@ -207,6 +207,7 @@ def test_the_study_refuses_to_start_beyond_its_declared_cap_and_the_command_runs
     assert code == 0
     record = json.loads((out / "repair-study.json").read_text())
     assert record["decision"] == "NO_CHANGE" and record["notes"] == ["plumbing check"] and record["mechanic"]["mechanic_id"] == "scripted-mechanic"
+    assert record["actor"] == {"adapter": "reference-orders", "model": None, "execute_live": False, "advice_presentation": "expectation"}
     assert cli.main(["study", "repair", "--store", str(tmp_path / "x.sqlite3"), "--out", str(out), "--adapter", "claude-agent",
                      "--model", "claude-haiku-5-5", "--mechanic", "none"]) == 2            # live without --execute-live
     assert cli.main(["study", "repair", "--store", str(tmp_path / "x.sqlite3"), "--out", str(out), "--adapter", "reference-orders",

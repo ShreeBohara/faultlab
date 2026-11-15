@@ -184,7 +184,8 @@ class UnseenStudy(RepairStudy):
 
     def __init__(self, *, store: TrialStore, design: UnseenStudyDesign, adapter_factory: Callable[[Any], Any], cases: list[dict], policy,
                  out_dir, referee=None, worlds_dir=None, name: str = "unseen-study", notes: list[str] | None = None,
-                 study_dollars: float | None = None, declaration: dict | None = None):
+                 study_dollars: float | None = None, declaration: dict | None = None,
+                 actor: dict | None = None):
         self.store, self.design, self.adapter_factory, self.mechanic, self.policy = store, design, adapter_factory, None, policy
         self.out_dir, self.name = Path(out_dir), name
         base = load_pack(design.pack_id)
@@ -198,7 +199,7 @@ class UnseenStudy(RepairStudy):
         self.record: dict[str, Any] = {
             "schema": SCHEMA, "name": name, "created_at": utc_now_text(), "design": design.model_dump(mode="json"),
             "design_digest": content_hash(design.model_dump(mode="json")), "pack_digest": self.pack.digest(), "base_pack_digest": base.digest(),
-            "cases_digest": content_hash(cases), "policy": policy,
+            "cases_digest": content_hash(cases), "policy": policy, "actor": dict(actor) if actor else None,
             "policy_digest": None if policy is None else content_hash(policy_from_json(policy).model_dump(mode="json")),
             "bound": {"max_trials": design.max_trials(), "max_dollars": design.max_dollars(), "study_dollars": study_dollars},
             "declaration": declaration, "notes": list(notes or []), "stages": {"rejected": {}, "other": {}}, "decision": None, "reason": None,

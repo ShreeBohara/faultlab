@@ -145,7 +145,8 @@ class RepairStudy:
 
     def __init__(self, *, store: TrialStore, design: RepairStudyDesign, adapter_factory: Callable[[Any], Any], mechanic,
                  out_dir, referee=None, worlds_dir=None, name: str = "repair-study", notes: list[str] | None = None,
-                 study_dollars: float | None = None, declaration: dict | None = None):
+                 study_dollars: float | None = None, declaration: dict | None = None,
+                 actor: dict | None = None):
         self.store, self.design, self.adapter_factory, self.mechanic = store, design, adapter_factory, mechanic
         self.out_dir, self.name = Path(out_dir), name
         self.pack = load_pack(design.pack_id)
@@ -162,6 +163,7 @@ class RepairStudy:
             "schema": SCHEMA, "name": name, "created_at": utc_now_text(), "design": design.model_dump(mode="json"),
             "design_digest": content_hash(design.model_dump(mode="json")), "pack_digest": self.pack.digest(),
             "rule_language_digest": content_hash(RULE_LANGUAGE), "mechanic": dict(getattr(mechanic, "identity", {}) or {}),
+            "actor": dict(actor) if actor else None,
             "bound": {"max_trials": design.max_trials(), "max_dollars": design.max_dollars(), "study_dollars": study_dollars},
             "declaration": declaration, "notes": list(notes or []), "stages": {}, "proposals": [], "decision": None, "reason": None,
             "readouts": None, "cost": None, "ended_at": None}

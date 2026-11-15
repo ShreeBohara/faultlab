@@ -201,7 +201,9 @@ def test_the_commands_draw_without_printing_a_case_and_record_a_run_the_referenc
                      "--policy", str(policy), "--worlds", str(tmp_path / "w2"), "--pairs", "1", "--gap", "1"]) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["decision"] == "INCOMPLETE" and "cannot carry a rule policy" in result["reason"]
-    assert json.loads((tmp_path / "out" / "unseen-study.json").read_text())["decision"] == "INCOMPLETE"
+    saved = json.loads((tmp_path / "out" / "unseen-study.json").read_text())
+    assert saved["decision"] == "INCOMPLETE"
+    assert saved["actor"] == {"adapter": "reference-orders", "model": None, "execute_live": False, "advice_presentation": "expectation"}
     assert cli.main(["study", "unseen", "--store", str(tmp_path / "x.sqlite3"), "--out", str(tmp_path / "x"), "--cases", str(cases)]) == 2
     second = tmp_path / "sealed2" / "cases.json"
     assert cli.main(["study", "unseen-draw", "--store", str(tmp_path / "draw2.sqlite3"), "--out", str(tmp_path / "sealed2"), "--cases", str(second),

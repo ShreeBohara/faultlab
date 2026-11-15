@@ -1,0 +1,193 @@
+{
+  "caps": {
+    "max_trials_each": 384,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 10.88,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $8.00"
+    },
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_usd": 0.034,
+    "study_usd_each": 13.1
+  },
+  "claim_scope": "new fault schedules of the same task, fixtures and fault types (from case space v3, every rejected case with an outage before the rejection); one learned rule unchanged, two presentations, one Actor (Haiku 5.5 on the API); not an active policy",
+  "code": {
+    "actor_prompt_sha256": "99a1b17daa637348b82849512df47d91db5f9364bddb0e5cb989c48a1885885e",
+    "compare_sha256": "4b1c41678c7b4adb4d268cba0fcf1b34babbec974cdf7c7dedf4c1fd3cffc38d",
+    "effectsafe_rules_sha256": "563521673b2da3ba81adc4c7070f198aa12494f4339e22192672c099ce3edec6",
+    "git_sha": "f680af422677e4a0a788550edae2ae55b35e417c",
+    "lab_rules_sha256": "d0f09e08aa6363da42248f982fcca9372aa9438607d8254e596dfba414fa5326",
+    "model_actor_sha256": "6334460bf398694d4ffa8420b53325283a20db79ac4126eb4ae085d5d49318e2",
+    "orders_pack_sha256": "5053b4d5f4f8808db0caba84d2ccc4102be0e72afc5818a8da370e305d0f4b0b",
+    "repair_study_sha256": "984a00c055e1d7e643edced77dc47f427bbf9bd2a7f0cc11c9fbdd43cd5504b4",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "44ac0aa5ea833d3d8f9231f03f14b78a19e45dd11f76db7e79cfd6cafd3a4958",
+    "unseen_study_sha256": "6ccbf54a7e51a79b47084fa28496cec58ecbceea6de9ca5002c8b3c0a8a6126f"
+  },
+  "comparison_readouts": [
+    "for each presentation, over the 168 L trials of the rejected cases: slips; trials with a block; side-effect trials (the rule acted and the trial has a conformance finding, a legacy violation, a false belief or no report); trials shown advice; advice turns; correct refusals; model calls; the same from `faultlab study compare`",
+    "primary: side-effect trials and trials with a block, E against Q, with two-sided Fisher exact p-values as description",
+    "the presentation is judged better on these cases if Q has fewer side-effect trials than E, at most half as many trials with a block, and no slip; otherwise it is not shown better here"
+  ],
+  "decision_rule": "each study's own decision under docs/v2/UNSEEN_STUDY.md at this commit (amendments 9 and 10): NOT_TRANSFERRED if any case fails, INCONCLUSIVE if none fails and the slip appeared in fewer than 6 B0 trials of the rejected cases, TRANSFERRED otherwise, INCOMPLETE if a stage cannot run. With 12 pairs the gate needs the rule to act in 11 of 12 trials of every rejected case, so trials whose rejection arrives after the agent's calls run out can fail a case under either presentation; the comparison read-outs answer the question",
+  "declared_at": "2026-11-15",
+  "design": {
+    "caps": {
+      "dollars": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "ticks": null,
+      "tokens": null,
+      "wall_seconds": 90.0
+    },
+    "gap_min": 6,
+    "other_cases": [
+      "unseen-o1",
+      "unseen-o2",
+      "unseen-o3",
+      "unseen-o4"
+    ],
+    "other_pairs": 6,
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "pairs": 12,
+    "rejected_cases": [
+      "unseen-r1",
+      "unseen-r2",
+      "unseen-r3",
+      "unseen-r4",
+      "unseen-r5",
+      "unseen-r6",
+      "unseen-r7",
+      "unseen-r8",
+      "unseen-r9",
+      "unseen-r10",
+      "unseen-r11",
+      "unseen-r12",
+      "unseen-r13",
+      "unseen-r14"
+    ],
+    "rejected_rule": "where_acted_no_legacy",
+    "target_rule": "notification_label_after_rejection",
+    "validation_rule": "where_acted"
+  },
+  "design_digest": "a41c91663823372cd06fb5b721496ba29208ff73049d43e23ccfa396bdc165d9",
+  "development_check": {
+    "decision": "PROCEED",
+    "name": "advice-presentation-dev-1-2026-11-15",
+    "trials_with_block": {
+      "E": [
+        7,
+        12
+      ],
+      "Q": [
+        0,
+        12
+      ],
+      "fisher_two_sided_p": 0.004577
+    }
+  },
+  "draw": {
+    "cases": 18,
+    "cases_file_sha256": "12991527dac4905d48847007c42c302812730d65e8508f8479009bf588d5066a",
+    "excluded": "the 35 cases of unseen-study-1, -2, -3 and unseen-comparison-1",
+    "per_stratum": {
+      "other": 4,
+      "rejected": 14
+    },
+    "sealed": "the case file, trial stores and bundles stay outside the repository and are not opened by the agent; records name cases by id only",
+    "seed_text": "f680af422677e4a0a788550edae2ae55b35e417c|49ea0491f1488711eaad4003c43d8e5606f81e3cc0b920cbb971e32c6bc5dcfa|advice-presentation:expectation,requirement",
+    "space": {
+      "other": 44,
+      "rejected": 55
+    },
+    "space_version": "v3",
+    "tried": {
+      "other": 4,
+      "rejected": 14
+    }
+  },
+  "expected_cost": "about $3 of API money (768 trials at about $0.004) and about 2.5 to 3 hours",
+  "ledger_before": {
+    "bound_sum_usd": 20.3364,
+    "committed_usd": 2.8773,
+    "month": "2026-11",
+    "rows": 4842
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "unseen-comparison-2-2026-11-15",
+  "preflight": {
+    "on_failure": "neither study starts; the failure is written up",
+    "pass": "the trial's execution is COMPLETED and its dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor`, before the studies"
+  },
+  "purpose": "An unseen-case comparison of two presentations of one frozen rule's advice on the same fresh draw, under the owner's instruction of 2026-11-14 ('If you want to add more things, add more code, do more tests, and do more verification, just do it'), after the development check advice-presentation-dev-1 cleared the requirement presentation.",
+  "question": "On new rejected-upgrade schedules, does showing the L3 rule's advice as the report gate's requirement (Q) leave fewer trials with a block and fewer side effects than showing it as an expectation (E), while still removing the slip?",
+  "rule": {
+    "policy": {
+      "rules": [
+        {
+          "hook": "before_final_report",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "require_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        },
+        {
+          "hook": "before_agent_turn",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "advise_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        }
+      ],
+      "version": "rejection-notification-not-required"
+    },
+    "policy_digest": "49ea0491f1488711eaad4003c43d8e5606f81e3cc0b920cbb971e32c6bc5dcfa",
+    "source": "artifacts/unseen-comparison-1-2026-11-14/policy-L3.json (repair study v3)"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "a study stops at the first stage that cannot run: INCOMPLETE; Q runs whatever E's decision",
+    "the ledger refuses any call past the process cap",
+    "a billing message in the preflight stops the launch",
+    "one run per draw: no rerun and no change to the rule, the presentations, the cases or the read-outs after a result"
+  ],
+  "studies": {
+    "E": {
+      "advice_presentation": "expectation",
+      "order": 1,
+      "out": "/Users/shree/FaultLab_Runs/2026-11-15/unseen-comparison-2/E"
+    },
+    "Q": {
+      "advice_presentation": "requirement",
+      "order": 2,
+      "out": "/Users/shree/FaultLab_Runs/2026-11-15/unseen-comparison-2/Q"
+    },
+    "note": "the same rule, design, cases and code for both; each has its own B0 arm (the same agent: the presentation shows nothing without a rule); Q runs after E"
+  }
+}

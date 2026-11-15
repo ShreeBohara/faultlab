@@ -222,3 +222,13 @@ then tested that rule (L3) against the blocks-only rule (R) on one fresh draw, 8
 `artifacts/unseen-comparison-1-2026-11-14/`). Both NOT_TRANSFERRED. Both removed the slip (0 of 168 against 121 of 168 without a
 rule); advice cut trials with a block from 54 to 34, but each rule still had 5 trials where a block on the last model call left no
 report. `faultlab study compare` computes those read-outs from saved records, offline.
+
+**Update 2026-11-15, later.** Advice the gate enforces can now be shown as a requirement (`--advice-presentation requirement`:
+`rule_requirements`, the refusal's consequence and a final-turn note; the default `expectation` is unchanged). On dev-5 it cut
+blocks from 7 of 12 trials to 0 of 12 ($0.07, `artifacts/advice-presentation-dev-1-2026-11-15/`). Case space v3 drops 17
+schedules whose faults could never both fire and adds 52 outage schedules. Unseen-case comparison 2 then ran L3 under both
+presentations on 18 fresh v3 cases, 168 rejected-case trials each ($2.47, `artifacts/unseen-comparison-2-2026-11-15/`): **both
+TRANSFERRED**, the first passes under amendment 10. Slip 0 of 336 against 273 of 336 without the rule; blocks 98 of 168 as an
+expectation and 0 of 168 as a requirement; no side effect under either. By the declared criterion the requirement presentation
+is not shown better here, because these cases never produced the late-evidence block that caused comparison 1's side
+effects. New study records name the Actor (`actor`: adapter, model, presentation).

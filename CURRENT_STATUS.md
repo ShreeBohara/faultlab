@@ -1505,6 +1505,23 @@ an unseen-case comparison. Development evidence on the case the rule was built f
 Money: **$0.0705 of API money** (126 model calls, all settled). November committed $2.8069 to 2.8773, rows 4,716 to 4,842.
 Declared bound $0.82 (24 trials at $0.034); project ledger $1,596.19 + $0.82 = $1,597.01 (bounds). 209 s.
 
+### Ledger entry 2026-11-15: unseen-case comparison 2 (Anthropic API): both presentations TRANSFERRED
+
+Declared (`~/FaultLab_Runs/2026-11-15/unseen-comparison-2/`, sha256 `591fd65c…b861`; records, logs and the comparison in
+`artifacts/unseen-comparison-2-2026-11-15/`): the L3 rule with its advice shown as an expectation (E, the default) and as the
+report gate's requirement (Q), each in its own unseen-case study on one fresh draw of 18 cases from case space v3 leaving out the
+35 earlier cases (14 rejected cases with 12 pairs, every one an outage before a rejection; 4 other cases with 6), Haiku 5.5 on the
+API, 8 model calls, amendments 9 and 10, commit f680af4. The preflight passed (dev-5). **E TRANSFERRED** and **Q TRANSFERRED**: no
+case failed, the first passes under amendment 10's limits. Over 168 rejected-case trials per study: slip 138 and 135 without the
+rule, 0 and 0 with it; trials with a blocked report 98 under E and 0 under Q (Fisher p = 7.7e-39, descriptive; the saved
+comparison prints 0.0 from six-decimal rounding, since fixed); side-effect trials 0 and 0 (p = 1.0). By the declared criterion
+the requirement presentation is **not shown better here**, because E had no side effect to remove; these cases never put a block
+on the last call. Write-up: [UNSEEN_STUDY.md](docs/v2/UNSEEN_STUDY.md#runs).
+
+Money: **$2.4678 of API money** (E $1.2824, Q $1.1826, preflight $0.0027; 4,242 model calls, all settled). November committed
+$2.8773 to 5.3451, rows 4,842 to 9,084. Declared bound $26.23 ($13.10 per study, $0.034 preflight); project ledger
+$1,597.01 + $26.23 = $1,623.24 (bounds). 6,772 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

@@ -30,6 +30,13 @@ def _list(value: str | None, default: list[str]) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def actor_description(args) -> dict:
+    """What played the Actor, for the study record: the adapter, its model, whether live calls were authorized and how rule
+    advice was shown. Before 2026-11-15 records carried this only in notes and launchers."""
+    return {"adapter": args.adapter, "model": args.model or None, "execute_live": bool(args.execute_live),
+            "advice_presentation": getattr(args, "advice_presentation", None) or "expectation"}
+
+
 def build_adapter_factory(args):
     """Adapters per arm: the same adapter id and model, with or without the proposal's policy."""
     presentation = getattr(args, "advice_presentation", None) or "expectation"
@@ -139,7 +146,8 @@ def unseen_main(argv) -> int:
             declaration = {"path": str(args.declaration), "sha256": sha256(Path(args.declaration).read_bytes()).hexdigest()}
         with TrialStore(args.store) as store:
             study = UnseenStudy(store=store, design=design, adapter_factory=factory, cases=cases, policy=policy, out_dir=args.out, referee=referee,
-                                worlds_dir=args.worlds, name=args.name, notes=args.note, study_dollars=args.study_dollars, declaration=declaration)
+                                worlds_dir=args.worlds, name=args.name, notes=args.note, study_dollars=args.study_dollars, declaration=declaration,
+                                actor=actor_description(args))
             record = asyncio.run(study.run())
     except (PackError, AdapterError, ValueError, ImportError, OSError) as error:
         print(str(error), file=sys.stderr)
@@ -237,7 +245,8 @@ def main(argv=None) -> int:
             declaration = {"path": str(args.declaration), "sha256": sha256(data).hexdigest()}
         with TrialStore(args.store) as store:
             study = RepairStudy(store=store, design=design, adapter_factory=factory, mechanic=mechanic, out_dir=args.out, referee=referee,
-                                worlds_dir=args.worlds, name=args.name, notes=args.note, study_dollars=args.study_dollars, declaration=declaration)
+                                worlds_dir=args.worlds, name=args.name, notes=args.note, study_dollars=args.study_dollars, declaration=declaration,
+                                actor=actor_description(args))
             record = asyncio.run(study.run())
     except (PackError, AdapterError, ValueError, ImportError, OSError) as error:
         print(str(error), file=sys.stderr)

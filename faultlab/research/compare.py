@@ -31,6 +31,12 @@ def fisher_exact(a: int, b: int, c: int, d: int) -> float:
     return min(1.0, sum(w for w in weights.values() if w <= observed) / comb(n, column))
 
 
+def describe_p(value: float) -> float:
+    """A p-value to six significant digits. Comparison 2 (2026-11-15) printed 0.0 for p = 7.7e-39 when this rounded to six
+    decimal places; a p-value is never zero."""
+    return float(f"{value:.6g}")
+
+
 def acted(row: dict) -> bool:
     """The rule acted in a trial: it ran a step at a gate (a report check or advice) or blocked a proposal."""
     return bool(row["rule_acted"] or row["blocked_proposals"])
@@ -116,6 +122,7 @@ def record_readouts(record: dict) -> dict:
                              "slips": sum(1 for row in rows if row["target"]),
                              "B0_slips": sum(1 for row in case["B0"]["rows"] if row["target"])}
     return {"name": record.get("name"), "decision": record["decision"], "reason": record["reason"], "policy_digest": record.get("policy_digest"),
+            "actor": record.get("actor"),
             "failed_cases": [case_id for group in (rejected, other) for case_id, case in group.items() if not case.get("passed")],
             "rejected": {"L": rule_rows(_rows(rejected, "L"), cap), "B0": baseline_rows(_rows(rejected, "B0"), cap), "per_case": per_case},
             "other": {"L": rule_rows(_rows(other, "L"), cap), "B0": baseline_rows(_rows(other, "B0"), cap)},
@@ -137,7 +144,7 @@ def compare_records(records: dict[str, dict]) -> dict:
     for key in ("side_effect_trials", "trials_with_block"):
         a, b = arms[first]["rejected"]["L"], arms[second]["rejected"]["L"]
         table = [[a[key], a["trials"] - a[key]], [b[key], b["trials"] - b[key]]]
-        primary[key] = {first: [a[key], a["trials"]], second: [b[key], b["trials"]], "fisher_two_sided_p": round(fisher_exact(*table[0], *table[1]), 6)}
+        primary[key] = {first: [a[key], a["trials"]], second: [b[key], b["trials"]], "fisher_two_sided_p": describe_p(fisher_exact(*table[0], *table[1]))}
     return {"schema": "faultlab-unseen-comparison/v1", "order": list(arms), "cases_digest": next(iter(records.values()))["cases_digest"],
             "design_digest": next(iter(records.values()))["design_digest"], "arms": arms, "primary": primary,
             "note": "Fisher p-values describe; each study's own decision is its claim"}

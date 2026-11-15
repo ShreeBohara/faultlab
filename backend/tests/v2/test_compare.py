@@ -7,7 +7,7 @@ import json
 import pytest
 
 from faultlab import __main__ as cli
-from faultlab.research.compare import acted, compare_records, fisher_exact, record_readouts, side_effect
+from faultlab.research.compare import acted, compare_records, describe_p, fisher_exact, record_readouts, side_effect
 
 
 def row(**overrides):
@@ -73,6 +73,19 @@ def test_the_primary_comparison_is_the_first_record_against_the_second():
     assert result["primary"]["side_effect_trials"] == {"R": [1, 10], "L3": [1, 10], "fisher_two_sided_p": 1.0}
     assert result["primary"]["trials_with_block"]["R"] == [10, 10] and result["primary"]["trials_with_block"]["L3"] == [1, 10]
     assert result["primary"]["trials_with_block"]["fisher_two_sided_p"] == pytest.approx(fisher_exact(10, 0, 1, 9), abs=1e-6)
+
+
+def test_a_tiny_p_value_stays_visible_and_each_arm_names_its_actor():
+    expectation = {"adapter": "model-actor", "model": "anthropic:claude-haiku-5-5", "execute_live": True, "advice_presentation": "expectation"}
+    a = record("E", [BLOCKED_THEN_FIXED] * 98 + [ADVISED] * 70, [SLIP])
+    b = record("Q", [ADVISED] * 168, [SLIP])
+    a["actor"], b["actor"] = expectation, {**expectation, "advice_presentation": "requirement"}
+    result = compare_records({"E": a, "Q": b})
+    p = result["primary"]["trials_with_block"]["fisher_two_sided_p"]
+    assert 0 < p < 1e-30 and p == pytest.approx(fisher_exact(98, 70, 0, 168), rel=1e-5)   # comparison 2's table, once printed as 0.0
+    assert describe_p(1.0) == 1.0 and describe_p(0.0031812345) == 0.00318123
+    assert result["arms"]["Q"]["actor"]["advice_presentation"] == "requirement" and result["arms"]["E"]["actor"] == expectation
+    assert record_readouts(record("old", [ADVISED], [SLIP]))["actor"] is None              # records before 2026-11-15 name no actor
 
 
 def test_records_from_different_draws_or_designs_are_refused():

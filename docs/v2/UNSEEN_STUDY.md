@@ -195,3 +195,57 @@ advice that the agent ignores almost half the time does not prevent it. Neither 
 launch's summary script crashed on a dictionary key after both studies had finished and been saved; the read-outs above come
 from the saved records through `faultlab study compare` (written afterwards; it reads record files only) with the definitions in
 the declaration. Money: $1.6832 of API money (R $0.8433, L3 $0.8371, preflight $0.0027), 2,767 model calls, 83 minutes.
+
+**Comparison 2, 2026-11-15** (Anthropic API; Haiku 5.5 through the model actor; amendments 9 and 10; one frozen rule, L3, shown two
+ways on one fresh draw from case space v3 at commit f680af4, leaving out the 35 cases of runs 1 to 3 and comparison 1; declaration
+sha256 `591fd65c…b861`; both records, the logs, the declaration and the comparison in `artifacts/unseen-comparison-2-2026-11-15/`).
+The question, declared before the run: does showing L3's advice as the report gate's requirement (**Q**, `--advice-presentation
+requirement`: the advice the gate enforces appears as `rule_requirements`, with the refusal's consequence and a final-turn note)
+leave fewer trials with a block and fewer side effects than showing it as an expectation (**E**, the default, which shows advice
+exactly as comparison 1's L3 arm did), while still removing the slip? The declared criterion: Q is better on these cases if it has fewer
+side-effect trials than E, at most half as many trials with a block, and no slip. Each presentation ran its own study on the
+same 18 cases (14 rejected-upgrade cases with 12 pairs each, every one an outage before a rejection; 4 other cases with 6 pairs
+each; 384 trials; 8 model calls, 18 HTTP attempts, 90 s), E first. **Both TRANSFERRED**, as declared: every rejected case passed
+amendment 9's gate and every other case the validation rule. These are the first `TRANSFERRED` decisions under amendment 10's
+limits. **The requirement presentation is not shown better here**, by the declared criterion: it removed every block, but E
+had no side effect for it to remove.
+
+| 168 rejected-case trials per arm | E study, no rule | E study, rule as expectation | Q study, no rule | Q study, rule as requirement |
+|---|---|---|---|---|
+| Slip | 138 | 0 | 135 | 0 |
+| Correct refusal | 30 | 168 | 32 | 168 |
+| Rule acted | n/a | 168 | n/a | 168 |
+| Trials shown advice (turns) | n/a | 168 (267) | n/a | 168 (168) |
+| Trials with a blocked report | n/a | 98 | n/a | 0 |
+| Side effect: the rule acted and the trial has a finding or no report | n/a | 0 | n/a | 0 |
+| Rule silent | n/a | 0 | n/a | 0 |
+| Model calls, mean; trials at the 8-call cap | 5.33; 1 | 5.86; 4 | 5.30; 5 | 5.24; 2 |
+
+The declared primary read-outs, as description and not as a decision: trials with a block 98 of 168 under E and 0 of 168 under
+Q (two-sided Fisher exact p = 7.7e-39); side-effect trials 0 of 168 under each (p = 1.0). The saved `comparison.json` prints the
+first p-value as 0.0: `faultlab study compare` rounded to six decimal places. It now keeps six significant digits; the saved file
+is left as the run wrote it.
+
+What the numbers say:
+
+- **Both presentations remove the slip completely**: 0 of 336 trials under the rule against 273 of 336 without it.
+- **Shown as a requirement, the advice was followed the first time in all 168 trials**: every first report carried the expected
+  label, and no report was blocked. Shown as an expectation, the agent proposed a report without the expected label in 98 of 168
+  trials, was blocked once, saw the advice again and corrected its report every time (98 of 98). The other 70 reported the
+  expected label the first time.
+- **Q took fewer model calls**: 5.24 a trial against 5.86, and each whole study cost $1.18 against $1.28, B0 arms included.
+- **Why neither presentation had a side effect, unlike comparison 1.** Here the rule acted in every trial and no block fell on
+  the last call. In comparison 1, every side effect was a block on the reserved final turn when the evidence arrived late.
+  These cases, each an outage before a rejection one to three ticks later, never produced that, so this run cannot say whether
+  the requirement presentation prevents it: its final-turn note is untested on unseen cases.
+- **The other cases.** The rule never acted on them under either presentation. A silent rule shows nothing, so those L trials see
+  what B0 trials see. Seven of the 96 other-case trials ended with no report after using all 8 calls, all on `unseen-o3` and
+  `unseen-o4`: six without a rule (four in E's study, two in Q's) and one under Q's silent rule. That failure belongs to the
+  turn budget, not the rule.
+
+What it shows: on 14 new rejected-upgrade schedules the learned rule L3 transferred under both presentations, and showing its
+advice as the gate's requirement removed every block. What it does not show: that the requirement presentation reduces side
+effects (there were none to reduce), the late-evidence case, other tasks, fixtures or fault types, another Actor, or an
+active policy. The records of this run carry the presentation only in their notes and in the launcher; records written after
+it name the Actor's adapter, model and presentation in an `actor` field. Money: $2.4678 of API money (E $1.2824, Q $1.1826,
+preflight $0.0027), 4,242 model calls, 113 minutes.
