@@ -112,3 +112,8 @@ amendment 9's (the design field `rejected_rule`).
 What it shows: this rule, frozen before either draw, removed the slip on new rejected-upgrade schedules and stayed silent
 elsewhere, with two trials under the rule going over the referee's call limit. What it does not show: other tasks, fixtures or fault types, another Actor, or an active policy. The space holds 30
 candidates and the two draws used 16 of them. Twenty-four trials per arm on four cases is small.
+
+**Run 3, 2026-11-14** (amendments 9 and 10; declaration sha256 `a3519230…bfb3`; drawn from commit 2072240, leaving out runs 1
+and 2): **not started**. The preflight failed twice with `ADAPTER_ERROR:RuntimeProviderError`, and one diagnostic call showed
+the cause: the Anthropic API rejects the configured key (HTTP 401, `AuthenticationError`). No case trial ran, so the draw is
+unused. The study can run on it once the owner replaces the key, under a new declaration that records this incident.

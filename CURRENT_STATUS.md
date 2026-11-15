@@ -1438,6 +1438,16 @@ so the gate of run 1 would have failed it. An unseen-case result for this rule o
 Money: **$0.2757 of API money** (study $0.2730, preflight $0.0027). November committed $0.2898 to $0.5655, rows 506 to 991, process
 cap $6.29. Declared bound $4.87 ($4.84 study, $0.034 preflight); project ledger $1,566.26 + $4.87 = $1,571.13 (bounds). 754 s.
 
+### Ledger entry 2026-11-14: unseen-case test 3 not started (API key rejected)
+
+Amendment 10 (committed at 2072240 with the owner's approval: legacy findings read where the rule acted, the repair study's
+8-call limit) and a fresh draw leaving out runs 1 and 2 were declared (`~/FaultLab_Runs/2026-11-14/unseen-study-3/`, sha256
+`a3519230…bfb3`). The preflight failed twice with `ADAPTER_ERROR:RuntimeProviderError`; one diagnostic call showed HTTP 401
+(`AuthenticationError`): the Anthropic API key in `.env`, which worked on 2026-11-09, is rejected. The study did not start and
+no case trial ran; the draw is unused. Money: none billed (each call was refused before any tokens); the spend ledger booked
+three reservations conservatively, $0.0126 (November committed $0.5655 to 0.5781, rows 991 to 994).
+Next step: the owner replaces the key; then a new declaration recording this incident, and the run.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

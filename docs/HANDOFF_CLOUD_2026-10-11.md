@@ -209,3 +209,6 @@ cases failed the gate on an unfired second fault, recorded as a design defect of
 result are in `docs/v2/UNSEEN_STUDY.md`. The owner approved amending that gate (amendment 9), and a second run on a fresh draw ended TRANSFERRED
 ($0.28, `artifacts/unseen-study-2-2026-11-08/`): slip 22 of 24 to 0 of 24. That pass depends on amendment 9, and two L trials
 carried a C8 violation (over the call limit) that the gate does not read.
+
+**Update 2026-11-14.** Unseen-case test 3 (amendment 10: legacy findings read, 8-call limit) is declared and drawn but not
+started: the Anthropic API key in `.env` is rejected (HTTP 401). After the owner replaces the key: re-declare, then run.
