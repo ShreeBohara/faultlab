@@ -1,0 +1,135 @@
+{
+  "caps": {
+    "max_dollars": 6.882,
+    "max_trials": 153,
+    "mechanic_per_proposal_usd_equivalent": 0.84,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 6.89,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $6.00"
+    },
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_usd": 0.034,
+    "study_usd": 7.0
+  },
+  "changes_since_pilot_2": [
+    "rule language v2 and the advice hook (340c031)",
+    "amendment 11: legacy referee violations in the candidate and validation gates (340c031)"
+  ],
+  "claim_scope": "a development qualification on the public split for one Actor (Haiku 5.5 on the API) and one Mechanic (Sonnet 5.5); not an unseen-case result, not an active policy",
+  "code": {
+    "claude_agent_sha256": "c29c1b826b48b64bffc0d6e0537a7500a2cf377fc9fe6262185307905b59cb3d",
+    "effectsafe_rules_sha256": "563521673b2da3ba81adc4c7070f198aa12494f4339e22192672c099ce3edec6",
+    "git_sha": "bca54a47dbccd3ce9f9283c98b6db9a617be5611",
+    "lab_rules_sha256": "e72ba38f1044f56008a0d4ea4ab085623aa0dbf546d61d021137c464552dbc3c",
+    "mechanic_sha256": "734e50ef6cdeccd6d5da57dcb4bb75a2a4fc3964af21972c8df012a842474cd3",
+    "model_actor_sha256": "cd17268c8c41f6e4f33070181fb55a45c78a9bc0aebc3e0fcdee26ff6da5b2ec",
+    "repair_study_sha256": "984a00c055e1d7e643edced77dc47f427bbf9bd2a7f0cc11c9fbdd43cd5504b4",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "db136a3455c5468f5f3723361791579cede768cd785b37d8d368217d18e22bb7"
+  },
+  "decision_rule": "the study's own decision (REPAIRED, NO_CHANGE or INCOMPLETE) under docs/v2/REPAIR_STUDY.md at this commit (amendments 1 to 8 and 11); nothing read after the run changes it",
+  "declared_at": "2026-11-14",
+  "design": {
+    "caps": {
+      "dollars": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "ticks": null,
+      "tokens": null,
+      "wall_seconds": 90.0
+    },
+    "gap_min": 3,
+    "healthy_controls": 3,
+    "healthy_min_valid": 2,
+    "healthy_scenario": "dev-1",
+    "legacy_rule": "read",
+    "mechanic_dollars": 0.84,
+    "must_complete": [
+      "dev-1",
+      "dev-6"
+    ],
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "pairs": 6,
+    "slots": 2,
+    "source_controls": 6,
+    "source_scenario": "dev-5",
+    "target_rule": "notification_label_after_rejection",
+    "validation_feedback_forbidden": true,
+    "validation_rule": "where_acted",
+    "validation_scenarios": [
+      "dev-1",
+      "dev-2",
+      "dev-3",
+      "dev-4",
+      "dev-6"
+    ]
+  },
+  "design_digest": "533fb10a2dd046364c3dc4c5fb277a604f738aa245ed286496fec26bfcd3f308",
+  "expected_cost": "about $0.25 to $0.50 of API money and 12 to 25 minutes",
+  "follow_up": "if REPAIRED, the proposal is frozen for an unseen-case comparison on a fresh draw, declared separately",
+  "ledger_before": {
+    "bound_sum_usd": 6.4512,
+    "committed_usd": 0.8862,
+    "month": "2026-11",
+    "rows": 1536
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "repair-study-v3-2026-11-14",
+  "no_expectation": "no outcome is expected or required; whether the Mechanic chooses advice, a block or both is a read-out",
+  "outputs": {
+    "bundles": "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/bundles",
+    "logs": [
+      "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/preflight.log",
+      "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/run.log"
+    ],
+    "record": "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/repair-study.json",
+    "store": "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/trials.sqlite3"
+  },
+  "pre_registered_readouts": [
+    "1 gap: target findings among valid source controls; healthy validity and findings",
+    "2 gate",
+    "3 proposals: validity, policy, attempts, turns, and the hooks each uses",
+    "4 candidate: L and B0 counts including legacy violations, advice turns and blocked proposals",
+    "5 validation: per case inert or acting, clean acting trials, both arms' counts",
+    "6 decision",
+    "7 cost: Actor dollars and tokens, Mechanic tokens and API-equivalent dollars"
+  ],
+  "preflight": {
+    "on_failure": "the study is not started; the failure is written up",
+    "pass": "the trial's execution is COMPLETED and its dollars are recorded",
+    "what": "one live dev-5 trial through `faultlab run --adapter model-actor`, before the study"
+  },
+  "purpose": "Repair study v3, chosen by the agent under the owner's instruction of 2026-11-14 ('Yeah, please go ahead. We have lots of time and money. We want to make this project the best. If you want to add more things, add more code, do more tests, and do more verification, just do it.'), after three unseen-case tests found that the frozen require_label rule removes the slip but its block sometimes costs the agent its last turn.",
+  "question": "Given rule language v2 (a before_agent_turn hook whose advise_label step shows the expected label before the report, and the documented turn cost of a block) and amendment 11 (legacy referee violations count as findings in both gates), does the Mechanic propose a repair that qualifies on dev-5 and passes validation on the other public cases, and which hooks does its proposal use?",
+  "roles": {
+    "actor": {
+      "adapter": "model-actor",
+      "channel": "Anthropic API (real money)",
+      "context_protocol": "faultlab-actor-context/v4-indexed-evidence",
+      "model": "anthropic:claude-haiku-5-5"
+    },
+    "mechanic": {
+      "adapter": "claude-agent",
+      "channel": "Claude Code on the owner's subscription (no API money; shadow-priced)",
+      "max_turns": 8,
+      "model": "claude-sonnet-5-5"
+    }
+  },
+  "rule_language": {
+    "digest": "3ba46ce5a9346af4ee842de1b4b5600065a96d86526b2eaf56ae5173c4b81c67",
+    "schema": "faultlab-rule-language/v2"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "the study stops at the first stage that cannot run (admission refused, worker stopped, infrastructure): INCOMPLETE",
+    "the ledger refuses any call past the process cap",
+    "a billing message in the preflight stops the launch (402 as a separate number, credit balance, billing)",
+    "one run: no rerun and no change to the design after a result"
+  ]
+}

@@ -1464,6 +1464,20 @@ Money: **$0.3081 of API money billed** for test 3 (study $0.3032, two passing pr
 reservations booked for the three calls refused with 401. November committed $0.5655 to 0.8862, rows 991 to
 1536. Declared bound $3.30 ($3.27 study, $0.034 preflight); project ledger $1,571.13 + $3.30 = $1,574.43 (bounds). 836 s.
 
+### Ledger entry 2026-11-14: repair study v3 (Anthropic API): REPAIRED
+
+Declared (`~/FaultLab_Runs/2026-11-14/repair-study-v3/`, sha256 `c9d801ac…b2ac`; record, logs and bundles in
+`artifacts/repair-study-v3-2026-11-14/`): the second pilot's setup with rule language v2 (the advice hook) and amendment 11 (legacy
+findings in both gates). Haiku 5.5 Actor on the API, Sonnet 5.5 Mechanic on the subscription. The preflight passed (dev-5,
+$0.0027). Gate 3 of 6. Slot 1, at its first attempt, proposed advice plus a block (`advise_label` before each turn and
+`require_label` at the report gate after the upgrade's terminal failure). Candidate: slip 0 of 6 against 5 of 6, correct refusals 6
+of 6 against 1 of 6, the advice shown on 10 turns and the block still needed 4 times. Validation: all five cases inert and passed.
+**REPAIRED**, a development qualification.
+
+Money: **$0.2376 of API money** (study $0.2349, preflight $0.0027); Mechanic $0.0158 API-equivalent on the subscription.
+November committed $0.8862 to 1.1237, rows 1,536 to 1,949. Declared bound $7.03 ($7.00 study, $0.034
+preflight); project ledger $1,574.43 + $7.03 = $1,581.46 (bounds). 675 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

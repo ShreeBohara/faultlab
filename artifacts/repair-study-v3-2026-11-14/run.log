@@ -1,0 +1,317 @@
+[claude-code:unrecognized_model] {"model":"claude-sonnet-5-5","query_source":"sdk"}
+{
+  "decision": "REPAIRED",
+  "readouts": {
+    "1_gap": {
+      "healthy_conformance": 0,
+      "healthy_trials": 3,
+      "healthy_valid": 3,
+      "source_target": 3,
+      "source_trials": 6,
+      "source_valid": 6
+    },
+    "2_gate_opened": true,
+    "3_proposals": [
+      {
+        "attempts": 1,
+        "ended": "proposal_recorded",
+        "policy": {
+          "rules": [
+            {
+              "hook": "before_final_report",
+              "operation": "upgrade",
+              "steps": [
+                {
+                  "claim": "notification_outcome",
+                  "expect": [
+                    "NOT_REQUIRED"
+                  ],
+                  "only_if": "always",
+                  "op": "require_label",
+                  "operation": "notification",
+                  "ticks": null
+                }
+              ],
+              "when": "terminal_failure"
+            },
+            {
+              "hook": "before_agent_turn",
+              "operation": "upgrade",
+              "steps": [
+                {
+                  "claim": "notification_outcome",
+                  "expect": [
+                    "NOT_REQUIRED"
+                  ],
+                  "only_if": "always",
+                  "op": "advise_label",
+                  "operation": "notification",
+                  "ticks": null
+                }
+              ],
+              "when": "terminal_failure"
+            }
+          ],
+          "version": "rejection-notification-not-required"
+        },
+        "slot": 1,
+        "turns": 2,
+        "valid": true
+      }
+    ],
+    "4_candidate": [
+      {
+        "B0_expected": 1,
+        "B0_target": 5,
+        "L_acted": 6,
+        "L_blocked": 4,
+        "L_conformance": 0,
+        "L_expected": 6,
+        "L_false_beliefs": 0,
+        "L_target": 0,
+        "L_valid": 6,
+        "qualified": true,
+        "slot": 1
+      }
+    ],
+    "5_validation": [
+      {
+        "cases": {
+          "dev-1": {
+            "B0": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.012288,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "L": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.012254,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "acting": 0,
+            "clean": 0,
+            "inert": true,
+            "passed": true
+          },
+          "dev-2": {
+            "B0": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.012753,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "L": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.012038,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "acting": 0,
+            "clean": 0,
+            "inert": true,
+            "passed": true
+          },
+          "dev-3": {
+            "B0": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.024009,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "L": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.024767,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "acting": 0,
+            "clean": 0,
+            "inert": true,
+            "passed": true
+          },
+          "dev-4": {
+            "B0": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.013439,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "L": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.012754,
+              "expected": 6,
+              "exposed": 5,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "acting": 0,
+            "clean": 0,
+            "inert": true,
+            "passed": true
+          },
+          "dev-6": {
+            "B0": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.02648,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "L": {
+              "acted": 0,
+              "advised": 0,
+              "basis": "scoreable",
+              "blocked": 0,
+              "completed": 6,
+              "conformance": 0,
+              "delivered": 6,
+              "dollars": 0.02644,
+              "expected": 6,
+              "exposed": 6,
+              "false_beliefs": 0,
+              "legacy": 0,
+              "scoreable": 6,
+              "target": 0,
+              "trials": 6
+            },
+            "acting": 0,
+            "clean": 0,
+            "inert": true,
+            "passed": true
+          }
+        },
+        "failed_cases": [],
+        "passed": true,
+        "slot": 1
+      }
+    ],
+    "6_decision": {
+      "decision": "REPAIRED",
+      "reason": "slot 1: the proposal qualified on the source case and passed validation"
+    },
+    "7_cost": {
+      "bound": {
+        "max_dollars": 6.882,
+        "max_trials": 153,
+        "study_dollars": 7.0
+      },
+      "measured": {
+        "dollars": 0.23490419999999995,
+        "envelopes": 81,
+        "http_attempts": 336,
+        "input_tokens": 1927207,
+        "model_calls": 408,
+        "output_tokens": 84367
+      },
+      "mechanic": [
+        {
+          "channel": "claude-code",
+          "dollars": 0.015798,
+          "input_tokens": 7719,
+          "output_tokens": 36,
+          "slot": 1
+        }
+      ]
+    }
+  },
+  "reason": "slot 1: the proposal qualified on the source case and passed validation",
+  "record": "/Users/shree/FaultLab_Runs/2026-11-14/repair-study-v3/repair-study.json"
+}

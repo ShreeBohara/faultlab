@@ -135,3 +135,10 @@ command offline.
   and the rule acted in all six L trials. All five validation cases were inert and passed; every validation trial
   completed without a finding in both arms, so the earlier comparative rule would also have passed them.
   **REPAIRED**; 82 trials, 716 s.
+- **Repair study v3, 2026-11-14** (Anthropic API, $0.2376; `artifacts/repair-study-v3-2026-11-14/`): rule language v2 (advice)
+  and amendment 11, otherwise the second pilot's setup. The gate opened (3 of 6). Slot 1 proposed, at its first attempt, advice and a
+  block together: `advise_label notification_outcome [NOT_REQUIRED]` before each agent turn and `require_label` at the report gate,
+  both after the upgrade's terminal failure. Candidate: L 0 of 6 target against B0 5 of 6, correct refusals 6 of 6 against 1 of 6, no
+  legacy violation. The agent was shown the advice on 10 turns and still proposed the slip 4 times, each caught by the block. All
+  five validation cases were inert and passed. **REPAIRED**; 81 trials, 675 s. A development qualification: the advice did not stop
+  Haiku from proposing the slip, so whether it removes the block's cost is left to the unseen-case comparison.
