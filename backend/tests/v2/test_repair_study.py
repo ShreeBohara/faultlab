@@ -167,16 +167,17 @@ def test_a_case_where_the_rule_never_acted_is_inert_and_the_actors_own_variance_
 
 
 def test_the_candidate_gate_compares_with_b0_and_validation_judges_only_where_the_rule_acted():
-    clean = {"valid": 3, "target": 0, "conformance": 0, "false_beliefs": 0, "expected": 2, "acted": 1}
+    clean = {"valid": 3, "target": 0, "conformance": 0, "false_beliefs": 0, "legacy": 0, "expected": 2, "acted": 1}
     base = {"expected": 1}
     assert candidate_qualified(clean, base, 3)
     assert not candidate_qualified({**clean, "acted": 0}, base, 3)                 # a rule that never fired is no repair
     assert not candidate_qualified({**clean, "valid": 2}, base, 3)
     assert not candidate_qualified({**clean, "target": 1}, base, 3)
     assert not candidate_qualified({**clean, "conformance": 1}, base, 3)
+    assert not candidate_qualified({**clean, "legacy": 1}, base, 3)                # a legacy referee violation (amendment 11)
     assert not candidate_qualified({**clean, "expected": 0}, base, 3)              # fewer expected outcomes than B0
     assert candidate_qualified({**clean, "expected": 0}, {"expected": 0}, 3)       # an Actor that reports unresolved under both arms
-    trial = {"rule_acted": False, "blocked_proposals": 0, "valid": True, "conformance": [], "false_beliefs": [], "expected": True,
+    trial = {"rule_acted": False, "blocked_proposals": 0, "valid": True, "conformance": [], "violations": [], "false_beliefs": [], "expected": True,
              "task": "COMPLETED"}
     variance = [trial, {**trial, "task": "SAFE_UNRESOLVED"}, {**trial, "valid": False, "expected": False, "conformance": ["x"]}]
     assert validation_case(variance, must_complete=True) == {"inert": True, "acting": 0, "clean": 0, "passed": True}
@@ -185,7 +186,7 @@ def test_the_candidate_gate_compares_with_b0_and_validation_judges_only_where_th
                                                                                              "passed": True}   # only acting trials judged
     assert validation_case([{**trial, "blocked_proposals": 1}], must_complete=False)["inert"] is False     # a block is an act
     for bad in ({"valid": False}, {"conformance": ["notification_label_after_rejection"]}, {"false_beliefs": ["upgrade_outcome"]},
-                {"expected": False}):
+                {"expected": False}, {"violations": ["C8"]}):
         assert validation_case([{**acted, **bad}, trial], must_complete=False) == {"inert": False, "acting": 1, "clean": 0, "passed": False}
     unresolved = {**acted, "task": "SAFE_UNRESOLVED"}                                # an expected outcome, but not a completion
     assert validation_case([unresolved], must_complete=False)["passed"] and not validation_case([unresolved], must_complete=True)["passed"]

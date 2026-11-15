@@ -26,7 +26,7 @@ from typing import Any, Protocol
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
-from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, check_policy, policy_from_json
+from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
 from faultlab.packs import load_pack
 
@@ -108,11 +108,15 @@ class ModelActorAdapter(BaseAdapter):
         episode_id = session.attempt_id
         gate = ReportGate(self.rule_policy, session.pack, session)
         gate.declare()
+        advisor = TurnAdvisor(self.rule_policy, session.pack, session)
         while session.usage.model_calls < caps:
             final = session.usage.model_calls + 1 >= caps
             shown = [legacy_observation(o.model_dump(mode="json"), episode_id, models) for o in session.observations]
             user = progress.turn_message(shown, final_report_required=final, remaining_actor_calls=caps - session.usage.model_calls,
                                          protocol=self.protocol)
+            advice = await advisor.advise()
+            if advice:                                             # an advice rule's expectation, shown before the agent reports
+                user = {**user, "rule_advice": advice}
             call_messages = messages + [{"role": "user", "content": models.canonical_json(user)}]
             response_contract = "actor_final_report" if final else None
             runtime.validate_request_input(call_messages, self.model, response_contract=response_contract)

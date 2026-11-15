@@ -7,7 +7,9 @@ This slice runs rules at one hook, ``before_final_report``, with the ``report`` 
 read a status, wait, resend the pinned bytes of a write, require a receipt or a label, or ask for
 a terminal report, and the hook's result either lets the agent's report through unchanged or blocks
 it with reasons the agent is shown. Nothing here rewrites a report; the referee and the oracle
-score only what was submitted. A policy with rules at any other hook is refused before any trial.
+score only what was submitted. Advice rules run at ``before_agent_turn`` (2026-11-14): before each agent turn, a rule whose condition holds in the
+delivered evidence shows the agent the label the report gate expects (``advise_label``); advice blocks, calls and rewrites
+nothing, and costs the agent no turn. A policy with rules at any other hook is refused before any trial.
 
 Rules name operations by the pack's aliases (``upgrade`` and ``notification`` for the orders
 pack); the aliases resolve to the trial's own operation ids through its intent.
@@ -21,7 +23,8 @@ from effectsafe import HookResult, Interpreter, RulePolicy
 from faultlab.core import canonical_json, content_hash
 
 REPORT_HOOK = "before_final_report"
-SUPPORTED_HOOKS = (REPORT_HOOK,)
+ADVICE_HOOK = "before_agent_turn"
+SUPPORTED_HOOKS = (REPORT_HOOK, ADVICE_HOOK)
 REQUIRED_ALIAS_KEYS = ("intent_key", "service", "write_tool", "status_tool", "claim")
 
 
@@ -49,14 +52,16 @@ def check_policy(policy: RulePolicy, pack) -> None:
     claims = set(pack.report_model.model_fields)
     for rule in policy.rules:
         if rule.hook not in SUPPORTED_HOOKS:
-            raise RuleError(f"hook {rule.hook!r} is not run at the report gate; supported: {', '.join(SUPPORTED_HOOKS)}")
+            raise RuleError(f"hook {rule.hook!r} is not run by the lab; supported: {', '.join(SUPPORTED_HOOKS)}")
         if rule.operation not in aliases:
             raise RuleError(f"unknown operation alias {rule.operation!r}; known: {', '.join(sorted(aliases))}")
         for step in rule.steps:
             if step.operation is not None and step.operation not in aliases:
                 raise RuleError(f"unknown operation alias {step.operation!r}; known: {', '.join(sorted(aliases))}")
-            if step.op == "require_label" and step.claim not in claims:
+            if step.op in ("require_label", "advise_label") and step.claim not in claims:
                 raise RuleError(f"unknown report claim {step.claim!r}; known: {', '.join(sorted(claims))}")
+            if (step.op == "advise_label") != (rule.hook == ADVICE_HOOK):
+                raise RuleError(f"{ADVICE_HOOK} runs advise_label steps only, and advise_label runs there only; got {step.op} at {rule.hook}")
 
 
 def resolve_policy(policy: RulePolicy, pack, intent: dict) -> RulePolicy:
@@ -110,7 +115,7 @@ class ReportGate:
         """Record the policy as the trial's first rule-step event, so the envelope shows what the agent carried."""
         if self.policy is not None:
             self.session.rule_step("policy_declared", {"policy": self.policy.model_dump(mode="json"), "policy_digest": self.digest,
-                                                       "hooks": list(SUPPORTED_HOOKS), "gate": "report"})
+                                                       "hooks": sorted({rule.hook for rule in self.policy.rules}), "gate": "report"})
 
     async def check(self, report: dict) -> HookResult | None:
         """Run the report hook on one proposal; None when the trial carries no policy."""
@@ -135,6 +140,32 @@ class ReportGate:
         return result
 
 
+class TurnAdvisor:
+    """One trial's advice rules, run before each agent turn: when a rule's condition holds in the delivered evidence, its
+    ``advise_label`` steps are shown to the agent as what the report gate expects. Nothing is blocked, called or rewritten."""
+
+    def __init__(self, policy: RulePolicy | None, pack, session):
+        self.pack, self.session = pack, session
+        self.active = policy is not None and any(rule.hook == ADVICE_HOOK for rule in policy.rules)
+        self.digest = policy_digest(policy) if policy is not None else None
+        self.interpreter = (Interpreter(resolve_policy(policy, pack, session.intent), session.journal, SessionExecutor(session, pack, ADVICE_HOOK))
+                            if self.active else None)
+        self.turns = 0
+        self.last: list[dict] = []
+
+    async def advise(self) -> list[dict]:
+        """The advice for the agent's next turn; [] when the trial carries no advice rule or no rule's condition holds."""
+        if not self.active:
+            return []
+        self.turns += 1
+        result = await self.interpreter.invoke(ADVICE_HOOK, f"turn-{self.turns}", gate="advice")
+        self.last = describe_reasons(result.advice, self.pack, self.session.intent)
+        if result.steps_run:
+            self.session.rule_step(ADVICE_HOOK, {"gate": "advice", "turn": self.turns, "policy_digest": self.digest, "advice": list(result.advice),
+                                                 "requirements": self.last, "steps_run": list(result.steps_run)})
+        return self.last
+
+
 def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
     """The gate's reason codes as the requirements they state, in words the agent can act on (smoke 2, amendment 4)."""
     aliases = {str(intent[spec["intent_key"]]): alias for alias, spec in pack.operation_aliases.items()}
@@ -146,6 +177,12 @@ def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
             allowed = labels.split("|")
             described.append({"requirement": "label", "claim": claim, "one_of": allowed,
                               "text": f"the report's {claim} must be one of: {', '.join(allowed)}"})
+        elif kind == "LABEL_ADVISED":
+            claim, _, labels = rest.partition(":")
+            allowed = labels.split("|")
+            described.append({"advice": "label", "claim": claim, "one_of": allowed,
+                              "text": f"a runtime rule expects the report's {claim} to be one of: {', '.join(allowed)}, given the evidence "
+                                      f"delivered so far"})
         elif kind == "RECEIPT_REQUIRED":
             alias = aliases.get(rest, rest)
             described.append({"requirement": "receipt", "operation": alias,
@@ -155,5 +192,5 @@ def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
     return described
 
 
-__all__ = ["REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "check_policy", "describe_reasons",
+__all__ = ["ADVICE_HOOK", "REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "TurnAdvisor", "check_policy", "describe_reasons",
            "policy_digest", "policy_from_json", "resolve_policy"]

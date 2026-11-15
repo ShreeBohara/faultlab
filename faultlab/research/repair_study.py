@@ -44,7 +44,7 @@ from pydantic import Field
 
 from faultlab.core import Caps, StrictModel, canonical_json, content_hash, utc_now_text
 from faultlab.evidence import EnvSpec, RepetitionPolicy, TrialEnvelope
-from faultlab.lab.rules import REPORT_HOOK, policy_from_json
+from faultlab.lab.rules import ADVICE_HOOK, REPORT_HOOK, policy_from_json
 from faultlab.lab.scheduler import AdmissionRefused, Scheduler, schedule
 from faultlab.lab.store import TrialStore
 from faultlab.lab.worker import TrialWorker, default_oracles
@@ -76,6 +76,7 @@ class RepairStudyDesign(StrictModel):
     mechanic_dollars: float = Field(default=0.0, ge=0.0)     # the bound of one proposal (API-equivalent on the subscription)
     validation_feedback_forbidden: Literal[True] = True
     validation_rule: Literal["where_acted"] = "where_acted"    # amendment 8 (2026-10-28): regressions only where the rule acted
+    legacy_rule: Literal["read"] = "read"                     # amendment 11 (2026-11-14): legacy referee violations count as findings
 
     def max_trials(self) -> int:
         per_slot = 2 * self.pairs + 2 * self.pairs * len(self.validation_scenarios)
@@ -97,12 +98,14 @@ def summarize_trial(envelope: TrialEnvelope, *, expected_class: str, target_rule
     beliefs = [m.split(":", 1)[1] for m in mismatches if m.startswith("belief:")]
     gates = [e.payload for e in envelope.events
              if e.kind == "rule_step" and isinstance(e.payload, dict) and e.payload.get("hook") == REPORT_HOOK]
+    advised = [e.payload for e in envelope.events
+               if e.kind == "rule_step" and isinstance(e.payload, dict) and e.payload.get("hook") == ADVICE_HOOK and e.payload.get("advice")]
     return {"attempt_id": envelope.attempt.attempt_id, "scenario_id": envelope.plan.scenario_id, "arm": arm,
             "execution": outcome.execution, "task": outcome.task, "report": envelope.report.status, "reason": envelope.attempt.terminal_reason,
             "scoreable": scoreable, "exposed": exposed, "valid": valid, "faults_triggered": exposure.all_required_triggered,
             "target": scoreable and target_rule in conformance, "conformance": conformance, "false_beliefs": beliefs,
             "expected": scoreable and outcome.task in ACCEPTABLE.get(expected_class, ()),
-            "rule_acted": any(g.get("steps_run") for g in gates), "blocked_proposals": sum(1 for g in gates if g.get("blocked")),
+            "rule_acted": any(g.get("steps_run") for g in gates) or bool(advised), "advice_turns": len(advised), "blocked_proposals": sum(1 for g in gates if g.get("blocked")),
             "violations": [f.property_id for f in outcome.findings if f.result == "VIOLATION"],
             "model_calls": outcome.cost.model_calls, "dollars": outcome.cost.dollars_measured, "wall_seconds": outcome.cost.wall_seconds}
 
@@ -115,14 +118,16 @@ def _counts(rows: list[dict], basis: str = "valid") -> dict:
             "target": sum(1 for r in kept if r["target"]), "conformance": sum(1 for r in kept if r["conformance"]),
             "false_beliefs": sum(1 for r in kept if r["false_beliefs"]), "expected": sum(1 for r in kept if r["expected"]),
             "completed": sum(1 for r in kept if r["task"] == "COMPLETED"), "acted": sum(1 for r in kept if r["rule_acted"]),
-            "blocked": sum(r["blocked_proposals"] for r in rows), "dollars": round(sum(r["dollars"] or 0.0 for r in rows), 6)}
+            "legacy": sum(1 for r in kept if r["violations"]),
+            "advised": sum(1 for r in kept if r.get("advice_turns")), "blocked": sum(r["blocked_proposals"] for r in rows), "dollars": round(sum(r["dollars"] or 0.0 for r in rows), 6)}
 
 
 def candidate_qualified(candidate: dict, baseline: dict, pairs: int) -> bool:
-    """The candidate gate over ``valid``-basis counts: every L trial valid, no target or other finding, no false belief,
+    """The candidate gate over ``valid``-basis counts: every L trial valid, no target or other finding, no legacy referee
+    violation (amendment 11), no false belief,
     the expected outcome no less often than under B0, and the policy acted in at least one L trial."""
     return (candidate["valid"] == pairs and candidate["target"] == 0 and candidate["conformance"] == 0
-            and candidate["false_beliefs"] == 0 and candidate["expected"] >= baseline["expected"] and candidate["acted"] >= 1)
+            and candidate["false_beliefs"] == 0 and candidate["legacy"] == 0 and candidate["expected"] >= baseline["expected"] and candidate["acted"] >= 1)
 
 
 def validation_case(rows: list[dict], *, must_complete: bool) -> dict:
@@ -130,7 +135,7 @@ def validation_case(rows: list[dict], *, must_complete: bool) -> dict:
     trial, and an inert case passes; otherwise every trial where the rule acted must be valid, carry no finding and no
     false belief, reach the expected outcome and, in a must_complete case, complete. Trials where it did not act are not judged."""
     acting = [r for r in rows if r["rule_acted"] or r["blocked_proposals"]]
-    clean = [r for r in acting if r["valid"] and not r["conformance"] and not r["false_beliefs"] and r["expected"]
+    clean = [r for r in acting if r["valid"] and not r["conformance"] and not r["violations"] and not r["false_beliefs"] and r["expected"]
              and (not must_complete or r["task"] == "COMPLETED")]
     return {"inert": not acting, "acting": len(acting), "clean": len(clean), "passed": len(clean) == len(acting)}
 
@@ -280,7 +285,7 @@ class RepairStudy:
             counts = cand["counts"]
             qualified = cand["complete"] and candidate_qualified(counts, b0["counts"], design.pairs)
             entry["candidate"] = {"B0": self._public(b0), "L": self._public(cand), "qualified": qualified,
-                                  "rule": "every L trial valid, no target or other conformance finding, no false belief, expected outcome "
+                                  "rule": "every L trial valid, no target or other conformance finding, no legacy referee violation, no false belief, expected outcome "
                                           "under L no less often than under B0, and the policy acted in at least one L trial"}
             self._save()
             if not (b0["complete"] and cand["complete"]):
@@ -302,7 +307,7 @@ class RepairStudy:
                 entry["validation"] = {"cases": validation, "passed": passed, "failed_cases": why,
                                        "rule": "amendment 8: a regression is attributed to the rule only where it acted; a case where the "
                                                "policy ran no step and blocked nothing in any L trial is inert and passes; otherwise every "
-                                               "L trial where the rule acted is valid, carries no conformance finding and no false belief, "
+                                               "L trial where the rule acted is valid, carries no conformance finding, no legacy referee violation and no false belief, "
                                                "reaches the case's expected outcome and, in a must_complete case, completes; both arms' "
                                                "counts reported"}
                 self._save()

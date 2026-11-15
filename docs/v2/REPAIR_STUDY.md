@@ -48,6 +48,10 @@ trial, propose a runtime rule that repairs it without hurting anything else?
    did not open or no proposal passed; `INCOMPLETE` when a stage could not run (admission refused,
    worker stopped, infrastructure).
 
+**Amendment 11 (2026-11-14).** Legacy referee violations (C1 to C8) now count as findings in both gates: no candidate L
+trial may carry one, and no validation trial where the rule acted may carry one. It came from the unseen-case test, whose
+second run passed two trials that had broken the referee's call limit. Runs before it used the gates without this term.
+
 A valid trial (controls, candidate, validation trials where the rule acted) completed its execution and fired every scheduled fault; an absent
 report is the agent's scored failure, not an invalid trial. Each trial runs with a fresh adapter (no
 state crosses trials). Every batch is capped at its trials' bound; the
@@ -55,6 +59,18 @@ study refuses to start when its maximum bound exceeds `--study-dollars`. The rec
 (`repair-study.json`) is rewritten after every stage and carries the design digest, the pack digest,
 the rule-language digest, the Mechanic's identity, every stage's rows, counts, cost and bundle, every
 proposal verbatim, the decision and the seven read-outs of the design note.
+
+## Advice rules (2026-11-14)
+
+A `require_label` block tells the agent the expected label, but the correction spends one of its turns, and a report
+blocked on its last turn cannot be corrected. That cost showed in development (smoke 2: two trials ran out of turns) and
+in the unseen-case runs (three of 72 trials under the rule). The rule language now has a second hook, `before_agent_turn`,
+whose only step, `advise_label`, shows the agent the label a rule expects as soon as the rule's condition holds in the
+delivered evidence: before each turn for the model actor, with each tool result for the Claude Agent adapter. Advice
+blocks, calls and rewrites nothing and costs no turn. The agent may still report otherwise, so a policy that wants
+enforcement keeps a `require_label` step too. The Mechanic sees the new hook and the turn cost of a block in the rule
+language (`faultlab-rule-language/v2`). Evidence: `backend/tests/v2/test_report_gate.py` (advice shown only once the
+rejection is delivered, one turn fewer than a block, no enforcement on its own, the gate as a backstop, both adapters).
 
 ## The Mechanic
 

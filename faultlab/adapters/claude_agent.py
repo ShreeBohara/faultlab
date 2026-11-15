@@ -34,7 +34,7 @@ from typing import Any, Callable
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
-from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, check_policy, policy_from_json
+from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
 from faultlab.packs import load_pack
 
@@ -161,6 +161,7 @@ class ClaudeAgentAdapter(BaseAdapter):
         self._failure: BaseException | None = None
         self._workdir: str | None = None
         self._gate: ReportGate | None = None
+        self._advisor: TurnAdvisor | None = None
 
     # -- the tools the agent sees -------------------------------------------------------------------
 
@@ -187,7 +188,11 @@ class ClaudeAgentAdapter(BaseAdapter):
             self._failure = error
             raise
         index = len(session.observations)      # the journal only appends: a label names the same observation on every turn
-        return {"content": [{"type": "text", "text": self._observation_text(observation, index)}]}
+        content = [{"type": "text", "text": self._observation_text(observation, index)}]
+        advice = await self._advisor.advise() if self._advisor is not None else []
+        if advice:                             # an advice rule's expectation rides with the evidence that made it hold
+            content.append({"type": "text", "text": json.dumps({"rule_advice": advice}, sort_keys=True)})
+        return {"content": content}
 
     def _request(self, tool: str, arguments: dict) -> tuple[str, dict]:
         i = self._session.intent
@@ -297,6 +302,7 @@ class ClaudeAgentAdapter(BaseAdapter):
         self._session, self._done, self._failure = session, False, None
         self._gate = ReportGate(self.rule_policy, session.pack, session)
         self._gate.declare()
+        self._advisor = TurnAdvisor(self.rule_policy, session.pack, session)
         caps = session.caps.model_calls if session.caps.model_calls is not None else DEFAULT_MODEL_CALLS
         prompt = json.dumps({"task": session.intent, "limits": {"model_turns": caps, "http_attempts": session.caps.http_attempts},
                              "instruction": "Carry out the task with the faultlab tools, then call report exactly once."}, sort_keys=True)

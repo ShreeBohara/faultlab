@@ -18,6 +18,7 @@ from faultlab.lab import TrialStore, TrialWorker
 from faultlab.lab.rules import RuleError, check_policy, policy_from_json, resolve_policy
 from faultlab.packs import load_pack
 from faultlab.referee.legacy import LegacyOrdersReferee
+from faultlab.research.repair_study import summarize_trial
 from faultlab import __main__ as cli
 from test_claude_agent import HARNESS_MODEL, MODEL, RATES, ScriptedHarness
 from test_model_actor import MODEL as PROVIDER_MODEL, ScriptedProvider
@@ -191,7 +192,7 @@ def test_a_policy_outside_the_gate_or_the_pack_is_refused_before_any_trial():
     other_hook = {**POLICY, "rules": [{**POLICY["rules"][0], "hook": "after_upgrade_response"}]}
     unknown_alias = {**POLICY, "rules": [{**POLICY["rules"][0], "operation": "orders"}]}
     unknown_claim = {**POLICY, "rules": [{**POLICY["rules"][0], "steps": [{**POLICY["rules"][0]["steps"][0], "claim": "mood"}]}]}
-    for bad, message in ((other_hook, "not run at the report gate"), (unknown_alias, "unknown operation alias"), (unknown_claim, "unknown report claim")):
+    for bad, message in ((other_hook, "not run by the lab"), (unknown_alias, "unknown operation alias"), (unknown_claim, "unknown report claim")):
         with pytest.raises(RuleError, match=message):
             check_policy(policy_from_json(bad), ORDERS)
         with pytest.raises(ValueError, match=message):
@@ -233,3 +234,66 @@ def test_the_run_command_takes_a_policy_file_for_the_live_adapters_only(tmp_path
                      "--rule-policy", str(path)])
     assert code == 2
     assert not (tmp_path / "s.sqlite3").exists()
+
+
+ADVISE = {"version": "advise-after-rejection/1", "rules": [
+    {"hook": "before_agent_turn", "operation": "upgrade", "when": "terminal_failure",
+     "steps": [{"op": "advise_label", "operation": "upgrade", "claim": "notification_outcome", "expect": ["NOT_REQUIRED"]}]}]}
+ADVISE_AND_REQUIRE = {"version": "advise-and-require/1", "rules": ADVISE["rules"] + POLICY["rules"]}
+
+
+class AdvisedProvider(SlippingProvider):
+    """Relabels once it has been shown advice, as it does after a block."""
+
+    async def complete(self, messages, **kwargs):
+        self.was_blocked = any(m["role"] == "user" and ("report_blocked" in m["content"] or "rule_advice" in m["content"]) for m in messages)
+        return await ScriptedProvider.complete(self, messages, **kwargs)
+
+
+class AdvisedHarness(SlippingHarness):
+    """Relabels once a tool result carried advice."""
+
+    def blocked(self):
+        return super().blocked() + [r for n, r in self.results if any("rule_advice" in c.get("text", "") for c in r["content"])]
+
+
+def test_an_advice_rule_shows_the_expected_label_before_the_report_and_never_blocks(worker):
+    provider = AdvisedProvider()
+    envelope = trial(worker, "dev-5", ModelActorAdapter(provider, PROVIDER_MODEL, rule_policy=ADVISE), "trial-advised")
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and envelope.outcome.claims.mismatches == []
+    advice = [s for s in rule_steps(envelope) if s["hook"] == "before_agent_turn"]
+    assert advice and all(s["gate"] == "advice" and s["advice"] == ["LABEL_ADVISED:notification_outcome:NOT_REQUIRED"] for s in advice)
+    assert [(s["blocked"], s["steps_run"]) for s in rule_steps(envelope) if s["hook"] == "before_final_report"] == [(False, [])]   # checked, nothing to run
+    turns = [json.loads(r["messages"][-1]["content"]) for r in provider.requests]
+    assert "rule_advice" not in turns[0] and turns[-1]["rule_advice"][0]["one_of"] == ["NOT_REQUIRED"]
+    row = summarize_trial(envelope, expected_class="rejected", target_rule="notification_label_after_rejection", arm="L")
+    assert row["rule_acted"] and row["advice_turns"] == len(advice) and row["blocked_proposals"] == 0
+    blocked = trial(worker, "dev-5", ModelActorAdapter(SlippingProvider(), PROVIDER_MODEL, rule_policy=POLICY), "trial-blocked")
+    assert envelope.outcome.cost.model_calls == blocked.outcome.cost.model_calls - 1                  # no turn spent on a block
+    ignored = trial(worker, "dev-5", ModelActorAdapter(SlippingProvider(), PROVIDER_MODEL, rule_policy=ADVISE), "trial-ignored")
+    assert ignored.outcome.claims.mismatches == [TARGET]                                               # advice alone enforces nothing
+    healthy = trial(worker, "dev-1", ModelActorAdapter(AdvisedProvider(), PROVIDER_MODEL, rule_policy=ADVISE), "trial-healthy")
+    assert healthy.outcome.task == "COMPLETED" and not [s for s in rule_steps(healthy) if s["hook"] == "before_agent_turn"]
+
+
+def test_the_claude_agent_sees_advice_with_the_evidence_and_the_gate_stays_a_backstop(worker):
+    adapter, harness = agent(ADVISE_AND_REQUIRE, harness=AdvisedHarness)
+    envelope = trial(worker, "dev-5", adapter, "trial-claude-advised")
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and envelope.outcome.claims.mismatches == []
+    assert any("rule_advice" in c.get("text", "") for _, r in harness.results for c in r["content"]) and not SlippingHarness.blocked(harness)
+    assert [g["blocked"] for g in rule_steps(envelope) if g["hook"] == "before_final_report"] == [False]
+    adapter, harness = agent(ADVISE_AND_REQUIRE)                      # an agent that ignores the advice still meets the block
+    envelope = trial(worker, "dev-5", adapter, "trial-claude-backstop")
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and len(harness.blocked()) == 1
+
+
+def test_advice_runs_only_at_its_hook_and_names_a_known_claim():
+    at_report_gate = {**ADVISE, "rules": [{**ADVISE["rules"][0], "hook": "before_final_report"}]}
+    block_at_advice = {**POLICY, "rules": [{**POLICY["rules"][0], "hook": "before_agent_turn"}]}
+    unknown = {**ADVISE, "rules": [{**ADVISE["rules"][0], "steps": [{**ADVISE["rules"][0]["steps"][0], "claim": "mood"}]}]}
+    for bad, message in ((at_report_gate, "advise_label runs there only"), (block_at_advice, "runs advise_label steps only"), (unknown, "unknown report claim")):
+        with pytest.raises(RuleError, match=message):
+            check_policy(policy_from_json(bad), ORDERS)
+    with pytest.raises(ValueError, match="advise_label names a claim"):
+        policy_from_json({"version": "x", "rules": [{"hook": "before_agent_turn", "operation": "upgrade", "steps": [{"op": "advise_label", "operation": "upgrade"}]}]})
+    check_policy(policy_from_json(ADVISE_AND_REQUIRE), ORDERS)
