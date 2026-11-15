@@ -299,9 +299,10 @@ What the numbers say:
 - **Both presentations remove the slip**: 0 of 192 trials under the rule against 38 of 192 without it.
 - **The rule was silent in four trials of five.** It reads delivered evidence only, so it speaks once the agent has seen the
   rejection. In 77 of 96 trials in each study it never did: in all but one the agent reported the upgrade unresolved
-  (`SAFE_UNRESOLVED`) without having seen the rejection (E: 41 after six or seven calls, 36 at the 8-call cap; Q: 36 after seven
-  calls, 40 at the cap). The scripted polling agent of the test sees the rejection on its seventh call; Haiku mostly reported
-  before that. A silent rule shows nothing, so those trials see what a B0 trial sees and the presentations cannot differ there.
+  (`SAFE_UNRESOLVED`) without having seen the rejection (E: 41 after six or seven calls, 36 on the eighth; Q: 36 after seven
+  calls, 40 on the eighth). The scripted polling agent of the test sees the rejection on its seventh call; most Haiku trials had
+  not seen it when they reported. A silent rule shows nothing, so those trials see what a B0 trial sees and the presentations
+  cannot differ there.
   This is why every case failed in both studies: with this agent and budget the late stratum can compare side effects but cannot
   pass the transfer gate.
 - **Two trials ended with no report without a block**, both on `unseen-l4` after all 8 calls: one without a rule (E's study) and
