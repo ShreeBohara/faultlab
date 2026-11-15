@@ -11,8 +11,10 @@ and does it stay harmless on schedules with no rejection?
 
 ## The cases
 
-`case_space` lists 30 candidate schedules, the orders pack's own fault grammar minus the six public cases: 13 where the
-upgrade ends in a terminal rejection (`rejected`) and 17 where it does not (`other`). Delays stop at four ticks, so that
+`case_space` lists 64 candidate schedules, the orders pack's own fault grammar minus the six public cases: 32 where the
+upgrade ends in a terminal rejection (`rejected`) and 32 where it does not (`other`). The space grew from 30 on 2026-11-14,
+adding a stale read of three versions, a lost upgrade response before a rejection or a success, and flaky confirmations on
+the history fixture; the first 30 come first and unchanged, and runs 1 to 3 drew only from them. Delays stop at four ticks, so that
 the turn budget measures the agent and not the wait. Each stratum is shuffled by a seed text made of the commit holding
 this code and the frozen rule's digest, so the order is fixed before the draw. The draw keeps the first four candidates
 per stratum that the reference agent plays cleanly, leaving out the cases of earlier draws. Nobody picks a case. The draw
@@ -24,7 +26,8 @@ about other tasks, other fixtures or other fault types.
 
 ## Trials and decision
 
-Each case runs `pairs` (6) trials with no rule (B0) and `pairs` under the frozen rule (L), each within the repair study's
+Each case runs `pairs` (6) trials with no rule (B0) and `pairs` under the frozen rule (L) (since 2026-11-14 an `other` case
+may run `other_pairs`, and the draw may keep fewer `other` cases, `--per-other`), each within the repair study's
 limits of 8 model calls, 18 HTTP attempts and 90 seconds (amendment 10, after run 2; runs 1 and 2 allowed 12, 24 and 120).
 
 - A `rejected` case (amendment 9, after run 1): every L trial completed its execution; the rule acted in at least `pairs - 1`

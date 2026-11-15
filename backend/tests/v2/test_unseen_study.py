@@ -48,7 +48,8 @@ def test_the_space_holds_no_public_case_and_its_classes_follow_the_faults():
     extended = pack_with_cases(PACK, cases)
     public = [signature(s) for s in PACK.scenarios]
     drawn = [signature(s) for s in extended.scenarios[len(PACK.scenarios):]]
-    assert len(space["rejected"]) == 13 and len(space["other"]) == 17 and len(drawn) == 30
+    assert len(space["rejected"]) == 32 and len(space["other"]) == 32 and len(drawn) == 64
+    assert content_hash({"rejected": space["rejected"][:13], "other": space["other"][:17]}) == "c489068f7881162b7a59c1167d3b84a3e667845898822e74f42eabde93ee689e"   # v1 first, unchanged
     assert all(s not in public for s in drawn)
     assert all(a != b for i, a in enumerate(drawn) for b in drawn[i + 1:])
     terminal = lambda c: any(p["parameters"].get("terminal_status") == "FAILED" for p in c["primitives"])
@@ -71,6 +72,10 @@ def test_the_draw_is_reproducible_and_keeps_cases_the_reference_agent_plays_clea
     assert drawn[0]["cases"] == drawn[1]["cases"] and len(drawn[0]["cases"]) == 4
     assert [c["case_id"] for c in drawn[0]["cases"]] == ["unseen-r1", "unseen-r2", "unseen-o1", "unseen-o2"]
     assert drawn[0]["tried"]["rejected"] >= 2 and drawn[0]["tried"]["other"] >= 2
+    with TrialStore(tmp_path / "three.sqlite3") as store:
+        fewer = run(draw_cases("fixed", per_stratum=2, per_other=1, store=store, out_dir=tmp_path / "three", worlds_dir=tmp_path / "three-worlds",
+                               referee=LegacyOrdersReferee()))
+    assert [c["case_id"] for c in fewer["cases"]] == ["unseen-r1", "unseen-r2", "unseen-o1"] and fewer["cases"] == drawn[0]["cases"][:3]
 
 
 def test_a_rule_that_repairs_the_slip_on_new_schedules_transfers(tmp_path):
@@ -143,12 +148,13 @@ def test_a_rejected_case_is_judged_where_the_rule_acted_whether_or_not_another_f
 def test_a_later_draw_leaves_out_the_cases_of_an_earlier_one():
     spent = [named_case(c, "rejected", i + 1) for i, c in enumerate(case_space()["rejected"][:4])]
     order = draw_order("b", exclude=spent)
-    assert len(order["rejected"]) == 9 and len(order["other"]) == 17
+    assert len(order["rejected"]) == 28 and len(order["other"]) == 32
     assert not any((c["fixture_id"], c["primitives"]) == (s["fixture_id"], s["primitives"]) for c in order["rejected"] for s in spent)
 
 
 def test_a_study_that_could_cost_more_than_declared_is_refused(tmp_path):
     caps = UnseenStudyDesign().caps
+    assert UnseenStudyDesign(rejected_cases=["a"], other_cases=["b", "c"], pairs=4, other_pairs=2).max_trials() == 2 * 4 + 2 * 2 * 2
     assert (caps.model_calls, caps.http_attempts, caps.wall_seconds) == (8, 18, 90.0)                                    # the repair study's limits
     with pytest.raises(ValueError, match="exceeds the declared study cap"):
         study(tmp_path, slipping, POLICY, caps=Caps(model_calls=8, http_attempts=18, ticks=20, wall_seconds=30, dollars=60.0))

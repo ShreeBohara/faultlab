@@ -68,7 +68,8 @@ def _candidates(expected_class, schedules) -> list[dict]:
 
 def case_space() -> dict[str, list[dict]]:
     """Every candidate schedule in a fixed order: the pack's fault grammar minus the six public cases. Delays stop at four
-    ticks so that a trial's turn budget measures the agent and not the wait."""
+    ticks so that a trial's turn budget measures the agent and not the wait. The space grew on 2026-11-14 (v2): the first
+    30 candidates come first and unchanged, and the three earlier draws used only them."""
     rejected = ([("standard-v1", [_delayed(t, _REJECT)]) for t in (1, 3, 4)]
                 + [("history-v1", [_delayed(t, _REJECT)]) for t in (1, 2, 3, 4)]
                 + [("history-v1", [_stale(b), _delayed(t, _REJECT)]) for b in (1, 2) for t in (1, 2, 3)])
@@ -78,8 +79,18 @@ def case_space() -> dict[str, list[dict]]:
                  + [("history-v1", [_stale(b)]) for b in (2, 3)]
                  + [("history-v1", [_stale(1), _delayed(t, _SUCCEED)]) for t in (1, 3)])
     unresolved = [("standard-v1", [_flaky(n)]) for n in (1, 3)] + [("history-v1", [_stale(1), _flaky(1)])]
-    return {"rejected": _candidates("rejected", rejected),
-            "other": _candidates("fault", completed) + _candidates("unresolved_or_completed", unresolved)}
+    rejected_v2 = ([("history-v1", [_stale(3), _delayed(t, _REJECT)]) for t in (1, 2, 3)]
+                   + [("history-v1", [_stale(b), _delayed(4, _REJECT)]) for b in (1, 2, 3)]
+                   + [("standard-v1", [_lost(ms), _delayed(t, _REJECT)]) for ms in (1500, 2000, 2500) for t in (1, 2, 3)]
+                   + [("history-v1", [_lost(ms), _delayed(t, _REJECT)]) for ms in (2000, 3000) for t in (1, 3)])
+    completed_v2 = ([("standard-v1", [_lost(ms), _delayed(t, _SUCCEED)]) for ms in (2000, 3000) for t in (1, 3)]
+                    + [("history-v1", [_stale(b), _delayed(t, _SUCCEED)]) for b in (2, 3) for t in (2, 4)]
+                    + [("history-v1", [_stale(1), _delayed(t, _SUCCEED)]) for t in (2, 4)])
+    unresolved_v2 = ([("history-v1", [_flaky(n)]) for n in (1, 2, 3)] + [("standard-v1", [_lost(2000), _flaky(1)])]
+                     + [("history-v1", [_stale(2), _flaky(2)])])
+    return {"rejected": _candidates("rejected", rejected) + _candidates("rejected", rejected_v2),
+            "other": (_candidates("fault", completed) + _candidates("unresolved_or_completed", unresolved)
+                      + _candidates("fault", completed_v2) + _candidates("unresolved_or_completed", unresolved_v2))}
 
 
 def draw_order(seed_text: str, exclude: list[dict] | None = None) -> dict[str, list[dict]]:
@@ -127,12 +138,13 @@ class UnseenStudyDesign(StrictModel):
     target_rule: str = "notification_label_after_rejection"
     pairs: int = Field(default=6, ge=1)
     gap_min: int = Field(default=6, ge=1)        # target findings over all B0 trials of the rejected cases for a repair to be testable
+    other_pairs: int | None = Field(default=None, ge=1)    # trials per arm in an other case (None: pairs)
     caps: Caps = Field(default_factory=lambda: Caps(model_calls=8, http_attempts=18, wall_seconds=90.0, dollars=0.0))   # the repair study's (amendment 10)
     validation_rule: Literal["where_acted"] = "where_acted"
     rejected_rule: Literal["where_acted_no_legacy"] = "where_acted_no_legacy"   # amendments 9 and 10: judged where the rule acted, legacy findings read
 
     def max_trials(self) -> int:
-        return 2 * self.pairs * (len(self.rejected_cases) + len(self.other_cases))
+        return 2 * self.pairs * len(self.rejected_cases) + 2 * (self.other_pairs or self.pairs) * len(self.other_cases)
 
     def max_dollars(self) -> float:
         return self.max_trials() * (self.caps.dollars or 0.0)
@@ -164,16 +176,16 @@ class UnseenStudy(RepairStudy):
             "declaration": declaration, "notes": list(notes or []), "stages": {"rejected": {}, "other": {}}, "decision": None, "reason": None,
             "readouts": None, "cost": None, "ended_at": None}
 
-    async def _arms(self, case_id: str) -> tuple[dict, dict, bool]:
+    async def _arms(self, case_id: str, k: int) -> tuple[dict, dict, bool]:
         # The "validation" label keeps every stage's counts on the scoreable basis (amendment 9).
-        b0 = await self._stage(f"validation-{case_id}-B0", case_id, self.design.pairs, None, "B0")
-        rule = await self._stage(f"validation-{case_id}-L", case_id, self.design.pairs, self.policy, "L")
+        b0 = await self._stage(f"validation-{case_id}-B0", case_id, k, None, "B0")
+        rule = await self._stage(f"validation-{case_id}-L", case_id, k, self.policy, "L")
         return b0, rule, b0["complete"] and rule["complete"]
 
     async def _run_stages(self) -> tuple[Decision, str]:
         design, stages = self.design, self.record["stages"]
         for case_id in design.rejected_cases:
-            b0, rule, complete = await self._arms(case_id)
+            b0, rule, complete = await self._arms(case_id, design.pairs)
             verdict = rejected_case(rule["rows"], b0["rows"], pairs=design.pairs)
             stages["rejected"][case_id] = {"B0": self._public(b0), "L": self._public(rule), **verdict, "complete": complete,
                                            "passed": complete and verdict["passed"]}
@@ -181,7 +193,7 @@ class UnseenStudy(RepairStudy):
             if not complete:
                 return "INCOMPLETE", f"{case_id} could not all run"
         for case_id in design.other_cases:
-            b0, rule, complete = await self._arms(case_id)
+            b0, rule, complete = await self._arms(case_id, design.other_pairs or design.pairs)
             verdict = validation_case(rule["rows"], must_complete=False)
             stages["other"][case_id] = {"B0": self._public(b0), "L": self._public(rule), **verdict, "complete": complete,
                                         "passed": complete and verdict["passed"]}
@@ -222,13 +234,14 @@ class UnseenStudy(RepairStudy):
 
 
 async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out_dir, referee=None, worlds_dir=None,
-                     pack_id: str = "orders.upgrade_then_confirm/v1", exclude: list[dict] | None = None) -> dict:
+                     pack_id: str = "orders.upgrade_then_confirm/v1", exclude: list[dict] | None = None, per_other: int | None = None) -> dict:
     """The draw: each stratum in seeded order, a candidate kept when the reference agent plays it cleanly, until the stratum is full."""
     kept, tried = [], {}
     for stratum, candidates in draw_order(seed_text, exclude).items():
         taken = tried[stratum] = 0
+        wanted = per_other if stratum == "other" and per_other else per_stratum
         for candidate in candidates:
-            if taken == per_stratum:
+            if taken == wanted:
                 break
             tried[stratum] += 1
             case = named_case(candidate, stratum, taken + 1)
@@ -240,8 +253,8 @@ async def draw_cases(seed_text: str, *, per_stratum: int, store: TrialStore, out
             if row and row["valid"] and row["expected"] and not row["conformance"] and not row["false_beliefs"]:
                 kept.append(case)
                 taken += 1
-        if taken < per_stratum:
-            raise ValueError(f"Only {taken} of {per_stratum} {stratum} cases could be played by the reference agent")
+        if taken < wanted:
+            raise ValueError(f"Only {taken} of {wanted} {stratum} cases could be played by the reference agent")
     return {"schema": SCHEMA, "seed_sha256": sha256(seed_text.encode("utf-8")).hexdigest(), "cases": kept, "tried": tried}
 
 
