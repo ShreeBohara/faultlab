@@ -124,6 +124,14 @@ no report shown advice as a requirement was refused: 0 of 204 trials. The bundle
 effects is one refused report on the fifth call, with the advice first shown on that call, and no report.
 $0.1247 of API money, 7 minutes.
 
+The unseen-case comparison of late evidence that followed (comparison 3, [UNSEEN_STUDY.md](UNSEEN_STUDY.md#runs)) kept the 8-call
+budget and used four new schedules built so that the advice tends to come first on the final turn. By its declared criterion the
+requirement presentation was **judged better on late evidence**: side-effect trials 11 of 96 as an expectation and 0 of 96 as a
+requirement (the first advice came on the last call in 16 and 14 trials). Both studies were NOT_TRANSFERRED, because the rule
+acted in only 19 of 96 trials each. The default stays `expectation`, so that earlier launch commands and adapter digests still
+reproduce. For new runs of an advice rule the evidence favours `--advice-presentation requirement`; it also makes a wrong rule
+easier to obey, and no run has yet shown the agent wrong advice.
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

@@ -236,3 +236,11 @@ A follow-up development check forced the advice onto the final turn (dev-5, a 5-
 `artifacts/advice-final-turn-dev-2-2026-11-15/`): 3 of 24 trials ended with no report under the expectation, 0 of 24 under
 the requirement. That was INCONCLUSIVE by its declared rule (it needed 4), so whether the requirement presentation prevents
 the late-evidence side effect is still open; across 204 trials no report shown advice as a requirement was refused.
+Case space v4 then added a `late` stratum (two failed requests, then a rejection after four ticks, so that a polling agent first
+sees the advice on its eighth and last call), and unseen-case comparison 3 ran L3 under both presentations on its four schedules,
+96 trials each ($1.86, `artifacts/unseen-comparison-3-2026-11-15/`). Side effects 11 of 96 as an expectation (each a refused
+report on the last call, then no report) and 0 of 96 as a requirement: by the declared criterion **the requirement presentation
+is judged better on late evidence**. Both studies were NOT_TRANSFERRED, as declared beforehand, because the agent usually
+reported before it saw the late rejection, so the rule acted in only 19 of 96 trials each. The default presentation stays
+`expectation` for reproducibility; new runs of an advice rule should weigh `requirement`. Trial rows now carry
+`first_advice_turn`, and `faultlab study compare` reports `last_call_advice`.

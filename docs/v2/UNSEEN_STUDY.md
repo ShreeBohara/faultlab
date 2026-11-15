@@ -258,3 +258,63 @@ effects (there were none to reduce), the late-evidence case, other tasks, fixtur
 active policy. The records of this run carry the presentation only in their notes and in the launcher; records written after
 it name the Actor's adapter, model and presentation in an `actor` field. Money: $2.4678 of API money (E $1.2824, Q $1.1826,
 preflight $0.0027), 4,242 model calls, 113 minutes.
+
+**Comparison 3, late evidence, 2026-11-15** (Anthropic API; Haiku 5.5 through the model actor; amendments 9 and 10; the frozen
+rule L3 shown two ways on all four schedules of case space v4's `late` stratum, drawn at commit c43ba8e, none of them in an
+earlier draw; declaration sha256 `8a6e6159…a776`; both records, the logs, the declaration and the comparison in
+`artifacts/unseen-comparison-3-2026-11-15/`). Comparison 2 never put the advice on the reserved final turn, where comparison 1's
+side effects came from, and the final-turn development check was INCONCLUSIVE. The question, declared before the run: on
+schedules whose rejection arrives late, does showing L3's advice as the report gate's requirement with the final-turn note
+(**Q**) leave fewer side-effect trials than showing it as an expectation (**E**)? The declared criterion: Q is better on late
+evidence if E has at least 4 side-effect trials, Q at most a quarter as many, and Q no slip; INCONCLUSIVE if E has fewer than 4.
+Each presentation ran its own study on the same 4 cases, 24 pairs each and no other cases (384 trials; 8 model calls, 18 HTTP
+attempts, 90 s), E first. **Q is judged better on late evidence**, by the declared criterion: 11 side-effect trials under E,
+none under Q, and no slip. **Both studies NOT_TRANSFERRED**, as the declaration foresaw: the gate needs the rule to act in 23 of
+24 trials of every case, and it acted in 1 to 13 (19 of 96 in each study), because the agent usually reported before it saw
+the rejection.
+
+| 96 late-case trials per arm | E study, no rule | E study, rule as expectation | Q study, no rule | Q study, rule as requirement |
+|---|---|---|---|---|
+| Slip | 21 | 0 | 17 | 0 |
+| Correct refusal | 3 | 8 | 2 | 19 |
+| Rule acted (advice turns) | n/a | 19 (20) | n/a | 19 (19) |
+| First advice on the eighth and last call | n/a | 16 | n/a | 14 |
+| Trials with a blocked report | n/a | 12 | n/a | 0 |
+| Side effect: the rule acted and the trial has a finding or no report | n/a | 11 | n/a | 0 |
+| Rule silent: the agent reported before it saw the rejection | n/a | 77 | n/a | 76 (+1 with no report) |
+| Model calls, mean; trials at the 8-call cap | 7.43; 48 | 7.51; 52 | 7.55; 58 | 7.53; 55 |
+
+The declared primary read-outs, as description and not as a decision: side-effect trials 11 of 96 under E and 0 of 96 under Q
+(two-sided Fisher exact p = 0.00072); trials with a block 12 of 96 and 0 of 96 (p = 0.00034).
+
+What the numbers say:
+
+- **When the advice first came on the last call, the expectation usually cost the report.** 16 E trials first saw the advice on
+  the eighth call, the reserved final turn. In 11 the agent proposed a report without the expected label, was refused and had no
+  turn left, so the trial ended with no report (`VIOLATION`; conformance `report_absent`, `report_absent_no_citations`; legacy
+  C5, C6, C7). The other 5 reported the expected label. Of the 3 E trials advised earlier, one was refused with a turn left and
+  corrected its report, and two reported the expected label at once.
+- **Shown as a requirement, the advice was followed the first time in all 19 trials where the rule acted**, including the 14
+  whose first advice came on the last call: 19 correct refusals and no block.
+- **Both presentations remove the slip**: 0 of 192 trials under the rule against 38 of 192 without it.
+- **The rule was silent in four trials of five.** It reads delivered evidence only, so it speaks once the agent has seen the
+  rejection. In 77 of 96 trials in each study it never did: in all but one the agent reported the upgrade unresolved
+  (`SAFE_UNRESOLVED`) without having seen the rejection (E: 41 after six or seven calls, 36 at the 8-call cap; Q: 36 after seven
+  calls, 40 at the cap). The scripted polling agent of the test sees the rejection on its seventh call; Haiku mostly reported
+  before that. A silent rule shows nothing, so those trials see what a B0 trial sees and the presentations cannot differ there.
+  This is why every case failed in both studies: with this agent and budget the late stratum can compare side effects but cannot
+  pass the transfer gate.
+- **Two trials ended with no report without a block**, both on `unseen-l4` after all 8 calls: one without a rule (E's study) and
+  one under Q's silent rule. That failure belongs to the turn budget, not the rule, as in comparison 2.
+
+Together with development check 2 (dev-5 with a 5-call budget, [REPAIR_STUDY.md](REPAIR_STUDY.md)), the trials whose first
+advice came on the last allowed call: under the expectation 14 of 28 ended with no report, under the requirement 0 of 27. Across
+the four runs with the requirement presentation (dev-1, comparison 2, dev-2 and this one), 223 trials were shown its advice and
+no report was refused.
+
+What it shows: when a rule's advice first reaches the agent on its last allowed call, showing it as the report gate's requirement,
+with the note that a refused report could not be corrected, prevented the lost report that the expectation left in 11 of 16 such
+trials. This is the first unseen-case evidence that the presentation removes the structural side effect found in comparison 1.
+What it does not show: transfer on these cases (neither study passed the gate, because the rule acted too rarely), other tasks,
+fixtures or fault types, another Actor, or an active policy. Money: $1.8570 of API money (E $0.9214, Q $0.9330, preflight
+$0.0026), 2,887 model calls, 97 minutes.

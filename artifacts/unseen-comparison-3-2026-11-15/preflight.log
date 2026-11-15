@@ -1,0 +1,46 @@
+{
+  "attempts": {
+    "TERMINAL": 1
+  },
+  "batch_id": "batch-51ac87dcd2ef4b99944c932423ece525",
+  "executions": {
+    "COMPLETED": 1
+  },
+  "plans": 1,
+  "spent": {
+    "measured": {
+      "dollars": 0.0025995000000000002,
+      "envelopes": 1,
+      "http_attempts": 4,
+      "input_tokens": 22510,
+      "model_calls": 5,
+      "output_tokens": 697
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "store": "/Users/shree/FaultLab_Runs/2026-11-15/unseen-comparison-3/preflight.sqlite3",
+  "tasks": {
+    "VIOLATION": 1
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-e6dd5ea067a64328b061c74692330aae",
+      "claims": [
+        "conformance:notification_label_after_rejection"
+      ],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "VIOLATION",
+      "violations": [
+        "C5"
+      ]
+    }
+  ]
+}

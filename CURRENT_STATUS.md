@@ -1535,6 +1535,23 @@ since E had fewer than the 4 side effects the rule required. Development evidenc
 Money: **$0.1247 of API money** (221 model calls, all settled). November committed $5.3451 to 5.4698, rows 9,084 to 9,305.
 Declared bound $1.63 (48 trials at $0.034); project ledger $1,623.24 + $1.63 = $1,624.87 (bounds). 420 s.
 
+### Ledger entry 2026-11-15: unseen-case comparison 3, late evidence (Anthropic API): requirement judged better
+
+Declared (`~/FaultLab_Runs/2026-11-15/unseen-comparison-3/`, sha256 `8a6e6159…a776`; records, logs and the comparison in
+`artifacts/unseen-comparison-3-2026-11-15/`): the L3 rule with its advice shown as an expectation (E) and as the report gate's
+requirement with the final-turn note (Q), each in its own unseen-case study on the four schedules of case space v4's late stratum
+(two failed requests, then a rejection after four ticks; none in an earlier draw), 24 pairs each and no other cases, Haiku 5.5 on
+the API, 8 model calls, amendments 9 and 10, commit c43ba8e. The preflight passed (dev-5). Side-effect trials 11 of 96 under E
+(each a refused report on the eighth and last call, then no report) and 0 of 96 under Q (Fisher p = 0.00072, descriptive); trials
+with a block 12 and 0 (p = 0.00034); no slip under either (21 and 17 without the rule). By the declared criterion **Q is judged
+better on late evidence**. Each study's own decision is **NOT_TRANSFERRED**, as the declaration foresaw: the rule acted in only
+19 of 96 trials per study (the gate needs 23 of 24 in every case), because the agent usually reported the upgrade unresolved
+before it saw the rejection. Write-up: [UNSEEN_STUDY.md](docs/v2/UNSEEN_STUDY.md#runs).
+
+Money: **$1.8570 of API money** (E $0.9214, Q $0.9330, preflight $0.0026; 2,887 model calls, all settled). November committed
+$5.4698 to 7.3268, rows 9,305 to 12,192. Declared bound $13.09 ($6.53 per study, $0.034 preflight); project ledger
+$1,624.87 + $13.09 = $1,637.96 (bounds). 5,801 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
