@@ -34,7 +34,7 @@ from typing import Any, Callable
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
-from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
+from faultlab.lab.rules import ADVICE_PRESENTATIONS, SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
 from faultlab.packs import load_pack
 
@@ -126,7 +126,11 @@ class ClaudeAgentAdapter(BaseAdapter):
     """Claude Code, through the Claude Agent SDK, driving the orders pack's tools as an MCP server."""
 
     def __init__(self, model: str, *, cli_path: str | None = None, rates: tuple[float, float] | None = None,
-                 query: Callable[..., Any] | None = None, sdk_version: str | None = None, rule_policy: Any = None):
+                 query: Callable[..., Any] | None = None, sdk_version: str | None = None, rule_policy: Any = None,
+                 advice_presentation: str = "expectation"):
+        if advice_presentation not in ADVICE_PRESENTATIONS:
+            raise ValueError(f"Unknown advice presentation {advice_presentation!r}; known: {', '.join(ADVICE_PRESENTATIONS)}")
+        self.advice_presentation = advice_presentation
         if model.startswith(f"{CHANNEL}:"):
             model = model[len(CHANNEL) + 1:]
         if not model.strip():
@@ -152,6 +156,8 @@ class ClaudeAgentAdapter(BaseAdapter):
         if self.rule_policy is not None:
             settings["rule_policy"] = self.rule_policy.model_dump(mode="json")
             settings["rule_hooks"] = list(SUPPORTED_HOOKS)
+            if advice_presentation != "expectation":          # the default adds no key, so earlier digests still match
+                settings["advice_presentation"] = advice_presentation
         self.spec = AdapterSpec(adapter_id=ADAPTER_ID, version=VERSION, model=f"{CHANNEL}:{self.model}", packs=[PACK_ID],
                                 description="Claude Code (the Claude Agent SDK) driving the pack's tools as an MCP server, on the owner's subscription.",
                                 settings_digest=content_hash(settings), prompt_digest=PROMPT_DIGEST)
@@ -189,9 +195,9 @@ class ClaudeAgentAdapter(BaseAdapter):
             raise
         index = len(session.observations)      # the journal only appends: a label names the same observation on every turn
         content = [{"type": "text", "text": self._observation_text(observation, index)}]
-        advice = await self._advisor.advise() if self._advisor is not None else []
-        if advice:                             # an advice rule's expectation rides with the evidence that made it hold
-            content.append({"type": "text", "text": json.dumps({"rule_advice": advice}, sort_keys=True)})
+        advice = await self._advisor.turn_fields() if self._advisor is not None else {}
+        if advice:                             # an advice rule's expectation or requirement rides with the evidence that made it hold
+            content.append({"type": "text", "text": json.dumps(advice, sort_keys=True)})
         return {"content": content}
 
     def _request(self, tool: str, arguments: dict) -> tuple[str, dict]:
@@ -302,7 +308,7 @@ class ClaudeAgentAdapter(BaseAdapter):
         self._session, self._done, self._failure = session, False, None
         self._gate = ReportGate(self.rule_policy, session.pack, session)
         self._gate.declare()
-        self._advisor = TurnAdvisor(self.rule_policy, session.pack, session)
+        self._advisor = TurnAdvisor(self.rule_policy, session.pack, session, presentation=self.advice_presentation)
         caps = session.caps.model_calls if session.caps.model_calls is not None else DEFAULT_MODEL_CALLS
         prompt = json.dumps({"task": session.intent, "limits": {"model_turns": caps, "http_attempts": session.caps.http_attempts},
                              "instruction": "Carry out the task with the faultlab tools, then call report exactly once."}, sort_keys=True)

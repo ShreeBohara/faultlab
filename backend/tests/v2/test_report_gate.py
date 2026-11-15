@@ -15,7 +15,7 @@ from faultlab.adapters.model_actor import ModelActorAdapter
 from faultlab.core import Caps, content_hash
 from faultlab.evidence import EnvSpec, TrialAttempt, plan_hash
 from faultlab.lab import TrialStore, TrialWorker
-from faultlab.lab.rules import RuleError, check_policy, policy_from_json, resolve_policy
+from faultlab.lab.rules import FINAL_TURN_NOTE, REQUIREMENT_INSTRUCTION, RuleError, check_policy, enforced_advice, policy_from_json, resolve_policy
 from faultlab.packs import load_pack
 from faultlab.referee.legacy import LegacyOrdersReferee
 from faultlab.research.repair_study import summarize_trial
@@ -91,8 +91,9 @@ class SlippingProvider(ScriptedProvider):
         return generation
 
 
-def agent(policy=None, *, harness=SlippingHarness, **options):
-    adapter = ClaudeAgentAdapter(MODEL, cli_path="/usr/local/bin/claude-test", rates=RATES, sdk_version="0.2.174", rule_policy=policy)
+def agent(policy=None, *, harness=SlippingHarness, presentation="expectation", **options):
+    adapter = ClaudeAgentAdapter(MODEL, cli_path="/usr/local/bin/claude-test", rates=RATES, sdk_version="0.2.174", rule_policy=policy,
+                                 advice_presentation=presentation)
     scripted = harness(adapter, **options)
     adapter.query = scripted
     return adapter, scripted
@@ -104,8 +105,8 @@ def worker(tmp_path):
         yield TrialWorker(store=store, worker_id="w", database_dir=tmp_path / "worlds", referee=LegacyOrdersReferee())
 
 
-def trial(worker, scenario_id, adapter, attempt_id):
-    plan = ORDERS.plan(scenario_id, agent=adapter.manifest(), environment=EnvSpec(kind="simulator"), protocol_version="faultlab/v2", caps=CAPS)
+def trial(worker, scenario_id, adapter, attempt_id, caps=CAPS):
+    plan = ORDERS.plan(scenario_id, agent=adapter.manifest(), environment=EnvSpec(kind="simulator"), protocol_version="faultlab/v2", caps=caps)
     return run(worker.run(plan, TrialAttempt(attempt_id=attempt_id, plan_hash=plan_hash(plan), lifecycle="READY"), adapter))
 
 
@@ -234,6 +235,9 @@ def test_the_run_command_takes_a_policy_file_for_the_live_adapters_only(tmp_path
                      "--rule-policy", str(path)])
     assert code == 2
     assert not (tmp_path / "s.sqlite3").exists()
+    code = cli.main(["run", "--store", str(tmp_path / "s.sqlite3"), "--pack", ORDERS.pack_id, "--adapter", "reference-orders",
+                     "--advice-presentation", "requirement"])
+    assert code == 2 and not (tmp_path / "s.sqlite3").exists()
 
 
 ADVISE = {"version": "advise-after-rejection/1", "rules": [
@@ -297,3 +301,101 @@ def test_advice_runs_only_at_its_hook_and_names_a_known_claim():
     with pytest.raises(ValueError, match="advise_label names a claim"):
         policy_from_json({"version": "x", "rules": [{"hook": "before_agent_turn", "operation": "upgrade", "steps": [{"op": "advise_label", "operation": "upgrade"}]}]})
     check_policy(policy_from_json(ADVISE_AND_REQUIRE), ORDERS)
+
+
+# -- the requirement presentation of advice (2026-11-15) ---------------------------------------------------------------
+
+L3 = {"version": "rejection-notification-not-required", "rules": [         # repair study v3's rule, as unseen comparison 1 froze it
+    {"hook": "before_final_report", "operation": "upgrade", "when": "terminal_failure", "steps": [
+        {"op": "require_label", "operation": "notification", "claim": "notification_outcome", "expect": ["NOT_REQUIRED"], "only_if": "always"}]},
+    {"hook": "before_agent_turn", "operation": "upgrade", "when": "terminal_failure", "steps": [
+        {"op": "advise_label", "operation": "notification", "claim": "notification_outcome", "expect": ["NOT_REQUIRED"], "only_if": "always"}]}]}
+NOTICE = {"requirement": "label", "claim": "notification_outcome", "one_of": ["NOT_REQUIRED"],
+          "text": "the report's notification_outcome must be one of: NOT_REQUIRED"}
+L3_DIGEST_RUN_2026_11_15 = "3c08b205b55ee45ef51381cc89b86e48450302917083c06aadd1eeebdc390a91"     # comparison 1's L arm, Haiku 5.5
+
+
+class RequirementProvider(SlippingProvider):
+    """Relabels once it has been shown the gate's requirement, before a report or after a block; an expectation it ignores."""
+
+    async def complete(self, messages, **kwargs):
+        self.was_blocked = any(m["role"] == "user" and ("report_blocked" in m["content"] or "rule_requirements" in m["content"]) for m in messages)
+        return await ScriptedProvider.complete(self, messages, **kwargs)
+
+
+class RequirementHarness(SlippingHarness):
+    """Relabels once a tool result carried the gate's requirement."""
+
+    def blocked(self):
+        return super().blocked() + [r for n, r in self.results if any("rule_requirements" in c.get("text", "") for c in r["content"])]
+
+
+def gates(envelope):
+    return [s["blocked"] for s in rule_steps(envelope) if s["hook"] == "before_final_report"]
+
+
+def test_advice_counts_as_enforced_only_where_the_report_gate_mirrors_it():
+    key = ("notification_outcome", ("NOT_REQUIRED",))
+    assert enforced_advice(policy_from_json(ADVISE_AND_REQUIRE)) == {key} and enforced_advice(policy_from_json(L3)) == {key}
+    assert enforced_advice(policy_from_json(ADVISE)) == set() and enforced_advice(None) == set()
+    on_success = {"version": "x", "rules": ADVISE["rules"] + WRONG_ON_SUCCESS["rules"]}                      # the gate acts on another condition
+    other_label = {"version": "x", "rules": ADVISE["rules"] + [{**POLICY["rules"][0], "steps": [{**POLICY["rules"][0]["steps"][0], "expect": ["NOT_STARTED"]}]}]}
+    other_step = {"version": "x", "rules": ADVISE["rules"] + [{**POLICY["rules"][0], "steps": [{**POLICY["rules"][0]["steps"][0], "operation": "notification"}]}]}
+    for policy in (on_success, other_label, other_step):
+        assert enforced_advice(policy_from_json(policy)) == set()
+
+
+def test_the_requirement_presentation_shows_the_gates_own_requirement_before_the_report(worker):
+    provider = RequirementProvider()
+    adapter = ModelActorAdapter(provider, PROVIDER_MODEL, rule_policy=ADVISE_AND_REQUIRE, advice_presentation="requirement")
+    envelope = trial(worker, "dev-5", adapter, "trial-requirement")
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and envelope.outcome.claims.mismatches == [] and gates(envelope) == [False]
+    last = json.loads(provider.requests[-1]["messages"][-1]["content"])
+    assert last["rule_requirements"] == [NOTICE] and last["instruction"] == REQUIREMENT_INSTRUCTION and "rule_advice" not in last
+    assert "rule_requirements" not in json.loads(provider.requests[0]["messages"][-1]["content"])         # nothing before the rejection
+    advice = [s for s in rule_steps(envelope) if s["hook"] == "before_agent_turn"]
+    assert advice and all(s["presentation"] == "requirement" and s["shown_as_requirements"] == [NOTICE] for s in advice)
+    expectation = trial(worker, "dev-5", ModelActorAdapter(RequirementProvider(), PROVIDER_MODEL, rule_policy=ADVISE_AND_REQUIRE), "trial-expectation")
+    assert expectation.outcome.task == "CORRECTLY_REFUSED" and gates(expectation) == [True, False]       # the same agent slips, then meets the block
+    assert all("presentation" not in s for s in rule_steps(expectation) if s["hook"] == "before_agent_turn")
+    provider = RequirementProvider()
+    alone = trial(worker, "dev-5", ModelActorAdapter(provider, PROVIDER_MODEL, rule_policy=ADVISE, advice_presentation="requirement"), "trial-unbacked")
+    last = json.loads(provider.requests[-1]["messages"][-1]["content"])
+    assert "rule_requirements" not in last and "instruction" not in last and last["rule_advice"][0]["one_of"] == ["NOT_REQUIRED"]
+    assert alone.outcome.claims.mismatches == [TARGET]                       # no gate enforces it, so no refusal is ever announced
+
+
+def test_on_the_final_turn_the_requirement_says_a_refusal_could_not_be_corrected(worker):
+    probe = trial(worker, "dev-5", ModelActorAdapter(ScriptedProvider(), PROVIDER_MODEL), "trial-probe")
+    caps = CAPS.model_copy(update={"model_calls": probe.outcome.cost.model_calls})                       # the report turn is now the last turn
+    provider = RequirementProvider()
+    envelope = trial(worker, "dev-5", ModelActorAdapter(provider, PROVIDER_MODEL, rule_policy=L3, advice_presentation="requirement"),
+                     "trial-final-requirement", caps=caps)
+    last = json.loads(provider.requests[-1]["messages"][-1]["content"])
+    assert last["final_report_required"] and last["instruction"] == REQUIREMENT_INSTRUCTION + FINAL_TURN_NOTE
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and gates(envelope) == [False]
+    late = trial(worker, "dev-5", ModelActorAdapter(RequirementProvider(), PROVIDER_MODEL, rule_policy=L3), "trial-final-expectation", caps=caps)
+    assert late.report.status == "ABSENT" and late.outcome.task == "VIOLATION" and gates(late) == [True]   # the side effect of comparison 1
+
+
+def test_the_presentation_is_part_of_the_agents_identity_only_when_it_shows_something_new():
+    digests = {p: ModelActorAdapter(ScriptedProvider(), "anthropic:claude-haiku-5-5", rule_policy=L3, advice_presentation=p).spec.settings_digest
+               for p in ("expectation", "requirement")}
+    assert digests["expectation"] == L3_DIGEST_RUN_2026_11_15 != digests["requirement"]                   # the default reproduces what ran
+    baseline = {ModelActorAdapter(ScriptedProvider(), PROVIDER_MODEL, advice_presentation=p).spec.settings_digest for p in ("expectation", "requirement")}
+    assert len(baseline) == 1                                                  # without a policy nothing is shown: one baseline agent
+    with pytest.raises(ValueError, match="advice presentation"):
+        ModelActorAdapter(ScriptedProvider(), PROVIDER_MODEL, advice_presentation="shout")
+    with pytest.raises(ValueError, match="advice presentation"):
+        agent(L3, presentation="shout")
+
+
+def test_the_claude_agent_sees_the_requirement_with_the_evidence(worker):
+    adapter, harness = agent(ADVISE_AND_REQUIRE, harness=RequirementHarness, presentation="requirement")
+    envelope = trial(worker, "dev-5", adapter, "trial-claude-requirement")
+    assert envelope.outcome.task == "CORRECTLY_REFUSED" and gates(envelope) == [False] and not SlippingHarness.blocked(harness)
+    shown = [json.loads(c["text"]) for _, r in harness.results for c in r["content"] if "rule_requirements" in c.get("text", "")]
+    assert shown and shown[-1] == {"rule_requirements": [NOTICE], "instruction": REQUIREMENT_INSTRUCTION}
+    adapter, harness = agent(ADVISE_AND_REQUIRE, harness=RequirementHarness)                                # as an expectation: slip, block, relabel
+    assert gates(trial(worker, "dev-5", adapter, "trial-claude-expectation")) == [True, False]
+

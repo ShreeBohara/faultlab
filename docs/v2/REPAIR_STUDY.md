@@ -72,6 +72,19 @@ enforcement keeps a `require_label` step too. The Mechanic sees the new hook and
 language (`faultlab-rule-language/v2`). Evidence: `backend/tests/v2/test_report_gate.py` (advice shown only once the
 rejection is delivered, one turn fewer than a block, no enforcement on its own, the gate as a backstop, both adapters).
 
+**Advice presentation (2026-11-15).** In unseen comparison 1 Haiku ignored the advice in 34 of 81 trials, yet corrected
+every report a block refused while a turn was left (78 of 78). In the dev-5 bundles of repair study v3 the pattern is the
+same: shown the advice, the agent still wrote `NOT_STARTED`, and it wrote `NOT_REQUIRED` only after the refusal. The advice
+read as an expectation ("a runtime rule expects ..."); the block states a requirement and its consequence. Adapters now
+take `advice_presentation`: `expectation` (the default, byte-identical to what ran, settings digests unchanged) or
+`requirement`, which shows advice that the report gate enforces under the same condition (`enforced_advice`) as the gate's
+own requirement (`rule_requirements`, in the words a block uses) with an `instruction` that a report not meeting it will be
+refused, record nothing and cost a turn, and on the final turn that a refusal could not be corrected. Advice no gate
+enforces is still shown as an expectation, so no refusal is announced that would not happen. The option is on
+`faultlab run`, `faultlab study repair` and `faultlab study unseen` (`--advice-presentation`) and is recorded in the
+adapter's settings digest only when it is not the default. Evidence: `backend/tests/v2/test_report_gate.py` (the mirror
+check, both presentations through both adapters, the final-turn note, the pinned digest of comparison 1's L arm).
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

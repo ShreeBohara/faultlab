@@ -26,7 +26,7 @@ from typing import Any, Protocol
 
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
-from faultlab.lab.rules import SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
+from faultlab.lab.rules import ADVICE_PRESENTATIONS, SUPPORTED_HOOKS, ReportGate, TurnAdvisor, check_policy, policy_from_json
 from faultlab.lab.session import CapExhausted, TrialSession
 from faultlab.packs import load_pack
 
@@ -76,9 +76,12 @@ def legacy_observation(observation: dict, episode_id: str, models) -> dict:
 
 class ModelActorAdapter(BaseAdapter):
     def __init__(self, provider: Provider, model: str, *, protocol: str = PROTOCOL_V4, turn_timeout_seconds: float = TURN_TIMEOUT_SECONDS,
-                 rule_policy: Any = None):
+                 rule_policy: Any = None, advice_presentation: str = "expectation"):
         if protocol not in SUPPORTED_PROTOCOLS:
             raise ValueError(f"Unsupported actor context protocol {protocol!r}; this adapter runs {SUPPORTED_PROTOCOLS}")
+        if advice_presentation not in ADVICE_PRESENTATIONS:
+            raise ValueError(f"Unknown advice presentation {advice_presentation!r}; known: {', '.join(ADVICE_PRESENTATIONS)}")
+        self.advice_presentation = advice_presentation
         actor, progress, _, _, runtime = _legacy()
         self.provider, self.model, self.protocol, self.turn_timeout_seconds = provider, model, protocol, turn_timeout_seconds
         # A recovery-rule policy (effectsafe rules at the report gate) is part of what this agent carries: refused here
@@ -94,6 +97,8 @@ class ModelActorAdapter(BaseAdapter):
         if self.rule_policy is not None:
             settings["rule_policy"] = self.rule_policy.model_dump(mode="json")
             settings["rule_hooks"] = list(SUPPORTED_HOOKS)
+            if advice_presentation != "expectation":          # the default adds no key, so earlier digests still match
+                settings["advice_presentation"] = advice_presentation
         self.spec = AdapterSpec(adapter_id=ADAPTER_ID, version=VERSION, model=model, packs=[PACK_ID],
                                 description="The legacy reference Actor's prompt loop on a model provider, through the v2 session.",
                                 settings_digest=content_hash(settings), prompt_digest=actor.ACTOR_PROMPT_HASH)
@@ -108,15 +113,15 @@ class ModelActorAdapter(BaseAdapter):
         episode_id = session.attempt_id
         gate = ReportGate(self.rule_policy, session.pack, session)
         gate.declare()
-        advisor = TurnAdvisor(self.rule_policy, session.pack, session)
+        advisor = TurnAdvisor(self.rule_policy, session.pack, session, presentation=self.advice_presentation)
         while session.usage.model_calls < caps:
             final = session.usage.model_calls + 1 >= caps
             shown = [legacy_observation(o.model_dump(mode="json"), episode_id, models) for o in session.observations]
             user = progress.turn_message(shown, final_report_required=final, remaining_actor_calls=caps - session.usage.model_calls,
                                          protocol=self.protocol)
-            advice = await advisor.advise()
-            if advice:                                             # an advice rule's expectation, shown before the agent reports
-                user = {**user, "rule_advice": advice}
+            advice = await advisor.turn_fields(final=final)
+            if advice:                                             # an advice rule's expectation or requirement, shown before the agent reports
+                user = {**user, **advice}
             call_messages = messages + [{"role": "user", "content": models.canonical_json(user)}]
             response_contract = "actor_final_report" if final else None
             runtime.validate_request_input(call_messages, self.model, response_contract=response_contract)

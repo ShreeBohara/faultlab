@@ -11,6 +11,12 @@ score only what was submitted. Advice rules run at ``before_agent_turn`` (2026-1
 delivered evidence shows the agent the label the report gate expects (``advise_label``); advice blocks, calls and rewrites
 nothing, and costs the agent no turn. A policy with rules at any other hook is refused before any trial.
 
+Advice has two presentations (2026-11-15), chosen by the adapter and recorded in its settings digest. ``expectation`` (the
+default, what repair study v3 and unseen comparison 1 ran) shows the advice as what a runtime rule expects. ``requirement``
+shows advice that the report gate enforces, under the same condition, as the gate's own requirement with the refusal's
+consequence, the way a blocked report is shown; advice no gate enforces stays an expectation, so the agent is never told of a
+refusal that would not happen.
+
 Rules name operations by the pack's aliases (``upgrade`` and ``notification`` for the orders
 pack); the aliases resolve to the trial's own operation ids through its intent.
 """
@@ -25,6 +31,10 @@ from faultlab.core import canonical_json, content_hash
 REPORT_HOOK = "before_final_report"
 ADVICE_HOOK = "before_agent_turn"
 SUPPORTED_HOOKS = (REPORT_HOOK, ADVICE_HOOK)
+ADVICE_PRESENTATIONS = ("expectation", "requirement")
+REQUIREMENT_INSTRUCTION = ("A runtime rule will check your final report against the evidence delivered so far. A report that does not meet "
+                           "rule_requirements will be refused: nothing is recorded and the refusal costs a turn.")
+FINAL_TURN_NOTE = " This is your final turn, so a refused report could not be corrected."
 REQUIRED_ALIAS_KEYS = ("intent_key", "service", "write_tool", "status_tool", "claim")
 
 
@@ -74,6 +84,29 @@ def resolve_policy(policy: RulePolicy, pack, intent: dict) -> RulePolicy:
                       for step in rule.steps)
         rules.append(rule.model_copy(update={"operation": operation_id(rule.operation), "steps": steps}))
     return policy.model_copy(update={"rules": tuple(rules)})
+
+
+def _condition(rule, step) -> tuple:
+    """Everything that decides when a label step acts and what it expects, apart from its op and hook."""
+    return (rule.operation, rule.when, step.operation, step.only_if, step.ticks, step.claim, tuple(sorted(step.expect or ())))
+
+
+def enforced_advice(policy: RulePolicy | None) -> set[tuple[str, tuple[str, ...]]]:
+    """The advice the report gate backs: ``(claim, sorted labels)`` of the ``advise_label`` steps whose every occurrence is
+    mirrored by a ``require_label`` step at the report hook under the same condition. Only this advice may be shown with a
+    refusal as its consequence."""
+    if policy is None:
+        return set()
+    required = {_condition(rule, step) for rule in policy.rules if rule.hook == REPORT_HOOK for step in rule.steps if step.op == "require_label"}
+    mirrored: dict[tuple[str, tuple[str, ...]], bool] = {}
+    for rule in policy.rules:
+        if rule.hook != ADVICE_HOOK:
+            continue
+        for step in rule.steps:
+            if step.op == "advise_label":
+                key = (step.claim, tuple(sorted(step.expect or ())))
+                mirrored[key] = mirrored.get(key, True) and _condition(rule, step) in required
+    return {key for key, backed in mirrored.items() if backed}
 
 
 class SessionExecutor:
@@ -142,16 +175,24 @@ class ReportGate:
 
 class TurnAdvisor:
     """One trial's advice rules, run before each agent turn: when a rule's condition holds in the delivered evidence, its
-    ``advise_label`` steps are shown to the agent as what the report gate expects. Nothing is blocked, called or rewritten."""
+    ``advise_label`` steps are shown to the agent, as an expectation or, when the report gate enforces them and the adapter
+    asks for it, as the gate's requirement (``ADVICE_PRESENTATIONS``). Nothing is blocked, called or rewritten."""
 
-    def __init__(self, policy: RulePolicy | None, pack, session):
-        self.pack, self.session = pack, session
+    def __init__(self, policy: RulePolicy | None, pack, session, presentation: str = "expectation"):
+        if presentation not in ADVICE_PRESENTATIONS:
+            raise RuleError(f"unknown advice presentation {presentation!r}; known: {', '.join(ADVICE_PRESENTATIONS)}")
+        self.pack, self.session, self.presentation = pack, session, presentation
         self.active = policy is not None and any(rule.hook == ADVICE_HOOK for rule in policy.rules)
         self.digest = policy_digest(policy) if policy is not None else None
         self.interpreter = (Interpreter(resolve_policy(policy, pack, session.intent), session.journal, SessionExecutor(session, pack, ADVICE_HOOK))
                             if self.active else None)
+        self.enforced = enforced_advice(policy) if self.active else set()
         self.turns = 0
         self.last: list[dict] = []
+        self.last_requirements: list[dict] = []
+
+    def _backed(self, item: dict) -> bool:
+        return (item.get("claim"), tuple(sorted(item.get("one_of") or ()))) in self.enforced
 
     async def advise(self) -> list[dict]:
         """The advice for the agent's next turn; [] when the trial carries no advice rule or no rule's condition holds."""
@@ -160,10 +201,33 @@ class TurnAdvisor:
         self.turns += 1
         result = await self.interpreter.invoke(ADVICE_HOOK, f"turn-{self.turns}", gate="advice")
         self.last = describe_reasons(result.advice, self.pack, self.session.intent)
+        self.last_requirements = []
+        if self.presentation == "requirement":
+            self.last_requirements = describe_reasons([f"LABEL_REQUIRED:{item['claim']}:{'|'.join(item['one_of'])}" for item in self.last
+                                                       if self._backed(item)], self.pack, self.session.intent)
         if result.steps_run:
-            self.session.rule_step(ADVICE_HOOK, {"gate": "advice", "turn": self.turns, "policy_digest": self.digest, "advice": list(result.advice),
-                                                 "requirements": self.last, "steps_run": list(result.steps_run)})
+            payload = {"gate": "advice", "turn": self.turns, "policy_digest": self.digest, "advice": list(result.advice),
+                       "requirements": self.last, "steps_run": list(result.steps_run)}
+            if self.presentation != "expectation":
+                payload.update({"presentation": self.presentation, "shown_as_requirements": self.last_requirements})
+            self.session.rule_step(ADVICE_HOOK, payload)
         return self.last
+
+    async def turn_fields(self, *, final: bool = False) -> dict:
+        """What the agent's next turn message gains: nothing without advice; ``rule_advice`` under the expectation
+        presentation; under the requirement presentation, ``rule_requirements`` in the report gate's own words with an
+        ``instruction`` that states the refusal's consequence (and, on the final turn, that it could not be corrected), plus
+        ``rule_advice`` for any advice the gate does not enforce."""
+        advice = await self.advise()
+        if not advice:
+            return {}
+        if not self.last_requirements:
+            return {"rule_advice": advice}
+        fields = {"rule_requirements": self.last_requirements, "instruction": REQUIREMENT_INSTRUCTION + (FINAL_TURN_NOTE if final else "")}
+        rest = [item for item in advice if not self._backed(item)]
+        if rest:
+            fields["rule_advice"] = rest
+        return fields
 
 
 def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
@@ -192,5 +256,5 @@ def describe_reasons(reasons: list[str], pack, intent: dict) -> list[dict]:
     return described
 
 
-__all__ = ["ADVICE_HOOK", "REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "TurnAdvisor", "check_policy", "describe_reasons",
-           "policy_digest", "policy_from_json", "resolve_policy"]
+__all__ = ["ADVICE_HOOK", "ADVICE_PRESENTATIONS", "REPORT_HOOK", "SUPPORTED_HOOKS", "ReportGate", "RuleError", "SessionExecutor", "TurnAdvisor",
+           "check_policy", "describe_reasons", "enforced_advice", "policy_digest", "policy_from_json", "resolve_policy"]

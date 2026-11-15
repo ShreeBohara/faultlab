@@ -32,9 +32,10 @@ def _list(value: str | None, default: list[str]) -> list[str]:
 
 def build_adapter_factory(args):
     """Adapters per arm: the same adapter id and model, with or without the proposal's policy."""
+    presentation = getattr(args, "advice_presentation", None) or "expectation"
     if args.adapter not in ("model-actor", "claude-agent"):
-        if args.model or args.execute_live:
-            raise ValueError("--model and --execute-live apply to the model-actor and claude-agent adapters only")
+        if args.model or args.execute_live or presentation != "expectation":
+            raise ValueError("--model, --execute-live and --advice-presentation apply to the model-actor and claude-agent adapters only")
         def offline(policy):
             if policy is not None:
                 raise ValueError(f"adapter {args.adapter} cannot carry a rule policy; the study's L arm needs model-actor or claude-agent")
@@ -51,10 +52,10 @@ def build_adapter_factory(args):
     settings = Settings.from_env()
     if args.adapter == "claude-agent":
         cli_path = settings.faultlab_claude_code_bin.strip() or None
-        return lambda policy: load_adapter("claude-agent", model=args.model, cli_path=cli_path, rule_policy=policy)
+        return lambda policy: load_adapter("claude-agent", model=args.model, cli_path=cli_path, rule_policy=policy, advice_presentation=presentation)
     from app.providers.runtime import RuntimeProvider
     provider = RuntimeProvider(settings, live_authorized=True)
-    return lambda policy: load_adapter("model-actor", provider=provider, model=args.model, rule_policy=policy)
+    return lambda policy: load_adapter("model-actor", provider=provider, model=args.model, rule_policy=policy, advice_presentation=presentation)
 
 
 def build_mechanic(args):
@@ -93,6 +94,8 @@ def unseen_main(argv) -> int:
     parser.add_argument("--adapter", default="reference-orders", help="unseen: reference-orders, model-actor or claude-agent")
     parser.add_argument("--model", default=None, help="model-actor: provider:model; claude-agent: an API model id")
     parser.add_argument("--execute-live", action="store_true", help="authorize live model calls")
+    parser.add_argument("--advice-presentation", choices=("expectation", "requirement"), default="expectation",
+                        help="how the rule's advice is shown to the agent (requirement: as the report gate's enforced requirement)")
     parser.add_argument("--referee", choices=("legacy", "none"), default="legacy")
     parser.add_argument("--target", default="notification_label_after_rejection", help="the oracle rule id of the target finding")
     parser.add_argument("--pairs", type=int, default=6)
@@ -188,6 +191,8 @@ def main(argv=None) -> int:
     parser.add_argument("--adapter", required=True, help="adapter id for the Actor: reference-orders, model-actor or claude-agent")
     parser.add_argument("--model", default=None, help="model-actor: provider:model; claude-agent: an API model id")
     parser.add_argument("--execute-live", action="store_true", help="authorize live model calls (Actor and Mechanic)")
+    parser.add_argument("--advice-presentation", choices=("expectation", "requirement"), default="expectation",
+                        help="how the rule's advice is shown to the agent (requirement: as the report gate's enforced requirement)")
     parser.add_argument("--mechanic", default="none", help="none, scripted:<policies.json>, or claude-agent")
     parser.add_argument("--mechanic-model", default=None, help="claude-agent Mechanic: an API model id")
     parser.add_argument("--mechanic-turns", type=int, default=8)
