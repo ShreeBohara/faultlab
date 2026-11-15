@@ -129,13 +129,15 @@ tripped. The draw, the code and the decision rule did not change between the lau
 | Rule acted | n/a | 23 |
 | Proposed reports blocked | n/a | 19 |
 
-Why `unseen-r3` failed: in one L trial the rule blocked 1 proposed report(s), and the report the agent then
-submitted ended `VIOLATION` with the conformance finding `report_absent`, `report_absent_no_citations` and legacy violations C5, C6, C7. No B0 trial of that case
+Why `unseen-r3` failed: in one L trial the rule blocked the agent's first report, and the agent then used up its 8 model
+calls without submitting another, so the trial ended `VIOLATION` with no report (conformance `report_absent`,
+`report_absent_no_citations`; legacy C5, C6, C7). No B0 trial of that case
 carried a finding other than the target slip. One L trial of `unseen-r4` ended `SAFE_UNRESOLVED` without the rule acting; it
 was not judged. The other four cases: the rule never acted in their 24 L trials, and every trial of both arms ended without a finding.
 
 Across the three runs, descriptively and under three different gates: the slip appeared in 61 of 72 no-rule trials on
 rejected-upgrade schedules and in 0 of 72 trials under the rule. Three of the 72 trials under the rule had a problem that
-no no-rule trial had: two over the referee's call limit (run 2) and this report (run 3). On schedules without a rejection
+no no-rule trial had: two over the referee's call limit (run 2) and this trial without a report (run 3), all three from the
+extra calls a block costs the agent. On schedules without a rejection
 the rule never acted. The rule reliably removes the slip, but its interruption sometimes costs a different failure. It is
 not ready to be an active policy.

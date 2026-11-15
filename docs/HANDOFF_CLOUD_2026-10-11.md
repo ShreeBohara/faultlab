@@ -212,5 +212,5 @@ carried a C8 violation (over the call limit) that the gate does not read.
 
 **Update 2026-11-14.** Unseen-case test 3 (amendment 10: legacy findings read, 8-call limit) ended NOT_TRANSFERRED ($0.31,
 `artifacts/unseen-study-3-2026-11-14/`), after a rejected API key (replaced by the owner) and a false billing alarm. Slip 18 of
-24 to 0 of 24, but one trial under the rule ended with a different bad report. Across the three unseen runs, 3 of 72 trials
+24 to 0 of 24, but one trial under the rule ran out of calls after a block and filed no report. Across the three unseen runs, 3 of 72 trials
 under the rule had a new problem. The rule removes the slip but is not ready to be an active policy.
