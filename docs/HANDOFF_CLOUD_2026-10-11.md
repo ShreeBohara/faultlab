@@ -244,3 +244,10 @@ is judged better on late evidence**. Both studies were NOT_TRANSFERRED, as decla
 reported before it saw the late rejection, so the rule acted in only 19 of 96 trials each. The default presentation stays
 `expectation` for reproducibility; new runs of an advice rule should weigh `requirement`. Trial rows now carry
 `first_advice_turn`, and `faultlab study compare` reports `last_call_advice`.
+At the owner's choice, unseen-case comparison 4 then repeated comparison 2's question with **Sonnet 5.5** as the Actor on a fresh
+draw (6 rejected and 2 other cases, 84 trials per study; $11.44, `artifacts/unseen-comparison-4-2026-11-15/`). As a requirement
+the rule **TRANSFERRED**, the first transfer of the Haiku-learned rule to another model; as an expectation it was
+NOT_TRANSFERRED on one lost report after advice that first came on the last call. Sonnet slipped in 19 of 72 trials without the
+rule (Haiku 81% on comparison 2's draw) and in none with it, reported "unresolved" far more often than Haiku, and had no blocked
+report under either presentation. Running another model needs `FAULTLAB_ACTOR_MODEL` and `--model` set alike (the adapter refuses
+a reply from a different model) and a per-trial dollar bound at that model's rates (Sonnet: $0.084 a call, $0.672 a trial).

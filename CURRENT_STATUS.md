@@ -1552,6 +1552,24 @@ Money: **$1.8570 of API money** (E $0.9214, Q $0.9330, preflight $0.0026; 2,887 
 $5.4698 to 7.3268, rows 9,305 to 12,192. Declared bound $13.09 ($6.53 per study, $0.034 preflight); project ledger
 $1,624.87 + $13.09 = $1,637.96 (bounds). 5,801 s.
 
+### Ledger entry 2026-11-15: unseen-case comparison 4, a stronger Actor (Anthropic API, Sonnet 5.5): requirement TRANSFERRED
+
+Declared (`~/FaultLab_Runs/2026-11-15/unseen-comparison-4/`, sha256 `1e65abff…4e85`; records, logs and the comparison in
+`artifacts/unseen-comparison-4-2026-11-15/`) after the owner chose "try the stronger model test", offered at roughly $5 to $15:
+the L3 rule with its advice as the report gate's requirement (Q) and as an expectation (E), each in its own unseen-case study on
+one fresh draw from case space v4 (6 rejected-upgrade schedules after a one- or two-request outage and 2 without a rejection;
+none in an earlier draw), 6 pairs per rejected case and 3 per other case, **Sonnet 5.5** on the API as the Actor, 8 model calls,
+amendments 9 and 10, commit 74bb4ce. The four-trial preflight on dev-5 passed its gate (all reported, 7 to 13 s a trial, at most
+356 output tokens a call, $0.053 a trial). **Q TRANSFERRED**; **E NOT_TRANSFERRED** (`unseen-r2`: one trial first advised on its
+eighth and last call ended with no report, on a case where 7 of 12 trials without the rule also ended with no report). No slip
+under the rule (0 of 72) against 19 of 72 without it; no blocked report under either presentation, so by the declared reading the
+presentation is not shown to matter for blocks with Sonnet. Write-up: [UNSEEN_STUDY.md](docs/v2/UNSEEN_STUDY.md#runs).
+
+Money: **$11.4363 of API money** (Q $5.6073, E $5.6165, preflight $0.2125; 1,038 model calls, all settled), inside the $15.00
+process cap (committed + $15.00 = $22.33). November committed $7.3268 to 18.7631, rows 12,192 to 13,230. Declared study bounds
+$56.45 each and $2.688 for the preflight, reservations at Sonnet's worst-case rates; the process cap bound the run, so project
+ledger $1,637.96 + $15.00 = $1,652.96 (bounds). 2,141 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

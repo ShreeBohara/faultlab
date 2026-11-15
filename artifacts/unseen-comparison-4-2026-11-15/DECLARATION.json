@@ -1,0 +1,266 @@
+{
+  "actor": {
+    "limits": {
+      "http_attempts": 18,
+      "max_output_tokens": 2000,
+      "model_calls": 8,
+      "turn_timeout_seconds": 20,
+      "wall_seconds": 90
+    },
+    "model": "anthropic:claude-sonnet-5-5",
+    "note": "the per-call and per-trial limits are the study's and the adapter's, unchanged from the Haiku runs; a slower or wordier model meets them as they are",
+    "per_call_reservation_usd": 0.084,
+    "pricing": {
+      "input_per_million": 2.0,
+      "output_per_million": 10.0,
+      "ref": "anthropic:claude-sonnet-5-5",
+      "source": "Official page https://platform.claude.com/docs/en/about-claude/pricing, read by the project on 2026-10-10 (base input/output tokens, global routing, no caching, no batch discount)",
+      "status": "priced",
+      "verified_on": "2026-10-10"
+    }
+  },
+  "caps": {
+    "max_trials_each": 84,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 22.33,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $15.00, the top of the range quoted to the owner; the study bounds are reservations at Sonnet's worst-case rates and the process cap is what binds"
+    },
+    "per_call_reservation_usd": 0.084,
+    "per_trial_usd": 0.672,
+    "preflight_usd": 2.688,
+    "study_usd_each": 56.45
+  },
+  "claim_scope": "new fault schedules of the same task, fixtures and fault types (case space v4: rejected upgrades after a one- or two-request outage, and schedules without a rejection); one learned rule unchanged (learned on Haiku 5.5 trials), two presentations, one Actor (Sonnet 5.5 on the Anthropic API through the same request profile as Haiku: max_tokens only, no temperature, response_format or thinking parameter); not an active policy",
+  "code": {
+    "actor_prompt_sha256": "99a1b17daa637348b82849512df47d91db5f9364bddb0e5cb989c48a1885885e",
+    "compare_sha256": "ca28cc7c4c68dc5234d8ae2e2032b45602bb1cc504e799b92cd2281de7f9b329",
+    "effectsafe_rules_sha256": "563521673b2da3ba81adc4c7070f198aa12494f4339e22192672c099ce3edec6",
+    "git_sha": "74bb4ce074363b88f6e13610b6292d98de5e9b28",
+    "kernel_dispatch_sha256": "d173dbc93dba165787ff382d9990de8e61d97f4d1c80137411ab192b0c19767c",
+    "lab_rules_sha256": "d0f09e08aa6363da42248f982fcca9372aa9438607d8254e596dfba414fa5326",
+    "lab_session_sha256": "fb886f8434991dfded8ed729a503ed4b8633a3c8823c17725f39bec6b3dd241e",
+    "lab_worker_sha256": "71512a0e2fcb2dc985cecc1347248aaa38b820e4923585276243aab740ad26b2",
+    "model_actor_sha256": "6334460bf398694d4ffa8420b53325283a20db79ac4126eb4ae085d5d49318e2",
+    "orders_pack_sha256": "5053b4d5f4f8808db0caba84d2ccc4102be0e72afc5818a8da370e305d0f4b0b",
+    "pricing_table_sha256": "6c898f429ee89bf2ca1f286c55ac45a34db06684e578da432e4431e4413690c9",
+    "provider_catalog_sha256": "a069cc74527f6070d387d6915f10f9686d906128f08894f1003cd63e2686d318",
+    "repair_study_sha256": "fb229561f444a7eb22d0e1f5cd8ecc99c1824ac46e23251c89ff82b72dbf237f",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "study_cli_sha256": "11f0c748e0d49f0442b87c0ad87565d95b26a46970f2bf389e4006b15147d1b7",
+    "unseen_study_sha256": "df61d5700a5ca6208bb983f35dad907784f49efb30b25a16d37433f35b43f6cd"
+  },
+  "comparison_readouts": [
+    "the main result holds for Sonnet if Q is TRANSFERRED. If Q is INCONCLUSIVE because the slip appeared in fewer than 6 of its 36 B0 trials, Sonnet seldom makes this mistake on these cases and the rule had little to repair. NOT_TRANSFERRED is reported with each failed case's reasons",
+    "primary comparison: trials with a block over the 36 L trials of the rejected cases, E against Q, with a two-sided Fisher exact p-value as description. The requirement presentation is judged better for Sonnet if E has at least 4 trials with a block, Q has at most a quarter as many, and Q has no slip; if E has fewer than 4, Sonnet followed the advice as an expectation and the presentation is not shown to matter for this model; otherwise Q is not shown better",
+    "secondary, from `faultlab study compare`: side-effect trials (the rule acted and the trial has a conformance finding, a legacy violation, a false belief or no report); slips; correct refusals; trials shown advice; advice turns; trials where the rule never acted; model calls and trials at the call cap; B0 slips, correct refusals and missing reports; dollars per trial",
+    "if E does not run (see stop rules), question (2) is not answered and the write-up says so"
+  ],
+  "decision_rule": "each study's own decision under docs/v2/UNSEEN_STUDY.md at this commit (amendments 9 and 10): NOT_TRANSFERRED if any case fails, INCONCLUSIVE if none fails and the slip appeared in fewer than 6 B0 trials of the rejected cases, TRANSFERRED otherwise, INCOMPLETE if a stage cannot run. With 6 pairs the gate needs the rule to act in 5 of 6 trials of every rejected case",
+  "declared_at": "2026-11-15",
+  "design": {
+    "caps": {
+      "dollars": 0.672,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "ticks": null,
+      "tokens": null,
+      "wall_seconds": 90.0
+    },
+    "gap_min": 6,
+    "other_cases": [
+      "unseen-o1",
+      "unseen-o2"
+    ],
+    "other_pairs": 3,
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "pairs": 6,
+    "rejected_cases": [
+      "unseen-r1",
+      "unseen-r2",
+      "unseen-r3",
+      "unseen-r4",
+      "unseen-r5",
+      "unseen-r6"
+    ],
+    "rejected_rule": "where_acted_no_legacy",
+    "target_rule": "notification_label_after_rejection",
+    "validation_rule": "where_acted"
+  },
+  "design_digest": "74eacce2ef25a939646ed0d6890651097d088b015bafe7b353ae35b48ad5dc20",
+  "draw": {
+    "cases": 8,
+    "cases_file_sha256": "eb421bc2bac9ee06b7ce1817f11cca90e6e0fcd3989bb55f17db0f342806699c",
+    "excluded": "the 57 cases of unseen-study-1, -2, -3 and unseen-comparisons 1, 2 and 3",
+    "per_stratum": {
+      "late": 0,
+      "other": 2,
+      "rejected": 6
+    },
+    "sealed": "the case file, trial stores and bundles stay outside the repository and are not opened by the agent; records name cases by id only",
+    "seed_text": "74bb4ce074363b88f6e13610b6292d98de5e9b28|49ea0491f1488711eaad4003c43d8e5606f81e3cc0b920cbb971e32c6bc5dcfa|stronger-actor:anthropic:claude-sonnet-5-5:requirement,expectation",
+    "space": {
+      "late": 4,
+      "other": 44,
+      "rejected": 55
+    },
+    "space_version": "v4",
+    "tried": {
+      "late": 0,
+      "other": 2,
+      "rejected": 6
+    }
+  },
+  "expected_cost": "about $11 of API money (168 study trials at about $0.065, from comparison 2's tokens at Sonnet's rates; more if Sonnet writes longer replies) plus about $0.30 for the preflight; at most $15.00 by the process cap; about 1.5 to 2 hours",
+  "haiku_reference": {
+    "comparison_2": {
+      "E": {
+        "B0_slips": [
+          138,
+          168
+        ],
+        "L_slips": [
+          0,
+          168
+        ],
+        "decision": "TRANSFERRED",
+        "side_effect_trials": [
+          0,
+          168
+        ],
+        "trials_with_block": [
+          98,
+          168
+        ]
+      },
+      "Q": {
+        "B0_slips": [
+          135,
+          168
+        ],
+        "L_slips": [
+          0,
+          168
+        ],
+        "decision": "TRANSFERRED",
+        "side_effect_trials": [
+          0,
+          168
+        ],
+        "trials_with_block": [
+          0,
+          168
+        ]
+      }
+    },
+    "comparison_3_primary": {
+      "side_effect_trials": {
+        "E": [
+          11,
+          96
+        ],
+        "Q": [
+          0,
+          96
+        ],
+        "fisher_two_sided_p": 0.000721146
+      },
+      "trials_with_block": {
+        "E": [
+          12,
+          96
+        ],
+        "Q": [
+          0,
+          96
+        ],
+        "fisher_two_sided_p": 0.00033866
+      }
+    },
+    "note": "Haiku's figures on other draws of these strata, for description only; no test is made across draws"
+  },
+  "ledger_before": {
+    "bound_sum_usd": 51.2064,
+    "committed_usd": 7.3268,
+    "month": "2026-11",
+    "rows": 12192
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "unseen-comparison-4-2026-11-15",
+  "preflight": {
+    "on_failure": "no study starts; the drawn cases are not run and later draws leave them out; the failure is written up",
+    "pass": "all four executions COMPLETED, each with a report, recorded dollars and under 80 seconds of wall time; every ledger row they added names Sonnet 5.5 and returned fewer than 1,900 output tokens (the cap is 2,000); their mean cost is at most $0.12 a trial; no billing message",
+    "what": "four live dev-5 trials (a public case) through `faultlab run --adapter model-actor` with Sonnet 5.5, the L3 rule and the requirement presentation, before any study"
+  },
+  "purpose": "Does the unseen-case result hold beyond one agent model? Every unseen-case run so far used Haiku 5.5 as the Actor, and the L3 rule was learned on Haiku trials. This run repeats comparison 2's question (the L3 rule's advice as a requirement or as an expectation, on fresh rejected-upgrade schedules) with Sonnet 5.5 as the Actor. The owner chose this test on 2026-11-15 ('try the stronger model test') after it was offered at roughly $5 to $15 of API money.",
+  "question": "With Sonnet 5.5 as the Actor, on new schedules of the same task: (1) does the report slip appear without the rule, and does the frozen L3 rule remove it with no failed case (each study's decision)? (2) Does showing the rule's advice as the report gate's requirement (Q) still leave fewer trials with a block than showing it as an expectation (E)?",
+  "rule": {
+    "policy": {
+      "rules": [
+        {
+          "hook": "before_final_report",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "require_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        },
+        {
+          "hook": "before_agent_turn",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "advise_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        }
+      ],
+      "version": "rejection-notification-not-required"
+    },
+    "policy_digest": "49ea0491f1488711eaad4003c43d8e5606f81e3cc0b920cbb971e32c6bc5dcfa",
+    "source": "artifacts/unseen-comparison-1-2026-11-14/policy-L3.json (repair study v3)"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "the preflight gate above; a billing message anywhere stops the launch",
+    "Q runs first. E starts only if Q's decision is not INCOMPLETE and the money left under the process cap is at least 1.2 times Q's measured dollars plus $0.30; otherwise E is not started and the write-up says so",
+    "a study stops at the first stage that cannot run: INCOMPLETE",
+    "the ledger refuses any call past the process cap",
+    "one run per draw: no rerun and no change to the rule, the presentations, the cases or the read-outs after a result"
+  ],
+  "studies": {
+    "E": {
+      "advice_presentation": "expectation",
+      "order": 2,
+      "out": "/Users/shree/FaultLab_Runs/2026-11-15/unseen-comparison-4/E"
+    },
+    "Q": {
+      "advice_presentation": "requirement",
+      "order": 1,
+      "out": "/Users/shree/FaultLab_Runs/2026-11-15/unseen-comparison-4/Q"
+    },
+    "note": "the same rule, design, cases and code for both; each has its own B0 arm (the same agent: the presentation shows nothing without a rule); Q runs first because it is the presentation the evidence favours"
+  }
+}

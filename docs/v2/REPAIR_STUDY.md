@@ -132,6 +132,13 @@ acted in only 19 of 96 trials each. The default stays `expectation`, so that ear
 reproduce. For new runs of an advice rule the evidence favours `--advice-presentation requirement`; it also makes a wrong rule
 easier to obey, and no run has yet shown the agent wrong advice.
 
+Comparison 4 (2026-11-15, [UNSEEN_STUDY.md](UNSEEN_STUDY.md#runs)) put a stronger Actor, Sonnet 5.5, in front of the same rule
+on a fresh draw. With the advice as a requirement the study was **TRANSFERRED**, the first transfer of a rule learned on Haiku
+trials to another model. As an expectation it was NOT_TRANSFERRED on one lost report after advice that first came on the last
+call. Sonnet had no blocked report under either presentation, so the requirement's advantage over the expectation in blocks was
+Haiku's; its advantage on the last call held for both models (lost reports 0 of 32 as a requirement against 15 of 31 as an
+expectation, over dev-2 and comparisons 3 and 4). The recommendation above stands.
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

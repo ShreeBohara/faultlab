@@ -319,3 +319,69 @@ trials. This is the first unseen-case evidence that the presentation removes the
 What it does not show: transfer on these cases (neither study passed the gate, because the rule acted too rarely), other tasks,
 fixtures or fault types, another Actor, or an active policy. Money: $1.8570 of API money (E $0.9214, Q $0.9330, preflight
 $0.0026), 2,887 model calls, 97 minutes.
+
+**Comparison 4, a stronger Actor, 2026-11-15** (Anthropic API; **Sonnet 5.5** through the model actor, with the same request
+profile as Haiku: `max_tokens` only, no temperature, response format or thinking parameter; amendments 9 and 10; the frozen rule
+L3 shown two ways on one fresh draw from case space v4 at commit 74bb4ce: 6 rejected-upgrade schedules, each after a one- or
+two-request outage, and 2 schedules without a rejection, none in an earlier draw; declaration sha256 `1e65abff…4e85`; both
+records, the logs, the declaration and the comparison in `artifacts/unseen-comparison-4-2026-11-15/`). Every earlier unseen-case
+run used Haiku 5.5 as the Actor, and L3 was learned on Haiku trials. The questions, declared before the run: with Sonnet 5.5,
+does the slip appear without the rule, and does L3 remove it with no failed case? Does the requirement presentation (**Q**) still
+leave fewer trials with a blocked report than the expectation (**E**)? The declared reading: the main result holds for Sonnet if
+Q is TRANSFERRED; Q is judged better if E has at least 4 trials with a block, Q at most a quarter as many and no slip; if E has
+fewer than 4, Sonnet followed the advice as an expectation and the presentation is not shown to matter for this model. Each
+presentation ran its own study on the same 8 cases, 6 pairs per rejected case and 3 per other case (168 trials; 8 model calls,
+18 HTTP attempts and 90 s, as for Haiku), Q first; E was to start only if the money left under the run's $15 cap allowed, and it
+did. A four-trial preflight on dev-5 first checked that Sonnet fits the adapter's limits: every trial reported, in 7 to 13 s,
+with at most 356 output tokens a call against the 2,000 cap, at $0.053 a trial.
+
+**The main result holds for Sonnet: Q TRANSFERRED.** **E NOT_TRANSFERRED**: one trial of `unseen-r2` ended with no report after
+its first advice came on the eighth and last call. **Neither presentation had a blocked report**, so by the declared reading the
+presentation is not shown to matter for blocks with this model.
+
+| 36 rejected-case trials per arm | E study, no rule | E study, rule as expectation | Q study, no rule | Q study, rule as requirement |
+|---|---|---|---|---|
+| Slip | 11 | 0 | 8 | 0 |
+| Correct refusal | 5 | 26 | 3 | 29 |
+| Reported unresolved (`SAFE_UNRESOLVED`) | 16 | 9 | 22 | 7 |
+| No report | 4 | 1 | 3 | 0 |
+| Rule acted (advice turns) | n/a | 35 (54) | n/a | 35 (54) |
+| First advice on the eighth and last call | n/a | 3 | n/a | 5 |
+| Trials with a blocked report | n/a | 0 | n/a | 0 |
+| Side effect: the rule acted and the trial has a finding or no report | n/a | 1 | n/a | 0 |
+| Model calls, mean; trials at the 8-call cap | 6.14; 6 | 6.03; 4 | 6.03; 6 | 6.06; 6 |
+
+The declared primary read-out, as description: trials with a block 0 of 36 under each presentation (two-sided Fisher exact
+p = 1); side-effect trials 1 of 36 and 0 of 36 (p = 1). The two other cases stayed inert in both studies: the rule never acted,
+and all 24 of their trials reported.
+
+What the numbers say:
+
+- **Sonnet makes the mistake less often, but it makes it.** Without the rule it slipped in 19 of 72 rejected-case trials (26%).
+  Haiku slipped in 273 of 336 on comparison 2's draw of the same strata (81%; a different draw, so description only). Under the
+  rule: 0 of 72.
+- **Sonnet's other answer is caution.** Without the rule it reported the upgrade unresolved in 38 of 72 trials and refused
+  correctly in 8; Haiku refused correctly in 62 of 336 and reported unresolved once. Under the rule Sonnet refused correctly in
+  55 of 72 and still reported unresolved in 16, 14 of them after the advice, which names the notification label, not the outcome.
+  Haiku under the rule refused correctly in all 336.
+- **Sonnet followed the advice the first time under either presentation**: 70 trials were shown advice and no report was
+  refused. Under the expectation Haiku was refused in 98 of 168 (comparison 2).
+- **E's failure is the last-call weakness, this time without a block.** `unseen-r2` takes Sonnet nearly all its calls: every one
+  of its 24 trials used 7 or 8. Without the rule, 7 of its 12 trials ended with no report after eight calls. Under E, one of its
+  trials, first advised on the eighth call, also ended with no report, and because the rule had acted the gate counts it against
+  the rule. Under Q all six of its trials reported, five of them first advised on the eighth call, where Q's note adds "This is
+  your final turn, so a refused report could not be corrected." On this case the advice went with more reports, not fewer: 11 of
+  12 rule trials reported against 5 of 12 without it. The record does not say what the failed trial's last answer was, and its
+  bundle stays sealed.
+- **The rule was silent in one trial per study**, both on `unseen-r2`, and both reported the upgrade unresolved.
+
+Across the runs with the requirement presentation (dev-1, comparison 2, dev-2, comparison 3, and this run's preflight and Q
+study), 262 trials were shown its advice, with two Actors, and no report was refused. Trials whose first advice came on the last
+allowed call, over dev-2 and comparisons 3 and 4: under the expectation 15 of 31 ended with no report (Haiku 14 of 28, Sonnet 1
+of 3); under the requirement 0 of 32.
+
+What it shows: a rule learned on Haiku trials transferred to a stronger Actor on new cases when its advice was shown as the
+report gate's requirement. Sonnet needed the rule less, followed it whichever way it was shown, and lost one report under the
+expectation in the situation comparison 3 isolated. What it does not show: other tasks, fixtures or fault types, a third model,
+or an active policy; with 6 pairs per case the rates are coarse. Money: $11.4363 of API money (Q $5.6073, E $5.6165, preflight
+$0.2125), 1,038 model calls (a mean of 116 output tokens a call, against Haiku's 190 to 263 in comparisons 2 and 3), 36 minutes.
