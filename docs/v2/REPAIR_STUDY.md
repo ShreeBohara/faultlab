@@ -98,6 +98,32 @@ new rejected-upgrade cases, 168 trials each: blocks 98 of 168 as an expectation 
 side effect under either, and both studies TRANSFERRED. Its declared criterion also needed fewer side effects, and there were
 none to reduce, so the requirement presentation is not shown better there. The default stays `expectation`.
 
+**Development check 2, final turn, 2026-11-15** (declared before the run, sha256 `11f0b4c2…1898`; declaration, logs, read-outs and
+bundles in `artifacts/advice-final-turn-dev-2-2026-11-15/`). Comparison 2 never showed the advice on the reserved final turn,
+where comparison 1's side effects came from. This check forced it: the L3 rule on dev-5 with the turn budget cut from 8 to 5 model
+calls (in check 1 every Q trial first saw the advice on its fifth call), 24 trials per presentation, E first. Declared go/no-go:
+PROCEED to an unseen-case test of late evidence if E has at least 4 side-effect trials and Q at most a quarter as many, with no
+slip. **INCONCLUSIVE**: E had 3 side-effect trials, one short of showing that the check produced the situation.
+
+| 24 trials per arm | E: expectation | Q: requirement |
+|---|---|---|
+| First advice on the fifth and last allowed call | 12 | 13 |
+| First advice on the fourth call | 10 | 11 |
+| Rule never acted (the agent reported before the rejection arrived) | 2 | 0 |
+| Trials with a blocked report | 5 | 0 |
+| Side effect: a block on the last call, then no report | 3 | 0 |
+| Correct refusal | 19 | 24 |
+| Slip | 0 | 0 |
+
+The shorter budget made the agent faster: in about half the trials it saw the rejection a call earlier than in check 1. Under E,
+3 of the 12 trials whose first advice came on the last call were refused and ended with no report, and the other 9 reported the
+expected label. The 2 blocks on the fourth call were corrected on the fifth. Under Q, with the final-turn note, none of the 13
+was refused. Side-effect trials 3 of 24 against 0 of 24 (Fisher p = 0.23). This agrees with the requirement presentation
+preventing the final-turn side effect, but there were too few events to show it. Across dev-1, comparison 2 and this check,
+no report shown advice as a requirement was refused: 0 of 204 trials. The bundles were read by hand: each of E's three side
+effects is one refused report on the fifth call, with the advice first shown on that call, and no report.
+$0.1247 of API money, 7 minutes.
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

@@ -232,3 +232,7 @@ TRANSFERRED**, the first passes under amendment 10. Slip 0 of 336 against 273 of
 expectation and 0 of 168 as a requirement; no side effect under either. By the declared criterion the requirement presentation
 is not shown better here, because these cases never produced the late-evidence block that caused comparison 1's side
 effects. New study records name the Actor (`actor`: adapter, model, presentation).
+A follow-up development check forced the advice onto the final turn (dev-5, a 5-call budget; $0.12,
+`artifacts/advice-final-turn-dev-2-2026-11-15/`): 3 of 24 trials ended with no report under the expectation, 0 of 24 under
+the requirement. That was INCONCLUSIVE by its declared rule (it needed 4), so whether the requirement presentation prevents
+the late-evidence side effect is still open; across 204 trials no report shown advice as a requirement was refused.

@@ -1,0 +1,277 @@
+{
+  "attempts": {
+    "TERMINAL": 24
+  },
+  "batch_id": "batch-d9e28b6dc044441091fcd6ef4ce23ec3",
+  "bundle": {
+    "bundle_id": "bundle-e23e3ec27999e9e315793a98e3343a6a",
+    "manifest_digest": "bfda42198b022abbde4cb86d8b5061e60e36f0365295a4e999b8043c2ee8efb3",
+    "path": "/Users/shree/FaultLab_Runs/2026-11-15/advice-final-turn-dev-2/bundle-Q.zip"
+  },
+  "executions": {
+    "COMPLETED": 24
+  },
+  "plans": 1,
+  "spent": {
+    "measured": {
+      "dollars": 0.0611772,
+      "envelopes": 24,
+      "http_attempts": 85,
+      "input_tokens": 490632,
+      "model_calls": 109,
+      "output_tokens": 24228
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "store": "/Users/shree/FaultLab_Runs/2026-11-15/advice-final-turn-dev-2/Q.sqlite3",
+  "tasks": {
+    "CORRECTLY_REFUSED": 24
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-8618d79f7a994525b37c433721ed3857",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-23aee91e74a843ec88f0960c048f8ec8",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-aae84cb353934e81b71a0cc505b2013a",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-262877fc16544ace91c599b230247578",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-f07ec58b4d814ade8c9e2c033bde1f81",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-fe0388bb9ebc49af932fbbe4b98169ee",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-047ea80b43a84d15acecca6330addefe",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-0fa4490a33bd4817b33f18f0a51bf546",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-1a8108050a8b41db8deb31714907edee",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-19cceea86d1e4d4ebc080f58cfb7d93b",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-a0234b08653b4ae9b8c27a99d3a60be7",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-508086082d474a6c8f5674bd9088fa46",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-f9e8f60a440f4c1fa282ec61926cc1b9",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-b127d00421a84fe1a8267855b9df5b5d",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-556029a1bc794b88a2dce6bb2d4c7a70",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-41e5b15c552843e787188cd0e883c72f",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-b957a57e71974a37bc9d1e945a1860e3",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-f6d5f7f0f1d44d539b81255dcfb27a81",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-00fdb41c7e004cdc95c0efcf8b150114",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-a19644881b5543a790db6fc13402bd02",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-495da0872d364e64995c33f0db734ba8",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-68a15245410c4471a70ffc9eb881f41d",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-9b2fcec2d2164aabaad190d20cffe9fa",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-67c1171ea7f040f389139f3174128eeb",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    }
+  ]
+}

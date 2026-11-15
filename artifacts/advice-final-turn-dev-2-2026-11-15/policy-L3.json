@@ -1,0 +1,39 @@
+{
+  "rules": [
+    {
+      "hook": "before_final_report",
+      "operation": "upgrade",
+      "steps": [
+        {
+          "claim": "notification_outcome",
+          "expect": [
+            "NOT_REQUIRED"
+          ],
+          "only_if": "always",
+          "op": "require_label",
+          "operation": "notification",
+          "ticks": null
+        }
+      ],
+      "when": "terminal_failure"
+    },
+    {
+      "hook": "before_agent_turn",
+      "operation": "upgrade",
+      "steps": [
+        {
+          "claim": "notification_outcome",
+          "expect": [
+            "NOT_REQUIRED"
+          ],
+          "only_if": "always",
+          "op": "advise_label",
+          "operation": "notification",
+          "ticks": null
+        }
+      ],
+      "when": "terminal_failure"
+    }
+  ],
+  "version": "rejection-notification-not-required"
+}

@@ -1522,6 +1522,19 @@ Money: **$2.4678 of API money** (E $1.2824, Q $1.1826, preflight $0.0027; 4,242 
 $2.8773 to 5.3451, rows 4,842 to 9,084. Declared bound $26.23 ($13.10 per study, $0.034 preflight); project ledger
 $1,597.01 + $26.23 = $1,623.24 (bounds). 6,772 s.
 
+### Ledger entry 2026-11-15: final-turn development check (Anthropic API): INCONCLUSIVE
+
+Declared (`~/FaultLab_Runs/2026-11-15/advice-final-turn-dev-2/`, sha256 `11f0b4c2…1898`; declaration, logs, read-outs and
+bundles in `artifacts/advice-final-turn-dev-2-2026-11-15/`): the L3 rule on dev-5 with the turn budget cut to 5 model calls so
+that its advice tends to come first on the reserved final turn, 24 trials with the advice as an expectation (E) and 24 as the
+report gate's requirement (Q), commit 2e17ce1. Side-effect trials 3 of 24 under E (each a block on the last call, then no report)
+and 0 of 24 under Q (Fisher p = 0.23, descriptive); trials with a block 5 and 0; no slip. Declared go/no-go: **INCONCLUSIVE**,
+since E had fewer than the 4 side effects the rule required. Development evidence on the case the rule was built from. Write-up:
+[REPAIR_STUDY.md](docs/v2/REPAIR_STUDY.md).
+
+Money: **$0.1247 of API money** (221 model calls, all settled). November committed $5.3451 to 5.4698, rows 9,084 to 9,305.
+Declared bound $1.63 (48 trials at $0.034); project ledger $1,623.24 + $1.63 = $1,624.87 (bounds). 420 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
