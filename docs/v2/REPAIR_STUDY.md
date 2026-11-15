@@ -85,6 +85,14 @@ enforces is still shown as an expectation, so no refusal is announced that would
 adapter's settings digest only when it is not the default. Evidence: `backend/tests/v2/test_report_gate.py` (the mirror
 check, both presentations through both adapters, the final-turn note, the pinned digest of comparison 1's L arm).
 
+**Development check, 2026-11-15** (declared before the run, sha256 `2a2e9dfe…57fc`; declaration, logs, read-outs and bundles in
+`artifacts/advice-presentation-dev-1-2026-11-15/`). The L3 rule, unchanged, on dev-5 with Haiku 5.5 on the API: 12 trials
+with the advice shown as an expectation (E), then 12 as the gate's requirement (Q). E: a block in 7 of 12 trials (the agent
+still proposed `NOT_STARTED` and was refused, then corrected). Q: a block in 0 of 12; every first report carried
+`NOT_REQUIRED`. Both arms: no slip, no side effect, 12 of 12 correct refusals; 5.5 model calls per trial under E, 5.0 under
+Q. Fisher p = 0.0046 for the blocks. The declared go/no-go was **PROCEED** to an unseen-case comparison. This is one public
+case, the one the rule was built from, so it is development evidence only. $0.0705 of API money, 4 minutes.
+
 ## The Mechanic
 
 `ClaudeCodeMechanic`: Claude Code through the Claude Agent SDK on the owner's subscription, the same

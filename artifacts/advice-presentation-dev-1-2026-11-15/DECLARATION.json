@@ -1,0 +1,122 @@
+{
+  "arms": {
+    "E": {
+      "advice_presentation": "expectation",
+      "order": 1,
+      "store": "/Users/shree/FaultLab_Runs/2026-11-15/advice-presentation-dev-1/E.sqlite3",
+      "trials": 12
+    },
+    "Q": {
+      "advice_presentation": "requirement",
+      "order": 2,
+      "store": "/Users/shree/FaultLab_Runs/2026-11-15/advice-presentation-dev-1/Q.sqlite3",
+      "trials": 12
+    }
+  },
+  "caps": {
+    "batch_usd_each": 0.408,
+    "max_trials": 24,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 4.81,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus $2.00"
+    },
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_usd": 0.034
+  },
+  "claim_scope": "development only: one public case, one rule (L3, unchanged), one Actor (Haiku 5.5 on the API); not an unseen-case result and not a policy",
+  "code": {
+    "actor_prompt_sha256": "99a1b17daa637348b82849512df47d91db5f9364bddb0e5cb989c48a1885885e",
+    "effectsafe_rules_sha256": "563521673b2da3ba81adc4c7070f198aa12494f4339e22192672c099ce3edec6",
+    "git_sha": "0a817d80741b05bfa70fbfa02c8054e388fc667d",
+    "lab_cli_sha256": "e79c8430d54da81bee656ced7884713bc7771ca6a1884ed08994d99f83adc61b",
+    "lab_rules_sha256": "d0f09e08aa6363da42248f982fcca9372aa9438607d8254e596dfba414fa5326",
+    "model_actor_sha256": "6334460bf398694d4ffa8420b53325283a20db79ac4126eb4ae085d5d49318e2",
+    "orders_pack_sha256": "5053b4d5f4f8808db0caba84d2ccc4102be0e72afc5818a8da370e305d0f4b0b",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb"
+  },
+  "decision_rule": "development go or no-go, fixed now: PROCEED to an unseen-case comparison of the two presentations if Q has at most half as many trials with a block as E, no slip, and no more side-effect trials than E; otherwise STOP and write it up",
+  "declared_at": "2026-11-15",
+  "design": {
+    "adapter": "model-actor",
+    "caps": {
+      "dollars": 0.034,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90.0
+    },
+    "model": "anthropic:claude-haiku-5-5",
+    "pack_id": "orders.upgrade_then_confirm/v1",
+    "referee": "legacy",
+    "scenario": "dev-5"
+  },
+  "expected_cost": "about $0.10 of API money (24 trials at about $0.004) and about 6 minutes",
+  "ledger_before": {
+    "bound_sum_usd": 19.8072,
+    "committed_usd": 2.8069,
+    "month": "2026-11",
+    "rows": 4716
+  },
+  "machine": {
+    "keep_awake": "caffeinate -i for the launcher's lifetime",
+    "on_ac_power": true,
+    "other_paid_runs": "none at launch"
+  },
+  "name": "advice-presentation-dev-1-2026-11-15",
+  "purpose": "A development check, under the owner's instruction of 2026-11-14 ('If you want to add more things, add more code, do more tests, and do more verification, just do it'), of the requirement presentation of advice (commit 0a817d8) before any unseen-case test of it.",
+  "question": "On dev-5, the development case the rule was built from, does showing the L3 rule's advice as the report gate's requirement (Q) cut the trials where the agent still proposes a report the gate refuses, compared with the advice shown as an expectation (E)?",
+  "readouts": [
+    "per arm over its 12 trials: trials with a blocked report (primary), slips (the target finding), side effects (the rule acted and the trial has a conformance finding, a legacy violation, a false belief or no report), correct refusals, trials shown advice, model calls",
+    "trials with a block, Q against E, with a two-sided Fisher exact p-value as description"
+  ],
+  "rule": {
+    "policy": {
+      "rules": [
+        {
+          "hook": "before_final_report",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "require_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        },
+        {
+          "hook": "before_agent_turn",
+          "operation": "upgrade",
+          "steps": [
+            {
+              "claim": "notification_outcome",
+              "expect": [
+                "NOT_REQUIRED"
+              ],
+              "only_if": "always",
+              "op": "advise_label",
+              "operation": "notification",
+              "ticks": null
+            }
+          ],
+          "when": "terminal_failure"
+        }
+      ],
+      "version": "rejection-notification-not-required"
+    },
+    "policy_digest": "49ea0491f1488711eaad4003c43d8e5606f81e3cc0b920cbb971e32c6bc5dcfa",
+    "source": "artifacts/unseen-comparison-1-2026-11-14/policy-L3.json (repair study v3, as comparison 1 froze it)"
+  },
+  "schema": "faultlab-run-declaration/v2",
+  "stop_rules": [
+    "E runs first; an INFRA_ERROR trial or a billing message in E stops the launch before Q",
+    "the ledger refuses any call past the process cap",
+    "one run per arm: no rerun and no change to the rule, the arms or the read-outs after a result"
+  ]
+}

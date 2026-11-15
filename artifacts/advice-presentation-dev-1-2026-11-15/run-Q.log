@@ -1,0 +1,157 @@
+{
+  "attempts": {
+    "TERMINAL": 12
+  },
+  "batch_id": "batch-5234fea248e541c29d9e7107e9fbcc21",
+  "bundle": {
+    "bundle_id": "bundle-984bccafe76f7fc520d3db9314ca2c49",
+    "manifest_digest": "0c9c63b92321603f53cefa897d252b46da1c0fb73cde4a1f20d229472a47fb00",
+    "path": "/Users/shree/FaultLab_Runs/2026-11-15/advice-presentation-dev-1/bundle-Q.zip"
+  },
+  "executions": {
+    "COMPLETED": 12
+  },
+  "plans": 1,
+  "spent": {
+    "measured": {
+      "dollars": 0.032196600000000006,
+      "envelopes": 12,
+      "http_attempts": 48,
+      "input_tokens": 271361,
+      "model_calls": 60,
+      "output_tokens": 10121
+    },
+    "reserved": {
+      "dollars": 0.0,
+      "model_calls": 0,
+      "open_attempts": 0,
+      "unbounded": 0
+    }
+  },
+  "store": "/Users/shree/FaultLab_Runs/2026-11-15/advice-presentation-dev-1/Q.sqlite3",
+  "tasks": {
+    "CORRECTLY_REFUSED": 12
+  },
+  "trials": [
+    {
+      "attempt_id": "trial-f9dc8acab53e43398ab9f445b30f71ea",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-f143991fdb4346708cb1d087756138f3",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-3680cd9344bb47ba8aa99ee53223597d",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-0b309e6e2b0947c0beb11ba95e533cf9",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-80803ddd8fc64484b82008c6ab2def5c",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-d56d0a27ad0b4b7ca8fa1d263c3ffc4b",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-c46613c335e7463995a0e04ca4e11e22",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-13daaaaca7324a2cb324c43724bff36b",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-e9b11fa8c6d84136827f14902dffc837",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-cda21f5e3a714d8f9854cdd3814f240d",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-a66713b617554a8c81a9c5c87d588bfe",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    },
+    {
+      "attempt_id": "trial-c949854b5e454beb9a9c7b653fa09beb",
+      "claims": [],
+      "execution": "COMPLETED",
+      "faults_triggered": true,
+      "reason": null,
+      "scenario_id": "dev-5",
+      "task": "CORRECTLY_REFUSED",
+      "violations": []
+    }
+  ]
+}

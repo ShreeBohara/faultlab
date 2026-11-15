@@ -1494,6 +1494,17 @@ Money: **$1.6832 of API money** (R $0.8433, L3 $0.8371, preflight $0.0027; 2,767
 $1.1237 to 2.8069, rows 1,949 to 4,716. Declared bound $14.73 ($7.35 per study, $0.034 preflight); project ledger
 $1,581.46 + $14.73 = $1,596.19 (bounds). 4,954 s.
 
+### Ledger entry 2026-11-15: advice-presentation development check (Anthropic API): PROCEED
+
+Declared (`~/FaultLab_Runs/2026-11-15/advice-presentation-dev-1/`, sha256 `2a2e9dfe…57fc`; declaration, logs, read-outs and
+bundles in `artifacts/advice-presentation-dev-1-2026-11-15/`): the L3 rule on dev-5, Haiku 5.5 on the API, 12 trials with its
+advice shown as an expectation and 12 as the report gate's requirement (commit 0a817d8). A block in 7 of 12 trials against 0
+of 12 (Fisher p = 0.0046); no slip, no side effect and 12 of 12 correct refusals in both arms. Declared go/no-go: **PROCEED** to
+an unseen-case comparison. Development evidence on the case the rule was built from, not an unseen-case result.
+
+Money: **$0.0705 of API money** (126 model calls, all settled). November committed $2.8069 to 2.8773, rows 4,716 to 4,842.
+Declared bound $0.82 (24 trials at $0.034); project ledger $1,596.19 + $0.82 = $1,597.01 (bounds). 209 s.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger
