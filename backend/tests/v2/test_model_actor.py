@@ -97,7 +97,7 @@ def test_the_adapter_carries_the_legacy_prompt_identity_and_needs_a_provider():
     assert ModelActorAdapter(ScriptedProvider(), MODEL, protocol=PROTOCOL_V1).manifest().settings_digest != manifest.settings_digest
     with pytest.raises(ValueError, match="Unsupported"):
         ModelActorAdapter(ScriptedProvider(), MODEL, protocol="faultlab-actor-context/v2-attempted-writes")
-    assert [a.adapter_id for a in load_adapters()] == ["reference-orders"]          # the model adapter needs settings
+    assert [a.adapter_id for a in load_adapters()] == ["reference-orders", "reference-bookings"]   # the model adapter needs settings
     assert load_adapter("model-actor", provider=ScriptedProvider(), model=MODEL).adapter_id == "model-actor"
     with pytest.raises(AdapterError):
         load_adapter("nope")

@@ -48,6 +48,42 @@ must turn hold labels in reports back into ids using the recorded label table. O
 (`faultlab/lab/replay.py`) re-issues recorded requests through the session, and those now hold the real hold ids, so a
 bookings replay must re-issue the labels instead.
 
+## Step 2: done (2026-11-15, $0)
+
+Bookings trials are now scored through the real v2 worker:
+
+- **Scripted agents as adapters.** `reference-bookings` and `buggy-bookings` (setting `name`: one of the eight
+  September buggy agents) live in `faultlab/adapters/september_bookings.py`. Each runs the September agent through
+  the session as the September broker did: one turn per action (a $0 model call), the view rebuilt from the session's
+  records, and the trusted request built from the intent.
+- **Referee.** `faultlab/referee/bookings.py` runs H1–H8 from the September `checks.py` and refuses a checker whose
+  sha256 is not the pinned one. It rebuilds the checks' inputs from v2 evidence: observations in the September form
+  (`faultlab/packs/bookings/views.py`, the same function that builds the agent's view), labels turned back into the
+  world's ids, scope refusals, usage against the budget, snapshots and the September world-integrity comparisons.
+  Use `faultlab run --referee bookings`.
+- **Oracle.** `faultlab/referee/oracle/bookings.py` judges `move_outcome`, `booking_slot`, `open_hold_ids` and
+  `overall` against the world's committed effects. It is registered in the worker, so a bookings trial's claims are
+  scored.
+- **Found and fixed:** effectsafe refused a second move after the first was refused before acceptance (the forced
+  path of `hk-dev-6`), because the move's bytes changed under the same operation id. The journal now pins new bytes
+  only when every earlier attempt proved it had no effect. Before any attempt, or once one may have acted, it still
+  refuses (`docs/v2/EFFECTSAFE.md`).
+
+Evidence (`backend/tests/v2/test_bookings_scoring.py`):
+
+- All **216** trials (9 agents × 8 cases × 3 trials) through the worker get the September verdict: the same task
+  outcome and exactly the same failed checks.
+- The correct agent is clean on 24 of 24 with the expected classes. The give-up caller fails H3 and the blind-retry
+  caller fails H2 on `hk-dev-2` and `hk-dev-3`.
+- The oracle finds no false belief for the correct agent, and the expected one for four buggy agents. A citation slip
+  fails H6 while every belief is true.
+- Run by hand, `faultlab run --pack bookings.move_with_hold/v1 --adapter reference-bookings --referee bookings` gave
+  8 of 8 trials with no violation: 6 completed and 2 correctly refused, every fault fired, $0.
+
+Still open: the September invalid-action path (an invalid action ends the trial here instead of costing a turn), and
+replaying a bookings trial (see step 1). The run command passes no adapter settings yet, so `buggy-bookings` runs from
+code or tests. Step 3 (a model Actor built from the pack) is next.
+
 ## Where it stands (checked 2026-11-15)
 
 - `pytest taskpacks/bookings_move_with_hold/tests`: **202 passed, 1 failed.** The failure is the

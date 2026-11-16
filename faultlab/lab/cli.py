@@ -33,6 +33,11 @@ def build_referee(name: str, pack_id: str):
         if pack_id != PACK_ID:
             raise ValueError(f"The legacy referee scores {PACK_ID} only")
         return LegacyOrdersReferee()
+    if name == "bookings":
+        from faultlab.referee.bookings import PACK_ID as BOOKINGS, BookingsReferee
+        if pack_id != BOOKINGS:
+            raise ValueError(f"The bookings referee scores {BOOKINGS} only")
+        return BookingsReferee()
     raise ValueError(f"Unknown referee {name!r}")
 
 
@@ -86,7 +91,8 @@ def main(argv=None) -> int:
     parser.add_argument("--adapter", required=True, help="adapter id, see `faultlab adapters`")
     parser.add_argument("--scenario", action="append", default=None, help="scenario id (repeatable); default: every scenario of the pack")
     parser.add_argument("--k", type=int, default=1, help="repetitions per scenario (default 1)")
-    parser.add_argument("--referee", choices=("legacy", "none"), default="none", help="who scores the task outcome")
+    parser.add_argument("--referee", choices=("legacy", "bookings", "none"), default="none",
+                        help="who scores the task outcome: legacy (orders C1-C8) or bookings (H1-H8)")
     parser.add_argument("--name", default=None, help="batch name (default: pack and adapter)")
     parser.add_argument("--dollars", type=float, default=0.0, help="each trial's dollar bound (offline adapters spend 0)")
     parser.add_argument("--batch-dollars", type=float, default=None,

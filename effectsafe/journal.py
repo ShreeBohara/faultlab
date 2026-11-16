@@ -92,10 +92,18 @@ class Journal:
             try:
                 row = self._db.execute("SELECT * FROM operations WHERE operation_id=?", (intent.operation_id,)).fetchone()
                 if row is not None:
-                    if row["original_bytes"] != original:
-                        raise JournalError("Original intent bytes cannot change")
                     if row["contract"] != contract.model_dump_json():
                         raise JournalError("An operation's tool contract cannot change")
+                    if row["original_bytes"] != original:
+                        state = OperationState.model_validate_json(row["state"])
+                        if not (state.attempts and state.outcome == NOT_STARTED and not state.effect_possibly_pending):
+                            raise JournalError("Original intent bytes cannot change")
+                        # Every attempt so far was refused in a way the contract says proves no effect, so the provider
+                        # never started this operation: the new request is pinned from now on (a move onto another hold
+                        # after the first hold had expired). Before any attempt, or once one may have acted, never.
+                        self._db.execute("UPDATE operations SET intent_hash=?, key=?, original_bytes=? WHERE operation_id=?",
+                                         (intent.intent_hash, key, original, intent.operation_id))
+                        return self.operation(intent.operation_id)
                     return self._operation(row)
                 self._db.execute("INSERT INTO operations VALUES (?,?,?,?,?,?,?,?,?)",
                                  (intent.operation_id, intent.action, intent.scope, intent.intent_hash, key, original,

@@ -124,7 +124,7 @@ def test_the_adapter_carries_its_own_prompt_identity_and_the_subscription_channe
     assert other.model == MODEL and other.manifest().settings_digest != manifest.settings_digest
     with pytest.raises(ValueError):
         ClaudeAgentAdapter("claude-code:")
-    assert [a.adapter_id for a in load_adapters()] == ["reference-orders"]          # the Claude Agent adapter needs a model
+    assert [a.adapter_id for a in load_adapters()] == ["reference-orders", "reference-bookings"]   # the Claude Agent adapter needs a model
     assert load_adapter("claude-agent", model=MODEL, rates=RATES).adapter_id == "claude-agent"
 
 

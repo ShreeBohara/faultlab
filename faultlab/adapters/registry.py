@@ -13,6 +13,9 @@ ADAPTERS: dict[str, tuple[str, str]] = {
     "model-actor": ("faultlab.adapters.model_actor", "ModelActorAdapter"),
     # Needs settings: model (an API model id, run through the Claude Code CLI on the owner's subscription).
     "claude-agent": ("faultlab.adapters.claude_agent", "ClaudeAgentAdapter"),
+    "reference-bookings": ("faultlab.adapters.september_bookings", "ReferenceBookingsAdapter"),
+    # Needs settings: name (a buggy agent of the September bookings pack, taskpacks/bookings_move_with_hold/mutants.py).
+    "buggy-bookings": ("faultlab.adapters.september_bookings", "BuggyBookingsAdapter"),
 }
 
 

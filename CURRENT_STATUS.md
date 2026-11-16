@@ -1615,6 +1615,17 @@ Checks: 17 new tests (`backend/tests/v2/test_bookings_pack.py`), the v2 suite at
 (see the commit). No provider call, no money. Next is step 2 (referee bridge, oracle and scripted agents through the
 worker); see [docs/v2/SECOND_TASK_PLAN.md](docs/v2/SECOND_TASK_PLAN.md).
 
+### 2026-11-15: second task, step 2, bookings trials scored through the worker ($0)
+
+The September bookings agents now run as v2 adapters (`reference-bookings`, `buggy-bookings`). A new referee runs the
+September checks H1–H8 on v2 evidence (`faultlab run --referee bookings`), and a bookings oracle judges four claims
+against the world's effects. All 216 trials (9 agents × 8 cases × 3 trials) through the worker get the September
+verdict: the same outcome and exactly the same failed checks. The correct agent is clean on 24 of 24 and never holds
+a false belief. Found and fixed: effectsafe refused a second move after the first was refused before acceptance; it
+now pins new bytes only once every earlier attempt proved no effect. Checks: 6 new tests, the v2 suite, the full
+backend suite (see the commit), and the run command by hand (8 of 8 clean, $0). Next is step 3, a model Actor built
+from the pack.
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

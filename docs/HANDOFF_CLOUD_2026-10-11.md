@@ -254,5 +254,5 @@ a reply from a different model) and a per-trial dollar bound at that model's rat
 The dashboard now has a read-only **Study results** page (`#/studies`) over every study folder in `artifacts/`
 (`faultlab/research/archive.py`, `GET /api/studies`); a new study shows up there once its declaration and records are
 published in `artifacts/<name>/` the way comparisons 1 to 4 were.
-The second task is under way: [v2/SECOND_TASK_PLAN.md](v2/SECOND_TASK_PLAN.md). Step 1 is done (the bookings pack runs on the kernel,
-matching the September world request for request); step 2, scoring through the worker, is next.
+The second task is under way: [v2/SECOND_TASK_PLAN.md](v2/SECOND_TASK_PLAN.md). Steps 1 and 2 are done (the bookings pack runs on the
+kernel and its trials are scored through the worker with the September verdicts); step 3, a model Actor built from the pack, is next.

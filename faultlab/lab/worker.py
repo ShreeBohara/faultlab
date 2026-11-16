@@ -83,8 +83,8 @@ def kernel_digest() -> str:
 
 
 def default_oracles() -> dict:
-    from faultlab.referee.oracle import orders
-    return {orders.PACK_ID: orders.score}
+    from faultlab.referee.oracle import bookings, orders
+    return {orders.PACK_ID: orders.score, bookings.PACK_ID: bookings.score}
 
 
 class TrialWorker:

@@ -14,8 +14,10 @@ never imports `faultlab` (the lab imports it). It is the legacy broker
 - **`contract`**: `ToolContract`, what a connector promises about a tool: whether it keys the
   operation (`identity_scope`), what a replay does, where the commit boundary is, which errors
   prove no effect. Shared object with the lab's packs and the future connector profiles.
-- **`journal`**: SQLite, append-only. `prepare` pins the exact bytes (a change is refused; a
-  client key the caller already placed in the payload is kept, otherwise one is derived);
+- **`journal`**: SQLite, append-only. `prepare` pins the exact bytes (a change is refused, except
+  once every attempt so far was refused with an error that proves no effect: the provider never
+  started the operation, so the new bytes are pinned instead; a client key the caller already
+  placed in the payload is kept, otherwise one is derived);
   `dispatch` records the attempt before the request leaves and returns the bytes to send;
   `deliver` folds evidence into the outcome; `observe` folds what a status read reported into
   the write it reports on (only a pending or terminal state word moves the outcome, so a status

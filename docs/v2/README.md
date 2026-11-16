@@ -24,7 +24,7 @@ store readable. This page lists the pieces that exist, each with its evidence.
 | Providers beyond W&B, verified prices, monthly ledger | `backend/app/providers` | `../providers.md` | live smoke and the four-model screen |
 | First multi-provider data | runs folder | `../CLAUDE_ACTOR_SCREEN_2026-10-11.md` | 72 live episodes, four models |
 | Study archive and the dashboard's Study results page | `faultlab/research/archive.py`, `backend/app/studies.py`, `frontend/src/components/StudiesScreen.tsx` | `UNSEEN_STUDY.md` | every committed study reads with its declaration verified; sealed files are never served (tests) |
-| Second task: the bookings pack | `faultlab/packs/bookings` (from `taskpacks/bookings_move_with_hold`) | `SECOND_TASK_PLAN.md`, `PACKS.md` | step 1 done: the kernel world answers every September request alike for 9 agents (the correct one and 8 buggy ones) × 8 cases × 3 seeds (tests); steps 2–6 open |
+| Second task: the bookings pack | `faultlab/packs/bookings`, `faultlab/referee/bookings.py`, `faultlab/adapters/september_bookings.py` | `SECOND_TASK_PLAN.md`, `PACKS.md` | steps 1–2 done: the kernel world answers every September request alike, and 216 trials through the worker get the September verdicts (tests); steps 3–6 open |
 
 Tests for the new packages live in `backend/tests/v2` and run with the core suite
 (`./scripts/test.sh backend`).
