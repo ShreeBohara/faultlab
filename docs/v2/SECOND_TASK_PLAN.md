@@ -48,6 +48,30 @@ must turn hold labels in reports back into ids using the recorded label table. O
 (`faultlab/lab/replay.py`) re-issues recorded requests through the session, and those now hold the real hold ids, so a
 bookings replay must re-issue the labels instead.
 
+## Step 3: done (2026-11-15, $0)
+
+A model can now do the bookings task. `faultlab/adapters/pack_actor.py` (`pack-actor`, settings: provider, model,
+pack id) builds its prompt from what the pack declares in a new `ActorBrief`: the task text, the six tools with the
+arguments the agent chooses (only a hold label), the report fields in plain words, and the identities it may see.
+The trusted request stays the pack's (`TaskPack.agent_request`), so no idempotency key or intent hash reaches the
+model. The loop keeps the legacy Actor's rules. A turn is charged before the request leaves. Every delivered answer
+is shown as `obs-N`, using the same function the referee uses. An invalid answer costs a turn, the model is told why,
+and nothing runs. The last turn must be the report. A lost model reply is retried once when the provider allows it.
+The orders pack keeps its legacy Actor and prompt digest. `faultlab run --adapter pack-actor --model ...
+--execute-live` builds it with the owner's provider; nothing in step 3 called one.
+
+Evidence (`backend/tests/v2/test_pack_actor.py`, a scripted model):
+
+- The prompt carries every tool line, the report notes and the evidence labels, and its digest is stable. The
+  orders pack is refused because it has no brief.
+- Through the worker and the H1–H8 referee, a careful model is clean on `hk-dev-1` and `hk-dev-2`, even when it
+  wraps its JSON in a code fence. A careless model that asks for a second hold after the lost answer fails H2
+  first, then H3.
+- An invalid answer costs a turn and calls nothing. A tool asked for on the reserved last turn runs nothing.
+- The run command refuses the adapter without `--execute-live`.
+
+Step 4 (study tools per pack) and then the paid screen (step 5, owner's OK and a declaration first) remain.
+
 ## Step 2: done (2026-11-15, $0)
 
 Bookings trials are now scored through the real v2 worker:

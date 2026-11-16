@@ -16,7 +16,7 @@ from __future__ import annotations
 from effectsafe import ToolContract
 from faultlab.core import content_hash
 from faultlab.env.kernel import FaultSpec
-from faultlab.packs.base import PropertySet, PropertySpec, ReferenceLabels, Scenario, TaskPack
+from faultlab.packs.base import ActorBrief, PropertySet, PropertySpec, ReferenceLabels, Scenario, TaskPack, ToolBrief
 from faultlab.packs.bookings import models as m
 from faultlab.packs.bookings.handler import FIXTURES, PACK_ID, BookingsHandler
 from faultlab.packs.bookings.routes import router as business_router
@@ -123,6 +123,34 @@ def allocate_intent(fixture_id: str, namespace: str) -> dict:
     return m.TaskIntent(**intent, task_text=table.TASK_TEXT).model_dump(mode="json")
 
 
+# What a model Actor built from the pack is told: the September tool table (description and the arguments the agent
+# chooses), the report's fields in plain words, and the identities the September agents were shown.
+ACTOR_BRIEF = ActorBrief(
+    tools=tuple(ToolBrief(name=name, description=spec["description"], arguments=tuple(spec["arguments"])) for name, spec in table.TOOLS.items()),
+    intent_fields=("task_id", "booking_id", "original_slot", "target_slot", "move_operation_id"),
+    report_notes=('move_outcome: NOT_STARTED, PENDING, SUCCEEDED, FAILED or UNKNOWN. booking_slot: ORIGINAL, TARGET or UNKNOWN. '
+                  'open_hold_ids: the holds of this task that are still active as far as the delivered evidence shows (at most 4). '
+                  'overall: COMPLETED, SAFE_UNRESOLVED or CORRECTLY_REJECTED. evidence_ids: the obs-N labels your claims rest on '
+                  '(at most 18). next_action: {"kind": "NONE"}, {"kind": "ESCALATE"}, {"kind": "CHECK_EXISTING_MOVE", "operation_id": '
+                  '"<the move operation id>"} or {"kind": "RELEASE_HOLD", "hold_id": "<a hold>"}.'))
+
+
+def agent_request(tool: str, arguments: dict, intent: dict) -> dict:
+    """The September broker's trusted request, in the session's form: the agent chooses only a hold, the pack the rest."""
+    booking = intent["booking_id"]
+    if tool == "place_hold":
+        return {"booking_id": booking, "payload": {"booking_id": booking, "slot_id": intent["target_slot"]}}
+    if tool == "move_booking":
+        return {"booking_id": booking, "operation_id": intent["move_operation_id"], "payload": {
+            "booking_id": booking, "hold_id": arguments["hold_id"], "operation_id": intent["move_operation_id"],
+            "idempotency_key": intent["move_idempotency_key"], "intent_hash": intent["move_intent_hash"]}}
+    if tool == "release_hold":
+        return {"booking_id": booking, "hold_id": arguments["hold_id"], "payload": {"booking_id": booking, "hold_id": arguments["hold_id"]}}
+    if tool == "get_move_status":
+        return {"booking_id": booking, "operation_id": intent["move_operation_id"]}
+    return {"booking_id": booking}
+
+
 def service_of(tool: str, request: dict) -> str:
     try:
         return m.SERVICE_OF_TOOL[tool]
@@ -166,8 +194,8 @@ PACK = TaskPack(
     handler_factory=BookingsHandler, business_router=business_router, service_of=service_of, validate_result=validate_result,
     intent_model=m.TaskIntent, report_model=m.MoveReport, allocate_intent=allocate_intent,
     tools=TOOLS, hooks=HOOKS, fixtures=FIXTURES, scenarios=SCENARIOS, properties=PROPERTIES,
-    operation_aliases=OPERATION_ALIASES, references=REFERENCES,
+    operation_aliases=OPERATION_ALIASES, references=REFERENCES, actor_brief=ACTOR_BRIEF, agent_request=agent_request,
 )
 
 __all__ = ["CHECKER_DIGEST", "CHECKER_PATH", "HOOKS", "KERNEL_REFUSALS", "OPERATION_ALIASES", "PACK", "PROPERTIES", "REFERENCES", "SCENARIOS",
-           "TOOLS", "VERSION", "allocate_intent", "service_of", "validate_result"]
+           "TOOLS", "VERSION", "ACTOR_BRIEF", "agent_request", "allocate_intent", "service_of", "validate_result"]

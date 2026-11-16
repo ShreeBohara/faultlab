@@ -61,7 +61,7 @@ def build_adapter(args):
     """The registered adapter; the model Actor needs a model, explicit live authorization and the owner's settings."""
     policy = load_rule_policy(getattr(args, "rule_policy", None))
     presentation = getattr(args, "advice_presentation", None) or "expectation"
-    if args.adapter not in ("model-actor", "claude-agent"):
+    if args.adapter not in ("model-actor", "claude-agent", "pack-actor"):
         if args.model or args.execute_live or policy is not None or presentation != "expectation":
             raise ValueError("--model, --execute-live, --rule-policy and --advice-presentation apply to the model-actor and claude-agent adapters only")
         return load_adapter(args.adapter)
@@ -80,6 +80,10 @@ def build_adapter(args):
                             advice_presentation=presentation)
     from app.providers.runtime import RuntimeProvider
     provider = RuntimeProvider(settings, live_authorized=True)
+    if args.adapter == "pack-actor":
+        if policy is not None or presentation != "expectation":
+            raise ValueError("pack-actor runs no recovery rules yet")
+        return load_adapter("pack-actor", provider=provider, model=args.model, pack_id=args.pack)
     return load_adapter("model-actor", provider=provider, model=args.model, rule_policy=policy, advice_presentation=presentation)
 
 

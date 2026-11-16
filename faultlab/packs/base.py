@@ -72,6 +72,22 @@ class ReferenceLabels(StrictModel):
     refusal_code: Annotated[str, StringConstraints(min_length=1, max_length=80, pattern=r"^[A-Z][A-Z0-9_]*$")]
 
 
+class ToolBrief(StrictModel):
+    """One tool as a model Actor built from the pack is told about it: what it does and the arguments the agent chooses."""
+    name: Label
+    description: Text
+    arguments: tuple[Label, ...] = ()
+
+
+class ActorBrief(StrictModel):
+    """What a model Actor built from the pack (``faultlab.adapters.pack_actor``) is told beyond the task text: the tools
+    it may call, how to fill the report, and which of the intent's identities it is shown. Everything else of the
+    trusted request is the pack's (``TaskPack.agent_request``)."""
+    tools: tuple[ToolBrief, ...] = Field(min_length=1)
+    report_notes: Text
+    intent_fields: tuple[Label, ...] = ()
+
+
 class PropertySpec(StrictModel):
     property_id: Id
     title: Annotated[str, StringConstraints(min_length=1, max_length=600)]
@@ -126,6 +142,10 @@ class TaskPack:
     operation_aliases: dict[str, dict[str, str]] = field(default_factory=dict)
     # Short per-trial labels for world-minted identifiers (part of the manifest only when declared).
     references: ReferenceLabels | None = None
+    # A model Actor built from the pack: what it is told (in the manifest only when declared), and how the pack turns a
+    # tool and the arguments the agent chose into the session's trusted request (tool, arguments, intent) -> request.
+    actor_brief: ActorBrief | None = None
+    agent_request: Callable[[str, dict, dict], dict] | None = None
     _by_tool: dict[str, ToolContract] = field(init=False, repr=False, compare=False)
     _by_scenario: dict[str, Scenario] = field(init=False, repr=False, compare=False)
 
@@ -156,6 +176,13 @@ class TaskPack:
                     raise PackError(f"Scenario {scenario.scenario_id} places a fault on undeclared tool {primitive.target_tool}")
         if self.references is not None and not set(self.references.sources) <= set(self._by_tool):
             raise PackError(f"Pack {self.pack_id} labels references delivered by undeclared tools")
+        if self.actor_brief is not None:
+            if not {tool.name for tool in self.actor_brief.tools} <= set(self._by_tool):
+                raise PackError(f"Pack {self.pack_id} briefs an undeclared tool")
+            if not set(self.actor_brief.intent_fields) <= set(self.intent_model.model_fields):
+                raise PackError(f"Pack {self.pack_id} shows an intent field its intent model lacks")
+            if self.agent_request is None:
+                raise PackError(f"Pack {self.pack_id} briefs a model Actor but builds no agent request")
         for alias, spec in self.operation_aliases.items():
             missing = [key for key in ("intent_key", "service", "write_tool", "status_tool", "claim") if not spec.get(key)]
             if missing:
@@ -214,6 +241,8 @@ class TaskPack:
         }
         if self.references is not None:                  # absent otherwise, so packs without labels keep their digests
             manifest["references"] = self.references.model_dump(mode="json")
+        if self.actor_brief is not None:
+            manifest["actor_brief"] = self.actor_brief.model_dump(mode="json")
         return manifest
 
     def digest(self) -> str:
@@ -238,4 +267,5 @@ class TaskPack:
                           limits=limits, business_router=self.business_router)
 
 
-__all__ = ["MANIFEST_VERSION", "PackError", "PropertySet", "PropertySpec", "ReferenceLabels", "Scenario", "TaskPack", "contract_json"]
+__all__ = ["ActorBrief", "MANIFEST_VERSION", "PackError", "PropertySet", "PropertySpec", "ReferenceLabels", "Scenario", "TaskPack",
+           "ToolBrief", "contract_json"]

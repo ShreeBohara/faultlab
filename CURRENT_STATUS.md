@@ -1615,6 +1615,15 @@ Checks: 17 new tests (`backend/tests/v2/test_bookings_pack.py`), the v2 suite at
 (see the commit). No provider call, no money. Next is step 2 (referee bridge, oracle and scripted agents through the
 worker); see [docs/v2/SECOND_TASK_PLAN.md](docs/v2/SECOND_TASK_PLAN.md).
 
+### 2026-11-15: second task, step 3, a model Actor built from the pack ($0)
+
+`pack-actor` (`faultlab/adapters/pack_actor.py`) lets a model do the bookings task. Its prompt is built from the pack's
+new `ActorBrief`: task, tools with the arguments the agent chooses, report fields, and visible identities. The pack
+builds the trusted request, and the loop rules are the legacy Actor's. The orders pack keeps its legacy Actor and
+prompt. With a scripted model through the worker and the H1–H8 referee, a careful model is clean and a careless one
+fails H2 first (a second hold after a lost answer). Checks: 4 new tests, the v2 suite at 224, the full backend suite
+(see the commit). No provider call, no money.
+
 ### 2026-11-15: second task, step 2, bookings trials scored through the worker ($0)
 
 The September bookings agents now run as v2 adapters (`reference-bookings`, `buggy-bookings`). A new referee runs the

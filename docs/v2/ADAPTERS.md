@@ -138,3 +138,10 @@ an unknown alias or an unknown report claim is refused when the adapter is built
 `backend/tests/v2/test_report_gate.py` (the dev-5 slip scripted through both adapters, with and
 without the rule; a stubborn agent; a rule that blocks truthful reports; a `read_status` step at the
 gate; refusals; the run command).
+
+## Bookings adapters (2026-11-15)
+
+`reference-bookings` and `buggy-bookings` (setting `name`) drive the September bookings agents through the session.
+`pack-actor` (settings: provider, model, pack id) is a model Actor whose prompt, tools and report contract come from
+the pack's `ActorBrief`. The orders pack keeps `model-actor` and its legacy prompt digest. See
+[SECOND_TASK_PLAN.md](SECOND_TASK_PLAN.md), steps 2 and 3.

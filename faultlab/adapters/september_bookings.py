@@ -13,6 +13,7 @@ from __future__ import annotations
 from faultlab.adapters.base import AdapterSpec, BaseAdapter
 from faultlab.core import content_hash
 from faultlab.lab.session import ProtocolError
+from faultlab.packs.bookings.pack import agent_request
 from faultlab.packs.bookings.views import september_observations
 from taskpacks.bookings_move_with_hold import driver, mutants, reference, table
 
@@ -21,20 +22,7 @@ VERSION = "1"
 INTENT_KEYS = ("task_id", "booking_id", "original_slot", "target_slot", "move_operation_id")
 
 
-def request_for(tool: str, args: dict, intent: dict) -> dict:
-    """The September broker's trusted request, in the session's form (identities, plus a payload for a write)."""
-    booking = intent["booking_id"]
-    if tool == "place_hold":
-        return {"booking_id": booking, "payload": {"booking_id": booking, "slot_id": intent["target_slot"]}}
-    if tool == "move_booking":
-        return {"booking_id": booking, "operation_id": intent["move_operation_id"], "payload": {
-            "booking_id": booking, "hold_id": args["hold_id"], "operation_id": intent["move_operation_id"],
-            "idempotency_key": intent["move_idempotency_key"], "intent_hash": intent["move_intent_hash"]}}
-    if tool == "release_hold":
-        return {"booking_id": booking, "hold_id": args["hold_id"], "payload": {"booking_id": booking, "hold_id": args["hold_id"]}}
-    if tool == "get_move_status":
-        return {"booking_id": booking, "operation_id": intent["move_operation_id"]}
-    return {"booking_id": booking}
+request_for = agent_request          # the trusted request is the pack's (faultlab.packs.bookings.pack.agent_request)
 
 
 class _SeptemberAgentAdapter(BaseAdapter):

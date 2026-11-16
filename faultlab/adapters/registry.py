@@ -16,6 +16,8 @@ ADAPTERS: dict[str, tuple[str, str]] = {
     "reference-bookings": ("faultlab.adapters.september_bookings", "ReferenceBookingsAdapter"),
     # Needs settings: name (a buggy agent of the September bookings pack, taskpacks/bookings_move_with_hold/mutants.py).
     "buggy-bookings": ("faultlab.adapters.september_bookings", "BuggyBookingsAdapter"),
+    # Needs settings: provider, model and pack_id (a pack that declares an actor brief, such as the bookings pack).
+    "pack-actor": ("faultlab.adapters.pack_actor", "PackActorAdapter"),
 }
 
 
