@@ -2,8 +2,9 @@
 
 The order of decisions is the legacy simulator's and is part of what the lab proves:
 pack hooks (diagnostic fixtures) run first; a transient failure (F4) is refused before any
-effect and prevents a lost reply (F1) on the same call; a lost reply is only triggered when
-the handler reports a committed effect, and otherwise recorded as prevented.
+effect and prevents a lost reply (F1) on the same call; a lost reply (F1) or a replaced reply
+(F5, the 500 after a committed effect) is only triggered when the handler reports a committed
+effect, and otherwise recorded as prevented.
 """
 
 from dataclasses import dataclass
@@ -70,6 +71,7 @@ def dispatch(store, limits, *, world: str, capability: str, call: str, attempt: 
                 for index, primitive in faults:
                     if primitive["kind"] == "F1":
                         ctx.prevented(index, "pre_effect_failure")
+                handler.on_transient_refusal(ctx, state, faults)
                 raise WorldError("TRANSIENT_UNAVAILABLE", 503)
             status, result, committed = handler.perform(ctx, state, tool, service, request, faults)
             for index, primitive in faults:
@@ -79,8 +81,16 @@ def dispatch(store, limits, *, world: str, capability: str, call: str, attempt: 
                         delay = max(delay, primitive["parameters"]["response_delay_ms"] / 1000)
                     else:
                         ctx.prevented(index, "target_not_committed")
+                elif primitive["kind"] == "F5":
+                    if committed:
+                        ctx.trigger(index)
+                        status, result = 500, handler.error_result(call, tool, request, "INTERNAL_ERROR")
+                    else:
+                        ctx.prevented(index, "target_not_committed")
         except WorldError as error:
-            status, result = error.status, handler.error_result(call, tool, request, error.code)
+            status = error.status
+            result = (handler.error_result(call, tool, request, error.code) if error.data is None
+                      else handler.error_result(call, tool, request, error.code, data=error.data))
             delay = max(delay, float(error.delay or 0.0))
             event(state, "request_rejected", {"error_code": error.code, "attempt_id": attempt}, call)
     return status, result, delay

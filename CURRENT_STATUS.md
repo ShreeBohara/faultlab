@@ -1598,6 +1598,23 @@ predates later dependency changes. Found while planning: the session retries any
 write that is not safe to repeat would be resent, refused by effectsafe and the trial ended `UNSAFE_RESEND_REFUSED`; step 1
 fixes that for such writes only. Four owner decisions are listed in the plan. Nothing is built yet.
 
+### 2026-11-15: second task, step 1, the bookings pack on the v2 kernel ($0)
+
+The owner accepted the plan's four recommendations. `bookings.move_with_hold/v1` is now a v2 task pack
+(`faultlab/packs/bookings/`). It is the September world ported onto the kernel and checked against it request by
+request: the correct agent and the eight buggy agents, on eight cases and three seeds (216 episodes), give the same
+answers and end states, in process and over HTTP. The kernel gained F5 and F6, refusal bodies and a hook for faults
+pre-empted by a 503. The orders world refuses the new families, and the orders pack digest is unchanged (pinned).
+
+Fixed: the session no longer resends a write that is not safe to repeat after a lost or failed answer; before the fix
+such a trial ended `UNSAFE_RESEND_REFUSED`. Added: short hold labels (`hold-1`) and the lab's refusal of a hold it never
+delivered (`UNKNOWN_HOLD_REFERENCE`, no HTTP attempt), via a generic `ReferenceLabels` declaration. The September guard's
+`dependency_lock_hash` was recorded again once, with a note; the September tests are now 203 of 203.
+
+Checks: 17 new tests (`backend/tests/v2/test_bookings_pack.py`), the v2 suite at 214 passed, and the full backend suite
+(see the commit). No provider call, no money. Next is step 2 (referee bridge, oracle and scripted agents through the
+worker); see [docs/v2/SECOND_TASK_PLAN.md](docs/v2/SECOND_TASK_PLAN.md).
+
 ## Budget
 
 **Current carried accounting: $898.58 conservatively charged** (ledger

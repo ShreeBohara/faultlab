@@ -44,3 +44,14 @@ handler is a faithful port of the legacy `business.py`, `clock.py` and fixture r
 Not done in this phase: the bookings pack (`taskpacks/bookings_move_with_hold`) still runs on its
 own world; moving it onto the kernel is the abstraction test of a later phase, and the legacy
 simulator is not yet replaced.
+
+## Faults F5 and F6, refusal bodies (2026-11-15)
+
+For the bookings pack, the kernel learned two more fault families. F5 is placed in `dispatch`: when the handler
+reports a committed effect, the answer becomes `500 INTERNAL_ERROR`. F6 is accepted by the kernel model, and its
+handler gives it meaning (a hold that expires early). Each handler decides which families it accepts, and the
+orders world refuses F5 and F6. A `WorldError` may carry `data`, which reaches `error_result` only when it is set.
+After a 503 placed by F4, the new `on_transient_refusal` hook lets a pack mark its other faults on that attempt as
+pre-empted (the default does nothing). With those changes, the September bookings world's earlier note ("still runs
+on its own world") is resolved: the kernel world answers every September request alike
+(`backend/tests/v2/test_bookings_pack.py`).

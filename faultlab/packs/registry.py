@@ -9,6 +9,7 @@ from faultlab.packs.base import PackError, TaskPack
 # pack id -> (module, attribute). Adding a pack means adding a line here and passing the conformance tests.
 PACKS: dict[str, tuple[str, str]] = {
     "orders.upgrade_then_confirm/v1": ("faultlab.packs.orders.pack", "PACK"),
+    "bookings.move_with_hold/v1": ("faultlab.packs.bookings.pack", "PACK"),
 }
 
 

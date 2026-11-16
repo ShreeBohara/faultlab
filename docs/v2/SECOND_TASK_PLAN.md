@@ -15,6 +15,39 @@ conformance tests". This plan moves the bookings task onto the v2 lab in six ste
 cost no API money and must reproduce the September numbers exactly through the real lab. Only then
 does a small paid screen ask whether a real model fails the task often enough to study.
 
+## Step 1: done (2026-11-15, $0)
+
+The bookings task now runs on the v2 kernel as the pack `bookings.move_with_hold/v1` (`faultlab/packs/bookings/`,
+one line in `faultlab/packs/registry.py`). What was built and how it was checked:
+
+- **The world.** `handler.py` ports the September world onto the kernel and reuses its pure helpers (fixture history,
+  fault grammar, the public view of a hold, deterministic ids). `routes.py` serves the six tools over HTTP.
+- **Parity.** `backend/tests/v2/test_bookings_pack.py` replays every request the September broker sent to its world,
+  for the correct agent and the eight buggy agents (two of them are the probe callers), on all eight
+  cases and three seeds: 216 episodes. The kernel
+  world gives the same status, error code, data and lost answer each time, and ends in the same state with the same
+  business events. A sample also runs over HTTP.
+- **Kernel.** F5 (the effect commits, then a 500) is placed by the kernel and F6 (a short hold) by the handler. A
+  refusal can carry a body (`HOLD_NOT_ACTIVE` names the hold and its state). A 503 before any effect now lets a pack
+  mark its other faults on that attempt as pre-empted, as in September. The orders world refuses F5 and F6, and the
+  orders pack digest is unchanged (`6956e1d5…`, pinned by a test).
+- **The resend bug.** The test that failed before the fix showed a lost `place_hold` answer ending the trial as
+  `UNSAFE_RESEND_REFUSED`. The session now resends a write that is not identity-safe only after a transient refusal
+  that proves no effect (`faultlab/lab/session.py`). Keyed writes, including every order write, keep their resend.
+- **Hold labels (decision 2).** The agent sees `hold-1`, `hold-2`, … numbered in order of first delivery. A label
+  becomes usable once `place_hold` or `list_holds` has delivered it. Anything else, including the raw id, is refused
+  by the lab with `UNKNOWN_HOLD_REFERENCE`, with no HTTP attempt. Each label's real id is recorded on the evaluator
+  plane. The mechanism is generic (`ReferenceLabels` on `TaskPack`) and appears in a manifest only when a pack
+  declares it, so the orders digest did not move.
+- **September guard (decision 4).** `dependency_lock_hash` was recorded again once, with a note in
+  `order_identity_baseline.json`, and a fresh gate freeze was saved in `artifacts/second-task-step1-2026-11-15/`.
+  The September tests now give 203 of 203.
+
+Step 2 is next: the H1–H8 referee bridge, the bookings oracle, and the scripted agents as v2 adapters. Its scoring
+must turn hold labels in reports back into ids using the recorded label table. One known gap for step 2: replay
+(`faultlab/lab/replay.py`) re-issues recorded requests through the session, and those now hold the real hold ids, so a
+bookings replay must re-issue the labels instead.
+
 ## Where it stands (checked 2026-11-15)
 
 - `pytest taskpacks/bookings_move_with_hold/tests`: **202 passed, 1 failed.** The failure is the
@@ -99,6 +132,8 @@ step 2 6–10%, step 3 6–10%, step 4 5–8%, and step 5 2–3% plus the API mo
 between parts, and work stops at the agreed line.
 
 ## Decisions for the owner
+
+**Settled 2026-11-15:** the owner accepted all four recommendations below ("go ahead with your recommendations").
 
 1. **Move the task to the v2 lab, not the legacy backend.** Recommended. The September phase 2
    plan was written before the v2 lab existed, and doing both would duplicate the engine.

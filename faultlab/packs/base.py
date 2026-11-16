@@ -34,7 +34,7 @@ Text = Annotated[str, StringConstraints(max_length=2000)]
 Severity = Literal["critical", "major", "minor"]
 PropertyFamily = Literal["unauthorized_or_duplicate_effect", "false_success_claim", "premature_confirmation",
                          "confirmation_count", "false_report", "fabricated_citation", "false_failure_claim",
-                         "disallowed_action", "unknown_property"]
+                         "disallowed_action", "abandoned_effect", "unknown_property"]
 # Set-valued contract fields are serialized sorted so a manifest's digest is stable.
 _CONTRACT_SETS = ("pending_states", "terminal_states", "errors_proving_no_effect", "retry_safe_errors")
 
@@ -55,6 +55,21 @@ class Scenario(StrictModel):
         """The v2 schedule derived from the kernel-form spec, with the legacy projection's placement ids."""
         placements, seed = legacy_placements(self.fault_spec.model_dump(mode="json"))
         return FaultSchedule(placements=placements, seed=seed)
+
+
+class ReferenceLabels(StrictModel):
+    """Identifiers the world mints that the agent sees as short per-trial labels, like ``obs-N`` for evidence.
+
+    Every string under ``key`` in a delivered reply is shown as ``prefix`` + its number, numbered in order of
+    first delivery, so the agent copies ``hold-1``, not a long id, and learns nothing about ids it was never
+    shown. A label is usable in a request (``key`` in the request or its payload) once a reply of one of
+    ``sources`` delivered it; any other value is refused by the lab with ``refusal_code``, with no HTTP
+    attempt (the September broker's rule). The lab records which label stands for which id.
+    """
+    key: Label
+    prefix: Annotated[str, StringConstraints(min_length=1, max_length=20, pattern=r"^[a-z][a-z0-9_-]*$")]
+    sources: tuple[Label, ...] = Field(min_length=1)
+    refusal_code: Annotated[str, StringConstraints(min_length=1, max_length=80, pattern=r"^[A-Z][A-Z0-9_]*$")]
 
 
 class PropertySpec(StrictModel):
@@ -109,6 +124,8 @@ class TaskPack:
     # key holding the trial's operation id, the service, the write tool, its status tool and the report claim that
     # carries the operation's outcome. Not part of the manifest: recorded identities keep their digests.
     operation_aliases: dict[str, dict[str, str]] = field(default_factory=dict)
+    # Short per-trial labels for world-minted identifiers (part of the manifest only when declared).
+    references: ReferenceLabels | None = None
     _by_tool: dict[str, ToolContract] = field(init=False, repr=False, compare=False)
     _by_scenario: dict[str, Scenario] = field(init=False, repr=False, compare=False)
 
@@ -137,6 +154,8 @@ class TaskPack:
             for primitive in scenario.fault_spec.primitives:
                 if primitive.target_tool not in self._by_tool:
                     raise PackError(f"Scenario {scenario.scenario_id} places a fault on undeclared tool {primitive.target_tool}")
+        if self.references is not None and not set(self.references.sources) <= set(self._by_tool):
+            raise PackError(f"Pack {self.pack_id} labels references delivered by undeclared tools")
         for alias, spec in self.operation_aliases.items():
             missing = [key for key in ("intent_key", "service", "write_tool", "status_tool", "claim") if not spec.get(key)]
             if missing:
@@ -178,7 +197,7 @@ class TaskPack:
 
     def manifest(self) -> dict:
         """The whole declaration as plain JSON: everything a plan, an adapter or a reviewer needs."""
-        return {
+        manifest = {
             "schema_version": MANIFEST_VERSION,
             "pack_id": self.pack_id,
             "version": self.version,
@@ -193,6 +212,9 @@ class TaskPack:
             "report_schema": self.report_model.model_json_schema(),
             "diagnostics": self.diagnostics,
         }
+        if self.references is not None:                  # absent otherwise, so packs without labels keep their digests
+            manifest["references"] = self.references.model_dump(mode="json")
+        return manifest
 
     def digest(self) -> str:
         return content_hash(self.manifest())
@@ -216,4 +238,4 @@ class TaskPack:
                           limits=limits, business_router=self.business_router)
 
 
-__all__ = ["MANIFEST_VERSION", "PackError", "PropertySet", "PropertySpec", "Scenario", "TaskPack", "contract_json"]
+__all__ = ["MANIFEST_VERSION", "PackError", "PropertySet", "PropertySpec", "ReferenceLabels", "Scenario", "TaskPack", "contract_json"]

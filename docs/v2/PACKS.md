@@ -71,3 +71,14 @@ computed in the test.
 Not in this phase: moving the orders checks themselves out of `backend/app/referee` (the legacy
 scorer stays the authority and its digest is what the pack pins), the bookings pack, and the trial
 worker that runs a plan (1.5).
+
+## The bookings pack (2026-11-15)
+
+`bookings.move_with_hold/v1` (`faultlab/packs/bookings/`) is the second pack: the September standalone task
+(`taskpacks/bookings_move_with_hold`) moved onto the kernel. Its declaration equals that pack's table: eight public
+cases, six tools, five hooks, checks H1–H8 pinned to the sha256 of that pack's `checks.py`, and the task text.
+`place_hold` is a write with `identity_scope="none"`; `move_booking` is keyed and asynchronous; `release_hold` is
+idempotent per hold. H3 uses the new property family `abandoned_effect`. The pack declares `ReferenceLabels`, so
+agents see hold ids as `hold-N` and the session refuses a hold it never delivered. The interface addition appears in
+a manifest only when declared, so the orders digest is unchanged. Evidence and the plan:
+`backend/tests/v2/test_bookings_pack.py`, [SECOND_TASK_PLAN.md](SECOND_TASK_PLAN.md).

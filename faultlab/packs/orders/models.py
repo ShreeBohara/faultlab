@@ -200,6 +200,8 @@ TOOLS_OF_KIND = {"F1": ("update_order", "send_confirmation"), "F2": ("update_ord
 def validate_primitive(primitive: dict) -> None:
     """The legacy fault-primitive rules: parameters per family, legal tools, tool/service agreement."""
     kind, tool, service = primitive["kind"], primitive["target_tool"], primitive["target_service"]
+    if kind not in TOOLS_OF_KIND:                  # the kernel also knows F5 and F6; the orders world has neither
+        raise ValueError("unknown fault family")
     if tool not in TOOLS_OF_KIND[kind] or service not in ("orders", "notifications"):
         raise ValueError("tool/kind mismatch")
     if tool != "get_operation_status" and SERVICE_OF_TOOL[tool] != service:

@@ -1,10 +1,12 @@
 """Fault schedules generic over ``(tool, service, occurrence)`` with honest trigger accounting.
 
-The kernel knows four families. F4 (transient failure before admission) and F1 (reply lost
-after the effect committed) are placed by the kernel itself in ``dispatch``. F2 (asynchronous
-completion) and F3 (stale read) need business meaning, so the handler places them inside
-``perform`` using the matches the kernel hands it. Parameters are validated by the handler
-(``validate_schedule``), which also decides which tools and services exist.
+The kernel knows six families. F4 (transient failure before admission), F1 (reply lost after
+the effect committed) and F5 (the effect committed, then the reply is a 500 error) are placed by
+the kernel itself in ``dispatch``. F2 (asynchronous completion), F3 (stale read) and F6 (a
+shortened hold) need business meaning, so the handler places them inside ``perform`` using the
+matches the kernel hands it. Parameters are validated by the handler (``validate_schedule``),
+which also decides which families, tools and services exist: the orders pack accepts F1 to F4
+only, the bookings pack F1 to F6.
 """
 
 from typing import Literal
@@ -14,7 +16,7 @@ from pydantic import Field, JsonValue
 from faultlab.core.model import StrictModel
 from faultlab.env.kernel.storage import event
 
-Family = Literal["F1", "F2", "F3", "F4"]
+Family = Literal["F1", "F2", "F3", "F4", "F5", "F6"]
 
 
 class Primitive(StrictModel):

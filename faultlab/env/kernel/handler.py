@@ -40,6 +40,10 @@ class WorldHandler:
         """Apply one admitted request; return ``(http_status, result_json, effect_committed)``."""
         raise WorldError("UNKNOWN_TOOL", 404)
 
+    def on_transient_refusal(self, ctx, state: dict, faults: list) -> None:
+        """A 503 before any effect (F4) was decided for this attempt; the kernel has already marked an F1 on it
+        as prevented. A pack may record why its own faults on the same attempt cannot fire. Default: nothing."""
+
     def error_result(self, call_id: str, tool: str, request: dict, code: str) -> dict:
         return {"call_id": call_id, "tool": tool, "transport": "error", "error_code": code}
 

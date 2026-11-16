@@ -5,7 +5,9 @@ journal (bytes pinned, identity kept), every dispatch is journalled before it re
 transport, every reply is reconciled into the operation's outcome, and everything the agent was
 shown becomes an agent-visible evidence event. Caps are enforced here: a transport attempt or a
 model call beyond the plan's caps raises ``CapExhausted``. A write the provider could not
-recognise is refused by the journal (``UnsafeResend``); the session never works around that.
+recognise is refused by the journal (``UnsafeResend``); the session never works around that, and
+it never asks for such a resend itself: a write that is not identity-safe is retried only after a
+transient refusal that proves no effect (the September broker's rule for a hold).
 """
 
 from __future__ import annotations
@@ -71,6 +73,10 @@ class TrialSession:
         self.report: Any = None
         self.report_submitted = False
         self.closed = False
+        # Short labels for world-minted identifiers (``pack.references``): id -> label, label -> id, usable labels.
+        self._label_of: dict[str, str] = {}
+        self._real_of: dict[str, str] = {}
+        self._usable: set[str] = set()
 
     # -- what the adapter may know ------------------------------------------------------------------
 
@@ -84,6 +90,11 @@ class TrialSession:
             return self.journal.operation(operation_id)["state"]
         except JournalError:
             return OperationState()
+
+    @property
+    def reference_labels(self) -> dict[str, str]:
+        """Which world identifier each label the agent was shown stands for (label -> id)."""
+        return dict(self._real_of)
 
     def remaining(self) -> dict:
         return {"model_calls": None if self.caps.model_calls is None else self.caps.model_calls - self.usage.model_calls,
@@ -143,10 +154,13 @@ class TrialSession:
             service = self.pack.service(tool, request)
         except ValueError as error:                       # an undeclared tool or service: the adapter broke the protocol
             raise ProtocolError(str(error)) from error
+        call_id = new_id("call")
+        refused = self._resolve_references(request)
+        if refused is not None:
+            return self._refuse_reference(call_id, tool, request, refused, caller, hook)
         payload = request.get("payload")
         if contract.kind == "write" and not isinstance(payload, dict):
             raise ProtocolError(f"{tool} is a write and needs a payload")
-        call_id = new_id("call")
         scope = str(request.get("order_id") or request.get("scope") or self.world_id)
         if contract.kind == "write":
             operation_id = str(request.get("operation_id") or payload.get("operation_id") or new_id("operation"))
@@ -182,6 +196,11 @@ class TrialSession:
                 if observation.result.get("error_code") == INVALID_RESPONSE:
                     break                                      # a reply that does not bind is final, never retried blindly
                 retryable = result.transport != "ok" or result.status in RETRYABLE_STATUSES or result.error_code in RETRYABLE_CODES
+                if contract.kind == "write" and not contract.resend_is_identity_safe:
+                    # A write the provider cannot recognise (every call a new hold or payment) is resent only after a
+                    # transient refusal that proves it had no effect. After a lost or failed answer the effect may exist,
+                    # so the agent is shown that answer instead; the journal would refuse the resend (UnsafeResend).
+                    retryable = result.error_code in RETRYABLE_CODES and result.error_code in contract.errors_proving_no_effect
                 if not retryable or retry + 1 >= self.max_attempts_per_call:
                     break
         finally:
@@ -211,7 +230,7 @@ class TrialSession:
             evidence = Evidence(transport="ok", status=body.get("status") if isinstance(body.get("status"), str) else None,
                                 receipt_id=body.get("receipt_id") if isinstance(body.get("receipt_id"), str) else None,
                                 error_code=result.error_code)
-            shown = body
+            shown = self._labelled(tool, body)
         else:
             code = result.error_code or ("HTTP_TIMEOUT" if result.transport == "timeout" else "TRANSPORT_ERROR")
             evidence = Evidence(transport="timeout" if result.transport == "timeout" else "error", error_code=code)
@@ -231,6 +250,75 @@ class TrialSession:
                                            "reply_delay_seconds": result.delay, "rejected_response": rejected},
                     operation_id=outcome_of, attempt_ref=attempt_id)
         return observation
+
+    # -- short labels for world-minted identifiers -------------------------------------------------------
+
+    def _resolve_references(self, request: dict):
+        """Put the id each label stands for into the request; return the first value that is not a usable label."""
+        refs = self.pack.references
+        if refs is None:
+            return None
+        places = [request]
+        if isinstance(request.get("payload"), dict):
+            request["payload"] = dict(request["payload"])        # never change the adapter's own object
+            places.append(request["payload"])
+        for place in places:
+            value = place.get(refs.key)
+            if value is None:
+                continue
+            if not isinstance(value, str) or value not in self._usable:
+                return value if isinstance(value, str) else repr(value)[:80]
+            place[refs.key] = self._real_of[value]
+        return None
+
+    def _refuse_reference(self, call_id: str, tool: str, request: dict, value: str, caller: str, hook: str | None) -> Observation:
+        """The lab refuses a reference it never delivered: no HTTP attempt, no journal entry, the refusal is evidence."""
+        refs = self.pack.references
+        shown = {"call_id": call_id, "tool": tool, "transport": "error", "error_code": refs.refusal_code, refs.key: value}
+        observation = Observation(evidence_id=new_id("evidence"), call_id=call_id, attempt_id=f"lab-refusal-{call_id}", tool=tool,
+                                  transport="error", http_status=None, result=shown, delivered_tick=self.usage.ticks)
+        self.observations.append(observation)
+        self._event("scope_refusal", {"observation": observation.model_dump(mode="json"), "reference": value, "caller": caller,
+                                      "hook": hook})
+        self.calls.append({"call_id": call_id, "tool": tool, "service": self.pack.service(tool, request), "caller": caller, "hook": hook,
+                           "operation_id": None, "attempt_ids": [], "observation_ids": [observation.evidence_id], "request": request})
+        return observation
+
+    def _labelled(self, tool: str, body: dict) -> dict:
+        """The reply as the agent sees it: every id under ``references.key`` replaced by its label, numbered on first sight."""
+        refs = self.pack.references
+        if refs is None:
+            return body
+        found: list[str] = []
+
+        def collect(value):
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    if key == refs.key and isinstance(item, str):
+                        found.append(item)
+                    else:
+                        collect(item)
+            elif isinstance(value, list):
+                for item in value:
+                    collect(item)
+
+        def relabel(value):
+            if isinstance(value, dict):
+                return {key: self._label_of.get(item, item) if key == refs.key and isinstance(item, str) else relabel(item)
+                        for key, item in value.items()}
+            if isinstance(value, list):
+                return [relabel(item) for item in value]
+            return value
+
+        collect(body)
+        for real in found:
+            if real not in self._label_of:
+                label = f"{refs.prefix}{len(self._label_of) + 1}"
+                self._label_of[real], self._real_of[label] = label, real
+                self._event("reference_labelled", {"label": label, "id": real, "tool": tool}, plane="evaluator")
+            if tool in refs.sources:
+                self._usable.add(self._label_of[real])
+        return relabel(body)
 
     async def wait(self, ticks: int, *, caller: str = "agent", hook: str | None = None) -> int:
         self._require_open()
