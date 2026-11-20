@@ -195,3 +195,14 @@ Rule 2 remains deferred research. The next useful milestone is an independently
 authored workflow: reproduce its owner's incident, verify their correction, and
 measure integration effort and repeat use. More adapters, hosted execution and
 generated repairs should follow that evidence and its concrete requirements.
+
+## Note added 2026-11-19: Linux
+
+The checks above ran on the Mac. On Linux the worker could not start until 2026-11-19: during
+the smolagents import, filelock 3.32 probes `os.link` in a `TemporaryDirectory`, and
+`shutil.rmtree` lists that directory through a descriptor. The accident guard refused descriptor
+listings, and tempfile's cleanup retried until RecursionError (`NATIVE_AGENT_EOF`; GitHub CI was
+red from 2026-10-11). On the Mac the same refusal only left the probe directory behind. The guard
+now allows listing through a descriptor. The spawn closes every descriptor but 0-2, so any other
+descriptor came from an open the guard already checked. Outside reads, listings, network and
+subprocess access are still refused (`test_native_user_code_removes_its_own_directories_but_cannot_open_outside_ones`).

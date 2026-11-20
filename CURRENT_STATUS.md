@@ -1646,6 +1646,32 @@ repeated a mistake, and the oracle found no false belief. Haiku stopped at SAFE_
 Money: **$0.1227** for 334 calls. November committed $18.8231 → $18.9458 (ledger, rows 13,396 → 13,730). The process
 monthly cap was $19.33 and the batch caps were $0.1008 and $0.3992.
 
+### 2026-11-19: GitHub CI, the two causes of five red weeks fixed ($0)
+
+After the push of `d826387`, GitHub's "Offline checks" turned out not to have passed on `main` since 2026-10-11
+(`fca3502`); only the "Backend tests" job failed. Both causes were reproduced and fixed in an Ubuntu 24.04 container
+that installs only `backend/requirements.lock`, as CI does:
+
+1. **Missing lock entries (since `94c129f`, 2026-10-25).** `claude-agent-sdk==0.2.174` was in
+   `backend/requirements.txt` but not in the lock, and neither were `mcp`, `mcp-types`, `PyJWT`, `python-multipart`
+   or `sse-starlette`. Four v2 test modules failed to import, so pytest stopped at collection and ran nothing. The six
+   are now locked at the versions the Mac already had (`pip check` clean).
+2. **The native worker on Linux (since 2026-10-11).** The 11 native-agent tests failed with `NATIVE_AGENT_EOF`. While
+   smolagents imports, filelock 3.32 removes a `TemporaryDirectory`, and `shutil.rmtree` lists it through a
+   descriptor. The worker's accident guard refused descriptor listings: on Linux tempfile's cleanup then retried until
+   RecursionError, and on the Mac it left a probe directory in the agent's work folder at every start. The guard now
+   allows listing through a descriptor; the spawn closes all but 0-2, so a descriptor came from an open the guard
+   already checked. The October 11 handoff had blamed the cloud container; corrected there and in
+   `docs/NATIVE_AGENT_2026-10-09.md`.
+
+New test `test_native_user_code_removes_its_own_directories_but_cannot_open_outside_ones`: it fails on the old worker
+on the Mac and passes on both systems. Checks: Mac full backend suite 2,657 passed, 1 skipped. Linux full backend suite
+2,642 passed, 9 skipped, 6 failed; the six were claude-code provider tests that CI had never reached, and they failed
+only because the bare image had no `python3` command (GitHub's runners have one); with it they pass, 9 of 9. The new
+test was added after that run and passes there (native tests 37 of 37). The lock change moves `dependency_lock_hash`,
+so the September order guard fails one test (202 of 203) until that identity is recorded again, which waits for the
+owner's OK. No provider call, no money.
+
 ### 2026-11-15: second task, step 2, bookings trials scored through the worker ($0)
 
 The September bookings agents now run as v2 adapters (`reference-bookings`, `buggy-bookings`). A new referee runs the

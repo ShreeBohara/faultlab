@@ -139,6 +139,10 @@ was written (checked repeatedly); the phase B write-up and ledger line are still
   same tests fail the same way on the pre-session commit `228e5ee` in this container, so it is the
   container, not this session's commits; GitHub CI (ubuntu) and the Mac are the reference for
   those. The v2 suite is 120 passed, 1 skipped (plus 3 driver tests under `tests/experiments`).
+  **Correction (2026-11-19):** it was not the container. GitHub CI on ubuntu failed the same 11
+  tests on every push from 2026-10-11, because on Linux the worker's accident guard refused
+  `shutil.rmtree`'s descriptor listing during filelock's import-time probe; only the Mac passed.
+  Fixed in `worker.py`; see CURRENT_STATUS.md, 2026-11-19.
 
 - **Credit plan**: the owner decided on 2026-10-11 to spend the whole promotional credit. The
   plan, declarations and read-outs are in `docs/CLAUDE_CREDIT_PLAN_2026-10-11.md` (piece C: the

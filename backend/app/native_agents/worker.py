@@ -70,7 +70,12 @@ def guards(source, worker, working, dependencies):
                 flags & (os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND))
             require_path(name, writing)
         elif event in {"os.listdir", "os.scandir"}:
-            require_path(args[0] if args[0] is not None else working)
+            # A descriptor names a directory this process opened through the open check above: the
+            # spawn closes every inherited descriptor but 0-2. shutil.rmtree lists by descriptor on
+            # Linux, and filelock's import-time probe removes a TemporaryDirectory; refusing it sent
+            # tempfile's cleanup into unbounded retries (RecursionError) before the agent could start.
+            if not isinstance(args[0], int):
+                require_path(args[0] if args[0] is not None else working)
         elif event in {"os.remove", "os.rmdir", "os.mkdir", "os.chmod", "os.chown", "os.truncate", "os.utime"}:
             require_path(args[0], True)
         elif event in {"os.rename", "os.link"}:

@@ -151,6 +151,44 @@ Path('guard-probe.json').write_text(json.dumps(results))
 
 
 @pytest.mark.anyio
+async def test_native_user_code_removes_its_own_directories_but_cannot_open_outside_ones(tmp_path):
+    # shutil.rmtree lists a directory through a descriptor. The guard used to refuse that: on the Mac a
+    # TemporaryDirectory then failed to clean up, and on Linux the cleanup retried until RecursionError
+    # inside filelock's import-time probe, so the child never started (GitHub CI, 2026-10-11 to 11-19).
+    outside = tmp_path / "outside-directory"
+    outside.mkdir()
+    suffix = f"""
+import json, os, shutil, tempfile
+from pathlib import Path
+results={{}}
+with tempfile.TemporaryDirectory(dir='.') as directory:
+    Path(directory,'nested').mkdir()
+    Path(directory,'nested','probe.txt').write_text('probe')
+results['temporary_directory_removed']=not os.path.exists(directory)
+Path('scratch','deeper').mkdir(parents=True)
+shutil.rmtree('scratch')
+results['rmtree_removed']=not os.path.exists('scratch')
+for name,fn in [('outside_descriptor',lambda:os.open({str(outside)!r},os.O_RDONLY)),
+                ('outside_listing',lambda:os.listdir({str(outside)!r}))]:
+    try:
+        fn()
+        results[name]='unexpected success'
+    except PermissionError:
+        results[name]='refused'
+Path('guard-probe.json').write_text(json.dumps(results))
+"""
+    source = authored(tmp_path / "outside-agent.py", suffix)
+    result = await run_native_agent(tmp_path / "output", source, healthy=True)
+    assert result["status"] == "PASS"
+    trial, = result["trials"]
+    record = trial["native_agent_execution"]
+    assert_reaped(record)
+    probe = json.loads((tmp_path / "output" / "agent-work" / record["episode_id"] / "guard-probe.json").read_text())
+    assert probe == {"temporary_directory_removed": True, "rmtree_removed": True,
+                     "outside_descriptor": "refused", "outside_listing": "refused"}
+
+
+@pytest.mark.anyio
 async def test_native_worker_disables_both_dotenv_loaders_for_user_constructor(tmp_path, monkeypatch):
     key = "FAULTLAB_HARMLESS_NATIVE_DOTENV_SENTINEL"
     monkeypatch.delenv(key, raising=False)
