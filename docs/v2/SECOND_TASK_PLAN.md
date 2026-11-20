@@ -42,6 +42,8 @@ one line in `faultlab/packs/registry.py`). What was built and how it was checked
 - **September guard (decision 4).** `dependency_lock_hash` was recorded again once, with a note in
   `order_identity_baseline.json`, and a fresh gate freeze was saved in `artifacts/second-task-step1-2026-11-15/`.
   The September tests now give 203 of 203.
+  Recorded a second time on 2026-11-20, with the owner's OK, after the CI lock fix (CURRENT_STATUS.md,
+  2026-11-19); the other four order identities still match.
 
 Step 2 is next: the H1–H8 referee bridge, the bookings oracle, and the scripted agents as v2 adapters. Its scoring
 must turn hold labels in reports back into ids using the recorded label table. One known gap for step 2: replay

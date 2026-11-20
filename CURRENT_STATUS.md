@@ -1668,9 +1668,10 @@ New test `test_native_user_code_removes_its_own_directories_but_cannot_open_outs
 on the Mac and passes on both systems. Checks: Mac full backend suite 2,657 passed, 1 skipped. Linux full backend suite
 2,642 passed, 9 skipped, 6 failed; the six were claude-code provider tests that CI had never reached, and they failed
 only because the bare image had no `python3` command (GitHub's runners have one); with it they pass, 9 of 9. The new
-test was added after that run and passes there (native tests 37 of 37). The lock change moves `dependency_lock_hash`,
-so the September order guard fails one test (202 of 203) until that identity is recorded again, which waits for the
-owner's OK. No provider call, no money.
+test was added after that run and passes there (native tests 37 of 37). The lock change moved `dependency_lock_hash`,
+so the September order guard failed one test (202 of 203); with the owner's OK it was recorded a second time on
+2026-11-20 (note in `order_identity_baseline.json`, fresh gate freeze in `artifacts/ci-fix-2026-11-20/`; the other four
+order identities still match), and the September tests give 203 of 203. No provider call, no money.
 
 ### 2026-11-15: second task, step 2, bookings trials scored through the worker ($0)
 
