@@ -48,6 +48,31 @@ must turn hold labels in reports back into ids using the recorded label table. O
 (`faultlab/lab/replay.py`) re-issues recorded requests through the session, and those now hold the real hold ids, so a
 bookings replay must re-issue the labels instead.
 
+## Step 5: the first paid screen (2026-11-19, $0.06): no repeated mistake
+
+The owner approved it, and it ran before step 4 because its answer decides whether step 4 is needed now. Haiku 5.5
+ran as `pack-actor` on the eight public cases, three trials each, with no rule. The declaration
+(`artifacts/bookings-screen-1-2026-11-19/`, sha256 `99a7ecc0…`) fixed the decision rule beforehand: a case shows a
+repeated mistake when the same lowest failed check appears in at least 2 of its 3 trials.
+
+- The preflight passed (hk-dev-2 ×3), and all 24 executions COMPLETED, each with a report. The 166 model calls cost
+  **$0.0599** (ledger rows agree; the largest answer was 1,111 output tokens).
+- **21 of 24 trials were clean.** **No duplicate hold (H2: 0).** All three lost-answer trials (`hk-dev-2`) listed the
+  holds and completed, and so did the trials with a 500 after a committed hold (`hk-dev-3`). The trap the task was built
+  for did not catch Haiku.
+- Three trials broke a rule, each in a different case, so the declared decision is **NO_REPEATED_MISTAKE**:
+  - `hk-dev-4`: H5. It reported SAFE_UNRESOLVED with no next action after a FAILED receipt.
+  - `hk-dev-5`: H3. It reported the move PENDING while turns were left; the hold stayed in use.
+  - `hk-dev-6`: H5. It reported SAFE_UNRESOLVED with no next action after the first hold expired.
+- The oracle found no false belief in any trial.
+- Not a violation, but worth noting: Haiku stops early. It never finished `hk-dev-6`, which needs one new hold and a
+  second move (0 of 3 completed; 2 honest SAFE_UNRESOLVED), and it reported `hk-dev-4` as SAFE_UNRESOLVED rather than
+  CORRECTLY_REJECTED in all three trials. The checks count an honest unresolved report as valid by design.
+
+By the declared rule, step 6 (a repair study) is not triggered. Step 4 can wait until there is something to study.
+The early stopping is a different question from the one this screen asked: whether a lab should measure "could have
+finished" separately is a product choice for the owner.
+
 ## Step 3: done (2026-11-15, $0)
 
 A model can now do the bookings task. `faultlab/adapters/pack_actor.py` (`pack-actor`, settings: provider, model,

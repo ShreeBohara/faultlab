@@ -1,0 +1,104 @@
+{
+  "actor": {
+    "model": "anthropic:claude-haiku-5-5",
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_bound_usd": 0.0336,
+    "pricing": {
+      "input_per_million": 0.1,
+      "output_per_million": 0.5,
+      "ref": "anthropic:claude-haiku-5-5",
+      "source": "Official page https://platform.claude.com/docs/en/about-claude/pricing, read by the project on 2026-10-10 (base input/output tokens, global routing, no caching, no batch discount); the rate for prompts up to 100,000 tokens, which every FaultLab call is (32,000-token input bound)",
+      "status": "priced",
+      "verified_on": "2026-10-10"
+    }
+  },
+  "claim": "A development screen on public cases: how often this model makes the task's mistakes here. Not an unseen-case result; no repair and no policy is involved.",
+  "code": {
+    "bookings_handler_sha256": "d1ddb4875079ac4fa838a87228aad843b902f3b3846333fa3108d2ef3da50dd2",
+    "bookings_oracle_sha256": "285138dadcdcad4c53bda5d85858baf3b1d25b92146aa43f0a6f46716056cda3",
+    "bookings_pack_sha256": "06ed4a79ffac49e141ca620705d28c7d2e1d5b021c8121065bb859ccf6570efd",
+    "bookings_referee_sha256": "40a4c5874bc0813481f4e8cab0e3419933f822ccadec2c1e9ce3b2ee299c6d52",
+    "git_sha": "3e9723abb6fae7afa729d30e933b7e55e839ee17",
+    "kernel_dispatch_sha256": "47d1887c83a434f5c61f79529f4682f04c95aa2a8a354c50185686298fcf2149",
+    "lab_session_sha256": "a4ea73faf24f007e294f3f2eb367736bcf8dd5cd1baca3f8b1cc716cc3897176",
+    "pack_actor_sha256": "664e96a937f0f363d78f75860f89658f1b92e2d6af9d73f0ff80355029a12eb6",
+    "pricing_table_sha256": "6c898f429ee89bf2ca1f286c55ac45a34db06684e578da432e4431e4413690c9",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "september_checks_sha256": "4b1de555a27d7d052c27eeddddb4538a1c967815029e366d221b25b139775ca4"
+  },
+  "decision_rule": "A case shows a repeated mistake when the same lowest failed check appears in at least 2 of its 3 trials. Any repeated mistake makes step 6 (a repair study on that case) worth proposing to the owner; none means no repeated mistake was found on the public cases, and it is reported that way.",
+  "design": {
+    "adapter": {
+      "id": "pack-actor",
+      "prompt_digest": "6a744727a14d70c1ead041dbada928fe5a496d622fc0d1c20b70814e7a914622",
+      "settings_digest": "66af7ba53678473a0d10c4585cd1e4ce3799800679c00b9f4f48fca6ac1e77ce",
+      "version": "1"
+    },
+    "caps_per_trial": {
+      "dollars": 0.0336,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "cases": [
+      "hk-dev-1",
+      "hk-dev-2",
+      "hk-dev-3",
+      "hk-dev-4",
+      "hk-dev-5",
+      "hk-dev-6",
+      "hk-dev-7",
+      "hk-dev-8"
+    ],
+    "model": "anthropic:claude-haiku-5-5",
+    "pack_digest": "fd9d0a242479110bb54b4da93817182d568a17fcda941023ed6f8ac2ee8715ca",
+    "pack_id": "bookings.move_with_hold/v1",
+    "referee": {
+      "checker_sha256": "4b1de555a27d7d052c27eeddddb4538a1c967815029e366d221b25b139775ca4",
+      "id": "bookings"
+    },
+    "trials_per_case": 3
+  },
+  "design_digest": "95dc0cd2d7c8c4ad2ca9c07006cf36ffc206bf8e24098ba87d5ac8eaa8148a03",
+  "kind": "development_screen",
+  "ledger_before": {
+    "bound_sum_usd": 138.3984,
+    "committed_usd": 18.7631,
+    "month": "2026-11",
+    "rows": 13230
+  },
+  "money": {
+    "batch_caps_usd": {
+      "preflight": 0.1008,
+      "rest": 0.7056
+    },
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 19.58,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus the quoted $0.81"
+    },
+    "quoted_max_usd": 0.81
+  },
+  "name": "bookings-screen-1-2026-11-19",
+  "order": "hk-dev-2 first (three trials, the preflight), then the other seven cases, three trials each: 24 trials in all",
+  "preflight": {
+    "pass": "all three executions COMPLETED with recorded dollars and under 80 seconds of wall time; every ledger row they added names the model; no answer reached 1,900 output tokens; mean cost under $0.03 a trial. A missing or invalid report is a finding of the screen, not a preflight failure. The preflight trials count as the case's three trials.",
+    "scenario": "hk-dev-2",
+    "trials": 3
+  },
+  "question": "With Haiku 5.5 as the pack-built Actor (pack-actor) on the eight public cases of the bookings task, three trials each and no rule: which checks does it fail, and does any case show a repeated mistake (the same lowest failed check in at least 2 of its 3 trials)?",
+  "readouts": [
+    "per case: the failed checks and the lowest failed check of each trial",
+    "the task's target mistakes: trials failing H2 (duplicate holding) and H3 (abandoned hold)",
+    "trials with no report",
+    "the oracle's false beliefs by claim",
+    "measured dollars and model calls"
+  ],
+  "stop_rules": [
+    "a billing message in any log stops the run",
+    "the preflight must PASS before the other 21 trials run",
+    "the batch dollar caps ($0.1008 and $0.7056) and the process monthly cap refuse further calls",
+    "an INFRA_ERROR trial is reported, not retried"
+  ]
+}

@@ -1624,6 +1624,17 @@ prompt. With a scripted model through the worker and the H1–H8 referee, a care
 fails H2 first (a second hold after a lost answer). Checks: 4 new tests, the v2 suite at 224, the full backend suite
 (see the commit). No provider call, no money.
 
+### Ledger entry 2026-11-19: bookings screen 1 (Anthropic API, Haiku 5.5): NO_REPEATED_MISTAKE
+
+The second task's first paid run, with the owner's go-ahead (plan step 5). Haiku 5.5 ran as `pack-actor` on the
+eight public bookings cases, three trials each, with no rule, under declaration sha256 `99a7ecc0…`
+(`artifacts/bookings-screen-1-2026-11-19/`; run folder `~/FaultLab_Runs/2026-11-19/bookings-screen-1/`). The preflight
+(hk-dev-2 ×3) passed. All 24 trials completed with a report. 21 were clean, and H2 (duplicate hold) occurred 0 times.
+The other three broke a rule once each, in different cases: H5 on hk-dev-4, H3 on hk-dev-5, H5 on hk-dev-6. No case
+repeated a mistake, and the oracle found no false belief. Haiku tended to stop early: it never completed hk-dev-6
+(0 of 3). Money: **$0.0599** for 166 calls. November committed $18.7631 → $18.8231 (ledger, rows 13,230 → 13,396). The process monthly cap was $19.58
+and the batch caps were $0.1008 and $0.7056.
+
 ### 2026-11-15: second task, step 2, bookings trials scored through the worker ($0)
 
 The September bookings agents now run as v2 adapters (`reference-bookings`, `buggy-bookings`). A new referee runs the
