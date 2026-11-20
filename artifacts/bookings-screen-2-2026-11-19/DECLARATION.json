@@ -1,0 +1,153 @@
+{
+  "actor": {
+    "model": "anthropic:claude-haiku-5-5",
+    "per_call_reservation_usd": 0.0042,
+    "per_trial_bound_usd": 0.0336,
+    "pricing": {
+      "input_per_million": 0.1,
+      "output_per_million": 0.5,
+      "ref": "anthropic:claude-haiku-5-5",
+      "source": "Official page https://platform.claude.com/docs/en/about-claude/pricing, read by the project on 2026-10-10 (base input/output tokens, global routing, no caching, no batch discount); the rate for prompts up to 100,000 tokens, which every FaultLab call is (32,000-token input bound)",
+      "status": "priced",
+      "verified_on": "2026-10-10"
+    }
+  },
+  "claim": "A development screen on newly drawn schedules of the same task. It tells whether Haiku's habits break on harder or different faults than the public cases; it is not an unseen-case test of any rule, and these cases become development evidence.",
+  "code": {
+    "bookings_draw_sha256": "844714099a3d423be7672176f2232272a38694c5a80b6d8f26c095e7e7c2fae1",
+    "bookings_handler_sha256": "d1ddb4875079ac4fa838a87228aad843b902f3b3846333fa3108d2ef3da50dd2",
+    "bookings_oracle_sha256": "285138dadcdcad4c53bda5d85858baf3b1d25b92146aa43f0a6f46716056cda3",
+    "bookings_pack_sha256": "06ed4a79ffac49e141ca620705d28c7d2e1d5b021c8121065bb859ccf6570efd",
+    "bookings_referee_sha256": "40a4c5874bc0813481f4e8cab0e3419933f822ccadec2c1e9ce3b2ee299c6d52",
+    "git_sha": "1a10085f6be6b4707552ffaada31903f41389c3c",
+    "lab_session_sha256": "a4ea73faf24f007e294f3f2eb367736bcf8dd5cd1baca3f8b1cc716cc3897176",
+    "pack_actor_sha256": "664e96a937f0f363d78f75860f89658f1b92e2d6af9d73f0ff80355029a12eb6",
+    "pricing_table_sha256": "6c898f429ee89bf2ca1f286c55ac45a34db06684e578da432e4431e4413690c9",
+    "runtime_provider_sha256": "7313641fa028a523b7765efba7ae031cd65b20fd9bbd86851c195b6f943d1fcb",
+    "september_checks_sha256": "4b1de555a27d7d052c27eeddddb4538a1c967815029e366d221b25b139775ca4"
+  },
+  "decision_rule": "A case shows a repeated mistake when the same lowest failed check appears in at least 2 of its 3 trials. Any repeated mistake makes a repair study on that case worth proposing to the owner (a new draw would then be the unseen test); none means no repeated mistake was found on these cases, and it is reported that way.",
+  "design": {
+    "adapter": {
+      "id": "pack-actor",
+      "prompt_digest": "6a744727a14d70c1ead041dbada928fe5a496d622fc0d1c20b70814e7a914622",
+      "settings_digest": "66af7ba53678473a0d10c4585cd1e4ce3799800679c00b9f4f48fca6ac1e77ce",
+      "version": "1"
+    },
+    "caps_per_trial": {
+      "dollars": 0.0336,
+      "http_attempts": 18,
+      "model_calls": 8,
+      "wall_seconds": 90
+    },
+    "cases": [
+      "hk-new-1",
+      "hk-new-2",
+      "hk-new-3",
+      "hk-new-4",
+      "hk-new-5",
+      "hk-new-6",
+      "hk-new-7",
+      "hk-new-8",
+      "hk-new-9",
+      "hk-new-10",
+      "hk-new-11",
+      "hk-new-12",
+      "hk-new-13",
+      "hk-new-14",
+      "hk-new-15",
+      "hk-new-16"
+    ],
+    "cases_sha256": "b31c55e5b46b7c2d9df2db97675c61fec21f0fe8beac266567c0661fb829b314",
+    "draw": {
+      "per_stratum": 4,
+      "rule": "each stratum shuffled by the seed text, taken in order while the September reference plays the case cleanly through the worker, fires every fault and keeps a turn",
+      "space": {
+        "hold_trouble": 163,
+        "lost_create": 116,
+        "move_trouble": 195,
+        "other": 76
+      },
+      "tried": {
+        "hold_trouble": 24,
+        "lost_create": 12,
+        "move_trouble": 15,
+        "other": 7
+      }
+    },
+    "model": "anthropic:claude-haiku-5-5",
+    "pack_digest": "0ba4f8b4cb9c25a861a6c2bebb2a794829b29bce48b0346e0ddb6c5a402b21d6",
+    "pack_id": "bookings.move_with_hold/v1",
+    "referee": {
+      "checker_sha256": "4b1de555a27d7d052c27eeddddb4538a1c967815029e366d221b25b139775ca4",
+      "id": "bookings"
+    },
+    "seed_text": "1a10085f6be6b4707552ffaada31903f41389c3c|fd9d0a242479110bb54b4da93817182d568a17fcda941023ed6f8ac2ee8715ca|bookings-screen-2:new-cases",
+    "strata": {
+      "hk-new-1": "lost_create",
+      "hk-new-10": "hold_trouble",
+      "hk-new-11": "hold_trouble",
+      "hk-new-12": "hold_trouble",
+      "hk-new-13": "other",
+      "hk-new-14": "other",
+      "hk-new-15": "other",
+      "hk-new-16": "other",
+      "hk-new-2": "lost_create",
+      "hk-new-3": "lost_create",
+      "hk-new-4": "lost_create",
+      "hk-new-5": "move_trouble",
+      "hk-new-6": "move_trouble",
+      "hk-new-7": "move_trouble",
+      "hk-new-8": "move_trouble",
+      "hk-new-9": "hold_trouble"
+    },
+    "trials_per_case": 3
+  },
+  "design_digest": "1ed6fa21e0a6ad08ad178f965d3ed5df52fe51b9bb4eb8dc94781a74034ec445",
+  "kind": "development_screen",
+  "ledger_before": {
+    "bound_sum_usd": 139.0956,
+    "committed_usd": 18.8231,
+    "month": "2026-11",
+    "rows": 13396
+  },
+  "money": {
+    "batch_caps_usd": {
+      "preflight": 0.1008,
+      "rest": 0.3992
+    },
+    "hard_cap_usd": 0.5,
+    "monthly": {
+      "env_cap_usd": 50.0,
+      "owner_api_limit_usd": 200.0,
+      "process_cap_usd": 19.33,
+      "rule": "for this run FAULTLAB_MONTHLY_DOLLAR_CAP is lowered to this month's committed dollars plus the $0.50 hard cap"
+    },
+    "quoted_range_usd": [
+      0.1,
+      0.5
+    ]
+  },
+  "name": "bookings-screen-2-2026-11-19",
+  "order": "the first drawn case first (three trials, the preflight), then the other fifteen, three trials each: 48 trials in all",
+  "preflight": {
+    "case": "hk-new-1",
+    "pass": "all three executions COMPLETED with recorded dollars and under 80 seconds of wall time; every ledger row they added names the model; no answer reached 1,900 output tokens; mean cost under $0.03 a trial. A missing or invalid report is a finding, not a preflight failure. The preflight trials count as the case's three trials.",
+    "trials": 3
+  },
+  "question": "With Haiku 5.5 as pack-actor on 16 bookings cases drawn new from the September fault grammar (four per stratum: lost_create, move_trouble, hold_trouble, other), three trials each and no rule: which checks does it fail, and does any case show a repeated mistake (the same lowest failed check in at least 2 of its 3 trials)?",
+  "readouts": [
+    "per case and stratum: the failed checks and the lowest failed check of each trial",
+    "trials failing H2 and H3",
+    "trials with no report",
+    "trials reported SAFE_UNRESOLVED",
+    "the oracle's false beliefs by claim",
+    "measured dollars and model calls"
+  ],
+  "stop_rules": [
+    "a billing message in any log stops the run",
+    "the preflight must PASS before the other 45 trials run",
+    "the batch dollar caps ($0.1008 and $0.3992, $0.50 in all) and the process monthly cap refuse further calls",
+    "an INFRA_ERROR trial is reported, not retried"
+  ]
+}

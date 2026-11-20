@@ -256,4 +256,5 @@ The dashboard now has a read-only **Study results** page (`#/studies`) over ever
 published in `artifacts/<name>/` the way comparisons 1 to 4 were.
 The second task is under way: [v2/SECOND_TASK_PLAN.md](v2/SECOND_TASK_PLAN.md). Steps 1 to 3 are done (the bookings pack runs on the
 kernel, its trials are scored with the September verdicts, and a model Actor built from the pack can do it). The first paid screen (2026-11-19, Haiku, $0.06) found no repeated mistake
-(21 of 24 clean, no duplicate hold), so the repair steps are not triggered; Haiku tends to stop early instead.
+(21 of 24 clean, no duplicate hold), and a second on 16 newly drawn cases ($0.12) found none either (45 of 48 clean). The repair
+steps are not triggered; Haiku tends to stop early instead.

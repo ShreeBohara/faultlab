@@ -48,6 +48,34 @@ must turn hold labels in reports back into ids using the recorded label table. O
 (`faultlab/lab/replay.py`) re-issues recorded requests through the session, and those now hold the real hold ids, so a
 bookings replay must re-issue the labels instead.
 
+## Step 4 and a second screen on new cases (2026-11-19, $0.12): still no repeated mistake
+
+At the owner's choice ("harder booking test"), step 4's draw came first. `faultlab/research/bookings_draw.py` builds
+550 candidate schedules from the September grammar: single faults, plus pairs that do not share an attempt of a tool.
+It leaves out grammar refusals, faults that cannot fire, and the public cases, and sorts the rest into four strata.
+A draw shuffles each stratum by a seed text fixed beforehand and takes cases in that order while the September
+reference plays them cleanly through the worker ($0), fires every fault, and keeps a turn to spare.
+
+Screen 2 (`artifacts/bookings-screen-2-2026-11-19/`, declaration sha256 `dbf81d64…`) drew 4 cases per stratum,
+16 in all, with the seed text `<git 1a10085>|<pack digest>|bookings-screen-2:new-cases`. Several cases combine two
+faults, for example a hold that commits but answers 500 followed by a lost move answer. Haiku 5.5 ran as `pack-actor`
+on each case three times, with no rule, a hard cap of $0.50, and the same decision rule as screen 1.
+
+- The preflight passed. All 48 trials completed with a report, using 334 calls for **$0.1227**.
+- **45 of 48 were clean. No duplicate hold (H2: 0).** The trap stratum (`lost_create`, a lost or 500 answer to
+  `place_hold`) was clean in 12 of 12 trials. The other strata were clean in 11 of 12 each.
+- Three trials broke a rule once each, in different cases, so the decision is **NO_REPEATED_MISTAKE**:
+  - `hk-new-15`: H3. It reported while a hold was still open.
+  - `hk-new-7`: H5. It reported CORRECTLY_REJECTED inconsistently.
+  - `hk-new-10`: H5. It reported SAFE_UNRESOLVED with no next action.
+- The oracle found no false belief.
+- Haiku again often stopped at SAFE_UNRESOLVED: 13 of 48 trials, including every trial of `hk-new-3`, `hk-new-6`
+  and `hk-new-12`. Across both screens, "SAFE_UNRESOLVED with no next action" is the one slip seen more than once
+  (3 of 72 trials, each in a different case). That is a description, not a decision: the declared rule counts
+  repeats within a case.
+
+These 16 cases are now development evidence. A later unseen test would need a fresh draw.
+
 ## Step 5: the first paid screen (2026-11-19, $0.06): no repeated mistake
 
 The owner approved it, and it ran before step 4 because its answer decides whether step 4 is needed now. Haiku 5.5
