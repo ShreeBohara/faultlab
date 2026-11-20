@@ -138,7 +138,9 @@ def draw(seed_text: str, per_stratum: int, *, play=playable) -> dict:
             if play(candidate):
                 taken += 1
                 cases.append(candidate)
-    named = [{"case_id": f"hk-new-{n}", "stratum": c["stratum"], "key": c["key"],
+    # The schedule's content hash is named schedule_digest in a cases file: a field called "key" holding 64 hex characters
+    # reads as a credential to secret scanners (screen 2's cases.json, 2026-11-19).
+    named = [{"case_id": f"hk-new-{n}", "stratum": c["stratum"], "schedule_digest": c["key"],
               "scenario": scenario(c, f"hk-new-{n}").model_dump(mode="json")} for n, c in enumerate(cases, 1)]
     return {"schema": CASES_SCHEMA, "pack_id": PACK.pack_id, "seed_text": seed_text, "per_stratum": per_stratum,
             "space": {name: sum(1 for c in space if c["stratum"] == name) for name in STRATA}, "tried": tried, "cases": named}

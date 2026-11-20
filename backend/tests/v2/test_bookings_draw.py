@@ -23,10 +23,10 @@ def test_the_draw_is_fixed_by_its_seed_text_and_takes_playable_cases_in_order(tm
     always = draw("seed-a", 3, play=lambda candidate: True)
     assert always == draw("seed-a", 3, play=lambda candidate: True) != draw("seed-b", 3, play=lambda candidate: True)
     assert [c["stratum"] for c in always["cases"]] == [name for name in STRATA for _ in range(3)]
-    refused = draw("seed-a", 1, play=lambda candidate: candidate["key"] != always["cases"][0]["key"])
-    assert refused["cases"][0]["key"] == always["cases"][1]["key"] and refused["tried"]["lost_create"] == 2
+    refused = draw("seed-a", 1, play=lambda candidate: candidate["key"] != always["cases"][0]["schedule_digest"])
+    assert refused["cases"][0]["schedule_digest"] == always["cases"][1]["schedule_digest"] and refused["tried"]["lost_create"] == 2
     real = draw("seed-a", 1)                                       # the reference through the worker, at $0
-    assert len(real["cases"]) == len(STRATA) and all(playable({"key": c["key"], "stratum": c["stratum"],
+    assert len(real["cases"]) == len(STRATA) and all(playable({"key": c["schedule_digest"], "stratum": c["stratum"],
                                                                "fixture_id": c["scenario"]["fixture_id"],
                                                                "primitives": c["scenario"]["fault_spec"]["primitives"]}) for c in real["cases"])
     path = tmp_path / "cases.json"
